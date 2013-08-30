@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_ResultsFile" object="${resultsfile}" path="/resultsfiles" z="U9liEQJ+2OwGsDVil43aQQ4SXjk=">
+        <field:display field="filePath" id="s_com_bibsmobile_model_ResultsFile_filePath" object="${resultsfile}" z="JLAE7Td+ouU/HH7M0MLvBbncOyM="/>
+        <field:display field="event" id="s_com_bibsmobile_model_ResultsFile_event" object="${resultsfile}" z="i5IIqtCqMxliIU5q8vlCbR+bQ2k="/>
+        <field:display field="filesize" id="s_com_bibsmobile_model_ResultsFile_filesize" object="${resultsfile}" z="NraWqd83LAWtGau2oSM+ZPL/XSM="/>
+        <field:display field="contentType" id="s_com_bibsmobile_model_ResultsFile_contentType" object="${resultsfile}" z="iZsV2xJanCFXiXh+6g8O6CY8gIU="/>
+        <field:display field="content" id="s_com_bibsmobile_model_ResultsFile_content" object="${resultsfile}" z="HoZDe0ejrZVp6d22qag1UyV6K7k="/>
+        <field:display field="name" id="s_com_bibsmobile_model_ResultsFile_name" object="${resultsfile}" z="opDYhTY3jD8DMMAv/yrjefR3UFU="/>
+    </page:show>
+</div>

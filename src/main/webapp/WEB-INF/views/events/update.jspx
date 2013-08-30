@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_bibsmobile_model_Event" modelAttribute="event" path="/events" versionField="Version" z="HRUEbbTPOtP6NCVvkP7sA85e324=">
+        <field:input field="name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/>
+        <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="fWuKqZzkHrCoE/9Fc7B/oy0Cxx8="/>
+        <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="0mdpfbgqMb+k71Qcx5r3C+mBfnA="/>
+        <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="SnpzH2dNfTWDWREFgB5ytB65s5o="/>
+        <field:input field="city" id="c_com_bibsmobile_model_Event_city" z="iYWjL3ti+38Wz9q1TzkesCh+8mw="/>
+        <field:input field="state" id="c_com_bibsmobile_model_Event_state" z="317hwhiMIVVt+Bq3TzgDkWOKaGA="/>
+        <field:input field="lattitude" id="c_com_bibsmobile_model_Event_lattitude" z="sbCFiLWnn/qsDor9GUnjZ/p2Ozc="/>
+        <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="xchtshc1rDaqQxKpn9hfxMR1JH8="/>
+        <field:input field="type" id="c_com_bibsmobile_model_Event_type" z="WpTy0+5h/OMiJK0+fOhga13yBoo="/>
+        <field:input field="website" id="c_com_bibsmobile_model_Event_website" z="WFocGr6gbdGCM6tSsc0Fo/eZeLs="/>
+        <field:input field="phone" id="c_com_bibsmobile_model_Event_phone" z="Xq4xyh1JokxjVrnPcb99go9L2q0="/>
+        <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="zO+HS3TEAM4WatbqeGIshVof5pM="/>
+        <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="OAAaw2ZIYLPtsS7VwyZe4OoU2ts="/>
+        <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="rs3+g9/88UAxVj3JqlSmEzJoNak="/>
+        <field:input field="general" id="c_com_bibsmobile_model_Event_general" z="lt0V5yEP0Jijsm3iZr8Zonu8o68="/>
+        <field:input field="description" id="c_com_bibsmobile_model_Event_description" z="a9A49mOXTTNoipgCG1056lC439A="/>
+        <field:input field="organization" id="c_com_bibsmobile_model_Event_organization" z="4jLJZDlGm8wxqUvqHfoxe7selK0="/>
+        <field:input field="photo" id="c_com_bibsmobile_model_Event_photo" z="TcVsFRw6mFx9NcLsIvtOkKrY2Co="/>
+        <field:input field="photo2" id="c_com_bibsmobile_model_Event_photo2" z="4+KUafFcRbYRS9SA/PN5hVf1jZE="/>
+        <field:input field="photo3" id="c_com_bibsmobile_model_Event_photo3" z="HLvWQiiyNJjXhjwT6LE6jkLnjV0="/>
+        <field:input field="map" id="c_com_bibsmobile_model_Event_map" z="2oDGrOEX2wtgilBTlorvVY4v/Kg="/>
+        <field:input field="map2" id="c_com_bibsmobile_model_Event_map2" z="8Mp1YQxK8Mj72RYzqTKgSbxeN0g="/>
+        <field:input field="map3" id="c_com_bibsmobile_model_Event_map3" z="5xl7oYOYy343xyppka6lUfyFLDE="/>
+        <field:input field="results" id="c_com_bibsmobile_model_Event_results" z="/B8Piu3cuMF0nsN6GtBQVM/YgT8="/>
+        <field:input field="results2" id="c_com_bibsmobile_model_Event_results2" z="QBnnd/xqeGQkn6w4PpgGIlN/7Eg="/>
+        <field:input field="results3" id="c_com_bibsmobile_model_Event_results3" z="BiHC4PyDoSwF9E//xvVReqHyb8Y="/>
+        <field:input field="alert1" id="c_com_bibsmobile_model_Event_alert1" z="Rej7jWnyUZba4YHvF0sOHDHo2gc="/>
+        <field:input field="alert2" id="c_com_bibsmobile_model_Event_alert2" z="QEXTHUTY1/uOhIxSVGhJwv0HHw4="/>
+        <field:input field="alert3" id="c_com_bibsmobile_model_Event_alert3" z="CfrLYjED6kBINCyUmaegc4jr3U8="/>
+        <field:input field="donateUrl" id="c_com_bibsmobile_model_Event_donateUrl" z="HL75gKaaA50r5iTMNfguWS5jnm8="/>
+        <field:input field="facebookUrl1" id="c_com_bibsmobile_model_Event_facebookUrl1" z="HlmSKp4rjFSRJjI4MyXAR4Sow+M="/>
+        <field:input field="facebookUrl2" id="c_com_bibsmobile_model_Event_facebookUrl2" z="5BaXQuiPC7Jnnmtq9ekEY4shGtI="/>
+        <field:input field="photoUploadUrl" id="c_com_bibsmobile_model_Event_photoUploadUrl" z="STR6z61YjGP7URw+aDaIdKuygtQ="/>
+        <field:input field="coursemaps" id="c_com_bibsmobile_model_Event_coursemaps" z="hLLdfVPuj88ygF6Q5bDSTNKDMXQ="/>
+        <field:input field="merchandise" id="c_com_bibsmobile_model_Event_merchandise" z="de9YNJdVO7/nhqyDau41pKBBAx0="/>
+        <field:input field="beachEvents" id="c_com_bibsmobile_model_Event_beachEvents" z="+wJqAmYRL4EoZ4vE2YoUDPzsSPY="/>
+        <field:input field="shuttles" id="c_com_bibsmobile_model_Event_shuttles" z="BnZpEmfdmLoPik26+EXfpKdWr0I="/>
+        <field:input field="courseRules" id="c_com_bibsmobile_model_Event_courseRules" z="BJcgnREBCv1k8bsAoyU7Fy8Wwz4="/>
+    </form:update>
+</div>

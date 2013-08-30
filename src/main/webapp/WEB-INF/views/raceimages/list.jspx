@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_RaceImage" items="${raceimages}" z="UmhrnEgJ375+8EwV5urNhKHu3V8=">
+        <table:table data="${raceimages}" id="l_com_bibsmobile_model_RaceImage" path="/raceimages" z="oflDsizUYYn+UafERD2ITU/bzzA=">
+            <table:column id="c_com_bibsmobile_model_RaceImage_filePath" property="filePath" z="QeODccy3K1At8JT7jJ677ZVKR5M="/>
+            <table:column id="c_com_bibsmobile_model_RaceImage_raceResult" property="raceResult" z="B5duhp99IPmyVjkK5FlucX4lejo="/>
+            <table:column id="c_com_bibsmobile_model_RaceImage_event" property="event" z="wg/dEiF2j7VuobgbEemH4Bz15LY="/>
+            <table:column id="c_com_bibsmobile_model_RaceImage_userProfile" property="userProfile" z="pT21oSjWfKavFZ2YuddjcP9XKn4="/>
+            <table:column id="c_com_bibsmobile_model_RaceImage_nonPublic" property="nonPublic" z="gBFgTANZyuDTYPMyG5rsw5xj0Z8="/>
+        </table:table>
+    </page:list>
+</div>

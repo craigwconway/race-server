@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_bibsmobile_model_RaceImage" modelAttribute="raceImage" path="/raceimages" versionField="Version" z="2UesAcR6wPak3fqjyKTh2+aUP9Y=">
+        <field:input field="filePath" id="c_com_bibsmobile_model_RaceImage_filePath" required="true" z="UuxovfG+86RKFB0os8sQVHwXwNc="/>
+        <field:select field="raceResult" id="c_com_bibsmobile_model_RaceImage_raceResult" itemValue="id" items="${raceresults}" path="/raceresults" z="rOxk4NTjPxcIXi59PtOpG7hHqIU="/>
+        <field:select field="event" id="c_com_bibsmobile_model_RaceImage_event" itemValue="id" items="${events}" path="/events" z="ToEXP/Tkgo5K3UhdAucIptbxLK8="/>
+        <field:select field="userProfile" id="c_com_bibsmobile_model_RaceImage_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" z="5QfhcdJQqyrbEIdJdCHJksClEUE="/>
+        <field:checkbox field="nonPublic" id="c_com_bibsmobile_model_RaceImage_nonPublic" z="pSjEQEPNnXhXahtnFf0heQkc0f0="/>
+    </form:update>
+</div>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_ResultsFileMapping" items="${resultsfilemappings}" z="8DJfJcOfsXJeZqJa10JDWpt4/D0=">
+        <table:table data="${resultsfilemappings}" id="l_com_bibsmobile_model_ResultsFileMapping" path="/resultsfilemappings" z="7NxfKdk3x+mhgQr2kpraZAJAUkM=">
+            <table:column id="c_com_bibsmobile_model_ResultsFileMapping_skipFirstRow" property="skipFirstRow" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFileMapping_map" property="map" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFileMapping_resultsFile" property="resultsFile" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFileMapping_row1" property="row1" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFileMapping_row2" property="row2" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFileMapping_options" property="options" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFileMapping_name" property="name" z="FXubtzWxZmjKKKW6IepbyjbnKJI="/>
+        </table:table>
+    </page:list>
+</div>

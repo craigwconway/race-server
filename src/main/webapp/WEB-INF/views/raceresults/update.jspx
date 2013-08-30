@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" versionField="Version" z="F9aarHhR5nq4t+oI83y+vKqDH/g=">
+        <field:input field="bib" id="c_com_bibsmobile_model_RaceResult_bib" required="true" z="hcgJpmS2s2exxb4PUp3zI+R6RlU="/>
+        <field:select field="event" id="c_com_bibsmobile_model_RaceResult_event" itemValue="id" items="${events}" path="/events" z="YpLpEgB7+lftHhbBVFMLoS84U2A="/>
+        <field:input field="age" id="c_com_bibsmobile_model_RaceResult_age" z="yZ94xj05TOypkGqmv/EMn/G6TAw="/>
+        <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
+        <field:input field="type" id="c_com_bibsmobile_model_RaceResult_type" z="99jcypouK2FeMc1juIO+ZFZXLlM="/>
+        <field:input field="medal1" id="c_com_bibsmobile_model_RaceResult_medal1" z="gfzZr2H+QSOl1/CIu91u+WOb0Wg="/>
+        <field:input field="medal2" id="c_com_bibsmobile_model_RaceResult_medal2" z="yrEyclEGPQVRkRDmxL8tdLU0E0A="/>
+        <field:input field="medal3" id="c_com_bibsmobile_model_RaceResult_medal3" z="5QQ6GmMC1vSjgMKoZy/fUIDw27w="/>
+        <field:input field="city" id="c_com_bibsmobile_model_RaceResult_city" z="NaUD9KS712aVBFoLI+iHu7qJSq8="/>
+        <field:input field="state" id="c_com_bibsmobile_model_RaceResult_state" z="BYXMVk0UAC6iGqpJ3cmxgqF45cA="/>
+        <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" z="wNJaKjw1pH02mAOFJPFg5mz6UdI="/>
+        <field:input field="firstname" id="c_com_bibsmobile_model_RaceResult_firstname" z="zKn6S2DhCQNPre9I507NFqdbR+Y="/>
+        <field:input field="lastname" id="c_com_bibsmobile_model_RaceResult_lastname" z="mbmpcyW9rdA70EKca3Hl8acqVVo="/>
+        <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" z="tI6uBHjxXkCojGBvn/QY9uq0LxM="/>
+        <field:input field="middlename2" id="c_com_bibsmobile_model_RaceResult_middlename2" z="+X+L7jmES90W8o6My/qIDsjjvr8="/>
+        <field:input field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" z="/SbBYR77LGGoxV4jPbfrXBD9JtA="/>
+        <field:input field="timegun" id="c_com_bibsmobile_model_RaceResult_timegun" z="ITlj1Y3w+zwXoIg7NhZYwmA+/ag="/>
+        <field:input field="timechip" id="c_com_bibsmobile_model_RaceResult_timechip" z="FE5TLCumdMkc8xLSVivEPD0GYQY="/>
+        <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="biaigy7Lm0o/w1toypGPfxVc01w="/>
+        <field:input field="timerun" id="c_com_bibsmobile_model_RaceResult_timerun" z="C+s1/MigozF9S0/YWYELmrrlqLw="/>
+        <field:input field="timeswim" id="c_com_bibsmobile_model_RaceResult_timeswim" z="dWnHclq/wpUglfwkEtwft3SLVKo="/>
+        <field:input field="timetrans1" id="c_com_bibsmobile_model_RaceResult_timetrans1" z="wzJkai6vPONY86wccUCAnspI08M="/>
+        <field:input field="timetrans2" id="c_com_bibsmobile_model_RaceResult_timetrans2" z="mp6iZ5LQCgo4ix9Q6dX8jiJ443I="/>
+        <field:input field="timebike" id="c_com_bibsmobile_model_RaceResult_timebike" z="pDzCxm26EXkfO1U7IGV8ODYhXJo="/>
+        <field:input field="timepace" id="c_com_bibsmobile_model_RaceResult_timepace" z="/Q5mydoVN6TAOpdRjFBXzT5VROY="/>
+        <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" z="OxJ8O0I6mDEAxFZE1SY0HmfCIK8="/>
+        <field:input field="rankoverall" id="c_com_bibsmobile_model_RaceResult_rankoverall" z="Y3aSMRK83zi+FFM+CNNoQasne/c="/>
+        <field:input field="rankage" id="c_com_bibsmobile_model_RaceResult_rankage" z="o0H7YbNOMfcMjoAWzlcT1lu2yQU="/>
+        <field:input field="rankgender" id="c_com_bibsmobile_model_RaceResult_rankgender" z="P/0HvnjxFWcYZJkFBNp9cGPtGis="/>
+        <field:input field="rankclass" id="c_com_bibsmobile_model_RaceResult_rankclass" z="k/jTrB+fwIieZqdAksO8ag51O4o="/>
+        <field:input field="fullname" id="c_com_bibsmobile_model_RaceResult_fullname" z="9aq5yVvlXZfORzQonmlN+Rwou7A="/>
+        <field:input field="lisencenumber" id="c_com_bibsmobile_model_RaceResult_lisencenumber" z="zGD64ij+CZqIcjkGBkMBL4GpsjU="/>
+        <field:input field="laps" id="c_com_bibsmobile_model_RaceResult_laps" z="q1cmcYACRx7INQikbKtRBbuXH2Q="/>
+    </form:update>
+</div>

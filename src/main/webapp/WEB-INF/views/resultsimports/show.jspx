@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_ResultsImport" object="${resultsimport}" path="/resultsimports" z="9yJLxYqao5o5zxsU/xMxgCXfocA=">
+        <field:display date="true" dateTimePattern="${resultsImport_rundate_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${resultsimport}" z="HVhqTILB7BbkLjzYITs7TqOarVI="/>
+        <field:display field="rowsProcessed" id="s_com_bibsmobile_model_ResultsImport_rowsProcessed" object="${resultsimport}" z="rfr1ZoEczrGr0WevXUBE0Rf3ygY="/>
+        <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${resultsimport}" z="AmOJFePITytpwX4sKJRf+FkAJn8="/>
+        <field:display field="errorRows" id="s_com_bibsmobile_model_ResultsImport_errorRows" object="${resultsimport}" z="KX4YKi5LU4kQjx11YwFoZE2R6Nc="/>
+        <field:display field="resultsFile" id="s_com_bibsmobile_model_ResultsImport_resultsFile" object="${resultsimport}" z="BFZFlsfyztPd7h6482eIJcuuKIQ="/>
+        <field:display field="resultsFileMapping" id="s_com_bibsmobile_model_ResultsImport_resultsFileMapping" object="${resultsimport}" z="j6bBHZSDUO90RJNxbYorFixPbvg="/>
+    </page:show>
+</div>

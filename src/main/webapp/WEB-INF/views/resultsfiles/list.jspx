@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_ResultsFile" items="${resultsfiles}" z="YiMG3Gfk0Pn5ssjK5NK+FeTQrMA=">
+        <table:table data="${resultsfiles}" id="l_com_bibsmobile_model_ResultsFile" path="/resultsfiles" z="vw9LtEv38FktUdHGj9KHWaFNmyQ=">
+            <table:column id="c_com_bibsmobile_model_ResultsFile_filePath" property="filePath" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFile_event" property="event" render="false" z="user-managed"/>
+            <table:column date="true" dateTimePattern="${resultsFile_created_date_format}" id="c_com_bibsmobile_model_ResultsFile_created" property="created" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFile_filesize" property="filesize" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFile_contentType" property="contentType" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsFile_name" property="name" z="SMJ94fmGA3Zgwt9+c4jPH8BDCPM="/>
+        </table:table>
+    </page:list>
+</div>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_UserAuthority" items="${userauthoritys}" z="EZJpndKmrdqrK7tyt9CbjSHLBJw=">
+        <table:table data="${userauthoritys}" id="l_com_bibsmobile_model_UserAuthority" path="/userauthoritys" z="zdnSuBYHmIDPXWxlbIs+SQ2gFGc=">
+            <table:column id="c_com_bibsmobile_model_UserAuthority_authority" property="authority" z="TwEdyUPGAplEa54Eieqy0nRLWvw="/>
+        </table:table>
+    </page:list>
+</div>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_bibsmobile_model_ResultsImport" modelAttribute="resultsImport" path="/resultsimports" versionField="Version" z="nqnoBCg371bNfxnyS+bUuNsJm+Y=">
+        <field:datetime dateTimePattern="${resultsImport_rundate_date_format}" field="runDate" id="c_com_bibsmobile_model_ResultsImport_runDate" z="x2pikNjBmDrzJGySuDYnlyIBTa8="/>
+        <field:input field="rowsProcessed" id="c_com_bibsmobile_model_ResultsImport_rowsProcessed" z="XAk8qSf9VxkyDW8eZNEBptawmYU="/>
+        <field:input field="errors" id="c_com_bibsmobile_model_ResultsImport_errors" z="QB+ybx9v8JHemDFTT32h0eRlN9k="/>
+        <field:input field="errorRows" id="c_com_bibsmobile_model_ResultsImport_errorRows" z="qEHUp+oauirwUF7i1wNEujk5LZQ="/>
+        <field:select field="resultsFile" id="c_com_bibsmobile_model_ResultsImport_resultsFile" itemValue="id" items="${resultsfiles}" path="/resultsfiles" required="true" z="NcLP9szTveQpuKQOLT+0EQSHzak="/>
+        <field:select field="resultsFileMapping" id="c_com_bibsmobile_model_ResultsImport_resultsFileMapping" itemValue="id" items="${resultsfilemappings}" path="/resultsfilemappings" required="true" z="dKy7WiF0lqttEW1lyqjdgTXsbM4="/>
+    </form:update>
+</div>

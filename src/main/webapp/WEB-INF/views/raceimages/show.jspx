@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_RaceImage" object="${raceimage}" path="/raceimages" z="859mEvGH9MEuv8Uv+DsYEr2wx60=">
+        <field:display field="filePath" id="s_com_bibsmobile_model_RaceImage_filePath" object="${raceimage}" z="tomFPcto+yRkljfmU5EWVn3jqgc="/>
+        <field:display field="raceResult" id="s_com_bibsmobile_model_RaceImage_raceResult" object="${raceimage}" z="5nOhCoYTNPDQQPKnkoywq1l2u5s="/>
+        <field:display field="event" id="s_com_bibsmobile_model_RaceImage_event" object="${raceimage}" z="doIJBqji+cw4yz5FxunEJYd4OrE="/>
+        <field:display field="userProfile" id="s_com_bibsmobile_model_RaceImage_userProfile" object="${raceimage}" z="GpDWuepyS1e1Wf9UVO13o9jm7YA="/>
+        <field:display field="nonPublic" id="s_com_bibsmobile_model_RaceImage_nonPublic" object="${raceimage}" z="kfINDbkDa30o9d6Jn26s23NAafs="/>
+    </page:show>
+</div>

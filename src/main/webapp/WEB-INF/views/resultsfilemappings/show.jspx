@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_ResultsFileMapping" object="${resultsfilemapping}" path="/resultsfilemappings" z="74CTOkv8idEjkcqax8ogOjeCMRU=">
+        <field:display field="skipFirstRow" id="s_com_bibsmobile_model_ResultsFileMapping_skipFirstRow" object="${resultsfilemapping}" z="5SlbFyUYKfvDskTQu2XXdwbAFpU="/>
+        <field:display field="map" id="s_com_bibsmobile_model_ResultsFileMapping_map" object="${resultsfilemapping}" z="AwJAFy7pbFZQPS5Bolt0M00gEgU="/>
+        <field:display field="resultsFile" id="s_com_bibsmobile_model_ResultsFileMapping_resultsFile" object="${resultsfilemapping}" z="OEU67eHNzhTRFOAsUDrA/WeBR2k="/>
+        <field:display field="row1" id="s_com_bibsmobile_model_ResultsFileMapping_row1" object="${resultsfilemapping}" render="false" z="user-managed"/>
+        <field:display field="row2" id="s_com_bibsmobile_model_ResultsFileMapping_row2" object="${resultsfilemapping}" render="false" z="user-managed"/>
+        <field:display field="options" id="s_com_bibsmobile_model_ResultsFileMapping_options" object="${resultsfilemapping}" render="false" z="user-managed"/>
+        <field:display field="name" id="s_com_bibsmobile_model_ResultsFileMapping_name" object="${resultsfilemapping}" z="Y63pWJoLtnjahjCrdzlUE2QI+WM="/>
+    </page:show>
+    <h3>Next, click the Edit icon to update and save the mapping!</h3>
+</div>

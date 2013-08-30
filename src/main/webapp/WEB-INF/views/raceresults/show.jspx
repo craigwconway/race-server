@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_RaceResult" object="${raceresult}" path="/raceresults" z="xkwjNPgv7crCtdJkXLNyd+HYYmI=">
+        <field:display field="bib" id="s_com_bibsmobile_model_RaceResult_bib" object="${raceresult}" z="qDzxvPoKAz0fR8e09txv0uPAKUg="/>
+        <field:display field="event" id="s_com_bibsmobile_model_RaceResult_event" object="${raceresult}" z="Fhklm418oADrVmGeNkYHwkp7XtI="/>
+        <field:display field="age" id="s_com_bibsmobile_model_RaceResult_age" object="${raceresult}" z="CwL//qBr/f5VOI9dIA7iBQp3cpU="/>
+        <field:display field="gender" id="s_com_bibsmobile_model_RaceResult_gender" object="${raceresult}" z="ciqcTBsViWRzjH16GZEwcU4+c/E="/>
+        <field:display field="type" id="s_com_bibsmobile_model_RaceResult_type" object="${raceresult}" z="qQwFeK2+fOjGlQpm/XjbuIDnCTQ="/>
+        <field:display field="medal1" id="s_com_bibsmobile_model_RaceResult_medal1" object="${raceresult}" z="BD51nIYvAh2fg9Dib+ONtxbGVU0="/>
+        <field:display field="medal2" id="s_com_bibsmobile_model_RaceResult_medal2" object="${raceresult}" z="Bn5qRdCLt2//WRXTiVBm4oo7O4g="/>
+        <field:display field="medal3" id="s_com_bibsmobile_model_RaceResult_medal3" object="${raceresult}" z="BenyAH1eYFet5pLQJlSrLQ5e26k="/>
+        <field:display field="city" id="s_com_bibsmobile_model_RaceResult_city" object="${raceresult}" z="pfVi0cWGbZSKOe2uKjquIeUTVLg="/>
+        <field:display field="state" id="s_com_bibsmobile_model_RaceResult_state" object="${raceresult}" z="pX9NRjProZBxQ/Q+nNym9vPiIH0="/>
+        <field:display field="country" id="s_com_bibsmobile_model_RaceResult_country" object="${raceresult}" z="W37N8I6kCQmb95NYf/9jXsDOvz0="/>
+        <field:display field="firstname" id="s_com_bibsmobile_model_RaceResult_firstname" object="${raceresult}" z="Sq7xuhXDz91mKP2YTNQONyXI8qU="/>
+        <field:display field="lastname" id="s_com_bibsmobile_model_RaceResult_lastname" object="${raceresult}" z="gdWvMCyr+Nb5+kmms/xLoslRMuQ="/>
+        <field:display field="middlename" id="s_com_bibsmobile_model_RaceResult_middlename" object="${raceresult}" z="fBaaVjXzIw6qfRhRqbhADpRSVWQ="/>
+        <field:display field="middlename2" id="s_com_bibsmobile_model_RaceResult_middlename2" object="${raceresult}" z="R5+Tzb0WirQqXM+UVV5bG+dV17k="/>
+        <field:display field="timeoverall" id="s_com_bibsmobile_model_RaceResult_timeoverall" object="${raceresult}" z="RalTwQFUx9cObFQeMRaagYUemOg="/>
+        <field:display field="timegun" id="s_com_bibsmobile_model_RaceResult_timegun" object="${raceresult}" z="NghMfw8LOGJdkRDYYzc6qUauEqI="/>
+        <field:display field="timechip" id="s_com_bibsmobile_model_RaceResult_timechip" object="${raceresult}" z="iSWr7kgQqlZS7RsXcqlM/dMCXr8="/>
+        <field:display field="timestart" id="s_com_bibsmobile_model_RaceResult_timestart" object="${raceresult}" z="rIN0bfA5qKZ5wRSu3rRx2mmBkjA="/>
+        <field:display field="timerun" id="s_com_bibsmobile_model_RaceResult_timerun" object="${raceresult}" z="ep6yKok+vfqcrrBNKiyTZnvrPIA="/>
+        <field:display field="timeswim" id="s_com_bibsmobile_model_RaceResult_timeswim" object="${raceresult}" z="GxNE/yfDDtKj4SvT+10qyck5++M="/>
+        <field:display field="timetrans1" id="s_com_bibsmobile_model_RaceResult_timetrans1" object="${raceresult}" z="zAuukUC71oUeEKUbZdLPAv+lrGs="/>
+        <field:display field="timetrans2" id="s_com_bibsmobile_model_RaceResult_timetrans2" object="${raceresult}" z="BKBFeuNGfxAgdww8xt5mjFykqOU="/>
+        <field:display field="timebike" id="s_com_bibsmobile_model_RaceResult_timebike" object="${raceresult}" z="Wtw+Udtyvr+qaodS/KjaAzMCCXo="/>
+        <field:display field="timepace" id="s_com_bibsmobile_model_RaceResult_timepace" object="${raceresult}" z="clhUQc8G6/YerBLObzd4RiuUB7U="/>
+        <field:display field="timeofficial" id="s_com_bibsmobile_model_RaceResult_timeofficial" object="${raceresult}" z="jcmEokI4SFffGEEvvEu2uDqjEfk="/>
+        <field:display field="rankoverall" id="s_com_bibsmobile_model_RaceResult_rankoverall" object="${raceresult}" z="06hLXADa5fXjytw2uICiAI5+C5Q="/>
+        <field:display field="rankage" id="s_com_bibsmobile_model_RaceResult_rankage" object="${raceresult}" z="yxRzCRq/WzGi0LPyokG9uZEjmdA="/>
+        <field:display field="rankgender" id="s_com_bibsmobile_model_RaceResult_rankgender" object="${raceresult}" z="jXTwiSAxzaVqX24qb0ACDCQSFZg="/>
+        <field:display field="rankclass" id="s_com_bibsmobile_model_RaceResult_rankclass" object="${raceresult}" z="a6U1l2IVPMJEgPGJiTBQ4628FGM="/>
+        <field:display field="fullname" id="s_com_bibsmobile_model_RaceResult_fullname" object="${raceresult}" z="A39Cn9EQbB4TrUQJKisNnmsk09U="/>
+        <field:display field="lisencenumber" id="s_com_bibsmobile_model_RaceResult_lisencenumber" object="${raceresult}" z="I3qUnKRI9woBwv1cUknMvHIox6U="/>
+        <field:display field="laps" id="s_com_bibsmobile_model_RaceResult_laps" object="${raceresult}" z="b3/ePU54wRtr2VrFDW3DpH/MJY0="/>
+    </page:show>
+</div>

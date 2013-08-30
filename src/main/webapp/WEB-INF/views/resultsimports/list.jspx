@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_ResultsImport" items="${resultsimports}" z="RvPpKaKAKP7sTAf1KnW2w8eO+J4=">
+        <table:table data="${resultsimports}" id="l_com_bibsmobile_model_ResultsImport" path="/resultsimports" z="+mN0fp5RLzyaWlgR3QuTkB7PNEU=">
+            <table:column date="true" dateTimePattern="${resultsImport_rundate_date_format}" id="c_com_bibsmobile_model_ResultsImport_runDate" property="runDate" z="0fGHO1B++MfSib8Z/ljLpej4Zto="/>
+            <table:column id="c_com_bibsmobile_model_ResultsImport_rowsProcessed" property="rowsProcessed" z="NpCmTHo87nvmTwUL93cOJtfI+f4="/>
+            <table:column id="c_com_bibsmobile_model_ResultsImport_errors" property="errors" z="gRNI8zvu1nSTfZqvxfXxlk/FsJM="/>
+            <table:column id="c_com_bibsmobile_model_ResultsImport_errorRows" property="errorRows" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_ResultsImport_resultsFile" property="resultsFile" z="JFHQ9Iff4nbjjrLxb34bdE3SOOY="/>
+            <table:column id="c_com_bibsmobile_model_ResultsImport_resultsFileMapping" property="resultsFileMapping" render="false" z="user-managed"/>
+        </table:table>
+    </page:list>
+</div>

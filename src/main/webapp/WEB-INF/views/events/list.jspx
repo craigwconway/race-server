@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
+        <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
+            <table:column id="c_com_bibsmobile_model_Event_name" property="name" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
+            <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeStart" z="rJXjev/8A3pdDiA7ZYgHXZTb4x8="/>
+            <table:column date="true" dateTimePattern="${event_timeend_date_format}" id="c_com_bibsmobile_model_Event_timeEnd" property="timeEnd" z="2ZWCmbxrDF9Mcm5A8UyBOUesg6Q="/>
+            <table:column id="c_com_bibsmobile_model_Event_featured" property="featured" z="SSlky1GT/HFOSdTEPcwMMl0oYJg="/>
+            <table:column id="c_com_bibsmobile_model_Event_city" property="city" z="WzbZmrBHV2hfyuQXeLrYTeL8uZU="/>
+            <table:column id="c_com_bibsmobile_model_Event_state" property="state" z="VJMVkJIab6+fDPY80DL+nyIjpHM="/>
+        </table:table>
+    </page:list>
+</div>
