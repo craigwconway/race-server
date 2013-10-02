@@ -104,6 +104,14 @@ privileged aspect RaceResult_Roo_JavaBean {
         this.timechip = timechip;
     }
     
+    public String RaceResult.getTimesplit() {
+        return this.timesplit;
+    }
+    
+    public void RaceResult.setTimesplit(String timesplit) {
+        this.timesplit = timesplit;
+    }
+    
     public String RaceResult.getTimestart() {
         return this.timestart;
     }

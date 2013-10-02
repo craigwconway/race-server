@@ -36,6 +36,7 @@
         <field:input field="fullname" id="c_com_bibsmobile_model_RaceResult_fullname" z="9aq5yVvlXZfORzQonmlN+Rwou7A="/>
         <field:input field="lisencenumber" id="c_com_bibsmobile_model_RaceResult_lisencenumber" z="zGD64ij+CZqIcjkGBkMBL4GpsjU="/>
         <field:input field="laps" id="c_com_bibsmobile_model_RaceResult_laps" z="q1cmcYACRx7INQikbKtRBbuXH2Q="/>
+        <field:input field="timesplit" id="c_com_bibsmobile_model_RaceResult_timesplit" z="kSiQV+PuM3fUGJ2NtT0n07C7XkA="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
 </div>

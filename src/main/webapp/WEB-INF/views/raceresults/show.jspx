@@ -21,7 +21,8 @@
         <field:display field="timeoverall" id="s_com_bibsmobile_model_RaceResult_timeoverall" object="${raceresult}" z="RalTwQFUx9cObFQeMRaagYUemOg="/>
         <field:display field="timegun" id="s_com_bibsmobile_model_RaceResult_timegun" object="${raceresult}" z="NghMfw8LOGJdkRDYYzc6qUauEqI="/>
         <field:display field="timechip" id="s_com_bibsmobile_model_RaceResult_timechip" object="${raceresult}" z="iSWr7kgQqlZS7RsXcqlM/dMCXr8="/>
-        <field:display field="timestart" id="s_com_bibsmobile_model_RaceResult_timestart" object="${raceresult}" z="rIN0bfA5qKZ5wRSu3rRx2mmBkjA="/>
+        <field:display field="timesplit" id="s_com_bibsmobile_model_RaceResult_timesplit" object="${raceresult}" z="GaSffl+h/M1GJK1pld2cPv0FOiQ="/>
+    	<field:display field="timestart" id="s_com_bibsmobile_model_RaceResult_timestart" object="${raceresult}" z="rIN0bfA5qKZ5wRSu3rRx2mmBkjA="/>
         <field:display field="timerun" id="s_com_bibsmobile_model_RaceResult_timerun" object="${raceresult}" z="ep6yKok+vfqcrrBNKiyTZnvrPIA="/>
         <field:display field="timeswim" id="s_com_bibsmobile_model_RaceResult_timeswim" object="${raceresult}" z="GxNE/yfDDtKj4SvT+10qyck5++M="/>
         <field:display field="timetrans1" id="s_com_bibsmobile_model_RaceResult_timetrans1" object="${raceresult}" z="zAuukUC71oUeEKUbZdLPAv+lrGs="/>

@@ -48,6 +48,8 @@ public class RaceResult {
 
     private String timechip;
 
+    private String timesplit;
+    
     private String timestart;
 
     private String timerun;
