@@ -37,6 +37,9 @@
         <field:input field="lisencenumber" id="c_com_bibsmobile_model_RaceResult_lisencenumber" z="zGD64ij+CZqIcjkGBkMBL4GpsjU="/>
         <field:input field="laps" id="c_com_bibsmobile_model_RaceResult_laps" z="q1cmcYACRx7INQikbKtRBbuXH2Q="/>
         <field:input field="timesplit" id="c_com_bibsmobile_model_RaceResult_timesplit" z="kSiQV+PuM3fUGJ2NtT0n07C7XkA="/>
+        <field:input field="time5k" id="c_com_bibsmobile_model_RaceResult_time5k" z="HEQ4aaTn5/J+xUC0pTolb86krQc="/>
+        <field:input field="time10k" id="c_com_bibsmobile_model_RaceResult_time10k" z="G0rUjQf0140KGbh9x0xprOy8vyg="/>
+        <field:input field="time15k" id="c_com_bibsmobile_model_RaceResult_time15k" z="+9yzB/xkt1xdbFPIhPa1mHDonYQ="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
 </div>

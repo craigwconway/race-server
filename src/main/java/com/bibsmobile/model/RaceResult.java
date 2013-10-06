@@ -42,6 +42,12 @@ public class RaceResult {
 
     private String type;
 
+    private String time5k;
+    
+    private String time10k;
+    
+    private String time15k;
+    
     private String timeoverall;
 
     private String timegun;

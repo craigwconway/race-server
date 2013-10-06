@@ -80,6 +80,30 @@ privileged aspect RaceResult_Roo_JavaBean {
         this.type = type;
     }
     
+    public String RaceResult.getTime5k() {
+        return this.time5k;
+    }
+    
+    public void RaceResult.setTime5k(String time5k) {
+        this.time5k = time5k;
+    }
+    
+    public String RaceResult.getTime10k() {
+        return this.time10k;
+    }
+    
+    public void RaceResult.setTime10k(String time10k) {
+        this.time10k = time10k;
+    }
+    
+    public String RaceResult.getTime15k() {
+        return this.time15k;
+    }
+    
+    public void RaceResult.setTime15k(String time15k) {
+        this.time15k = time15k;
+    }
+    
     public String RaceResult.getTimeoverall() {
         return this.timeoverall;
     }
