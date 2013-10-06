@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bibs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+   <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+    </head>
+  <body>
+  <style>body{margin:12px;}thead{font-weight:bold;}</style>
+    <h1>Bibs</h1>
+    
+    <ul class="nav nav-tabs">
+	  <li class="active"><a href="#">Bibs</a></li>
+	  <li><a href="reader.html">Race day</a></li>
+	  <li><a href="runners.html">Runners</a></li>
+	  <li><a href="awards.html">Awards</a></li>
+	</ul>
+
+<div class="row" style="margin:30px;">
+	<button type="button" class="btn btn-success" 
+		style="margin:2px;"
+		onclick="startReader();">Start Scanning</button>
+	<button type="button" class="btn btn-danger" 
+		style="margin:2px;"
+		onclick="stopReader();">Stop Scanning</button>
+	<div id="status-bar" class="progress progress-striped active status-warning"
+		style="width: 100px;display:none;">
+	  <div class="progress-bar"  role="progressbar" 
+	  	aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" 
+	  	style="width:100%">
+	    <span class="sr-only">Scanning...</span>
+	  </div>
+	  <div class="progress-bar"  role="progressbar" 
+	  	aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" 
+	  	style="width:100%">
+	    <span class="sr-only">Processing...</span>
+	  </div>
+	</div>
+
+</div>
+
+<div id="result-count" class="row" 
+	style="margin:30px;display:none;">
+	<h3><span id="result-count-output">0</span> Bibs processed.</h3>
+</div>
+
+<div id="results" class="row" 
+	style="margin:30px;display:none;">
+	<h4>Bib <span id="last-bib-output"></span> Scanned.</h4>
+</div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    
+<script>
+var readerOn=false;
+function startReader(){
+	readerOn=true;
+	$('#status-bar').show();
+	var readerStart = $.ajax({
+		url: "/bibs-server/events/pstart",
+		type: "GET",
+		data: { id : "start" },
+		dataType: "html"
+		});
+	readerStart.done(function( msg ) {
+		$( "#results" ).html( msg );
+		$( "#results" ).show( 500 );
+		});
+	readerStart.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+	setInterval(function(){
+		if(!readerOn) return true;
+		readerQuery();
+	},3000);
+	
+}
+
+function readerQuery(){
+	$('#progress-bar').show();
+	var request = $.ajax({
+		url: "/bibs-server/events/results",
+		type: "GET",
+		data: { id : "start" },
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+			$( "#results" ).html( msg );
+			});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+	$('#progress-bar').hide();
+}
+
+function stopReader(){
+	readerOn=false;
+	var request = $.ajax({
+		url: "/bibs-server/events/pstop",
+		type: "GET",
+		data: { id : "start" },
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		$( "#results" ).html( msg );
+		$( "#results" ).hide( 2500 );
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+	$('#status-bar').hide(500);
+}
+
+
+</script>
+
+  </body>
+</html>

@@ -7,6 +7,7 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,69 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RooWebScaffold(path = "events", formBackingObject = Event.class)
 @RooWebJson(jsonObject = Event.class)
 public class EventController {
+
+    @RequestMapping(value = "/start", method = RequestMethod.GET)
+    @ResponseBody
+    public String readerTimeStart(){
+    	String rtn = "Timer started (Galen)"+new Date().getTime();
+        try {
+        	// galens api call here
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+    
+    @RequestMapping(value = "/stop", method = RequestMethod.GET)
+    @ResponseBody
+    public String readerTimeStop(){
+    	String rtn = "Timer stopped (Galen)"+new Date().getTime();
+        try {
+        	// galens api call here
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+    
+    @RequestMapping(value = "/pstart", method = RequestMethod.GET)
+    @ResponseBody
+    public String readerProgramStart(){
+    	String rtn = "Program started (Galen)"+new Date().getTime();
+        try {
+        	// galens api call here
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+
+    
+    @RequestMapping(value = "/pstop", method = RequestMethod.GET)
+    @ResponseBody
+    public String readerProgramStop(){
+    	String rtn = "Program stopped (Galen)"+new Date().getTime();
+        try {
+        	// galens api call here
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+    
+    @RequestMapping(value = "/results", method = RequestMethod.GET)
+    @ResponseBody
+    public String readerQuery(){
+    	List<RaceResult> results = new ArrayList<RaceResult>();
+        String rtn = "reader results query "+new Date().getTime();
+        try {
+        	// galens api call here
+        } catch (Exception e) {
+            //e.printStackTrace();
+        }
+        return rtn;
+    }
+
 
     @RequestMapping(value = "/featured", method = RequestMethod.GET)
     @ResponseBody

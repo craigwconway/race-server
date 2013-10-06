@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bibs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+   <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+    </head>
+  <body>
+  <style>body{margin:12px;}thead{font-weight:bold;}</style>
+    <h1>Bibs</h1>
+    
+    <ul class="nav nav-tabs">
+	  <li><a href="bibs.html">Bibs</a></li>
+	  <li><a href="reader.html">Race day</a></li>
+	  <li><a href="runners.html">Runners</a></li>
+	  <li class="active"><a href="#">Awards</a></li>
+	</ul>
+
+
+<div id="results" class="row" 
+	style="margin:30px;display:none;">
+	<h4>Awards</h4>
+	<table class="table">
+	  <thead>
+	  <tr>
+	  	<td>Award</td>
+	  	<td>Bib</td>
+	  	<td>Name</td>
+	  	<td>Gender</td>
+	  	<td>Age</td>
+	  	<td>Time</td>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  <tr>
+	  	<td><span class="badge alert-info">1st Overall</span></td>
+	  	<td>123</td>
+	  	<td>Jim Mclain</td>
+	  	<td>M</td>
+	  	<td>29</td>
+	  	<td>10:07:69</td>
+	  </tr>
+	  <tr>
+	  	<td><span class="badge alert-warning">3rd Female 30-35</span></td>
+	  	<td>543</td>
+	  	<td>Joe Bibs</td>
+	  	<td>F</td>
+	  	<td>30</td>
+	  	<td>23:45:67</td>
+	  </tr>
+	  </tbody>
+	</table>
+</div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    
+<script>
+	$('#results').show(500);
+</script>
+
+  </body>
+</html>

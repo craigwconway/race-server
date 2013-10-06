@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bibs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+   <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+
+    </head>
+  <body>
+  <style>body{margin:12px;}thead{font-weight:bold;}</style>
+    <h1>Bibs</h1>
+    
+    <ul class="nav nav-tabs">
+	  <li><a href="bibs.html">Bibs</a></li>
+	  <li class="active"><a href="#">Race day</a></li>
+	  <li><a href="runners.html">Runners</a></li>
+	  <li><a href="awards.html">Awards</a></li>
+	</ul>
+
+<div class="row" style="margin:30px;">
+	<button type="button" class="btn btn-success pull-left" 
+		style="margin:2px;"
+		onclick="startTimer();">Start</button>
+	<button type="button" class="btn btn-danger pull-left" 
+		style="margin:2px;"
+		onclick="stopTimer();">Stop</button>
+    <div id="timer" class="form-control pull-left"
+			style="margin-2px;width:60px;text-align:right;" >
+			<span class="value">0</span>
+	</div>
+</div>
+
+<div id="results-none" class="row" 
+	style="margin:30px;display:none;">
+	<h3>25,137 registered runners.</h3>
+	<h4>Results will be shown here in real-time...</h4>
+</div>
+
+<div id="results" class="row" 
+	style="margin-left:30px;display:none;">
+	<h3>Results for 3 runners.</h3>
+	<h4>25,134 remaining...</h4>
+	<table class="table">
+	  <thead>
+	  <tr>
+	  	<td>Bib</td>
+	  	<td>Name</td>
+	  	<td>Gender</td>
+	  	<td>Age</td>
+	  	<td>Time</td>
+	  	<td>Award</td>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  <tr>
+	  	<td>123</td>
+	  	<td>Jim Mclain</td>
+	  	<td>M</td>
+	  	<td>29</td>
+	  	<td>10:07:69</td>
+	  	<td><span class="badge alert-info">1st Overall</span></td>
+	  </tr>
+	  <tr>
+	  	<td>456</td>
+	  	<td>Craig Conway</td>
+	  	<td>M</td>
+	  	<td>36</td>
+	  	<td>69:00:01</td>
+	  	<td></td>
+	  </tr>
+	  <tr>
+	  	<td>543</td>
+	  	<td>Joe Bibs</td>
+	  	<td>F</td>
+	  	<td>30</td>
+	  	<td>23:45:67</td>
+	  	<td><span class="badge alert-warning">3rd Female 30-35</span></td>
+	  </tr>
+	  </tbody>
+	</table>
+</div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    
+<script>
+var timerOn=false;
+setInterval(updateDisplay, 10); // every millisecond call updateDisplay
+
+function startTimer(){
+	var request = $.ajax({
+		url: "/bibs-server/events/start",
+		type: "GET",
+		data: { id : "start" },
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		timerOn=true;
+		$( "#results" ).html( msg );
+		$( "#results" ).show( 300 );
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
+
+function stopTimer(){
+	timerOn=false;
+	var request = $.ajax({
+		url: "/bibs-server/events/stop",
+		type: "GET",
+		data: { id : "start" },
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		$( "#results" ).html( msg );
+		$( "#results" ).hide(  );
+		$( "#results" ).show( 300 );
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
+
+function updateDisplay(){
+	if(!timerOn) return true;
+     var value = parseInt($('#timer').find('.value').text(), 10);
+     value=value+10;
+     $('#timer').find('.value').text(value);
+}
+</script>
+
+  </body>
+</html>
