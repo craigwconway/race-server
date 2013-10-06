@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.RaceTimer;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
@@ -28,13 +29,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RooWebScaffold(path = "events", formBackingObject = Event.class)
 @RooWebJson(jsonObject = Event.class)
 public class EventController {
-
+	RaceTimer manager = new RaceTimer();
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     @ResponseBody
     public String readerTimeStart(){
     	String rtn = "Timer started (Galen)"+new Date().getTime();
         try {
         	// galens api call here
+        	if(manager.getStatus() < 1)
+        		manager.connect();
+        	//if(manager.getStatus()!=2)
+        		//manager.start();
         } catch (Exception e) {
             //e.printStackTrace();
         }
@@ -47,6 +52,8 @@ public class EventController {
     	String rtn = "Timer stopped (Galen)"+new Date().getTime();
         try {
         	// galens api call here
+        	if(manager.getStatus()==2)
+        		manager.stop();
         } catch (Exception e) {
             //e.printStackTrace();
         }
