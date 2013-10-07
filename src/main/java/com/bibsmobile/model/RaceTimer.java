@@ -15,7 +15,7 @@ public class RaceTimer {
 		public RaceTimer() {
 			status = 0;
 			r = null;
-			ReaderURI = "192.168.1.100";
+			ReaderURI = "tmr://192.168.1.100";
 			times = new HashMap <Integer, Long> ();
 			startTimes = new HashMap <Integer, Long>();
 		}

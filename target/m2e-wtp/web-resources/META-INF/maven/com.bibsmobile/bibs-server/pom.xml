@@ -6,7 +6,7 @@
     <packaging>war</packaging>
     <version>0.1.0.BUILD-SNAPSHOT</version>
     <name>bibs-server</name>
-    <properties>
+    <properties> 
         <aspectj.version>1.7.0</aspectj.version>
         <java.version>7</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,16 +62,19 @@
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
         </dependency>
+        <!--  
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -351,7 +354,23 @@
 			<artifactId>javamelody-core</artifactId>
 			<version>1.43.0</version>
 		</dependency>
-            
+        
+        <dependency>
+		    <groupId>com.thingmagic</groupId>
+		    <artifactId>thingmagic</artifactId>
+		    <version>0.0.1</version>
+		    <scope>system</scope>
+		    <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/mercuryapi.jar</systemPath>
+		</dependency>
+		
+        <dependency>
+		    <groupId>ltkjava</groupId>
+		    <artifactId>ltkjava</artifactId>
+		    <version>1.0.0.6</version>
+		    <scope>system</scope>
+		    <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/ltkjava-1.0.0.6.jar</systemPath>
+		</dependency>
+		
     </dependencies>
     <build>
         <plugins>

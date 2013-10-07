@@ -29,12 +29,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RooWebScaffold(path = "events", formBackingObject = Event.class)
 @RooWebJson(jsonObject = Event.class)
 public class EventController {
-	RaceTimer manager = new RaceTimer();
+	
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     @ResponseBody
     public String readerTimeStart(){
     	String rtn = "Timer started (Galen)"+new Date().getTime();
         try {
+        	RaceTimer manager = new RaceTimer();
         	// galens api call here
         	if(manager.getStatus() < 1)
         		manager.connect();
@@ -51,6 +52,7 @@ public class EventController {
     public String readerTimeStop(){
     	String rtn = "Timer stopped (Galen)"+new Date().getTime();
         try {
+        	RaceTimer manager = new RaceTimer();
         	// galens api call here
         	if(manager.getStatus()==2)
         		manager.stop();
