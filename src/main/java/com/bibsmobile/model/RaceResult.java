@@ -1,8 +1,13 @@
 package com.bibsmobile.model;
 
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
@@ -22,7 +27,7 @@ import org.springframework.roo.addon.json.RooJson;
 		"findRaceResultsByEventAndFirstnameLikeAndLastnameLike"})
 public class RaceResult {
 
-    @ManyToOne
+    @ManyToOne 
     private Event event;
 
     @NotNull 
@@ -203,4 +208,20 @@ public class RaceResult {
         return q;
     }
 
+
+	public String toJson() {
+        return new JSONSerializer().exclude("*.class","event").serialize(this);
+    }
+
+	public static RaceResult fromJsonToRaceResult(String json) {
+        return new JSONDeserializer<RaceResult>().use(null, RaceResult.class).deserialize(json);
+    }
+
+	public static String toJsonArray(Collection<RaceResult> collection) {
+        return new JSONSerializer().exclude("*.class","event").serialize(collection);
+    }
+
+	public static Collection<RaceResult> fromJsonArrayToRaceResults(String json) {
+        return new JSONDeserializer<List<RaceResult>>().use(null, ArrayList.class).use("values", RaceResult.class).deserialize(json);
+    }
 }

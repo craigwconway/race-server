@@ -62,7 +62,7 @@ function startReader(){
 	readerOn=true;
 	$('#status-bar').show();
 	var readerStart = $.ajax({
-		url: "/bibs-server/events/pstart",
+		url: "/bibs-server/events/start",
 		type: "GET",
 		data: { id : "start" },
 		dataType: "html"
@@ -86,10 +86,10 @@ function readerQuery(){
 	var request = $.ajax({
 		url: "/bibs-server/events/results",
 		type: "GET",
-		data: { id : "start" },
 		dataType: "html"
 		});
 	request.done(function( msg ) {
+			var before = $( "#results" ).html();
 			$( "#results" ).html( msg );
 			});
 	request.fail(function( jqXHR, textStatus ) {
@@ -101,14 +101,13 @@ function readerQuery(){
 function stopReader(){
 	readerOn=false;
 	var request = $.ajax({
-		url: "/bibs-server/events/pstop",
+		url: "/bibs-server/events/stop",
 		type: "GET",
 		data: { id : "start" },
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		$( "#results" ).html( msg );
-		$( "#results" ).hide( 2500 );
+		// ?
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );

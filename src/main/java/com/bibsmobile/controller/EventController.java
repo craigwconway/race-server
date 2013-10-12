@@ -1,9 +1,9 @@
 package com.bibsmobile.controller;
 
+import com.bibsmobile.service.Timer;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.RaceTimer;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
@@ -11,8 +11,13 @@ import com.bibsmobile.model.ResultsImport;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -30,46 +35,47 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RooWebJson(jsonObject = Event.class)
 public class EventController {
 	
+	@Autowired // see applicationContext.xml
+	private Timer timer;
+	
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     @ResponseBody
     public String readerTimeStart(){
-    	String rtn = "Timer started (Galen)"+new Date().getTime();
+    	String rtn = "false";
         try {
-        	RaceTimer manager = new RaceTimer();
-        	// galens api call here
-        	if(manager.getStatus() < 1)
-        		manager.connect();
-        	//if(manager.getStatus()!=2)
-        		//manager.start();
+        	if(timer.getStatus()!=2)
+        		timer.start();
+        	rtn = "true";
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
-        return rtn.toString();
+        return rtn;
     }
     
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     @ResponseBody
     public String readerTimeStop(){
-    	String rtn = "Timer stopped (Galen)"+new Date().getTime();
+    	String rtn = "false";
         try {
-        	RaceTimer manager = new RaceTimer();
-        	// galens api call here
-        	if(manager.getStatus()==2)
-        		manager.stop();
+        	if(timer.getStatus()==2)
+        		timer.stop();
+        	rtn = "true";
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
-        return rtn.toString();
+        return rtn;
     }
     
     @RequestMapping(value = "/pstart", method = RequestMethod.GET)
     @ResponseBody
     public String readerProgramStart(){
-    	String rtn = "Program started (Galen)"+new Date().getTime();
+    	String rtn = "false";
         try {
-        	// galens api call here
+        	//if(manager.getStatus()==2)
+        		// Galen what do we do here? 
+        	//rtn = "true";
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return rtn.toString();
     }
@@ -78,26 +84,42 @@ public class EventController {
     @RequestMapping(value = "/pstop", method = RequestMethod.GET)
     @ResponseBody
     public String readerProgramStop(){
-    	String rtn = "Program stopped (Galen)"+new Date().getTime();
+    	String rtn = "false";
         try {
-        	// galens api call here
+        	if(timer.getStatus()==2)
+        		timer.stop();
+        	rtn = "true";
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
-        return rtn.toString();
+        return rtn;
     }
+    
+    private List<RaceResult> runners = new ArrayList<RaceResult>();
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
     public String readerQuery(){
-    	List<RaceResult> results = new ArrayList<RaceResult>();
-        String rtn = "reader results query "+new Date().getTime();
+    	StringBuffer rtn = new StringBuffer();
         try {
-        	// galens api call here
+        	Map <Integer,Long> bibtime = timer.getTimes();
+        	for(Integer bib:bibtime.keySet()){
+        		RaceResult result = new RaceResult();
+        		try{
+        			result = RaceResult.findRaceResultsByEventAndBibEquals(
+        				Event.findEvent(2l), bib.toString()).getSingleResult();
+        		}catch(EmptyResultDataAccessException e){
+        			System.out.println("No runner found for bib "+bib);
+        		}
+        		result.setBib(bib.toString());
+        		result.setTimeoverall(bibtime.get(bib).toString());
+        		runners.add(result);
+        	}
+        	rtn.append(RaceResult.toJsonArray(runners));
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
-        return rtn;
+        return rtn.toString();
     }
 
 
