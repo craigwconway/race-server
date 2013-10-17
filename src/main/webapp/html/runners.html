@@ -18,48 +18,15 @@
 	  <li><a href="awards.html">Awards</a></li>
 	</ul>
 
+<div class="row" style="margin:30px;">
+	<button type="button" class="btn btn-success" 
+		style="margin:2px;">Import</button>
+</div>
 
 <div id="results" class="row" 
-	style="margin:30px;display:none;">
-	<h4>Results for 3 runners. Total of 25,137 registered. (25,134 uncounted)</h4>
-	<table class="table">
-	  <thead>
-	  <tr>
-	  	<td>Bib</td>
-	  	<td>Name</td>
-	  	<td>Gender</td>
-	  	<td>Age</td>
-	  	<td>Time</td>
-	  	<td>Award</td>
-	  </tr>
-	  </thead>
-	  <tbody>
-	  <tr>
-	  	<td>123</td>
-	  	<td>Jim Mclain</td>
-	  	<td>M</td>
-	  	<td>29</td>
-	  	<td>10:07:69</td>
-	  	<td><span class="badge alert-info">1st Overall</span></td>
-	  </tr>
-	  <tr>
-	  	<td>456</td>
-	  	<td>Craig Conway</td>
-	  	<td>M</td>
-	  	<td>36</td>
-	  	<td>69:00:01</td>
-	  	<td></td>
-	  </tr>
-	  <tr>
-	  	<td>543</td>
-	  	<td>Joe Bibs</td>
-	  	<td>F</td>
-	  	<td>30</td>
-	  	<td>23:45:67</td>
-	  	<td><span class="badge alert-warning">3rd Female 30-35</span></td>
-	  </tr>
-	  </tbody>
-	</table>
+	style="margin:30px;">
+	<table id="raceresults"></table> 
+	<div id="pager"></div>
 </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="http://code.jquery.com/jquery.js"></script>

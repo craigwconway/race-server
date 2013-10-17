@@ -130,11 +130,13 @@ public class RaceResult {
 		}
     }
 
-	public static TypedQuery<RaceResult> findRaceResultsByEvent(Event event) {
+	public static TypedQuery<RaceResult> findRaceResultsByEvent(Event event,int firstResult,int maxResults) {
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event", RaceResult.class);
         q.setParameter("event", event);
+        q.setFirstResult(firstResult);
+        q.setMaxResults(maxResults);
         return q;
     }
 

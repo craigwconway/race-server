@@ -3,13 +3,11 @@
   <head>
     <title>Bibs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-   <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+   <link href="../styles/bootstrap.min.css" rel="stylesheet">
 
     </head>
   <body>
   <style>body{margin:12px;}thead{font-weight:bold;}</style>
-    <h1>Bibs</h1>
     
     <ul class="nav nav-tabs">
 	  <li class="active"><a href="#">Bibs</a></li>
@@ -18,14 +16,19 @@
 	  <li><a href="awards.html">Awards</a></li>
 	</ul>
 
-<div class="row" style="margin:30px;">
+<div class="row" style="margin:30px; float:left;">
+	<button type="button" class="btn btn-default" 
+		style="margin:2px;">Import</button>
+	<button type="button" class="btn btn-default" 
+		style="margin:2px;">Export</button>
 	<button type="button" class="btn btn-success" 
-		style="margin:2px;"
-		onclick="startReader();">Start Scanning</button>
+		style="margin:2px;" id="program-start"
+		onclick="startReader();">Program</button>
 	<button type="button" class="btn btn-danger" 
-		style="margin:2px;"
-		onclick="stopReader();">Stop Scanning</button>
-	<div id="status-bar" class="progress progress-striped active status-warning"
+		style="margin:2px;display:none;" id="program-stop"
+		onclick="stopReader();">Stop</button>
+	<div id="status-bar" 
+		class="progress progress-striped active status-warning"
 		style="width: 100px;display:none;">
 	  <div class="progress-bar"  role="progressbar" 
 	  	aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" 
@@ -41,25 +44,37 @@
 
 </div>
 
+<div id="search-div" style="margin:30px;">
+
+<form id="search-form" class="form-inline" role="form">
+  <div class="form-group">
+    <label class="sr-only" for="query">Search</label>
+    <input type="text" class="form-control" id="query" placeholder="Type a Bib or Name">
+  </div>
+  <button type="submit" class="btn btn-default">Search</button>
+</form>
+
+</div>
+
 <div id="result-count" class="row" 
 	style="margin:30px;display:none;">
 	<h3><span id="result-count-output">0</span> Bibs processed.</h3>
 </div>
 
 <div id="results" class="row" 
-	style="margin:30px;display:none;">
-	<h4>Bib <span id="last-bib-output"></span> Scanned.</h4>
+	style="margin:30px;display:none;"> 
+	<table id="raceresults" class="table"></table>
 </div>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="../scripts/jquery-1.10.2.min.js"></script>
+<script src="../scripts/bootstrap.min.js"></script>
     
 <script>
 var readerOn=false;
 function startReader(){
 	readerOn=true;
+	$('#program-start').hide();
+	$('#program-stop').show();
 	$('#status-bar').show();
 	var readerStart = $.ajax({
 		url: "/bibs-server/events/start",
@@ -68,34 +83,34 @@ function startReader(){
 		dataType: "html"
 		});
 	readerStart.done(function( msg ) {
-		$( "#results" ).html( msg );
-		$( "#results" ).show( 500 );
+		// update table
 		});
 	readerStart.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		alert( "Error: " + textStatus );
 		});
-	setInterval(function(){
-		if(!readerOn) return true;
-		readerQuery();
-	},3000);
+	// start polling
+// 	setInterval(function(){
+// 		if(!readerOn) return true;
+// 		readerQuery();
+// 		},3000);
 	
 }
 
 function readerQuery(){
-	$('#progress-bar').show();
 	var request = $.ajax({
 		url: "/bibs-server/events/results",
 		type: "GET",
-		dataType: "html"
+		dataType: "json"
 		});
-	request.done(function( msg ) {
-			var before = $( "#results" ).html();
-			$( "#results" ).html( msg );
-			});
+	request.done(function( data ) {
+		// do something
+		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		alert( "Error: " + textStatus );
 		});
-	$('#progress-bar').hide();
+	$('#progress-bar').show();
+	$('#program-start').hide();
+	$('#program-stop').show();
 }
 
 function stopReader(){
@@ -103,18 +118,48 @@ function stopReader(){
 	var request = $.ajax({
 		url: "/bibs-server/events/stop",
 		type: "GET",
-		data: { id : "start" },
 		dataType: "html"
 		});
 	request.done(function( msg ) {
 		// ?
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		alert( "Error: " + textStatus );
 		});
-	$('#status-bar').hide(500);
+	$('#progress-bar').hide();
+	$('#program-start').show();
+	$('#program-stop').hide();
 }
 
+function getRunners(){
+	readerOn=false;
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/byevent/ice?page=1&size=10",
+		type: "GET",
+		dataType: "json"
+		});
+	request.done(function( data ) {
+			var results = "";
+			for(var i in data){
+				results += "<tr>";
+				results += "<td>"+data[i].bib+"</td>";
+				results += "<td>"+data[i].firstname+"</td>";
+				results += "<td>"+data[i].lastname+"</td>";
+				results += "<td>"+data[i].city+"</td>";
+				results += "<td>"+data[i].state+"</td>";
+				results += "<td>"+data[i].age+"</td>";
+				results += "</tr>";
+			}
+			$('#raceresults').html(results);
+			$('#results').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+	
+}
+
+$(document).ready(getRunners);
 
 </script>
 

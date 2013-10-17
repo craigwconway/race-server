@@ -24,7 +24,7 @@ public class RaceResultController {
         String rtn = "";
         try {
             Event event = Event.findEventsByNameLike(eventName, page, size).getSingleResult();
-            List<RaceResult> raceResults = RaceResult.findRaceResultsByEvent(event).getResultList();
+            List<RaceResult> raceResults = RaceResult.findRaceResultsByEvent(event,page,size).getResultList();
             rtn = RaceResult.toJsonArray(raceResults);
         } catch (Exception e) {
             //e.printStackTrace();
