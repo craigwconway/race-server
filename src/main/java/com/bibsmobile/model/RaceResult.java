@@ -1,7 +1,5 @@
 package com.bibsmobile.model;
 
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -14,11 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
+
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 @RooJavaBean
 @RooJson
@@ -102,6 +101,8 @@ public class RaceResult {
     private String lisencenumber;
 
     private String laps;
+    
+    private String award;
     
     @Override
     public String toString(){
@@ -226,4 +227,40 @@ public class RaceResult {
 	public static Collection<RaceResult> fromJsonArrayToRaceResults(String json) {
         return new JSONDeserializer<List<RaceResult>>().use(null, ArrayList.class).use("values", RaceResult.class).deserialize(json);
     }
+	
+	public static List<RaceResult> findRaceResultsByOverallTime(Event event,int page,int size) {
+		final String AWARD_TIME_OVERALL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null order by o.timeoverall asc";
+		EntityManager em = Event.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery( AWARD_TIME_OVERALL, RaceResult.class);
+        q.setParameter("event", event );
+        q.setFirstResult((page-1)*size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
+
+	public static List<RaceResult> findRaceResultsByOverallTimeAndGender(Event event, String gender,int page,int size) {
+		final String AWARD_OVERALL_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.gender = :gender order by o.timeoverall asc";
+		EntityManager em = Event.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery( AWARD_OVERALL_GENDER, RaceResult.class);
+        q.setParameter("event", event );
+        q.setParameter("gender", gender );
+        q.setFirstResult((page-1)*size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
+	
+	public static List<RaceResult> findRaceResultsByOverallTimeAndGenderAndAge(Event event, String gender, int min, int max, int page,int size) {
+		final String AWARD_AGE_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.gender = :gender AND o.age >= :min AND o.age <= :max order by o.timeoverall asc";
+		EntityManager em = Event.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery( AWARD_AGE_GENDER, RaceResult.class);
+        q.setParameter("event", event );
+        q.setParameter("gender", gender );
+        q.setParameter("min", min );
+        q.setParameter("max", max );
+        q.setFirstResult((page-1)*size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
+	
+
 }

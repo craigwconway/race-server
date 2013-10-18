@@ -9,7 +9,6 @@
     </head>
   <body>
   <style>body{margin:12px;}thead{font-weight:bold;}</style>
-    <h1>Bibs</h1>
     
     <ul class="nav nav-tabs">
 	  <li><a href="bibs.html">Bibs</a></li>
@@ -31,66 +30,31 @@
 	</div>
 </div>
 
+<div id="runners-count-div"
+	style="margin:30px;display:none;">
+	<h4><span id="runners-count"></span> Total Runners</h4>
+</div>
+	
 <div id="results-none" class="row" 
 	style="margin:30px;display:none;">
-	<h3>25,137 registered runners.</h3>
-	<h4>Results will be shown here in real-time...</h4>
+	<h5>Results will be shown here in real-time...</h5>
 </div>
 
 <div id="results" class="row" 
 	style="margin-left:30px;display:none;">
-	<h3>Results for 3 runners.</h3>
-	<h4>25,134 remaining...</h4>
-	<table class="table">
-	  <thead>
-	  <tr>
-	  	<td>Bib</td>
-	  	<td>Name</td>
-	  	<td>Gender</td>
-	  	<td>Age</td>
-	  	<td>Time</td>
-	  	<td>Award</td>
-	  </tr>
-	  </thead>
-	  <tbody>
-	  <tr>
-	  	<td>123</td>
-	  	<td>Jim Mclain</td>
-	  	<td>M</td>
-	  	<td>29</td>
-	  	<td>10:07:69</td>
-	  	<td><span class="badge alert-info">1st Overall</span></td>
-	  </tr>
-	  <tr>
-	  	<td>456</td>
-	  	<td>Craig Conway</td>
-	  	<td>M</td>
-	  	<td>36</td>
-	  	<td>69:00:01</td>
-	  	<td></td>
-	  </tr>
-	  <tr>
-	  	<td>543</td>
-	  	<td>Joe Bibs</td>
-	  	<td>F</td>
-	  	<td>30</td>
-	  	<td>23:45:67</td>
-	  	<td><span class="badge alert-warning">3rd Female 30-35</span></td>
-	  </tr>
-	  </tbody>
-	</table>
+	<table class="table"></table>
 </div>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="/bibs-server/resources/scripts/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/bibs-server/resources/scripts/bootstrap.min.js"></script>
+<script src="../scripts/jquery-1.10.2.min.js"></script>
+<script src="../scripts/bootstrap.min.js"></script>
     
 <script>
 var timerOn=false;
 setInterval(updateDisplay, 10); // every millisecond call updateDisplay
+getRunnersCount();
 
 function startTimer(){
+	$("#results-none").show(500);
 	var request = $.ajax({
 		url: "/bibs-server/events/start",
 		type: "GET",
@@ -99,8 +63,11 @@ function startTimer(){
 		});
 	request.done(function( msg ) {
 		timerOn=true;
-		$( "#results" ).html( msg );
-		$( "#results" ).show( 300 );
+		if(msg.length>0){
+			$("#results-none").hide(500);
+			$( "#results" ).html( msg );
+			$( "#results" ).show( 500 );
+		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
@@ -131,6 +98,24 @@ function updateDisplay(){
      value=value+10;
      $('#timer').find('.value').text(value);
 }
+
+
+function getRunnersCount(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/count/",
+		type: "GET",
+		data: {event:19},
+		dataType: "html"
+		});
+	request.done(function( data ) {
+		$('#runners-count').html(data);
+		$('#runners-count-div').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
 </script>
 
   </body>

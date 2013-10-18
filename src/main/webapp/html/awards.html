@@ -9,7 +9,6 @@
     </head>
   <body>
   <style>body{margin:12px;}thead{font-weight:bold;}</style>
-    <h1>Bibs</h1>
     
     <ul class="nav nav-tabs">
 	  <li><a href="bibs.html">Bibs</a></li>
@@ -17,50 +16,108 @@
 	  <li><a href="runners.html">Runners</a></li>
 	  <li class="active"><a href="#">Awards</a></li>
 	</ul>
-
-
-<div id="results" class="row" 
-	style="margin:30px;display:none;">
-	<h4>Awards</h4>
-	<table class="table">
-	  <thead>
-	  <tr>
-	  	<td>Award</td>
-	  	<td>Bib</td>
-	  	<td>Name</td>
-	  	<td>Gender</td>
-	  	<td>Age</td>
-	  	<td>Time</td>
-	  </tr>
-	  </thead>
-	  <tbody>
-	  <tr>
-	  	<td><span class="badge alert-info">1st Overall</span></td>
-	  	<td>123</td>
-	  	<td>Jim Mclain</td>
-	  	<td>M</td>
-	  	<td>29</td>
-	  	<td>10:07:69</td>
-	  </tr>
-	  <tr>
-	  	<td><span class="badge alert-warning">3rd Female 30-35</span></td>
-	  	<td>543</td>
-	  	<td>Joe Bibs</td>
-	  	<td>F</td>
-	  	<td>30</td>
-	  	<td>23:45:67</td>
-	  </tr>
-	  </tbody>
-	</table>
-</div>
+	
+	<h4>Overall Winners</h4>
+	<table id="overall" style="display:none;" class="table"></table>
+	
+	<h4>Male Leaders</h4>
+	<table id="male" style="display:none;" class="table"></table>
+	
+	<h4>Female Leaders</h4>
+	<table id="female" style="display:none;" class="table"></table>
+	
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="http://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     
 <script>
-	$('#results').show(500);
+
+getAwardsOverall();
+getAwardsMale();
+getAwardsFemale();
+
+function getAwardsOverall(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/overall",
+		type: "GET",
+		data: {event:19,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#overall').html();
+		for(var i in data){
+			results += "<tr>";
+			results += "<td>"+(Math.max(i,0)+1)+"</td>";
+			results += "<td>"+data[i].timeoverall+"</td>";
+			results += "<td>"+data[i].bib+"</td>";
+			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+			results += "<td>"+data[i].age+"</td>";
+			results += "</tr>";
+		}
+		$('#overall').html(results);
+		$('#overall').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsMale(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender",
+		type: "GET",
+		data: {event:19,gender:"M",page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#male').html();
+		for(var i in data){
+			results += "<tr>";
+			results += "<td>"+(Math.max(i,0)+1)+"</td>";
+			results += "<td>"+data[i].timeoverall+"</td>";
+			results += "<td>"+data[i].bib+"</td>";
+			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+			results += "<td>"+data[i].age+"</td>";
+			results += "</tr>";
+		}
+		$('#male').html(results);
+		$('#male').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsFemale(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender",
+		type: "GET",
+		data: {event:19,gender:"F",page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#female').html();
+		for(var i in data){
+			results += "<tr>";
+			results += "<td>"+(Math.max(i,0)+1)+"</td>";
+			results += "<td>"+data[i].timeoverall+"</td>";
+			results += "<td>"+data[i].bib+"</td>";
+			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+			results += "<td>"+data[i].age+"</td>";
+			results += "</tr>";
+		}
+		$('#female').html(results);
+		$('#female').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
 </script>
 
-  </body>
+</body>
 </html>

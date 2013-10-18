@@ -228,7 +228,7 @@ public class EventController {
           System.out.println("delete image "+image.getId());
       	image.remove();
       }
-      List<RaceResult> results = RaceResult.findRaceResultsByEvent(event).getResultList();
+      List<RaceResult> results = RaceResult.findRaceResultsByEvent(event,1,10000).getResultList();
       System.out.println("results "+results.size());
       for(RaceResult result:results){ 
           //System.out.println("delete result "+result.getId());
@@ -243,4 +243,5 @@ public class EventController {
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/events";
     }
+    
 }

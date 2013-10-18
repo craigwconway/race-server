@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Temporal;
@@ -117,4 +118,5 @@ public class Event {
         q.setMaxResults(size);
         return q;
     }
+
 }

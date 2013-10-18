@@ -2,7 +2,9 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
+
 import java.util.List;
+
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -72,4 +74,70 @@ public class RaceResultController {
         }
         return rtn;
     }
+
+    @RequestMapping(value = "/awards/overall", method = RequestMethod.GET)
+    @ResponseBody
+    public String byOverallTime(
+    		@RequestParam(value = "event", required = true) Long event, 
+    		@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+        StringBuffer rtn = new StringBuffer();
+        try {
+            rtn.append(RaceResult.toJsonArray(RaceResult.findRaceResultsByOverallTime(
+            		Event.findEvent(event),page,size)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+    
+    @RequestMapping(value = "/awards/gender", method = RequestMethod.GET)
+    @ResponseBody
+    public String byOverallTimeFemale(
+    		@RequestParam(value = "event", required = true) Long event, 
+    		@RequestParam(value = "gender", required = true) String gender,  
+    		@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+        StringBuffer rtn = new StringBuffer();
+        try {
+            rtn.append(RaceResult.toJsonArray(RaceResult.findRaceResultsByOverallTimeAndGender(
+            		Event.findEvent(event),gender,page,size)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+
+    @RequestMapping(value = "/awards/gender/age", method = RequestMethod.GET)
+    @ResponseBody
+    public String byOverallTimeMaleAge(
+    		@RequestParam(value = "event", required = true) Long event,  
+    		@RequestParam(value = "gender", required = true) String gender,  
+    		@RequestParam(value = "min", required = false, defaultValue = "1") Integer min, 
+    		@RequestParam(value = "max", required = false, defaultValue = "19") Integer max, 
+    		@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+        StringBuffer rtn = new StringBuffer();
+        try {
+            rtn.append(RaceResult.toJsonArray(RaceResult.findRaceResultsByOverallTimeAndGenderAndAge(
+            		Event.findEvent(event),gender,min,max,page,size)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    @ResponseBody
+    public String byOverallTimeMaleAge(
+    		@RequestParam(value = "event", required = true) Long event) {
+        StringBuffer rtn = new StringBuffer();
+        try {
+            rtn.append(RaceResult.countRaceResults());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+    
 }
