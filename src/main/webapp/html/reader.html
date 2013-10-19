@@ -17,17 +17,20 @@
 	</ul>
 
 	<div class="row" style="margin-top:12px;">
+	
   		<div class="col-md-4">
+  		
 			<button type="button" class="btn btn-success pull-left" 
-				style="margin:2px;"
-				onclick="startTimer();">Start</button>
+				style="margin:2px;" id="start-button"
+				onclick="startTimer();">Start Race Timer!</button>
 			<button type="button" class="btn btn-danger pull-left" 
-				style="margin:2px;"
-				onclick="stopTimer();">Stop</button>
+				style="margin:2px;display:none;" id="stop-button"
+				onclick="stopTimer();">Pause Race Timer...</button>
 		    <div id="timer" class="form-control pull-left"
 					style="margin-top:2px;width:60px;text-align:right;" >
 					<span class="value">0</span>
 			</div>
+			
 		</div>
   		<div class="col-md-4">
   		&nbsp;
@@ -64,7 +67,6 @@ $( window ).unload(function() {
 });
 
 function startTimer(){
-	$("#results-none").show(500);
 	var request = $.ajax({
 		url: "/bibs-server/events/start",
 		type: "GET",
@@ -76,6 +78,9 @@ function startTimer(){
 		if(msg != "true"){
 			alert("Failed.");
 		}else{
+			$("#start-button").hide(500);
+			$("#stop-button").show(500);
+			$("#results-none").show(500);
 			setInterval(pollResults, 3000); // every millisecond call updateDisplay
 		}
 		});
@@ -89,11 +94,12 @@ function stopTimer(){
 	var request = $.ajax({
 		url: "/bibs-server/events/stop",
 		type: "GET",
-		data: { id : "start" },
 		dataType: "html"
 		});
 	request.done(function( msg ) {
 		if(msg != "true") alert("Failed.");
+		$("#start-button").show(500);
+		$("#stop-button").hide(500);
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
@@ -133,9 +139,10 @@ function pollResults(){
 		dataType: "json"
 		});
 	request.done(function( data ) {
-		$('#raceresults').html(makeTable(data,""));
+		//if(data == "false") return;
+		$('#raceresults').html(makeTable(data,$('#raceresults').html()));
 		$('#results').show(500);
-		$("#results-none").show(500);
+		$("#results-none").hide(500);
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Error: " + textStatus );

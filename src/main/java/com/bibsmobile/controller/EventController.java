@@ -65,60 +65,39 @@ public class EventController {
         }
         return rtn;
     }
-    
-    @RequestMapping(value = "/pstart", method = RequestMethod.GET)
-    @ResponseBody
-    public String readerProgramStart(){
-    	String rtn = "false";
-        try {
-        	//if(manager.getStatus()==2)
-        		// Galen what do we do here? 
-        	//rtn = "true";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rtn.toString();
-    }
 
-    
-    @RequestMapping(value = "/pstop", method = RequestMethod.GET)
-    @ResponseBody
-    public String readerProgramStop(){
-    	String rtn = "false";
-        try {
-        	if(timer.getStatus()==2)
-        		timer.stop();
-        	rtn = "true";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rtn;
-    }
-    
-    private List<RaceResult> runners = new ArrayList<RaceResult>();
+    private List<Integer> bibs = new ArrayList<Integer>();
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
-    public String readerQuery(){
-    	StringBuffer rtn = new StringBuffer();
+    public String readerQuery(@RequestParam(value = "event", required = true) int event){
+        List<RaceResult> runners = new ArrayList<RaceResult>();
         try {
         	Map <Integer,Long> bibtime = timer.getTimes();
+        	boolean newBibs = false;
         	for(Integer bib:bibtime.keySet()){
+    			if(bibs.contains(bib)) continue;
+        		System.out.println("found "+bib+" "+bibtime.get(bib).toString());
+    			newBibs = true;
+    			bibs.add(bib);
         		RaceResult result = new RaceResult();
-        		try{
-        			// ??
-        		}catch(EmptyResultDataAccessException e){
-        			System.out.println("No runner found for bib "+bib);
-        		}
+    			try{
+    				result = RaceResult.findRaceResultsByEventAndBibEquals(
+    							Event.findEvent(Long.valueOf(event).longValue()), bib.toString())
+    							.getSingleResult();
+    			}catch(Exception e){
+    				// no runner assigned to bib
+    				// e.printStackTrace();
+    			}
         		result.setBib(bib.toString());
-        		result.setTimeoverall(bibtime.get(bib).toString());
+        		result.setTimeoverall(	bibtime.get(bib).toString());
         		runners.add(result);
         	}
-        	rtn.append(RaceResult.toJsonArray(runners));
+        	if(newBibs) return RaceResult.toJsonArray(runners);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return rtn.toString();
+        return "false";
     }
     
     @RequestMapping(value = "/write", method = RequestMethod.GET)

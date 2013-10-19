@@ -27,6 +27,16 @@
 		<div id="status-bar" > </div>
 	</div>
 	
+	<div class="row" style="margin:12px;">
+			<form id="search-form" class="form" role="form">
+			  <div class="form-group pull-left" style="width:200px;">
+			    <label class="sr-only" for="query">Search</label>
+			    <input type="text" class="form-control" id="bib-input" placeholder="Type a Bib Number">
+			  </div>
+			  <button type="submit" class="btn btn-default pull-left">Write</button>
+			</form>
+	</div>
+	
 	<div id="results" class="row" style="margin:12px;"> 
 		<table id="raceresults" class="table"></table>
 	</div>
@@ -48,39 +58,31 @@ function startReader(){
 		readerOn=true;
 }
 
-function readerQuery(){
+function writeBib(){
 	if(!readerOn) return;
-	$('#status-bar').html("Reading...");
+	$('#status-bar').html("Writing...");
+	$('#status-bar').show(500);
 	var request = $.ajax({
 		url: "/bibs-server/events/write",
 		type: "GET",
-		data: {bib:1972},
+		data: {bib:$('#bib-input').value()},
 		dataType: "json"
 		});
 	request.done(function( data ) {
-		if(data == "false"){
-			alert("Error writing bib.")
-			return;
+		if(data != "true"){
+			alert("Error writing bib.");
+		}else{
+			$('#status-bar').html("Done.");
 		}
-		var results = $('#raceresults').html();
-		for(var i in data){
-			results += "<tr>";
-			results += "<td>"+data[i].bib+"</td>";
-			results += "<td>processed...</td>";
-			results += "</tr>";
-		}
-		$('#raceresults').html(results);
-		$('#results').show(500);
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Error: " + textStatus );
 		});
-	$('#status-bar').html("");
 }
 
 function stopReader(){
 	readerOn=false;
-	$('#status-bar').hide();
+	$('#status-bar').html("");
 	$('#program-start').show();
 	$('#program-stop').hide();
 }
