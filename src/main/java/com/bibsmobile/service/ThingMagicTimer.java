@@ -35,7 +35,7 @@ public class ThingMagicTimer implements Timer{
 			times = new HashMap <Integer, Long> ();
 			startTimes = new HashMap <Integer, Long>();
                         rl = null;
-            this.connect();
+            		this.connect();
             
 		}
 		
@@ -66,7 +66,9 @@ public class ThingMagicTimer implements Timer{
                                 //    }
                                 //}
                                 r.connect();
-                				status = 1;
+                                status = 1;
+                                ReadListener rl = new bibListener();
+                                r.addReadListener(rl);
                                 System.out.println("connected");
 			}
                         catch( Exception ex){
@@ -89,8 +91,6 @@ public class ThingMagicTimer implements Timer{
 
 		public void start(){
 			if(status == 1) {
-				ReadListener rl = new bibListener();
-				r.addReadListener(rl);
 				r.startReading();
 				status = 2;
 			}
@@ -98,7 +98,6 @@ public class ThingMagicTimer implements Timer{
 		public void stop(){
 			if (status == 2) {
 				r.stopReading();
-                                r.removeReadListener(rl);
 				status = 1;
 			}
 		}
@@ -107,14 +106,23 @@ public class ThingMagicTimer implements Timer{
 			return times;
 		}
 		
-		public void writeTag(int num){
+		public void writeTag(int num) {
 			status = 3; //mark low power write mode
+			TagReadData[] bibSeen;
 			byte [] bibdata = new byte []{
 					(byte) (num >>> 24),
 					(byte) (num >>> 16),
 					(byte) (num >>> 8),
 					(byte) (num)
 			};
+			bibSeen = r.read(250);
+			if(bibSeen.size < 1) {
+				throw new Exception("0" + " tags seen, could not write");
+			}
+			if(bibSeen.size > 1) {
+				throw new Exception(bibSeen.Size + "tags seen, could not write");
+			}
+				
 			TagFilter target = null;
 			TagData bibinf = new TagData(bibdata);
 			try {
