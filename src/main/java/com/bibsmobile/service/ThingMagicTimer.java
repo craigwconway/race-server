@@ -126,7 +126,10 @@ public class ThingMagicTimer implements Timer{
 			TagFilter target = null;
 			TagData bibinf = new TagData(bibdata);
 			try {
-				r.writeTag(target, bibinf);
+				//r.writeTag(target, bibinf);
+			      Gen2.TagData epc = new Gen2.TagData(bibdata);
+			          Gen2.WriteTag tagop = new Gen2.WriteTag(epc);
+			          r.executeTagOp(tagop, target);
 			} catch (ReaderException e) {
 				e.printStackTrace();
 			}
