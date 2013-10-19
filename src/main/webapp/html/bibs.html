@@ -33,7 +33,7 @@
 			    <label class="sr-only" for="query">Search</label>
 			    <input type="text" class="form-control" id="bib-input" placeholder="Type a Bib Number">
 			  </div>
-			  <button type="submit" class="btn btn-default pull-left">Write</button>
+			  <button type="button" class="btn btn-default pull-left" onclick="writeBib()">Write</button>
 			</form>
 	</div>
 	
@@ -49,7 +49,6 @@
 <script>
 
 var readerOn=false;
-setInterval(function(){readerQuery()},3000);
 
 function startReader(){
 	$('#program-start').hide();
@@ -59,14 +58,14 @@ function startReader(){
 }
 
 function writeBib(){
-	if(!readerOn) return;
+	var bib = $('#bib-input').val();
 	$('#status-bar').html("Writing...");
 	$('#status-bar').show(500);
 	var request = $.ajax({
 		url: "/bibs-server/events/write",
 		type: "GET",
-		data: {bib:$('#bib-input').value()},
-		dataType: "json"
+		data: {bib:bib},
+		dataType: "html"
 		});
 	request.done(function( data ) {
 		if(data != "true"){

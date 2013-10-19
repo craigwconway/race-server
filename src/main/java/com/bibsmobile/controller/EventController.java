@@ -1,33 +1,28 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.service.Timer;
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.RaceImage;
-import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.ResultsFileMapping;
-import com.bibsmobile.model.ResultsImport;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.service.Timer;
 
 @RequestMapping("/events")
 @Controller
@@ -43,8 +38,7 @@ public class EventController {
     public String readerTimeStart(){
     	String rtn = "false";
         try {
-        	if(timer.getStatus()!=2)
-        		timer.start();
+        	timer.start();
         	rtn = "true";
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,8 +51,7 @@ public class EventController {
     public String readerTimeStop(){
     	String rtn = "false";
         try {
-        	if(timer.getStatus()==2)
-        		timer.stop();
+        	timer.stop();
         	rtn = "true";
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,11 +60,11 @@ public class EventController {
     }
 
     private List<Integer> bibs = new ArrayList<Integer>();
+    List<RaceResult> runners = new ArrayList<RaceResult>();
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
     public String readerQuery(@RequestParam(value = "event", required = true) int event){
-        List<RaceResult> runners = new ArrayList<RaceResult>();
         try {
         	Map <Integer,Long> bibtime = timer.getTimes();
         	boolean newBibs = false;
@@ -81,16 +74,20 @@ public class EventController {
     			newBibs = true;
     			bibs.add(bib);
         		RaceResult result = new RaceResult();
+        		boolean found = false;
     			try{
     				result = RaceResult.findRaceResultsByEventAndBibEquals(
     							Event.findEvent(Long.valueOf(event).longValue()), bib.toString())
     							.getSingleResult();
+    				found = true;
     			}catch(Exception e){
     				// no runner assigned to bib
     				// e.printStackTrace();
     			}
         		result.setBib(bib.toString());
         		result.setTimeoverall(	bibtime.get(bib).toString());
+        		if (found) result.merge();
+        		else result.persist();
         		runners.add(result);
         	}
         	if(newBibs) return RaceResult.toJsonArray(runners);

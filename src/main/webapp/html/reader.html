@@ -70,7 +70,6 @@ function startTimer(){
 	var request = $.ajax({
 		url: "/bibs-server/events/start",
 		type: "GET",
-		data: { id : "start" },
 		dataType: "html"
 		});
 	request.done(function( msg ) {
@@ -80,7 +79,7 @@ function startTimer(){
 		}else{
 			$("#start-button").hide(500);
 			$("#stop-button").show(500);
-			$("#results-none").show(500);
+			if($("#raceresults").html()=="") $("#results-none").show(500);
 			setInterval(pollResults, 3000); // every millisecond call updateDisplay
 		}
 		});
@@ -139,7 +138,6 @@ function pollResults(){
 		dataType: "json"
 		});
 	request.done(function( data ) {
-		//if(data == "false") return;
 		$('#raceresults').html(makeTable(data,$('#raceresults').html()));
 		$('#results').show(500);
 		$("#results-none").hide(500);

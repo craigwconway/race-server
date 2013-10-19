@@ -14,6 +14,7 @@ package com.bibsmobile.service;
  */
 import java.util.HashMap;
 
+import com.thingmagic.Gen2;
 import com.thingmagic.ReadListener;
 import com.thingmagic.Reader;
 import com.thingmagic.ReaderException;
@@ -24,18 +25,16 @@ import com.thingmagic.TagReadData;
 public class ThingMagicTimer implements Timer{
 		private int status;
 		private Reader r;
+		private ReadListener bibListener = new BibListener();
 		private String readerURI;
 		private HashMap <Integer, Long> times; // Bibnumber vs ms after epoch
 		private HashMap <Integer, Long> startTimes;
-		private ReadListener rl;
 		public ThingMagicTimer() {
 			status = 0;
-			r = null;
 			readerURI = getReaderURI();
 			times = new HashMap <Integer, Long> ();
 			startTimes = new HashMap <Integer, Long>();
-                        rl = null;
-            		this.connect();
+            this.connect();
             
 		}
 		
@@ -67,8 +66,6 @@ public class ThingMagicTimer implements Timer{
                                 //}
                                 r.connect();
                                 status = 1;
-                                ReadListener rl = new bibListener();
-                                r.addReadListener(rl);
                                 System.out.println("connected");
 			}
                         catch( Exception ex){
@@ -91,6 +88,7 @@ public class ThingMagicTimer implements Timer{
 
 		public void start(){
 			if(status == 1) {
+				r.addReadListener(bibListener);
 				r.startReading();
 				status = 2;
 			}
@@ -98,6 +96,7 @@ public class ThingMagicTimer implements Timer{
 		public void stop(){
 			if (status == 2) {
 				r.stopReading();
+				r.removeReadListener(bibListener);
 				status = 1;
 			}
 		}
@@ -106,7 +105,7 @@ public class ThingMagicTimer implements Timer{
 			return times;
 		}
 		
-		public void writeTag(int num) throws Exception {
+		public void writeTag(int num) throws Exception{
 			status = 3; //mark low power write mode
 			TagReadData[] bibSeen;
 			byte [] bibdata = new byte []{
@@ -126,13 +125,16 @@ public class ThingMagicTimer implements Timer{
 			TagFilter target = null;
 			TagData bibinf = new TagData(bibdata);
 			try {
-				r.writeTag(target, bibinf);
+				//r.writeTag(target, bibinf);
+			      Gen2.TagData epc = new Gen2.TagData(bibdata);
+			          Gen2.WriteTag tagop = new Gen2.WriteTag(epc);
+			          r.executeTagOp(tagop, target);
 			} catch (ReaderException e) {
 				e.printStackTrace();
 			}
 		}
 		
-		class bibListener implements ReadListener
+		class BibListener implements ReadListener
 		{
 			public void tagRead(Reader r, TagReadData tr)
 		    {
