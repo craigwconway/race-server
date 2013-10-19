@@ -3,46 +3,52 @@
   <head>
     <title>Bibs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
    <link href="/bibs-server/resources/styles/bootstrap.min.css" rel="stylesheet">
 
     </head>
   <body>
-  <style>body{margin:12px;}thead{font-weight:bold;}</style>
-    
+<div style="margin:12px;">
+
     <ul class="nav nav-tabs">
-	  <li><a href="bibs.html">Bibs</a></li>
 	  <li class="active"><a href="#">Race day</a></li>
 	  <li><a href="runners.html">Runners</a></li>
 	  <li><a href="awards.html">Awards</a></li>
+	  <li><a href="bibs.html">Admin</a></li>
 	</ul>
 
-<div class="row" style="margin:30px;">
-	<button type="button" class="btn btn-success pull-left" 
-		style="margin:2px;"
-		onclick="startTimer();">Start</button>
-	<button type="button" class="btn btn-danger pull-left" 
-		style="margin:2px;"
-		onclick="stopTimer();">Stop</button>
-    <div id="timer" class="form-control pull-left"
-			style="margin-2px;width:60px;text-align:right;" >
-			<span class="value">0</span>
+	<div class="row" style="margin-top:12px;">
+  		<div class="col-md-4">
+			<button type="button" class="btn btn-success pull-left" 
+				style="margin:2px;"
+				onclick="startTimer();">Start</button>
+			<button type="button" class="btn btn-danger pull-left" 
+				style="margin:2px;"
+				onclick="stopTimer();">Stop</button>
+		    <div id="timer" class="form-control pull-left"
+					style="margin-top:2px;width:60px;text-align:right;" >
+					<span class="value">0</span>
+			</div>
+		</div>
+  		<div class="col-md-4">
+  		&nbsp;
+  		</div>
+	  	<div class="col-md-4">
+			<span id="runners-count-div">
+				<span id="runners-count"></span> Total Runners
+			</span>
+	  	</div>
 	</div>
-</div>
 
-<div id="runners-count-div"
-	style="margin:30px;display:none;">
-	<h4><span id="runners-count"></span> Total Runners</h4>
-</div>
 	
 <div id="results-none" class="row" 
 	style="margin:30px;display:none;">
 	<h5>Results will be shown here in real-time...</h5>
 </div>
 
-<div id="results" class="row" 
-	style="margin-left:30px;display:none;">
-	<table class="table"></table>
+<div id="results" class="row" style="margin-top:15px;display:none;">
+	<table id="raceresults" class="table"></table>
+</div>
+
 </div>
 
 <script src="../scripts/jquery-1.10.2.min.js"></script>
@@ -51,7 +57,11 @@
 <script>
 var timerOn=false;
 setInterval(updateDisplay, 10); // every millisecond call updateDisplay
-getRunnersCount();
+//getRunnersCount();
+
+$( window ).unload(function() {
+	stopTimer();
+});
 
 function startTimer(){
 	$("#results-none").show(500);
@@ -63,10 +73,10 @@ function startTimer(){
 		});
 	request.done(function( msg ) {
 		timerOn=true;
-		if(msg.length>0){
-			$("#results-none").hide(500);
-			$( "#results" ).html( msg );
-			$( "#results" ).show( 500 );
+		if(msg != "true"){
+			alert("Failed.");
+		}else{
+			setInterval(pollResults, 3000); // every millisecond call updateDisplay
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
@@ -83,9 +93,7 @@ function stopTimer(){
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		$( "#results" ).html( msg );
-		$( "#results" ).hide(  );
-		$( "#results" ).show( 300 );
+		if(msg != "true") alert("Failed.");
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
@@ -116,6 +124,37 @@ function getRunnersCount(){
 		});
 }
 
+function pollResults(){
+	if(!timerOn) return;
+	var request = $.ajax({
+		url: "/bibs-server/events/results/",
+		type: "GET",
+		data: {event:19},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		$('#raceresults').html(makeTable(data,""));
+		$('#results').show(500);
+		$("#results-none").show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function makeTable(data,results){
+	for(var i in data){
+		results += "<tr>";
+		results += "<td><input type=\"checkbox\"\></td>";
+		results += "<td>"+data[i].bib+"</td>";
+		results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+		results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+		results += "<td>"+data[i].gender+"</td>";
+		results += "<td>"+data[i].age+"</td>";
+		results += "</tr>";
+	}
+	return results;
+}
 </script>
 
   </body>

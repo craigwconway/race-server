@@ -1,41 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>Bibs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-
     </head>
   <body>
-  <style>body{margin:12px;}thead{font-weight:bold;}</style>
+  
+  <div style="margin:12px;">
     
-    <ul class="nav nav-tabs">
-	  <li><a href="bibs.html">Bibs</a></li>
+    <ul class="nav nav-tabs" >
 	  <li><a href="reader.html">Race day</a></li>
 	  <li><a href="runners.html">Runners</a></li>
 	  <li class="active"><a href="#">Awards</a></li>
+	  <li><a href="bibs.html">Admin</a></li>
 	</ul>
 	
-	<h4>Overall Winners</h4>
-	<table id="overall" style="display:none;" class="table"></table>
+	<div class="row" style="padding-top:12px;">
+	  	<div class="col-md-4">
+				<h4>Overall Winners</h4>
+				<table id="overall" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4" style="background:#D6EBFF;border-radius:15px;">
+				<h4>Male Leaders</h4>
+				<table id="male" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4">
+				<h4>Female Leaders</h4>
+				<table id="female" style="display:none;" class="table"></table>
+		</div>
+	</div>
 	
-	<h4>Male Leaders</h4>
-	<table id="male" style="display:none;" class="table"></table>
+	<div class="row" style="padding-top:12px;">
+	  	<div class="col-md-4" style="background:#D6EBFF;border-radius:15px;">
+				<h4>Male Ages 9 to 19</h4>
+				<table id="male1" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4">
+				<h4>Male Ages 20 to 29</h4>
+				<table id="male2" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4" style="background:#D6EBFF;border-radius:15px;">
+				<h4>Male Ages 30 to 39</h4>
+				<table id="male3" style="display:none;" class="table"></table>
+		</div>
+	</div>
 	
-	<h4>Female Leaders</h4>
-	<table id="female" style="display:none;" class="table"></table>
+	<div class="row">
+	  	<div class="col-md-4">
+				<h4>Male Ages 40 to 49</h4>
+				<table id="male4" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4" style="background:#D6EBFF;border-radius:15px;">
+				<h4>Male Ages 50 to 59</h4>
+				<table id="male5" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4">
+				<h4>Male Ages 60+</h4>
+				<table id="male6" style="display:none;" class="table"></table>
+		</div>
+	</div>
 	
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="http://code.jquery.com/jquery.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    
-<script>
+	<div class="row" style="padding-top:12px;">
+	  	<div class="col-md-4" style="background:#D6EBFF;border-radius:15px;">
+				<h4>Female Ages 9 to 19</h4>
+				<table id="female1" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4">
+				<h4>Female Ages 20 to 29</h4>
+				<table id="female2" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4" style="background:#D6EBFF;border-radius:15px;">
+				<h4>Female Ages 30 to 39</h4>
+				<table id="female3" style="display:none;" class="table"></table>
+		</div>
+	</div>
+	
+	<div class="row">
+	  	<div class="col-md-4">
+				<h4>Female Ages 40 to 49</h4>
+				<table id="female4" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4" style="background:#D6EBFF;border-radius:15px;">
+				<h4>Female Ages 50 to 59</h4>
+				<table id="female5" style="display:none;" class="table"></table>
+		</div>
+	  	<div class="col-md-4">
+				<h4>Female Ages 60+</h4>
+				<table id="female6" style="display:none;" class="table"></table>
+		</div>
+	</div>
+	
+</div>
 
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script>
 getAwardsOverall();
 getAwardsMale();
 getAwardsFemale();
+
+getAwardsMale1();
+getAwardsMale2();
+getAwardsMale3();
+getAwardsMale4();
+getAwardsMale5();
+getAwardsMale6();
+
+getAwardsFemale1();
+getAwardsFemale2();
+getAwardsFemale3();
 
 function getAwardsOverall(){
 	var request = $.ajax({
@@ -46,16 +121,7 @@ function getAwardsOverall(){
 		});
 	request.done(function( data ) {
 		var results =  $('#overall').html();
-		for(var i in data){
-			results += "<tr>";
-			results += "<td>"+(Math.max(i,0)+1)+"</td>";
-			results += "<td>"+data[i].timeoverall+"</td>";
-			results += "<td>"+data[i].bib+"</td>";
-			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
-			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
-			results += "<td>"+data[i].age+"</td>";
-			results += "</tr>";
-		}
+		results = makeTable(data,results);
 		$('#overall').html(results);
 		$('#overall').show(500);
 		});
@@ -73,16 +139,7 @@ function getAwardsMale(){
 		});
 	request.done(function( data ) {
 		var results =  $('#male').html();
-		for(var i in data){
-			results += "<tr>";
-			results += "<td>"+(Math.max(i,0)+1)+"</td>";
-			results += "<td>"+data[i].timeoverall+"</td>";
-			results += "<td>"+data[i].bib+"</td>";
-			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
-			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
-			results += "<td>"+data[i].age+"</td>";
-			results += "</tr>";
-		}
+		results = makeTable(data,results);
 		$('#male').html(results);
 		$('#male').show(500);
 		});
@@ -100,22 +157,190 @@ function getAwardsFemale(){
 		});
 	request.done(function( data ) {
 		var results =  $('#female').html();
-		for(var i in data){
-			results += "<tr>";
-			results += "<td>"+(Math.max(i,0)+1)+"</td>";
-			results += "<td>"+data[i].timeoverall+"</td>";
-			results += "<td>"+data[i].bib+"</td>";
-			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
-			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
-			results += "<td>"+data[i].age+"</td>";
-			results += "</tr>";
-		}
+		results = makeTable(data,results);
 		$('#female').html(results);
 		$('#female').show(500);
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Error: " + textStatus );
 		});
+}
+
+function getAwardsMale1(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"M",min:0,max:19,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#male1').html();
+		results = makeTable(data,results);
+		$('#male1').html(results);
+		$('#male1').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsMale2(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"M",min:20,max:29,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#male2').html();
+		results = makeTable(data,results);
+		$('#male2').html(results);
+		$('#male2').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsMale3(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"M",min:30,max:39,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#male3').html();
+		results = makeTable(data,results);
+		$('#male3').html(results);
+		$('#male3').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+
+function getAwardsMale4(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"M",min:40,max:49,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#male4').html();
+		results = makeTable(data,results);
+		$('#male4').html(results);
+		$('#male4').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsMale5(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"M",min:50,max:59,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#male5').html();
+		results = makeTable(data,results);
+		$('#male5').html(results);
+		$('#male5').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsMale6(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"M",min:60,max:99,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#male6').html();
+		results = makeTable(data,results);
+		$('#male6').html(results);
+		$('#male6').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsFemale1(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"F",min:0,max:19,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#female1').html();
+		results = makeTable(data,results);
+		$('#female1').html(results);
+		$('#female1').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsFemale2(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"F",min:20,max:29,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#female2').html();
+		results = makeTable(data,results);
+		$('#female2').html(results);
+		$('#female2').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+function getAwardsFemale3(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/awards/gender/age",
+		type: "GET",
+		data: {event:19,gender:"F",min:30,max:39,page:1,size:5},
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		var results =  $('#female3').html();
+		results = makeTable(data,results);
+		$('#female3').html(results);
+		$('#female3').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
+
+function makeTable(data,results){
+	for(var i in data){
+		results += "<tr>";
+		results += "<td>"+(Math.max(i,0)+1)+"</td>";
+		results += "<td>"+data[i].timeoverall+"</td>";
+		results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+		results += "<td>("+data[i].gender+")"+data[i].age+"</td>";
+		results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+		results += "</tr>";
+	}
+	return results;
 }
 </script>
 

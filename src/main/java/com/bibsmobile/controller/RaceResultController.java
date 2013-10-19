@@ -129,15 +129,14 @@ public class RaceResultController {
 
     @RequestMapping(value = "/count", method = RequestMethod.GET)
     @ResponseBody
-    public String byOverallTimeMaleAge(
+    public Integer countRaceResultsByEvent(
     		@RequestParam(value = "event", required = true) Long event) {
-        StringBuffer rtn = new StringBuffer();
         try {
-            rtn.append(RaceResult.countRaceResults());
+        	return RaceResult.countRaceResultsByEvent(Event.findEvent(event));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return rtn.toString();
+        return 0;
     }
     
 }

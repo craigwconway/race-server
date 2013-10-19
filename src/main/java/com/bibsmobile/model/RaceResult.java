@@ -3,12 +3,14 @@ package com.bibsmobile.model;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 
@@ -248,18 +250,26 @@ public class RaceResult {
         q.setMaxResults(size);
         return q.getResultList();
     }
-	
+
 	public static List<RaceResult> findRaceResultsByOverallTimeAndGenderAndAge(Event event, String gender, int min, int max, int page,int size) {
 		final String AWARD_AGE_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.gender = :gender AND o.age >= :min AND o.age <= :max order by o.timeoverall asc";
 		EntityManager em = Event.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( AWARD_AGE_GENDER, RaceResult.class);
         q.setParameter("event", event );
         q.setParameter("gender", gender );
-        q.setParameter("min", min );
-        q.setParameter("max", max );
+        q.setParameter("min", String.valueOf(min) );
+        q.setParameter("max", String.valueOf(max) );
         q.setFirstResult((page-1)*size);
         q.setMaxResults(size);
         return q.getResultList();
+    }
+	
+	public static int countRaceResultsByEvent(Event event) {
+		final String COUNT = "SELECT Count(*) FROM Race_Result WHERE event = :event_id";
+		EntityManager em = Event.entityManager();
+        Query q = em.createNativeQuery( COUNT );
+        q.setParameter("event_id", event.getId() );
+        return ((BigInteger) q.getSingleResult()).intValue();
     }
 	
 
