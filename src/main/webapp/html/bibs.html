@@ -17,21 +17,17 @@
 	  <li class="active"><a href="#">Admin</a></li>
 	</ul>
 
-	<div class="row" style="margin-top:15px;">
+	<div class="row" style="margin:12px;">
 		<button type="button" class="btn btn-success" 
-			style="margin:2px;" id="program-start"
+			style="margin-right:2px;" id="program-start"
 			onclick="startReader();">Program</button>
 		<button type="button" class="btn btn-danger" 
 			style="margin:2px;display:none;" id="program-stop"
 			onclick="stopReader();">Stop</button>
-		<div id="status-bar" 
-			class="progress progress-striped active status-warning"
-			style="width: 100px;display:none;">
-		</div>
+		<div id="status-bar" > </div>
 	</div>
 	
-	<div id="results" class="row" 
-		style="margin:30px;display:none;"> 
+	<div id="results" class="row" style="margin:12px;"> 
 		<table id="raceresults" class="table"></table>
 	</div>
 
@@ -43,48 +39,34 @@
 <script>
 
 var readerOn=false;
+setInterval(function(){readerQuery()},3000);
 
 function startReader(){
-	readerOn=true;
 	$('#program-start').hide();
 	$('#program-stop').show();
 	$('#status-bar').show();
-	var readerStart = $.ajax({
-		url: "/bibs-server/events/start",
-		type: "GET",
-		data: { id : "start" },
-		dataType: "html"
-		});
-	readerStart.done(function( msg ) {
-		readerQuery();
-		});
-	readerStart.fail(function( jqXHR, textStatus ) {
-		alert( "Error: " + textStatus );
-		});
-	
-	// start polling
-	setInterval(function(){
-		if(!readerOn) return true;
-		readerQuery();
-		},3000);
-	
+		readerOn=true;
 }
 
 function readerQuery(){
+	if(!readerOn) return;
+	$('#status-bar').html("Reading...");
 	var request = $.ajax({
-		url: "/bibs-server/events/results",
+		url: "/bibs-server/events/write",
 		type: "GET",
+		data: {bib:1972},
 		dataType: "json"
 		});
 	request.done(function( data ) {
-		var results = "";
+		if(data == "false"){
+			alert("Error writing bib.")
+			return;
+		}
+		var results = $('#raceresults').html();
 		for(var i in data){
 			results += "<tr>";
 			results += "<td>"+data[i].bib+"</td>";
-			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
-			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
-			results += "<td>"+data[i].age+"</td>";
-			results += "<td>"+data[i].gender+"</td>";
+			results += "<td>processed...</td>";
 			results += "</tr>";
 		}
 		$('#raceresults').html(results);
@@ -93,24 +75,11 @@ function readerQuery(){
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Error: " + textStatus );
 		});
-	$('#progress-bar').show();
-	$('#program-start').hide();
-	$('#program-stop').show();
+	$('#status-bar').html("");
 }
 
 function stopReader(){
 	readerOn=false;
-	var request = $.ajax({
-		url: "/bibs-server/events/stop",
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( msg ) {
-		// ?
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		alert( "Error: " + textStatus );
-		});
 	$('#status-bar').hide();
 	$('#program-start').show();
 	$('#program-stop').hide();

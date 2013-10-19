@@ -106,8 +106,7 @@ public class EventController {
         	for(Integer bib:bibtime.keySet()){
         		RaceResult result = new RaceResult();
         		try{
-        			result = RaceResult.findRaceResultsByEventAndBibEquals(
-        				Event.findEvent(2l), bib.toString()).getSingleResult();
+        			// ??
         		}catch(EmptyResultDataAccessException e){
         			System.out.println("No runner found for bib "+bib);
         		}
@@ -120,6 +119,18 @@ public class EventController {
             e.printStackTrace();
         }
         return rtn.toString();
+    }
+    
+    @RequestMapping(value = "/write", method = RequestMethod.GET)
+    @ResponseBody
+    public String writeBib(@RequestParam(value = "bib", required = true) String bib){
+        try {
+        	timer.writeTag(Integer.valueOf(bib));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "false";
+        }
+        return "true";
     }
 
 
