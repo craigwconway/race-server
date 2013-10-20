@@ -26,7 +26,7 @@ import flexjson.JSONSerializer;
 @RooJpaActiveRecord(finders = { "findRaceResultsByEvent", "findRaceResultsByEventAndBibEquals", 
 		"findRaceResultsByEventAndFirstnameLike", "findRaceResultsByEventAndLastnameLike",
 		"findRaceResultsByEventAndFirstnameLikeAndLastnameLike"})
-public class RaceResult {
+public class RaceResult implements Comparable<RaceResult>{
 
     @ManyToOne 
     private Event event;
@@ -105,6 +105,8 @@ public class RaceResult {
     private String laps;
     
     private String award;
+    
+    private long timer;
     
     @Override
     public String toString(){
@@ -271,6 +273,11 @@ public class RaceResult {
         q.setParameter("event_id", event.getId() );
         return ((BigInteger) q.getSingleResult()).intValue();
     }
+	
+	public int compareTo(RaceResult other) {
+		long val = timer - other.timer;
+		return (int) val;
+	}
 	
 
 }

@@ -12,6 +12,7 @@ package com.bibsmobile.service;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+import java.util.Date;
 import java.util.HashMap;
 
 import com.thingmagic.Gen2;
@@ -25,7 +26,7 @@ import com.thingmagic.TagReadData;
 public class ThingMagicTimer implements Timer{
 		private int status;
 		private Reader r;
-		private ReadListener bibListener = new BibListener();
+		private ReadListener bibListener;
 		private String readerURI;
 		private HashMap <Integer, Long> times; // Bibnumber vs ms after epoch
 		private HashMap <Integer, Long> startTimes;
@@ -35,6 +36,7 @@ public class ThingMagicTimer implements Timer{
 			times = new HashMap <Integer, Long> ();
 			startTimes = new HashMap <Integer, Long>();
             this.connect();
+            bibListener = null;
             
 		}
 		
@@ -87,7 +89,12 @@ public class ThingMagicTimer implements Timer{
 		}
 
 		public void start(){
+			if(status == 3) {
+				this.disconnect();
+				this.connect();
+			}
 			if(status == 1) {
+				ReadListener bibListener = new BibListener();
 				r.addReadListener(bibListener);
 				r.startReading();
 				status = 2;
@@ -125,10 +132,10 @@ public class ThingMagicTimer implements Timer{
 			TagFilter target = null;
 			TagData bibinf = new TagData(bibdata);
 			try {
-				//r.writeTag(target, bibinf);
+				  //r.writeTag(null, bibinf);
 			      Gen2.TagData epc = new Gen2.TagData(bibdata);
-			          Gen2.WriteTag tagop = new Gen2.WriteTag(epc);
-			          r.executeTagOp(tagop, target);
+			      Gen2.WriteTag tagop = new Gen2.WriteTag(epc);
+			      r.executeTagOp(tagop, target);
 			} catch (ReaderException e) {
 				e.printStackTrace();
 			}
@@ -155,4 +162,21 @@ public class ThingMagicTimer implements Timer{
 		          }
 		    }
 		  }
+
+		@Override
+		public long getTime() throws Exception {
+			Date readerDate = new Date();
+			long time;
+			if(status < 1) {
+				throw new Exception("Could not connect.");
+			}
+			try {
+				readerDate = (Date) r.paramGet("/reader/currentTime");
+			} catch (ReaderException e) {
+				e.printStackTrace();
+				throw new Exception("Time not found");
+			}
+			return readerDate.getTime();
+		}
+
 }

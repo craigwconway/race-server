@@ -1,5 +1,6 @@
 package com.bibsmobile.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,5 +28,9 @@ public class DummyTimer implements Timer {
 		public void writeTag(int num){}
 		public void setReaderURI(String readerURI) {
 			this.readerURI = readerURI;
+		}
+		@Override
+		public long getTime() {
+			return new Date().getTime();
 		}
 }

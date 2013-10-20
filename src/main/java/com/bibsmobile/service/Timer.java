@@ -15,4 +15,5 @@ public interface Timer {
 		void stop();
 		Map <Integer,Long> getTimes();
 		void writeTag(int num) throws Exception;
+		long getTime() throws Exception;
 }
