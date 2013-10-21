@@ -29,9 +29,65 @@ import com.bibsmobile.service.Timer;
 @RooWebScaffold(path = "events", formBackingObject = Event.class)
 @RooWebJson(jsonObject = Event.class)
 public class EventController {
-	
+
 	@Autowired // see applicationContext.xml
 	private Timer timer;
+
+    @RequestMapping(value = "/purgetimer", method = RequestMethod.GET)
+    @ResponseBody
+    public String purgeTimer(){
+    	try{
+    	    bibs = new ArrayList<Integer>();
+    	    timer.purge();
+    	}catch(Exception x){
+    		x.printStackTrace();
+    		return "false";
+    	}
+        return "true";
+    }
+    @RequestMapping(value = "/purge", method = RequestMethod.GET)
+    @ResponseBody
+    public String purge(@RequestParam(value = "event", required = true) long event){
+    	try{
+    	    bibs = new ArrayList<Integer>();
+        	Event e = Event.findEvent(event);
+    		List<RaceResult> runners = RaceResult.findRaceResultsByEvent(e, 1, 999999).getResultList();
+    		for(RaceResult r:runners){
+    			r.remove();
+    		}
+    	}catch(Exception x){
+    		x.printStackTrace();
+    		return "false";
+    	}
+        return "true";
+    }
+
+    @RequestMapping(value = "/restart", method = RequestMethod.GET)
+    @ResponseBody
+    public String restart(){
+    	try{
+    	    bibs = new ArrayList<Integer>();
+    	}catch(Exception x){
+    		x.printStackTrace();
+    		return "false";
+    	}
+        return "true";
+    }
+	
+    @RequestMapping(value = "/gun", method = RequestMethod.GET)
+    @ResponseBody
+    public String gun(@RequestParam(value = "event", required = true) long event){
+    	try{
+        	Event e = Event.findEvent(event);
+    		e.setTimerStart(timer.getTime());
+    		e.merge();
+    		System.out.println("event time "+e.getTimerStart());
+    	}catch(Exception x){
+    		x.printStackTrace();
+    		return "false";
+    	}
+        return "true";
+    }
 	
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     @ResponseBody
@@ -64,11 +120,13 @@ public class EventController {
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
-    public String readerQuery(@RequestParam(value = "event", required = true) int event){
+    public String readerQuery(@RequestParam(value = "event", required = true) int event_id){ 
+    	runners = new ArrayList<RaceResult>();
         try {
         	Map <Integer,Long> bibtime = timer.getTimes();
         	boolean newBibs = false;
         	for(Integer bib:bibtime.keySet()){
+        		Event event = Event.findEvent(Long.valueOf(event_id).longValue());
     			if(bibs.contains(bib)) continue;
         		System.out.println("found "+bib+" "+bibtime.get(bib).toString());
     			newBibs = true;
@@ -77,7 +135,7 @@ public class EventController {
         		boolean found = false;
     			try{
     				result = RaceResult.findRaceResultsByEventAndBibEquals(
-    							Event.findEvent(Long.valueOf(event).longValue()), bib.toString())
+    							event, bib.toString())
     							.getSingleResult();
     				found = true;
     			}catch(Exception e){
@@ -85,7 +143,10 @@ public class EventController {
     				// e.printStackTrace();
     			}
         		result.setBib(bib.toString());
-        		result.setTimeoverall(	bibtime.get(bib).toString());
+        		result.setEvent(event);
+        		long timerTime = bibtime.get(bib);
+        		long startTime = event.getTimerStart();
+        		result.setTimeoverall( getHoursMinutesSeconds(timerTime-startTime)	);
         		if (found) result.merge();
         		else result.persist();
         		runners.add(result);
@@ -97,7 +158,29 @@ public class EventController {
         return "false";
     }
     
-    @RequestMapping(value = "/write", method = RequestMethod.GET)
+    private String getHoursMinutesSeconds(long l) {
+    	String rtn = "";
+    	l=Math.abs(l);
+		int hours = (int) ((l / 3600000) );
+		System.out.println("Hours:" + hours);
+		//l = l % 3600000;
+		int minutes = (int) ((l / 60000) % 60 );
+		System.out.println("Minutes: " + minutes);
+		//l = l % 60000;
+		int seconds =  (int) ((l/1000) % 60);
+		System.out.println("Seconds " + seconds);
+    	if(hours>0 && hours <=9) rtn = "0"+hours;
+    	else if (hours > 9) rtn = hours +":";
+    	else if (hours == 0) rtn = "00:";
+    	if(minutes>0 && minutes <=9) rtn = rtn + "0"+minutes;
+    	else if(minutes > 9) rtn = rtn + ""+minutes;
+    	else if (minutes == 0) rtn = rtn + "00";
+    	if(seconds>0 && seconds <=9) rtn = rtn + ":0"+seconds;
+    	else if(seconds > 9) rtn = rtn + ":"+seconds;
+		return rtn;
+	}
+
+	@RequestMapping(value = "/write", method = RequestMethod.GET)
     @ResponseBody
     public String writeBib(@RequestParam(value = "bib", required = true) String bib){
         try {

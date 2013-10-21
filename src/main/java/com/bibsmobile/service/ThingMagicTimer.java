@@ -40,6 +40,10 @@ public class ThingMagicTimer implements Timer{
             
 		}
 		
+		public void purge(){
+			times = new HashMap<Integer,Long>();
+		}
+		
 		public void init(){
         	if(getStatus() < 1)
 			this.connect();

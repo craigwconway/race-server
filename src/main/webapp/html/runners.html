@@ -12,46 +12,33 @@
       
     <ul class="nav nav-tabs">
 	  <li><a href="reader.html">Race day</a></li>
-	  <li class="active"><a href="#">Runners</a></li>
+	  <li class="active"><a href="/bibs-server/resources/html/runners.html">Runners</a></li>
 	  <li><a href="awards.html">Awards</a></li>
 	  <li><a href="bibs.html">Admin</a></li>
 	</ul>
 
 	<div class="row" style="margin-top:12px;">
-	  	<div class="col-md-4">
+	  	<div class="col-md-8">
+			<button type="button" class="btn btn-default" 
+				style="margin:2px;" onclick="addRunner()">Add</button>
 			<button type="button" class="btn btn-default" 
 				style="margin:2px;">Import</button>
 			<button type="button" class="btn btn-default" 
 				style="margin:2px;">Export</button>
-		</div>
-	  	<div class="col-md-4">
 			<button type="button" class="btn btn-default" 
-				style="margin:2px;">Read Bibs</button>
-			<span id="result-count" style="display:none;">
-				<span id="result-count-output">0</span> Bibs processed.
-			</span>
+				style="margin:2px;" onclick="purge()">Purge</button>
 		</div>
 	  	<div class="col-md-4">
-			<form id="search-form" class="form" role="form">
-			  <div class="form-group pull-left" style="width:200px;">
-			    <label class="sr-only" for="query">Search</label>
-			    <input type="text" class="form-control" id="query" placeholder="Type a Bib or Name">
-			  </div>
-			  <button type="submit" class="btn btn-default pull-left">Search</button>
-			</form>
+			    <input type="text" class="form-control" id="query" 
+			    	style="width:100px;display:inline;"
+			    	placeholder="Type a Bib">
+			  <button onclick="search()" class="btn btn-default">Search</button>
 		</div>
 	</div>
 		
 	<div id="results"
 		style="margin:30px;display:none;"> 
 		<table id="raceresults" class="table">
-		<thead><tr>
-			<th>Bib</th>	
-			<th>Name</th>	
-			<th>Hometown</th>	
-			<th>Age</th>	
-			<th>Gender</th>	
-		</tr></thead>
 		</table>
 	</div>
 
@@ -64,6 +51,10 @@
 
 $(document).ready(getRunners);
 
+function addRunner(){
+	document.location="runneredit.html?id=0";
+}
+
 function getRunners(){
 	readerOn=false;
 	var request = $.ajax({
@@ -75,8 +66,10 @@ function getRunners(){
 			var results = $('#raceresults').html();
 			for(var i in data){
 				results += "<tr>";
+				results += "<td><a href=\"runneredit.html?id="+data[i].id+"\">Edit</a></td>";
 				results += "<td>"+data[i].bib+"</td>";
 				results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+				results += "<td>"+data[i].timeoverall+"</td>";
 				results += "<td>"+data[i].city+", "+data[i].state+"</td>";
 				results += "<td>"+data[i].age+"</td>";
 				results += "<td>"+data[i].gender+"</td>";
@@ -91,6 +84,68 @@ function getRunners(){
 	
 }
 
+
+function search(){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/bybib/ice/"+$("#query").val(),
+		type: "GET",
+		dataType: "json"
+		});
+	request.done(function( data1 ) {
+			var data = [data1];
+			for(var i in data){
+				results += "<tr>";
+				results += "<td><a href=\"runneredit.html?id="+data[i].id+"\">Edit</a></td>";
+				results += "<td>"+data[i].bib+"</td>";
+				results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+				results += "<td>"+data[i].timeoverall+"</td>";
+				results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+				results += "<td>"+data[i].age+"</td>";
+				results += "<td>"+data[i].gender+"</td>";
+				results += "</tr>";
+				results += "<tr><td colspan=\"99\"><a href=\"runners.html\">Show All Runners</a</td></tr>";
+				
+			}
+			$('#raceresults').hide();
+			$('#raceresults').empty();
+			$('#raceresults').html(results);
+			$('#raceresults').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+	
+}
+function purge(){
+	var request = $.ajax({
+		url: "/bibs-server/events/purge?event=19",
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( data ) {
+		$("#raceresults").empty();
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+	
+}
+
+function makeTable(tableElement,data){
+	for(var i in data){
+		var newResults = "";
+		newResults += "<tr>";
+		newResults += "<td>"+data[i].bib+"</td>";
+		newResults += "<td>"+data[i].timeoverall+"</td>";
+		newResults += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+		newResults += "<td>"+data[i].city+", "+data[i].state+"</td>";
+		newResults += "<td>"+data[i].gender+"</td>";
+		newResults += "<td>"+data[i].age+"</td>";
+		newResults += "</tr>";
+		tableElement.prepend(newResults);
+	}
+	return;
+}
 </script>
 
   </body>

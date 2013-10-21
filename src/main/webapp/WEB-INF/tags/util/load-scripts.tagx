@@ -27,6 +27,11 @@
   <link rel="stylesheet" type="text/css" href="${tundra_url}" />
   <link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}" />
   <link rel="SHORTCUT ICON" href="${favicon}" />
+  
+  <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
+  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   <link href="${bootstrap_url }" rel="stylesheet"/>
 
   <!-- Get the user local from the page context (it was set by Spring MVC's locale resolver) -->
   <c:set var="userLocale">

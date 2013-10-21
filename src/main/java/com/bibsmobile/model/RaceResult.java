@@ -233,7 +233,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 	
 	public static List<RaceResult> findRaceResultsByOverallTime(Event event,int page,int size) {
-		final String AWARD_TIME_OVERALL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null order by o.timeoverall asc";
+		final String AWARD_TIME_OVERALL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.timeoverall != '' order by o.timeoverall asc";
 		EntityManager em = Event.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( AWARD_TIME_OVERALL, RaceResult.class);
         q.setParameter("event", event );
@@ -243,7 +243,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public static List<RaceResult> findRaceResultsByOverallTimeAndGender(Event event, String gender,int page,int size) {
-		final String AWARD_OVERALL_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.gender = :gender order by o.timeoverall asc";
+		final String AWARD_OVERALL_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.timeoverall != '' AND o.gender = :gender order by o.timeoverall asc";
 		EntityManager em = Event.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( AWARD_OVERALL_GENDER, RaceResult.class);
         q.setParameter("event", event );
@@ -254,7 +254,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public static List<RaceResult> findRaceResultsByOverallTimeAndGenderAndAge(Event event, String gender, int min, int max, int page,int size) {
-		final String AWARD_AGE_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.gender = :gender AND o.age >= :min AND o.age <= :max order by o.timeoverall asc";
+		final String AWARD_AGE_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != '' AND o.timeoverall != null AND o.gender = :gender AND o.age >= :min AND o.age <= :max order by o.timeoverall asc";
 		EntityManager em = Event.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( AWARD_AGE_GENDER, RaceResult.class);
         q.setParameter("event", event );

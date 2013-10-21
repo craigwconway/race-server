@@ -1,7 +1,6 @@
 package com.bibsmobile.model;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Temporal;
@@ -61,6 +60,7 @@ public class Event {
     private String  beachEvents;
     private String  shuttles;
     private String  courseRules;
+    private Long timerStart; 
 
     @Override
     public String toString() {

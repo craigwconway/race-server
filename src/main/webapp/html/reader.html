@@ -4,7 +4,6 @@
     <title>Bibs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link href="/bibs-server/resources/styles/bootstrap.min.css" rel="stylesheet">
-
     </head>
   <body>
 <div style="margin:12px;">
@@ -16,33 +15,45 @@
 	  <li><a href="bibs.html">Admin</a></li>
 	</ul>
 
-	<div class="row" style="margin-top:12px;">
+	<div style="margin-top:12px;">
 	
-  		<div class="col-md-4">
-  		
-			<button type="button" class="btn btn-success pull-left" 
-				style="margin:2px;" id="start-button"
-				onclick="startTimer();">Start Race Timer!</button>
-			<button type="button" class="btn btn-danger pull-left" 
+			<button type="button" class="btn btn-danger" 
+				style="margin:2px;float:left;" id="gun-button"
+				onclick="gunTime();">Fire gun!</button>
+				
+			<input type="text" class="form-control" id="timerStart"
+			     	placeholder="Start Time (ex. 08:01:23)" 
+			     	style="width:200px;margin-top:2px;display:inline;"
+			     	onfocus="setStartTime()"/>
+	
+			<button type="button" class="btn btn-danger" 
+				style="margin:2px;float:left;display:none;" id="starttime-button"
+				onclick="gunTime();">Set Start Time</button>
+			     	
+	
+			<button type="button" class="btn btn-success" 
+				style="margin:2px;display:none;" id="start-button"
+				onclick="startTimer();">Start Finish Line Reader</button>
+			<button type="button" class="btn btn-success" 
+				style="margin:2px;display:none;" id="restart-button"
+				onclick="restartTimer();">Re-Start Finish Line Reader</button>
+			<button type="button" class="btn btn-danger" 
 				style="margin:2px;display:none;" id="stop-button"
-				onclick="stopTimer();">Pause Race Timer...</button>
-		    <div id="timer" class="form-control pull-left"
-					style="margin-top:2px;width:60px;text-align:right;" >
-					<span class="value">0</span>
+				onclick="stopTimer();">Stop Finish Line Reader</button>
+			<button type="button" class="btn" 
+				style="margin:2px;" id="purge-button"
+				onclick="resetTimer();">Reset</button>
+			
+			<button type="button" class="btn" 
+				style="margin:2px;display:none;" id="status"
+				>Scanning for Runners...</button>
+			
+	</div>
+	
+			<div id="runners-count-div" style="display:none;">
+				<span id="runners-count"></span> Total Runners
 			</div>
 			
-		</div>
-  		<div class="col-md-4">
-  		&nbsp;
-  		</div>
-	  	<div class="col-md-4">
-			<span id="runners-count-div">
-				<span id="runners-count"></span> Total Runners
-			</span>
-	  	</div>
-	</div>
-
-	
 <div id="results-none" class="row" 
 	style="margin:30px;display:none;">
 	<h5>Results will be shown here in real-time...</h5>
@@ -56,30 +67,95 @@
 
 <script src="../scripts/jquery-1.10.2.min.js"></script>
 <script src="../scripts/bootstrap.min.js"></script>
-    
+
 <script>
 var timerOn=false;
-setInterval(updateDisplay, 10); // every millisecond call updateDisplay
 //getRunnersCount();
 
+// unload stop reader
 $( window ).unload(function() {
 	stopTimer();
 });
 
+function setStartTime(){
+	var date = new Date();
+	$("#gun-button").hide(500);
+	$("#starttime-button").show(500);
+}
+
+
+function gunTime(){
+	var date = new Date();
+	$("#timerStart").val(date.getHours()+":"+date.getMinutes()+":"+date.getSeconds() );
+	$("#timerStart").css("width","100");
+	//$("#timerStart").attr("disabled","disabled");
+	gun();
+	$("#restart-button").hide();
+	$("#stop-button").hide();
+	$("#start-button").show(500);
+}
+
 function startTimer(){
+	timerOn=true;
 	var request = $.ajax({
 		url: "/bibs-server/events/start",
 		type: "GET",
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		timerOn=true;
 		if(msg != "true"){
 			alert("Failed.");
 		}else{
 			$("#start-button").hide(500);
 			$("#stop-button").show(500);
+			$("#status").show();
 			if($("#raceresults").html()=="") $("#results-none").show(500);
+			setInterval(pollResults, 3000); // every millisecond call updateDisplay
+		}
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
+
+
+function resetTimer(){
+	timerOn=true;
+	var request = $.ajax({
+		url: "/bibs-server/events/purgetimer",
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		if(msg != "true"){
+			alert("Failed.");
+		}else{
+			$("#start-button").hide();
+			$("#restart-button").hide();
+			$("#stop-button").hide();
+			$("#status").hide();
+			$("#raceresults").empty(); 
+		}
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}function restartTimer(){
+	timerOn=true;
+	var request = $.ajax({
+		url: "/bibs-server/events/restart",
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		if(msg != "true"){
+			alert("Failed.");
+		}else{
+			$("#restart-button").hide(500);
+			$("#stop-button").show(500);
+			$("#status").show();
+			$("#raceresults").empty(); 
+			$("#results-none").show(500);
 			setInterval(pollResults, 3000); // every millisecond call updateDisplay
 		}
 		});
@@ -97,21 +173,14 @@ function stopTimer(){
 		});
 	request.done(function( msg ) {
 		if(msg != "true") alert("Failed.");
-		$("#start-button").show(500);
+		$("#restart-button").show(500);
 		$("#stop-button").hide(500);
+		$("#status").hide();
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
 		});
 }
-
-function updateDisplay(){
-	if(!timerOn) return true;
-     var value = parseInt($('#timer').find('.value').text(), 10);
-     value=value+10;
-     $('#timer').find('.value').text(value);
-}
-
 
 function getRunnersCount(){
 	var request = $.ajax({
@@ -129,6 +198,22 @@ function getRunnersCount(){
 		});
 }
 
+function gun(){
+	var request = $.ajax({
+		url: "/bibs-server/events/gun",
+		type: "GET",
+		data: {event:19},
+		dataType: "html"
+		});
+	request.done(function( data ) {
+		if(data != "true") alert("Failed.");
+		else alert("Race Started!")
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+
 function pollResults(){
 	if(!timerOn) return;
 	var request = $.ajax({
@@ -138,7 +223,8 @@ function pollResults(){
 		dataType: "json"
 		});
 	request.done(function( data ) {
-		$('#raceresults').html(makeTable(data,$('#raceresults').html()));
+		if(data.len == 0) return;
+		makeTable($('#raceresults'),data);
 		$('#results').show(500);
 		$("#results-none").hide(500);
 		});
@@ -147,19 +233,20 @@ function pollResults(){
 		});
 }
 
-function makeTable(data,results){
+function makeTable(tableElement,data){
 	for(var i in data){
-		results += "<tr>";
-		results += "<td><input type=\"checkbox\"\></td>";
-		results += "<td>"+data[i].bib+"</td>";
-		results += "<td>"+data[i].timeoverall+"</td>";
-		results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
-		results += "<td>"+data[i].city+", "+data[i].state+"</td>";
-		results += "<td>"+data[i].gender+"</td>";
-		results += "<td>"+data[i].age+"</td>";
-		results += "</tr>";
+		var newResults = "";
+		newResults += "<tr>";
+		newResults += "<td>"+data[i].bib+"</td>";
+		newResults += "<td>"+data[i].timeoverall+"</td>";
+		newResults += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+		newResults += "<td>"+data[i].city+", "+data[i].state+"</td>";
+		newResults += "<td>"+data[i].gender+"</td>";
+		newResults += "<td>"+data[i].age+"</td>";
+		newResults += "</tr>";
+		tableElement.prepend(newResults);
 	}
-	return results;
+	return;
 }
 </script>
 

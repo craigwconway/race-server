@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bibs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link href="../styles/bootstrap.min.css" rel="stylesheet">
+
+    </head>
+<body>
+
+<div style="margin:12px;">
+      
+    <ul class="nav nav-tabs">
+	  <li><a href="reader.html">Race day</a></li>
+	  <li class="active"><a href="/bibs-server/resources/html/runners.html">Runners</a></li>
+	  <li><a href="awards.html">Awards</a></li>
+	  <li><a href="bibs.html">Admin</a></li>
+	</ul>
+		
+	<div id="results"
+		style="margin:30px;display:none;"> 
+	</div>
+
+</div>
+
+<script src="../scripts/jquery-1.10.2.min.js"></script>
+<script src="../scripts/bootstrap.min.js"></script>
+    
+<script>
+
+$(document).ready(addUpdate);
+
+$.urlParam = function(name){
+    var results = new RegExp('[\\?&amp;]' + name + '=([^&amp;#]*)').exec(window.location.href);
+    return results[1] || 0;
+}
+
+function addUpdate(){
+	if($.urlParam("id") == 0) getRunner("");
+	else getRunner($.urlParam("id"));
+}
+
+function getRunner(id){
+	var request = $.ajax({
+		url: "/bibs-server/raceresults/"+id+"?form",
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( data ) {
+			$('#results').html(data);
+			$('#results').show(500);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+	
+}
+
+</script>
+
+  </body>
+</html>

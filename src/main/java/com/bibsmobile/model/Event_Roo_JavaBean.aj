@@ -312,4 +312,12 @@ privileged aspect Event_Roo_JavaBean {
         this.courseRules = courseRules;
     }
     
+    public Long Event.getTimerStart() {
+        return this.timerStart;
+    }
+    
+    public void Event.setTimerStart(Long timerStart) {
+        this.timerStart = timerStart;
+    }
+    
 }

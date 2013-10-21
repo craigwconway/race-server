@@ -22,7 +22,7 @@ public class DummyTimer implements Timer {
 		public void stop(){status = 0;}
 		public HashMap <Integer,Long> getTimes(){
 			java.util.Random r = new java.util.Random();
-			times.put(r.nextInt(50000), r.nextLong());
+			times.put(r.nextInt(50000), new Date().getTime());
 			return times;
 		}
 		public void writeTag(int num){}
@@ -33,4 +33,7 @@ public class DummyTimer implements Timer {
 		public long getTime() {
 			return new Date().getTime();
 		}
+
+		@Override
+		public void purge(){}
 }
