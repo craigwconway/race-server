@@ -45,6 +45,6 @@ public class ResultsFileController {
             resultsFile.persist();
         }
         
-        return "redirect:/resultsfiles/" + encodeUrlPathSegment(resultsFile.getId().toString(), httpServletRequest);
+        return "redirect:/resultsfilemappings/?form";
     }
 }

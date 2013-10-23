@@ -11,6 +11,5 @@
         <field:input field="options" id="c_com_bibsmobile_model_ResultsFileMapping_options" render="false" z="user-managed"/>
         <field:input field="name" id="c_com_bibsmobile_model_ResultsFileMapping_name" z="VMMocjIKbSSvwduNG0XYQHWk7uc="/>
     </form:create>
-    <h3>First choose the Import file to base this mapping on.</h3>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_ResultsFileMapping" render="${not empty dependencies}" z="TXnO8kb8EfvVI5iBmhy95k2doI8="/>
 </div>
