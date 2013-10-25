@@ -182,5 +182,42 @@ public class ThingMagicTimer implements Timer{
 			}
 			return readerDate.getTime();
 		}
+		private int getReadPower() {
+			int readPower = 0;
+			try {
+				readPower =  (int) r.paramGet("/reader/radio/readPower");
+			} catch (ReaderException e) {
+				e.printStackTrace();
+			}
+
+			return readPower;
+		}
+		
+		private void setReadPower(int readPower) {
+			try{
+				r.paramSet("reader/radio/readPower", readPower);
+			} catch (ReaderException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		private int getWritePower() {
+			int writePower = 0;
+			try {
+				writePower =  (int) r.paramGet("/reader/radio/writePower");
+			} catch (ReaderException e) {
+				e.printStackTrace();
+			}
+
+			return writePower;
+		}
+		
+		private void setWritePower(int writePower) {
+			try{
+				r.paramSet("reader/radio/writePower", writePower);
+			} catch (ReaderException e) {
+				e.printStackTrace();
+			}
+		}
 
 }
