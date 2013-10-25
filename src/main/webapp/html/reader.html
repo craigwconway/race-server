@@ -17,31 +17,29 @@
 
 	<div style="margin-top:12px;">
 	
-			<button type="button" class="btn btn-danger" 
-				style="margin:2px;float:left;" id="gun-button"
+			<button type="button" class="btn btn-danger pull-left" 
+				style="margin:2px;" id="gun-button"
 				onclick="gunTime();">Fire gun!</button>
-				
-			<input type="text" class="form-control" id="timerStart"
+			     	
+			<input type="text" class="form-control pull-left" id="timerStart"
 			     	placeholder="Start Time (ex. 08:01:23)" 
-			     	style="width:200px;margin-top:2px;display:inline;"
-			     	onfocus="setStartTime()"/>
+			     	style="width:200px;margin-top:2px;display:inline;"/>
+<!-- 			     	onfocus="$('#gun-button').toggle(300);$('#starttime-button').toggle(300);"  -->
+<!-- 			     	onblur="$('#gun-button').toggle(300);$('#starttime-button').toggle(300));"  -->
+			     	
 	
-			<button type="button" class="btn btn-danger" 
+			<button type="button" class="btn btn-danger pull-left" 
 				style="margin:2px;float:left;display:none;" id="starttime-button"
 				onclick="gunTime();">Set Start Time</button>
-			     	
 	
 			<button type="button" class="btn btn-success" 
 				style="margin:2px;display:none;" id="start-button"
 				onclick="startTimer();">Start Finish Line Reader</button>
-			<button type="button" class="btn btn-success" 
-				style="margin:2px;display:none;" id="restart-button"
-				onclick="restartTimer();">Re-Start Finish Line Reader</button>
 			<button type="button" class="btn btn-danger" 
 				style="margin:2px;display:none;" id="stop-button"
 				onclick="stopTimer();">Stop Finish Line Reader</button>
 			<button type="button" class="btn" 
-				style="margin:2px;" id="purge-button"
+				style="margin:2px;display:none;" id="purge-button"
 				onclick="resetTimer();">Reset</button>
 			
 			<button type="button" class="btn" 
@@ -90,7 +88,6 @@ function gunTime(){
 	$("#timerStart").css("width","100");
 	//$("#timerStart").attr("disabled","disabled");
 	gun();
-	$("#restart-button").hide();
 	$("#stop-button").hide();
 	$("#start-button").show(500);
 }
@@ -120,7 +117,7 @@ function startTimer(){
 
 
 function resetTimer(){
-	timerOn=true;
+	timerOn=false;
 	var request = $.ajax({
 		url: "/bibs-server/events/purgetimer",
 		type: "GET",
@@ -130,8 +127,8 @@ function resetTimer(){
 		if(msg != "true"){
 			alert("Failed.");
 		}else{
+			$("#purge-button").hide(500);
 			$("#start-button").hide();
-			$("#restart-button").hide();
 			$("#stop-button").hide();
 			$("#status").hide();
 			$("#raceresults").empty(); 
@@ -140,29 +137,8 @@ function resetTimer(){
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
 		});
-}function restartTimer(){
-	timerOn=true;
-	var request = $.ajax({
-		url: "/bibs-server/events/restart",
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( msg ) {
-		if(msg != "true"){
-			alert("Failed.");
-		}else{
-			$("#restart-button").hide(500);
-			$("#stop-button").show(500);
-			$("#status").show();
-			$("#raceresults").empty(); 
-			$("#results-none").show(500);
-			setInterval(pollResults, 3000); // every millisecond call updateDisplay
-		}
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
-		});
 }
+
 
 function stopTimer(){
 	timerOn=false;
@@ -173,7 +149,7 @@ function stopTimer(){
 		});
 	request.done(function( msg ) {
 		if(msg != "true") alert("Failed.");
-		$("#restart-button").show(500);
+		$("#purge-button").show(500);
 		$("#stop-button").hide(500);
 		$("#status").hide();
 		});
