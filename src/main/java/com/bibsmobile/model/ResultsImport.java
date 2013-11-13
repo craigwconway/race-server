@@ -16,14 +16,12 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord(finders = { "findResultsImportsByResultsFile" }) 
 public class ResultsImport {
 	
-	@ManyToOne @NotNull
-	@Cascade({CascadeType.ALL})
+	private Date runDate = new Date(); 
+	@ManyToOne
 	private ResultsFile resultsFile;
-	@ManyToOne @NotNull
-	@Cascade({CascadeType.ALL})
+	@ManyToOne
 	private ResultsFileMapping resultsFileMapping;
 	
-	private Date runDate = new Date(); 
 	private int rowsProcessed;
 	private int errors;
 	private String errorRows = new String();

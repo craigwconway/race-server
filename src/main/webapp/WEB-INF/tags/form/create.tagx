@@ -26,7 +26,8 @@
       <c:if test="${not empty compositePkField}">
       	<c:set var="jsCall" value="encodePk()" />
       </c:if>
-      <form:form action="${form_url}" method="POST" modelAttribute="${modelAttribute}" enctype="${enctype}" onsubmit="${jsCall}">
+      <form:form action="${form_url}" method="POST" modelAttribute="${modelAttribute}" enctype="${enctype}" onsubmit="${jsCall}"
+      	role="form">
         <form:errors cssClass="errors" delimiter="&lt;p/&gt;"/>
         <c:if test="${not empty compositePkField}">
           <form:hidden id="_${fn:escapeXml(compositePkField)}_id" path="${fn:escapeXml(compositePkField)}" />
@@ -53,7 +54,8 @@
         <div class="submit" id="${fn:escapeXml(id)}_submit">
           <spring:message code="button_save" var="save_button" htmlEscape="false" />
           <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
-          <input id="proceed" type="submit" value="${fn:escapeXml(save_button)}"/>
+          <button id="back" type="button" class="btn" onclick="window.history.back();">Cancel</button>
+          <button class="btn btn-success" id="proceed" type="submit" >Save</button>
         </div>
       </form:form>
     </util:panel>

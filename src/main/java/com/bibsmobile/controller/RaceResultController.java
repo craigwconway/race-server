@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +27,7 @@ public class RaceResultController {
         String rtn = "";
         try {
             Event event = Event.findEventsByNameLike(eventName, page, size).getSingleResult();
-            List<RaceResult> raceResults = RaceResult.findRaceResultsByEvent(event,page,size).getResultList();
+            List<RaceResult> raceResults = event.findRaceResults(page,size);
             rtn = RaceResult.toJsonArray(raceResults);
         } catch (Exception e) {
             //e.printStackTrace();
@@ -83,8 +84,7 @@ public class RaceResultController {
     		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         try {
-            rtn.append(RaceResult.toJsonArray(RaceResult.findRaceResultsByOverallTime(
-            		Event.findEvent(event),page,size)));
+            rtn.append(RaceResult.toJsonArray(Event.findEvent(event).findRaceResultsByOverallTime(page,size)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,8 +100,7 @@ public class RaceResultController {
     		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         try {
-            rtn.append(RaceResult.toJsonArray(RaceResult.findRaceResultsByOverallTimeAndGender(
-            		Event.findEvent(event),gender,page,size)));
+            rtn.append(RaceResult.toJsonArray(Event.findEvent(event).findRaceResultsByOverallTimeAndGender(gender,page,size)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,8 +118,7 @@ public class RaceResultController {
     		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         try {
-            rtn.append(RaceResult.toJsonArray(RaceResult.findRaceResultsByOverallTimeAndGenderAndAge(
-            		Event.findEvent(event),gender,min,max,page,size)));
+            rtn.append(RaceResult.toJsonArray(Event.findEvent(event).findRaceResultsByOverallTimeAndGenderAndAge(gender,min,max,page,size)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,14 +127,37 @@ public class RaceResultController {
 
     @RequestMapping(value = "/count", method = RequestMethod.GET)
     @ResponseBody
-    public Integer countRaceResultsByEvent(
+    public Long countRaceResultsByEvent(
     		@RequestParam(value = "event", required = true) Long event) {
         try {
-        	return RaceResult.countRaceResultsByEvent(Event.findEvent(event));
+        	return Event.findEvent(event).countRaceResults();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return 0;
+        return -1l;
+    }
+    
+    @RequestMapping(produces = "text/html")
+    public static String list(
+    						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
+    						@RequestParam(value = "event", required = false, defaultValue = "0") Long event, 
+    						Model uiModel) {
+        uiModel.addAttribute("events", Event.findAllEvents());
+        int sizeNo = size == null ? 10 : size.intValue();
+        final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+        float nrOfPages = 0;
+        if(event > 0){
+        	Event _event = Event.findEvent(event);
+        	uiModel.addAttribute("raceresults", _event.findRaceResults(firstResult, sizeNo));
+            nrOfPages = (float) _event.countRaceResults() / sizeNo;
+        }else{
+        	uiModel.addAttribute("raceresults", RaceResult.findRaceResultEntries(firstResult, sizeNo));
+            nrOfPages = (float) RaceResult.countRaceResults() / sizeNo;
+        }
+        uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        //addDateTimeFormatPatterns(uiModel);
+        return "raceresults/list";
     }
     
 }

@@ -2,6 +2,10 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <button type="button" class="btn btn-primary btn-top"
+		onclick="document.location='/bibs-server/userprofiles?form';">
+		Add User
+	</button>
     <page:list id="pl_com_bibsmobile_model_UserProfile" items="${userprofiles}" z="1SzZRnyS7+fCTmjwHcV6wnTBQ7A=">
         <table:table data="${userprofiles}" id="l_com_bibsmobile_model_UserProfile" path="/userprofiles" z="skPQvI3EqZxrcsnFZTq+pwfTzpQ=">
             <table:column id="c_com_bibsmobile_model_UserProfile_username" property="username" z="Iy3Q1HWj7a1aVU94RUb2sdaqe5U="/>
@@ -10,6 +14,7 @@
             <table:column id="c_com_bibsmobile_model_UserProfile_accountNonLocked" property="accountNonLocked" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_credentialsNonExpired" property="credentialsNonExpired" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_enabled" property="enabled" z="Ge2sMyHhZy/vZK/OL0hhOa7MIw8="/>
+            <table:column id="c_com_bibsmobile_model_UserProfile_email" property="email" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

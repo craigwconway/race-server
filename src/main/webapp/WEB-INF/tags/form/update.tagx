@@ -29,13 +29,15 @@
     <spring:message arguments="${label}" code="entity_update" var="title_msg" htmlEscape="false" />
     <util:panel id="${id}" title="${title_msg}" openPane="${openPane}">
       <spring:url value="${path}" var="form_url" />
-      <form:form action="${form_url}" method="PUT" modelAttribute="${modelAttribute}" enctype="${enctype}">
+      <form:form action="${form_url}" method="PUT" modelAttribute="${modelAttribute}" enctype="${enctype}"
+      	role="form">
         <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />
         <jsp:doBody />
         <div class="submit" id="${fn:escapeXml(id)}_submit">
+          <button id="back" type="button" class="btn" onclick="window.history.back();">Cancel</button>
           <spring:message code="button_save" var="save_button" htmlEscape="false" />
           <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
-          <input id="proceed" type="submit" value="${fn:escapeXml(save_button)}" />
+          <button id="proceed" type="submit" class="btn btn-success">Save</button>
         </div>
         <form:hidden id="_${fn:escapeXml(idField)}_id" path="${fn:escapeXml(idField)}" />
         <c:if test="${versionField ne 'none'}">

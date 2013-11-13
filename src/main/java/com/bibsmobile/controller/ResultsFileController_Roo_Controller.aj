@@ -6,9 +6,9 @@ package com.bibsmobile.controller;
 import com.bibsmobile.controller.ResultsFileController;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.joda.time.format.DateTimeFormat;
@@ -27,11 +27,6 @@ privileged aspect ResultsFileController_Roo_Controller {
     @RequestMapping(params = "form", produces = "text/html")
     public String ResultsFileController.createForm(Model uiModel) {
         populateEditForm(uiModel, new ResultsFile());
-        List<String[]> dependencies = new ArrayList<String[]>();
-        if (Event.countEvents() == 0) {
-            dependencies.add(new String[] { "event", "events" });
-        }
-        uiModel.addAttribute("dependencies", dependencies);
         return "resultsfiles/create";
     }
     
@@ -93,6 +88,8 @@ privileged aspect ResultsFileController_Roo_Controller {
         uiModel.addAttribute("resultsFile", resultsFile);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("events", Event.findAllEvents());
+        uiModel.addAttribute("resultsfilemappings", ResultsFileMapping.findAllResultsFileMappings());
+        uiModel.addAttribute("resultsimports", ResultsImport.findAllResultsImports());
     }
     
     String ResultsFileController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

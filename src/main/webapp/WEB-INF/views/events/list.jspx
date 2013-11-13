@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+<div
+	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+    <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/events?form';" type="button">
+		Add Event
+	</button>
+	</sec:authorize>
     <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
         <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
             <table:column id="c_com_bibsmobile_model_Event_name" property="name" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
             <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeStart" z="rJXjev/8A3pdDiA7ZYgHXZTb4x8="/>
-            <table:column date="true" dateTimePattern="${event_timeend_date_format}" id="c_com_bibsmobile_model_Event_timeEnd" property="timeEnd" z="2ZWCmbxrDF9Mcm5A8UyBOUesg6Q="/>
-            <table:column id="c_com_bibsmobile_model_Event_featured" property="featured" z="SSlky1GT/HFOSdTEPcwMMl0oYJg="/>
-            <table:column id="c_com_bibsmobile_model_Event_city" property="city" z="WzbZmrBHV2hfyuQXeLrYTeL8uZU="/>
-            <table:column id="c_com_bibsmobile_model_Event_state" property="state" z="VJMVkJIab6+fDPY80DL+nyIjpHM="/>
+            <table:column date="true" dateTimePattern="${event_created_date_format}" id="c_com_bibsmobile_model_Event_created" property="created" z="2ZWCmbxrDF9Mcm5A8UyBOUesg6Q="/>
+            <table:column date="true" dateTimePattern="${event_updated_date_format}" id="c_com_bibsmobile_model_Event_updated" property="updated" z="2ZWCmbxrDF9Mcm5A8UyBOUesg6Q="/>
+            <table:column date="true" dateTimePattern="${event_timeend_date_format}" id="c_com_bibsmobile_model_Event_timeEnd" property="timeEnd" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_Event_featured" property="featured" render="false" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

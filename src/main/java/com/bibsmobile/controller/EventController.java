@@ -51,7 +51,7 @@ public class EventController {
     	try{
     	    bibs = new ArrayList<Integer>();
         	Event e = Event.findEvent(event);
-    		List<RaceResult> runners = RaceResult.findRaceResultsByEvent(e, 1, 999999).getResultList();
+    		List<RaceResult> runners = e.findRaceResults(1, 999999);
     		for(RaceResult r:runners){
     			r.remove();
     		}
@@ -270,48 +270,8 @@ public class EventController {
         return rtn.toString();
     }
     
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        Event event = Event.findEvent(id);
-        
-        // remove relationships
-        List<ResultsFile> files = ResultsFile.findResultsFilesByEvent(event).getResultList();
-        System.out.println("files "+files.size());
-        for(ResultsFile file:files){
-            System.out.println("delete file "+file.getId());
-        	List<ResultsImport> imports = ResultsImport.findResultsImportsByResultsFile(file).getResultList();
-            System.out.println("imports "+imports.size());
-        	for(ResultsImport import_:imports){
-                System.out.println("delete import "+import_.getId());
-        		import_.remove(); 
-        	}
-        	List<ResultsFileMapping> maps = ResultsFileMapping.findResultsFileMappingsByResultsFile(file).getResultList();
-            System.out.println("maps "+maps.size());
-        	for(ResultsFileMapping map:maps){
-                System.out.println("delete map "+map.getId());
-        		map.remove();
-        	}
-        	file.remove();
-        } 
-      List<RaceImage> images = RaceImage.findRaceImagesByEvent(event).getResultList();
-      for(RaceImage image:images){ 
-          System.out.println("delete image "+image.getId());
-      	image.remove();
-      }
-      List<RaceResult> results = RaceResult.findRaceResultsByEvent(event,1,10000).getResultList();
-      System.out.println("results "+results.size());
-      for(RaceResult result:results){ 
-          //System.out.println("delete result "+result.getId());
-      	result.remove();
-      }
-        // remove event
-        System.out.println("clear event (not delete) "+event.toString());
-        //event.remove();
-
-        uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/events";
+    @RequestMapping(value = "/awards", method = RequestMethod.GET)
+    public static String awards(){
+    	return "events/awards";
     }
-    
 }

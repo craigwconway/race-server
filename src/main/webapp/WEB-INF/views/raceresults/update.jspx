@@ -11,35 +11,46 @@
         <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
         <field:input field="city" id="c_com_bibsmobile_model_RaceResult_city" z="NaUD9KS712aVBFoLI+iHu7qJSq8="/>
         <field:input field="state" id="c_com_bibsmobile_model_RaceResult_state" z="BYXMVk0UAC6iGqpJ3cmxgqF45cA="/>
-        <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" z="wNJaKjw1pH02mAOFJPFg5mz6UdI="/>
-        <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" z="tI6uBHjxXkCojGBvn/QY9uq0LxM="/>
-        <field:input field="middlename2" id="c_com_bibsmobile_model_RaceResult_middlename2" z="+X+L7jmES90W8o6My/qIDsjjvr8="/>
-        <field:input field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" z="/SbBYR77LGGoxV4jPbfrXBD9JtA="/>
-        <field:input field="timegun" id="c_com_bibsmobile_model_RaceResult_timegun" z="ITlj1Y3w+zwXoIg7NhZYwmA+/ag="/>
-        <field:input field="timechip" id="c_com_bibsmobile_model_RaceResult_timechip" z="FE5TLCumdMkc8xLSVivEPD0GYQY="/>
-        <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="biaigy7Lm0o/w1toypGPfxVc01w="/>
-        <field:input field="timerun" id="c_com_bibsmobile_model_RaceResult_timerun" z="C+s1/MigozF9S0/YWYELmrrlqLw="/>
-        <field:input field="timeswim" id="c_com_bibsmobile_model_RaceResult_timeswim" z="dWnHclq/wpUglfwkEtwft3SLVKo="/>
-        <field:input field="timetrans1" id="c_com_bibsmobile_model_RaceResult_timetrans1" z="wzJkai6vPONY86wccUCAnspI08M="/>
-        <field:input field="timetrans2" id="c_com_bibsmobile_model_RaceResult_timetrans2" z="mp6iZ5LQCgo4ix9Q6dX8jiJ443I="/>
-        <field:input field="timebike" id="c_com_bibsmobile_model_RaceResult_timebike" z="pDzCxm26EXkfO1U7IGV8ODYhXJo="/>
-        <field:input field="timepace" id="c_com_bibsmobile_model_RaceResult_timepace" z="/Q5mydoVN6TAOpdRjFBXzT5VROY="/>
-        <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" z="OxJ8O0I6mDEAxFZE1SY0HmfCIK8="/>
-        <field:input field="rankoverall" id="c_com_bibsmobile_model_RaceResult_rankoverall" z="Y3aSMRK83zi+FFM+CNNoQasne/c="/>
-        <field:input field="rankage" id="c_com_bibsmobile_model_RaceResult_rankage" z="o0H7YbNOMfcMjoAWzlcT1lu2yQU="/>
-        <field:input field="rankgender" id="c_com_bibsmobile_model_RaceResult_rankgender" z="P/0HvnjxFWcYZJkFBNp9cGPtGis="/>
-        <field:input field="rankclass" id="c_com_bibsmobile_model_RaceResult_rankclass" z="k/jTrB+fwIieZqdAksO8ag51O4o="/>
-        <field:input field="fullname" id="c_com_bibsmobile_model_RaceResult_fullname" z="9aq5yVvlXZfORzQonmlN+Rwou7A="/>
-        <field:input field="lisencenumber" id="c_com_bibsmobile_model_RaceResult_lisencenumber" z="zGD64ij+CZqIcjkGBkMBL4GpsjU="/>
-        <field:input field="laps" id="c_com_bibsmobile_model_RaceResult_laps" z="q1cmcYACRx7INQikbKtRBbuXH2Q="/>
-        <field:input field="timesplit" id="c_com_bibsmobile_model_RaceResult_timesplit" z="kSiQV+PuM3fUGJ2NtT0n07C7XkA="/>
-        <field:input field="time5k" id="c_com_bibsmobile_model_RaceResult_time5k" z="HEQ4aaTn5/J+xUC0pTolb86krQc="/>
-        <field:input field="time10k" id="c_com_bibsmobile_model_RaceResult_time10k" z="G0rUjQf0140KGbh9x0xprOy8vyg="/>
-        <field:input field="time15k" id="c_com_bibsmobile_model_RaceResult_time15k" z="+9yzB/xkt1xdbFPIhPa1mHDonYQ="/>
-        <field:input field="type" id="c_com_bibsmobile_model_RaceResult_type" z="99jcypouK2FeMc1juIO+ZFZXLlM="/>
-        <field:input field="medal1" id="c_com_bibsmobile_model_RaceResult_medal1" z="gfzZr2H+QSOl1/CIu91u+WOb0Wg="/>
-        <field:input field="medal2" id="c_com_bibsmobile_model_RaceResult_medal2" z="yrEyclEGPQVRkRDmxL8tdLU0E0A="/>
-        <field:input field="medal3" id="c_com_bibsmobile_model_RaceResult_medal3" z="5QQ6GmMC1vSjgMKoZy/fUIDw27w="/>
-        
+        <field:input render="false" field="country" id="c_com_bibsmobile_model_RaceResult_country" z="user-managed"/>
+        <field:input render="false" field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" z="user-managed"/>
+        <field:input render="false" field="middlename2" id="c_com_bibsmobile_model_RaceResult_middlename2" z="user-managed"/>
+        <field:input render="false" field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" z="user-managed"/>
+        <field:input render="false" field="timegun" id="c_com_bibsmobile_model_RaceResult_timegun" z="user-managed"/>
+        <field:input render="false" field="timechip" id="c_com_bibsmobile_model_RaceResult_timechip" z="user-managed"/>
+        <field:input render="false" field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed"/>
+        <field:input render="false" field="timerun" id="c_com_bibsmobile_model_RaceResult_timerun" z="user-managed"/>
+        <field:input render="false" field="timeswim" id="c_com_bibsmobile_model_RaceResult_timeswim" z="user-managed"/>
+        <field:input render="false" field="timetrans1" id="c_com_bibsmobile_model_RaceResult_timetrans1" z="user-managed"/>
+        <field:input render="false" field="timetrans2" id="c_com_bibsmobile_model_RaceResult_timetrans2" z="user-managed"/>
+        <field:input render="false" field="timebike" id="c_com_bibsmobile_model_RaceResult_timebike" z="user-managed"/>
+        <field:input render="false" field="timepace" id="c_com_bibsmobile_model_RaceResult_timepace" z="user-managed"/>
+        <field:input render="false" field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" z="user-managed"/>
+        <field:input render="false" field="rankoverall" id="c_com_bibsmobile_model_RaceResult_rankoverall" z="user-managed"/>
+        <field:input render="false" field="rankage" id="c_com_bibsmobile_model_RaceResult_rankage" z="user-managed"/>
+        <field:input render="false" field="rankgender" id="c_com_bibsmobile_model_RaceResult_rankgender" z="user-managed"/>
+        <field:input render="false" field="rankclass" id="c_com_bibsmobile_model_RaceResult_rankclass" z="user-managed"/>
+        <field:input render="false" field="fullname" id="c_com_bibsmobile_model_RaceResult_fullname" z="user-managed"/>
+        <field:input render="false" field="lisencenumber" id="c_com_bibsmobile_model_RaceResult_lisencenumber" z="user-managed"/>
+        <field:input render="false" field="laps" id="c_com_bibsmobile_model_RaceResult_laps" z="user-managed"/>
+        <field:input render="false" field="timesplit" id="c_com_bibsmobile_model_RaceResult_timesplit" z="user-managed"/>
+        <field:input render="false" field="time5k" id="c_com_bibsmobile_model_RaceResult_time5k" z="user-managed"/>
+        <field:input render="false" field="time10k" id="c_com_bibsmobile_model_RaceResult_time10k" z="user-managed"/>
+        <field:input render="false" field="time15k" id="c_com_bibsmobile_model_RaceResult_time15k" z="user-managed"/>
+        <field:input render="false" field="type" id="c_com_bibsmobile_model_RaceResult_type" z="user-managed"/>
+        <field:input render="false" field="medal1" id="c_com_bibsmobile_model_RaceResult_medal1" z="user-managed"/>
+        <field:input render="false" field="medal2" id="c_com_bibsmobile_model_RaceResult_medal2" z="user-managed"/>
+        <field:input render="false" field="medal3" id="c_com_bibsmobile_model_RaceResult_medal3" z="user-managed"/>
+        <field:input render="false" field="award" id="c_com_bibsmobile_model_RaceResult_award" z="user-managed"/>
+        <field:input render="false" field="timer" id="c_com_bibsmobile_model_RaceResult_timer" z="user-managed"/>
+        <field:input render="false" field="timesplit1" id="c_com_bibsmobile_model_RaceResult_timesplit1" z="user-managed"/>
+        <field:input render="false" field="timesplit2" id="c_com_bibsmobile_model_RaceResult_timesplit2" z="user-managed"/>
+        <field:input render="false" field="timesplit3" id="c_com_bibsmobile_model_RaceResult_timesplit3" z="user-managed"/>
+        <field:input render="false" field="timesplit4" id="c_com_bibsmobile_model_RaceResult_timesplit4" z="user-managed"/>
+        <field:input render="false" field="timemile1" id="c_com_bibsmobile_model_RaceResult_timemile1" z="user-managed"/>
+        <field:input render="false" field="timemile2" id="c_com_bibsmobile_model_RaceResult_timemile2" z="user-managed"/>
+        <field:input render="false" field="timemile3" id="c_com_bibsmobile_model_RaceResult_timemile3" z="user-managed"/>
+        <field:input render="false" field="timemile4" id="c_com_bibsmobile_model_RaceResult_timemile4" z="user-managed"/>
+        <field:datetime render="false" dateTimePattern="${raceResult_updated_date_format}" field="updated" id="c_com_bibsmobile_model_RaceResult_updated" z="user-managed"/>
+        <field:simple render="false" field="raceImage" id="c_com_bibsmobile_model_RaceResult_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
     </form:update>
 </div>

@@ -2,22 +2,25 @@ package com.bibsmobile.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooJpaActiveRecord(finders = { "findResultsFileMappingsByResultsFile"})
 public class ResultsFileMapping {
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultsFileMapping")
+	private Set<ResultsImport> resultsImport;
+	
 	private String name;
 	@ManyToOne 
 	private ResultsFile resultsFile;

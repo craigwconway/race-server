@@ -19,25 +19,23 @@
     </c:if>
 
     <c:if test="${empty list}">
-    <sec:authorize ifAnyGranted="ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN">
       <c:set var="list" value="true" />
-      </sec:authorize>
     </c:if>
 
     <c:if test="${empty create}">
-    <sec:authorize ifAnyGranted="ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN">
+    <sec:authorize ifAnyGranted="ROLE_SYS_ADMIN">
       <c:set var="create" value="true" />
       </sec:authorize>
     </c:if>
 
     <c:if test="${empty update}">
-    <sec:authorize ifAnyGranted="ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN">
+    <sec:authorize ifAnyGranted="ROLE_SYS_ADMIN">
       <c:set var="update" value="true" />
       </sec:authorize>
     </c:if>
 
     <c:if test="${empty delete}">
-    <sec:authorize ifAnyGranted="ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN">
+    <sec:authorize ifAnyGranted="ROLE_SYS_ADMIN">
       <c:set var="delete" value="true" />
       </sec:authorize>
     </c:if>
@@ -46,40 +44,50 @@
     <spring:message var="typeNamePlural" code="menu_item_${fn:toLowerCase(fn:split(id,'_')[fn:length(fn:split(id,'_')) - 1])}_list_label" htmlEscape="false" />
 
     <spring:message arguments="${label}" code="entity_show" var="title_msg" htmlEscape="false" />
-    <util:panel id="${id}" title="${title_msg}" openPane="${openPane}">
+<!--     <util:panel id="${id}" title="${title_msg}" openPane="${openPane}"> -->
       <c:choose>
         <c:when test="${not empty object}">
-          <jsp:doBody />
           <div class="quicklinks">
+            <span class="pull-left">
+              <c:if test="${update}">
+                <spring:url value="${path}/${itemId}" var="update_form_url">
+                  <spring:param name="form" />
+                </spring:url>
+                <!--
+                <spring:url value="/resources/images/update.png" var="update_image_url" />
+                <spring:message arguments="${typeName}" code="entity_update" var="update_label" htmlEscape="false" />
+                <a href="${update_form_url}" alt="${fn:escapeXml(update_label)}" title="${fn:escapeXml(update_label)}">
+                  <img alt="${fn:escapeXml(update_label)}" class="image" src="${update_image_url}" title="${fn:escapeXml(update_label)}" />
+                </a>
+                -->
+			    <button type="button" class="btn btn-info btn-top"
+					onclick="document.location='${update_form_url}';">
+					Edit
+				</button>
+              </c:if>
+            </span>
             <span>
               <c:if test="${delete}">
                 <spring:url value="${path}/${itemId}" var="delete_form_url" />
                 <spring:url value="/resources/images/delete.png" var="delete_image_url" />
-                <form:form action="${delete_form_url}" method="DELETE">
+                <form:form action="${delete_form_url}" method="DELETE" class="pull-left" id="deleteForm">
                   <spring:message arguments="${typeName}" code="entity_delete" var="delete_label" htmlEscape="false" />
                   <c:set var="delete_confirm_msg">
                     <spring:escapeBody javaScriptEscape="true">
                       <spring:message code="entity_delete_confirm" />
                     </spring:escapeBody>
                   </c:set>
-                  <input alt="${fn:escapeXml(delete_label)}" class="image" src="${delete_image_url}" title="${fn:escapeXml(delete_label)}" type="image" value="${fn:escapeXml(delete_label)}" onclick="return confirm('${fn:escapeXml(delete_confirm_msg)}');" />
+                  <!-- cwc input alt="${fn:escapeXml(delete_label)}" class="image" src="${delete_image_url}" title="${fn:escapeXml(delete_label)}" type="image" value="${fn:escapeXml(delete_label)}" onclick="return confirm('${fn:escapeXml(delete_confirm_msg)}');" />
+                	-->
+				    <button type="button" class="btn btn-danger btn-top"
+						 onclick="if( confirm('${fn:escapeXml(delete_confirm_msg)}') ) document.getElementById('deleteForm').submit();">
+						Delete
+					</button>
                 </form:form>
               </c:if>
             </span>
             <span>
-              <c:if test="${update}">
-                <spring:url value="${path}/${itemId}" var="update_form_url">
-                  <spring:param name="form" />
-                </spring:url>
-                <spring:url value="/resources/images/update.png" var="update_image_url" />
-                <spring:message arguments="${typeName}" code="entity_update" var="update_label" htmlEscape="false" />
-                <a href="${update_form_url}" alt="${fn:escapeXml(update_label)}" title="${fn:escapeXml(update_label)}">
-                  <img alt="${fn:escapeXml(update_label)}" class="image" src="${update_image_url}" title="${fn:escapeXml(update_label)}" />
-                </a>
-              </c:if>
-            </span>
-            <span>
-              <c:if test="${create}">
+              <c:if test="${create} and false">
                 <spring:url value="${path}" var="create_form_url">
                   <spring:param name="form" />
                 </spring:url>
@@ -91,7 +99,7 @@
               </c:if>
             </span>
             <span>
-              <c:if test="${list}">
+              <c:if test="${list} and false">
                 <spring:url value="${path}" var="list_form_url" />
                 <spring:url value="/resources/images/list.png" var="list_image_url" />
                 <spring:message arguments="${typeNamePlural}" code="entity_list_all" var="list_label" htmlEscape="false" />
@@ -101,11 +109,13 @@
               </c:if>
             </span>
           </div>
+          <div style="clear:both"/>
+          <jsp:doBody />
         </c:when>
         <c:otherwise>
           <spring:message arguments="${label}" code="entity_not_found_single" />
         </c:otherwise>
       </c:choose>
-    </util:panel>
+<!--     </util:panel> -->
   </c:if>
 </jsp:root>

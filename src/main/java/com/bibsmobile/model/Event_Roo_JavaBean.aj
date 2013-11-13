@@ -4,9 +4,37 @@
 package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
 import java.util.Date;
+import java.util.Set;
 
 privileged aspect Event_Roo_JavaBean {
+    
+    public Set<RaceResult> Event.getRaceResults() {
+        return this.raceResults;
+    }
+    
+    public void Event.setRaceResults(Set<RaceResult> raceResults) {
+        this.raceResults = raceResults;
+    }
+    
+    public Set<ResultsFile> Event.getResultsFile() {
+        return this.resultsFile;
+    }
+    
+    public void Event.setResultsFile(Set<ResultsFile> resultsFile) {
+        this.resultsFile = resultsFile;
+    }
+    
+    public Set<RaceImage> Event.getRaceImage() {
+        return this.raceImage;
+    }
+    
+    public void Event.setRaceImage(Set<RaceImage> raceImage) {
+        this.raceImage = raceImage;
+    }
     
     public String Event.getName() {
         return this.name;
@@ -318,6 +346,22 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setTimerStart(Long timerStart) {
         this.timerStart = timerStart;
+    }
+    
+    public Date Event.getCreated() {
+        return this.created;
+    }
+    
+    public void Event.setCreated(Date created) {
+        this.created = created;
+    }
+    
+    public Date Event.getUpdated() {
+        return this.updated;
+    }
+    
+    public void Event.setUpdated(Date updated) {
+        this.updated = updated;
     }
     
 }

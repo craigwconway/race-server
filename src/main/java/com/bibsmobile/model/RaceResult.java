@@ -6,14 +6,24 @@ import java.beans.PropertyDescriptor;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Query;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cascade;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
@@ -28,8 +38,11 @@ import flexjson.JSONSerializer;
 		"findRaceResultsByEventAndFirstnameLikeAndLastnameLike"})
 public class RaceResult implements Comparable<RaceResult>{
 
-    @ManyToOne 
+    @ManyToOne
     private Event event;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "raceResult")
+	private Set<RaceImage> raceImage;
 
     @NotNull 
     private String bib;
@@ -106,11 +119,45 @@ public class RaceResult implements Comparable<RaceResult>{
     
     private String award;
     
-    private long timer;
+    private long timer = 0l;
+
+    private String timesplit1; 
+    
+    private String timesplit2;
+    
+    private String timesplit3;
+    
+    private String timesplit4;
+    
+    private String timemile1;
+    
+    private String timemile2;
+    
+    private String timemile3;
+    
+    private String timemile4;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style="SS")
+    private Date created;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style="SS")
+    private Date updated;
+    
+    @PrePersist
+    protected void onCreate() {
+        created = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
     
     @Override
     public String toString(){
-    	return bib + " " + event.toString() + firstname + " " + lastname;
+    	return event.toString() + " " + bib + " " + firstname + " " + lastname;
     }
     
     /**
@@ -133,26 +180,6 @@ public class RaceResult implements Comparable<RaceResult>{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    }
-
-	public static TypedQuery<RaceResult> findRaceResultsByEvent(Event event,int firstResult,int maxResults) {
-        if (event == null) throw new IllegalArgumentException("The event argument is required");
-        EntityManager em = RaceResult.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event", RaceResult.class);
-        q.setParameter("event", event);
-        q.setFirstResult(firstResult);
-        q.setMaxResults(maxResults);
-        return q;
-    }
-
-	public static TypedQuery<RaceResult> findRaceResultsByEventAndBibEquals(Event event, String bib) {
-        if (event == null) throw new IllegalArgumentException("The event argument is required");
-        if (bib == null || bib.length() == 0) throw new IllegalArgumentException("The bib argument is required");
-        EntityManager em = RaceResult.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib", RaceResult.class);
-        q.setParameter("event", event);
-        q.setParameter("bib", bib);
-        return q;
     }
 
 	public static TypedQuery<RaceResult> findRaceResultsByEventAndFirstnameLike(Event event, String firstname) {
@@ -215,7 +242,6 @@ public class RaceResult implements Comparable<RaceResult>{
         return q;
     }
 
-
 	public String toJson() {
         return new JSONSerializer().exclude("*.class","event").serialize(this);
     }
@@ -232,52 +258,9 @@ public class RaceResult implements Comparable<RaceResult>{
         return new JSONDeserializer<List<RaceResult>>().use(null, ArrayList.class).use("values", RaceResult.class).deserialize(json);
     }
 	
-	public static List<RaceResult> findRaceResultsByOverallTime(Event event,int page,int size) {
-		final String AWARD_TIME_OVERALL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.timeoverall != '' order by o.timeoverall asc";
-		EntityManager em = Event.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery( AWARD_TIME_OVERALL, RaceResult.class);
-        q.setParameter("event", event );
-        q.setFirstResult((page-1)*size);
-        q.setMaxResults(size);
-        return q.getResultList();
-    }
-
-	public static List<RaceResult> findRaceResultsByOverallTimeAndGender(Event event, String gender,int page,int size) {
-		final String AWARD_OVERALL_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.timeoverall != '' AND o.gender = :gender order by o.timeoverall asc";
-		EntityManager em = Event.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery( AWARD_OVERALL_GENDER, RaceResult.class);
-        q.setParameter("event", event );
-        q.setParameter("gender", gender );
-        q.setFirstResult((page-1)*size);
-        q.setMaxResults(size);
-        return q.getResultList();
-    }
-
-	public static List<RaceResult> findRaceResultsByOverallTimeAndGenderAndAge(Event event, String gender, int min, int max, int page,int size) {
-		final String AWARD_AGE_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != '' AND o.timeoverall != null AND o.gender = :gender AND o.age >= :min AND o.age <= :max order by o.timeoverall asc";
-		EntityManager em = Event.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery( AWARD_AGE_GENDER, RaceResult.class);
-        q.setParameter("event", event );
-        q.setParameter("gender", gender );
-        q.setParameter("min", String.valueOf(min) );
-        q.setParameter("max", String.valueOf(max) );
-        q.setFirstResult((page-1)*size);
-        q.setMaxResults(size);
-        return q.getResultList();
-    }
-	
-	public static int countRaceResultsByEvent(Event event) {
-		final String COUNT = "SELECT Count(*) FROM Race_Result WHERE event = :event_id";
-		EntityManager em = Event.entityManager();
-        Query q = em.createNativeQuery( COUNT );
-        q.setParameter("event_id", event.getId() );
-        return ((BigInteger) q.getSingleResult()).intValue();
-    }
-	
 	public int compareTo(RaceResult other) {
 		long val = timer - other.timer;
 		return (int) val;
 	}
-	
 
 }

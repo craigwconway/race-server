@@ -1,9 +1,11 @@
 <jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
 
-
 <!-- jquery code   -->
-<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<spring:url value="/resources/scripts/jquery-1.10.2.min.js" var="jquery_url" />
+<script src="${jquery_url}" type="text/javascript"/>
 <script type="text/javascript">;//?</script>
+
+<!-- results mapping code   -->
 <spring:url value="/resources/scripts/resultsfilemapping.js" var="mapping_url" />
 <script src="${mapping_url}" type="text/javascript"/>
 
@@ -12,25 +14,41 @@
 <spring:url value="/resources/scripts/googanalytics.js" var="goog_analytics" />
 <script src="${goog_analytics}" type="text/javascript"/>
 
-<script type="text/javascript">$.noConflict();</script>
 <!-- end jquery -->
+<script type="text/javascript">$.noConflict();</script>
 
   <jsp:output omit-xml-declaration="yes" />
-
-  <spring:theme code="styleSheet" var="roo_css" />
-  <spring:url value="/${roo_css}" var="roo_css_url" />
+  
   <spring:url value="/resources/dojo/dojo.js" var="dojo_url" />
   <spring:url value="/resources/dijit/themes/tundra/tundra.css" var="tundra_url" />
   <spring:url value="/resources/spring/Spring.js" var="spring_url" />
   <spring:url value="/resources/spring/Spring-Dojo.js" var="spring_dojo_url" />
   <spring:url value="/resources/images/favicon.ico" var="favicon" />
   <link rel="stylesheet" type="text/css" href="${tundra_url}" />
-  <link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}" />
   <link rel="SHORTCUT ICON" href="${favicon}" />
+  
   
   <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="${bootstrap_url }" rel="stylesheet"/>
+  <style>
+  	.box{ display:inline !important;}
+  	label {
+	    margin-left: 5px;
+	    margin-top: 0;
+	    width: 160px;
+	}
+  	button {
+  		margin:6px;
+  	}
+  	.btn-top{
+  	 	margin-bottom:12px;
+  	}
+  </style>
+  
+  <spring:theme code="styleSheet" var="roo_css" />
+  <spring:url value="/${roo_css}" var="roo_css_url" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}" />
 
   <!-- Get the user local from the page context (it was set by Spring MVC's locale resolver) -->
   <c:set var="userLocale">

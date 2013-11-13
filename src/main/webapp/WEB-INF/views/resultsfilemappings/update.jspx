@@ -5,41 +5,42 @@
     <form:update id="fu_com_bibsmobile_model_ResultsFileMapping" modelAttribute="resultsFileMapping" path="/resultsfilemappings" versionField="Version" z="R3X/cwIg4xEsr85wWmQGIeqWb10=">
         <field:checkbox field="skipFirstRow" id="c_com_bibsmobile_model_ResultsFileMapping_skipFirstRow" z="8WIpOiReKgaJdQ7fDTyYizxq7xI="/>
         <field:input field="map" id="c_com_bibsmobile_model_ResultsFileMapping_map" z="YI3m/nkGHkj1GZNBnG2xJbl2vck="/>
-        <field:select field="resultsFile" id="c_com_bibsmobile_model_ResultsFileMapping_resultsFile" itemLabel="name" itemValue="id" items="${resultsfiles}" path="/resultsfiles" required="true" z="user-managed"/>
+        <field:select field="resultsFile" id="c_com_bibsmobile_model_ResultsFileMapping_resultsFile" itemLabel="name" itemValue="id" items="${resultsfiles}" path="/resultsfiles" z="user-managed"/>
         <field:input field="row1" id="c_com_bibsmobile_model_ResultsFileMapping_row1" render="false" z="user-managed"/>
         <field:input field="row2" id="c_com_bibsmobile_model_ResultsFileMapping_row2" render="false" z="user-managed"/>
         <field:input field="options" id="c_com_bibsmobile_model_ResultsFileMapping_options" render="false" z="user-managed"/>
-        <field:input field="name" id="c_com_bibsmobile_model_ResultsFileMapping_name" z="VMMocjIKbSSvwduNG0XYQHWk7uc="/>
-    </form:update>
-    <table>
-        <tr>
-            <td>
-                <strong>Row 1</strong>
-            </td>
-            <td>
-                <strong>Row 2</strong>
-            </td>
-            <td>
-                <strong>Label</strong>
-            </td>
-        </tr>
-        <c:forEach items="${resultsFileMapping.row1}" var="cell" varStatus="i">
-            <tr class="${(i.index % 2 eq 0) ? 'row-alt' :''}">
+        <field:input field="name" id="c_com_bibsmobile_model_ResultsFileMapping_name" z="user-managed"/>
+        <table>
+            <tr>
                 <td>
-                    <c:out value="${cell}"/>
+                    <strong>Row 1</strong>
                 </td>
                 <td>
-                    <c:out value="${(i.index lt resultsFileMapping.row2.size()) ? resultsFileMapping.row2.get(i.index) :''}"/>
+                    <strong>Row 2</strong>
                 </td>
                 <td>
-                    <select id="label-${ i.index }" onChange="javascript:helpSelect(this);">
-                        <option value="-">Unused / Ignore</option>
-                        <c:forEach items="${resultsFileMapping.options}" var="option">
-                            <option value="${option.key}">${option.value}</option>
-                        </c:forEach>
-                    </select>
+                    <strong>Label</strong>
                 </td>
             </tr>
-        </c:forEach>
-    </table>
+            <c:forEach items="${resultsFileMapping.row1}" var="cell" varStatus="i">
+                <tr class="${(i.index % 2 eq 0) ? 'row-alt' :''}">
+                    <td>
+                        <c:out value="${cell}"/>
+                    </td>
+                    <td>
+                        <c:out value="${(i.index lt resultsFileMapping.row2.size()) ? resultsFileMapping.row2.get(i.index) :''}"/>
+                    </td>
+                    <td>
+                        <select id="label-${ i.index }" onChange="javascript:helpSelect(this);">
+                            <option value="-">Unused / Ignore</option>
+                            <c:forEach items="${resultsFileMapping.options}" var="option">
+                                <option value="${option.key}">${option.value}</option>
+                            </c:forEach>
+                        </select>
+                    </td>
+                </tr>
+            </c:forEach>
+        </table>
+        <field:simple field="resultsImport" id="c_com_bibsmobile_model_ResultsFileMapping_resultsImport" messageCode="entity_reference_not_managed" messageCodeAttribute="Results Import" z="WfklVM3vNlpLtZ9/wSQpRRJgxvw="/>
+    </form:update>
 </div>

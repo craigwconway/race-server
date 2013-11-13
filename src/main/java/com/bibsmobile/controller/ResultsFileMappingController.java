@@ -1,6 +1,8 @@
 package com.bibsmobile.controller;
 
 import au.com.bytecode.opencsv.CSVReader;
+
+import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
@@ -43,6 +45,7 @@ public class ResultsFileMappingController {
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         ResultsFileMapping resultsFileMapping = ResultsFileMapping.findResultsFileMapping(id);
+        System.out.println("1 mapping e="+resultsFileMapping.getResultsFile().getEvent().getId());
         try {
             initMap(resultsFileMapping);
         } catch (InvalidFormatException e) {
@@ -168,9 +171,94 @@ public class ResultsFileMappingController {
         }
         uiModel.asMap().clear();
         resultsFileMapping.merge();
-//        return "redirect:/resultsfilemappings/" + encodeUrlPathSegment(resultsFileMapping.getId().toString(), httpServletRequest);
-        return "redirect:/resultsimports?form";
+        //  cwc      return "redirect:/resultsfilemappings/" + encodeUrlPathSegment(resultsFileMapping.getId().toString(), httpServletRequest);
+        // do import
+        System.out.println("mapping m="+resultsFileMapping.getId());
+        ResultsFileMapping mapping = ResultsFileMapping.findResultsFileMapping(resultsFileMapping.getId());
+        System.out.println("mapping f="+mapping.getResultsFile().getId());
+        System.out.println("mapping e="+mapping.getResultsFile().getEvent().getId());
+        ResultsImport resultsImport = new ResultsImport();
+        resultsImport.setResultsFile(mapping.getResultsFile());
+        resultsImport.setResultsFileMapping(mapping);
+        resultsImport.persist();
+        try {
+			doImport(resultsImport);
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        return "redirect:/raceresults/";
+        
+        //return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }
+	
+	
+	// ##############################################
+
+
+    public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
+        System.out.println("Starting import...");
+        resultsImport.setRunDate(new Date());
+        ResultsFileMapping resultsFileMapping = resultsImport.getResultsFileMapping();
+        Event event = resultsImport.getResultsFile().getEvent();
+        ResultsFile resultsFile = resultsImport.getResultsFile();
+        resultsImport.setRunDate(new Date());
+        File file = new File(resultsFile.getFilePath());
+        String[] map = resultsFileMapping.getMap().split(",");
+        if (resultsFile.getFilePath().endsWith(".csv") || resultsFile.getFilePath().endsWith(".txt")
+        		|| resultsFile.getFilePath().endsWith(".CSV") || resultsFile.getFilePath().endsWith(".TXT")) {
+            CSVReader reader = new CSVReader(new FileReader(file));
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                saveRaceResult(resultsImport, event, nextLine, map);
+            }
+            reader.close();
+        } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls")
+        		|| resultsFile.getFilePath().endsWith(".XLSX") || resultsFile.getFilePath().endsWith(".XLS")) {
+            XlsToCsv csv = new XlsToCsv();
+            Workbook wb = WorkbookFactory.create(file);
+            Sheet sheet = wb.getSheetAt(0);
+            for (int i = (resultsFileMapping.isSkipFirstRow() ? 1 : 0); i <= sheet.getLastRowNum(); i++) {
+                final String nextLine[] = csv.rowToCSV(sheet.getRow(i)).split(",");
+                saveRaceResult(resultsImport, event, nextLine, map);
+            }
+        }
+        System.out.println("Done");
+    }
+
+    public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
+        System.out.println("values " + Arrays.asList(nextLine).toString());
+        System.out.println("map " + Arrays.asList(map).toString());
+        System.out.println(nextLine.length+"="+map.length);
+        if (nextLine.length != map.length || nextLine.length == 0) {
+            resultsImport.setErrors(resultsImport.getErrors() + 1);
+            resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
+            return;
+        }
+        StringBuffer json = new StringBuffer("{");
+        for (int j = 0; j < nextLine.length; j++) {
+            if (map[j].equals("-")) continue;
+            if (!json.toString().equals("{")) json.append(",");
+            json.append(map[j] + ":\"" + nextLine[j] + "\"");
+        }
+        json.append("}");
+        RaceResult result = RaceResult.fromJsonToRaceResult(json.toString());
+        result.setEvent(event);
+        RaceResult exists = null;
+        try {
+            exists = RaceResult.findRaceResultsByEventAndBibEquals(event, result.getBib()).getSingleResult();
+        } catch (Exception e) {
+        }
+        if (null != exists) {
+            exists.merge(result);
+            exists.merge();
+        } else {
+            result.persist();
+        }
+        resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);
+    }
+    // #################################
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {

@@ -3,25 +3,25 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_UserProfile" modelAttribute="userProfile" path="/userprofiles" render="${empty dependencies}" z="eIzSFlowIdDdsF/gthcEfxtxa7s=">
-        <field:input field="password" id="c_com_bibsmobile_model_UserProfile_password" z="Whdn67AqYvdSEM0tyxpxFiZzPh8="/>
         <field:input field="username" id="c_com_bibsmobile_model_UserProfile_username" z="k856jRjB6npeLYN54JcgSX9iBdw="/>
-        <field:checkbox field="accountNonExpired" id="c_com_bibsmobile_model_UserProfile_accountNonExpired" z="WiLeEdBclDIn0x3FMBdF+XYDa14="/>
-        <field:checkbox field="accountNonLocked" id="c_com_bibsmobile_model_UserProfile_accountNonLocked" z="Wzhsffi4JmOaecM83OMBDZV/r5o="/>
-        <field:checkbox field="credentialsNonExpired" id="c_com_bibsmobile_model_UserProfile_credentialsNonExpired" z="V+qaV4JqVIEYpqCGlZnqpHXz0Zc="/>
-        <field:checkbox field="enabled" id="c_com_bibsmobile_model_UserProfile_enabled" z="dHXv6zyWxAS+4lo4vsOKUWSu5n8="/>
+        <field:input field="password" id="c_com_bibsmobile_model_UserProfile_password" z="Whdn67AqYvdSEM0tyxpxFiZzPh8="/>
+        <field:checkbox render="false" field="accountNonExpired" id="c_com_bibsmobile_model_UserProfile_accountNonExpired" z="WiLeEdBclDIn0x3FMBdF+XYDa14="/>
+        <field:checkbox render="false" field="accountNonLocked" id="c_com_bibsmobile_model_UserProfile_accountNonLocked" z="Wzhsffi4JmOaecM83OMBDZV/r5o="/>
+        <field:checkbox render="false" field="credentialsNonExpired" id="c_com_bibsmobile_model_UserProfile_credentialsNonExpired" z="V+qaV4JqVIEYpqCGlZnqpHXz0Zc="/>
+        <field:checkbox render="false" field="enabled" id="c_com_bibsmobile_model_UserProfile_enabled" z="dHXv6zyWxAS+4lo4vsOKUWSu5n8="/>
         <field:select field="userAuthorities" id="c_com_bibsmobile_model_UserProfile_userAuthorities" itemValue="id" items="${userauthoritys}" multiple="true" path="/userauthoritys" z="5fQESFCW0s+536APzVmY2ttYsyw="/>
-        <field:input field="facebookId" id="c_com_bibsmobile_model_UserProfile_facebookId" z="LdJYaTAe4I0VhJsg/bjc7670gq4="/>
-        <field:input field="twitterId" id="c_com_bibsmobile_model_UserProfile_twitterId" z="/P8p7fUfh+iBuglsbe4RNn2FS3k="/>
-        <field:input field="googleId" id="c_com_bibsmobile_model_UserProfile_googleId" z="qhjduvNKqMkUJzMeH1Mq5PHoUWE="/>
-        <field:input field="age" id="c_com_bibsmobile_model_UserProfile_age" z="RAn/1VjWyIiBnu+vJjHwKPEMH5c="/>
-        <field:input field="gender" id="c_com_bibsmobile_model_UserProfile_gender" z="gST8V9PrfOSUFvWfgMdpNyE3MSM="/>
+        <field:input render="false" field="facebookId" id="c_com_bibsmobile_model_UserProfile_facebookId" z="LdJYaTAe4I0VhJsg/bjc7670gq4="/>
+        <field:input render="false" field="twitterId" id="c_com_bibsmobile_model_UserProfile_twitterId" z="/P8p7fUfh+iBuglsbe4RNn2FS3k="/>
+        <field:input render="false" field="googleId" id="c_com_bibsmobile_model_UserProfile_googleId" z="qhjduvNKqMkUJzMeH1Mq5PHoUWE="/>
+        <field:input render="false" field="age" id="c_com_bibsmobile_model_UserProfile_age" z="RAn/1VjWyIiBnu+vJjHwKPEMH5c="/>
+        <field:input render="false" field="gender" id="c_com_bibsmobile_model_UserProfile_gender" z="gST8V9PrfOSUFvWfgMdpNyE3MSM="/>
         <field:input field="email" id="c_com_bibsmobile_model_UserProfile_email" validationMessageCode="field_invalid_email" z="Xr2DzhquaRqK/EHgSeidkkclows="/>
-        <field:select field="friends" id="c_com_bibsmobile_model_UserProfile_friends" itemLabel="username" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="user-managed"/>
-        <field:select field="rivals" id="c_com_bibsmobile_model_UserProfile_rivals" itemLabel="username" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="user-managed"/>
-        <field:select field="eventsSaved" id="c_com_bibsmobile_model_UserProfile_eventsSaved" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
-        <field:select field="eventsSearched" id="c_com_bibsmobile_model_UserProfile_eventsSearched" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
-        <field:select field="eventsViewed" id="c_com_bibsmobile_model_UserProfile_eventsViewed" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
-        <field:select field="raceimages" id="c_com_bibsmobile_model_UserProfile_raceimages" itemValue="id" items="${raceimages}" multiple="true" path="/raceimages" z="u3nkqC2aJJ6NlWcFZcuFVmB+Ta8="/>
+        <field:select render="false" field="friends" id="c_com_bibsmobile_model_UserProfile_friends" itemLabel="username" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="user-managed"/>
+        <field:select render="false" field="rivals" id="c_com_bibsmobile_model_UserProfile_rivals" itemLabel="username" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="user-managed"/>
+        <field:select render="false" field="eventsSaved" id="c_com_bibsmobile_model_UserProfile_eventsSaved" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
+        <field:select render="false" field="eventsSearched" id="c_com_bibsmobile_model_UserProfile_eventsSearched" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
+        <field:select render="false" field="eventsViewed" id="c_com_bibsmobile_model_UserProfile_eventsViewed" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
+        <field:select render="false" field="raceimages" id="c_com_bibsmobile_model_UserProfile_raceimages" itemValue="id" items="${raceimages}" multiple="true" path="/raceimages" z="u3nkqC2aJJ6NlWcFZcuFVmB+Ta8="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserProfile" render="${not empty dependencies}" z="bjmbow3uaKPnQKxTUw7asq9aKLc="/>
 </div>

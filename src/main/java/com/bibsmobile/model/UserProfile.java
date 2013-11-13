@@ -2,9 +2,12 @@ package com.bibsmobile.model;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cascade;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
@@ -19,15 +22,18 @@ import flexjson.JSONSerializer;
 @RooJpaActiveRecord(finders = { "findUserProfilesByUsernameEquals" })
 public class UserProfile implements UserDetails {
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userProfile")
+	private Set<RaceImage> raceImage;
+	
     @ManyToMany
     @JoinTable(name = "user_authorities")
     private Set<UserAuthority> userAuthorities;
     private String username;
     private String password;
-    private boolean accountNonExpired;
-    private boolean accountNonLocked;
-    private boolean credentialsNonExpired;
-    private boolean enabled;
+    private boolean accountNonExpired = true;
+    private boolean accountNonLocked = true;
+    private boolean credentialsNonExpired = true;
+    private boolean enabled = true;
     
     private String facebookId;
     private String twitterId;

@@ -5,10 +5,20 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 privileged aspect ResultsFileMapping_Roo_JavaBean {
+    
+    public Set<ResultsImport> ResultsFileMapping.getResultsImport() {
+        return this.resultsImport;
+    }
+    
+    public void ResultsFileMapping.setResultsImport(Set<ResultsImport> resultsImport) {
+        this.resultsImport = resultsImport;
+    }
     
     public String ResultsFileMapping.getName() {
         return this.name;

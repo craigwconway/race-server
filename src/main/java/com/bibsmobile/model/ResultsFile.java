@@ -1,8 +1,11 @@
 package com.bibsmobile.model;
 
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -10,21 +13,25 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooJpaActiveRecord(finders = { "findResultsFilesByEvent","findResultsFilesByNameEqualsAndEvent"} )
 public class ResultsFile {
 
-    private String name; 
+    private String name; 	
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultsFile")
+	private Set<ResultsFileMapping> resultsFileMapping;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultsFile")
+	private Set<ResultsImport> resultsImport;
 
     @NotNull
     private String contentType;
-    @ManyToOne @NotNull
+    @ManyToOne
     private Event event;
     
     @Temporal(TemporalType.TIMESTAMP)

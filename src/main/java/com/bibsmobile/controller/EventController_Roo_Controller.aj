@@ -5,6 +5,9 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.EventController;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -78,14 +81,29 @@ privileged aspect EventController_Roo_Controller {
         return "events/update";
     }
     
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String EventController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        Event event = Event.findEvent(id);
+        event.remove();
+        uiModel.asMap().clear();
+        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
+        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        return "redirect:/events";
+    }
+    
     void EventController.addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("event_timestart_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
         uiModel.addAttribute("event_timeend_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
+        uiModel.addAttribute("event_created_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
+        uiModel.addAttribute("event_updated_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
     }
     
     void EventController.populateEditForm(Model uiModel, Event event) {
         uiModel.addAttribute("event", event);
         addDateTimeFormatPatterns(uiModel);
+        uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
+        uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
+        uiModel.addAttribute("resultsfiles", ResultsFile.findAllResultsFiles());
     }
     
     String EventController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

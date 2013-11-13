@@ -1,6 +1,8 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+
 import java.io.File;
 import java.util.Date;
 
@@ -18,13 +20,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 @RequestMapping("/resultsfiles")
 @Controller
-@RooWebScaffold(path = "resultsfiles", formBackingObject = ResultsFile.class)
+@RooWebScaffold(path = "resultsfiles", formBackingObject = ResultsFile.class) 
 public class ResultsFileController {
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid ResultsFile resultsFile, BindingResult bindingResult, Model uiModel, @RequestParam("content") CommonsMultipartFile content, HttpServletRequest httpServletRequest) {
         File dest = new File("/data/" + content.getOriginalFilename());
-        try {
+        try { 
             content.transferTo(dest);
             resultsFile.setCreated(new Date());
             resultsFile.setName(dest.getName());
@@ -44,7 +46,14 @@ public class ResultsFileController {
         	System.out.println("new");
             resultsFile.persist();
         }
+
+        System.out.println("file e="+resultsFile.getEvent().getId());
+        ResultsFileMapping mapping = new ResultsFileMapping();
+        mapping.setResultsFile(resultsFile);
+        mapping.setName(resultsFile.getName());
+        mapping.persist();
+        mapping.flush();
         
-        return "redirect:/resultsfilemappings/?form";
+        return "redirect:/resultsfilemappings/"+mapping.getId()+"?form";
     }
 }

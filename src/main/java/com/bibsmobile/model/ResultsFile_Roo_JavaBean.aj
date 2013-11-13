@@ -5,7 +5,10 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
 import java.util.Date;
+import java.util.Set;
 
 privileged aspect ResultsFile_Roo_JavaBean {
     
@@ -15,6 +18,22 @@ privileged aspect ResultsFile_Roo_JavaBean {
     
     public void ResultsFile.setName(String name) {
         this.name = name;
+    }
+    
+    public Set<ResultsFileMapping> ResultsFile.getResultsFileMapping() {
+        return this.resultsFileMapping;
+    }
+    
+    public void ResultsFile.setResultsFileMapping(Set<ResultsFileMapping> resultsFileMapping) {
+        this.resultsFileMapping = resultsFileMapping;
+    }
+    
+    public Set<ResultsImport> ResultsFile.getResultsImport() {
+        return this.resultsImport;
+    }
+    
+    public void ResultsFile.setResultsImport(Set<ResultsImport> resultsImport) {
+        this.resultsImport = resultsImport;
     }
     
     public String ResultsFile.getContentType() {

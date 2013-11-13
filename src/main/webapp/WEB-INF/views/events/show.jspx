@@ -1,45 +1,67 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+<div
+	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+    <button class="btn btn-primary btn-top" onclick="redirectImport()" type="button">
+		Import
+	</button>
+    <button class="btn btn-primary btn-top" onclick="alert('Export!')" type="button">
+		Export
+	</button>
+	</sec:authorize>
+    <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
+		Awards
+	</button>
+    <script>
+	function redirectImport(){
+		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
+	}
+	function redirectAwards(){
+		window.location="/bibs-server/events/awards?event=${event.id}";
+	}
+	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
         <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="KCvuJyXjhI+esh4Khj9v+/5uf8E="/>
         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="qrl+dzf0p+2w5arcE+U16iPzg44="/>
         <field:display date="true" dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_Event_timeEnd" object="${event}" z="w3Ss+x+vRMrpo7OkYmd4sWL8hOw="/>
-        <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" z="1vKhLQpHwe0QjuiNF+iyxRZtZkc="/>
+        <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" render="false" z="user-managed"/>
         <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="rjg6V8gVupqKmdsIqvFAxPS3CHI="/>
         <field:display field="state" id="s_com_bibsmobile_model_Event_state" object="${event}" z="Gc7Mpphzf9fIkMRlKcDvXh/sk1k="/>
-        <field:display field="lattitude" id="s_com_bibsmobile_model_Event_lattitude" object="${event}" z="K3iJPrSPkSzyl+CiXzqUEDlDtjc="/>
-        <field:display field="longitude" id="s_com_bibsmobile_model_Event_longitude" object="${event}" z="ZT/rHzlde7wuvJJ7OoXzmLxz+zc="/>
-        <field:display field="type" id="s_com_bibsmobile_model_Event_type" object="${event}" z="7ac+tWZrcMrw2ZF4rtWze/T+Xw8="/>
-        <field:display field="website" id="s_com_bibsmobile_model_Event_website" object="${event}" z="8YGLYec+46eZX+E8mx3bGD7oTXQ="/>
-        <field:display field="phone" id="s_com_bibsmobile_model_Event_phone" object="${event}" z="951zZrnHN9hQDMEZBuRV2bhlwbk="/>
-        <field:display field="email" id="s_com_bibsmobile_model_Event_email" object="${event}" z="mtTTYaUR24h8T504jcQCFseXWGo="/>
-        <field:display field="registration" id="s_com_bibsmobile_model_Event_registration" object="${event}" z="+z/dWCogmRF5gUvrQBG/XaUyqy0="/>
-        <field:display field="parking" id="s_com_bibsmobile_model_Event_parking" object="${event}" z="XhN/Sz+EfZQmxH0QrHCWFSFVIuo="/>
-        <field:display field="general" id="s_com_bibsmobile_model_Event_general" object="${event}" z="F8eLKrBZMMNk2lpn0X9R+avZAEY="/>
-        <field:display field="description" id="s_com_bibsmobile_model_Event_description" object="${event}" z="b7TafVtyy+astykzidoxfkk1IA0="/>
-        <field:display field="organization" id="s_com_bibsmobile_model_Event_organization" object="${event}" z="+nbw43ENL6FeYBwDnHG1SVb666Q="/>
-        <field:display field="photo" id="s_com_bibsmobile_model_Event_photo" object="${event}" z="ERoOo7oS2m6nQcPFrMG4xvHBezc="/>
-        <field:display field="photo2" id="s_com_bibsmobile_model_Event_photo2" object="${event}" z="esX4e6FGLnl9Zdc8xBBoOQCpoYs="/>
-        <field:display field="photo3" id="s_com_bibsmobile_model_Event_photo3" object="${event}" z="kmrS7VibaP9wBwiS66sVrrDzpaU="/>
-        <field:display field="map" id="s_com_bibsmobile_model_Event_map" object="${event}" z="2+/De2Kz+AAGE5yxkAkGKJqfny8="/>
-        <field:display field="map2" id="s_com_bibsmobile_model_Event_map2" object="${event}" z="Vija1FGKp1ksR1dvjEvQblXaRXk="/>
-        <field:display field="map3" id="s_com_bibsmobile_model_Event_map3" object="${event}" z="0IUjIvlyLs1Bd+pPzXxSop8Sifk="/>
-        <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" z="WdvZR59X1V7e8ffITTcnvnFuB14="/>
-        <field:display field="results2" id="s_com_bibsmobile_model_Event_results2" object="${event}" z="DLPtBNHJL9gJQEEb0aS6N0BZSm4="/>
-        <field:display field="results3" id="s_com_bibsmobile_model_Event_results3" object="${event}" z="tLOMlCSI3ApRRJb1LPUQ1TfpfQs="/>
-        <field:display field="alert1" id="s_com_bibsmobile_model_Event_alert1" object="${event}" z="VOmTrfo2ZupVg0l0EH++EKjYGm0="/>
-        <field:display field="alert2" id="s_com_bibsmobile_model_Event_alert2" object="${event}" z="3huQmXoaWtjjYPid3Rtn1o08Mug="/>
-        <field:display field="alert3" id="s_com_bibsmobile_model_Event_alert3" object="${event}" z="9cEs7hgKfoVSI1PVWouBe20Q2kk="/>
-        <field:display field="donateUrl" id="s_com_bibsmobile_model_Event_donateUrl" object="${event}" z="/qXdcr9xhp2OoOitSpqgo7RrpAE="/>
-        <field:display field="facebookUrl1" id="s_com_bibsmobile_model_Event_facebookUrl1" object="${event}" z="1GgE5WZD+dABuvh574wPKwtgDvY="/>
-        <field:display field="facebookUrl2" id="s_com_bibsmobile_model_Event_facebookUrl2" object="${event}" z="4V8kgEJdsU1bLNr8gcTXkQY4BHY="/>
-        <field:display field="photoUploadUrl" id="s_com_bibsmobile_model_Event_photoUploadUrl" object="${event}" z="VfSgAhuShLOtdxu+Qin1+8kTrmM="/>
-        <field:display field="coursemaps" id="s_com_bibsmobile_model_Event_coursemaps" object="${event}" z="dIk8DUIdqGnrWWGffgyyCMTcogc="/>
-        <field:display field="merchandise" id="s_com_bibsmobile_model_Event_merchandise" object="${event}" z="ko8LWgTn81pBLM4aLt7cdo8ahIA="/>
-        <field:display field="beachEvents" id="s_com_bibsmobile_model_Event_beachEvents" object="${event}" z="vM1IRG3hhx+4uJhR1rYQg+hDGp4="/>
-        <field:display field="shuttles" id="s_com_bibsmobile_model_Event_shuttles" object="${event}" z="0iVz98ntL24bSM4djFCxTCaaVUs="/>
-        <field:display field="courseRules" id="s_com_bibsmobile_model_Event_courseRules" object="${event}" z="FcMFfEAIOINYqZWNAS3lYFkpqfw="/>
+        <field:display field="lattitude" id="s_com_bibsmobile_model_Event_lattitude" object="${event}" render="false" z="user-managed"/>
+        <field:display field="longitude" id="s_com_bibsmobile_model_Event_longitude" object="${event}" render="false" z="user-managed"/>
+        <field:display render="false" field="type" id="s_com_bibsmobile_model_Event_type" object="${event}" z="user-managed"/>
+        <field:display render="false" field="website" id="s_com_bibsmobile_model_Event_website" object="${event}" z="user-managed"/>
+        <field:display render="false" field="phone" id="s_com_bibsmobile_model_Event_phone" object="${event}" z="user-managed"/>
+        <field:display render="false" field="email" id="s_com_bibsmobile_model_Event_email" object="${event}" z="user-managed"/>
+        <field:display field="registration" id="s_com_bibsmobile_model_Event_registration" object="${event}" render="false" z="user-managed"/>
+        <field:display field="parking" id="s_com_bibsmobile_model_Event_parking" object="${event}" render="false" z="user-managed"/>
+        <field:display field="general" id="s_com_bibsmobile_model_Event_general" object="${event}" render="false" z="user-managed"/>
+        <field:display field="description" id="s_com_bibsmobile_model_Event_description" object="${event}" render="false" z="user-managed"/>
+        <field:display field="organization" id="s_com_bibsmobile_model_Event_organization" object="${event}" render="false" z="user-managed"/>
+        <field:display field="photo" id="s_com_bibsmobile_model_Event_photo" object="${event}" render="false" z="user-managed"/>
+        <field:display field="photo2" id="s_com_bibsmobile_model_Event_photo2" object="${event}" render="false" z="user-managed"/>
+        <field:display field="photo3" id="s_com_bibsmobile_model_Event_photo3" object="${event}" render="false" z="user-managed"/>
+        <field:display field="map" id="s_com_bibsmobile_model_Event_map" object="${event}" render="false" z="user-managed"/>
+        <field:display field="map2" id="s_com_bibsmobile_model_Event_map2" object="${event}" render="false" z="user-managed"/>
+        <field:display field="map3" id="s_com_bibsmobile_model_Event_map3" object="${event}" render="false" z="user-managed"/>
+        <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" render="false" z="user-managed"/>
+        <field:display field="results2" id="s_com_bibsmobile_model_Event_results2" object="${event}" render="false" z="user-managed"/>
+        <field:display field="results3" id="s_com_bibsmobile_model_Event_results3" object="${event}" render="false" z="user-managed"/>
+        <field:display field="alert1" id="s_com_bibsmobile_model_Event_alert1" object="${event}" render="false" z="user-managed"/>
+        <field:display field="alert2" id="s_com_bibsmobile_model_Event_alert2" object="${event}" render="false" z="user-managed"/>
+        <field:display field="alert3" id="s_com_bibsmobile_model_Event_alert3" object="${event}" render="false" z="user-managed"/>
+        <field:display field="donateUrl" id="s_com_bibsmobile_model_Event_donateUrl" object="${event}" render="false" z="user-managed"/>
+        <field:display field="facebookUrl1" id="s_com_bibsmobile_model_Event_facebookUrl1" object="${event}" render="false" z="user-managed"/>
+        <field:display field="facebookUrl2" id="s_com_bibsmobile_model_Event_facebookUrl2" object="${event}" render="false" z="user-managed"/>
+        <field:display field="photoUploadUrl" id="s_com_bibsmobile_model_Event_photoUploadUrl" object="${event}" render="false" z="user-managed"/>
+        <field:display field="coursemaps" id="s_com_bibsmobile_model_Event_coursemaps" object="${event}" render="false" z="user-managed"/>
+        <field:display field="merchandise" id="s_com_bibsmobile_model_Event_merchandise" object="${event}" render="false" z="user-managed"/>
+        <field:display field="beachEvents" id="s_com_bibsmobile_model_Event_beachEvents" object="${event}" render="false" z="user-managed"/>
+        <field:display field="shuttles" id="s_com_bibsmobile_model_Event_shuttles" object="${event}" render="false" z="user-managed"/>
+        <field:display field="courseRules" id="s_com_bibsmobile_model_Event_courseRules" object="${event}" render="false" z="user-managed"/>
+        <field:display field="timerStart" id="s_com_bibsmobile_model_Event_timerStart" object="${event}" render="false" z="user-managed"/>
+        <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" render="false" z="user-managed"/>
     </page:show>
 </div>

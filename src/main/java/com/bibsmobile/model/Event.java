@@ -1,13 +1,20 @@
 package com.bibsmobile.model;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -17,13 +24,23 @@ import org.springframework.roo.addon.json.RooJson;
 @RooJson
 @RooJpaActiveRecord()
 public class Event {
+	
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	private Set<RaceResult> raceResults;
+
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	private Set<ResultsFile> resultsFile;
+
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	private Set<RaceImage> raceImage;
+	
     @NotNull
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "SS")
+    @DateTimeFormat(style="SS")
     private Date timeStart;
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "SS")
+    @DateTimeFormat(style="SS")
     private Date timeEnd;
     private int featured;
     private String city;
@@ -56,12 +73,30 @@ public class Event {
     private String facebookUrl2;
     private String photoUploadUrl;
     private String coursemaps;
-    private String  merchandise;
-    private String  beachEvents;
-    private String  shuttles;
-    private String  courseRules;
-    private Long timerStart; 
+    private String merchandise;
+    private String beachEvents;
+    private String shuttles;
+    private String courseRules;
+    private Long timerStart;  
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style="SS")
+    private Date created;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style="SS")
+    private Date updated;
+    
+    @PrePersist
+    protected void onCreate() {
+        created = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updated = new Date();
+    }
+    
     @Override
     public String toString() {
         return name;
@@ -117,6 +152,58 @@ public class Event {
         q.setFirstResult((page-1)*size);
         q.setMaxResults(size);
         return q;
+    }
+	
+
+	
+	public List<RaceResult> findRaceResultsByOverallTime(int page,int size) {
+		final String AWARD_TIME_OVERALL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.timeoverall != '' order by o.timeoverall asc";
+		EntityManager em = Event.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery( AWARD_TIME_OVERALL, RaceResult.class);
+        q.setParameter("event", this );
+        q.setFirstResult((page-1)*size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
+
+	public List<RaceResult> findRaceResultsByOverallTimeAndGender(String gender,int page,int size) {
+		final String AWARD_OVERALL_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.timeoverall != '' AND o.gender = :gender order by o.timeoverall asc";
+		EntityManager em = Event.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery( AWARD_OVERALL_GENDER, RaceResult.class);
+        q.setParameter("event", this );
+        q.setParameter("gender", gender );
+        q.setFirstResult((page-1)*size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
+
+	public List<RaceResult> findRaceResultsByOverallTimeAndGenderAndAge(String gender, int min, int max, int page,int size) {
+		final String AWARD_AGE_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != '' AND o.timeoverall != null AND o.gender = :gender AND o.age >= :min AND o.age <= :max order by o.timeoverall asc";
+		EntityManager em = Event.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery( AWARD_AGE_GENDER, RaceResult.class);
+        q.setParameter("event", this );
+        q.setParameter("gender", gender );
+        q.setParameter("min", String.valueOf(min) );
+        q.setParameter("max", String.valueOf(max) );
+        q.setFirstResult((page-1)*size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
+	
+	public long countRaceResults() {
+		EntityManager em = RaceResult.entityManager();
+		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event", Long.class);
+        q.setParameter("event", this ); 
+        return q.getSingleResult();
+    }
+	
+	public List<RaceResult> findRaceResults(int firstResult,int maxResults) {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event", RaceResult.class);
+        q.setParameter("event", this);
+        q.setFirstResult(firstResult);
+        q.setMaxResults(maxResults);
+        return q.getResultList(); 
     }
 
 }

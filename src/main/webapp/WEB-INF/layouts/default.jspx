@@ -18,10 +18,12 @@
 	
   	<body style="margin:6px;">
 <!--    		<div id="wrapper"> -->
-<!-- 		    <tiles:insertAttribute name="header" ignore="true" /> -->
-		    <tiles:insertAttribute name="menu" ignore="true" />   
+		    <tiles:insertAttribute name="header" ignore="true" />
+<!-- 		    <tiles:insertAttribute name="menu" ignore="true" />    -->
 <!-- 		    <div id="main"> -->
+	<div style="margin-top:16px;">
 	    		<tiles:insertAttribute name="body"/> 
+	</div>
 		    	<tiles:insertAttribute name="footer" ignore="true"/>
 <!-- 		    </div> -->
 <!-- 		</div> -->

@@ -4,7 +4,10 @@
 package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import java.util.Date;
+import java.util.Set;
 
 privileged aspect RaceResult_Roo_JavaBean {
     
@@ -14,6 +17,14 @@ privileged aspect RaceResult_Roo_JavaBean {
     
     public void RaceResult.setEvent(Event event) {
         this.event = event;
+    }
+    
+    public Set<RaceImage> RaceResult.getRaceImage() {
+        return this.raceImage;
+    }
+    
+    public void RaceResult.setRaceImage(Set<RaceImage> raceImage) {
+        this.raceImage = raceImage;
     }
     
     public String RaceResult.getBib() {
@@ -302,6 +313,102 @@ privileged aspect RaceResult_Roo_JavaBean {
     
     public void RaceResult.setLaps(String laps) {
         this.laps = laps;
+    }
+    
+    public String RaceResult.getAward() {
+        return this.award;
+    }
+    
+    public void RaceResult.setAward(String award) {
+        this.award = award;
+    }
+    
+    public long RaceResult.getTimer() {
+        return this.timer;
+    }
+    
+    public void RaceResult.setTimer(long timer) {
+        this.timer = timer;
+    }
+    
+    public String RaceResult.getTimesplit1() {
+        return this.timesplit1;
+    }
+    
+    public void RaceResult.setTimesplit1(String timesplit1) {
+        this.timesplit1 = timesplit1;
+    }
+    
+    public String RaceResult.getTimesplit2() {
+        return this.timesplit2;
+    }
+    
+    public void RaceResult.setTimesplit2(String timesplit2) {
+        this.timesplit2 = timesplit2;
+    }
+    
+    public String RaceResult.getTimesplit3() {
+        return this.timesplit3;
+    }
+    
+    public void RaceResult.setTimesplit3(String timesplit3) {
+        this.timesplit3 = timesplit3;
+    }
+    
+    public String RaceResult.getTimesplit4() {
+        return this.timesplit4;
+    }
+    
+    public void RaceResult.setTimesplit4(String timesplit4) {
+        this.timesplit4 = timesplit4;
+    }
+    
+    public String RaceResult.getTimemile1() {
+        return this.timemile1;
+    }
+    
+    public void RaceResult.setTimemile1(String timemile1) {
+        this.timemile1 = timemile1;
+    }
+    
+    public String RaceResult.getTimemile2() {
+        return this.timemile2;
+    }
+    
+    public void RaceResult.setTimemile2(String timemile2) {
+        this.timemile2 = timemile2;
+    }
+    
+    public String RaceResult.getTimemile3() {
+        return this.timemile3;
+    }
+    
+    public void RaceResult.setTimemile3(String timemile3) {
+        this.timemile3 = timemile3;
+    }
+    
+    public String RaceResult.getTimemile4() {
+        return this.timemile4;
+    }
+    
+    public void RaceResult.setTimemile4(String timemile4) {
+        this.timemile4 = timemile4;
+    }
+    
+    public Date RaceResult.getCreated() {
+        return this.created;
+    }
+    
+    public void RaceResult.setCreated(Date created) {
+        this.created = created;
+    }
+    
+    public Date RaceResult.getUpdated() {
+        return this.updated;
+    }
+    
+    public void RaceResult.setUpdated(Date updated) {
+        this.updated = updated;
     }
     
 }

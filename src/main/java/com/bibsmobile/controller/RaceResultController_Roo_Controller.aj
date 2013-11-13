@@ -5,10 +5,13 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.RaceResultController;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import org.joda.time.format.DateTimeFormat;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,23 +42,10 @@ privileged aspect RaceResultController_Roo_Controller {
     
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String RaceResultController.show(@PathVariable("id") Long id, Model uiModel) {
+        addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("raceresult", RaceResult.findRaceResult(id));
         uiModel.addAttribute("itemId", id);
         return "raceresults/show";
-    }
-    
-    @RequestMapping(produces = "text/html")
-    public String RaceResultController.list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        if (page != null || size != null) {
-            int sizeNo = size == null ? 10 : size.intValue();
-            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("raceresults", RaceResult.findRaceResultEntries(firstResult, sizeNo));
-            float nrOfPages = (float) RaceResult.countRaceResults() / sizeNo;
-            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else {
-            uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
-        }
-        return "raceresults/list";
     }
     
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
@@ -85,9 +75,16 @@ privileged aspect RaceResultController_Roo_Controller {
         return "redirect:/raceresults";
     }
     
+    void RaceResultController.addDateTimeFormatPatterns(Model uiModel) {
+        uiModel.addAttribute("raceResult_created_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
+        uiModel.addAttribute("raceResult_updated_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
+    }
+    
     void RaceResultController.populateEditForm(Model uiModel, RaceResult raceResult) {
         uiModel.addAttribute("raceResult", raceResult);
+        addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("events", Event.findAllEvents());
+        uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
     }
     
     String RaceResultController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

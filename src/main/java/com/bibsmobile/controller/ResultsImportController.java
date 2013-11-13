@@ -11,8 +11,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -104,4 +107,5 @@ public class ResultsImportController {
         }
         resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);
     }
+    
 }

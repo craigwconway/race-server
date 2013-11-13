@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div
+	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+	<h3>Awards</h3>
+	<table id="awards-table" class="table"><tr><td></td></tr></table>
+	<script>
+	window.onload=getAwardsOverall;
+	function getAwardsOverall(){
+		var request = jQuery.ajax({
+			url: "/bibs-server/raceresults/awards/overall",
+			type: "GET",
+			data: {event:${param.event},page:1,size:10},
+			dataType: "json"
+			});
+		request.done(function( data ) {
+			var results =  makeTable(data,"");
+			document.getElementById('awards-table').innerHTML=results;
+			//jQuery('#awards-table').show(500);
+			});
+		request.fail(function( jqXHR, textStatus ) {
+			alert( "Error: " + textStatus );
+			});
+	}
+	function makeTable(data,results){
+		for(var i in data){
+			results += "<tr>";
+			results += "<td>"+(Math.max(i,0)+1)+"</td>";
+			results += "<td>"+data[i].timeoverall+"</td>";
+			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+			results += "<td>("+data[i].gender+")"+data[i].age+"</td>";
+			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+			results += "</tr>";
+		}
+		return results;
+	}
+	</script>
+	
+</div>

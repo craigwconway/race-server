@@ -8,8 +8,6 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.ui.Model;
@@ -26,14 +24,6 @@ privileged aspect ResultsImportController_Roo_Controller {
     @RequestMapping(params = "form", produces = "text/html")
     public String ResultsImportController.createForm(Model uiModel) {
         populateEditForm(uiModel, new ResultsImport());
-        List<String[]> dependencies = new ArrayList<String[]>();
-        if (ResultsFile.countResultsFiles() == 0) {
-            dependencies.add(new String[] { "resultsfile", "resultsfiles" });
-        }
-        if (ResultsFileMapping.countResultsFileMappings() == 0) {
-            dependencies.add(new String[] { "resultsfilemapping", "resultsfilemappings" });
-        }
-        uiModel.addAttribute("dependencies", dependencies);
         return "resultsimports/create";
     }
     

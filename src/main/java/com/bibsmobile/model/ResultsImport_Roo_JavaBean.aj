@@ -10,6 +10,14 @@ import java.util.Date;
 
 privileged aspect ResultsImport_Roo_JavaBean {
     
+    public Date ResultsImport.getRunDate() {
+        return this.runDate;
+    }
+    
+    public void ResultsImport.setRunDate(Date runDate) {
+        this.runDate = runDate;
+    }
+    
     public ResultsFile ResultsImport.getResultsFile() {
         return this.resultsFile;
     }
@@ -24,14 +32,6 @@ privileged aspect ResultsImport_Roo_JavaBean {
     
     public void ResultsImport.setResultsFileMapping(ResultsFileMapping resultsFileMapping) {
         this.resultsFileMapping = resultsFileMapping;
-    }
-    
-    public Date ResultsImport.getRunDate() {
-        return this.runDate;
-    }
-    
-    public void ResultsImport.setRunDate(Date runDate) {
-        this.runDate = runDate;
     }
     
     public int ResultsImport.getRowsProcessed() {
