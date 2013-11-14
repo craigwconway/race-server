@@ -14,11 +14,13 @@
 	</div>
  -->
  
+<spring:url value="/events/raceday" var="raceday_url" />
 <spring:url value="/events?page=1&amp;size=10" var="events_url" />
 <spring:url value="/raceresults?page=1&amp;size=10" var="runners_url" />
 <spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
  
     <ul class="nav nav-tabs pull-left" >
+	  		<li id="nav_raceday"><a href="${raceday_url}">Race Day</a></li>
 	  		<li id="nav_events"><a href="${events_url}">Events</a></li>
 	  		<li id="nav_runners"><a href="${runners_url}">Runners</a></li>
 		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
@@ -27,7 +29,9 @@
 	</ul>
 	
 	<script>
-	if((window.location+"").contains('events')) $( "#nav_events" ).addClass( "active" );
+	// derive active tab from current url
+	if((window.location+"").contains('raceday')) $( "#nav_raceday" ).addClass( "active" );
+	else if((window.location+"").contains('events')) $( "#nav_events" ).addClass( "active" );
 	else if((window.location+"").contains('results')) $( "#nav_runners" ).addClass( "active" );
 	else if((window.location+"").contains('user')) $( "#nav_users" ).addClass( "active" );
 	</script>
@@ -45,5 +49,11 @@
 	</div>
 	
 	<div style="clear:both;"/>
+	
+	<style>
+	.dijitCalendarPopup{
+		background-color: #FFF;
+	}
+	</style>
 	
 </div>

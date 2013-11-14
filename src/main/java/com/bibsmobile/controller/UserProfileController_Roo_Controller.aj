@@ -6,6 +6,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.controller.UserProfileController;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
@@ -96,6 +97,7 @@ privileged aspect UserProfileController_Roo_Controller {
         uiModel.addAttribute("userProfile", userProfile);
         uiModel.addAttribute("events", Event.findAllEvents());
         uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
+        uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
         uiModel.addAttribute("userauthoritys", UserAuthority.findAllUserAuthoritys());
         uiModel.addAttribute("userprofiles", userProfileService.findAllUserProfiles());
     }

@@ -2,12 +2,10 @@ package com.bibsmobile.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.Cascade;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
@@ -21,9 +19,6 @@ import flexjson.JSONSerializer;
 @RooJson
 @RooJpaActiveRecord(finders = { "findUserProfilesByUsernameEquals" })
 public class UserProfile implements UserDetails {
-
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userProfile")
-	private Set<RaceImage> raceImage;
 	
     @ManyToMany
     @JoinTable(name = "user_authorities")
@@ -54,6 +49,9 @@ public class UserProfile implements UserDetails {
     private Set<Event> eventsViewed;
     @ManyToMany
     private Set<RaceImage> raceimages;
+	
+	@OneToMany(mappedBy = "userProfile")
+	private Set<RaceResult> raceResults; 
     
     @Override
     public Set<com.bibsmobile.model.UserAuthority> getAuthorities() {

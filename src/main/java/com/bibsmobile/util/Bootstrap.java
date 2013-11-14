@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserProfile;
 
@@ -16,13 +17,18 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
 	@Autowired
 	private static UserAuthority userAuthority;
-	
+
 	@Autowired
 	private static UserProfile userProfile;
 	
+	@Autowired
+	private static AwardCategory awardCategory;
+	
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		if(userProfile.countUserProfiles()<1){
+		
+		// users
+		if(userProfile.countUserProfiles() < 1){
 			// system role and user
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_SYS_ADMIN");
@@ -46,6 +52,33 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userAuthority.setAuthority("ROLE_USER");
 			userAuthority.persist();
 		}
+		
+		// standard award categories
+		if(awardCategory.countAwardCategorys() < 1){
+			awardCategory = new AwardCategory();
+			awardCategory.setName("Overall Winners");
+			awardCategory.persist();
+			awardCategory = new AwardCategory();
+			awardCategory.setName("Men Overall");
+			awardCategory.setGender("M");
+			awardCategory.persist();
+			awardCategory = new AwardCategory();
+			awardCategory.setName("Women Overall");
+			awardCategory.setGender("F");
+			awardCategory.persist();
+			awardCategory = new AwardCategory();
+			awardCategory.setName("Ages 10 and Under");
+			awardCategory.setAgeMin(0);
+			awardCategory.setAgeMax(10);
+			awardCategory.persist();
+			awardCategory = new AwardCategory();
+			awardCategory.setName("Men's Masters");
+			awardCategory.setGender("M");
+			awardCategory.setAgeMin(40);
+			awardCategory.setAgeMax(49);
+			awardCategory.persist();
+		}
+		
 	}
 	
 }

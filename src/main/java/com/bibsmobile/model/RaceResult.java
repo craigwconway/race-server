@@ -40,6 +40,9 @@ public class RaceResult implements Comparable<RaceResult>{
 
     @ManyToOne
     private Event event;
+    
+    @ManyToOne
+    private UserProfile userProfile;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "raceResult")
 	private Set<RaceImage> raceImage;
@@ -240,6 +243,53 @@ public class RaceResult implements Comparable<RaceResult>{
         q.setParameter("event", event);
         q.setParameter("lastname", lastname);
         return q;
+    }
+	
+	public static List<RaceResult> search(Long eventId, String name, String bib) {
+        EntityManager em = RaceResult.entityManager();
+        
+        Event event = new Event();
+        if(null!=eventId && eventId > 0) event = Event.findEvent(eventId);
+        
+        String firstname = "";
+        String lastname = "";
+        if(name.contains(" ")){
+        	firstname = name.split(" ")[0];
+        	lastname = name.split(" ")[1];
+        }
+        
+        String HQL = "SELECT o FROM RaceResult AS o WHERE " ;
+
+        if(null!=eventId && eventId > 0) 
+        	HQL += " o.event = :event AND ";
+        
+        if(!bib.isEmpty()) 
+        	HQL += " o.bib = :bib AND ";
+
+        if(!firstname.isEmpty() && !lastname.isEmpty()) { 
+        	firstname += "%";
+        	lastname += "%";
+        	HQL += " LOWER(o.firstname) LIKE LOWER(:firstname) AND LOWER(o.lastname) LIKE LOWER(:lastname) ";
+        }else{
+        	name += "%";
+        	HQL += " (LOWER(o.firstname) LIKE LOWER(:name) OR LOWER(o.lastname) LIKE LOWER(:name)) ";
+        }
+        
+        TypedQuery<RaceResult> q = em.createQuery( HQL , RaceResult.class);
+
+        if(null!=eventId && eventId > 0) 
+        	q.setParameter("event", event);
+        if(!bib.isEmpty()) 
+        	q.setParameter("bib", bib);
+        if(!firstname.isEmpty() && !lastname.isEmpty()){
+        	q.setParameter("firstname", firstname);
+        	q.setParameter("lastname", lastname);
+        }else{
+        	q.setParameter("name", name);
+        }
+        q.setMaxResults(100);
+        
+        return q.getResultList();
     }
 
 	public String toJson() {

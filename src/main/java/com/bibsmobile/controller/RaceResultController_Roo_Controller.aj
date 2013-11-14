@@ -7,10 +7,12 @@ import com.bibsmobile.controller.RaceResultController;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.service.UserProfileService;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.joda.time.format.DateTimeFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +24,9 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 privileged aspect RaceResultController_Roo_Controller {
+    
+    @Autowired
+    UserProfileService RaceResultController.userProfileService;
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String RaceResultController.create(@Valid RaceResult raceResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -85,6 +90,7 @@ privileged aspect RaceResultController_Roo_Controller {
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("events", Event.findAllEvents());
         uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
+        uiModel.addAttribute("userprofiles", userProfileService.findAllUserProfiles());
     }
     
     String RaceResultController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

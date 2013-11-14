@@ -13,4 +13,7 @@
 <definition extends="default" name="raceresults/update">
         <put-attribute name="body" value="/WEB-INF/views/raceresults/update.jspx"/>
     </definition>
+<definition extends="default" name="raceresults/bibs">
+        <put-attribute name="body" value="/WEB-INF/views/raceresults/bibs.jspx"/>
+    </definition>
 </tiles-definitions>

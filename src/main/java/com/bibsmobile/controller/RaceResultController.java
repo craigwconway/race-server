@@ -21,6 +21,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RooWebJson(jsonObject = RaceResult.class)
 public class RaceResultController {
 
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @ResponseBody
+    public String search(@RequestParam(value = "event", required = false, defaultValue = "0") Long event, 
+						 @RequestParam(value = "name", required = false, defaultValue = "") String name, 
+						 @RequestParam(value = "bib", required = false, defaultValue = "") String bib) {
+        String rtn = "[]";
+        try {
+            List<RaceResult> raceResults = RaceResult.search(event,name,bib);
+            rtn = RaceResult.toJsonArray(raceResults);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtn;
+    }
+
     @RequestMapping(value = "/byevent/{eventName}", method = RequestMethod.GET)
     @ResponseBody
     public String byEvent(@PathVariable String eventName, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
@@ -75,67 +90,6 @@ public class RaceResultController {
         }
         return rtn;
     }
-
-    @RequestMapping(value = "/awards/overall", method = RequestMethod.GET)
-    @ResponseBody
-    public String byOverallTime(
-    		@RequestParam(value = "event", required = true) Long event, 
-    		@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
-    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
-        StringBuffer rtn = new StringBuffer();
-        try {
-            rtn.append(RaceResult.toJsonArray(Event.findEvent(event).findRaceResultsByOverallTime(page,size)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rtn.toString();
-    }
-    
-    @RequestMapping(value = "/awards/gender", method = RequestMethod.GET)
-    @ResponseBody
-    public String byOverallTimeFemale(
-    		@RequestParam(value = "event", required = true) Long event, 
-    		@RequestParam(value = "gender", required = true) String gender,  
-    		@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
-    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
-        StringBuffer rtn = new StringBuffer();
-        try {
-            rtn.append(RaceResult.toJsonArray(Event.findEvent(event).findRaceResultsByOverallTimeAndGender(gender,page,size)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rtn.toString();
-    }
-
-    @RequestMapping(value = "/awards/gender/age", method = RequestMethod.GET)
-    @ResponseBody
-    public String byOverallTimeMaleAge(
-    		@RequestParam(value = "event", required = true) Long event,  
-    		@RequestParam(value = "gender", required = true) String gender,  
-    		@RequestParam(value = "min", required = false, defaultValue = "1") Integer min, 
-    		@RequestParam(value = "max", required = false, defaultValue = "19") Integer max, 
-    		@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
-        StringBuffer rtn = new StringBuffer();
-        try {
-            rtn.append(RaceResult.toJsonArray(Event.findEvent(event).findRaceResultsByOverallTimeAndGenderAndAge(gender,min,max,page,size)));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rtn.toString();
-    }
-
-    @RequestMapping(value = "/count", method = RequestMethod.GET)
-    @ResponseBody
-    public Long countRaceResultsByEvent(
-    		@RequestParam(value = "event", required = true) Long event) {
-        try {
-        	return Event.findEvent(event).countRaceResults();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return -1l;
-    }
     
     @RequestMapping(produces = "text/html")
     public static String list(
@@ -158,6 +112,11 @@ public class RaceResultController {
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         //addDateTimeFormatPatterns(uiModel);
         return "raceresults/list";
+    }
+
+    @RequestMapping(value = "/bibs", method = RequestMethod.GET, produces = "text/html")
+    public static String bibs(){
+    	return "raceresults/bibs";
     }
     
 }

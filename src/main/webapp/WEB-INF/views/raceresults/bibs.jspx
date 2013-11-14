@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+ 
+	<div style="margin:12px;">
+		<input type="text" class="form-control" id="bib-input0" 
+			style="display:inline;width:100px;" placeholder="First Bib" />
+		<input type="text" class="form-control" id="bib-input1" 
+			style="display:inline;width:100px;" placeholder="Last Bib" />
+		<button type="button" class="btn btn-success" 
+			style="margin-right:2px;" id="program-start"
+			onclick="startReader();">Start Writing</button>
+		<button type="button" class="btn btn-danger" 
+			style="margin:2px;display:none;" id="program-stop"
+			onclick="stopReader();">Stop Writing</button>
+		<button type="button" class="btn" 
+			style="margin:2px;display:none;" id="status">
+				Writing Bibs...</button>
+	</div>
+	
+	<div style="margin:12px;">
+	<div class="container"><h4>OR</h4></div>
+	</div>
+	
+	<div style="margin:12px;">
+			    <input type="text" class="form-control" id="bib-input" 
+			    	style="width:110px;display:inline;" placeholder="Bib Number"/>
+			  <button type="button" class="btn btn-default" 
+			  onclick="writeBib1()">
+			  Write</button>
+	</div>
+	
+	<div id="results" class="row" style="margin:12px;"> 
+		<table id="raceresults" class="table"></table>
+	</div>
+
+    
+<script>
+
+var readerOn=false;
+
+var currentBib = 0;
+function startReader(){
+	if(!validateMulti()) return;
+	readerOn=true;
+	jQuery("#program-stop").show();
+	jQuery("#program-start").hide();
+	jQuery("#status").show(500);
+	
+	// set current bib
+	if(currentBib==0) currentBib = jQuery("#bib-input0").val();
+	while(currentBib &lt;= jQuery("#bib-input1").val()){
+		// write bib
+		writeBib(currentBib);
+		// pause for next bib
+		if(!confirm(currentBib+" done. Next bib...")){
+			stopReader();
+			return;
+		}
+		// increment bib
+		currentBib++;
+	}
+	alert("Done!");
+	stopReader();
+}
+
+function stopReader(){
+	readerOn=false;
+	jQuery("#status").hide(500);
+	jQuery("#program-start").show();
+	jQuery("#program-stop").hide();
+}
+
+function writeBib1(){
+	var bib = jQuery("#bib-input").val();
+	jQuery("#status-bar").html("Writing...");
+	jQuery("#status-bar").show(500);
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/write",
+		type: "GET",
+		data: {bib:jQuery("#bib-input").val()},
+		dataType: "html"
+		});
+	request.done(function( data ) {
+		if(data != "true"){
+			alert("Error writing bib.");
+		}else{
+			alert(jQuery("#bib-input").val()+" Written");
+			jQuery("#status-bar").html("Wrote "+bib);
+		}
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		});
+}
+function writeBib(bib){
+	jQuery("#status-bar").html("Writing...");
+	jQuery("#status-bar").show(500);
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/write",
+		type: "GET",
+		data: {bib:bib},
+		dataType: "html"
+		});
+	request.done(function( data ) {
+		if(data != "true"){
+			alert("Error writing bib.");
+		}else{
+			jQuery("#status-bar").html(bib+" Written");
+		}
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Error: " + textStatus );
+		stopReader();
+		jQuery("#bib-input0").val(currentBib);
+		});
+}
+
+function validateMulti(){
+	if(jQuery("#bib-input0").val() == ""){
+		alert("First Bib required.")
+		jQuery("#bib-input0").focus();
+		return false;
+	}
+	if(jQuery("#bib-input1").val() == ""){
+		alert("Last Bib required.")
+		jQuery("#bib-input1").focus();
+		return false;
+	}
+	return true;
+}
+
+</script>
+
+</div>

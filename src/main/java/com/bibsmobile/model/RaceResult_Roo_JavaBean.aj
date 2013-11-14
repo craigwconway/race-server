@@ -6,6 +6,7 @@ package com.bibsmobile.model;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.UserProfile;
 import java.util.Date;
 import java.util.Set;
 
@@ -17,6 +18,14 @@ privileged aspect RaceResult_Roo_JavaBean {
     
     public void RaceResult.setEvent(Event event) {
         this.event = event;
+    }
+    
+    public UserProfile RaceResult.getUserProfile() {
+        return this.userProfile;
+    }
+    
+    public void RaceResult.setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
     
     public Set<RaceImage> RaceResult.getRaceImage() {

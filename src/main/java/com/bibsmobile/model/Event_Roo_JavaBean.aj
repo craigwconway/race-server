@@ -4,6 +4,7 @@
 package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventAwardCategory;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
@@ -20,20 +21,36 @@ privileged aspect Event_Roo_JavaBean {
         this.raceResults = raceResults;
     }
     
-    public Set<ResultsFile> Event.getResultsFile() {
-        return this.resultsFile;
+    public Set<EventAwardCategory> Event.getEventAwardCategorys() {
+        return this.eventAwardCategorys;
     }
     
-    public void Event.setResultsFile(Set<ResultsFile> resultsFile) {
-        this.resultsFile = resultsFile;
+    public void Event.setEventAwardCategorys(Set<EventAwardCategory> eventAwardCategorys) {
+        this.eventAwardCategorys = eventAwardCategorys;
     }
     
-    public Set<RaceImage> Event.getRaceImage() {
-        return this.raceImage;
+    public Set<ResultsFile> Event.getResultsFiles() {
+        return this.resultsFiles;
     }
     
-    public void Event.setRaceImage(Set<RaceImage> raceImage) {
-        this.raceImage = raceImage;
+    public void Event.setResultsFiles(Set<ResultsFile> resultsFiles) {
+        this.resultsFiles = resultsFiles;
+    }
+    
+    public Set<RaceImage> Event.getRaceImages() {
+        return this.raceImages;
+    }
+    
+    public void Event.setRaceImages(Set<RaceImage> raceImages) {
+        this.raceImages = raceImages;
+    }
+    
+    public Set<EventAwardCategory> Event.getEventAwardCategory() {
+        return this.eventAwardCategory;
+    }
+    
+    public void Event.setEventAwardCategory(Set<EventAwardCategory> eventAwardCategory) {
+        this.eventAwardCategory = eventAwardCategory;
     }
     
     public String Event.getName() {

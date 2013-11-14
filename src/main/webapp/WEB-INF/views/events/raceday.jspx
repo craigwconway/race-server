@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div  xmlns:c="http://java.sun.com/jsp/jstl/core"
+	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+	
+	 <div class="pull-left" >
+        <div class="pull-left" style="padding:6px;">
+            <strong>Event</strong>
+        </div>
+        <select class="form-control pull-left" id="event" name="event" style="width:300px">
+            <c:forEach items="${events}" var="event" varStatus="i">
+                <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
+            </c:forEach>
+        </select>
+    </div>
+	
+	<div class="row" style="margin:30px;">
+	<button id="btn-start" type="button" class="btn btn-success" 
+		style="margin:2px;"
+		onclick="startReader();">Start Scanning</button>
+	<button id="btn-stop" type="button" class="btn btn-danger" 
+		style="margin:2px;display:none;"
+		onclick="stopReader();">Stop Scanning</button>
+	</div>
+
+<table id="results" class="table" 
+	style="margin:30px;"><tr><td></td></tr>
+</table>
+    
+<script>
+window.onunload=stopReader;
+
+var readerOn=false;
+function startReader(){
+	readerOn=true;
+	jQuery('#btn-stop').show();
+	jQuery('#btn-start').hide();
+	var readerStart = jQuery.ajax({
+		url: "/bibs-server/events/start",
+		type: "GET",
+		dataType: "html"
+		});
+	readerStart.done(function( msg ) {
+		if(msg!="true"){
+			alert("Error starting reader.");
+			jQuery('#btn-stop').hide();
+			jQuery('#btn-start').show();
+		}
+	});
+	readerStart.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		jQuery('#btn-stop').hide();
+		jQuery('#btn-start').show();
+	});
+	readerQuery();
+	setInterval(function(){
+		if(!readerOn) return true;
+		readerQuery();
+	},3000);
+	
+}
+
+function readerQuery(){
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/results?event="+jQuery("#event").val(),
+		type: "GET",
+		dataType: "json"
+		});
+	request.done(function( data ) {
+			jQuery("#results" ).html( makeTable(data, jQuery( "#results" ).html() ) );
+			});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
+
+function makeTable(data,results){
+	for(var i in data){
+		results += "<tr>";
+		results += "<td>"+data[i].bib+"</td>";
+		results += "<td>"+data[i].timeofficial+"</td>";
+		results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
+		results += "<td>("+data[i].gender+")"+data[i].age+"</td>";
+		results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+		results += "</tr>";
+	}
+	return results;
+}
+
+function stopReader(){
+	readerOn=false;
+	jQuery('#btn-stop').hide();
+	jQuery('#btn-start').show();
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/stop",
+		type: "GET",
+		data: { id : "start" },
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		if(msg!="true") alert("Reader stop failed.")
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
+
+
+</script>
+
+</div>

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div
-	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
+    <style>
+    label{
+    	width:60px;
+    }
+    </style>
     <script>
     window.onload=function(){
 		setEventSelection();
@@ -13,6 +16,7 @@
     		document.getElementById("event-${param.event}").selected=true;
     	}catch(e){}
     }
+    
     function filterByEvent(){
     	var uri = document.location;
     	uri = updateQueryStringParameter(uri+"","event",document.getElementById("event").value);
@@ -20,6 +24,7 @@
     	uri = updateQueryStringParameter(uri+"","size","10");
     	document.location = uri;
     }
+    
     function updateQueryStringParameter(uri, key, value) {
     	  var re = new RegExp("([?|&amp;])" + key + "=.*?(&amp;|$)", "i");
     	  separator = uri.indexOf("?") !== -1 ? "&amp;" : "?";
@@ -30,28 +35,83 @@
     	    return uri + separator + key + "=" + value;
     	  }
     }
-    </script>
+    
+    function search(){
+    	var request = $.ajax({
+    		url: "/bibs-server/raceresults/search?event=${param.event}&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
+    		type: "GET",
+    		dataType: "json"
+    		});
+    	request.done(function( data ) {
+    			var results = makeTable(data);
+    			$('.table').hide();
+    			$('.table').empty();
+    			$('.table').html(results);
+    			$('.table').show(500);
+    		});
+    	request.fail(function( jqXHR, textStatus ) {
+    			alert("Error");
+    			$("#query").focus();
+    		});
+    }
+
+	function makeTable(data){
+		var results = "";
+		results += "<th>";
+		results += "<td></td>";
+		results += "<td>Bib</td>";
+		results += "<td>First Name</td>";
+		results += "<td>Last Name</td>";
+		results += "</th>";
+		for(var i in data){
+			results += "<tr>";
+			results += "<td>id:"+data[i].id+"</td>";
+			results += "<td>"+data[i].bib+"</td>";
+			results += "<td>"+data[i].firstname+"</td>";
+			results += "<td>"+data[i].lastname+"</td>";
+			results += "</tr>";
+		}
+		return results;
+	}
 	
-	<sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
-	<button type="button" class="btn btn-primary pull-left btn-top"
-		onclick="document.location='/bibs-server/raceresults?form&amp;event=${param.event}';">
+    </script>
+    <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
+        <button class="btn btn-primary pull-left btn-top" 
+        	onclick="document.location='/bibs-server/raceresults?form&amp;event=${param.event}';"
+        	 type="button">
 		Add Runner
 	</button>
 	</sec:authorize>
-
-<div>
-	<div class="pull-left" style="padding:6px;">
-		<strong>Event</strong>
-	</div>
-	<select id="event" name="event" onchange="filterByEvent()" class="form-control pull-left" style="width:300px">
-	    <option id="event-0" value="0">All Events</option>
-	    <c:forEach items="${events}" var="event" varStatus="i">
-	    	<option value="${event.id}" id="event-${event.id}">${ event.name }</option>
-	    </c:forEach>
-    </select>
-</div>
-<div style="clear:both;"/>
+    <div class="pull-left" >
+        <div class="pull-left" style="padding:6px;">
+            <strong>Event</strong>
+        </div>
+        <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()" style="width:300px">
+            <option id="event-0" value="0">All Events</option>
+            <c:forEach items="${events}" var="event" varStatus="i">
+                <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
+            </c:forEach>
+        </select>
+    </div>
+    <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+        <button class="btn btn-primary pull-left btn-top" 
+        	onclick="document.location='/bibs-server/raceresults/bibs';" type="button">
+		Write Bibs
+	</button>
+    </sec:authorize>
     
+  	<div class="pull-right">
+  		<label>Search</label>
+	    <input type="text" class="form-control" id="query" 
+	    	style="width:200px;display:inline;"
+	    	placeholder="by Name"/>
+	    <input type="text" class="form-control" id="bib" 
+	    	style="width:100px;display:inline;"
+	    	placeholder="by Bib"/>
+		<button onclick="search()" class="btn btn-default">Go</button>
+	</div>
+		
+    <div style="clear:both;"/>
     <page:list id="pl_com_bibsmobile_model_RaceResult" items="${raceresults}" z="YFteNpNSy87fSVCYb1X/4lNLBoA=">
         <table:table data="${raceresults}" id="l_com_bibsmobile_model_RaceResult" path="/raceresults" z="8A8H2AFIrX6CW2kysD/E4yuVCqQ=">
             <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
@@ -60,6 +120,7 @@
             <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_middlename" property="middlename" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_RaceResult_middlename2" property="middlename2" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" render="false" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

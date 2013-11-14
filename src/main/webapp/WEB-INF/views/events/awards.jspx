@@ -3,37 +3,105 @@
 	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-	<h3>Awards</h3>
+	<h3>Awards <small id="award-title">Official Results</small></h3>
+	
+	<style>
+	input{
+		margin-left: 6px;
+	}
+	label{
+		width:60px;
+	}
+	</style>
+	
+	<form class="form-inline" role="form">
+	  	<div class="form-group">
+		    <label for="gender">Gender</label>
+			<select id="gender" name="gender" onchange="getAwards()" 
+				class="form-control" style="width:160px;">
+				<option value="">Any</option>
+				<option value="M">Men</option>
+				<option value="F">Women</option>
+			</select>
+		</div>
+	  	<div class="form-group">
+		    <label for="ageMin">Age Min</label>
+			<input id="ageMin" name="ageMin" 
+				class="form-control" style="width:80px;"
+				placeholder="Age Min"/>
+		</div>
+	  	<div class="form-group">
+		    <label for="ageMax">Age Max</label>
+			<input id="ageMax" name="ageMax"
+				class="form-control" style="width:80px;"
+				placeholder="Age Max"/>
+		</div>
+	  	<div class="form-group">
+		    <label for="listSize">List Size</label>
+			<input id="listSize" name="listSize"
+				class="form-control" style="width:80px;"
+				placeholder="List Size"/>
+		</div>
+	    <button class="btn btn-primary btn-top" onclick="getAwards()" type="button">
+			Go
+		</button>
+	</form>
+	<div style="clear:both;"/>
+	
 	<table id="awards-table" class="table"><tr><td></td></tr></table>
+	
 	<script>
-	window.onload=getAwardsOverall;
-	function getAwardsOverall(){
+	
+	window.onload=getAwards;
+
+	var event = ${param.event};
+	var listSize = 10;
+	var gender = "";
+	var ageMin = 0;
+	var ageMax = 0;
+	
+	function getAwards(){
+		listSize = Math.max(jQuery('#listSize').val(),10);
+		listSize = Math.min(listSize,30);
+		jQuery('#listSize').val(listSize);
+		gender = jQuery('#gender').val();
+		ageMin = Math.max(jQuery('#ageMin').val(),0);
+		ageMax = Math.max(jQuery('#ageMax').val(),0);
+		fetchAwards("?event="+event+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize);
+	}
+	
+	function fetchAwards(params){
+		jQuery('#awards-table').hide();
 		var request = jQuery.ajax({
-			url: "/bibs-server/raceresults/awards/overall",
+			url: "/bibs-server/events/timeofficial"+params,
 			type: "GET",
-			data: {event:${param.event},page:1,size:10},
 			dataType: "json"
 			});
 		request.done(function( data ) {
 			var results =  makeTable(data,"");
 			document.getElementById('awards-table').innerHTML=results;
-			//jQuery('#awards-table').show(500);
+			jQuery('#awards-table').show(500);
 			});
 		request.fail(function( jqXHR, textStatus ) {
 			alert( "Error: " + textStatus );
 			});
 	}
+	
 	function makeTable(data,results){
 		for(var i in data){
 			results += "<tr>";
 			results += "<td>"+(Math.max(i,0)+1)+"</td>";
-			results += "<td>"+data[i].timeoverall+"</td>";
+			results += "<td>"+data[i].timeofficial+"</td>";
 			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
 			results += "<td>("+data[i].gender+")"+data[i].age+"</td>";
 			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
 			results += "</tr>";
 		}
 		return results;
+	}
+	
+	function setTitle(title){
+		document.getElementById('award-title').innerHTML=title;
 	}
 	</script>
 	

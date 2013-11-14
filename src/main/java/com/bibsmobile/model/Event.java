@@ -26,13 +26,19 @@ import org.springframework.roo.addon.json.RooJson;
 public class Event {
 	
 	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
-	private Set<RaceResult> raceResults;
+	private Set<RaceResult> raceResults;	
+	
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	private Set<EventAwardCategory> eventAwardCategorys;
 
 	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
-	private Set<ResultsFile> resultsFile;
+	private Set<ResultsFile> resultsFiles;
 
 	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
-	private Set<RaceImage> raceImage;
+	private Set<RaceImage> raceImages;
+	
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	private Set<EventAwardCategory> eventAwardCategory;
 	
     @NotNull
     private String name;
@@ -154,37 +160,18 @@ public class Event {
         return q;
     }
 	
-
-	
-	public List<RaceResult> findRaceResultsByOverallTime(int page,int size) {
-		final String AWARD_TIME_OVERALL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.timeoverall != '' order by o.timeoverall asc";
+	public List<RaceResult> findRaceResultsByAwardCategory(String gender, int min, int max, int page,int size) {
+		if(min>max)min=max;		
+		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial != '' AND o.timeofficial != null ";
+		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
+		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
+		HQL += " order by o.timeofficial asc";
 		EntityManager em = Event.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery( AWARD_TIME_OVERALL, RaceResult.class);
+        TypedQuery<RaceResult> q = em.createQuery( HQL, RaceResult.class);
         q.setParameter("event", this );
-        q.setFirstResult((page-1)*size);
-        q.setMaxResults(size);
-        return q.getResultList();
-    }
-
-	public List<RaceResult> findRaceResultsByOverallTimeAndGender(String gender,int page,int size) {
-		final String AWARD_OVERALL_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != null AND o.timeoverall != '' AND o.gender = :gender order by o.timeoverall asc";
-		EntityManager em = Event.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery( AWARD_OVERALL_GENDER, RaceResult.class);
-        q.setParameter("event", this );
-        q.setParameter("gender", gender );
-        q.setFirstResult((page-1)*size);
-        q.setMaxResults(size);
-        return q.getResultList();
-    }
-
-	public List<RaceResult> findRaceResultsByOverallTimeAndGenderAndAge(String gender, int min, int max, int page,int size) {
-		final String AWARD_AGE_GENDER = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeoverall != '' AND o.timeoverall != null AND o.gender = :gender AND o.age >= :min AND o.age <= :max order by o.timeoverall asc";
-		EntityManager em = Event.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery( AWARD_AGE_GENDER, RaceResult.class);
-        q.setParameter("event", this );
-        q.setParameter("gender", gender );
-        q.setParameter("min", String.valueOf(min) );
-        q.setParameter("max", String.valueOf(max) );
+        if(!gender.isEmpty()) q.setParameter("gender", gender );
+        if(max > 0) q.setParameter("min", String.valueOf(min) );
+        if(max > 0) q.setParameter("max", String.valueOf(max) );
         q.setFirstResult((page-1)*size);
         q.setMaxResults(size);
         return q.getResultList();

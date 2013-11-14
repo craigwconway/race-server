@@ -2,6 +2,7 @@ package com.bibsmobile.controller;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -127,6 +128,11 @@ public class EventController {
         	boolean newBibs = false;
         	for(Integer bib:bibtime.keySet()){
         		Event event = Event.findEvent(Long.valueOf(event_id).longValue());
+    			if(null==event) break;
+    			if(null==event.getTimerStart()){
+    				event.setTimerStart(new Date().getTime());
+    				event.merge();
+    			}
     			if(bibs.contains(bib)) continue;
         		System.out.println("found "+bib+" "+bibtime.get(bib).toString());
     			newBibs = true;
@@ -270,8 +276,45 @@ public class EventController {
         return rtn.toString();
     }
     
+    @RequestMapping(value = "/raceday", method = RequestMethod.GET)
+    public static String raceday(Model uiModel){
+    	uiModel.addAttribute("events",Event.findAllEvents());
+    	return "events/raceday";
+    }
+    
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
     public static String awards(){
     	return "events/awards";
     }
+    
+    @RequestMapping(value = "/timeofficial", method = RequestMethod.GET)
+    @ResponseBody
+    public String byTimeOfficial(
+    		@RequestParam(value = "event", required = true) Long event, 
+    		@RequestParam(value = "gender", required = false, defaultValue = "") String gender, 
+    		@RequestParam(value = "min", required = false, defaultValue = "0") int min, 
+    		@RequestParam(value = "max", required = false, defaultValue = "0") int max, 
+    		@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+        StringBuffer rtn = new StringBuffer();
+        try {
+            rtn.append(RaceResult.toJsonArray(Event.findEvent(event).findRaceResultsByAwardCategory(gender, min, max, page,size)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    @ResponseBody
+    public Long countRaceResultsByEvent(
+    		@RequestParam(value = "event", required = true) Long event) {
+        try {
+        	return Event.findEvent(event).countRaceResults();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1l;
+    }
+    
 }
