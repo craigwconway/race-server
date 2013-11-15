@@ -3,7 +3,7 @@
 	  xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" version="2.0">
   <jsp:directive.page contentType="text/html;charset=UTF-8" />
   <jsp:output omit-xml-declaration="yes" />
-<!-- 
+
 	<div class="pull-left">
 	  <spring:url var="banner" value="/resources/images/bibsicon6-460x340.png" />
 	  <spring:url var="home" value="/" />
@@ -12,7 +12,6 @@
 	    <img src="${banner}" height="40" width="60"/> 
 	  </a>
 	</div>
- -->
  
 <spring:url value="/events/raceday" var="raceday_url" />
 <spring:url value="/events?page=1&amp;size=10" var="events_url" />

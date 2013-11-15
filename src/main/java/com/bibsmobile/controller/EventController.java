@@ -152,7 +152,7 @@ public class EventController {
         		result.setEvent(event);
         		long timerTime = bibtime.get(bib);
         		long startTime = event.getTimerStart();
-        		result.setTimeoverall( getHoursMinutesSeconds(timerTime-startTime)	);
+        		result.setTimeofficial( getHoursMinutesSeconds(timerTime-startTime)	);
         		if (found) result.merge();
         		else result.persist();
         		runners.add(result);
