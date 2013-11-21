@@ -61,7 +61,7 @@
 	<div id="events"></div>
 	
 <script>
-var runningEventCount = 0;
+var runningEventCount = 1;
 var readerOn=false;
 
 window.onload = getRunning;

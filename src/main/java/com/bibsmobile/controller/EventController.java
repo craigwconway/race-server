@@ -75,7 +75,7 @@ public class EventController {
     @RequestMapping(value = "/run", method = RequestMethod.GET)
     @ResponseBody
     public static String run(@RequestParam(value = "event", required = true) long event,
-    		@RequestParam(value = "order", required = false) int order){
+    		@RequestParam(value = "order", required = false, defaultValue = "1") int order){
 		System.out.println("event run "+event);
     	try{
         	Event e = Event.findEvent(event);

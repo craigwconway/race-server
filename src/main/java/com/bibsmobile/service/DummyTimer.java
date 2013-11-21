@@ -1,7 +1,9 @@
 package com.bibsmobile.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import com.thingmagic.*;
 public class DummyTimer implements Timer {
 		private String readerURI;
 		int status = 0;
+		List<Integer> done = new ArrayList<Integer>();
 		HashMap <Integer,Long> times = new HashMap <Integer,Long>();
 		public void init(){ status = 1;}
 		public void cleanup(){ status = 0;}
@@ -23,7 +26,11 @@ public class DummyTimer implements Timer {
 		public HashMap <Integer,Long> getTimes(){
 			java.util.Random r = new java.util.Random();
 			times.clear();
-			times.put(r.nextInt(50000), new Date().getTime());
+			Integer rand = r.nextInt(20);
+			if(!done.contains(rand)){
+				times.put(rand, new Date().getTime());
+				done.add(rand);
+			}
 			return times;
 		}
 		public void writeTag(int num){}
@@ -36,5 +43,5 @@ public class DummyTimer implements Timer {
 		}
 
 		@Override
-		public void purge(){}
+		public void purge(){ done.clear();}
 }
