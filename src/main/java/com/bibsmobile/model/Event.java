@@ -84,6 +84,8 @@ public class Event {
     private String shuttles;
     private String courseRules;
     private Long timerStart;  
+    private int running = 0;
+    private boolean gunFired = false;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style="SS")
@@ -160,7 +162,7 @@ public class Event {
         return q;
     }
 	
-	public List<RaceResult> findRaceResultsByAwardCategory(String gender, int min, int max, int page,int size) {
+	public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page,int size) {
 		if(min>max)min=max;		
 		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial != '' AND o.timeofficial != null ";
 		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
@@ -168,7 +170,7 @@ public class Event {
 		HQL += " order by o.timeofficial asc";
 		EntityManager em = Event.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( HQL, RaceResult.class);
-        q.setParameter("event", this );
+        q.setParameter("event", Event.findEvent(event) );
         if(!gender.isEmpty()) q.setParameter("gender", gender );
         if(max > 0) q.setParameter("min", String.valueOf(min) );
         if(max > 0) q.setParameter("max", String.valueOf(max) );
@@ -177,19 +179,25 @@ public class Event {
         return q.getResultList();
     }
 	
-	public long countRaceResults() {
+	public static long countRaceResults(long event) {
 		EntityManager em = RaceResult.entityManager();
 		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event", Long.class);
-        q.setParameter("event", this ); 
+        q.setParameter("event", Event.findEvent(event) ); 
         return q.getSingleResult();
     }
 	
-	public List<RaceResult> findRaceResults(int firstResult,int maxResults) {
+	public static List<RaceResult> findRaceResults(long event, int firstResult,int maxResults) {
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event", RaceResult.class);
-        q.setParameter("event", this);
+        q.setParameter("event", Event.findEvent(event));
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
+        return q.getResultList(); 
+    }
+	
+	public static List<Event> findEventsByRunning() {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.running > 0 order by o.running asc", Event.class);
         return q.getResultList(); 
     }
 

@@ -43,7 +43,7 @@
     		dataType: "json"
     		});
     	request.done(function( data ) {
-    			var results = makeTable(data);
+    			var results = runnerSearchResultsTable(data);
     			$('.table').hide();
     			$('.table').empty();
     			$('.table').html(results);
@@ -54,27 +54,8 @@
     			$("#query").focus();
     		});
     }
-
-	function makeTable(data){
-		var results = "";
-		results += "<th>";
-		results += "<td></td>";
-		results += "<td>Bib</td>";
-		results += "<td>First Name</td>";
-		results += "<td>Last Name</td>";
-		results += "</th>";
-		for(var i in data){
-			results += "<tr>";
-			results += "<td>id:"+data[i].id+"</td>";
-			results += "<td>"+data[i].bib+"</td>";
-			results += "<td>"+data[i].firstname+"</td>";
-			results += "<td>"+data[i].lastname+"</td>";
-			results += "</tr>";
-		}
-		return results;
-	}
-	
-    </script>
+    </script> 
+    
     <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
         <button class="btn btn-primary pull-left btn-top" 
         	onclick="document.location='/bibs-server/raceresults?form&amp;event=${param.event}';"

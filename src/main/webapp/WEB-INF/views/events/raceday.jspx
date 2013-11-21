@@ -13,25 +13,73 @@
                 <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
             </c:forEach>
         </select>
+		<button id="btn-stop" type="button" class="btn btn-default" 
+			style="margin:2px;"
+			onclick="addEvent();">Add</button>
+		<button id="btn-start" type="button" class="btn btn-success" 
+			style="margin:2px;display:none;"
+			onclick="startReader();">Start Scanning</button>
+		<button id="btn-stop" type="button" class="btn btn-danger" 
+			style="margin:2px;display:none;"
+			onclick="stopReader();">Stop Scanning</button>
     </div>
+	<div style="clear:both;"/>
 	
-	<div class="row" style="margin:30px;">
-	<button id="btn-start" type="button" class="btn btn-success" 
-		style="margin:2px;"
-		onclick="startReader();">Start Scanning</button>
-	<button id="btn-stop" type="button" class="btn btn-danger" 
-		style="margin:2px;display:none;"
-		onclick="stopReader();">Stop Scanning</button>
+	<style>
+	.raceEvent{
+		font-size: 28px;
+		font-weight: bold;
+	}
+	small{
+		color: grey;
+		font-size: 14px;
+		font-weight: none;
+	}
+	</style>
+	
+	<div id="eventTemplate" style="display:none;">
+		<div id="event--event_id--" class="eventRow" style="padding-top:30px;">
+			<span class="raceEvent">--event_name-- <small>Finish Line Announcer</small></span>
+			<button id="btn-gun---event_id--" type="button" class="btn btn-success" 
+				style="margin:2px;" onclick="gun(--event_id--);jQuery(this).hide();">Fire Gun</button>
+			<button id="btn-done" type="button" class="btn btn-danger" 
+				style="margin:2px;" onclick="stopRunning(--event_id--);">Finish</button>
+			<table id="results--event_id--" class="table" style="margin:30px;"><tr><td></td></tr></table>
+		</div>
 	</div>
+	
+	<div id="events"></div>
 
-<table id="results" class="table" 
-	style="margin:30px;"><tr><td></td></tr>
-</table>
     
 <script>
-window.onunload=stopReader;
-
+var runningEventCount = 0;
 var readerOn=false;
+
+window.onload = getRunning;
+window.onunload = stopReader;
+
+function addEvent(){
+	var eventId = jQuery("#event").val();
+	var eventName = jQuery("#event option[value='"+eventId+"']").text();
+	makeEventRow(eventId,eventName);
+	setRunning(eventId,runningEventCount++);
+}
+
+function makeEventRow(eventId,eventName){
+	var eventRow = jQuery("#eventTemplate").html()
+		.replace(/--event_id--/g,eventId)
+		.replace(/--event_name--/g,eventName);
+	jQuery("#events").append(eventRow);
+	jQuery("#btn-start").show(200);
+}
+
+function closeWarning(){
+	// do not close
+	var warning = "The finish line reader has been started!\r\nIf you leave this page, the Announcer's list will be reset.";
+	alert(warning);
+	window.onbeforeunload = function(e) { return warning; };
+}
+
 function startReader(){
 	readerOn=true;
 	jQuery('#btn-stop').show();
@@ -52,23 +100,24 @@ function startReader(){
 		alert( "Request failed: " + textStatus );
 		jQuery('#btn-stop').hide();
 		jQuery('#btn-start').show();
+		return false;
 	});
 	readerQuery();
 	setInterval(function(){
 		if(!readerOn) return true;
 		readerQuery();
 	},3000);
-	
+	closeWarning();
 }
 
-function readerQuery(){
+function readerQuery(eventId){
 	var request = jQuery.ajax({
-		url: "/bibs-server/events/results?event="+jQuery("#event").val(),
+		url: "/bibs-server/events/results?event="+eventId,
 		type: "GET",
 		dataType: "json"
 		});
 	request.done(function( data ) {
-			jQuery("#results" ).html( makeTable(data, jQuery( "#results" ).html() ) );
+			jQuery("#results"+eventId).html( makeTable(data, jQuery( "#results"+eventId).html() ) );
 			});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
@@ -106,7 +155,67 @@ function stopReader(){
 		});
 }
 
+function setRunning(eventId,order){
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/run?event="+eventId+"&amp;order="+order,
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		if(msg!="true") alert("Run failed.")
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
 
+function stopRunning(eventId){
+	jQuery("#event"+eventId).remove();
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/done?event="+eventId,
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		if(msg!="true") alert("Run failed.")
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
+
+function gun(eventId){
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/gun?event="+eventId,
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		if(msg!="true") alert("Gun failed.")
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
+
+function getRunning(eventId,order){
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/running",
+		type: "GET",
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		for(var i in data){
+			var eventId = data[i].id;
+			var eventName = data[i].name;
+			makeEventRow(eventId,eventName);
+			runningEventCount++;
+		}
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert( "Request failed: " + textStatus );
+		});
+}
 </script>
 
 </div>

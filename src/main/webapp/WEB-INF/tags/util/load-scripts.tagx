@@ -6,8 +6,6 @@
 <script type="text/javascript">;//?</script>
 
 <!-- results mapping code   -->
-<spring:url value="/resources/scripts/resultsfilemapping.js" var="mapping_url" />
-<script src="${mapping_url}" type="text/javascript"/>
 
 <spring:url value="/resources/scripts/bibs-html-utils.js" var="utils_url" />
 <script src="${utils_url}" type="text/javascript"/>

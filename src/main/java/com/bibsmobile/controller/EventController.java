@@ -46,26 +46,10 @@ public class EventController {
     	}
         return "true";
     }
-    @RequestMapping(value = "/purge", method = RequestMethod.GET)
-    @ResponseBody
-    public String purge(@RequestParam(value = "event", required = true) long event){
-    	try{
-    	    bibs = new ArrayList<Integer>();
-        	Event e = Event.findEvent(event);
-    		List<RaceResult> runners = e.findRaceResults(1, 999999);
-    		for(RaceResult r:runners){
-    			r.remove();
-    		}
-    	}catch(Exception x){
-    		x.printStackTrace();
-    		return "false";
-    	}
-        return "true";
-    }
 
     @RequestMapping(value = "/restart", method = RequestMethod.GET)
     @ResponseBody
-    public String restart(){
+    public static String restart(){
     	try{
     	    bibs = new ArrayList<Integer>();
     	}catch(Exception x){
@@ -80,9 +64,41 @@ public class EventController {
     public String gun(@RequestParam(value = "event", required = true) long event){
     	try{
         	Event e = Event.findEvent(event);
+        	e.setGunFired(true);
     		e.setTimerStart(timer.getTime());
     		e.merge();
     		System.out.println("event time "+e.getTimerStart());
+    	}catch(Exception x){
+    		x.printStackTrace();
+    		return "false";
+    	}
+        return "true";
+    }
+	
+    @RequestMapping(value = "/run", method = RequestMethod.GET)
+    @ResponseBody
+    public static String run(@RequestParam(value = "event", required = true) long event,
+    		@RequestParam(value = "order", required = false) int order){
+		System.out.println("event run "+event);
+    	try{
+        	Event e = Event.findEvent(event);
+    		e.setRunning(order);
+    		e.merge();
+    	}catch(Exception x){
+    		x.printStackTrace();
+    		return "false";
+    	}
+        return "true";
+    }
+    
+    @RequestMapping(value = "/done", method = RequestMethod.GET)
+    @ResponseBody
+    public static String done(@RequestParam(value = "event", required = true) long event){
+		System.out.println("event done "+event);
+    	try{
+        	Event e = Event.findEvent(event);
+    		e.setRunning(0);
+    		e.merge();
     	}catch(Exception x){
     		x.printStackTrace();
     		return "false";
@@ -116,8 +132,8 @@ public class EventController {
         return rtn;
     }
 
-    private List<Integer> bibs = new ArrayList<Integer>();
-    List<RaceResult> runners = new ArrayList<RaceResult>();
+    private static List<Integer> bibs = new ArrayList<Integer>();
+    static List<RaceResult> runners = new ArrayList<RaceResult>();
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
@@ -164,7 +180,7 @@ public class EventController {
         return "false";
     }
     
-    private String getHoursMinutesSeconds(long l) {
+    public static String getHoursMinutesSeconds(long l) {
     	String rtn = "";
     	l=Math.abs(l);
 		int hours = (int) ((l / 3600000) );
@@ -201,7 +217,7 @@ public class EventController {
 
     @RequestMapping(value = "/featured", method = RequestMethod.GET)
     @ResponseBody
-    public String featured(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+    public static String featured(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         try {
             rtn.append(Event.toJsonArray(Event.findEventsByFeaturedGreaterThan(0, page, size).getResultList()));
@@ -213,7 +229,7 @@ public class EventController {
 
     @RequestMapping(value = "/byname", method = RequestMethod.GET)
     @ResponseBody
-    public String byName() {
+    public static String byName() {
         StringBuffer rtn = new StringBuffer("[");
         boolean first = true;
         for (Event event : Event.findAllEvents()) {
@@ -230,7 +246,7 @@ public class EventController {
 
     @RequestMapping(value = "/byname/{eventName}", method = RequestMethod.GET)
     @ResponseBody
-    public String byName(@PathVariable String eventName, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+    public static String byName(@PathVariable String eventName, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         try {
             rtn.append(Event.toJsonArray(Event.findEventsByNameLike(eventName, page, size).getResultList()));
@@ -242,7 +258,7 @@ public class EventController {
 
     @RequestMapping(value = "/future", method = RequestMethod.GET)
     @ResponseBody
-    public String future(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size, Integer featured) {
+    public static String future(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size, Integer featured) {
         StringBuffer rtn = new StringBuffer();
         Calendar today = Calendar.getInstance();
 		today.set(Calendar.HOUR_OF_DAY, 0);
@@ -260,7 +276,7 @@ public class EventController {
 
     @RequestMapping(value = "/past", method = RequestMethod.GET)
     @ResponseBody
-    public String past(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+    public static String past(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         Calendar today = Calendar.getInstance();
 		today.set(Calendar.HOUR_OF_DAY, 0);
@@ -279,7 +295,14 @@ public class EventController {
     @RequestMapping(value = "/raceday", method = RequestMethod.GET)
     public static String raceday(Model uiModel){
     	uiModel.addAttribute("events",Event.findAllEvents());
+    	uiModel.addAttribute("eventsRunning",Event.findEventsByRunning());
     	return "events/raceday";
+    }    
+    
+    @RequestMapping(value = "/running", method = RequestMethod.GET)
+    @ResponseBody
+    public static String running(){
+    	return Event.toJsonArray(Event.findEventsByRunning());
     }
     
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
@@ -289,7 +312,7 @@ public class EventController {
     
     @RequestMapping(value = "/timeofficial", method = RequestMethod.GET)
     @ResponseBody
-    public String byTimeOfficial(
+    public static String byTimeOfficial(
     		@RequestParam(value = "event", required = true) Long event, 
     		@RequestParam(value = "gender", required = false, defaultValue = "") String gender, 
     		@RequestParam(value = "min", required = false, defaultValue = "0") int min, 
@@ -298,7 +321,7 @@ public class EventController {
     		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         try {
-            rtn.append(RaceResult.toJsonArray(Event.findEvent(event).findRaceResultsByAwardCategory(gender, min, max, page,size)));
+            rtn.append(RaceResult.toJsonArray(Event.findRaceResultsByAwardCategory(event,gender, min, max, page,size)));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -307,10 +330,10 @@ public class EventController {
 
     @RequestMapping(value = "/count", method = RequestMethod.GET)
     @ResponseBody
-    public Long countRaceResultsByEvent(
+    public static Long countRaceResultsByEvent(
     		@RequestParam(value = "event", required = true) Long event) {
         try {
-        	return Event.findEvent(event).countRaceResults();
+        	return Event.countRaceResults(event);
         } catch (Exception e) {
             e.printStackTrace();
         }

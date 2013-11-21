@@ -365,6 +365,22 @@ privileged aspect Event_Roo_JavaBean {
         this.timerStart = timerStart;
     }
     
+    public int Event.getRunning() {
+        return this.running;
+    }
+    
+    public void Event.setRunning(int running) {
+        this.running = running;
+    }
+    
+    public boolean Event.isGunFired() {
+        return this.gunFired;
+    }
+    
+    public void Event.setGunFired(boolean gunFired) {
+        this.gunFired = gunFired;
+    }
+    
     public Date Event.getCreated() {
         return this.created;
     }

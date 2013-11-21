@@ -42,7 +42,7 @@ public class RaceResultController {
         String rtn = "";
         try {
             Event event = Event.findEventsByNameLike(eventName, page, size).getSingleResult();
-            List<RaceResult> raceResults = event.findRaceResults(page,size);
+            List<RaceResult> raceResults = Event.findRaceResults(event.getId(),page,size);
             rtn = RaceResult.toJsonArray(raceResults);
         } catch (Exception e) {
             //e.printStackTrace();
@@ -102,9 +102,8 @@ public class RaceResultController {
         final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
         float nrOfPages = 0;
         if(event > 0){
-        	Event _event = Event.findEvent(event);
-        	uiModel.addAttribute("raceresults", _event.findRaceResults(firstResult, sizeNo));
-            nrOfPages = (float) _event.countRaceResults() / sizeNo;
+        	uiModel.addAttribute("raceresults", Event.findRaceResults(event,firstResult, sizeNo));
+            nrOfPages = (float) Event.countRaceResults(event) / sizeNo;
         }else{
         	uiModel.addAttribute("raceresults", RaceResult.findRaceResultEntries(firstResult, sizeNo));
             nrOfPages = (float) RaceResult.countRaceResults() / sizeNo;
