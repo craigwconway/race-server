@@ -22,6 +22,7 @@ public class DummyTimer implements Timer {
 		public void stop(){status = 0;}
 		public HashMap <Integer,Long> getTimes(){
 			java.util.Random r = new java.util.Random();
+			times.clear();
 			times.put(r.nextInt(50000), new Date().getTime());
 			return times;
 		}

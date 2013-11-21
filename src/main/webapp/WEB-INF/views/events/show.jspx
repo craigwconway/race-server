@@ -3,19 +3,22 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-        <button class="btn btn-primary btn-top" onclick="redirectImport()" type="button">
-		Import
-	</button>
-        <button class="btn btn-primary btn-top" onclick="alert('Export!')" type="button">
-		Export
-	</button>
+        <button class="btn btn-default btn-top" onclick="redirectImport()" type="button">
+		Import Runners
+		</button>
+        <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
+		Export Runners
+		</button>
     </sec:authorize>
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
-		Awards
+		View Awards
 	</button>
     <script>
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
+	}
+	function redirectExport(){
+		window.location="/bibs-server/events/export?event=${event.id}";
 	}
 	function redirectAwards(){
 		window.location="/bibs-server/events/awards?event=${event.id}";

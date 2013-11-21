@@ -1,10 +1,20 @@
 package com.bibsmobile.controller;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
@@ -38,20 +48,7 @@ public class EventController {
     @ResponseBody
     public String purgeTimer(){
     	try{
-    	    bibs = new ArrayList<Integer>();
     	    timer.purge();
-    	}catch(Exception x){
-    		x.printStackTrace();
-    		return "false";
-    	}
-        return "true";
-    }
-
-    @RequestMapping(value = "/restart", method = RequestMethod.GET)
-    @ResponseBody
-    public static String restart(){
-    	try{
-    	    bibs = new ArrayList<Integer>();
     	}catch(Exception x){
     		x.printStackTrace();
     		return "false";
@@ -98,6 +95,7 @@ public class EventController {
     	try{
         	Event e = Event.findEvent(event);
     		e.setRunning(0);
+        	e.setGunFired(false);
     		e.merge();
     	}catch(Exception x){
     		x.printStackTrace();
@@ -108,7 +106,7 @@ public class EventController {
 	
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     @ResponseBody
-    public String readerTimeStart(){
+    public String readerStart(){
     	String rtn = "false";
         try {
         	timer.start();
@@ -121,7 +119,7 @@ public class EventController {
     
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     @ResponseBody
-    public String readerTimeStop(){
+    public String readerStop(){
     	String rtn = "false";
         try {
         	timer.stop();
@@ -131,28 +129,24 @@ public class EventController {
         }
         return rtn;
     }
-
-    private static List<Integer> bibs = new ArrayList<Integer>();
-    static List<RaceResult> runners = new ArrayList<RaceResult>();
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
-    public String readerQuery(@RequestParam(value = "event", required = true) int event_id){ 
-    	runners = new ArrayList<RaceResult>();
+    public synchronized String readerQuery(@RequestParam(value = "event", required = true) int event_id){ 
         try {
-        	Map <Integer,Long> bibtime = timer.getTimes();
-        	boolean newBibs = false;
+        	List<RaceResult> runners = new ArrayList<RaceResult>();
+        	Map <Integer,Long> bibtime = timer.getTimes(); // only bibs not yet returned
         	for(Integer bib:bibtime.keySet()){
         		Event event = Event.findEvent(Long.valueOf(event_id).longValue());
     			if(null==event) break;
-    			if(null==event.getTimerStart()){
-    				event.setTimerStart(new Date().getTime());
+    			// make sure we have an event start time
+    			if(null==event.getTimerStart()){ // no gun
+    				if(null!=event.getTimeStart()) // set timer to event start
+    					event.setTimerStart(event.getTimeStart().getTime());
+    				else event.setTimerStart(new Date().getTime()); // now
     				event.merge();
     			}
-    			if(bibs.contains(bib)) continue;
         		System.out.println("found "+bib+" "+bibtime.get(bib).toString());
-    			newBibs = true;
-    			bibs.add(bib);
         		RaceResult result = new RaceResult();
         		boolean found = false;
     			try{
@@ -161,6 +155,7 @@ public class EventController {
     							.getSingleResult();
     				found = true;
     			}catch(Exception e){
+            		System.out.println("No Runner found for "+bib+" in "+event.getName());
     				// no runner assigned to bib
     				// e.printStackTrace();
     			}
@@ -170,10 +165,10 @@ public class EventController {
         		long startTime = event.getTimerStart();
         		result.setTimeofficial( getHoursMinutesSeconds(timerTime-startTime)	);
         		if (found) result.merge();
-        		else result.persist();
+        		// do not add if does not match existing // else result.persist();
         		runners.add(result);
         	}
-        	if(newBibs) return RaceResult.toJsonArray(runners);
+        	return RaceResult.toJsonArray(runners);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -339,5 +334,24 @@ public class EventController {
         }
         return -1l;
     }
+    
+    @RequestMapping(value="/export", method = RequestMethod.GET)
+    public void export(@RequestParam(value = "event", required = true) Long event,
+    		HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException{
+        Event _event = Event.findEvent(event);
+        response.setContentType("text/csv;charset=utf-8"); 
+        response.setHeader("Content-Disposition","attachment; filename=\""+_event.getName()+".csv\"");
+        OutputStream resOs= response.getOutputStream();  
+        OutputStream buffOs= new BufferedOutputStream(resOs);   
+        OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);  
+
+        List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
+        for(RaceResult r:runners){              
+        	outputwriter.write(r.getBib()+","+r.getFirstname()+","+r.getLastname()+","+","+r.getCity()+","+r.getState()+","+r.getTimeofficial()+"\r\n");  
+        }     
+        outputwriter.flush();   
+        outputwriter.close();
+
+    };
     
 }

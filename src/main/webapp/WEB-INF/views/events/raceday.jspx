@@ -4,16 +4,38 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 	
-	 <div class="pull-left" >
+	<style>
+	.event-row{
+		margin: 16px;
+		padding: 16px;
+		border:solid #DDD 1px;
+		border-radius: 5px;
+		float: left;
+		width: 600px;
+		overflow: hidden;
+	}
+	.event-name{
+		font-size: 28px;
+		font-weight: bold;
+		margin-right: 12px;
+	}
+	small{
+		color: grey;
+		font-size: 14px;
+		font-weight: none;
+	}
+	</style>
+	
+	 <div class="pull-left" style="padding-bottom:16px;">
         <div class="pull-left" style="padding:6px;">
             <strong>Event</strong>
         </div>
         <select class="form-control pull-left" id="event" name="event" style="width:300px">
             <c:forEach items="${events}" var="event" varStatus="i">
-                <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
+                <option value="${event.id}">${ event.name }</option>
             </c:forEach>
         </select>
-		<button id="btn-stop" type="button" class="btn btn-default" 
+		<button id="btn-add" type="button" class="btn btn-default" 
 			style="margin:2px;"
 			onclick="addEvent();">Add</button>
 		<button id="btn-start" type="button" class="btn btn-success" 
@@ -25,32 +47,19 @@
     </div>
 	<div style="clear:both;"/>
 	
-	<style>
-	.raceEvent{
-		font-size: 28px;
-		font-weight: bold;
-	}
-	small{
-		color: grey;
-		font-size: 14px;
-		font-weight: none;
-	}
-	</style>
-	
 	<div id="eventTemplate" style="display:none;">
-		<div id="event--event_id--" class="eventRow" style="padding-top:30px;">
-			<span class="raceEvent">--event_name-- <small>Finish Line Announcer</small></span>
+		<div id="event---event_id--" class="event-row">
+			<div class="event-name">--event_name--</div>
 			<button id="btn-gun---event_id--" type="button" class="btn btn-success" 
 				style="margin:2px;" onclick="gun(--event_id--);jQuery(this).hide();">Fire Gun</button>
-			<button id="btn-done" type="button" class="btn btn-danger" 
+			<button id="btn-done---event_id--" type="button" class="btn btn-danger" 
 				style="margin:2px;" onclick="stopRunning(--event_id--);">Finish</button>
-			<table id="results--event_id--" class="table" style="margin:30px;"><tr><td></td></tr></table>
+			<table id="results--event_id--" class="table" style="margin:30px;display:none;"><tr><td></td></tr></table>
 		</div>
 	</div>
 	
 	<div id="events"></div>
-
-    
+	
 <script>
 var runningEventCount = 0;
 var readerOn=false;
@@ -70,6 +79,7 @@ function makeEventRow(eventId,eventName){
 		.replace(/--event_id--/g,eventId)
 		.replace(/--event_name--/g,eventName);
 	jQuery("#events").append(eventRow);
+	jQuery("#event option[value='"+eventId+"']").remove();
 	jQuery("#btn-start").show(200);
 }
 
@@ -82,8 +92,6 @@ function closeWarning(){
 
 function startReader(){
 	readerOn=true;
-	jQuery('#btn-stop').show();
-	jQuery('#btn-start').hide();
 	var readerStart = jQuery.ajax({
 		url: "/bibs-server/events/start",
 		type: "GET",
@@ -92,22 +100,28 @@ function startReader(){
 	readerStart.done(function( msg ) {
 		if(msg!="true"){
 			alert("Error starting reader.");
-			jQuery('#btn-stop').hide();
-			jQuery('#btn-start').show();
+		}else{
+			jQuery('#btn-start').hide();
+			jQuery('#btn-stop').show(200);
 		}
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
-		jQuery('#btn-stop').hide();
-		jQuery('#btn-start').show();
 		return false;
 	});
-	readerQuery();
+	getReaderResults();
 	setInterval(function(){
 		if(!readerOn) return true;
-		readerQuery();
+		getReaderResults();
 	},3000);
 	closeWarning();
+}
+
+function getReaderResults(){
+	jQuery("#events > .event-row").each(function(index,element){
+		var eventId = element.id.split("-")[1];
+		readerQuery(eventId);
+	});
 }
 
 function readerQuery(eventId){
@@ -117,7 +131,8 @@ function readerQuery(eventId){
 		dataType: "json"
 		});
 	request.done(function( data ) {
-			jQuery("#results"+eventId).html( makeTable(data, jQuery( "#results"+eventId).html() ) );
+			jQuery("#results"+eventId).prepend( makeTable(data, jQuery( "#results"+eventId).html() ) );
+			jQuery("#results"+eventId).show();
 			});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
@@ -125,6 +140,7 @@ function readerQuery(eventId){
 }
 
 function makeTable(data,results){
+	results = "";
 	for(var i in data){
 		results += "<tr>";
 		results += "<td>"+data[i].bib+"</td>";
@@ -170,14 +186,14 @@ function setRunning(eventId,order){
 }
 
 function stopRunning(eventId){
-	jQuery("#event"+eventId).remove();
+	jQuery("#event-"+eventId).remove();
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/done?event="+eventId,
 		type: "GET",
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		if(msg!="true") alert("Run failed.")
+		if(msg!="true") alert("Done failed.")
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
@@ -192,6 +208,7 @@ function gun(eventId){
 		});
 	request.done(function( msg ) {
 		if(msg!="true") alert("Gun failed.")
+		else jQuery("#btn-done-"+eventId).show();
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert( "Request failed: " + textStatus );
@@ -209,6 +226,10 @@ function getRunning(eventId,order){
 			var eventId = data[i].id;
 			var eventName = data[i].name;
 			makeEventRow(eventId,eventName);
+			if(data[i].gunFired == true){
+				jQuery("#btn-gun-"+eventId).hide();
+				jQuery("#btn-done-"+eventId).show();
+			}
 			runningEventCount++;
 		}
 		});
