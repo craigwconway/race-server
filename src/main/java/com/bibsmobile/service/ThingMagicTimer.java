@@ -27,9 +27,12 @@ public class ThingMagicTimer implements Timer{
 		private int status;
 		private Reader r;
 		private ReadListener bibListener;
+		private ReadListener startListener;
 		private String readerURI;
 		private HashMap <Integer, Long> times; // Bibnumber vs ms after epoch
+		private HashMap <Integer, Long> tmpTimes;
 		private HashMap <Integer, Long> startTimes;
+		private HashMap <Integer, Long> tmpStartTimes;
 		public ThingMagicTimer() {
 			status = 0;
 			readerURI = getReaderURI();
@@ -91,6 +94,10 @@ public class ThingMagicTimer implements Timer{
 				r.destroy();
 			status = 0;
 		}
+		
+		public HashMap <Integer, Long> getStartTimes () {
+			return startTimes;
+		}
 
 		public void start(){
 			if(status == 3) {
@@ -112,6 +119,26 @@ public class ThingMagicTimer implements Timer{
 			}
 		}
 		
+		public void startStartLine(){
+			if(status == 3) {
+				this.disconnect();
+				this.connect();
+			}
+			if(status == 1) {
+				ReadListener startListener = new StartListener();
+				r.addReadListener(startListener);
+				r.startReading();
+				status = 4;
+			}	
+		}
+		
+		public void stopStartLine(){
+			if (status == 4) {
+				r.stopReading();
+				r.removeReadListener(startListener);
+				status = 1;
+			}
+		}
 		public HashMap <Integer,Long> getTimes() {
 			return times;
 		}
@@ -145,7 +172,7 @@ public class ThingMagicTimer implements Timer{
 			}
 		}
 		
-		class BibListener implements ReadListener
+		class LastSeenBibListener implements ReadListener
 		{
 			public void tagRead(Reader r, TagReadData tr)
 		    {
@@ -164,6 +191,58 @@ public class ThingMagicTimer implements Timer{
 		          //TODO: Call announcer
 		          //TODO: Add
 		          }
+		    }
+		  }
+		class BibListener implements ReadListener
+		{
+			public void tagRead(Reader r, TagReadData tr)
+		    {
+		      TagData t = tr.getTag();
+		      byte [] bibdata = t.epcBytes();
+		      long bibtime = tr.getTime();
+		      final int bibnum = bibdata[3] & 0xFF | 
+		    		  (bibdata[2] & 0xFF) << 8 | 
+		    		  (bibdata[1] & 0xFF) << 16 |
+		    		  (bibdata[0] & 0xFF) << 24;
+		      System.out.println("New tag: " + t.toString());
+
+		          //System.out.println("New tag: " + t.toString());
+		          tmpTimes.put(new Integer(bibnum), new Long(bibtime));
+		          new java.util.Timer().schedule( 
+		        	        new java.util.TimerTask() {
+		        	            @Override
+		        	            public void run() {
+		        	            	times.put(new Integer(bibnum), new Long(tmpTimes.get(bibnum)));
+		        	            }
+		        	        }, 
+		        	        5000 
+		        	);
+		    }
+		  }
+		class StartListener implements ReadListener
+		{
+			public void tagRead(Reader r, TagReadData tr)
+		    {
+		      TagData t = tr.getTag();
+		      byte [] bibdata = t.epcBytes();
+		      long bibtime = tr.getTime();
+		      final int bibnum = bibdata[3] & 0xFF | 
+		    		  (bibdata[2] & 0xFF) << 8 | 
+		    		  (bibdata[1] & 0xFF) << 16 |
+		    		  (bibdata[0] & 0xFF) << 24;
+		      System.out.println("New tag: " + t.toString());
+
+		          //System.out.println("New tag: " + t.toString());
+		          tmpStartTimes.put(new Integer(bibnum), new Long(bibtime));
+		          new java.util.Timer().schedule( 
+		        	        new java.util.TimerTask() {
+		        	            @Override
+		        	            public void run() {
+		        	            	startTimes.put(new Integer(bibnum), new Long(tmpTimes.get(bibnum)));
+		        	            }
+		        	        }, 
+		        	        5000 
+		        	);
 		    }
 		  }
 
