@@ -50,8 +50,8 @@
         <field:simple field="resultsFiles" id="c_com_bibsmobile_model_Event_resultsFiles" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" render="false" z="user-managed"/>
         <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" render="false" z="user-managed"/>
         <field:simple field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" render="false" z="user-managed"/>
-        <field:input field="running" id="c_com_bibsmobile_model_Event_running" z="oir/vFsdF11FAojMc7EtVt8si2E="/>
-        <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="0RV1e5MVdCYDRpwVJtZE0UHHj6c="/>
+        <field:input field="running" id="c_com_bibsmobile_model_Event_running" render="false" z="user-managed"/>
+        <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" render="false" z="user-managed"/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Event" render="${not empty dependencies}" z="97PxZzAnMjrQHEYGI+GbAcLkB+8="/>
 </div>

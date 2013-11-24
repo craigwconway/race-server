@@ -14,7 +14,7 @@
         <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" render="false" z="user-managed"/>
         <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" render="false" z="user-managed"/>
         <field:input field="middlename2" id="c_com_bibsmobile_model_RaceResult_middlename2" render="false" z="user-managed"/>
-        <field:input field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" render="false" z="user-managed"/>
+        <field:input field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" render="true" z="user-managed"/>
         <field:input field="timegun" id="c_com_bibsmobile_model_RaceResult_timegun" render="false" z="user-managed"/>
         <field:input field="timechip" id="c_com_bibsmobile_model_RaceResult_timechip" render="false" z="user-managed"/>
         <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" render="false" z="user-managed"/>

@@ -44,9 +44,29 @@ public class EventController {
 	@Autowired // see applicationContext.xml
 	private Timer timer;
 
-    @RequestMapping(value = "/purgetimer", method = RequestMethod.GET)
+    @RequestMapping(value = "/timer/connect", method = RequestMethod.GET)
     @ResponseBody
-    public String purgeTimer(){
+    public String timerConnect(){
+    	String rtn = "false";
+    	try{
+    		timer.init();
+    		if(timer.getStatus()==1)
+    			rtn = "true";
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	return rtn;
+    }
+
+    @RequestMapping(value = "/timer/status", method = RequestMethod.GET)
+    @ResponseBody
+    public String timerStatus(){
+    	return Integer.valueOf(timer.getStatus()).toString();
+    }
+
+    @RequestMapping(value = "/timer/purge", method = RequestMethod.GET)
+    @ResponseBody
+    public String timerPurge(){
     	try{
     	    timer.purge();
     	}catch(Exception x){
@@ -58,7 +78,7 @@ public class EventController {
 	
     @RequestMapping(value = "/gun", method = RequestMethod.GET)
     @ResponseBody
-    public String gun(@RequestParam(value = "event", required = true) long event){
+    public String timerGun(@RequestParam(value = "event", required = true) long event){
     	try{
         	Event e = Event.findEvent(event);
         	e.setGunFired(true);
@@ -90,7 +110,7 @@ public class EventController {
     
     @RequestMapping(value = "/done", method = RequestMethod.GET)
     @ResponseBody
-    public static String done(@RequestParam(value = "event", required = true) long event){
+    public static String timerDone(@RequestParam(value = "event", required = true) long event){
 		System.out.println("event done "+event);
     	try{
         	Event e = Event.findEvent(event);
@@ -106,7 +126,7 @@ public class EventController {
 	
     @RequestMapping(value = "/start", method = RequestMethod.GET)
     @ResponseBody
-    public String readerStart(){
+    public String timerStart(){
     	String rtn = "false";
         try {
         	timer.start();
@@ -119,7 +139,7 @@ public class EventController {
     
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     @ResponseBody
-    public String readerStop(){
+    public String timerStop(){
     	String rtn = "false";
         try {
         	timer.stop();
@@ -132,7 +152,7 @@ public class EventController {
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
-    public synchronized String readerQuery(@RequestParam(value = "event", required = true) int event_id){ 
+    public synchronized String timerQuery(@RequestParam(value = "event", required = true) int event_id){ 
         try {
         	List<RaceResult> runners = new ArrayList<RaceResult>();
         	Map <Integer,Long> bibtime = timer.getTimes(); // only bibs not yet returned

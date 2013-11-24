@@ -26,6 +26,29 @@
 	}
 	</style>
 	
+	<div id="timer-functions" style="margin-bottom: 16px;">
+	
+		<span id="reader-status-title"
+			style="margin:2px;"><strong>Reader Status:</strong> </span>
+		<span id="reader-status"
+			style="margin:2px;"> Not Connected </span>
+		<button id="btn-connect" type="button" class="btn btn-default" 
+			style="margin:2px;"
+			onclick="timerConnect();">Connect</button>
+		<button id="btn-start" type="button" class="btn btn-success" 
+			style="margin:2px;display:none;"
+			onclick="startReader();">Start Scanning</button>
+		<button id="btn-stop" type="button" class="btn btn-danger" 
+			style="margin:2px;display:none;"
+			onclick="stopReader();">Stop Scanning</button>
+		<span id="progress">
+			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
+   		</span>
+	
+	</div>
+
+<div id="mgmt-view" style="display:none">
+
 	 <div class="pull-left" style="padding-bottom:16px;">
         <div class="pull-left" style="padding:6px;">
             <strong>Event</strong>
@@ -38,18 +61,15 @@
 		<button id="btn-add" type="button" class="btn btn-default" 
 			style="margin:2px;"
 			onclick="addEvent();">Add</button>
-		<button id="btn-start" type="button" class="btn btn-success" 
-			style="margin:2px;display:none;"
-			onclick="startReader();">Start Scanning</button>
-		<button id="btn-stop" type="button" class="btn btn-danger" 
-			style="margin:2px;display:none;"
-			onclick="stopReader();">Stop Scanning</button>
     </div>
 	<div style="clear:both;"/>
 	
 	<div id="eventTemplate" style="display:none;">
 		<div id="event---event_id--" class="event-row">
 			<div class="event-name">--event_name--</div>
+			<div><span>Start time: </span><span id="starttime---event_id--">--event_starttime--</span></div>
+			<button id="btn-edit---event_id--" type="button" class="btn btn-info"
+				style="margin:2px;" onclick="window.location='/bibs-server/events/--event_id--';">Edit Start Time</button>
 			<button id="btn-gun---event_id--" type="button" class="btn btn-success" 
 				style="margin:2px;" onclick="gun(--event_id--);jQuery(this).hide();">Fire Gun</button>
 			<button id="btn-done---event_id--" type="button" class="btn btn-danger" 
@@ -60,18 +80,97 @@
 	
 	<div id="events"></div>
 	
+</div>
+	
 <script>
 var runningEventCount = 1;
 var readerOn=false;
+var readerStatus = 0;
 
-window.onload = getRunning;
-window.onunload = stopReader;
+window.onload = racedayInit;
+//window.onunload = stopReader;
+
+function racedayInit(){
+	jQuery("#progress").hide();
+	getRunning();
+	timerStatus();
+}
+
+function timerStatus(){
+	jQuery("#progress").show();
+	var r = jQuery.ajax({
+		url: "/bibs-server/events/timer/status",
+		type: "GET",
+		dataType: "html"
+		});
+	r.done(function( data ) {
+    	readerStatus = data; 
+    	var rtn = "No Connection";
+    	if(readerStatus == 0){
+    		rtn = "Disconnected";
+    		jQuery("#mgmt-view").hide();
+    	}else if(readerStatus == 1){
+    		rtn = "Connected";
+    		jQuery("#mgmt-view").show();
+    	}else if(readerStatus == 2){
+    		rtn = "Reading...";
+    		jQuery("#mgmt-view").show();
+    	}else if(readerStatus == 3){
+    		rtn = "Writing...";
+    		jQuery("#mgmt-view").show();
+    	}
+    	jQuery("#reader-status").html(rtn);
+    	jQuery("#progress").hide();
+	});
+	r.fail(function( jqXHR, textStatus ) {
+		//alert("Timing Hardware Not Found");
+		jQuery("#mgmt-view").hide();
+	});
+}
+
+function timerConnect(){
+	jQuery("#progress").show();
+	var r = jQuery.ajax({
+		url: "/bibs-server/events/timer/connect",
+		type: "GET",
+		dataType: "html"
+		});
+	r.done(function( data ) {
+		if(data == "true"){
+    		jQuery("#mgmt-view").show();
+			jQuery("#btn-start").show(200);
+			jQuery("#btn-connect").hide(200);
+		}
+		jQuery("#progress").hide();
+		timerStatus();
+	});
+	r.fail(function( jqXHR, textStatus ) {
+		jQuery("#mgmt-view").hide();
+		jQuery("#progress").hide();
+	});
+}
+
+function lookupStartTime(eventId){
+	var r = jQuery.ajax({
+		url: "/bibs-server/events/"+eventId,
+		type: "GET",
+		dataType: "json"
+		});
+	r.done(function( data ) {
+			jQuery('#starttime-'+eventId).html(new Date(data.timeStart));
+	});
+	r.fail(function( jqXHR, textStatus ) {
+		jQuery('#starttime-'+eventId).html(new Date());
+	});
+}
 
 function addEvent(){
 	var eventId = jQuery("#event").val();
+	if(null==eventId) return false;
 	var eventName = jQuery("#event option[value='"+eventId+"']").text();
 	makeEventRow(eventId,eventName);
 	setRunning(eventId,runningEventCount++);
+	getStartTime();
 }
 
 function makeEventRow(eventId,eventName){
@@ -80,7 +179,14 @@ function makeEventRow(eventId,eventName){
 		.replace(/--event_name--/g,eventName);
 	jQuery("#events").append(eventRow);
 	jQuery("#event option[value='"+eventId+"']").remove();
-	jQuery("#btn-start").show(200);
+}
+
+function getStartTime(){
+	jQuery("#events > .event-row").each(function(index,element){
+		var eventId = element.id.split("-")[1];
+		var data = jQuery("#starttime-"+eventId).html();
+		if(data =="--event_starttime--") lookupStartTime(eventId);
+	});
 }
 
 function closeWarning(){
@@ -226,6 +332,7 @@ function getRunning(eventId,order){
 			var eventId = data[i].id;
 			var eventName = data[i].name;
 			makeEventRow(eventId,eventName);
+			jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart));
 			if(data[i].gunFired == true){
 				jQuery("#btn-gun-"+eventId).hide();
 				jQuery("#btn-done-"+eventId).show();
