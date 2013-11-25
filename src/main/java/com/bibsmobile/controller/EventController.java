@@ -41,7 +41,7 @@ import com.bibsmobile.service.Timer;
 @RooWebJson(jsonObject = Event.class)
 public class EventController {
 
-	@Autowired // see applicationContext.xml
+	@Autowired // inject see applicationContext.xml
 	private Timer timer;
 
     @RequestMapping(value = "/timer/connect", method = RequestMethod.GET)
@@ -61,12 +61,16 @@ public class EventController {
     @RequestMapping(value = "/timer/status", method = RequestMethod.GET)
     @ResponseBody
     public String timerStatus(){
-    	return Integer.valueOf(timer.getStatus()).toString();
+		System.out.println("timer status "+timer.toString());
+		final String rtn = Integer.valueOf(timer.getStatus()).toString();
+		System.out.println("timer status returned "+rtn);
+    	return rtn;
     }
 
     @RequestMapping(value = "/timer/purge", method = RequestMethod.GET)
     @ResponseBody
     public String timerPurge(){
+		System.out.println("timer Purge");
     	try{
     	    timer.purge();
     	}catch(Exception x){

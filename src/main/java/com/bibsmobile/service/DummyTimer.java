@@ -21,8 +21,8 @@ public class DummyTimer implements Timer {
 		public void connect(){ status = 1;}
 		public String getReaderURI(){ return "dummy";}
 		public void disconnect(){status = 0;}
-		public void start(){status = 1;}
-		public void stop(){status = 0;}
+		public void start(){status = 2;}
+		public void stop(){status = 1;}
 		public HashMap <Integer,Long> getTimes(){
 			java.util.Random r = new java.util.Random();
 			times.clear();
@@ -33,7 +33,7 @@ public class DummyTimer implements Timer {
 			}
 			return times;
 		}
-		public void writeTag(int num){}
+		public void writeTag(int num){ status = 3; }
 		public void setReaderURI(String readerURI) {
 			this.readerURI = readerURI;
 		}

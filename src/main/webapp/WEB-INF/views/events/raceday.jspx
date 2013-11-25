@@ -44,6 +44,9 @@
 		<span id="progress">
 			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
    		</span>
+		<button id="btn-purge" type="button" class="btn btn-default pull-right" 
+			style="margin:2px;display:none;"
+			onclick="timerPurge();">Clear Timer</button>
 	
 	</div>
 
@@ -51,7 +54,7 @@
 
 	 <div class="pull-left" style="padding-bottom:16px;">
         <div class="pull-left" style="padding:6px;">
-            <strong>Event</strong>
+            <strong>Choose Event(s) to Run</strong>
         </div>
         <select class="form-control pull-left" id="event" name="event" style="width:300px">
             <c:forEach items="${events}" var="event" varStatus="i">
@@ -112,6 +115,9 @@ function timerStatus(){
     	}else if(readerStatus == 1){
     		rtn = "Connected";
     		jQuery("#mgmt-view").show();
+    		jQuery("#btn-connect").hide();
+    		jQuery("#btn-start").show();
+    		jQuery("#btn-purge").show();
     	}else if(readerStatus == 2){
     		rtn = "Reading...";
     		jQuery("#mgmt-view").show();
@@ -146,6 +152,25 @@ function timerConnect(){
 	});
 	r.fail(function( jqXHR, textStatus ) {
 		jQuery("#mgmt-view").hide();
+		jQuery("#progress").hide();
+	});
+}
+
+function timerPurge(){
+	jQuery("#progress").show();
+	var r = jQuery.ajax({
+		url: "/bibs-server/events/timer/purge",
+		type: "GET",
+		dataType: "html"
+		});
+	r.done(function( data ) {
+		if(data != "true"){
+    		// error?
+		}
+		jQuery("#progress").hide();
+		timerStatus();
+	});
+	r.fail(function( jqXHR, textStatus ) {
 		jQuery("#progress").hide();
 	});
 }
@@ -241,7 +266,7 @@ function readerQuery(eventId){
 			jQuery("#results"+eventId).show();
 			});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		// error?
 		});
 }
 
@@ -261,19 +286,20 @@ function makeTable(data,results){
 
 function stopReader(){
 	readerOn=false;
-	jQuery('#btn-stop').hide();
-	jQuery('#btn-start').show();
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/stop",
 		type: "GET",
-		data: { id : "start" },
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		if(msg!="true") alert("Reader stop failed.")
+		if(msg=="true"){
+			jQuery('#btn-stop').hide();
+			jQuery('#btn-start').show();
+			timerStatus();
+		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		timerStatus();
 		});
 }
 
@@ -284,10 +310,12 @@ function setRunning(eventId,order){
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		if(msg!="true") alert("Run failed.")
+		if(msg!="true"){
+			// error
+		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		// error
 		});
 }
 
@@ -299,10 +327,12 @@ function stopRunning(eventId){
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		if(msg!="true") alert("Done failed.")
+		if(msg!="true") {
+			//error
+		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		// error
 		});
 }
 
@@ -313,11 +343,11 @@ function gun(eventId){
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		if(msg!="true") alert("Gun failed.")
-		else jQuery("#btn-done-"+eventId).show();
+		if(msg=="true") 
+			jQuery("#btn-done-"+eventId).show();
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		// error?
 		});
 }
 
@@ -341,7 +371,7 @@ function getRunning(eventId,order){
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
+		// error?
 		});
 }
 </script>

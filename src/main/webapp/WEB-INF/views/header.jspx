@@ -55,6 +55,9 @@
 	.dijitCalendarPopup{
 		background-color: #FFF;
 	}
+	.dijitCheckBoxInput{
+		opacity: 1 !important;
+	}
 	</style>
 	
 </div>
