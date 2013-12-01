@@ -264,7 +264,9 @@ public class ThingMagicTimer implements Timer{
 		private int getReadPower() {
 			int readPower = 0;
 			try {
-				readPower =  (int) r.paramGet("/reader/radio/readPower");
+				readPower =  Integer.valueOf(
+						r.paramGet("/reader/radio/readPower").toString())
+						.intValue();
 			} catch (ReaderException e) {
 				e.printStackTrace();
 			}
@@ -283,7 +285,9 @@ public class ThingMagicTimer implements Timer{
 		private int getWritePower() {
 			int writePower = 0;
 			try {
-				writePower =  (int) r.paramGet("/reader/radio/writePower");
+				writePower =  Integer.valueOf(
+						r.paramGet("/reader/radio/readPower").toString())
+						.intValue();
 			} catch (ReaderException e) {
 				e.printStackTrace();
 			}

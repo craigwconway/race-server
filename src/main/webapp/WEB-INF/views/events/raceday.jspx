@@ -29,9 +29,10 @@
 	<div id="timer-functions" style="margin-bottom: 16px;">
 	
 		<span id="reader-status-title"
-			style="margin:2px;"><strong>Reader Status:</strong> </span>
+			style="margin:2px;"><strong>Finish Line Reader Status:</strong> 
 		<span id="reader-status"
 			style="margin:2px;"> Not Connected </span>
+		</span>
 		<button id="btn-connect" type="button" class="btn btn-default" 
 			style="margin:2px;"
 			onclick="timerConnect();">Connect</button>
@@ -41,20 +42,20 @@
 		<button id="btn-stop" type="button" class="btn btn-danger" 
 			style="margin:2px;display:none;"
 			onclick="stopReader();">Stop Scanning</button>
+		<button id="btn-purge" type="button" class="btn btn-default" 
+			style="margin:2px;display:none;"
+			onclick="timerPurge();">Clear</button>
 		<span id="progress">
 			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
    		</span>
-		<button id="btn-purge" type="button" class="btn btn-default pull-right" 
-			style="margin:2px;display:none;"
-			onclick="timerPurge();">Clear Timer</button>
 	
 	</div>
 
-<div id="mgmt-view" style="display:none">
+<div id="mgmt-view" style="display:none" class="pull-left">
 
 	 <div class="pull-left" style="padding-bottom:16px;">
-        <div class="pull-left" style="padding:6px;">
-            <strong>Choose Event(s) to Run</strong>
+        <div style="padding:6px;">
+            <strong>Event(s) to Run</strong>
         </div>
         <select class="form-control pull-left" id="event" name="event" style="width:300px">
             <c:forEach items="${events}" var="event" varStatus="i">
@@ -69,14 +70,16 @@
 	
 	<div id="eventTemplate" style="display:none;">
 		<div id="event---event_id--" class="event-row">
-			<div class="event-name">--event_name--</div>
-			<div><span>Start time: </span><span id="starttime---event_id--">--event_starttime--</span></div>
-			<button id="btn-edit---event_id--" type="button" class="btn btn-info"
-				style="margin:2px;" onclick="window.location='/bibs-server/events/--event_id--';">Edit Start Time</button>
-			<button id="btn-gun---event_id--" type="button" class="btn btn-success" 
-				style="margin:2px;" onclick="gun(--event_id--);jQuery(this).hide();">Fire Gun</button>
-			<button id="btn-done---event_id--" type="button" class="btn btn-danger" 
-				style="margin:2px;" onclick="stopRunning(--event_id--);">Finish</button>
+			<div>
+			<span class="event-name">--event_name--</span>
+			<span><strong>Start time: </strong></span>
+			<span id="starttime---event_id--">--event_starttime--</span>
+			<a href="/bibs-server/events/--event_id--?form"> Edit </a> 
+			<a href="#" id="btn-gun---event_id--" style="color:red;"
+				onclick="gun(--event_id--);"> Fire Gun! </a> 
+			<a href="#" id="btn-done---event_id--" 
+				onclick="stopRunning(--event_id--);"> Finish </a>
+			</div>
 			<table id="results--event_id--" class="table" style="margin:30px;display:none;"><tr><td></td></tr></table>
 		</div>
 	</div>
@@ -111,20 +114,27 @@ function timerStatus(){
     	var rtn = "No Connection";
     	if(readerStatus == 0){
     		rtn = "Disconnected";
-    		jQuery("#mgmt-view").hide();
     	}else if(readerStatus == 1){
     		rtn = "Connected";
+    	}else if(readerStatus == 2){
+    		rtn = "Reading...";
+    	}else if(readerStatus == 3){
+    		rtn = "Writing...";
+    		timerConnect();
+    	}
+    	
+    	if(readerStatus == 1 || readerStatus == 2){
     		jQuery("#mgmt-view").show();
     		jQuery("#btn-connect").hide();
     		jQuery("#btn-start").show();
     		jQuery("#btn-purge").show();
-    	}else if(readerStatus == 2){
-    		rtn = "Reading...";
-    		jQuery("#mgmt-view").show();
-    	}else if(readerStatus == 3){
-    		rtn = "Writing...";
-    		jQuery("#mgmt-view").show();
+    	}else{
+    		jQuery("#mgmt-view").hide();
+    		jQuery("#btn-connect").show();
+    		jQuery("#btn-start").hide();
+    		jQuery("#btn-purge").hide();
     	}
+    	
     	jQuery("#reader-status").html(rtn);
     	jQuery("#progress").hide();
 	});
@@ -137,7 +147,7 @@ function timerStatus(){
 function timerConnect(){
 	jQuery("#progress").show();
 	var r = jQuery.ajax({
-		url: "/bibs-server/events/timer/connect",
+		url: "/bibs-server/events/timer/reconnect",
 		type: "GET",
 		dataType: "html"
 		});
@@ -182,7 +192,9 @@ function lookupStartTime(eventId){
 		dataType: "json"
 		});
 	r.done(function( data ) {
-			jQuery('#starttime-'+eventId).html(new Date(data.timeStart));
+		var date = new Date(data.timeStart);
+		var dateStr = date.toString().split("GMT")[0];
+		jQuery('#starttime-'+eventId).html(dateStr);
 	});
 	r.fail(function( jqXHR, textStatus ) {
 		jQuery('#starttime-'+eventId).html(new Date());
@@ -217,8 +229,8 @@ function getStartTime(){
 function closeWarning(){
 	// do not close
 	var warning = "The finish line reader has been started!\r\nIf you leave this page, the Announcer's list will be reset.";
-	alert(warning);
-	window.onbeforeunload = function(e) { return warning; };
+	//alert(warning);
+	//window.onbeforeunload = function(e) { return warning; };
 }
 
 function startReader(){
@@ -234,6 +246,8 @@ function startReader(){
 		}else{
 			jQuery('#btn-start').hide();
 			jQuery('#btn-stop').show(200);
+			jQuery("#progress").show();
+			jQuery("#timer-status").html("Reading...");
 		}
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
@@ -245,7 +259,7 @@ function startReader(){
 		if(!readerOn) return true;
 		getReaderResults();
 	},3000);
-	closeWarning();
+	//closeWarning();
 }
 
 function getReaderResults(){
@@ -256,6 +270,7 @@ function getReaderResults(){
 }
 
 function readerQuery(eventId){
+	console.log("readerQuery "+eventId);
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/results?event="+eventId,
 		type: "GET",
@@ -295,6 +310,8 @@ function stopReader(){
 		if(msg=="true"){
 			jQuery('#btn-stop').hide();
 			jQuery('#btn-start').show();
+			jQuery("#progress").hide();
+			jQuery("#timer-status").html("Stopping...");
 			timerStatus();
 		}
 		});
@@ -346,8 +363,10 @@ function gun(eventId){
 		if(msg=="true") 
 			jQuery("#btn-done-"+eventId).show();
 		});
+		jQuery("#starttime-"+eventId).html(new Date().toString().split("GMT")[0]);
+		jQuery("#btn-gun-"+eventId).hide();
 	request.fail(function( jqXHR, textStatus ) {
-		// error?
+		alert("Error firing gun.")
 		});
 }
 
@@ -362,7 +381,7 @@ function getRunning(eventId,order){
 			var eventId = data[i].id;
 			var eventName = data[i].name;
 			makeEventRow(eventId,eventName);
-			jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart));
+			jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart).toString().split("GMT")[0]);
 			if(data[i].gunFired == true){
 				jQuery("#btn-gun-"+eventId).hide();
 				jQuery("#btn-done-"+eventId).show();

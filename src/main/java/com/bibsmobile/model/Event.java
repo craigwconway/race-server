@@ -84,8 +84,8 @@ public class Event {
     private String shuttles;
     private String courseRules;
     private Long timerStart;  
-    private int running = 0;
-    private boolean gunFired = false;
+    private int running;
+    private boolean gunFired;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style="SS")

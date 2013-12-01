@@ -75,7 +75,7 @@
     
 	<bean id="timer" class="com.bibsmobile.service.DummyTimer" 
 		 destroy-method="cleanup">
-		<property name="readerURI" value="tmr://10.0.1.16"/>
+		<property name="readerURI" value="tmr://192.168.1.100"/>
 	</bean>
 		
 </beans>

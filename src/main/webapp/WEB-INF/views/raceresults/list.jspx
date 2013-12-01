@@ -54,6 +54,19 @@
     			$("#query").focus();
     		});
     }
+    
+    // press enter submit
+    $("#query").keyup(function(event){
+        if(event.keyCode == 13){
+			search();
+        }
+    });
+    $("#bib").keyup(function(event){
+        if(event.keyCode == 13){
+			search();
+        }
+    });
+    
     </script> 
     
     <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">

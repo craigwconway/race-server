@@ -4,14 +4,14 @@
     <jsp:output omit-xml-declaration="yes"/>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <button class="btn btn-default btn-top" onclick="redirectImport()" type="button">
-		Import Runners
+		Import
 		</button>
         <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
-		Export Runners
+		Export
 		</button>
     </sec:authorize>
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
-		View Awards
+		Awards
 	</button>
     <script>
 	function redirectImport(){

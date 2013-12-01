@@ -27,9 +27,9 @@ public class DummyTimer implements Timer {
 			java.util.Random r = new java.util.Random();
 			times.clear();
 			Integer rand = r.nextInt(20);
-			if(!done.contains(rand)){
-				times.put(rand, new Date().getTime());
-				done.add(rand);
+			if(!done.contains(rand)){ // add NEW results to temp cache
+				times.put(rand, new Date().getTime()); 
+				done.add(rand); // do not return same result twice
 			}
 			return times;
 		}

@@ -57,6 +57,20 @@ public class EventController {
     	}
     	return rtn;
     }
+    @RequestMapping(value = "/timer/reconnect", method = RequestMethod.GET)
+    @ResponseBody
+    public String timerReconnect(){
+    	String rtn = "false";
+    	try{
+    		timer.disconnect();
+    		timer.init();
+    		if(timer.getStatus()==1)
+    			rtn = "true";
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	return rtn;
+    }
 
     @RequestMapping(value = "/timer/status", method = RequestMethod.GET)
     @ResponseBody
@@ -160,7 +174,10 @@ public class EventController {
         try {
         	List<RaceResult> runners = new ArrayList<RaceResult>();
         	Map <Integer,Long> bibtime = timer.getTimes(); // only bibs not yet returned
+        	if(bibtime.isEmpty())
+        		System.out.println("No times returned from reader");
         	for(Integer bib:bibtime.keySet()){
+        		System.out.println("Reader: "+bib+" : "+bibtime.get(bib));
         		Event event = Event.findEvent(Long.valueOf(event_id).longValue());
     			if(null==event) break;
     			// make sure we have an event start time
@@ -189,7 +206,7 @@ public class EventController {
         		long startTime = event.getTimerStart();
         		result.setTimeofficial( getHoursMinutesSeconds(timerTime-startTime)	);
         		if (found) result.merge();
-        		// do not add if does not match existing // else result.persist();
+        		else result.persist();
         		runners.add(result);
         	}
         	return RaceResult.toJsonArray(runners);
