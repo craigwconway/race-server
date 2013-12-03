@@ -5,6 +5,12 @@
     <jsp:output omit-xml-declaration="yes"/>
 	
 	<style>
+	.corners{
+		margin: 16px;
+		padding: 16px;
+		border:solid #DDD 1px;
+		border-radius: 5px;
+	}
 	.event-row{
 		margin: 16px;
 		padding: 16px;
@@ -26,24 +32,24 @@
 	}
 	</style>
 	
-	<div id="timer-functions" style="margin-bottom: 16px;">
+	<div id="timer-functions" style="margin-bottom: 16px;" class="corners">
 	
 		<span id="reader-status-title"
-			style="margin:2px;"><strong>Finish Line Reader Status:</strong> 
+			style="margin:0;margin-left: 3px;"><strong>Reader Status:</strong> 
 		<span id="reader-status"
-			style="margin:2px;"> Not Connected </span>
+			style="margin:0;margin-left: 3px;"> Not Connected </span>
 		</span>
 		<button id="btn-connect" type="button" class="btn btn-default" 
-			style="margin:2px;"
+			style="margin:0;margin-left: 3px;"
 			onclick="timerConnect();">Connect</button>
 		<button id="btn-start" type="button" class="btn btn-success" 
-			style="margin:2px;display:none;"
+			style="margin:0;margin-left: 3px;display:none;"
 			onclick="startReader();">Start Scanning</button>
 		<button id="btn-stop" type="button" class="btn btn-danger" 
-			style="margin:2px;display:none;"
+			style="margin:0;margin-left: 3px;display:none;"
 			onclick="stopReader();">Stop Scanning</button>
 		<button id="btn-purge" type="button" class="btn btn-default" 
-			style="margin:2px;display:none;"
+			style="margin:0;margin-left: 3px;display:none;"
 			onclick="timerPurge();">Clear</button>
 		<span id="progress">
 			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
@@ -54,8 +60,8 @@
 <div id="mgmt-view" style="display:none" class="pull-left">
 
 	 <div class="pull-left" style="padding-bottom:16px;">
-        <div style="padding:6px;">
-            <strong>Event(s) to Run</strong>
+        <div style="padding:6px;" class="pull-left">
+            <strong>Select Event(s) to Run</strong>
         </div>
         <select class="form-control pull-left" id="event" name="event" style="width:300px">
             <c:forEach items="${events}" var="event" varStatus="i">
@@ -63,8 +69,8 @@
             </c:forEach>
         </select>
 		<button id="btn-add" type="button" class="btn btn-default" 
-			style="margin:2px;"
-			onclick="addEvent();">Add</button>
+			style="margin:0;margin-left: 3px;"
+			onclick="addEvent();">Add Event</button>
     </div>
 	<div style="clear:both;"/>
 	
@@ -72,8 +78,8 @@
 		<div id="event---event_id--" class="event-row">
 			<div>
 			<span class="event-name">--event_name--</span>
-			<span><strong>Start time: </strong></span>
-			<span id="starttime---event_id--">--event_starttime--</span>
+			<span id="starttime-section---event_id--"><strong>Start time: </strong>
+			<span id="starttime---event_id--">--event_starttime--</span></span>
 			<a href="/bibs-server/events/--event_id--?form"> Edit </a> 
 			<a href="#" id="btn-gun---event_id--" style="color:red;"
 				onclick="gun(--event_id--);"> Fire Gun! </a> 

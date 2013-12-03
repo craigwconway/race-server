@@ -73,7 +73,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
     
-	<bean id="timer" class="com.bibsmobile.service.DummyTimer" 
+	<bean id="timer" class="com.bibsmobile.service.ThingMagicTimer" 
 		 destroy-method="cleanup">
 		<property name="readerURI" value="tmr://192.168.1.100"/>
 	</bean>

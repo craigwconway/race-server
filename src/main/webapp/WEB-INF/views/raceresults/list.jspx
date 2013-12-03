@@ -68,17 +68,9 @@
     });
     
     </script> 
-    
-    <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
-        <button class="btn btn-primary pull-left btn-top" 
-        	onclick="document.location='/bibs-server/raceresults?form&amp;event=${param.event}';"
-        	 type="button">
-		Add Runner
-	</button>
-	</sec:authorize>
     <div class="pull-left" >
         <div class="pull-left" style="padding:6px;">
-            <strong>Event</strong>
+            <strong>Filter by Event</strong>
         </div>
         <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()" style="width:300px">
             <option id="event-0" value="0">All Events</option>
@@ -87,8 +79,15 @@
             </c:forEach>
         </select>
     </div>
+    <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
+        <button class="btn btn-primary pull-left btn-top" style="margin:0;margin-left: 3px;"
+        	onclick="document.location='/bibs-server/raceresults?form&amp;event=${param.event}';"
+        	 type="button">
+		Add Runner
+	</button>
+	</sec:authorize>
     <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-        <button class="btn btn-primary pull-left btn-top" 
+        <button class="btn btn-primary pull-left btn-top" style="margin:0;margin-left: 3px;"
         	onclick="document.location='/bibs-server/raceresults/bibs';" type="button">
 		Write Bibs
 	</button>
@@ -102,7 +101,8 @@
 	    <input type="text" class="form-control" id="bib" 
 	    	style="width:100px;display:inline;"
 	    	placeholder="by Bib"/>
-		<button onclick="search()" class="btn btn-default">Go</button>
+		<button onclick="search()" class="btn btn-default" 
+			style="margin:0;margin-left: 3px;">Go</button>
 	</div>
 		
     <div style="clear:both;"/>

@@ -3,6 +3,33 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
  
+ <div id="timer-functions" style="margin-bottom: 16px;" class="corners">
+	
+		<span id="reader-status-title"
+			style="margin:0;margin-left: 3px;"><strong>Reader Status:</strong> 
+		<span id="reader-status"
+			style="margin:0;margin-left: 3px;"> Not Connected </span>
+		</span>
+		<button id="btn-connect" type="button" class="btn btn-default" 
+			style="margin:0;margin-left: 3px;"
+			onclick="timerConnect();">Connect</button>
+		<button id="btn-start" type="button" class="btn btn-success" 
+			style="margin:0;margin-left: 3px;display:none;"
+			onclick="startReader();">Start Scanning</button>
+		<button id="btn-stop" type="button" class="btn btn-danger" 
+			style="margin:0;margin-left: 3px;display:none;"
+			onclick="stopReader();">Stop Scanning</button>
+		<button id="btn-purge" type="button" class="btn btn-default" 
+			style="margin:0;margin-left: 3px;display:none;"
+			onclick="timerPurge();">Clear</button>
+		<span id="progress">
+			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
+   		</span>
+	
+	</div>
+
+<div id="mgmt-view" style="display:none">
+ 
 	<div style="margin:12px;">
 		<input type="text" class="form-control" id="bib-input0" 
 			style="display:inline;width:100px;" placeholder="First Bib" />
@@ -12,10 +39,10 @@
 			style="margin-right:2px;" id="program-start"
 			onclick="startReader();">Start Writing</button>
 		<button type="button" class="btn btn-danger" 
-			style="margin:2px;display:none;" id="program-stop"
+			style="margin:0;margin-left: 3px;display:none;" id="program-stop"
 			onclick="stopReader();">Stop Writing</button>
 		<button type="button" class="btn" 
-			style="margin:2px;display:none;" id="status">
+			style="margin:0;margin-left: 3px;display:none;" id="status">
 				Writing Bibs...</button>
 	</div>
 	
@@ -34,7 +61,7 @@
 	<div id="results" class="row" style="margin:12px;"> 
 		<table id="raceresults" class="table"></table>
 	</div>
-
+</div>
     
 <script>
 
@@ -131,6 +158,66 @@ function validateMulti(){
 	return true;
 }
 
+window.onload = timerStatus;
+
+function timerStatus(){
+	jQuery("#progress").show();
+	var r = jQuery.ajax({
+		url: "/bibs-server/events/timer/status",
+		type: "GET",
+		dataType: "html"
+		});
+	r.done(function( data ) {
+  	readerStatus = data; 
+  	var rtn = "No Connection";
+  	if(readerStatus == 0){
+  		rtn = "Disconnected";
+  	}else if(readerStatus == 1){
+  		rtn = "Connected";
+  	}else if(readerStatus == 2){
+  		rtn = "Reading...";
+  	}else if(readerStatus == 3){
+  		rtn = "Writing...";
+  		timerConnect();
+  	}
+  	
+  	if(readerStatus == 1 || readerStatus == 2){
+  		jQuery("#mgmt-view").show();
+  		jQuery("#btn-connect").hide();
+  	}else{
+  		jQuery("#mgmt-view").hide();
+  		jQuery("#btn-start").hide();
+  	}
+  	
+  	jQuery("#reader-status").html(rtn);
+  	jQuery("#progress").hide();
+	});
+	r.fail(function( jqXHR, textStatus ) {
+		//alert("Timing Hardware Not Found");
+		jQuery("#mgmt-view").hide();
+	});
+}
+
+function timerConnect(){
+	jQuery("#progress").show();
+	var r = jQuery.ajax({
+		url: "/bibs-server/events/timer/reconnect",
+		type: "GET",
+		dataType: "html"
+		});
+	r.done(function( data ) {
+		if(data == "true"){
+  		jQuery("#mgmt-view").show();
+			jQuery("#btn-connect").hide(200);
+		}
+		jQuery("#progress").hide();
+		timerStatus();
+	});
+	r.fail(function( jqXHR, textStatus ) {
+		jQuery("#mgmt-view").hide();
+		jQuery("#progress").hide();
+	});
+}
 </script>
 
 </div>
