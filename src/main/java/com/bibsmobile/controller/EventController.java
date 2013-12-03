@@ -227,6 +227,7 @@ public class EventController {
 		//l = l % 60000;
 		int seconds =  (int) ((l/1000) % 60);
 		System.out.println("Seconds " + seconds);
+		int millis = (int) (l%100);
     	if(hours>0 && hours <=9) rtn = "0"+hours;
     	else if (hours > 9) rtn = hours +":";
     	else if (hours == 0) rtn = "00:";
@@ -235,6 +236,7 @@ public class EventController {
     	else if (minutes == 0) rtn = rtn + "00";
     	if(seconds>0 && seconds <=9) rtn = rtn + ":0"+seconds;
     	else if(seconds > 9) rtn = rtn + ":"+seconds;
+    	rtn = rtn + "."+millis;
 		return rtn;
 	}
 

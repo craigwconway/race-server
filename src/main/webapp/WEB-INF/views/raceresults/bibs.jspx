@@ -13,15 +13,9 @@
 		<button id="btn-connect" type="button" class="btn btn-default" 
 			style="margin:0;margin-left: 3px;"
 			onclick="timerConnect();">Connect</button>
-		<button id="btn-start" type="button" class="btn btn-success" 
-			style="margin:0;margin-left: 3px;display:none;"
-			onclick="startReader();">Start Scanning</button>
 		<button id="btn-stop" type="button" class="btn btn-danger" 
 			style="margin:0;margin-left: 3px;display:none;"
 			onclick="stopReader();">Stop Scanning</button>
-		<button id="btn-purge" type="button" class="btn btn-default" 
-			style="margin:0;margin-left: 3px;display:none;"
-			onclick="timerPurge();">Clear</button>
 		<span id="progress">
 			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
    		</span>
@@ -73,7 +67,7 @@ function startReader(){
 	readerOn=true;
 	jQuery("#program-stop").show();
 	jQuery("#program-start").hide();
-	jQuery("#status").show(500);
+	jQuery("#status").show();
 	
 	// set current bib
 	if(currentBib==0) currentBib = jQuery("#bib-input0").val();
@@ -89,20 +83,38 @@ function startReader(){
 		currentBib++;
 	}
 	alert("Done!");
-	stopReader();
+	jQuery("#program-stop").hide();
+	jQuery("#program-start").show();
+	jQuery("#status").hide();
+	timerConnect();
 }
 
 function stopReader(){
 	readerOn=false;
-	jQuery("#status").hide(500);
-	jQuery("#program-start").show();
-	jQuery("#program-stop").hide();
+	jQuery('#btn-stop').hide();
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/stop",
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		if(msg=="true"){
+			jQuery("#progress").hide();
+			jQuery("#timer-status").html("Stopping...");
+			timerStatus();
+		}else{
+			jQuery('#btn-stop').show();
+		}
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		timerStatus();
+		});
 }
 
 function writeBib1(){
 	var bib = jQuery("#bib-input").val();
 	jQuery("#status-bar").html("Writing...");
-	jQuery("#status-bar").show(500);
+	jQuery("#status-bar").show();
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/write",
 		type: "GET",
@@ -161,7 +173,6 @@ function validateMulti(){
 window.onload = timerStatus;
 
 function timerStatus(){
-	jQuery("#progress").show();
 	var r = jQuery.ajax({
 		url: "/bibs-server/events/timer/status",
 		type: "GET",
@@ -178,19 +189,22 @@ function timerStatus(){
   		rtn = "Reading...";
   	}else if(readerStatus == 3){
   		rtn = "Writing...";
-  		timerConnect();
   	}
   	
-  	if(readerStatus == 1 || readerStatus == 2){
+  	if(readerStatus == 1 ){
   		jQuery("#mgmt-view").show();
   		jQuery("#btn-connect").hide();
-  	}else{
+  		jQuery("#progress").hide();
+  	}else if(readerStatus == 2 || readerStatus == 3){
+  		jQuery("#btn-connect").hide();
   		jQuery("#mgmt-view").hide();
-  		jQuery("#btn-start").hide();
+  		jQuery("#btn-stop").show();
+  		jQuery("#progress").show();
+  	}else{
+  		jQuery("#progress").hide();
   	}
   	
   	jQuery("#reader-status").html(rtn);
-  	jQuery("#progress").hide();
 	});
 	r.fail(function( jqXHR, textStatus ) {
 		//alert("Timing Hardware Not Found");

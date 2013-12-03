@@ -37,7 +37,9 @@ public class ThingMagicTimer implements Timer{
 			status = 0;
 			readerURI = getReaderURI();
 			times = new HashMap <Integer, Long> ();
+			tmpTimes = new HashMap <Integer, Long> ();
 			startTimes = new HashMap <Integer, Long>();
+			tmpStartTimes = new HashMap <Integer, Long> ();
             this.connect();
             bibListener = null;
             
@@ -45,6 +47,9 @@ public class ThingMagicTimer implements Timer{
 		
 		public void purge(){
 			times = new HashMap<Integer,Long>();
+			tmpTimes = new HashMap<Integer,Long>();
+			startTimes = new HashMap<Integer,Long>();
+			tmpStartTimes = new HashMap<Integer,Long>();
 		}
 		
 		public void init(){
@@ -140,7 +145,10 @@ public class ThingMagicTimer implements Timer{
 			}
 		}
 		public HashMap <Integer,Long> getTimes() {
-			return times;
+			HashMap<Integer, Long> tmp = new HashMap<Integer, Long> ();
+			tmp = times;
+			times = new HashMap<Integer,Long> ();
+			return tmp;
 		}
 		
 		public void writeTag(int num) throws Exception{
@@ -207,6 +215,7 @@ public class ThingMagicTimer implements Timer{
 		      System.out.println("New tag: " + t.toString());
 
 		          //System.out.println("New tag: " + t.toString());
+		      if(!tmpTimes.containsKey(new Integer(bibnum))) {
 		          tmpTimes.put(new Integer(bibnum), new Long(bibtime));
 		          new java.util.Timer().schedule( 
 		        	        new java.util.TimerTask() {
@@ -215,8 +224,12 @@ public class ThingMagicTimer implements Timer{
 		        	            	times.put(new Integer(bibnum), new Long(tmpTimes.get(bibnum)));
 		        	            }
 		        	        }, 
-		        	        5000 
+		        	        10000 
 		        	);
+		      }
+		      else {
+		    	  tmpTimes.put(new Integer(bibnum), new Long(bibtime));
+		      }
 		    }
 		  }
 		class StartListener implements ReadListener
@@ -230,19 +243,10 @@ public class ThingMagicTimer implements Timer{
 		    		  (bibdata[2] & 0xFF) << 8 | 
 		    		  (bibdata[1] & 0xFF) << 16 |
 		    		  (bibdata[0] & 0xFF) << 24;
-		      System.out.println("New tag: " + t.toString());
+		      //System.out.println("New tag: " + t.toString());
 
-		          //System.out.println("New tag: " + t.toString());
-		          tmpStartTimes.put(new Integer(bibnum), new Long(bibtime));
-		          new java.util.Timer().schedule( 
-		        	        new java.util.TimerTask() {
-		        	            @Override
-		        	            public void run() {
-		        	            	startTimes.put(new Integer(bibnum), new Long(tmpTimes.get(bibnum)));
-		        	            }
-		        	        }, 
-		        	        5000 
-		        	);
+		          System.out.println("StartTime: " + t.toString());
+		          startTimes.put(new Integer(bibnum), new Long(bibtime));
 		    }
 		  }
 

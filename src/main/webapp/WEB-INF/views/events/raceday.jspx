@@ -100,12 +100,16 @@ var readerOn=false;
 var readerStatus = 0;
 
 window.onload = racedayInit;
-//window.onunload = stopReader;
+window.onunload = racedayEnd;
 
 function racedayInit(){
 	jQuery("#progress").hide();
 	getRunning();
 	timerStatus();
+}
+
+function racedayEnd(){
+	//stopReader();
 }
 
 function timerStatus(){
@@ -124,6 +128,7 @@ function timerStatus(){
     		rtn = "Connected";
     	}else if(readerStatus == 2){
     		rtn = "Reading...";
+    		startReader();
     	}else if(readerStatus == 3){
     		rtn = "Writing...";
     		timerConnect();
@@ -253,7 +258,7 @@ function startReader(){
 			jQuery('#btn-start').hide();
 			jQuery('#btn-stop').show(200);
 			jQuery("#progress").show();
-			jQuery("#timer-status").html("Reading...");
+			jQuery("#reader-status").html("Reading...");
 		}
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
@@ -307,6 +312,7 @@ function makeTable(data,results){
 
 function stopReader(){
 	readerOn=false;
+	jQuery('#btn-stop').hide();
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/stop",
 		type: "GET",
@@ -314,11 +320,12 @@ function stopReader(){
 		});
 	request.done(function( msg ) {
 		if(msg=="true"){
-			jQuery('#btn-stop').hide();
 			jQuery('#btn-start').show();
 			jQuery("#progress").hide();
 			jQuery("#timer-status").html("Stopping...");
 			timerStatus();
+		}else{
+			jQuery('#btn-stop').show();
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
