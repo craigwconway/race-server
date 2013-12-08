@@ -41,6 +41,6 @@
                 </tr>
             </c:forEach>
         </table>
-        <field:simple field="resultsImport" id="c_com_bibsmobile_model_ResultsFileMapping_resultsImport" messageCode="entity_reference_not_managed" messageCodeAttribute="Results Import" z="WfklVM3vNlpLtZ9/wSQpRRJgxvw="/>
+        <field:simple field="resultsImport" id="c_com_bibsmobile_model_ResultsFileMapping_resultsImport" messageCode="entity_reference_not_managed" messageCodeAttribute="Results Import" z="user-managed" render="false"/>
     </form:update>
 </div>
