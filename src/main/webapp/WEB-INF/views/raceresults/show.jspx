@@ -26,7 +26,6 @@
         <field:display field="timetrans2" id="s_com_bibsmobile_model_RaceResult_timetrans2" object="${raceresult}" render="false" z="user-managed"/>
         <field:display field="timebike" id="s_com_bibsmobile_model_RaceResult_timebike" object="${raceresult}" render="false" z="user-managed"/>
         <field:display field="timepace" id="s_com_bibsmobile_model_RaceResult_timepace" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timeofficial" id="s_com_bibsmobile_model_RaceResult_timeofficial" object="${raceresult}" render="true" z="user-managed"/>
         <field:display field="rankoverall" id="s_com_bibsmobile_model_RaceResult_rankoverall" object="${raceresult}" render="false" z="user-managed"/>
         <field:display field="rankage" id="s_com_bibsmobile_model_RaceResult_rankage" object="${raceresult}" render="false" z="user-managed"/>
         <field:display field="rankgender" id="s_com_bibsmobile_model_RaceResult_rankgender" object="${raceresult}" render="false" z="user-managed"/>
@@ -52,5 +51,6 @@
         <field:display field="timemile4" id="s_com_bibsmobile_model_RaceResult_timemile4" object="${raceresult}" render="false" z="user-managed"/>
         <field:display date="true" dateTimePattern="${raceResult_updated_date_format}" field="updated" id="s_com_bibsmobile_model_RaceResult_updated" object="${raceresult}" render="false" z="user-managed"/>
         <field:display field="userProfile" id="s_com_bibsmobile_model_RaceResult_userProfile" object="${raceresult}" render="false" z="user-managed"/>
+        <field:display field="timeofficial" id="s_com_bibsmobile_model_RaceResult_timeofficial" object="${raceresult}" render="true" z="user-managed"/>
     </page:show>
 </div>

@@ -57,7 +57,7 @@
 	
 	</div>
 
-<div id="mgmt-view" style="display:none" class="pull-left">
+<div id="mgmt-view" style="margin-left:30px;display:none;" class="pull-left">
 
 	 <div class="pull-left" style="padding-bottom:16px;">
         <div style="padding:6px;" class="pull-left">
@@ -178,21 +178,19 @@ function timerConnect(){
 }
 
 function timerPurge(){
-	jQuery("#progress").show();
 	var r = jQuery.ajax({
 		url: "/bibs-server/events/timer/purge",
 		type: "GET",
 		dataType: "html"
 		});
 	r.done(function( data ) {
-		if(data != "true"){
-    		// error?
+		if(data == "true"){
+    		alert("Reader cleared.");
+		}else{
+			jQuery("#btn-purge").html("Error");
 		}
-		jQuery("#progress").hide();
-		timerStatus();
 	});
 	r.fail(function( jqXHR, textStatus ) {
-		jQuery("#progress").hide();
 	});
 }
 

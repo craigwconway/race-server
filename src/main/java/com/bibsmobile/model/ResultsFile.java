@@ -42,11 +42,11 @@ public class ResultsFile {
     private long filesize;
 
     @NotNull
-    @Size(max = 128)
+    @Size(max = 128) 
     private String filePath; 
     
     @Transient
-    private byte[] content;
+    private byte[] content; 
     
     @Override
     public String toString(){

@@ -47,10 +47,16 @@
         <context:exclude-filter expression=".*_Roo_.*" type="regex"/>
         <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
+    
     <bean class="org.springframework.web.multipart.support.MultipartFilter" id="multipartFilter">
         <property name="multipartResolverBeanName" value="multipartResolver"/>
     </bean>
-    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"/>
+    <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+            <property name="maxUploadSize">
+			<value>10614400</value>
+		</property>
+	</bean>
+	
     <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
         <property name="driverClassName" value="${database.driverClassName}"/>
         <property name="url" value="${database.url}"/>
