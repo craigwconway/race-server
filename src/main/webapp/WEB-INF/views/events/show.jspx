@@ -66,6 +66,6 @@
         <field:display field="timerStart" id="s_com_bibsmobile_model_Event_timerStart" object="${event}" render="false" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" render="false" z="user-managed"/>
         <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" render="false" z="user-managed"/>
-        <field:display field="gunFired" id="s_com_bibsmobile_model_Event_gunFired" object="${event}" render="false" z="user-manager"/>
+        <field:display field="gunFired" id="s_com_bibsmobile_model_Event_gunFired" object="${event}" render="false" z="user-managed"/>
     </page:show>
 </div>

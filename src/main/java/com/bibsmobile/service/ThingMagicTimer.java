@@ -245,7 +245,7 @@ public class ThingMagicTimer implements Timer{
 		    		  (bibdata[0] & 0xFF) << 24;
 		      //System.out.println("New tag: " + t.toString());
 
-		          System.out.println("StartTime: " + t.toString());
+		          System.out.println("StartTime: " + bibnum);
 		          startTimes.put(new Integer(bibnum), new Long(bibtime));
 		    }
 		  }
