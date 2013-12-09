@@ -207,7 +207,7 @@ public class EventController {
         		result.setTimeofficial( getHoursMinutesSeconds(timerTime-startTime)	);
         		if (found) result.merge();
         		//else result.persist();
-        		runners.add(result);
+        		if (found) runners.add(result);
         	}
         	return RaceResult.toJsonArray(runners);
         } catch (Exception e) {
