@@ -206,7 +206,7 @@ public class EventController {
         		long startTime = event.getTimerStart();
         		result.setTimeofficial( getHoursMinutesSeconds(timerTime-startTime)	);
         		if (found) result.merge();
-        		else result.persist();
+        		//else result.persist();
         		runners.add(result);
         	}
         	return RaceResult.toJsonArray(runners);
