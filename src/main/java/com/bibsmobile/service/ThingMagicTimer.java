@@ -208,6 +208,11 @@ public class ThingMagicTimer implements Timer{
 		      TagData t = tr.getTag();
 		      byte [] bibdata = t.epcBytes();
 		      long bibtime = tr.getTime();
+		      try {
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		      final int bibnum = bibdata[3] & 0xFF | 
 		    		  (bibdata[2] & 0xFF) << 8 | 
 		    		  (bibdata[1] & 0xFF) << 16 |
@@ -258,7 +263,9 @@ public class ThingMagicTimer implements Timer{
 				throw new Exception("Could not connect.");
 			}
 			try {
+				System.out.println( r.paramGet("/reader/currentTime"));
 				readerDate = (Date) r.paramGet("/reader/currentTime");
+				
 			} catch (ReaderException e) {
 				e.printStackTrace();
 				throw new Exception("Time not found");

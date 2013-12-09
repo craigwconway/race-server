@@ -81,7 +81,7 @@
     
 	<bean id="timer" class="com.bibsmobile.service.ThingMagicTimer" 
 		 destroy-method="cleanup">
-		<property name="readerURI" value="tmr://10.0.1.10"/>
+		<property name="readerURI" value="tmr://192.168.0.199"/>
 	</bean>
 		
 </beans>
