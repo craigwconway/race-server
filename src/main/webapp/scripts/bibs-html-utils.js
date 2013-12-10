@@ -39,3 +39,21 @@ function createMap(){
 //	}
 	return true;
 }
+
+function getHoursMinutesSeconds(e,l) {
+	var rtn = "";
+	var hours = Math.round((l / 3600000) );
+	var minutes = Math.round((l / 60000) % 60 );
+	var seconds = Math.round((l/1000) % 60);
+	var millis = Math.round(l%100);
+	if(hours>0 && hours <=9) rtn = "0"+hours;
+	else if (hours > 9) rtn = hours +":";
+	else if (hours == 0) rtn = "00:";
+	if(minutes>0 && minutes <=9) rtn = rtn + "0"+minutes;
+	else if(minutes > 9) rtn = rtn + ""+minutes;
+	else if (minutes == 0) rtn = rtn + "00";
+	if(seconds>0 && seconds <=9) rtn = rtn + ":0"+seconds;
+	else if(seconds > 9) rtn = rtn + ":"+seconds;
+	//rtn = rtn + "."+millis;
+	e.html(rtn);
+}
