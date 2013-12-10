@@ -195,7 +195,7 @@ function timerPurge(){
 		});
 	r.done(function( data ) {
 		if(data == "true"){
-    		alert("Reader cleared.");
+    		// alert("Reader cleared.");
 		}else{
 			jQuery("#btn-purge").html("Error");
 		}
