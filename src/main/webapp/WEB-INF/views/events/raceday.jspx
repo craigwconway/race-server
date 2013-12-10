@@ -300,14 +300,14 @@ function initTimer(eventId){
 			starttime = now - Math.max(0,data.timerStart);
 			jQuery("#event-timer-"+eventId).html(starttime);
 			setInterval(function(){
-				timer(eventId,starttime);
+				timer(eventId);
 			},1000);
 		});
 	});
 	
 }
 
-function timer(eventId,starttime){
+function timer(eventId){
 	var l = Math.max(0,jQuery("#event-timer-"+eventId).html()) + 1000 // add 1 sec
 	jQuery("#event-timer-"+eventId).html(l);
 	var e = jQuery("#event-timer-str-"+eventId);

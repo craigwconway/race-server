@@ -55,5 +55,18 @@ function getHoursMinutesSeconds(e,l) {
 	if(seconds>0 && seconds <=9) rtn = rtn + ":0"+seconds;
 	else if(seconds > 9) rtn = rtn + ":"+seconds;
 	//rtn = rtn + "."+millis;
+	
+	seconds = Math.floor(l/1000);
+	var numyears = Math.floor(seconds / 31536000);
+	var numdays = Math.floor((seconds % 31536000) / 86400); 
+	var numhours = Math.floor(((seconds % 31536000) % 86400) / 3600);
+	var numminutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
+	var numseconds = (((seconds % 31536000) % 86400) % 3600) % 60;
+	rtn = numyears + " years " +  numdays + " days " + numhours + " hours " + numminutes + " minutes " + numseconds + " seconds";
+	if(numminutes<10) numminutes = "0"+numminutes;
+	if(numseconds<10) numseconds = "0"+numseconds;
+	rtn =  numminutes + ":" + numseconds;
+	if(numhours>0) rtn = numhours + ":" + rtn;
+	
 	e.html(rtn);
 }
