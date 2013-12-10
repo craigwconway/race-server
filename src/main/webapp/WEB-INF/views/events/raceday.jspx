@@ -283,18 +283,26 @@ function startReader(){
 
 function initTimer(eventId){
 	var starttime = 0;
-
+	var now = new Date().getTime();
 	var req = jQuery.ajax({
 		url: "/bibs-server/events/"+eventId,
 		type: "GET",
 		dataType: "json"
 		});
 	req.done(function( data ) {
-		starttime = new Date().getTime() - Math.max(0,data.timerStart);
-		jQuery("#event-timer-"+eventId).html(starttime);
-		setInterval(function(){
-			timer(eventId,starttime);
-		},1000);
+		var req2 = jQuery.ajax({
+			url: "/bibs-server/events/timer/time",
+			type: "GET",
+			dataType: "html"
+			});
+		req2.done(function( data2 ) {
+			now = Math.max(0,data2);
+			starttime = now - Math.max(0,data.timerStart);
+			jQuery("#event-timer-"+eventId).html(starttime);
+			setInterval(function(){
+				timer(eventId,starttime);
+			},1000);
+		});
 	});
 	
 }

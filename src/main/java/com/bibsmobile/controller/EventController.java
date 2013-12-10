@@ -110,6 +110,18 @@ public class EventController {
         return "true";
     }
 	
+    @RequestMapping(value = "/timer/time", method = RequestMethod.GET)
+    @ResponseBody
+    public String timerTime(){
+    	try {
+			return String.valueOf(timer.getTime());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return "0";
+    }
+	
     @RequestMapping(value = "/run", method = RequestMethod.GET)
     @ResponseBody
     public static String run(@RequestParam(value = "event", required = true) long event,
