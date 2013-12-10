@@ -186,6 +186,13 @@ public class Event {
         return q.getSingleResult();
     }
 	
+	public static long countRaceResultsComplete(long event) {
+		EntityManager em = RaceResult.entityManager();
+		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event and rr.timeofficial is not null", Long.class);
+        q.setParameter("event", Event.findEvent(event) );  
+        return q.getSingleResult();
+    }
+	
 	public static List<RaceResult> findRaceResults(long event, int firstResult,int maxResults) {
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event", RaceResult.class);

@@ -87,6 +87,8 @@
 				onclick="gun(--event_id--);"> Fire Gun! </button> 
 			<button id="btn-done---event_id--" type="button" class="btn btn-default" 
 				onclick="stopRunning(--event_id--);"> Finish </button>
+				<strong>Finished: </strong>
+				<span id="runners-done---event_id--"></span>
 			</div>
 			<table id="results--event_id--" class="table" style="margin:30px;display:none;"><tr><td></td></tr></table>
 		</div>
@@ -288,7 +290,7 @@ function readerQuery(eventId){
 		dataType: "json"
 		});
 	request.done(function( data ) {
-			jQuery("#results"+eventId).prepend( makeTable(data, jQuery( "#results"+eventId).html() ) );
+			jQuery("#results"+eventId).prepend( makeTable(data, jQuery( "#results"+eventId).html(), eventId ) );
 			jQuery("#results"+eventId).show();
 			});
 	request.fail(function( jqXHR, textStatus ) {
@@ -296,10 +298,11 @@ function readerQuery(eventId){
 		});
 }
 
-function makeTable(data,results){
+function makeTable(data,results,eventId){
 	results = "";
 	for(var i in data){
 		clearTime(data[i].bib);
+		incrementDone(eventId);
 		results += "<tr>";
 		results += "<td>"+data[i].bib+"</td>";
 		results += "<td>"+data[i].timeofficial+"</td>";
@@ -309,6 +312,12 @@ function makeTable(data,results){
 		results += "</tr>";
 	}
 	return results;
+}
+
+function incrementDone(eventId){
+	var done = Math.max(0,jQuery("#runners-done-"+eventId).html().split("/")[0]);
+	var total = Math.max(0,jQuery("#runners-done-"+eventId).html().split("/")[1]);
+	jQuery("#runners-done-"+eventId).html((done+1)+"/"+total);
 }
 
 function stopReader(){
@@ -407,7 +416,8 @@ function getRunning(eventId,order){
 			var eventId = data[i].id;
 			var eventName = data[i].name;
 			makeEventRow(eventId,eventName);
-			jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart).toLocaleTimeString());
+			//jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart).toLocaleTimeString());
+			queryRunnerCount(eventId);
 			if(data[i].gunFired == true){
 				jQuery("#btn-gun-"+eventId).hide();
 				jQuery("#btn-done-"+eventId).show();
@@ -419,6 +429,28 @@ function getRunning(eventId,order){
 		// error?
 		});
 }
+
+function queryRunnerCount(eventId){
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/count?event="+eventId,
+		type: "GET",
+		dataType: "html"
+		});
+	var request2 = jQuery.ajax({
+		url: "/bibs-server/events/countcomplete?event="+eventId,
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( data ) {
+		var done = 0;
+		var total = Math.max(0,data);
+		request2.done(function( data1 ) {
+			done = Math.max(0,data1);
+			jQuery("#runners-done-"+eventId).html(done+"/"+total);
+			});
+		});
+}
+
 </script>
 
 </div>

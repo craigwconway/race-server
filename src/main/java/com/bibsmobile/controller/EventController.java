@@ -367,26 +367,38 @@ public class EventController {
 
     @RequestMapping(value = "/count", method = RequestMethod.GET)
     @ResponseBody
-    public static Long countRaceResultsByEvent(
+    public static String countRaceResultsByEvent(
     		@RequestParam(value = "event", required = true) Long event) {
         try {
-        	return Event.countRaceResults(event);
+        	return String.valueOf(Event.countRaceResults(event));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return -1l;
+        return "0";
+    }
+    
+    @RequestMapping(value = "/countcomplete", method = RequestMethod.GET)
+    @ResponseBody
+    public static String countRaceResultsCompleteByEvent(
+    		@RequestParam(value = "event", required = true) Long event) {
+        try {
+        	return String.valueOf(Event.countRaceResultsComplete(event));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "0";
     }
 
     @RequestMapping(value = "/timer/cleartime", method = RequestMethod.GET)
     @ResponseBody
-    public boolean clearTime(
+    public String clearTime(
     		@RequestParam(value = "bib", required = true) Integer bib) {
         try {
         	timer.clearTime(bib);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return "true";
     }
     
     @RequestMapping(value="/export", method = RequestMethod.GET)
