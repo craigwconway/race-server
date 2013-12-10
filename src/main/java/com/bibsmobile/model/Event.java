@@ -188,7 +188,7 @@ public class Event {
 	
 	public static long countRaceResultsComplete(long event) {
 		EntityManager em = RaceResult.entityManager();
-		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event and rr.timeofficial is not null", Long.class);
+		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event and rr.timeofficial is not null and rr.timeofficial > ''", Long.class);
         q.setParameter("event", Event.findEvent(event) );  
         return q.getSingleResult();
     }
