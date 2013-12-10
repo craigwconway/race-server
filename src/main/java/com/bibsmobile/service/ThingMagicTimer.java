@@ -22,6 +22,9 @@ import com.thingmagic.ReaderException;
 import com.thingmagic.TagData;
 import com.thingmagic.TagFilter;
 import com.thingmagic.TagReadData;
+import com.thingmagic.SimpleReadPlan;
+import com.thingmagic.TagProtocol;
+import com.thingmagic.ReadPlan;
 
 public class ThingMagicTimer implements Timer{
 		private int status;
