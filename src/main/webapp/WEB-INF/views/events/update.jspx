@@ -4,11 +4,14 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_com_bibsmobile_model_Event" modelAttribute="event" path="/events" versionField="Version" z="HRUEbbTPOtP6NCVvkP7sA85e324=">
         <field:input field="name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/>
-        <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="fWuKqZzkHrCoE/9Fc7B/oy0Cxx8="/>
-        <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="0mdpfbgqMb+k71Qcx5r3C+mBfnA="/>
+        <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart"  render="false" z="user-managed"/>
+        <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd"  render="false" z="user-managed"/>
         <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" render="false" z="user-managed"/>
         <field:input field="city" id="c_com_bibsmobile_model_Event_city" z="iYWjL3ti+38Wz9q1TzkesCh+8mw="/>
         <field:input field="state" id="c_com_bibsmobile_model_Event_state" z="317hwhiMIVVt+Bq3TzgDkWOKaGA="/>
+        <div id="guntimerow" style="margin-left:8px;"><strong>Gun Time: </strong>
+        <span id="guntime" style="margin-left:88px;"></span></div>
+        
         <field:input field="lattitude" id="c_com_bibsmobile_model_Event_lattitude" render="false" z="user-managed"/>
         <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" render="false" z="user-managed"/>
         <field:input field="type" id="c_com_bibsmobile_model_Event_type" render="false" z="user-managed"/>
@@ -41,7 +44,7 @@
         <field:input field="beachEvents" id="c_com_bibsmobile_model_Event_beachEvents" render="false" z="user-managed"/>
         <field:input field="shuttles" id="c_com_bibsmobile_model_Event_shuttles" render="false" z="user-managed"/>
         <field:input field="courseRules" id="c_com_bibsmobile_model_Event_courseRules" render="false" z="user-managed"/>
-        <field:input field="timerStart" id="c_com_bibsmobile_model_Event_timerStart" render="false" validationMessageCode="field_invalid_integer" z="user-managed"/>
+        <field:input field="timerStart" id="c_com_bibsmobile_model_Event_timerStart" render="true" validationMessageCode="field_invalid_integer" z="user-managed"/>
         <field:datetime dateTimePattern="${event_updated_date_format}" field="updated" id="c_com_bibsmobile_model_Event_updated" render="false" z="user-managed"/>
         <field:simple field="raceResults" id="c_com_bibsmobile_model_Event_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" render="false" z="user-managed"/>
         <field:simple field="resultsFile" id="c_com_bibsmobile_model_Event_resultsFile" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" render="false" z="user-managed"/>
@@ -51,6 +54,16 @@
         <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" render="false" z="user-managed"/>
         <field:simple field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" render="false" z="user-managed"/>
         <field:input field="running" id="c_com_bibsmobile_model_Event_running"  render="false" z="user-managed"/>
-        <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="0RV1e5MVdCYDRpwVJtZE0UHHj6c="/>
+        <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="user-managed" render="true"/>
+        <script>
+        var val = Math.max(0,jQuery("#_timerStart_id").attr("value"));
+        jQuery("#guntime").html(new Date(val).toLocaleTimeString() );
+        jQuery("#_c_com_bibsmobile_model_Event_timerStart_id").hide();
+        if(val==0){
+        	jQuery("#__id").hide();
+            jQuery("#guntimerow").hide();
+        }
+        </script>
+
     </form:update>
 </div>

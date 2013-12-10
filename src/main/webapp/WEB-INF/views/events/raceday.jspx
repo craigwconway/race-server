@@ -68,7 +68,7 @@
                 <option value="${event.id}">${ event.name }</option>
             </c:forEach>
         </select>
-		<button id="btn-add" type="button" class="btn btn-default" 
+		<button id="btn-add" type="button" class="btn btn-primary" 
 			style="margin:0;margin-left: 3px;"
 			onclick="addEvent();">Add Event</button>
     </div>
@@ -78,13 +78,15 @@
 		<div id="event---event_id--" class="event-row">
 			<div>
 			<span class="event-name">--event_name--</span>
-			<span id="starttime-section---event_id--"><strong>Start time: </strong>
+			<span id="starttime-section---event_id--" style="display:none;">
+			<strong>Start time: </strong>
 			<span id="starttime---event_id--">--event_starttime--</span></span>
-			<a href="/bibs-server/events/--event_id--?form"> Edit </a> 
-			<a href="#" id="btn-gun---event_id--" style="color:red;"
-				onclick="gun(--event_id--);"> Fire Gun! </a> 
-			<a href="#" id="btn-done---event_id--" 
-				onclick="stopRunning(--event_id--);"> Finish </a>
+			<button  type="button" class="btn btn-info"
+				onclick="window.location='/bibs-server/events/--event_id--?form'"> Edit </button> 
+			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
+				onclick="gun(--event_id--);"> Fire Gun! </button> 
+			<button id="btn-done---event_id--" type="button" class="btn btn-default" 
+				onclick="stopRunning(--event_id--);"> Finish </button>
 			</div>
 			<table id="results--event_id--" class="table" style="margin:30px;display:none;"><tr><td></td></tr></table>
 		</div>
@@ -297,6 +299,7 @@ function readerQuery(eventId){
 function makeTable(data,results){
 	results = "";
 	for(var i in data){
+		clearTime(data[i].bib);
 		results += "<tr>";
 		results += "<td>"+data[i].bib+"</td>";
 		results += "<td>"+data[i].timeofficial+"</td>";
@@ -364,6 +367,18 @@ function stopRunning(eventId){
 		});
 }
 
+function clearTime(bib){
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/timer/cleartime?bib="+bib,
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		});
+}
+
 function gun(eventId){
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/gun?event="+eventId,
@@ -374,7 +389,7 @@ function gun(eventId){
 		if(msg=="true") 
 			jQuery("#btn-done-"+eventId).show();
 		});
-		jQuery("#starttime-"+eventId).html(new Date().toString().split("GMT")[0]);
+		//jQuery("#starttime-"+eventId).html(new Date().toString().split("GMT")[0]);
 		jQuery("#btn-gun-"+eventId).hide();
 	request.fail(function( jqXHR, textStatus ) {
 		alert("Error firing gun.")
@@ -392,7 +407,7 @@ function getRunning(eventId,order){
 			var eventId = data[i].id;
 			var eventName = data[i].name;
 			makeEventRow(eventId,eventName);
-			jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart).toString().split("GMT")[0]);
+			jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart).toLocaleTimeString());
 			if(data[i].gunFired == true){
 				jQuery("#btn-gun-"+eventId).hide();
 				jQuery("#btn-done-"+eventId).show();

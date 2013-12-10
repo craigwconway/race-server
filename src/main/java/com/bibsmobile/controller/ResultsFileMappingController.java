@@ -198,7 +198,7 @@ public class ResultsFileMappingController {
 
 
     public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
-        System.out.println("Starting import...");
+        System.out.println("Starting import (mapping)...");
         resultsImport.setRunDate(new Date());
         ResultsFileMapping resultsFileMapping = resultsImport.getResultsFileMapping();
         Event event = resultsImport.getResultsFile().getEvent();
@@ -210,6 +210,7 @@ public class ResultsFileMappingController {
         		|| resultsFile.getFilePath().endsWith(".CSV") || resultsFile.getFilePath().endsWith(".TXT")) {
             CSVReader reader = new CSVReader(new FileReader(file));
             String[] nextLine;
+            if(resultsFileMapping.isSkipFirstRow() ) reader.readNext();
             while ((nextLine = reader.readNext()) != null) {
                 saveRaceResult(resultsImport, event, nextLine, map);
             }

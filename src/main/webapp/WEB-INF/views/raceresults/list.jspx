@@ -10,7 +10,14 @@
     <script>
     window.onload=function(){
 		setEventSelection();
+		removeNulls();
     };
+    function removeNulls(){
+    	jQuery("td").each(function(index,element){
+    		if(element.innerHTML.indexOf(' null null 0')>0)
+    			element.innerHTML=element.innerHTML.replace(' null null 0','');
+    	});
+    }
     function setEventSelection(){
     	try{
     		document.getElementById("event-${param.event}").selected=true;

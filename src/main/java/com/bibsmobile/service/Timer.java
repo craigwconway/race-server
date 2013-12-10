@@ -17,4 +17,5 @@ public interface Timer {
 		void writeTag(int num) throws Exception;
 		long getTime() throws Exception;
 		void purge();
+		void clearTime(Integer bib);
 }

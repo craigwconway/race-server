@@ -8,8 +8,9 @@ function runnerSearchResultsTable(data){
 				"</a></td>";
 		results += "<td>"+data[i].bib+"</td>";
 		results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
-		results += "<td>("+data[i].gender+")"+data[i].age+"</td>";
-		results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+		if(null != data[i].city) results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+		if(null != data[i].gender)results += "<td>"+data[i].gender+", "+data[i].age+"</td>";
+		if(null != data[i].timeofficial)results += "<td>"+data[i].timeofficial+"</td>";
 		results += "</tr>";
 	}
 	return results;

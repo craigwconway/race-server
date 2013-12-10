@@ -44,4 +44,6 @@ public class DummyTimer implements Timer {
 
 		@Override
 		public void purge(){ done.clear();}
+		@Override
+		public void clearTime(Integer bib) {		}
 }

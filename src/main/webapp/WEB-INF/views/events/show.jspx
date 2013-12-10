@@ -26,8 +26,8 @@
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
         <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="KCvuJyXjhI+esh4Khj9v+/5uf8E="/>
-        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="qrl+dzf0p+2w5arcE+U16iPzg44="/>
-        <field:display date="true" dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_Event_timeEnd" object="${event}" z="w3Ss+x+vRMrpo7OkYmd4sWL8hOw="/>
+        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed" render="false"/>
+        <field:display date="true" dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_Event_timeEnd" object="${event}" z="user-managed" render="false"/>
         <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" render="false" z="user-managed"/>
         <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="rjg6V8gVupqKmdsIqvFAxPS3CHI="/>
         <field:display field="state" id="s_com_bibsmobile_model_Event_state" object="${event}" z="Gc7Mpphzf9fIkMRlKcDvXh/sk1k="/>
@@ -63,9 +63,15 @@
         <field:display field="beachEvents" id="s_com_bibsmobile_model_Event_beachEvents" object="${event}" render="false" z="user-managed"/>
         <field:display field="shuttles" id="s_com_bibsmobile_model_Event_shuttles" object="${event}" render="false" z="user-managed"/>
         <field:display field="courseRules" id="s_com_bibsmobile_model_Event_courseRules" object="${event}" render="false" z="user-managed"/>
-        <field:display field="timerStart" id="s_com_bibsmobile_model_Event_timerStart" object="${event}" render="false" z="user-managed"/>
+        <field:display field="timerStart" id="s_com_bibsmobile_model_Event_timerStart" object="${event}" render="true" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" render="false" z="user-managed"/>
         <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" render="false" z="user-managed"/>
         <field:display field="gunFired" id="s_com_bibsmobile_model_Event_gunFired" object="${event}" render="false" z="user-managed"/>
+     	<script>
+        var val = Math.max(0,jQuery("#_s_com_bibsmobile_model_Event_timerStart_timerStart_id").html());
+        jQuery("#_s_com_bibsmobile_model_Event_timerStart_timerStart_id").html(new Date(val).toLocaleTimeString() );
+        if(val==0) jQuery("#_s_com_bibsmobile_model_Event_timerStart_id").hide();
+        </script>
+    
     </page:show>
 </div>

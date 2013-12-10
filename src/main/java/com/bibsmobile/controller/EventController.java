@@ -133,7 +133,6 @@ public class EventController {
     	try{
         	Event e = Event.findEvent(event);
     		e.setRunning(0);
-        	e.setGunFired(false);
     		e.merge();
     	}catch(Exception x){
     		x.printStackTrace();
@@ -377,6 +376,18 @@ public class EventController {
         }
         return -1l;
     }
+
+    @RequestMapping(value = "/timer/cleartime", method = RequestMethod.GET)
+    @ResponseBody
+    public boolean clearTime(
+    		@RequestParam(value = "bib", required = true) Integer bib) {
+        try {
+        	timer.clearTime(bib);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
     
     @RequestMapping(value="/export", method = RequestMethod.GET)
     public void export(@RequestParam(value = "event", required = true) Long event,
@@ -390,7 +401,8 @@ public class EventController {
 
         List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
         for(RaceResult r:runners){              
-        	outputwriter.write(r.getBib()+","+r.getFirstname()+","+r.getLastname()+","+","+r.getCity()+","+r.getState()+","+r.getTimeofficial()+"\r\n");  
+        	outputwriter.write(r.getBib()+","+r.getFirstname()+","+r.getLastname()+","+r.getCity()+
+        			","+r.getState()+","+r.getTimeofficial()+","+r.getGender()+","+r.getAge()+"\r\n");  
         }     
         outputwriter.flush();   
         outputwriter.close();

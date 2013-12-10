@@ -145,10 +145,12 @@ public class ThingMagicTimer implements Timer{
 			}
 		}
 		public HashMap <Integer,Long> getTimes() {
-			HashMap<Integer, Long> tmp = new HashMap<Integer, Long> ();
-			tmp = times;
-			times = new HashMap<Integer,Long> ();
-			return tmp;
+			return times;
+		}
+		
+		public void clearTime(Integer bib){
+			System.out.println("clearTime "+bib);
+			times.remove(bib);
 		}
 		
 		public void writeTag(int num) throws Exception{

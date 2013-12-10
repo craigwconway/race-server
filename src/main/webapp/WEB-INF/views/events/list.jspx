@@ -10,9 +10,9 @@
     <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
         <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
             <table:column id="c_com_bibsmobile_model_Event_name" property="name" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
-            <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeEnd" z="user-managed"/>
-            <table:column date="true" dateTimePattern="${event_created_date_format}" id="c_com_bibsmobile_model_Event_created" property="created" z="user-managed"/>
-            <table:column date="true" dateTimePattern="${event_updated_date_format}" id="c_com_bibsmobile_model_Event_updated" property="updated" z="user-managed"/>
+            <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeEnd" z="user-managed" render="false"/>
+            <table:column date="true" dateTimePattern="${event_created_date_format}" id="c_com_bibsmobile_model_Event_created" property="created" z="user-managed" render="false"/>
+            <table:column date="true" dateTimePattern="${event_updated_date_format}" id="c_com_bibsmobile_model_Event_updated" property="updated" z="user-managed" render="false"/>
             <table:column date="true" dateTimePattern="${event_timeend_date_format}" id="c_com_bibsmobile_model_Event_timeEnd" property="timeEnd" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_Event_featured" property="featured" render="false" z="user-managed"/>
         </table:table>
