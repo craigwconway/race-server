@@ -79,6 +79,7 @@ public class ThingMagicTimer implements Timer{
                                 //    }
                                 //}
                                 r.connect();
+                                optimize();
                                 status = 1;
                                 System.out.println("connected");
 			}
@@ -314,6 +315,15 @@ public class ThingMagicTimer implements Timer{
 			} catch (ReaderException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		private void optimize() {
+			try {
+				r.paramSet("/reader/read/plan", new SimpleReadPlan(null, TagProtocol.GEN2, true));
+			} catch (ReaderException e) {
+				e.printStackTrace();
+			}
+
 		}
 
 }
