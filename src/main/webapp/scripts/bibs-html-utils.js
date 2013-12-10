@@ -67,6 +67,8 @@ function getHoursMinutesSeconds(e,l) {
 	if(numseconds<10) numseconds = "0"+numseconds;
 	rtn =  numminutes + ":" + numseconds;
 	if(numhours>0) rtn = numhours + ":" + rtn;
+	if(numdays>0) rtn = numdays + "days "+rtn;
+	
 	
 	e.html(rtn);
 }

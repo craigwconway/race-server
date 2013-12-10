@@ -92,7 +92,8 @@
 			<button id="event-timer---event_id--"  type="button" class="btn btn-default" 
 				style="display:none;">0
 				</button>
-			<button id="event-timer-str---event_id--"  type="button" class="btn btn-default" >
+			<button id="event-timer-str---event_id--"  type="button" class="btn btn-default" 
+				style="display:none;">
 				</button>
 			</div>
 			<table id="results--event_id--" class="table" style="margin:30px;display:none;"><tr><td></td></tr></table>
@@ -299,6 +300,8 @@ function initTimer(eventId){
 			now = Math.max(0,data2);
 			starttime = now - Math.max(0,data.timerStart);
 			jQuery("#event-timer-"+eventId).html(starttime);
+			timer(eventId);
+			jQuery("#event-timer-str-"+eventId).show();
 			setInterval(function(){
 				timer(eventId);
 			},1000);
@@ -312,6 +315,7 @@ function timer(eventId){
 	jQuery("#event-timer-"+eventId).html(l);
 	var e = jQuery("#event-timer-str-"+eventId);
 	getHoursMinutesSeconds(e,l);
+	
 }
 
 
