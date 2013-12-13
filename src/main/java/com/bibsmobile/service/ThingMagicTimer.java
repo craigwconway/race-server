@@ -224,8 +224,8 @@ public class ThingMagicTimer implements Timer{
 		    		  (bibdata[1] & 0xFF) << 16 |
 		    		  (bibdata[0] & 0xFF) << 24;
 		      //System.out.println("New tag: " + t.toString());
-			System.out.println("New tag: " + bibnum);
-		          //System.out.println("New tag: " + t.toString());
+			System.out.println("New tag (bibs): " + bibnum);
+		        System.out.println("New tag (mylaps): " + t.toString());
 		      if(!tmpTimes.containsKey(new Integer(bibnum))) {
 		          tmpTimes.put(new Integer(bibnum), new Long(bibtime));
 		          new java.util.Timer().schedule( 
