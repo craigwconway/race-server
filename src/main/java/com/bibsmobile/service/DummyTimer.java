@@ -1,49 +1,57 @@
 package com.bibsmobile.service;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import org.springframework.stereotype.Service;
-
-import com.thingmagic.*;
+import com.bibsmobile.model.TimerConfig;
 
 public class DummyTimer implements Timer {
-		private String readerURI;
-		int status = 0;
-		List<Integer> done = new ArrayList<Integer>();
-		HashMap <Integer,Long> times = new HashMap <Integer,Long>();
-		public void init(){ status = 1;}
-		public void cleanup(){ status = 0;}
-		public int getStatus(){ return status; }
-		public void connect(){ status = 1;}
-		public String getReaderURI(){ return "dummy";}
-		public void disconnect(){status = 0;}
-		public void start(){status = 2;}
-		public void stop(){status = 1;}
-		public HashMap <Integer,Long> getTimes(){
-			java.util.Random r = new java.util.Random();
-			times.clear();
-			Integer rand = r.nextInt(20);
-			if(!done.contains(rand)){ // add NEW results to temp cache
-				times.put(rand, new Date().getTime()); 
-				done.add(rand); // do not return same result twice
-			}
-			return times;
-		}
-		public void writeTag(int num){ status = 3; }
-		public void setReaderURI(String readerURI) {
-			this.readerURI = readerURI;
-		}
-		@Override
-		public long getTime() {
-			return new Date().getTime();
-		}
+	
+	private TimerConfig timerConfig;
+	private int status;
+	
+	@Override
+	public long getDateTime() {
+		return new Date().getTime();
+	}
 
-		@Override
-		public void purge(){ done.clear();}
-		@Override
-		public void clearTime(Integer bib) {		}
+	@Override
+	public void start() {
+		status = 2;
+		System.out.println(this.getClass().getName()+":"+Thread.currentThread().getName()+" Starting Reading...");
+	}
+
+	@Override
+	public void stop() {
+		status = 1;
+		System.out.println(this.getClass().getName()+":"+Thread.currentThread().getName()+" Stopped Reading.");
+	}
+
+	@Override
+	public void write(long bib) throws Exception {
+		System.out.println(this.getClass().getName()+":"+Thread.currentThread().getName()+" Started Writing...");
+		status = 3;
+	}
+
+	@Override
+	public void connect() {
+		status = 1;
+		System.out.println(this.getClass().getName()+" Connected.");
+	}
+
+	@Override
+	public void disconnect() {
+		status = 0;
+		System.out.println(this.getClass().getName()+" Connected.");
+		
+	}
+
+	@Override
+	public int getStatus() {
+		return status;
+	}
+
+	@Override
+	public void setTimerConfig(TimerConfig timerConfig) {
+		this.timerConfig = timerConfig;
+	}
 }

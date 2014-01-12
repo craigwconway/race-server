@@ -27,7 +27,23 @@
 		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
 	  		<li id="nav_users"><a href="${users_url}">Admin</a></li>
 	  	</sec:authorize>
+		<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_EVENT_ADMIN,ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
+			<li><a href="#" onclick="alert('Profile!')" ><sec:authentication property="principal.username"/></a></li>
+		</sec:authorize>
+		<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+			<spring:url var="login" value="/login" />
+			<li><a href="${ login }">Login</a></li>
+		</sec:authorize>
 	</ul>
+	
+	<div style="float:right">
+		<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+			<spring:url var="logout" value="/resources/j_spring_security_logout" />
+			<i><a href="${logout }">Logout</a></i>
+		</sec:authorize>
+	</div>
+	
+	<div style="clear:both;"/>
 	
 	<script>
 	// derive active tab from current url
@@ -36,20 +52,6 @@
 	else if((window.location+"").contains('results')) $( "#nav_runners" ).addClass( "active" );
 	else if((window.location+"").contains('user')) $( "#nav_users" ).addClass( "active" );
 	</script>
-	
-	<div class="pull-right">
-		<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_EVENT_ADMIN,ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
-		<spring:url var="logout" value="/resources/j_spring_security_logout" />
-		Welcome back, <sec:authentication property="principal.username"></sec:authentication>
-		<br/><a href="${logout }">Logout</a>
-		</sec:authorize>
-		<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-			<spring:url var="login" value="/login" />
-			<h6><a href="${ login }">Login</a></h6>
-		</sec:authorize>
-	</div>
-	
-	<div style="clear:both;"/>
 	
 	<style>
 	.dijitCalendarPopup{

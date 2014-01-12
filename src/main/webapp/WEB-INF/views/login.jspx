@@ -54,9 +54,9 @@
       <div class="submit">
         <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
         <spring:message code="button_submit" var="submit_label" htmlEscape="false" />
-        <input id="proceed" type="submit" value="${fn:escapeXml(submit_label)}" />
+        <input id="proceed" type="submit" value="${fn:escapeXml(submit_label)}" class="btn btn-success" />
         <spring:message code="button_reset" var="reset_label" htmlEscape="false" />
-        <input id="reset" type="reset" value="${fn:escapeXml(reset_label)}" />
+        <input id="reset" type="reset" value="${fn:escapeXml(reset_label)}" class="btn btn-default"/>
       </div>
     </form>
 <!--   </util:panel> -->

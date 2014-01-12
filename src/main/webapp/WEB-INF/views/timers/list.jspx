@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_TimerConfig" items="${timerconfigs}" z="21mRsfOwmhGthvwvny4D/kHR0oI=">
+        <table:table data="${timerconfigs}" id="l_com_bibsmobile_model_TimerConfig" path="/timers" z="HOBF5DQvvbIVD4p/2xw3W/3V3ZY=">
+            <table:column id="c_com_bibsmobile_model_TimerConfig_position" property="position" z="KyRFxpeDGy9vtHohNV/YEXUaWBU="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" z="w3MPJFu1R5uA7dJrert4GMqoBDg="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_events" property="events" z="vDvmpWgmjnwSTy7aSp8jOcrxvYQ="/>
+        </table:table>
+    </page:list>
+</div>

@@ -14,7 +14,7 @@
     };
     function removeNulls(){
     	jQuery("td").each(function(index,element){
-    		if(element.innerHTML.indexOf(' null null 0')>0)
+    		if(element.innerHTML.indexOf(' null null 0')&gt;0)
     			element.innerHTML=element.innerHTML.replace(' null null 0','');
     	});
     }
@@ -74,8 +74,8 @@
         }
     });
     
-    </script> 
-    <div class="pull-left" >
+    </script>
+    <div class="pull-left">
         <div class="pull-left" style="padding:6px;">
             <strong>Filter by Event</strong>
         </div>
@@ -87,41 +87,31 @@
         </select>
     </div>
     <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
-        <button class="btn btn-primary pull-left btn-top" style="margin:0;margin-left: 3px;"
-        	onclick="document.location='/bibs-server/raceresults?form&amp;event=${param.event}';"
-        	 type="button">
+        <button class="btn btn-primary pull-left btn-top" onclick="document.location='/bibs-server/raceresults?form&amp;event=${param.event}';" style="margin:0;margin-left: 3px;" type="button">
 		Add Runner
 	</button>
-	</sec:authorize>
+    </sec:authorize>
     <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-        <button class="btn btn-primary pull-left btn-top" style="margin:0;margin-left: 3px;"
-        	onclick="document.location='/bibs-server/raceresults/bibs';" type="button">
+        <button class="btn btn-primary pull-left btn-top" onclick="document.location='/bibs-server/raceresults/bibs';" style="margin:0;margin-left: 3px;" type="button">
 		Write Bibs
 	</button>
     </sec:authorize>
-    
-  	<div class="pull-right">
-  		<label>Search</label>
-	    <input type="text" class="form-control" id="query" 
-	    	style="width:200px;display:inline;"
-	    	placeholder="by Name"/>
-	    <input type="text" class="form-control" id="bib" 
-	    	style="width:100px;display:inline;"
-	    	placeholder="by Bib"/>
-		<button onclick="search()" class="btn btn-default" 
-			style="margin:0;margin-left: 3px;">Go</button>
-	</div>
-		
+    <div class="pull-right">
+        <label>Search</label>
+        <input class="form-control" id="query" placeholder="by Name" style="width:200px;display:inline;" type="text"/>
+        <input class="form-control" id="bib" placeholder="by Bib" style="width:100px;display:inline;" type="text"/>
+        <button class="btn btn-default" onclick="search()" style="margin:0;margin-left: 3px;">Go</button>
+    </div>
     <div style="clear:both;"/>
     <page:list id="pl_com_bibsmobile_model_RaceResult" items="${raceresults}" z="YFteNpNSy87fSVCYb1X/4lNLBoA=">
         <table:table data="${raceresults}" id="l_com_bibsmobile_model_RaceResult" path="/raceresults" z="8A8H2AFIrX6CW2kysD/E4yuVCqQ=">
             <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_firstname" property="firstname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="N7gN/+AnhpT6TOnJeyaeHYv3mW8="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_middlename" property="middlename" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_RaceResult_middlename2" property="middlename2" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="RQafEEyuJ7qpxUCuXW0zX0x+3KA="/>
         </table:table>
     </page:list>
 </div>

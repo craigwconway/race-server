@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <script>window.location="/bibs-server/events/raceday";</script>
+    <page:show id="ps_com_bibsmobile_model_TimerConfig" object="${timerconfig}" path="/timers" z="fZuDsrBZ5krIi9qs46ixl0/cCGY=">
+        <field:display field="position" id="s_com_bibsmobile_model_TimerConfig_position" object="${timerconfig}" z="NeJGlIg7M5JKbW7biYR6X/Bgpr8="/>
+        <field:display field="url" id="s_com_bibsmobile_model_TimerConfig_url" object="${timerconfig}" z="Mb+yv6DQuVvPtMbUh2NcwYLnE8M="/>
+        <field:display field="readTimeout" id="s_com_bibsmobile_model_TimerConfig_readTimeout" object="${timerconfig}" z="8BPAYxGVtEGAu3ofLo7acUChbbI="/>
+        <field:display field="events" id="s_com_bibsmobile_model_TimerConfig_events" object="${timerconfig}" z="et+Ac3A+9YLeNibiflekoo/IchU="/>
+    </page:show>
+</div>

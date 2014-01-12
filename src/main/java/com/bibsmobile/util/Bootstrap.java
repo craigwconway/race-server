@@ -9,6 +9,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import com.bibsmobile.model.AwardCategory;
+import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserProfile;
 
@@ -24,11 +25,20 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 	@Autowired
 	private static AwardCategory awardCategory;
 	
+	@Autowired
+	private static TimerConfig timerConfig;
+	
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		
-		// users
-		if(userProfile.countUserProfiles() < 1){
+			// readers
+			if(TimerConfig.countTimerConfigs() < 1){
+				new TimerConfig().persist(); // reader 1
+				new TimerConfig().persist(); // reader 2
+			}
+			
+			// users
+			if(UserProfile.countUserProfiles() < 1){
 			// system role and user
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_SYS_ADMIN");
@@ -54,7 +64,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 		}
 		
 		// standard award categories
-		if(awardCategory.countAwardCategorys() < 1){
+		if(AwardCategory.countAwardCategorys() < 1){
 			awardCategory = new AwardCategory();
 			awardCategory.setName("Overall Winners");
 			awardCategory.persist();

@@ -41,66 +41,14 @@ import com.bibsmobile.service.Timer;
 @RooWebJson(jsonObject = Event.class)
 public class EventController {
 
-	@Autowired // inject see applicationContext.xml
-	private Timer timer;
-
-    @RequestMapping(value = "/timer/connect", method = RequestMethod.GET)
-    @ResponseBody
-    public String timerConnect(){
-    	String rtn = "false";
-    	try{
-    		timer.init();
-    		if(timer.getStatus()==1)
-    			rtn = "true";
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-    	return rtn;
-    }
-    @RequestMapping(value = "/timer/reconnect", method = RequestMethod.GET)
-    @ResponseBody
-    public String timerReconnect(){
-    	String rtn = "false";
-    	try{
-    		timer.disconnect();
-    		timer.init();
-    		if(timer.getStatus()==1)
-    			rtn = "true";
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-    	return rtn;
-    }
-
-    @RequestMapping(value = "/timer/status", method = RequestMethod.GET)
-    @ResponseBody
-    public String timerStatus(){
-		System.out.println("timer status "+timer.toString());
-		final String rtn = Integer.valueOf(timer.getStatus()).toString();
-		System.out.println("timer status returned "+rtn);
-    	return rtn;
-    }
-
-    @RequestMapping(value = "/timer/purge", method = RequestMethod.GET)
-    @ResponseBody
-    public String timerPurge(){
-		System.out.println("timer Purge");
-    	try{
-    	    timer.purge();
-    	}catch(Exception x){
-    		x.printStackTrace();
-    		return "false";
-    	}
-        return "true";
-    }
-	
+	 
     @RequestMapping(value = "/gun", method = RequestMethod.GET)
     @ResponseBody
     public String timerGun(@RequestParam(value = "event", required = true) long event){
     	try{
         	Event e = Event.findEvent(event);
         	e.setGunFired(true);
-    		e.setTimerStart(timer.getTime());
+    		e.setTimerStart(new Date().getTime());
     		e.merge();
     		System.out.println("event time "+e.getTimerStart());
     	}catch(Exception x){
@@ -108,18 +56,6 @@ public class EventController {
     		return "false";
     	}
         return "true";
-    }
-	
-    @RequestMapping(value = "/timer/time", method = RequestMethod.GET)
-    @ResponseBody
-    public String timerTime(){
-    	try {
-			return String.valueOf(timer.getTime());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	return "0";
     }
 	
     @RequestMapping(value = "/run", method = RequestMethod.GET)
@@ -158,7 +94,6 @@ public class EventController {
     public String timerStart(){
     	String rtn = "false";
         try {
-        	timer.start();
         	rtn = "true";
         } catch (Exception e) {
             e.printStackTrace();
@@ -171,7 +106,6 @@ public class EventController {
     public String timerStop(){
     	String rtn = "false";
         try {
-        	timer.stop();
         	rtn = "true";
         } catch (Exception e) {
             e.printStackTrace();
@@ -181,46 +115,11 @@ public class EventController {
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
-    public synchronized String timerQuery(@RequestParam(value = "event", required = true) int event_id){ 
+    public synchronized String resultsQuery(@RequestParam(value = "event", required = true) int event_id,
+    		@RequestParam(value = "l", required = true) long lastUpdate){ 
         try {
-        	List<RaceResult> runners = new ArrayList<RaceResult>();
-        	Map <Integer,Long> bibtime = timer.getTimes(); // only bibs not yet returned
-        	if(bibtime.isEmpty())
-        		System.out.println("No times returned from reader");
-        	for(Integer bib:bibtime.keySet()){
-        		System.out.println("Reader: "+bib+" : "+bibtime.get(bib));
-        		Event event = Event.findEvent(Long.valueOf(event_id).longValue());
-    			if(null==event) break;
-    			// make sure we have an event start time
-    			if(null==event.getTimerStart()){ // no gun
-    				if(null!=event.getTimeStart()) // set timer to event start
-    					event.setTimerStart(event.getTimeStart().getTime());
-    				else event.setTimerStart(new Date().getTime()); // now
-    				event.merge();
-    			}
-        		System.out.println("found "+bib+" "+bibtime.get(bib).toString());
-        		RaceResult result = new RaceResult();
-        		boolean found = false;
-    			try{
-    				result = RaceResult.findRaceResultsByEventAndBibEquals(
-    							event, bib.toString())
-    							.getSingleResult();
-    				found = true;
-    			}catch(Exception e){
-            		System.out.println("No Runner found for "+bib+" in "+event.getName());
-    				// no runner assigned to bib
-    				// e.printStackTrace();
-    			}
-        		result.setBib(bib.toString());
-        		result.setEvent(event);
-        		long timerTime = bibtime.get(bib);
-        		long startTime = event.getTimerStart();
-        		result.setTimeofficial( getHoursMinutesSeconds(timerTime-startTime)	);
-        		if (found) result.merge();
-        		//else result.persist();
-        		if (found) runners.add(result);
-        	}
-        	return RaceResult.toJsonArray(runners);
+        	return RaceResult.toJsonArray(
+        			RaceResult.findRaceResultsByEventAndUpdatedGreaterThan(new Long(event_id), new Date().getTime()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -253,9 +152,9 @@ public class EventController {
 
 	@RequestMapping(value = "/write", method = RequestMethod.GET)
     @ResponseBody
-    public String writeBib(@RequestParam(value = "bib", required = true) String bib){
+    public String writeBib(@RequestParam(value = "bib", required = true) Long bib){
         try {
-        	timer.writeTag(Integer.valueOf(bib));
+        	// write
         } catch (Exception e) {
             e.printStackTrace();
             return "false";
@@ -406,7 +305,7 @@ public class EventController {
     public String clearTime(
     		@RequestParam(value = "bib", required = true) Integer bib) {
         try {
-        	timer.clearTime(bib);
+        	//timer.clearTime(bib);
         } catch (Exception e) {
             e.printStackTrace();
         }

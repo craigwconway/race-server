@@ -10,9 +10,9 @@
   <jsp:directive.page contentType="text/html;charset=UTF-8"/>
   <jsp:output omit-xml-declaration="yes"/>
 
-<center>
+<div id="footer-inner">
 	&#169; 2013 Bibs, Inc. All right reserved.
-</center>
+</div>
 
   <!-- 
   <spring:url value="/" var="home"/>

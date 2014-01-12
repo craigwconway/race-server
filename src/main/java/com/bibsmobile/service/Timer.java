@@ -1,21 +1,22 @@
 package com.bibsmobile.service;
 
-import java.util.Map;
+import com.bibsmobile.model.TimerConfig;
 
 public interface Timer {
-		
-		void init();
-		void cleanup();
-		int getStatus();
-		void connect();
-		String getReaderURI();
-		void setReaderURI(String uri);
-		void disconnect();
-		void start();
-		void stop();
-		Map <Integer,Long> getTimes();
-		void writeTag(int num) throws Exception;
-		long getTime() throws Exception;
-		void purge();
-		void clearTime(Integer bib);
+	
+	void setTimerConfig(TimerConfig timerConfig);
+	
+	int getStatus();
+	
+	long getDateTime();
+
+	void connect();
+
+	void disconnect();
+
+	void start();
+
+	void stop();
+
+	void write(long bib) throws Exception;
 }

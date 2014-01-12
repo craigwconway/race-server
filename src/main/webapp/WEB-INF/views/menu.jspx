@@ -42,5 +42,9 @@
         <menu:category id="c_flows" z="5igpkb/e+HPIN8iUErvmM38Eqqk=">
             <menu:item id="i_flows_event" messageCode="webflow_menu_enter" url="/event" z="0FnN16hcvzhhUACHoOQosDBTmjw="/>
         </menu:category>
+        <menu:category id="c_timerconfig" z="vqFCvosW3JLeYlXs4/fq84rtsTk=">
+            <menu:item id="i_timerconfig_new" messageCode="global_menu_new" url="/timers?form" z="9bdkRkFhSlikRKjIHGu+ASAs2Uk="/>
+            <menu:item id="i_timerconfig_list" messageCode="global_menu_list" url="/timers?page=1&amp;size=${empty param.size ? 10 : param.size}" z="9xzwd6cep7o2+pGgQpkOIALp0yE="/>
+        </menu:category>
     </menu:menu>
 </div>

@@ -45,7 +45,6 @@ public class ResultsFileMappingController {
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         ResultsFileMapping resultsFileMapping = ResultsFileMapping.findResultsFileMapping(id);
-        System.out.println("1 mapping e="+resultsFileMapping.getResultsFile().getEvent().getId());
         try {
             initMap(resultsFileMapping);
         } catch (InvalidFormatException e) {
@@ -67,7 +66,6 @@ public class ResultsFileMappingController {
         File file = new File(resultsFile.getFilePath());
         if (resultsFile.getFilePath().endsWith(".csv") || resultsFile.getFilePath().endsWith(".txt")
         		|| resultsFile.getFilePath().endsWith(".CSV") || resultsFile.getFilePath().endsWith(".TXT")) {
-            System.out.println("csv");
             CSVReader reader = new CSVReader(new FileReader(file));
             String[] nextLine;
             int line = 0;
@@ -83,7 +81,6 @@ public class ResultsFileMappingController {
             reader.close();
         } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls")
         		|| resultsFile.getFilePath().endsWith(".XLSX") || resultsFile.getFilePath().endsWith(".XLS")) {
-            System.out.println("xls");
             XlsToCsv csv = new XlsToCsv();
             Workbook wb = WorkbookFactory.create(file);
             Sheet sheet = wb.getSheetAt(0);
@@ -103,7 +100,6 @@ public class ResultsFileMappingController {
     }
 
     public void setOptions(ResultsFileMapping resultsFileMapping) throws IOException {
-        System.out.println("setOptions");
         Properties p = getPropertiesFromClasspath("application.properties");
         final String prefix = "label_com_bibsmobile_model_raceresult_";
         for (Object key : p.keySet()) {
@@ -115,7 +111,6 @@ public class ResultsFileMappingController {
     }
 
     public Properties getPropertiesFromClasspath(String propFileName) throws IOException {
-        System.out.println("getPropertiesFromClasspath");
         Properties props = new Properties();
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(propFileName);
         if (inputStream == null) {
@@ -173,10 +168,7 @@ public class ResultsFileMappingController {
         resultsFileMapping.merge();
         //  cwc      return "redirect:/resultsfilemappings/" + encodeUrlPathSegment(resultsFileMapping.getId().toString(), httpServletRequest);
         // do import
-        System.out.println("mapping m="+resultsFileMapping.getId());
         ResultsFileMapping mapping = ResultsFileMapping.findResultsFileMapping(resultsFileMapping.getId());
-        System.out.println("mapping f="+mapping.getResultsFile().getId());
-        System.out.println("mapping e="+mapping.getResultsFile().getEvent().getId());
         ResultsImport resultsImport = new ResultsImport();
         resultsImport.setResultsFile(mapping.getResultsFile());
         resultsImport.setResultsFileMapping(mapping);
@@ -229,9 +221,6 @@ public class ResultsFileMappingController {
     }
 
     public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
-        System.out.println("values " + Arrays.asList(nextLine).toString());
-        System.out.println("map " + Arrays.asList(map).toString());
-        System.out.println(nextLine.length+"="+map.length);
         if (nextLine.length != map.length || nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));

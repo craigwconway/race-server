@@ -10,20 +10,30 @@
 		padding: 16px;
 		border:solid #DDD 1px;
 		border-radius: 5px;
+		margin: 6px;
+		padding: 6px;
 	}
 	.event-row{
-		margin: 16px;
-		padding: 16px;
 		border:solid #DDD 1px;
 		border-radius: 5px;
-		float: left;
 		width: 600px;
 		overflow: hidden;
+		margin: 16px;
+		padding: 16px;
 	}
 	.event-name{
 		font-size: 28px;
 		font-weight: bold;
 		margin-right: 12px;
+	}
+	.reader-title{
+	}
+	.reader{
+		float: left;
+		width: 420px;
+	}
+	#readers{
+		float: left;
 	}
 	small{
 		color: grey;
@@ -32,47 +42,49 @@
 	}
 	</style>
 	
-	<div id="timer-functions" style="margin-bottom: 16px;" class="corners">
-	
-		<span id="reader-status-title"
-			style="margin:0;margin-left: 3px;"><strong>Reader Status:</strong> 
-		<span id="reader-status"
-			style="margin:0;margin-left: 3px;"> Not Connected </span>
-		</span>
-		<button id="btn-connect" type="button" class="btn btn-default" 
-			style="margin:0;margin-left: 3px;"
-			onclick="timerConnect();">Connect</button>
-		<button id="btn-start" type="button" class="btn btn-success" 
+<div id="reader-list">
+	<div id="reader-template" style="display:none">
+		<div id="reader---id" class="reader corners">
+			<span id="reader-title---id--" class="reader-title"
+				style="margin:0;margin-left: 3px;"><strong>Reader --url-- </strong>  
+			<span id="reader-pos---id--"
+				style="margin:0;margin-left: 3px;">--position--, </span>
+			<span id="reader-status---id--"
+				style="margin:0;margin-left: 3px;">Not Connected</span>
+			</span>
+			<button id="btn-update---id--" type="button" class="btn btn-info" 
+				style="margin:0;margin-left: 3px;"
+				onclick="timerUpdate(--id--);">Edit</button>
+			<button id="btn-connect---id--" type="button" class="btn btn-default" 
+				style="margin:0;margin-left: 3px;"
+				onclick="timerConnect(--id--);">Connect</button>
+			<span id="reader-progress---id--">
+				<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> 
+	   		</span>
+		<button id="btn-start---id--" type="button" class="btn btn-success" 
 			style="margin:0;margin-left: 3px;display:none;"
-			onclick="startReader();">Start Scanning</button>
-		<button id="btn-stop" type="button" class="btn btn-danger" 
+			onclick="startReader(--id--);">Start</button>
+		<button id="btn-stop---id--" type="button" class="btn btn-danger" 
 			style="margin:0;margin-left: 3px;display:none;"
-			onclick="stopReader();">Stop Scanning</button>
-		<button id="btn-purge" type="button" class="btn btn-default" 
-			style="margin:0;margin-left: 3px;display:none;"
-			onclick="timerPurge();">Clear</button>
-		<span id="progress">
-			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
-   		</span>
-	
+			onclick="stopReader(--id--);">Stop</button>
+   		</div>
 	</div>
+	
+	<div id="readers" >
+	</div>
+</div>
+<div style="clear:both"/>
+<div id="mgmt-view" style="margin:10px;" >
 
-<div id="mgmt-view" style="margin-left:30px;display:none;" class="pull-left">
-
-	 <div class="pull-left" style="padding-bottom:16px;">
-        <div style="padding:6px;" class="pull-left">
-            <strong>Select Event(s) to Run</strong>
-        </div>
-        <select class="form-control pull-left" id="event" name="event" style="width:300px">
+	 <div id="events-dropdown" style="padding-bottom:10px;">
+        <select class="form-control" id="event" name="event" style="width:300px"
+        	onchange="addEvent()">
+            <option value="0" selected="true">Select an Event...</option>
             <c:forEach items="${events}" var="event" varStatus="i">
                 <option value="${event.id}">${ event.name }</option>
             </c:forEach>
         </select>
-		<button id="btn-add" type="button" class="btn btn-primary" 
-			style="margin:0;margin-left: 3px;"
-			onclick="addEvent();">Add Event</button>
     </div>
-	<div style="clear:both;"/>
 	
 	<div id="eventTemplate" style="display:none;">
 		<div id="event---event_id--" class="event-row">
@@ -87,12 +99,12 @@
 				onclick="gun(--event_id--);"> Fire Gun! </button> 
 			<button id="btn-done---event_id--" type="button" class="btn btn-default" 
 				onclick="stopRunning(--event_id--);"> Finish </button>
-			<button id="runners-done---event_id--"  type="button" class="btn btn-default" >
+			<button id="runners-done---event_id--"  type="button" class="btn" >
 				</button>
-			<button id="event-timer---event_id--"  type="button" class="btn btn-default" 
+			<button id="event-timer---event_id--"  type="button" class="btn" 
 				style="display:none;">0
 				</button>
-			<button id="event-timer-str---event_id--"  type="button" class="btn btn-default" 
+			<button id="event-timer-str---event_id--"  type="button" class="btn" 
 				style="display:none;">
 				</button>
 			</div>
@@ -110,97 +122,70 @@ var readerOn=false;
 var readerStatus = 0;
 
 window.onload = racedayInit;
-window.onunload = racedayEnd;
+// window.onunload = racedayEnd;
 
 function racedayInit(){
-	jQuery("#progress").hide();
 	getRunning();
-	timerStatus();
+	getReaders();
 }
 
-function racedayEnd(){
+function getTimer(id){
 	//stopReader();
 }
 
-function timerStatus(){
-	jQuery("#progress").show();
+function timerUpdate(id){
+	window.location = "/bibs-server/timers/"+id+"?form";
+}
+
+function timerStatus(id){
+	jQuery("#reader-progress-"+id).show();
 	var r = jQuery.ajax({
-		url: "/bibs-server/events/timer/status",
+		url: "/bibs-server/timers/status/"+id,
 		type: "GET",
 		dataType: "html"
 		});
 	r.done(function( data ) {
-    	readerStatus = data; 
-    	var rtn = "No Connection";
+    	readerStatus = Math.max(0,data); 
+    	var rtn = "Not Connected";
     	if(readerStatus == 0){
     		rtn = "Disconnected";
+    		jQuery("#btn-connect-"+id).show();
     	}else if(readerStatus == 1){
     		rtn = "Connected";
+    		jQuery("#btn-start-"+id).show();
+    		jQuery("#btn-stop-"+id).hide();
+    		jQuery("#btn-connect-"+id).hide();
     	}else if(readerStatus == 2){
     		rtn = "Reading...";
-    		startReader();
+    		startReader(id);
+    		jQuery("#btn-start-"+id).hide();
+    		jQuery("#btn-stop-"+id).show();
+    		jQuery("#btn-connect-"+id).hide();
     	}else if(readerStatus == 3){
     		rtn = "Writing...";
-    		timerConnect();
+    		jQuery("#btn-connect-"+id).show();
     	}
     	
-    	if(readerStatus == 1 || readerStatus == 2){
-    		jQuery("#mgmt-view").show();
-    		jQuery("#btn-connect").hide();
-    		jQuery("#btn-start").show();
-    		jQuery("#btn-purge").show();
-    	}else{
-    		jQuery("#mgmt-view").hide();
-    		jQuery("#btn-connect").show();
-    		jQuery("#btn-start").hide();
-    		jQuery("#btn-purge").hide();
-    	}
-    	
-    	jQuery("#reader-status").html(rtn);
-    	jQuery("#progress").hide();
+    	jQuery("#reader-status-"+id).html(rtn);
+    	jQuery("#reader-progress-"+id).hide();
 	});
 	r.fail(function( jqXHR, textStatus ) {
 		//alert("Timing Hardware Not Found");
-		jQuery("#mgmt-view").hide();
 	});
 }
 
-function timerConnect(){
-	jQuery("#progress").show();
+function timerConnect(id){
+	jQuery("#reader-progress-"+id).show();
 	var r = jQuery.ajax({
-		url: "/bibs-server/events/timer/reconnect",
+		url: "/bibs-server/timers/connect/"+id,
 		type: "GET",
 		dataType: "html"
 		});
 	r.done(function( data ) {
-		if(data == "true"){
-    		jQuery("#mgmt-view").show();
-			jQuery("#btn-start").show(200);
-			jQuery("#btn-connect").hide(200);
-		}
-		jQuery("#progress").hide();
-		timerStatus();
+		timerStatus(id);
 	});
 	r.fail(function( jqXHR, textStatus ) {
-		jQuery("#mgmt-view").hide();
-		jQuery("#progress").hide();
-	});
-}
-
-function timerPurge(){
-	var r = jQuery.ajax({
-		url: "/bibs-server/events/timer/purge",
-		type: "GET",
-		dataType: "html"
-		});
-	r.done(function( data ) {
-		if(data == "true"){
-    		// alert("Reader cleared.");
-		}else{
-			jQuery("#btn-purge").html("Error");
-		}
-	});
-	r.fail(function( jqXHR, textStatus ) {
+		timerStatus(id);
 	});
 }
 
@@ -222,12 +207,22 @@ function lookupStartTime(eventId){
 
 function addEvent(){
 	var eventId = jQuery("#event").val();
-	if(null==eventId) return false;
+	if(null==eventId || !(eventId>0)) return false;
 	var eventName = jQuery("#event option[value='"+eventId+"']").text();
 	makeEventRow(eventId,eventName);
 	setRunning(eventId,runningEventCount++);
 	// getStartTime();
 	queryRunnerCount(eventId);
+}
+
+function makeReaderRow(readerObj){
+	var position = "Starting Line";
+	if(readerObj.position) position = "Finish Line";
+	var row = jQuery("#reader-template").html()
+		.replace(/--id--/g,readerObj.id)
+		.replace(/--position--/g,position)
+		.replace(/--url--/g,readerObj.id);
+	jQuery("#readers").append(row);
 }
 
 function makeEventRow(eventId,eventName){
@@ -246,17 +241,9 @@ function getStartTime(){
 	});
 }
 
-function closeWarning(){
-	// do not close
-	var warning = "The finish line reader has been started!\r\nIf you leave this page, the Announcer's list will be reset.";
-	//alert(warning);
-	//window.onbeforeunload = function(e) { return warning; };
-}
-
-function startReader(){
-	readerOn=true;
+function startReader(id){
 	var readerStart = jQuery.ajax({
-		url: "/bibs-server/events/start",
+		url: "/bibs-server/timers/start/"+id,
 		type: "GET",
 		dataType: "html"
 		});
@@ -264,10 +251,11 @@ function startReader(){
 		if(msg!="true"){
 			alert("Error starting reader.");
 		}else{
-			jQuery('#btn-start').hide();
-			jQuery('#btn-stop').show(200);
-			jQuery("#progress").show();
-			jQuery("#reader-status").html("Reading...");
+			jQuery('#btn-start-'+id).hide();
+			jQuery('#btn-stop-'+id).show();
+			jQuery("#reader-progress-"+id).show();
+			jQuery("#reader-status-"+id).html("Reading...");
+			readerOn=true;
 		}
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
@@ -279,11 +267,9 @@ function startReader(){
 		if(!readerOn) return true;
 		getReaderResults();
 	},3000);
-	//closeWarning();
 }
 
 function initTimer(eventId){
-	var starttime = 0;
 	var now = new Date().getTime();
 	var req = jQuery.ajax({
 		url: "/bibs-server/events/"+eventId,
@@ -291,21 +277,16 @@ function initTimer(eventId){
 		dataType: "json"
 		});
 	req.done(function( data ) {
-		var req2 = jQuery.ajax({
-			url: "/bibs-server/events/timer/time",
-			type: "GET",
-			dataType: "html"
-			});
-		req2.done(function( data2 ) {
-			now = Math.max(0,data2);
-			starttime = now - Math.max(0,data.timerStart);
-			jQuery("#event-timer-"+eventId).html(starttime);
+		if(!eval(data.gunFired)){
+			jQuery("#event-timer-str-"+eventId).hide();
+			return true;
+		}
+			jQuery("#event-timer-"+eventId).html(now-data.timerStart);
 			timer(eventId);
 			jQuery("#event-timer-str-"+eventId).show();
 			setInterval(function(){
 				timer(eventId);
 			},1000);
-		});
 	});
 	
 }
@@ -364,26 +345,24 @@ function incrementDone(eventId){
 	jQuery("#runners-done-"+eventId).html((done+1)+"/"+total);
 }
 
-function stopReader(){
-	readerOn=false;
-	jQuery('#btn-stop').hide();
+function stopReader(id){
 	var request = jQuery.ajax({
-		url: "/bibs-server/events/stop",
+		url: "/bibs-server/timers/stop/"+id,
 		type: "GET",
 		dataType: "html"
 		});
 	request.done(function( msg ) {
 		if(msg=="true"){
-			jQuery('#btn-start').show();
-			jQuery("#progress").hide();
-			jQuery("#timer-status").html("Stopping...");
-			timerStatus();
-		}else{
-			jQuery('#btn-stop').show();
+			jQuery('#btn-stop-'+id).hide();
+			jQuery('#btn-start-'+id).show();
+			jQuery("#timer-progress-"+id).hide();
+			jQuery("#timer-status-"+id).html("Stopping...");
+			timerStatus(id);
+			readerOn=false;
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		timerStatus();
+		timerStatus(id);
 		});
 }
 
@@ -404,7 +383,9 @@ function setRunning(eventId,order){
 }
 
 function stopRunning(eventId){
-	jQuery("#event-"+eventId).remove();
+	jQuery("#event-"+eventId).slideUp("slow",function(){
+			jQuery("#event-"+eventId).remove();
+		});
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/done?event="+eventId,
 		type: "GET",
@@ -417,18 +398,6 @@ function stopRunning(eventId){
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		// error
-		});
-}
-
-function clearTime(bib){
-	var request = jQuery.ajax({
-		url: "/bibs-server/events/timer/cleartime?bib="+bib,
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( msg ) {
-		});
-	request.fail(function( jqXHR, textStatus ) {
 		});
 }
 
@@ -476,6 +445,22 @@ function getRunning(eventId,order){
 		});
 }
 
+function getReaders(){
+	var request = jQuery.ajax({
+		url: "/bibs-server/timers",
+		type: "GET",
+		dataType: "json"
+		});
+	request.done(function( data ) {
+		for(var i in data){
+			makeReaderRow(data[i]);
+			timerStatus(data[i].id)
+		}
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		// error?
+		});
+}
 function queryRunnerCount(eventId){
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/count?event="+eventId,

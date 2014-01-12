@@ -220,6 +220,10 @@ privileged aspect RaceResult_Roo_JavaBean {
         this.timeofficial = timeofficial;
     }
     
+    public void RaceResult.setTimeofficialdisplay(String timeofficialdisplay) {
+        this.timeofficialdisplay = timeofficialdisplay;
+    }
+    
     public String RaceResult.getRankoverall() {
         return this.rankoverall;
     }

@@ -18,6 +18,10 @@
 	font-size: small;
 }
 
+#footer-inner{
+	text-align:center;
+}
+
 /* menu elements*/
 
 .quicklinks {

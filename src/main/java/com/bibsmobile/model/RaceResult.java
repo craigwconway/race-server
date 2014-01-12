@@ -93,6 +93,8 @@ public class RaceResult implements Comparable<RaceResult>{
     private String timepace;
 
     private String timeofficial;
+    
+    private String timeofficialdisplay;
 
     private String rankoverall;
 
@@ -148,13 +150,9 @@ public class RaceResult implements Comparable<RaceResult>{
     @DateTimeFormat(style="SS")
     private Date updated;
     
-    @PrePersist
-    protected void onCreate() {
-        created = new Date();
-    }
-
     @PreUpdate
     protected void onUpdate() {
+        if(created==null) created = new Date();
         updated = new Date();
     }
     
@@ -245,8 +243,16 @@ public class RaceResult implements Comparable<RaceResult>{
         return q;
     }
 	
-	public static List<RaceResult> search(Long eventId, String name, String bib) {
+	public static List<RaceResult> findRaceResultsByEventAndUpdatedGreaterThan(Long event, Long updated) {
         EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.updated > :updated", RaceResult.class);
+        q.setParameter("event", event);
+        q.setParameter("updated", updated);
+        return q.getResultList();
+	}
+    	
+    	public static List<RaceResult> search(Long eventId, String name, String bib) {
+            EntityManager em = RaceResult.entityManager();
         
         Event event = new Event();
         if(null!=eventId && eventId > 0) event = Event.findEvent(eventId);
@@ -312,5 +318,29 @@ public class RaceResult implements Comparable<RaceResult>{
 		long val = timer - other.timer;
 		return (int) val;
 	}
-
+	
+	public String getTimeofficialdisplay() {
+		if(null==getTimestart() || null==getTimeofficial())
+			return "";
+		long l = Long.valueOf(getTimestart()) - Long.valueOf(getTimeofficial());
+    	String rtn = "";
+    	l=Math.abs(l);
+		int hours = (int) ((l / 3600000) );
+		System.out.println("Hours:" + hours);
+		int minutes = (int) ((l / 60000) % 60 );
+		System.out.println("Minutes: " + minutes);
+		int seconds =  (int) ((l/1000) % 60);
+		System.out.println("Seconds " + seconds);
+		int millis = (int) (l%100);
+    	if(hours>0 && hours <=9) rtn = "0"+hours;
+    	else if (hours > 9) rtn = hours +":";
+    	else if (hours == 0) rtn = "00:";
+    	if(minutes>0 && minutes <=9) rtn = rtn + "0"+minutes;
+    	else if(minutes > 9) rtn = rtn + ""+minutes;
+    	else if (minutes == 0) rtn = rtn + "00";
+    	if(seconds>0 && seconds <=9) rtn = rtn + ":0"+seconds;
+    	else if(seconds > 9) rtn = rtn + ":"+seconds;
+    	rtn = rtn + "."+millis;
+		return rtn;
+	}
 }

@@ -78,10 +78,4 @@
         <property name="persistenceUnitName" value="persistenceUnit"/>
         <property name="dataSource" ref="dataSource"/>
     </bean>
-    
-	<bean id="timer" class="com.bibsmobile.service.DummyTimer" 
-		 destroy-method="cleanup">
-		<property name="readerURI" value="tmr://192.168.0.197"/>
-	</bean>
-		
 </beans>

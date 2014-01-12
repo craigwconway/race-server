@@ -4,12 +4,14 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
+import com.bibsmobile.model.BibReader;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
@@ -25,6 +27,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     @Autowired
     UserProfileService ApplicationConversionServiceFactoryBean.userProfileService;
+    
+    public Converter<BibReader, String> ApplicationConversionServiceFactoryBean.getBibReaderToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.BibReader, java.lang.String>() {
+            public String convert(BibReader bibReader) {
+                return "(no displayable fields)";
+            }
+        };
+    }
+    
+    public Converter<Long, BibReader> ApplicationConversionServiceFactoryBean.getIdToBibReaderConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.BibReader>() {
+            public com.bibsmobile.model.BibReader convert(java.lang.Long id) {
+                return BibReader.findBibReader(id);
+            }
+        };
+    }
+    
+    public Converter<String, BibReader> ApplicationConversionServiceFactoryBean.getStringToBibReaderConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.BibReader>() {
+            public com.bibsmobile.model.BibReader convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), BibReader.class);
+            }
+        };
+    }
     
     public Converter<Event, String> ApplicationConversionServiceFactoryBean.getEventToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.Event, java.lang.String>() {
@@ -77,7 +103,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<RaceResult, String> ApplicationConversionServiceFactoryBean.getRaceResultToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.RaceResult, java.lang.String>() {
             public String convert(RaceResult raceResult) {
-                return new StringBuilder().append(raceResult.getBib()).append(' ').append(raceResult.getFirstname()).append(' ').append(raceResult.getLastname()).append(' ').append(raceResult.getMiddlename()).toString();
+                return new StringBuilder().append(raceResult.getTimeofficialdisplay()).append(' ').append(raceResult.getBib()).append(' ').append(raceResult.getFirstname()).append(' ').append(raceResult.getLastname()).toString();
             }
         };
     }
@@ -170,6 +196,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
+    public Converter<TimerConfig, String> ApplicationConversionServiceFactoryBean.getTimerConfigToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.TimerConfig, java.lang.String>() {
+            public String convert(TimerConfig timerConfig) {
+                return new StringBuilder().append(timerConfig.getPosition()).append(' ').append(timerConfig.getUrl()).append(' ').append(timerConfig.getReadTimeout()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, TimerConfig> ApplicationConversionServiceFactoryBean.getIdToTimerConfigConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.TimerConfig>() {
+            public com.bibsmobile.model.TimerConfig convert(java.lang.Long id) {
+                return TimerConfig.findTimerConfig(id);
+            }
+        };
+    }
+    
+    public Converter<String, TimerConfig> ApplicationConversionServiceFactoryBean.getStringToTimerConfigConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.TimerConfig>() {
+            public com.bibsmobile.model.TimerConfig convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), TimerConfig.class);
+            }
+        };
+    }
+    
     public Converter<UserAuthority, String> ApplicationConversionServiceFactoryBean.getUserAuthorityToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthority, java.lang.String>() {
             public String convert(UserAuthority userAuthority) {
@@ -243,6 +293,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     }
     
     public void ApplicationConversionServiceFactoryBean.installLabelConverters(FormatterRegistry registry) {
+        registry.addConverter(getBibReaderToStringConverter());
+        registry.addConverter(getIdToBibReaderConverter());
+        registry.addConverter(getStringToBibReaderConverter());
         registry.addConverter(getEventToStringConverter());
         registry.addConverter(getIdToEventConverter());
         registry.addConverter(getStringToEventConverter());
@@ -261,6 +314,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getResultsImportToStringConverter());
         registry.addConverter(getIdToResultsImportConverter());
         registry.addConverter(getStringToResultsImportConverter());
+        registry.addConverter(getTimerConfigToStringConverter());
+        registry.addConverter(getIdToTimerConfigConverter());
+        registry.addConverter(getStringToTimerConfigConverter());
         registry.addConverter(getUserAuthorityToStringConverter());
         registry.addConverter(getIdToUserAuthorityConverter());
         registry.addConverter(getStringToUserAuthorityConverter());
