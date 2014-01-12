@@ -319,18 +319,13 @@ public class RaceResult implements Comparable<RaceResult>{
 		return (int) val;
 	}
 	
-	public String getTimeofficialdisplay() {
-		if(null==getTimestart() || null==getTimeofficial())
-			return "";
-		long l = Long.valueOf(getTimestart()) - Long.valueOf(getTimeofficial());
+	public static String toHumanTime(long start,long finish) {
+		long l = finish - start;
     	String rtn = "";
     	l=Math.abs(l);
 		int hours = (int) ((l / 3600000) );
-		System.out.println("Hours:" + hours);
 		int minutes = (int) ((l / 60000) % 60 );
-		System.out.println("Minutes: " + minutes);
 		int seconds =  (int) ((l/1000) % 60);
-		System.out.println("Seconds " + seconds);
 		int millis = (int) (l%100);
     	if(hours>0 && hours <=9) rtn = "0"+hours;
     	else if (hours > 9) rtn = hours +":";

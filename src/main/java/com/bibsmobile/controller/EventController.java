@@ -50,7 +50,6 @@ public class EventController {
         	e.setGunFired(true);
     		e.setTimerStart(new Date().getTime());
     		e.merge();
-    		System.out.println("event time "+e.getTimerStart());
     	}catch(Exception x){
     		x.printStackTrace();
     		return "false";
@@ -62,7 +61,6 @@ public class EventController {
     @ResponseBody
     public static String run(@RequestParam(value = "event", required = true) long event,
     		@RequestParam(value = "order", required = false, defaultValue = "1") int order){
-		System.out.println("event run "+event);
     	try{
         	Event e = Event.findEvent(event);
     		e.setRunning(order);
@@ -89,72 +87,24 @@ public class EventController {
         return "true";
     }
 	
-    @RequestMapping(value = "/start", method = RequestMethod.GET)
-    @ResponseBody
-    public String timerStart(){
-    	String rtn = "false";
-        try {
-        	rtn = "true";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rtn;
-    }
-    
-    @RequestMapping(value = "/stop", method = RequestMethod.GET)
-    @ResponseBody
-    public String timerStop(){
-    	String rtn = "false";
-        try {
-        	rtn = "true";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rtn;
-    }
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
-    public synchronized String resultsQuery(@RequestParam(value = "event", required = true) int event_id,
-    		@RequestParam(value = "l", required = true) long lastUpdate){ 
+    public String resultsQuery(@RequestParam(value = "event", required = true) int event_id){ 
         try {
         	return RaceResult.toJsonArray(
-        			RaceResult.findRaceResultsByEventAndUpdatedGreaterThan(new Long(event_id), new Date().getTime()));
+        			Event.findRaceResultsForAnnouncer(event_id, "", 0, 0, 1, 30));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return "false";
     }
     
-    public static String getHoursMinutesSeconds(long l) {
-    	String rtn = "";
-    	l=Math.abs(l);
-		int hours = (int) ((l / 3600000) );
-		System.out.println("Hours:" + hours);
-		//l = l % 3600000;
-		int minutes = (int) ((l / 60000) % 60 );
-		System.out.println("Minutes: " + minutes);
-		//l = l % 60000;
-		int seconds =  (int) ((l/1000) % 60);
-		System.out.println("Seconds " + seconds);
-		int millis = (int) (l%100);
-    	if(hours>0 && hours <=9) rtn = "0"+hours;
-    	else if (hours > 9) rtn = hours +":";
-    	else if (hours == 0) rtn = "00:";
-    	if(minutes>0 && minutes <=9) rtn = rtn + "0"+minutes;
-    	else if(minutes > 9) rtn = rtn + ""+minutes;
-    	else if (minutes == 0) rtn = rtn + "00";
-    	if(seconds>0 && seconds <=9) rtn = rtn + ":0"+seconds;
-    	else if(seconds > 9) rtn = rtn + ":"+seconds;
-    	rtn = rtn + "."+millis;
-		return rtn;
-	}
-
 	@RequestMapping(value = "/write", method = RequestMethod.GET)
     @ResponseBody
     public String writeBib(@RequestParam(value = "bib", required = true) Long bib){
         try {
-        	// write
+        	// write TODO
         } catch (Exception e) {
             e.printStackTrace();
             return "false";
@@ -300,18 +250,6 @@ public class EventController {
         return "0";
     }
 
-    @RequestMapping(value = "/timer/cleartime", method = RequestMethod.GET)
-    @ResponseBody
-    public String clearTime(
-    		@RequestParam(value = "bib", required = true) Integer bib) {
-        try {
-        	//timer.clearTime(bib);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "true";
-    }
-    
     @RequestMapping(value="/export", method = RequestMethod.GET)
     public void export(@RequestParam(value = "event", required = true) Long event,
     		HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException{

@@ -54,4 +54,9 @@
         <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" render="false" z="user-managed"/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Event" render="${not empty dependencies}" z="97PxZzAnMjrQHEYGI+GbAcLkB+8="/>
+	<script>
+    window.onload = function(){
+    	jQuery("#_name_id").focus();
+    }
+	</script>
 </div>

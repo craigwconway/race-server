@@ -6,7 +6,8 @@
         <field:input field="position" id="c_com_bibsmobile_model_TimerConfig_position" z="yamQ8KWzGfWz+41JyeNXITbQ6K4="/>
         <field:input field="url" id="c_com_bibsmobile_model_TimerConfig_url" z="YQG6sHqrsWv50OpnvgYxdIUonpM="/>
         <field:input field="readTimeout" id="c_com_bibsmobile_model_TimerConfig_readTimeout" z="/+mgpFRssYFOzU8d28QtwFU+oT8="/>
-        <field:input field="events" id="c_com_bibsmobile_model_TimerConfig_events" z="b1iGCiqWViIBd1cqNAWGCEmjy9o="/>
+        <field:input field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" z="8WfNi44TqqgU9MbP0HqWem5pywM="/>
+        <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" z="21VSYhjitSQ8K0PLS7ZAkOt2Mt4="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_TimerConfig" render="${not empty dependencies}" z="wKZtWYD4VUhFJUi1mFDoCmL7dQY="/>
 </div>

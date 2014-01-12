@@ -49,7 +49,7 @@ public class ThingMagicTimer implements Timer {
 	}
 
 	@Override
-	public void start() {
+	public void startReader() {
 		// stop writing
 		if (getStatus() == 3) {
 			this.disconnect();
@@ -70,7 +70,7 @@ public class ThingMagicTimer implements Timer {
 	}
 
 	@Override
-	public void stop() {
+	public void stopReader() {
 		if (null == reader)
 			return;
 		reader.stopReading();
@@ -147,7 +147,7 @@ public class ThingMagicTimer implements Timer {
 			
 			if(bibtime < (bibTimes.get(bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
 				bibTimes.put(bibnum, bibtime);
-				for(Event event:timerConfig.getEvents()){
+				for(Event event:Event.findEventsByRunning()){
 					try{
 						RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult();
 						result.setTimeofficial("" + bibtime);
@@ -180,7 +180,7 @@ public class ThingMagicTimer implements Timer {
 			
 			if(bibtime < (bibTimes.get(bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
 				bibTimes.put(bibnum, bibtime);
-				for(Event event:timerConfig.getEvents()){
+				for(Event event:Event.findEventsByRunning()){
 					try{
 						RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult();
 						result.setTimestart("" + bibtime);

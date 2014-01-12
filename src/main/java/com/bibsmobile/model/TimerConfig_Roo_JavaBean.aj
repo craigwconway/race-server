@@ -3,9 +3,7 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.Event;
 import com.bibsmobile.model.TimerConfig;
-import java.util.List;
 
 privileged aspect TimerConfig_Roo_JavaBean {
     
@@ -33,12 +31,20 @@ privileged aspect TimerConfig_Roo_JavaBean {
         this.readTimeout = readTimeout;
     }
     
-    public List<Event> TimerConfig.getEvents() {
-        return this.events;
+    public int TimerConfig.getReadPower() {
+        return this.readPower;
     }
     
-    public void TimerConfig.setEvents(List<Event> events) {
-        this.events = events;
+    public void TimerConfig.setReadPower(int readPower) {
+        this.readPower = readPower;
+    }
+    
+    public int TimerConfig.getWritePower() {
+        return this.writePower;
+    }
+    
+    public void TimerConfig.setWritePower(int writePower) {
+        this.writePower = writePower;
     }
     
 }

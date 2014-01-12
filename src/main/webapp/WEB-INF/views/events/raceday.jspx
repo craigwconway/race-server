@@ -5,6 +5,9 @@
     <jsp:output omit-xml-declaration="yes"/>
 	
 	<style>
+	button{
+		float:right;
+	}
 	.corners{
 		margin: 16px;
 		padding: 16px;
@@ -16,10 +19,11 @@
 	.event-row{
 		border:solid #DDD 1px;
 		border-radius: 5px;
-		width: 600px;
+		width: 450px;
 		overflow: hidden;
-		margin: 16px;
-		padding: 16px;
+		padding: 10px;
+		margin: 10px;
+		float: left;
 	}
 	.event-name{
 		font-size: 28px;
@@ -30,7 +34,14 @@
 	}
 	.reader{
 		float: left;
-		width: 420px;
+		width: 450px;
+	}
+	#event{
+		margin:10px; 
+		width:300px;
+	}
+	#events{
+		float: left;
 	}
 	#readers{
 		float: left;
@@ -47,10 +58,13 @@
 		<div id="reader---id" class="reader corners">
 			<span id="reader-title---id--" class="reader-title"
 				style="margin:0;margin-left: 3px;"><strong>Reader --url-- </strong>  
-			<span id="reader-pos---id--"
-				style="margin:0;margin-left: 3px;">--position--, </span>
-			<span id="reader-status---id--"
-				style="margin:0;margin-left: 3px;">Not Connected</span>
+				<span id="reader-pos---id--"
+					style="margin:0;margin-left: 3px;">--position--, 
+					</span>
+				<span id="reader-status---id--"
+					style="margin:0;margin-left: 3px;">Not Connected</span>
+				<span id="reader-progress---id--">
+					<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> </span>
 			</span>
 			<button id="btn-update---id--" type="button" class="btn btn-info" 
 				style="margin:0;margin-left: 3px;"
@@ -58,9 +72,6 @@
 			<button id="btn-connect---id--" type="button" class="btn btn-default" 
 				style="margin:0;margin-left: 3px;"
 				onclick="timerConnect(--id--);">Connect</button>
-			<span id="reader-progress---id--">
-				<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> 
-	   		</span>
 		<button id="btn-start---id--" type="button" class="btn btn-success" 
 			style="margin:0;margin-left: 3px;display:none;"
 			onclick="startReader(--id--);">Start</button>
@@ -74,31 +85,31 @@
 	</div>
 </div>
 <div style="clear:both"/>
-<div id="mgmt-view" style="margin:10px;" >
+<div id="mgmt-view" >
 
-	 <div id="events-dropdown" style="padding-bottom:10px;">
-        <select class="form-control" id="event" name="event" style="width:300px"
+	 <div id="events-dropdown" >
+        <select class="form-control" id="event" name="event"
         	onchange="addEvent()">
             <option value="0" selected="true">Select an Event...</option>
             <c:forEach items="${events}" var="event" varStatus="i">
                 <option value="${event.id}">${ event.name }</option>
-            </c:forEach>
+            </c:forEach> 
         </select>
     </div>
-	
+    
 	<div id="eventTemplate" style="display:none;">
 		<div id="event---event_id--" class="event-row">
 			<div>
-			<span class="event-name">--event_name--</span>
+			<div id="event-name---event_id--" class="event-name">--event_name--</div>
 			<span id="starttime-section---event_id--" style="display:none;">
 			<strong>Start time: </strong>
 			<span id="starttime---event_id--">--event_starttime--</span></span>
 			<button  type="button" class="btn btn-info"
 				onclick="window.location='/bibs-server/events/--event_id--?form'"> Edit </button> 
-			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
-				onclick="gun(--event_id--);"> Fire Gun! </button> 
 			<button id="btn-done---event_id--" type="button" class="btn btn-default" 
 				onclick="stopRunning(--event_id--);"> Finish </button>
+			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
+				onclick="gun(--event_id--);"> Fire Gun! </button> 
 			<button id="runners-done---event_id--"  type="button" class="btn" >
 				</button>
 			<button id="event-timer---event_id--"  type="button" class="btn" 
@@ -108,7 +119,7 @@
 				style="display:none;">
 				</button>
 			</div>
-			<table id="results--event_id--" class="table" style="margin:30px;display:none;"><tr><td></td></tr></table>
+			<table id="results--event_id--" class="table" style="margin:10px;display:none;"><tr><td></td></tr></table>
 		</div>
 	</div>
 	
@@ -248,19 +259,14 @@ function startReader(id){
 		dataType: "html"
 		});
 	readerStart.done(function( msg ) {
-		if(msg!="true"){
-			alert("Error starting reader.");
-		}else{
 			jQuery('#btn-start-'+id).hide();
 			jQuery('#btn-stop-'+id).show();
 			jQuery("#reader-progress-"+id).show();
 			jQuery("#reader-status-"+id).html("Reading...");
 			readerOn=true;
-		}
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
-		alert( "Request failed: " + textStatus );
-		return false;
+		timerStatus(id);
 	});
 	getReaderResults();
 	setInterval(function(){
@@ -315,7 +321,7 @@ function readerQuery(eventId){
 		dataType: "json"
 		});
 	request.done(function( data ) {
-			jQuery("#results"+eventId).prepend( makeTable(data, jQuery( "#results"+eventId).html(), eventId ) );
+			jQuery("#results"+eventId).html( makeTable(data, jQuery( "#results"+eventId).html(), eventId ) );
 			jQuery("#results"+eventId).show();
 			});
 	request.fail(function( jqXHR, textStatus ) {
@@ -326,7 +332,6 @@ function readerQuery(eventId){
 function makeTable(data,results,eventId){
 	results = "";
 	for(var i in data){
-		clearTime(data[i].bib);
 		incrementDone(eventId);
 		results += "<tr>";
 		results += "<td>"+data[i].bib+"</td>";
@@ -352,14 +357,12 @@ function stopReader(id){
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		if(msg=="true"){
 			jQuery('#btn-stop-'+id).hide();
 			jQuery('#btn-start-'+id).show();
 			jQuery("#timer-progress-"+id).hide();
 			jQuery("#timer-status-"+id).html("Stopping...");
 			timerStatus(id);
 			readerOn=false;
-		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		timerStatus(id);
@@ -383,17 +386,18 @@ function setRunning(eventId,order){
 }
 
 function stopRunning(eventId){
-	jQuery("#event-"+eventId).slideUp("slow",function(){
-			jQuery("#event-"+eventId).remove();
-		});
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/done?event="+eventId,
 		type: "GET",
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		if(msg!="true") {
-			//error
+		if(msg=="true") {
+			var eventName = jQuery("#event-name-"+eventId).html();
+			jQuery("#event-"+eventId).slideUp("slow",function(){
+					jQuery("#event-"+eventId).remove();
+				});
+			jQuery("#event").append("<option value="+eventId+">"+eventName+"</option>");
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
@@ -408,12 +412,12 @@ function gun(eventId){
 		dataType: "html"
 		});
 	request.done(function( msg ) {
-		if(msg=="true") 
-			jQuery("#btn-done-"+eventId).show();
+		if(msg=="true") {
+			jQuery("#btn-gun-"+eventId).hide();
+			//jQuery("#btn-done-"+eventId).show();
 			initTimer(eventId);
+		}
 		});
-		//jQuery("#starttime-"+eventId).html(new Date().toString().split("GMT")[0]);
-		jQuery("#btn-gun-"+eventId).hide();
 	request.fail(function( jqXHR, textStatus ) {
 		alert("Error firing gun.")
 		});
@@ -435,10 +439,11 @@ function getRunning(eventId,order){
 			initTimer(eventId);
 			if(data[i].gunFired == true){
 				jQuery("#btn-gun-"+eventId).hide();
-				jQuery("#btn-done-"+eventId).show();
+				//jQuery("#btn-done-"+eventId).show();
 			}
 			runningEventCount++;
 		}
+		getReaderResults();
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		// error?

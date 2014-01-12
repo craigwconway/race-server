@@ -7,7 +7,8 @@
             <table:column id="c_com_bibsmobile_model_TimerConfig_position" property="position" z="KyRFxpeDGy9vtHohNV/YEXUaWBU="/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" z="w3MPJFu1R5uA7dJrert4GMqoBDg="/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_events" property="events" z="vDvmpWgmjnwSTy7aSp8jOcrxvYQ="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" z="9ETveBEyYSMhalUJYMkq7ilWPa8="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" z="Rv2qRMTX4o7sxEtgzdKrmiAeoeA="/>
         </table:table>
     </page:list>
 </div>

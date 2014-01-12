@@ -111,7 +111,7 @@
             <table:column id="c_com_bibsmobile_model_RaceResult_middlename" property="middlename" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_RaceResult_middlename2" property="middlename2" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="RQafEEyuJ7qpxUCuXW0zX0x+3KA="/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="N7gN/+AnhpT6TOnJeyaeHYv3mW8="/>
         </table:table>
     </page:list>
 </div>

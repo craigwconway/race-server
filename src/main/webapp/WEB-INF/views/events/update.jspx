@@ -56,13 +56,16 @@
         <field:input field="running" id="c_com_bibsmobile_model_Event_running"  render="false" z="user-managed"/>
         <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="user-managed" render="true"/>
         <script>
-        var val = Math.max(0,jQuery("#_timerStart_id").attr("value"));
-        jQuery("#guntime").html(new Date(val).toLocaleTimeString() );
-        jQuery("#_c_com_bibsmobile_model_Event_timerStart_id").hide();
-        if(val==0){
-        	jQuery("#__id").hide();
-            jQuery("#guntimerow").hide();
-        }
+        window.onload = function(){
+	        jQuery("#_name_id").focus();
+	        var val = Math.max(0,jQuery("#_timerStart_id").attr("value"));
+	        jQuery("#guntime").html(new Date(val).toLocaleTimeString() );
+	        jQuery("#_c_com_bibsmobile_model_Event_timerStart_id").hide();
+	        if(val==0){
+	        	jQuery("#__id").hide();
+	            jQuery("#guntimerow").hide();
+	        }
+	       }
         </script>
 
     </form:update>

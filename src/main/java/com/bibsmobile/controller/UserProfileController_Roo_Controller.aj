@@ -45,13 +45,6 @@ privileged aspect UserProfileController_Roo_Controller {
         return "userprofiles/create";
     }
     
-    @RequestMapping(value = "/{id}", produces = "text/html")
-    public String UserProfileController.show(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("userprofile", userProfileService.findUserProfile(id));
-        uiModel.addAttribute("itemId", id);
-        return "userprofiles/show";
-    }
-    
     @RequestMapping(produces = "text/html")
     public String UserProfileController.list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         if (page != null || size != null) {

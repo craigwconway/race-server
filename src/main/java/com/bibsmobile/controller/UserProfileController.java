@@ -1,19 +1,14 @@
 package com.bibsmobile.controller;
 
-import java.util.List;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bibsmobile.model.Event;
 import com.bibsmobile.model.UserProfile;
 
 @RequestMapping("/userprofiles")
@@ -22,13 +17,11 @@ import com.bibsmobile.model.UserProfile;
 @RooWebScaffold(path = "userprofiles", formBackingObject = UserProfile.class)
 public class UserProfileController {
 
-    public UserProfile byUsernameEquals(String username) {
-        UserProfile user = null;
-        try {
-            user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return user;
-    }
+    @RequestMapping(value = "/byusername/{username}", produces = "text/html")
+    public static String show(@PathVariable("username") String username, Model uiModel) {
+    	UserProfile u = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+        uiModel.addAttribute("userprofile", u);
+        uiModel.addAttribute("itemId", u.getId());
+        return "userprofiles/show";
+    }    
 }

@@ -14,9 +14,9 @@ public interface Timer {
 
 	void disconnect();
 
-	void start();
+	void startReader();
 
-	void stop();
+	void stopReader();
 
 	void write(long bib) throws Exception;
 }

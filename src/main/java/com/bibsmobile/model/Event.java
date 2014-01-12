@@ -179,6 +179,23 @@ public class Event {
         return q.getResultList();
     }
 	
+	public static List<RaceResult> findRaceResultsForAnnouncer(long event, String gender, int min, int max, int page,int size) {
+		if(min>max)min=max;		
+		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial != '' AND o.timeofficial != null ";
+		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
+		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
+		HQL += " order by o.timeofficial desc";
+		EntityManager em = Event.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery( HQL, RaceResult.class);
+        q.setParameter("event", Event.findEvent(event) );
+        if(!gender.isEmpty()) q.setParameter("gender", gender );
+        if(max > 0) q.setParameter("min", String.valueOf(min) );
+        if(max > 0) q.setParameter("max", String.valueOf(max) );
+        q.setFirstResult((page-1)*size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
+	
 	public static long countRaceResults(long event) {
 		EntityManager em = RaceResult.entityManager();
 		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event", Long.class);

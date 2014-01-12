@@ -7,6 +7,7 @@
         <field:display field="position" id="s_com_bibsmobile_model_TimerConfig_position" object="${timerconfig}" z="NeJGlIg7M5JKbW7biYR6X/Bgpr8="/>
         <field:display field="url" id="s_com_bibsmobile_model_TimerConfig_url" object="${timerconfig}" z="Mb+yv6DQuVvPtMbUh2NcwYLnE8M="/>
         <field:display field="readTimeout" id="s_com_bibsmobile_model_TimerConfig_readTimeout" object="${timerconfig}" z="8BPAYxGVtEGAu3ofLo7acUChbbI="/>
-        <field:display field="events" id="s_com_bibsmobile_model_TimerConfig_events" object="${timerconfig}" z="et+Ac3A+9YLeNibiflekoo/IchU="/>
+        <field:display field="readPower" id="s_com_bibsmobile_model_TimerConfig_readPower" object="${timerconfig}" z="JEEoWcdnlaBRbH2lEX2qXGgqlZs="/>
+        <field:display field="writePower" id="s_com_bibsmobile_model_TimerConfig_writePower" object="${timerconfig}" z="GAEYQnVzIi6VjA/5qYIr/1XljLw="/>
     </page:show>
 </div>

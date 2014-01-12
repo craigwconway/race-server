@@ -51,14 +51,14 @@ public class TimerConfigController {
     @RequestMapping(value = "/start/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String start(@PathVariable(value = "id") long id){
-    	getTimer(id).start();
+    	getTimer(id).startReader();
         return "true";
     }
     
     @RequestMapping(value = "/stop/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String stop(@PathVariable(value = "id") long id){
-    	getTimer(id).stop();
+    	getTimer(id).stopReader();
         return "true";
     }
     
