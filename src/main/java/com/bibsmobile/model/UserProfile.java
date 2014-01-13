@@ -19,7 +19,15 @@ import flexjson.JSONSerializer;
 @RooJson
 @RooJpaActiveRecord(finders = { "findUserProfilesByUsernameEquals" })
 public class UserProfile implements UserDetails {
-	
+
+    private String firstname;
+    private String lastname;
+    private String city;
+    private String state;
+    private int age;
+    private String gender;
+    private String email;
+    
     @ManyToMany
     @JoinTable(name = "user_authorities")
     private Set<UserAuthority> userAuthorities;
@@ -33,9 +41,6 @@ public class UserProfile implements UserDetails {
     private String facebookId;
     private String twitterId;
     private String googleId;
-    private int age;
-    private String gender;
-    private String email;
 
     @ManyToMany
     private Set<UserProfile> friends;
@@ -43,10 +48,6 @@ public class UserProfile implements UserDetails {
     private Set<UserProfile> rivals;
     @ManyToMany 
     private Set<Event> eventsSaved;
-    @ManyToMany 
-    private Set<Event> eventsSearched;
-    @ManyToMany 
-    private Set<Event> eventsViewed;
     @ManyToMany
     private Set<RaceImage> raceimages;
 	

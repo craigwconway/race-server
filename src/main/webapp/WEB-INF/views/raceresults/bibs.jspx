@@ -13,9 +13,6 @@
 		<button id="btn-connect" type="button" class="btn btn-default" 
 			style="margin:0;margin-left: 3px;"
 			onclick="timerConnect();">Connect</button>
-		<button id="btn-stop" type="button" class="btn btn-danger" 
-			style="margin:0;margin-left: 3px;display:none;"
-			onclick="stopReader();">Stop Scanning</button>
 		<span id="progress">
 			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
    		</span>
@@ -93,7 +90,7 @@ function stopReader(){
 	readerOn=false;
 	jQuery('#btn-stop').hide();
 	var request = jQuery.ajax({
-		url: "/bibs-server/events/stop",
+		url: "/bibs-server/timers/stop/1",
 		type: "GET",
 		dataType: "html"
 		});
@@ -116,9 +113,8 @@ function writeBib1(){
 	jQuery("#status-bar").html("Writing...");
 	jQuery("#status-bar").show();
 	var request = jQuery.ajax({
-		url: "/bibs-server/events/write",
+		url: "/bibs-server/timers/write/"+jQuery("#bib-input").val(),
 		type: "GET",
-		data: {bib:jQuery("#bib-input").val()},
 		dataType: "html"
 		});
 	request.done(function( data ) {
@@ -135,11 +131,10 @@ function writeBib1(){
 }
 function writeBib(bib){
 	jQuery("#status-bar").html("Writing...");
-	jQuery("#status-bar").show(500);
+	jQuery("#status-bar").show();
 	var request = jQuery.ajax({
-		url: "/bibs-server/events/write",
+		url: "/bibs-server/timers/write/"+bib,
 		type: "GET",
-		data: {bib:bib},
 		dataType: "html"
 		});
 	request.done(function( data ) {
@@ -174,38 +169,38 @@ window.onload = timerStatus;
 
 function timerStatus(){
 	var r = jQuery.ajax({
-		url: "/bibs-server/events/timer/status",
+		url: "/bibs-server/timers/status/1",
 		type: "GET",
 		dataType: "html"
 		});
 	r.done(function( data ) {
-  	readerStatus = data; 
-  	var rtn = "No Connection";
-  	if(readerStatus == 0){
-  		rtn = "Disconnected";
-  	}else if(readerStatus == 1){
-  		rtn = "Connected";
-  	}else if(readerStatus == 2){
-  		rtn = "Reading...";
-  	}else if(readerStatus == 3){
-  		rtn = "Writing...";
-  	}
+	  	var readerStatus = Math.max(0,data); 
+	  	var rtn = "No Connection";
+	  	if(readerStatus == 0){
+	  		rtn = "Disconnected";
+	  	}else if(readerStatus == 1){
+	  		rtn = "Connected";
+	  	}else if(readerStatus == 2){
+	  		rtn = "Reading...";
+	  	}else if(readerStatus == 3){
+	  		rtn = "Writing...";
+	  	}
   	
-  	if(readerStatus == 1 ){
-  		jQuery("#mgmt-view").show();
-  		jQuery("#btn-connect").hide();
-  		jQuery("#progress").hide();
-  	}else if(readerStatus == 2 || readerStatus == 3){
-  		jQuery("#btn-connect").hide();
-  		jQuery("#mgmt-view").hide();
-  		jQuery("#btn-stop").show();
-  		jQuery("#progress").show();
-  	}else{
-  		jQuery("#progress").hide();
-  	}
-  	
-  	jQuery("#reader-status").html(rtn);
-	});
+	  	if(readerStatus == 1 ){
+	  		jQuery("#mgmt-view").show();
+	  		jQuery("#btn-connect").hide();
+	  		jQuery("#progress").hide();
+	  	}else if(readerStatus == 2 || readerStatus == 3){
+	  		jQuery("#btn-connect").hide();
+	  		jQuery("#mgmt-view").hide();
+	  		jQuery("#btn-stop").show();
+	  		jQuery("#progress").show();
+	  	}else{
+	  		jQuery("#progress").hide();
+	  	}
+	  	
+	  	jQuery("#reader-status").html(rtn);
+		});
 	r.fail(function( jqXHR, textStatus ) {
 		//alert("Timing Hardware Not Found");
 		jQuery("#mgmt-view").hide();
@@ -215,7 +210,7 @@ function timerStatus(){
 function timerConnect(){
 	jQuery("#progress").show();
 	var r = jQuery.ajax({
-		url: "/bibs-server/events/timer/reconnect",
+		url: "/bibs-server/timers/connect/1",
 		type: "GET",
 		dataType: "html"
 		});

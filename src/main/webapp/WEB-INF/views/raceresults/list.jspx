@@ -107,11 +107,9 @@
         <table:table data="${raceresults}" id="l_com_bibsmobile_model_RaceResult" path="/raceresults" z="8A8H2AFIrX6CW2kysD/E4yuVCqQ=">
             <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_firstname" property="firstname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_middlename" property="middlename" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_middlename2" property="middlename2" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="N7gN/+AnhpT6TOnJeyaeHYv3mW8="/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_timeofficial" property="timeofficial" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
         </table:table>
     </page:list>
 </div>

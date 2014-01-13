@@ -12,6 +12,62 @@ import java.util.Set;
 
 privileged aspect UserProfile_Roo_JavaBean {
     
+    public String UserProfile.getFirstname() {
+        return this.firstname;
+    }
+    
+    public void UserProfile.setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+    
+    public String UserProfile.getLastname() {
+        return this.lastname;
+    }
+    
+    public void UserProfile.setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+    
+    public String UserProfile.getCity() {
+        return this.city;
+    }
+    
+    public void UserProfile.setCity(String city) {
+        this.city = city;
+    }
+    
+    public String UserProfile.getState() {
+        return this.state;
+    }
+    
+    public void UserProfile.setState(String state) {
+        this.state = state;
+    }
+    
+    public int UserProfile.getAge() {
+        return this.age;
+    }
+    
+    public void UserProfile.setAge(int age) {
+        this.age = age;
+    }
+    
+    public String UserProfile.getGender() {
+        return this.gender;
+    }
+    
+    public void UserProfile.setGender(String gender) {
+        this.gender = gender;
+    }
+    
+    public String UserProfile.getEmail() {
+        return this.email;
+    }
+    
+    public void UserProfile.setEmail(String email) {
+        this.email = email;
+    }
+    
     public Set<UserAuthority> UserProfile.getUserAuthorities() {
         return this.userAuthorities;
     }
@@ -68,30 +124,6 @@ privileged aspect UserProfile_Roo_JavaBean {
         this.googleId = googleId;
     }
     
-    public int UserProfile.getAge() {
-        return this.age;
-    }
-    
-    public void UserProfile.setAge(int age) {
-        this.age = age;
-    }
-    
-    public String UserProfile.getGender() {
-        return this.gender;
-    }
-    
-    public void UserProfile.setGender(String gender) {
-        this.gender = gender;
-    }
-    
-    public String UserProfile.getEmail() {
-        return this.email;
-    }
-    
-    public void UserProfile.setEmail(String email) {
-        this.email = email;
-    }
-    
     public Set<UserProfile> UserProfile.getFriends() {
         return this.friends;
     }
@@ -114,22 +146,6 @@ privileged aspect UserProfile_Roo_JavaBean {
     
     public void UserProfile.setEventsSaved(Set<Event> eventsSaved) {
         this.eventsSaved = eventsSaved;
-    }
-    
-    public Set<Event> UserProfile.getEventsSearched() {
-        return this.eventsSearched;
-    }
-    
-    public void UserProfile.setEventsSearched(Set<Event> eventsSearched) {
-        this.eventsSearched = eventsSearched;
-    }
-    
-    public Set<Event> UserProfile.getEventsViewed() {
-        return this.eventsViewed;
-    }
-    
-    public void UserProfile.setEventsViewed(Set<Event> eventsViewed) {
-        this.eventsViewed = eventsViewed;
     }
     
     public Set<RaceImage> UserProfile.getRaceimages() {

@@ -37,7 +37,6 @@ public class DummyTimer implements Timer, Runnable {
 	@Override
 	public void write(long bib) throws Exception {
 		status = 3;
-		notify();
 		System.out.println(this.getClass().getName()+":"+Thread.currentThread().getName()+" Started Writing...");
 	}
 

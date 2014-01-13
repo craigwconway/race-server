@@ -15,12 +15,16 @@
         <field:display field="googleId" id="s_com_bibsmobile_model_UserProfile_googleId" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="age" id="s_com_bibsmobile_model_UserProfile_age" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="gender" id="s_com_bibsmobile_model_UserProfile_gender" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="email" id="s_com_bibsmobile_model_UserProfile_email" object="${userprofile}"  render="false" z="user-managed"/>
+        <field:display field="email" id="s_com_bibsmobile_model_UserProfile_email" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="friends" id="s_com_bibsmobile_model_UserProfile_friends" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="rivals" id="s_com_bibsmobile_model_UserProfile_rivals" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="eventsSaved" id="s_com_bibsmobile_model_UserProfile_eventsSaved" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="eventsSearched" id="s_com_bibsmobile_model_UserProfile_eventsSearched" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="eventsViewed" id="s_com_bibsmobile_model_UserProfile_eventsViewed" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="raceimages" id="s_com_bibsmobile_model_UserProfile_raceimages" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="firstname" id="s_com_bibsmobile_model_UserProfile_firstname" object="${userprofile}" z="QVKv4wiVTY/p1droEPr8cSAUA7o="/>
+        <field:display field="lastname" id="s_com_bibsmobile_model_UserProfile_lastname" object="${userprofile}" z="UBzaT/ZyYVmwv3fH0O7wbWjTniM="/>
+        <field:display field="city" id="s_com_bibsmobile_model_UserProfile_city" object="${userprofile}" z="nkiKew0Zy3Hq7VY6PD2HapBnFjc="/>
+        <field:display field="state" id="s_com_bibsmobile_model_UserProfile_state" object="${userprofile}" z="E4hur0PeVa284ORSqCmxaibU4gA="/>
     </page:show>
 </div>
