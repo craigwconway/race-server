@@ -92,7 +92,7 @@
 	</button>
     </sec:authorize>
     <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-        <button class="btn btn-primary pull-left btn-top" onclick="document.location='/bibs-server/raceresults/bibs';" style="margin:0;margin-left: 3px;" type="button">
+        <button class="btn btn-success pull-left btn-top" onclick="document.location='/bibs-server/raceresults/bibs';" style="margin:0;margin-left: 3px;" type="button">
 		Write Bibs
 	</button>
     </sec:authorize>
@@ -108,8 +108,9 @@
             <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_firstname" property="firstname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="N7gN/+AnhpT6TOnJeyaeHYv3mW8="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_timeofficial" property="timeofficial" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" z="nRuKUQNQ26td4rqAxRg8YuQlvDM="/>
         </table:table>
     </page:list>
 </div>

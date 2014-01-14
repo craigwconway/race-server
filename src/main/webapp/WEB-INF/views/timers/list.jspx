@@ -9,6 +9,7 @@
             <table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" z="w3MPJFu1R5uA7dJrert4GMqoBDg="/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" z="9ETveBEyYSMhalUJYMkq7ilWPa8="/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" z="Rv2qRMTX4o7sxEtgzdKrmiAeoeA="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_type" property="type" z="DnTzjIXPAechPe0BHlF0GokFjlY="/>
         </table:table>
     </page:list>
 </div>

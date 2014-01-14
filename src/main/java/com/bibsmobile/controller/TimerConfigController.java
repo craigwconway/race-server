@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.service.DummyTimer;
+import com.bibsmobile.service.ThingMagicTimer;
 import com.bibsmobile.service.Timer;
 
 @RequestMapping("/timers")
@@ -24,27 +25,46 @@ public class TimerConfigController {
 
 	private Timer getTimer(long id){
 		TimerConfig timerConfig = TimerConfig.findTimerConfig(id);
-    	Timer timer;
+    	Timer timer = null;
     	if(timers.containsKey(id)){
+    		if(timer instanceof ThingMagicTimer && timerConfig.getType() == 0){
+    			timer = new DummyTimer();
+    			timers.put(id, timer);
+    		}else if(timer instanceof DummyTimer && timerConfig.getType() == 1){
+    			timer = new ThingMagicTimer();
+        		timers.put(id, timer);
+    		}
     		timer = timers.get(id);
     	}else{
-    		timer = new DummyTimer();
-    		timer.setTimerConfig(timerConfig);
+    		if(timerConfig.getType() == 0)
+    			timer = new DummyTimer();
+    		else if(timerConfig.getType() == 1){
+    			timer = new ThingMagicTimer();
+    		}
     		timers.put(id, timer);
     	}
+		timer.setTimerConfig(timerConfig);
     	return timer;
 	}
 	
 	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public String status(@PathVariable(value = "id") long id) {
-		return String.valueOf(getTimer(id).getStatus());
+		return getTimer(id).getStatus()+"";
 	}
 	
 	@RequestMapping(value = "/connect/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String connect(@PathVariable(value = "id") long id){
+    	getTimer(id).disconnect(); 
     	getTimer(id).connect();
+        return "true";
+    }
+	
+	@RequestMapping(value = "/disconnect/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String disconnect(@PathVariable(value = "id") long id){
+    	getTimer(id).disconnect();
         return "true";
     }
     
@@ -65,7 +85,13 @@ public class TimerConfigController {
     @RequestMapping(value = "/write/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String write(@PathVariable(value = "id") long id) throws Exception{
-    	getTimer(id).write(id);
+    	getTimer(1).write(id); // use timer 1 TODO ?
         return "true";
+    } 
+
+    @RequestMapping(value = "/time/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String time(@PathVariable(value = "id") long id) {
+        return getTimer(id).getDateTime()+"";
     }
 }

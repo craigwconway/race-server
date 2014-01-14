@@ -8,6 +8,7 @@
         <field:input field="readTimeout" id="c_com_bibsmobile_model_TimerConfig_readTimeout" z="/+mgpFRssYFOzU8d28QtwFU+oT8="/>
         <field:input field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" z="8WfNi44TqqgU9MbP0HqWem5pywM="/>
         <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" z="21VSYhjitSQ8K0PLS7ZAkOt2Mt4="/>
+        <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_TimerConfig" render="${not empty dependencies}" z="wKZtWYD4VUhFJUi1mFDoCmL7dQY="/>
 </div>

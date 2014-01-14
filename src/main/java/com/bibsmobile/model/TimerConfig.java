@@ -16,4 +16,6 @@ public class TimerConfig {
 	private int readTimeout;
 	private int readPower;
 	private int writePower;
+	private int type; // Dummy, ThingMagic, etc 
+	
 }

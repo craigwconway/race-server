@@ -51,7 +51,7 @@
         <field:display field="timemile4" id="s_com_bibsmobile_model_RaceResult_timemile4" object="${raceresult}" render="false" z="user-managed"/>
         <field:display date="true" dateTimePattern="${raceResult_updated_date_format}" field="updated" id="s_com_bibsmobile_model_RaceResult_updated" object="${raceresult}" render="false" z="user-managed"/>
         <field:display field="userProfile" id="s_com_bibsmobile_model_RaceResult_userProfile" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timeofficial" id="s_com_bibsmobile_model_RaceResult_timeofficial" object="${raceresult}" render="true" z="user-managed"/>
+        <field:display field="timeofficial" id="s_com_bibsmobile_model_RaceResult_timeofficial" object="${raceresult}" render="false" z="user-managed"/>
         <field:display field="timeofficialdisplay" id="s_com_bibsmobile_model_RaceResult_timeofficialdisplay" object="${raceresult}" z="DbLNqHk2uuPTEv8Wdov6q4CZ0PM="/>
     </page:show>
 </div>

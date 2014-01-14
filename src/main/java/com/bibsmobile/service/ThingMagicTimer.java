@@ -27,13 +27,14 @@ public class ThingMagicTimer implements Timer {
 	private TimerConfig timerConfig;
 
 	@Override
-	public void connect() {
+	public void connect() { 
+		System.out.println("Connecting to " + timerConfig.getUrl() + " type:" + timerConfig.getType() + " "+getClass().getName());
 		try {
 			reader = Reader.create(timerConfig.getUrl()); 
 			reader.connect();
 			optimize();
 			status = 1;
-			System.out.println("Reader at " + timerConfig.getUrl() + "connected");
+			System.out.println("Reader at " + timerConfig.getUrl() + " connected. (status="+status+")");
 		} catch (ReaderException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +61,7 @@ public class ThingMagicTimer implements Timer {
 			}
 			this.connect();
 		}
-		if (getStatus() == 1) {
+		if (status == 1) {
 			if(timerConfig.getPosition() == 0) readListener = new StartLineListener();
 			else readListener = new FinishLineListener();
 			reader.addReadListener(readListener);
@@ -108,7 +109,7 @@ public class ThingMagicTimer implements Timer {
 	@Override
 	public long getDateTime() {
 		long t = 0l;
-		if (getStatus() < 1)
+		if (status < 1)
 			return 0;
 		try {
 			System.out.println(reader.paramGet("/reader/currentTime"));
@@ -134,30 +135,34 @@ public class ThingMagicTimer implements Timer {
 		private HashMap<Integer, Long> bibTimes = new HashMap<Integer, Long>();
 		
 		public void tagRead(Reader r, TagReadData tr) {
+			String l = Thread.currentThread().getName();
 			TagData t = tr.getTag();
 			byte[] bibdata = t.epcBytes();
 			long bibtime = tr.getTime();
 			int bibnum = bibdata[3] & 0xFF | (bibdata[2] & 0xFF) << 8
 					| (bibdata[1] & 0xFF) << 16 | (bibdata[0] & 0xFF) << 24;
-			System.out.println("New tag (bibs): " + bibnum);
-			System.out.println("New tag (mylaps): " + t.toString());
+
+			System.out.println(l+" bib "+bibnum + "("+t.toString()+")");
 
 			if (!bibTimes.containsKey(bibnum)) 
 				bibTimes.put(bibnum, bibtime);
 			
 			if(bibtime < (bibTimes.get(bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
-				bibTimes.put(bibnum, bibtime);
 				for(Event event:Event.findEventsByRunning()){
 					try{
 						RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult();
-						result.setTimeofficial("" + bibtime);
+						long starttime = (Long) ((null!=result.getTimestart()) ? Long.valueOf(result.getTimestart()) 
+								: event.getTimerStart()); 
+						result.setTimeofficial( bibtime +"" );
+						result.setTimeofficialdisplay( RaceResult.toHumanTime(starttime, bibtime) );
 						result.merge();
+						System.out.println(l+" update bib "+bibnum+" in "+event.getName());
 					}catch(Exception e){
-						System.out.println("No bib found for "+bibnum+" in "+event.getName());
-					}
+						System.out.println(l+" ERROR "+e.getMessage());
+					} 
 				}
 			}else{
-				System.out.println("Finish Timeout reached for "+bibnum);
+				System.out.println(l+" timeout for "+bibnum);
 			}
 		}
 	}
@@ -167,30 +172,31 @@ public class ThingMagicTimer implements Timer {
 		private HashMap<Integer, Long> bibTimes = new HashMap<Integer, Long>();
 		
 		public void tagRead(Reader r, TagReadData tr) {
+			String l = Thread.currentThread().getName();
 			TagData t = tr.getTag();
 			byte[] bibdata = t.epcBytes();
 			long bibtime = tr.getTime();
 			int bibnum = bibdata[3] & 0xFF | (bibdata[2] & 0xFF) << 8
 					| (bibdata[1] & 0xFF) << 16 | (bibdata[0] & 0xFF) << 24;
-			System.out.println("New tag (bibs): " + bibnum);
-			System.out.println("New tag (mylaps): " + t.toString());
+
+			System.out.println(l+" bib "+bibnum + "("+t.toString()+")");
 
 			if (!bibTimes.containsKey(bibnum)) 
 				bibTimes.put(bibnum, bibtime);
 			
 			if(bibtime < (bibTimes.get(bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
-				bibTimes.put(bibnum, bibtime);
 				for(Event event:Event.findEventsByRunning()){
 					try{
 						RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult();
-						result.setTimestart("" + bibtime);
+						result.setTimestart( bibtime +"" );
 						result.merge();
+						System.out.println(l+" update start for bib "+bibnum+" in "+event.getName());
 					}catch(Exception e){
-						System.out.println("No bib found for "+bibnum+" in "+event.getName());
-					}
+						System.out.println(l+" ERROR2 "+e.getMessage());
+					} 
 				}
 			}else{
-				System.out.println("Start Timeout reached for "+bibnum);
+				System.out.println(l+" timeout for "+bibnum);
 			}
 		}
 	}

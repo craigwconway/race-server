@@ -100,19 +100,6 @@ public class EventController {
         return "false";
     }
     
-	@RequestMapping(value = "/write", method = RequestMethod.GET)
-    @ResponseBody
-    public String writeBib(@RequestParam(value = "bib", required = true) Long bib){
-        try {
-        	// write TODO
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "false";
-        }
-        return "true";
-    }
-
-
     @RequestMapping(value = "/featured", method = RequestMethod.GET)
     @ResponseBody
     public static String featured(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {

@@ -47,4 +47,12 @@ privileged aspect TimerConfig_Roo_JavaBean {
         this.writePower = writePower;
     }
     
+    public int TimerConfig.getType() {
+        return this.type;
+    }
+    
+    public void TimerConfig.setType(int type) {
+        this.type = type;
+    }
+    
 }

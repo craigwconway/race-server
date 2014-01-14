@@ -34,7 +34,7 @@
 			onclick="stopReader();">Stop Writing</button>
 		<button type="button" class="btn" 
 			style="margin:0;margin-left: 3px;display:none;" id="status">
-				Writing Bibs...</button>
+				Write Many</button>
 	</div>
 	
 	<div style="margin:12px;">
@@ -44,9 +44,9 @@
 	<div style="margin:12px;">
 			    <input type="text" class="form-control" id="bib-input" 
 			    	style="width:110px;display:inline;" placeholder="Bib Number"/>
-			  <button type="button" class="btn btn-default" 
+			  <button type="button" class="btn btn-success" 
 			  onclick="writeBib1()">
-			  Write</button>
+			  Write One</button>
 	</div>
 	
 	<div id="results" class="row" style="margin:12px;"> 
@@ -59,6 +59,7 @@
 var readerOn=false;
 
 var currentBib = 0;
+
 function startReader(){
 	if(!validateMulti()) return;
 	readerOn=true;
@@ -165,11 +166,11 @@ function validateMulti(){
 	return true;
 }
 
-window.onload = timerStatus;
+window.onload = timerConnect;
 
 function timerStatus(){
 	var r = jQuery.ajax({
-		url: "/bibs-server/timers/status/1",
+		url: "/bibs-server/timers/status/1", // always timer 1 TODO 
 		type: "GET",
 		dataType: "html"
 		});
