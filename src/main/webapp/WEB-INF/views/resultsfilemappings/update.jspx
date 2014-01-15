@@ -4,12 +4,14 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_com_bibsmobile_model_ResultsFileMapping" modelAttribute="resultsFileMapping" path="/resultsfilemappings" versionField="Version" z="R3X/cwIg4xEsr85wWmQGIeqWb10=">
         <field:checkbox field="skipFirstRow" id="c_com_bibsmobile_model_ResultsFileMapping_skipFirstRow" z="8WIpOiReKgaJdQ7fDTyYizxq7xI="/>
+        <div style="display:none;">
         <field:input field="map" id="c_com_bibsmobile_model_ResultsFileMapping_map" z="YI3m/nkGHkj1GZNBnG2xJbl2vck="/>
         <field:select field="resultsFile" id="c_com_bibsmobile_model_ResultsFileMapping_resultsFile" itemLabel="name" itemValue="id" items="${resultsfiles}" path="/resultsfiles" z="user-managed"/>
         <field:input field="row1" id="c_com_bibsmobile_model_ResultsFileMapping_row1" render="false" z="user-managed"/>
         <field:input field="row2" id="c_com_bibsmobile_model_ResultsFileMapping_row2" render="false" z="user-managed"/>
         <field:input field="options" id="c_com_bibsmobile_model_ResultsFileMapping_options" render="false" z="user-managed"/>
         <field:input field="name" id="c_com_bibsmobile_model_ResultsFileMapping_name" z="user-managed"/>
+        </div>
         <table>
             <tr>
                 <td>

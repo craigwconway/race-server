@@ -57,7 +57,7 @@
 	<div id="reader-template" style="display:none">
 		<div id="reader---id" class="reader corners">
 			<span id="reader-title---id--" class="reader-title"
-				style="margin:0;margin-left: 3px;"><strong>Reader --url-- </strong>  
+				style="margin:0;margin-left: 3px;"><strong>Reader --count-- </strong>  
 				<span id="reader-pos---id--"
 					style="margin:0;margin-left: 3px;">--position--, 
 					</span>
@@ -101,17 +101,17 @@
 		<div id="event---event_id--" class="event-row" style="display:none;">
 			<div>
 			<div id="event-name---event_id--" class="event-name">--event_name--</div>
-			<span id="starttime-section---event_id--" style="display:none;">
-			<strong>Start time: </strong>
-			<span id="starttime---event_id--">--event_starttime--</span></span>
+			<span id="metrics---event_id--" >
+				Runners Completed: 
+				<span id="done---event_id--">0</span> /
+				<span id="total---event_id--">0</span>
+			</span>
 			<button  type="button" class="btn btn-info"
 				onclick="window.location='/bibs-server/events/--event_id--?form'"> Edit </button> 
 			<button id="btn-done---event_id--" type="button" class="btn btn-default" 
 				onclick="stopRunning(--event_id--);"> Finish </button>
 			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
 				onclick="gun(--event_id--);"> Fire Gun! </button> 
-			<button id="runners-done---event_id--"  type="button" class="btn" >
-				</button>
 			<button id="event-timer---event_id--"  type="button" class="btn" 
 				style="display:none;">0
 				</button>
@@ -119,7 +119,8 @@
 				style="display:none;">
 				</button>
 			</div>
-			<table id="results--event_id--" class="table" style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
+			<table id="results--event_id--" class="table" 
+				style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
 		</div>
 	</div>
 	
@@ -166,6 +167,7 @@ function timerStatus(id){
     		jQuery("#btn-start-"+id).show();
     		jQuery("#btn-stop-"+id).hide();
     		jQuery("#btn-connect-"+id).hide();
+    		timerSync(id);
     	}else if(readerStatus == 2){
     		rtn = "Reading...";
     		startReader(id);
@@ -200,6 +202,25 @@ function timerConnect(id){
 	});
 }
 
+function timerSync(id){
+	jQuery("#reader-progress-"+id).show();
+	var timerTime = jQuery.ajax({
+		url: "/bibs-server/timers/time/"+id,
+		type: "GET",
+		dataType: "html"
+		});
+	timerTime.done(function( data ) {
+		if(data != "true"){
+			alert("Timer not in sync! "+id);
+			jQuery("#reader-"+id).css("backgroundColor","red");
+			jQuery("#reader-"+id).css("background-color","red");
+		}else{
+			jQuery("#reader-"+id).css("backgroundColor","red");
+			jQuery("#reader-"+id).css("background-color","none");
+		}
+	});
+}
+
 function lookupStartTime(eventId){
 	var r = jQuery.ajax({
 		url: "/bibs-server/events/"+eventId,
@@ -222,14 +243,13 @@ function addEvent(){
 	var eventName = jQuery("#event option[value='"+eventId+"']").text();
 	makeEventRow(eventId,eventName);
 	setRunning(eventId,runningEventCount++);
-	// getStartTime();
-	queryRunnerCount(eventId);
 }
 
-function makeReaderRow(readerObj){
+function makeReaderRow(n,readerObj){
 	var position = "Starting Line";
 	if(readerObj.position) position = "Finish Line";
 	var row = jQuery("#reader-template").html()
+		.replace(/--count--/g,n)
 		.replace(/--id--/g,readerObj.id)
 		.replace(/--position--/g,position)
 		.replace(/--url--/g,readerObj.id);
@@ -244,14 +264,6 @@ function makeEventRow(eventId,eventName){
 	jQuery("#event-"+eventId).slideDown();
 	jQuery("#event option[value='"+eventId+"']").remove();
 	readerQuery(eventId);
-}
-
-function getStartTime(){
-	jQuery("#events > .event-row").each(function(index,element){
-		var eventId = element.id.split("-")[1];
-		var data = jQuery("#starttime-"+eventId).html();
-		if(data =="--event_starttime--") lookupStartTime(eventId);
-	});
 }
 
 function startReader(id){
@@ -325,6 +337,7 @@ function readerQuery(eventId){
 	request.done(function( data ) {
 			jQuery("#results"+eventId).html( makeTable(data, jQuery( "#results"+eventId).html(), eventId ) );
 			jQuery("#results"+eventId).show();
+			refreshMetrics(eventId);
 			});
 	request.fail(function( jqXHR, textStatus ) {
 		// error?
@@ -334,7 +347,6 @@ function readerQuery(eventId){
 function makeTable(data,results,eventId){
 	results = "";
 	for(var i in data){
-		incrementDone(eventId);
 		results += "<tr>";
 		results += "<td>"+data[i].timeofficialdisplay+"</td>";
 		results += "<td>"+data[i].firstname+" "+data[i].lastname+" ("+data[i].bib+")</td>";
@@ -343,12 +355,6 @@ function makeTable(data,results,eventId){
 		results += "</tr>";
 	}
 	return results;
-}
-
-function incrementDone(eventId){
-	var done = Math.max(0,jQuery("#runners-done-"+eventId).html().split("/")[0]);
-	var total = Math.max(0,jQuery("#runners-done-"+eventId).html().split("/")[1]);
-	jQuery("#runners-done-"+eventId).html((done+1)+"/"+total);
 }
 
 function stopReader(id){
@@ -436,7 +442,6 @@ function getRunning(eventId,order){
 			var eventName = data[i].name;
 			makeEventRow(eventId,eventName);
 			//jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart).toLocaleTimeString());
-			queryRunnerCount(eventId);
 			initTimer(eventId);
 			if(data[i].gunFired == true){
 				jQuery("#btn-gun-"+eventId).hide();
@@ -458,34 +463,33 @@ function getReaders(){
 		dataType: "json"
 		});
 	request.done(function( data ) {
+		var n = 1;
 		for(var i in data){
-			makeReaderRow(data[i]);
-			timerStatus(data[i].id)
+			makeReaderRow(n++,data[i]);
+			timerStatus(data[i].id);
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		// error?
 		});
 }
-function queryRunnerCount(eventId){
-	var request = jQuery.ajax({
+function refreshMetrics(eventId){
+	var total = jQuery.ajax({
 		url: "/bibs-server/events/count?event="+eventId,
 		type: "GET",
 		dataType: "html"
 		});
-	var request2 = jQuery.ajax({
+	var finished = jQuery.ajax({
 		url: "/bibs-server/events/countcomplete?event="+eventId,
 		type: "GET",
 		dataType: "html"
 		});
-	request.done(function( data ) {
-		var done = 0;
-		var total = Math.max(0,data);
-		request2.done(function( data1 ) {
-			done = Math.max(0,data1);
-			jQuery("#runners-done-"+eventId).html(done+"/"+total);
-			});
+	finished.done(function( data ) {
+		jQuery("#done-"+eventId).html(data);
+		total.done(function(data){
+			jQuery("#total-"+eventId).html(data);
 		});
+	});
 }
 
 </script>

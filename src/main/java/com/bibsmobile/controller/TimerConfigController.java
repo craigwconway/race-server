@@ -1,5 +1,6 @@
 package com.bibsmobile.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
@@ -92,6 +93,13 @@ public class TimerConfigController {
     @RequestMapping(value = "/time/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String time(@PathVariable(value = "id") long id) {
-        return getTimer(id).getDateTime()+"";
+    	long timer = getTimer(id).getDateTime();
+    	long server = new Date().getTime();
+    	if(server - timer > 1000){ // 1 second
+    		System.out.println("Timer/Server "+timer+"/"+server);
+    		return "false";
+    	}
+        return "true";
     }
+    
 }

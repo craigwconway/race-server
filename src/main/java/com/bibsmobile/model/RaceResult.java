@@ -242,16 +242,8 @@ public class RaceResult implements Comparable<RaceResult>{
         q.setParameter("lastname", lastname);
         return q;
     }
-	
-	public static List<RaceResult> findRaceResultsByEventAndUpdatedGreaterThan(Long event, Long updated) {
-        EntityManager em = RaceResult.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.updated > :updated", RaceResult.class);
-        q.setParameter("event", event);
-        q.setParameter("updated", updated);
-        return q.getResultList();
-	}
-    	
-    	public static List<RaceResult> search(Long eventId, String name, String bib) {
+    
+	public static List<RaceResult> search(Long eventId, String name, String bib) {
             EntityManager em = RaceResult.entityManager();
         
         Event event = new Event();

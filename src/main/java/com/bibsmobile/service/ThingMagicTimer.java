@@ -151,14 +151,23 @@ public class ThingMagicTimer implements Timer {
 				for(Event event:Event.findEventsByRunning()){
 					try{
 						RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult();
-						long starttime = (Long) ((null!=result.getTimestart()) ? Long.valueOf(result.getTimestart()) 
-								: event.getTimerStart()); 
+						long starttime = 0l;
+						if(null!=result.getTimestart() && !"".equals(result.getTimestart())){
+							starttime = Long.valueOf(result.getTimestart()) ;
+							System.out.println(l+" starttime runner "+starttime);
+						}else{
+							starttime = event.getTimerStart(); 
+							System.out.println(l+" starttime event "+starttime);
+						}
+						final String strTime = RaceResult.toHumanTime(starttime, bibtime);
 						result.setTimeofficial( bibtime +"" );
-						result.setTimeofficialdisplay( RaceResult.toHumanTime(starttime, bibtime) );
+						result.setTimeofficialdisplay( strTime );
 						result.merge();
-						System.out.println(l+" update bib "+bibnum+" in "+event.getName());
+						System.out.println(l+" update bib "+bibnum+" "+strTime+" "+event.getName());
+					}catch(org.springframework.dao.EmptyResultDataAccessException | javax.persistence.NoResultException nre){
+						System.out.println(l+" unregistered bib "+bibnum+" "+event.getName());
 					}catch(Exception e){
-						System.out.println(l+" ERROR "+e.getMessage());
+						e.printStackTrace();
 					} 
 				}
 			}else{
