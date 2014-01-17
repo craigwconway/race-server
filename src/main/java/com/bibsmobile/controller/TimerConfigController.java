@@ -22,27 +22,21 @@ import com.bibsmobile.service.Timer;
 @RooWebScaffold(path = "timers", formBackingObject = TimerConfig.class)
 public class TimerConfigController {
 	
-	private HashMap<Long,Timer> timers = new HashMap<Long,Timer>();
+	private HashMap<TimerConfig,Timer> timers = new HashMap<TimerConfig,Timer>();
 
 	private Timer getTimer(long id){
 		TimerConfig timerConfig = TimerConfig.findTimerConfig(id);
     	Timer timer = null;
-    	if(timers.containsKey(id)){
-    		if(timer instanceof ThingMagicTimer && timerConfig.getType() == 0){
-    			timer = new DummyTimer();
-    			timers.put(id, timer);
-    		}else if(timer instanceof DummyTimer && timerConfig.getType() == 1){
-    			timer = new ThingMagicTimer();
-        		timers.put(id, timer);
-    		}
-    		timer = timers.get(id);
+    	if(timers.containsKey(timerConfig)){
+    		System.out.println("Found cached timer!");
+    		timer = timers.get(timerConfig);
     	}else{
     		if(timerConfig.getType() == 0)
     			timer = new DummyTimer();
-    		else if(timerConfig.getType() == 1){
+    		else if(timerConfig.getType() == 1)
     			timer = new ThingMagicTimer();
-    		}
-    		timers.put(id, timer);
+    		timers.put(timerConfig, timer);
+    		System.out.println("Put cached timer!");
     	}
 		timer.setTimerConfig(timerConfig);
     	return timer;

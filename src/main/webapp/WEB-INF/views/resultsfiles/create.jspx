@@ -17,6 +17,6 @@
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_ResultsFile" render="${not empty dependencies}" z="91FLssB/ihm10hfS6M+6Xe7cztg="/>
     <script>
     // select event based on param
-    $('[name=event]').val( ${param.event} );
+    $('[name=event]').val( GetURLParameter("event") );
     </script>
 </div>

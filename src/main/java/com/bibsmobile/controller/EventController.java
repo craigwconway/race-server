@@ -48,7 +48,7 @@ public class EventController {
     	try{
         	Event e = Event.findEvent(event);
         	e.setGunFired(true);
-    		e.setTimerStart(new Date().getTime());
+    		e.setGunTime(new Date());
     		e.merge();
     	}catch(Exception x){
     		x.printStackTrace();
@@ -219,6 +219,18 @@ public class EventController {
     		@RequestParam(value = "event", required = true) Long event) {
         try {
         	return String.valueOf(Event.countRaceResults(event));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "0";
+    }
+    
+    @RequestMapping(value = "/countstarted", method = RequestMethod.GET)
+    @ResponseBody
+    public static String countRaceResultsStartedByEvent(
+    		@RequestParam(value = "event", required = true) Long event) {
+        try {
+        	return String.valueOf(Event.countRaceResultsStarted(event));
         } catch (Exception e) {
             e.printStackTrace();
         }

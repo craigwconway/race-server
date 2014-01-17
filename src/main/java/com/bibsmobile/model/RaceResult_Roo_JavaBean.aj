@@ -156,11 +156,11 @@ privileged aspect RaceResult_Roo_JavaBean {
         this.timesplit = timesplit;
     }
     
-    public String RaceResult.getTimestart() {
+    public long RaceResult.getTimestart() {
         return this.timestart;
     }
     
-    public void RaceResult.setTimestart(String timestart) {
+    public void RaceResult.setTimestart(long timestart) {
         this.timestart = timestart;
     }
     
@@ -212,11 +212,11 @@ privileged aspect RaceResult_Roo_JavaBean {
         this.timepace = timepace;
     }
     
-    public String RaceResult.getTimeofficial() {
+    public long RaceResult.getTimeofficial() {
         return this.timeofficial;
     }
     
-    public void RaceResult.setTimeofficial(String timeofficial) {
+    public void RaceResult.setTimeofficial(long timeofficial) {
         this.timeofficial = timeofficial;
     }
     

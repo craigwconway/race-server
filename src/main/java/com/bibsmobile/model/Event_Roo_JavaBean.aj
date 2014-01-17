@@ -357,14 +357,6 @@ privileged aspect Event_Roo_JavaBean {
         this.courseRules = courseRules;
     }
     
-    public Long Event.getTimerStart() {
-        return this.timerStart;
-    }
-    
-    public void Event.setTimerStart(Long timerStart) {
-        this.timerStart = timerStart;
-    }
-    
     public int Event.getRunning() {
         return this.running;
     }
@@ -379,6 +371,14 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setGunFired(boolean gunFired) {
         this.gunFired = gunFired;
+    }
+    
+    public Date Event.getGunTime() {
+        return this.gunTime;
+    }
+    
+    public void Event.setGunTime(Date gunTime) {
+        this.gunTime = gunTime;
     }
     
     public Date Event.getCreated() {

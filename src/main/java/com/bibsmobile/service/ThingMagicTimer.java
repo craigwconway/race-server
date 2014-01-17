@@ -44,6 +44,7 @@ public class ThingMagicTimer implements Timer {
 	public void disconnect() {
 		if (null == reader)
 			return;
+		reader.stopReading();
 		reader.destroy();
 		reader = null;
 		status = 0;
@@ -133,9 +134,9 @@ public class ThingMagicTimer implements Timer {
 	class FinishLineListener implements ReadListener {
 
 		private HashMap<Integer, Long> bibTimes = new HashMap<Integer, Long>();
+		final String l = Thread.currentThread().getName() +" " + getClass().getName();
 		
 		public void tagRead(Reader r, TagReadData tr) {
-			String l = Thread.currentThread().getName();
 			TagData t = tr.getTag();
 			byte[] bibdata = t.epcBytes();
 			long bibtime = tr.getTime();
@@ -149,29 +150,43 @@ public class ThingMagicTimer implements Timer {
 			
 			if(bibtime < (bibTimes.get(bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
 				for(Event event:Event.findEventsByRunning()){
+					// if event started
+					if(null==event.getGunTime())
+						continue;
+					
 					try{
 						RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult();
+						// check timeout again
+						long cTimeofficial = 0;
+						if(result.getTimeofficial() > 0){
+							cTimeofficial = result.getTimeofficial();
+							if(bibtime > cTimeofficial + (timerConfig.getReadTimeout() * 1000)) {
+								System.out.println(l+" existing timeout "+bibnum);
+								continue; // don't update	
+							}
+						}
+						// bib vs chip start
 						long starttime = 0l;
-						if(null!=result.getTimestart() && !"".equals(result.getTimestart())){
+						if(result.getTimestart()>0){
 							starttime = Long.valueOf(result.getTimestart()) ;
 							System.out.println(l+" starttime runner "+starttime);
 						}else{
-							starttime = event.getTimerStart(); 
+							starttime = event.getGunTime().getTime(); 
 							System.out.println(l+" starttime event "+starttime);
 						}
 						final String strTime = RaceResult.toHumanTime(starttime, bibtime);
-						result.setTimeofficial( bibtime +"" );
+						result.setTimeofficial( bibtime );
 						result.setTimeofficialdisplay( strTime );
 						result.merge();
 						System.out.println(l+" update bib "+bibnum+" "+strTime+" "+event.getName());
-					}catch(org.springframework.dao.EmptyResultDataAccessException | javax.persistence.NoResultException nre){
+					}catch(org.springframework.dao.EmptyResultDataAccessException e){
 						System.out.println(l+" unregistered bib "+bibnum+" "+event.getName());
 					}catch(Exception e){
 						e.printStackTrace();
 					} 
 				}
 			}else{
-				System.out.println(l+" timeout for "+bibnum);
+				System.out.println(l+" finish timeout for "+bibnum);
 			}
 		}
 	}
@@ -179,9 +194,9 @@ public class ThingMagicTimer implements Timer {
 	class StartLineListener implements ReadListener {
 
 		private HashMap<Integer, Long> bibTimes = new HashMap<Integer, Long>();
+		final String l = Thread.currentThread().getName() +" " + getClass().getName();
 		
 		public void tagRead(Reader r, TagReadData tr) {
-			String l = Thread.currentThread().getName();
 			TagData t = tr.getTag();
 			byte[] bibdata = t.epcBytes();
 			long bibtime = tr.getTime();
@@ -196,8 +211,21 @@ public class ThingMagicTimer implements Timer {
 			if(bibtime < (bibTimes.get(bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
 				for(Event event:Event.findEventsByRunning()){
 					try{
+						// if event started
+						if(null==event.getGunTime() )
+							continue;
+						
 						RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult();
-						result.setTimestart( bibtime +"" );
+						// check timeout again
+						long cTimestart = 0;
+						if(result.getTimestart()>0){
+							cTimestart = result.getTimestart();
+							if(bibtime > cTimestart + (timerConfig.getReadTimeout() * 1000)) {
+								System.out.println(l+" existing starttime "+bibnum);
+								continue; // don't update	
+							}
+						}
+						result.setTimestart( bibtime );
 						result.merge();
 						System.out.println(l+" update start for bib "+bibnum+" in "+event.getName());
 					}catch(Exception e){
@@ -205,7 +233,7 @@ public class ThingMagicTimer implements Timer {
 					} 
 				}
 			}else{
-				System.out.println(l+" timeout for "+bibnum);
+				System.out.println(l+" start timeout for "+bibnum);
 			}
 		}
 	}

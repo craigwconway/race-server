@@ -78,7 +78,7 @@ public class RaceResult implements Comparable<RaceResult>{
 
     private String timesplit;
     
-    private String timestart;
+    private long timestart;
 
     private String timerun;
 
@@ -92,7 +92,7 @@ public class RaceResult implements Comparable<RaceResult>{
 
     private String timepace;
 
-    private String timeofficial;
+    private long timeofficial;
     
     private String timeofficialdisplay;
 
@@ -143,11 +143,11 @@ public class RaceResult implements Comparable<RaceResult>{
     private String timemile4;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style="SS")
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style="SS")
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date updated;
     
     @PreUpdate
@@ -327,14 +327,14 @@ public class RaceResult implements Comparable<RaceResult>{
     	else if (minutes == 0) rtn = rtn + "00";
     	if(seconds>0 && seconds <=9) rtn = rtn + ":0"+seconds;
     	else if(seconds > 9) rtn = rtn + ":"+seconds;
-    	rtn = rtn + "."+millis;
+    	// rtn = rtn + "."+millis;
     	
-    	
-
     	int numyears = (int) Math.floor(seconds / 31536000);
     	int numdays = (int) Math.floor((seconds % 31536000) / 86400); 
-    	if(numdays>0) rtn = numdays + "days "+rtn;
-    	if(numyears>0) rtn = numdays + "years "+rtn;
+    	if(numdays==1) rtn = numdays + " day "+rtn;
+    	else if(numdays>0) rtn = numdays + " days "+rtn;
+    	if(numyears==1) rtn = numdays + " year "+rtn;
+    	else if(numyears>0) rtn = numdays + " years "+rtn;
     	
 		return rtn;
 	}

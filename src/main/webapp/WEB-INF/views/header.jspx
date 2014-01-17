@@ -49,11 +49,13 @@
 	
 	<script>
 	// derive active tab from current url
+	try{
 	if((window.location+"").contains('raceday')) $( "#nav_raceday" ).addClass( "active" );
 	else if((window.location+"").contains('events')) $( "#nav_events" ).addClass( "active" );
 	else if((window.location+"").contains('results')) $( "#nav_runners" ).addClass( "active" );
 	else if((window.location+"").contains('byusername')) $( "#nav_profile" ).addClass( "active" );
 	else if((window.location+"").contains('user')) $( "#nav_users" ).addClass( "active" );
+	}catch(e){}
 	</script>
 	
 	<style>

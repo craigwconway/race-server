@@ -90,7 +90,7 @@
 	 <div id="events-dropdown" >
         <select class="form-control" id="event" name="event"
         	onchange="addEvent()">
-            <option value="0" selected="true">Select an Event...</option>
+            <option value="0" selected="true">Manage an Event...</option>
             <c:forEach items="${events}" var="event" varStatus="i">
                 <option value="${event.id}">${ event.name }</option>
             </c:forEach> 
@@ -102,9 +102,13 @@
 			<div>
 			<div id="event-name---event_id--" class="event-name">--event_name--</div>
 			<span id="metrics---event_id--" >
+				Runners Started: 
+				<span id="start---event_id--">0</span> /
+				<span class="total---event_id--">0</span>
+				<br/>
 				Runners Completed: 
 				<span id="done---event_id--">0</span> /
-				<span id="total---event_id--">0</span>
+				<span class="total---event_id--">0</span>
 			</span>
 			<button  type="button" class="btn btn-info"
 				onclick="window.location='/bibs-server/events/--event_id--?form'"> Edit </button> 
@@ -263,7 +267,7 @@ function makeEventRow(eventId,eventName){
 	jQuery("#events").append(eventRow);
 	jQuery("#event-"+eventId).slideDown();
 	jQuery("#event option[value='"+eventId+"']").remove();
-	readerQuery(eventId);
+	//readerQuery(eventId);
 }
 
 function startReader(id){
@@ -301,12 +305,12 @@ function initTimer(eventId){
 			jQuery("#event-timer-str-"+eventId).hide();
 			return true;
 		}
-			jQuery("#event-timer-"+eventId).html(now-data.timerStart);
+		jQuery("#event-timer-"+eventId).html(now-data.gunTime);
+		timer(eventId);
+		jQuery("#event-timer-str-"+eventId).show();
+		setInterval(function(){
 			timer(eventId);
-			jQuery("#event-timer-str-"+eventId).show();
-			setInterval(function(){
-				timer(eventId);
-			},1000);
+		},1000);
 	});
 	
 }
@@ -347,11 +351,23 @@ function readerQuery(eventId){
 function makeTable(data,results,eventId){
 	results = "";
 	for(var i in data){
+		var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
+		var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
+		var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
+		var bib = (null!=data[i].bib) ? data[i].bib : "";
+		var gender = (null!=data[i].gender) ? data[i].gender : "";
+		var age = (null!=data[i].age) ? data[i].age : "";
+		var city = (null!=data[i].city) ? data[i].city : "";
+		var state = (null!=data[i].state) ? data[i].state : "";
+		
 		results += "<tr>";
-		results += "<td>"+data[i].timeofficialdisplay+"</td>";
-		results += "<td>"+data[i].firstname+" "+data[i].lastname+" ("+data[i].bib+")</td>";
-		results += "<td>"+data[i].gender+", "+data[i].age+"</td>";
-		results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+		results += "<td>"+timeofficialdisplay+"</td>";
+		results += "<td>"+bib+"</td>";
+		results += "<td>"+firstname+" "+lastname+"</td>";
+		results += "<td>"+age+"</td>";
+		results += "<td>"+gender+"</td>";
+		results += "<td>"+city+"</td>";
+		results += "<td>"+state+"</td>";
 		results += "</tr>";
 	}
 	return results;
@@ -479,6 +495,17 @@ function refreshMetrics(eventId){
 		type: "GET",
 		dataType: "html"
 		});
+	total.done(function(data){
+		jQuery(".total-"+eventId).html(data);
+	});
+	var started = jQuery.ajax({
+		url: "/bibs-server/events/countstarted?event="+eventId,
+		type: "GET",
+		dataType: "html"
+		});
+	started.done(function( data ) {
+		jQuery("#start-"+eventId).html(data);
+	});
 	var finished = jQuery.ajax({
 		url: "/bibs-server/events/countcomplete?event="+eventId,
 		type: "GET",
@@ -486,9 +513,6 @@ function refreshMetrics(eventId){
 		});
 	finished.done(function( data ) {
 		jQuery("#done-"+eventId).html(data);
-		total.done(function(data){
-			jQuery("#total-"+eventId).html(data);
-		});
 	});
 }
 

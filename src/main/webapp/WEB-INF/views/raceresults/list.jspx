@@ -8,6 +8,7 @@
     }
     </style>
     <script>
+    var event = GetURLParameter("event");
     window.onload=function(){
 		setEventSelection();
 		removeNulls();
@@ -20,7 +21,7 @@
     }
     function setEventSelection(){
     	try{
-    		document.getElementById("event-${param.event}").selected=true;
+    		document.getElementById("event-"+event).selected=true;
     	}catch(e){}
     }
     
@@ -45,7 +46,7 @@
     
     function search(){
     	var request = $.ajax({
-    		url: "/bibs-server/raceresults/search?event=${param.event}&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
+    		url: "/bibs-server/raceresults/search?event="+event+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
     		type: "GET",
     		dataType: "json"
     		});

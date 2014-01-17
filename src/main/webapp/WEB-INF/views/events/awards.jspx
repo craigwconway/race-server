@@ -54,13 +54,14 @@
 	
 	window.onload=getAwards;
 
-	var event = ${param.event};
+	var event = Math.max(0,GetURLParameter("event"));
 	var listSize = 10;
 	var gender = "";
 	var ageMin = 0;
 	var ageMax = 0;
 	
 	function getAwards(){
+		var event = Math.max(0,GetURLParameter("event"));
 		listSize = Math.max(jQuery('#listSize').val(),10);
 		listSize = Math.min(listSize,30);
 		jQuery('#listSize').val(listSize);
@@ -87,14 +88,35 @@
 			});
 	}
 	
-	function makeTable(data,results){
+	function makeTable(data,results,eventId){
+		results = "";
+		results += "<tr>";
+		results += "<th>Official Time</th>";
+		results += "<th>Bib</th>";
+		results += "<th>Name</th>";
+		results += "<th>Age</th>";
+		results += "<th>Gender</th>";
+		results += "<th>City</th>";
+		results += "<th>State</th>";
+		results += "</tr>";
 		for(var i in data){
+			var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
+			var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
+			var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
+			var bib = (null!=data[i].bib) ? data[i].bib : "";
+			var gender = (null!=data[i].gender) ? data[i].gender : "";
+			var age = (null!=data[i].age) ? data[i].age : "";
+			var city = (null!=data[i].city) ? data[i].city : "";
+			var state = (null!=data[i].state) ? data[i].state : "";
+			
 			results += "<tr>";
-			results += "<td>"+(Math.max(i,0)+1)+"</td>";
-			results += "<td>"+data[i].timeofficial+"</td>";
-			results += "<td>"+data[i].firstname+" "+data[i].lastname+"</td>";
-			results += "<td>("+data[i].gender+")"+data[i].age+"</td>";
-			results += "<td>"+data[i].city+", "+data[i].state+"</td>";
+			results += "<td>"+timeofficialdisplay+"</td>";
+			results += "<td>"+bib+"</td>";
+			results += "<td>"+firstname+" "+lastname+"</td>";
+			results += "<td>"+age+"</td>";
+			results += "<td>"+gender+"</td>";
+			results += "<td>"+city+"</td>";
+			results += "<td>"+state+"</td>";
 			results += "</tr>";
 		}
 		return results;

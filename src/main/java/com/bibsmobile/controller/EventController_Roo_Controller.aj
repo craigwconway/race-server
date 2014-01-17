@@ -12,8 +12,6 @@ import com.bibsmobile.model.ResultsFile;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import org.joda.time.format.DateTimeFormat;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -93,10 +91,11 @@ privileged aspect EventController_Roo_Controller {
     }
     
     void EventController.addDateTimeFormatPatterns(Model uiModel) {
-        uiModel.addAttribute("event_timestart_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
-        uiModel.addAttribute("event_timeend_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
-        uiModel.addAttribute("event_created_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
-        uiModel.addAttribute("event_updated_date_format", DateTimeFormat.patternForStyle("SS", LocaleContextHolder.getLocale()));
+        uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
     }
     
     void EventController.populateEditForm(Model uiModel, Event event) {

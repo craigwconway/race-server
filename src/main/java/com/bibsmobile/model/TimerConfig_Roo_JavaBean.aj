@@ -27,10 +27,6 @@ privileged aspect TimerConfig_Roo_JavaBean {
         return this.readTimeout;
     }
     
-    public void TimerConfig.setReadTimeout(int readTimeout) {
-        this.readTimeout = readTimeout;
-    }
-    
     public int TimerConfig.getReadPower() {
         return this.readPower;
     }

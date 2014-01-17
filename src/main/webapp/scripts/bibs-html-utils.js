@@ -1,3 +1,28 @@
+function makeRunnersTable(data,results,eventId){
+	results = "";
+	for(var i in data){
+		var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
+		var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
+		var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
+		var bib = (null!=data[i].bib) ? data[i].bib : "";
+		var gender = (null!=data[i].gender) ? data[i].gender : "";
+		var age = (null!=data[i].age) ? data[i].age : "";
+		var city = (null!=data[i].city) ? data[i].city : "";
+		var state = (null!=data[i].state) ? data[i].state : "";
+		
+		results += "<tr>";
+		results += "<td>"+timeofficialdisplay+"</td>";
+		results += "<td>"+bib+"</td>";
+		results += "<td>"+firstname+" "+lastname+"</td>";
+		results += "<td>"+age+"</td>";
+		results += "<td>"+gender+"</td>";
+		results += "<td>"+city+"</td>";
+		results += "<td>"+state+"</td>";
+		results += "</tr>";
+	}
+	return results;
+}
+
 function runnerSearchResultsTable(data){
 	var results = "";
 	for(var i in data){
@@ -71,4 +96,19 @@ function getHoursMinutesSeconds(e,l) {
 	
 	
 	e.html(rtn);
+}
+
+
+function GetURLParameter(sParam)
+{
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
 }

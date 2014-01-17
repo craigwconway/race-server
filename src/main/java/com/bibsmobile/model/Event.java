@@ -43,10 +43,10 @@ public class Event {
     @NotNull
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style="SS")
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date timeStart;
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style="SS")
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date timeEnd;
     private int featured;
     private String city;
@@ -76,23 +76,27 @@ public class Event {
     private String alert3;
     private String donateUrl;
     private String facebookUrl1;
-    private String facebookUrl2;
+    private String facebookUrl2; 
     private String photoUploadUrl;
     private String coursemaps;
     private String merchandise;
     private String beachEvents;
     private String shuttles;
     private String courseRules;
-    private Long timerStart;  
     private int running;
     private boolean gunFired;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
+    private Date gunTime;  
+    
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style="SS")
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style="SS")
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a") 
     private Date updated;
     
     @PrePersist
@@ -164,7 +168,7 @@ public class Event {
 	
 	public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page,int size) {
 		if(min>max)min=max;		
-		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial != '' AND o.timeofficial != null ";
+		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
 		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
 		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
 		HQL += " order by o.timeofficial asc";
@@ -181,7 +185,7 @@ public class Event {
 	
 	public static List<RaceResult> findRaceResultsForAnnouncer(long event, String gender, int min, int max, int page,int size) {
 		if(min>max)min=max;		
-		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial != '' AND o.timeofficial != null ";
+		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND (o.timestart > 0 OR o.timeofficial > 0) ";
 		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
 		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
 		HQL += " order by o.timeofficial desc";
@@ -202,10 +206,17 @@ public class Event {
         q.setParameter("event", Event.findEvent(event) ); 
         return q.getSingleResult();
     }
+
+	public static long countRaceResultsStarted(long event) {
+		EntityManager em = RaceResult.entityManager();
+		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event and rr.timestart > 0", Long.class);
+        q.setParameter("event", Event.findEvent(event) );  
+        return q.getSingleResult();
+    }
 	
 	public static long countRaceResultsComplete(long event) {
 		EntityManager em = RaceResult.entityManager();
-		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event and rr.timeofficial is not null and rr.timeofficial > ''", Long.class);
+		TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event and rr.timeofficial > 0", Long.class);
         q.setParameter("event", Event.findEvent(event) );  
         return q.getSingleResult();
     }
