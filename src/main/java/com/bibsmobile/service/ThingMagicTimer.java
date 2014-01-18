@@ -82,19 +82,20 @@ public class ThingMagicTimer implements Timer {
 	
 
 	@Override
-	public void write(long num) {
+	public void write(long num) throws Exception {
 		status = 3; 
 		TagReadData[] bibSeen;
 		byte[] bibdata = new byte[] { (byte) (num >>> 24), (byte) (num >>> 16),
 				(byte) (num >>> 8), (byte) (num) };
-		try {
 			bibSeen = reader.read(250);
 			if (bibSeen.length < 1) {
 				System.out.println("0" + " tags seen, could not write");
+				throw new Exception("No tags present");
 			}
 			if (bibSeen.length > 1) {
 				System.out.println(bibSeen.length
 						+ "tags seen, could not write");
+				throw new Exception("Too many tags present");
 			}
 			TagFilter target = null;
 			TagData bibinf = new TagData(bibdata);
@@ -102,9 +103,6 @@ public class ThingMagicTimer implements Timer {
 			Gen2.TagData epc = new Gen2.TagData(bibdata);
 			Gen2.WriteTag tagop = new Gen2.WriteTag(epc);
 			reader.executeTagOp(tagop, target);
-		} catch (ReaderException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -172,6 +170,7 @@ public class ThingMagicTimer implements Timer {
 							System.out.println(l+" starttime runner "+starttime);
 						}else{
 							starttime = event.getGunTime().getTime(); 
+							result.setTimestart( starttime );
 							System.out.println(l+" starttime event "+starttime);
 						}
 						final String strTime = RaceResult.toHumanTime(starttime, bibtime);

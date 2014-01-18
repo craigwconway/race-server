@@ -23,10 +23,18 @@
         <field:select field="eventsViewed" id="c_com_bibsmobile_model_UserProfile_eventsViewed" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" render="false" z="user-managed"/>
         <field:select field="raceimages" id="c_com_bibsmobile_model_UserProfile_raceimages" itemValue="id" items="${raceimages}" multiple="true" path="/raceimages" render="false" z="user-managed"/>
         <field:simple field="raceResults" id="c_com_bibsmobile_model_UserProfile_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" render="false" z="user-managed"/>
-        <field:input field="firstname" id="c_com_bibsmobile_model_UserProfile_firstname" z="msDyOI2fDyyI15IUAeBmry/wFgY="/>
-        <field:input field="lastname" id="c_com_bibsmobile_model_UserProfile_lastname" z="xXnmVi5/ZyP/DW7BblQPPudW9mQ="/>
-        <field:input field="city" id="c_com_bibsmobile_model_UserProfile_city" z="t9eF5jF5DfsfpH55CDp2wbUtzq4="/>
-        <field:input field="state" id="c_com_bibsmobile_model_UserProfile_state" z="Dl+TwcAwtNWvKGJ5vWmFOme2ylg="/>
+        <field:input field="firstname" id="c_com_bibsmobile_model_UserProfile_firstname" render="false" z="user-managed"/>
+        <field:input field="lastname" id="c_com_bibsmobile_model_UserProfile_lastname" render="false" z="user-managed"/>
+        <field:input field="city" id="c_com_bibsmobile_model_UserProfile_city" render="false" z="user-managed"/>
+        <field:input field="state" id="c_com_bibsmobile_model_UserProfile_state" render="false" z="user-managed"/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserProfile" render="${not empty dependencies}" z="bjmbow3uaKPnQKxTUw7asq9aKLc="/>
+    <script>
+	window.onload=function(){
+		jQuery("#userAuthorities &gt; .event-row").each(function(index,element){
+			var eventId = element.id.split("-")[1];
+			readerQuery(eventId);
+		});
+	}
+	</script>
 </div>

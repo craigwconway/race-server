@@ -381,6 +381,14 @@ privileged aspect Event_Roo_JavaBean {
         this.gunTime = gunTime;
     }
     
+    public long Event.getGunTimeStart() {
+        return this.gunTimeStart;
+    }
+    
+    public void Event.setGunTimeStart(long gunTimeStart) {
+        this.gunTimeStart = gunTimeStart;
+    }
+    
     public Date Event.getCreated() {
         return this.created;
     }

@@ -63,17 +63,6 @@ privileged aspect EventController_Roo_Controller {
         return "events/list";
     }
     
-    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
-    public String EventController.update(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, event);
-            return "events/update";
-        }
-        uiModel.asMap().clear();
-        event.merge();
-        return "redirect:/events/" + encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
-    }
-    
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String EventController.updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, Event.findEvent(id));

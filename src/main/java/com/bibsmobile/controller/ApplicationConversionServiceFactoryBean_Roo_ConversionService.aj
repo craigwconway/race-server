@@ -78,7 +78,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<RaceResult, String> ApplicationConversionServiceFactoryBean.getRaceResultToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.RaceResult, java.lang.String>() {
             public String convert(RaceResult raceResult) {
-                return new StringBuilder().append(raceResult.getBib()).append(' ').append(raceResult.getFirstname()).append(' ').append(raceResult.getLastname()).append(' ').append(raceResult.getMiddlename()).toString();
+                return new StringBuilder().append(raceResult.getTimeofficialdisplay()).append(' ').append(raceResult.getBib()).append(' ').append(raceResult.getFirstname()).append(' ').append(raceResult.getLastname()).toString();
             }
         };
     }

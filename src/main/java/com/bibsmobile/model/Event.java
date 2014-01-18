@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
@@ -19,6 +20,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
+import org.springframework.transaction.annotation.Transactional;
 
 @RooJavaBean
 @RooJson
@@ -89,6 +91,7 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date gunTime;  
+    private long gunTimeStart; 
     
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -172,7 +175,7 @@ public class Event {
 		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
 		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
 		HQL += " order by o.timeofficial asc";
-		EntityManager em = Event.entityManager();
+		EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( HQL, RaceResult.class);
         q.setParameter("event", Event.findEvent(event) );
         if(!gender.isEmpty()) q.setParameter("gender", gender );
@@ -185,11 +188,11 @@ public class Event {
 	
 	public static List<RaceResult> findRaceResultsForAnnouncer(long event, String gender, int min, int max, int page,int size) {
 		if(min>max)min=max;		
-		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND (o.timestart > 0 OR o.timeofficial > 0) ";
+		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
 		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
 		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
 		HQL += " order by o.timeofficial desc";
-		EntityManager em = Event.entityManager();
+		EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( HQL, RaceResult.class);
         q.setParameter("event", Event.findEvent(event) );
         if(!gender.isEmpty()) q.setParameter("gender", gender );
@@ -231,9 +234,24 @@ public class Event {
     }
 	
 	public static List<Event> findEventsByRunning() {
-        EntityManager em = RaceResult.entityManager();
+        EntityManager em = Event.entityManager();
         TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.running > 0 order by o.running asc", Event.class);
         return q.getResultList(); 
     }
+	
+	@Transactional 
+	public static int updateRaceResultsStarttimeByByEvent(Event event, long time0, long time1) {
+		System.out.println("updateRaceResultsStarttimeByByEvent "+event+" "+time0+" "+time1);
+        EntityManager em = RaceResult.entityManager();
+        Query q = em.createQuery("UPDATE RaceResult SET timestart = :time1 WHERE event = :event AND " +
+        		" (timestart is null OR timestart = 0 OR timestart = :time0) ");
+        q.setParameter("event", event);
+        q.setParameter("time0", time0);
+        q.setParameter("time1", time1);
+		System.out.println("updateRaceResultsStarttimeByByEvent excuteUpdate");
+        return q.executeUpdate(); 
+    }
+	
+	
 
 }

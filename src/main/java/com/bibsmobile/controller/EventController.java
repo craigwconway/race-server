@@ -9,18 +9,21 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -269,4 +272,30 @@ public class EventController {
 
     };
     
+
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    public String update(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            populateEditForm(uiModel, event);
+            return "events/update";
+        }
+        
+        Date time0 = new Date(event.getGunTimeStart());
+        Date time1 = event.getGunTime();
+        System.out.println("update2 "+(time0==time1)+" "+time0 + " "+time1);
+        
+        if(time0!=time1){
+        	//Event.updateRaceResultsStarttimeByByEvent(event, time0.getTime(), time1.getTime());
+        	for(RaceResult r : RaceResult.findRaceResultsByEvent(event).getResultList()){
+        		r.setTimestart(time1.getTime());
+        		r.merge();
+        	}
+        	event.setGunTimeStart(event.getGunTime().getTime());
+        }
+        
+        uiModel.asMap().clear();
+        event.merge();
+        return "redirect:/events/" + encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
+    }
+
 }

@@ -153,6 +153,7 @@ public class DummyTimer implements Timer, Runnable {
 								+ starttime);
 					} else {
 						starttime = event.getGunTime().getTime();
+						result.setTimestart(starttime);
 						System.out.println(log + " starttime event "
 								+ starttime);
 					}

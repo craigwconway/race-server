@@ -87,13 +87,14 @@ function getHoursMinutesSeconds(e,l) {
 	var numhours = Math.floor(((seconds % 31536000) % 86400) / 3600);
 	var numminutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
 	var numseconds = (((seconds % 31536000) % 86400) % 3600) % 60;
-	rtn = numyears + " years " +  numdays + " days " + numhours + " hours " + numminutes + " minutes " + numseconds + " seconds";
 	if(numminutes<10) numminutes = "0"+numminutes;
 	if(numseconds<10) numseconds = "0"+numseconds;
 	rtn =  numminutes + ":" + numseconds;
-	if(numhours>0) rtn = numhours + ":" + rtn;
-	if(numdays>0) rtn = numdays + "days "+rtn;
-	
+	if(numhours == 0) rtn = "00:" + rtn;
+	else if(numhours<=9) rtn = "0"+numhours + ":" + rtn;
+	else if(numhours>9) rtn = numhours + ":" + rtn;
+	if(numdays==1) rtn = numdays + " day "+rtn;
+	else if(numdays>0) rtn = numdays + " days "+rtn;
 	
 	e.html(rtn);
 }

@@ -161,6 +161,11 @@ public class RaceResult implements Comparable<RaceResult>{
     	return event.toString() + " " + bib + " " + firstname + " " + lastname;
     }
     
+    public String getTimeofficialdisplay(){
+    	if(timestart == 0 || timeofficial == 0) return "";
+    	return RaceResult.toHumanTime(timestart, timeofficial);
+    }
+    
     /**
      * Over-write current fields with non-null values from new object
      * @param raceResult

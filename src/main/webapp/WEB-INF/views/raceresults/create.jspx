@@ -9,14 +9,21 @@
         <field:input field="lastname" id="c_com_bibsmobile_model_RaceResult_lastname" z="mbmpcyW9rdA70EKca3Hl8acqVVo="/>
         <field:input field="age" id="c_com_bibsmobile_model_RaceResult_age" z="yZ94xj05TOypkGqmv/EMn/G6TAw="/>
         <div>
-        	<table><tr><td><label for="custom-gender">Gender:</label></td><td>
-	        <select id="custom-gender" name="custom-gender" onchange="change('gender')" style="width:100px">
-	            <option id="gender-0" value="M">Male</option>
-	            <option id="gender-1" value="F">Female</option>
-	        </select>
-	        </td></tr></table>
-	        <br/>
-    	</div>
+            <table>
+                <tr>
+                    <td>
+                        <label for="custom-gender">Gender:</label>
+                    </td>
+                    <td>
+                        <select id="custom-gender" name="custom-gender" onchange="change('gender')" style="width:100px">
+                            <option id="gender-0" value="M">Male</option>
+                            <option id="gender-1" value="F">Female</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+        </div>
         <field:input field="city" id="c_com_bibsmobile_model_RaceResult_city" z="NaUD9KS712aVBFoLI+iHu7qJSq8="/>
         <field:input field="state" id="c_com_bibsmobile_model_RaceResult_state" z="BYXMVk0UAC6iGqpJ3cmxgqF45cA="/>
         <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" render="false" z="user-managed"/>
@@ -61,16 +68,18 @@
         <field:datetime dateTimePattern="${raceResult_updated_date_format}" field="updated" id="c_com_bibsmobile_model_RaceResult_updated" render="false" z="user-managed"/>
         <field:simple field="raceImage" id="c_com_bibsmobile_model_RaceResult_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" render="false" z="user-managed"/>
         <field:select field="userProfile" id="c_com_bibsmobile_model_RaceResult_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" render="false" z="user-managed"/>
-        <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" z="H+vW5Q6UE1wmP0fTBXGNQwsB0Ac="/>
-    	<field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
-        
+        <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
+        <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
     <script>
     // select event based on param
     $('[name=event]').val( Math.max(0,GetURLParameter("event")) );
-
-   	function change(field){
+	window.onload=function(){
+		jQuery("#_gender_id").val("M");
+		jQuery("#_c_com_bibsmobile_model_RaceResult_gender_id").hide();
+		};
+    function change(field){
    		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
     }
     </script>

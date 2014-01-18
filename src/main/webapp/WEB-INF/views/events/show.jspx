@@ -9,6 +9,9 @@
         <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
 		Export
 		</button>
+        <button class="btn btn-default btn-top" onclick="alert('Booooom!')" type="button">
+		Cloud Sync
+		</button>
     </sec:authorize>
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
 		Awards
@@ -67,5 +70,6 @@
         <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" render="false" z="user-managed"/>
         <field:display field="gunFired" id="s_com_bibsmobile_model_Event_gunFired" object="${event}" render="false" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="nqrHpcNegZtIDsWpidGprGh41zI="/>
+        <field:display field="gunTimeStart" render="false" id="s_com_bibsmobile_model_Event_gunTimeStart" object="${event}" z="JqrFBjTxWlqWfAjbksGdC6Ys2LY="/>
     </page:show>
 </div>
