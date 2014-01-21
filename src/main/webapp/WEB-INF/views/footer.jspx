@@ -11,7 +11,7 @@
   <jsp:output omit-xml-declaration="yes"/>
 
 <div id="footer-inner">
-	&#169; 2013 Bibs, Inc. All right reserved.
+	&#169; 2014 Bibs, Inc. All right reserved.
 </div>
 
   <!-- 

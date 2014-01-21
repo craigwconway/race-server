@@ -8,10 +8,17 @@
     }
     </style>
     <script>
-    var event = GetURLParameter("event");
+    var event = (undefined != GetURLParameter("event")) ? GetURLParameter("event") : 0;
+    
     window.onload=function(){
 		setEventSelection();
 		removeNulls();
+	    // press enter submit
+	    $("input").keyup(function(e){
+	        if(e.which == 10 || e.which == 13){
+				search();
+	        }
+	    });
     };
     function removeNulls(){
     	jQuery("td").each(function(index,element){
@@ -62,19 +69,6 @@
     			$("#query").focus();
     		});
     }
-    
-    // press enter submit
-    $("#query").keyup(function(event){
-        if(event.keyCode == 13){
-			search();
-        }
-    });
-    $("#bib").keyup(function(event){
-        if(event.keyCode == 13){
-			search();
-        }
-    });
-    
     </script>
     <div class="pull-left">
         <div class="pull-left" style="padding:6px;">
@@ -108,9 +102,10 @@
         <table:table data="${raceresults}" id="l_com_bibsmobile_model_RaceResult" path="/raceresults" z="8A8H2AFIrX6CW2kysD/E4yuVCqQ=">
             <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_firstname" property="firstname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" z="nRuKUQNQ26td4rqAxRg8YuQlvDM="/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" z="nRuKUQNQ26td4rqAxRg8YuQlvDM=" render="false"/>
         </table:table>
     </page:list>
 </div>

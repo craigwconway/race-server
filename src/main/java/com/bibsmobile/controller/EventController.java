@@ -265,7 +265,7 @@ public class EventController {
         List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
         for(RaceResult r:runners){              
         	outputwriter.write(r.getBib()+","+r.getFirstname()+","+r.getLastname()+","+r.getCity()+
-        			","+r.getState()+","+r.getTimeofficial()+","+r.getGender()+","+r.getAge()+"\r\n");  
+        			","+r.getState()+","+r.getTimeofficialdisplay()+","+r.getGender()+","+r.getAge()+"\r\n");  
         }     
         outputwriter.flush();   
         outputwriter.close();

@@ -26,8 +26,8 @@
 	  		<li id="nav_runners"><a href="${runners_url}">Runners</a></li>
 		<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_EVENT_ADMIN,ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
 		<sec:authentication var="principal" property="principal" />
-			<li id="nav_profile"><a href="/bibs-server/userprofiles/byusername/${principal.username }" >
-				<!-- sec:authentication property="principal.username"/-->Profile</a></li>
+<!-- 			<li id="nav_profile"><a href="/bibs-server/userprofiles/byusername/${principal.username }" > -->
+<!-- 				Profile</a></li> -->
 		</sec:authorize>
 		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
 	  		<li id="nav_users"><a href="${users_url}">Admin</a></li>
@@ -53,7 +53,7 @@
 	if((window.location+"").contains('raceday')) $( "#nav_raceday" ).addClass( "active" );
 	else if((window.location+"").contains('events')) $( "#nav_events" ).addClass( "active" );
 	else if((window.location+"").contains('results')) $( "#nav_runners" ).addClass( "active" );
-	else if((window.location+"").contains('byusername')) $( "#nav_profile" ).addClass( "active" );
+	//else if((window.location+"").contains('byusername')) $( "#nav_profile" ).addClass( "active" );
 	else if((window.location+"").contains('user')) $( "#nav_users" ).addClass( "active" );
 	}catch(e){}
 	</script>
@@ -61,6 +61,7 @@
 	<style>
 	.dijitCalendarPopup{
 		background-color: #FFF;
+		border: solid grey 1px;
 	}
 	.dijitCheckBoxInput{
 		opacity: 1 !important;

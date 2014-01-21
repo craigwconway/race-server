@@ -30,11 +30,6 @@
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserProfile" render="${not empty dependencies}" z="bjmbow3uaKPnQKxTUw7asq9aKLc="/>
     <script>
-	window.onload=function(){
-		jQuery("#userAuthorities &gt; .event-row").each(function(index,element){
-			var eventId = element.id.split("-")[1];
-			readerQuery(eventId);
-		});
-	}
+	window.onload=beautifyAuthorities;
 	</script>
 </div>

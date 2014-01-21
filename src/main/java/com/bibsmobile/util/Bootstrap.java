@@ -48,19 +48,49 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile = new UserProfile();
 			userProfile.setUsername("admin");
 			userProfile.setPassword("admin");
+			userProfile.setFirstname("System");
+			userProfile.setLastname("Administrator");
 			userProfile.setUserAuthorities(uas);
 			userProfile.persist();
 			// other roles
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_EVENT_ADMIN");
 			userAuthority.persist();
+			uas = new HashSet<UserAuthority>();
+			uas.add(userAuthority);
+			userProfile = new UserProfile();
+			userProfile.setUsername("eventadmin");
+			userProfile.setPassword("eventadmin");
+			userProfile.setFirstname("Event");
+			userProfile.setLastname("Administrator");
+			userProfile.setUserAuthorities(uas);
+			userProfile.persist();
 			// other roles
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_USER_ADMIN");
 			userAuthority.persist();
+			uas = new HashSet<UserAuthority>();
+			uas.add(userAuthority);
+			userProfile = new UserProfile();
+			userProfile.setUsername("useradmin");
+			userProfile.setPassword("useradmin");
+			userProfile.setFirstname("User");
+			userProfile.setLastname("Administrator");
+			userProfile.setUserAuthorities(uas);
+			userProfile.persist();
+			// user
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_USER");
 			userAuthority.persist();
+			uas = new HashSet<UserAuthority>();
+			uas.add(userAuthority);
+			userProfile = new UserProfile();
+			userProfile.setUsername("user");
+			userProfile.setPassword("user");
+			userProfile.setFirstname("Bibs");
+			userProfile.setLastname("User");
+			userProfile.setUserAuthorities(uas);
+			userProfile.persist();
 		}
 		
 		// standard award categories

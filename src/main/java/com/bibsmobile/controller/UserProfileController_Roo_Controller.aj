@@ -8,6 +8,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import java.io.UnsupportedEncodingException;
@@ -104,6 +105,14 @@ privileged aspect UserProfileController_Roo_Controller {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
         } catch (UnsupportedEncodingException uee) {}
         return pathSegment;
+    }
+
+    
+    @RequestMapping(value = "/{id}", produces = "text/html")
+    public String UserProfileController.show(@PathVariable("id") Long id, Model uiModel) {
+        uiModel.addAttribute("userprofile", UserProfile.findUserProfile(id));
+        uiModel.addAttribute("itemId", id);
+        return "userprofiles/show";
     }
     
 }

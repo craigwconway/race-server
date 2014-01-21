@@ -2,7 +2,25 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    
+    <style>
+	.title{
+		font-size: 28px;
+		font-weight: bold;
+		margin-right: 12px;
+	}
+	.subtext{
+		font-size: 18px;
+		font-weight: normal;
+		margin-right: 12px;
+	}
+    </style>
+    
+	<div class="title">${userprofile.username}
+	<span class="subtext">${userprofile.firstname} ${userprofile.lastname}</span></div>
+    
     <page:show id="ps_com_bibsmobile_model_UserProfile" object="${userprofile}" path="/userprofiles" z="sBTUG3BAJNyhXpkk6T9rEdaoCkI=">
+        <div style="display:none;">
         <field:display field="username" id="s_com_bibsmobile_model_UserProfile_username" object="${userprofile}" z="kj/1KKkg0r+DIHZemGpfOI+Xb1U="/>
         <field:display field="password" id="s_com_bibsmobile_model_UserProfile_password" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="accountNonExpired" id="s_com_bibsmobile_model_UserProfile_accountNonExpired" object="${userprofile}" render="false" z="user-managed"/>
@@ -26,5 +44,6 @@
         <field:display field="lastname" id="s_com_bibsmobile_model_UserProfile_lastname" object="${userprofile}" z="UBzaT/ZyYVmwv3fH0O7wbWjTniM="/>
         <field:display field="city" id="s_com_bibsmobile_model_UserProfile_city" object="${userprofile}" z="nkiKew0Zy3Hq7VY6PD2HapBnFjc="/>
         <field:display field="state" id="s_com_bibsmobile_model_UserProfile_state" object="${userprofile}" z="E4hur0PeVa284ORSqCmxaibU4gA="/>
+		</div>    
     </page:show>
 </div>

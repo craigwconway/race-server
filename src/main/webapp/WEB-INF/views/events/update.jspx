@@ -6,6 +6,7 @@
         <field:input field="name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/>
         <field:input field="city" id="c_com_bibsmobile_model_Event_city" z="iYWjL3ti+38Wz9q1TzkesCh+8mw="/>
         <field:input field="state" id="c_com_bibsmobile_model_Event_state" z="317hwhiMIVVt+Bq3TzgDkWOKaGA="/>
+        
         <div id="less" style="margin:15px;">
             <a href="#" onclick="jQuery('#more').slideDown();jQuery('#less').hide();">Show more...</a>
         </div>
@@ -13,16 +14,11 @@
             <div>
                 <a href="#" onclick="jQuery('#more').slideUp(400,           function(){jQuery('#less').show();})">Show less</a>
             </div>
-            <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
-                <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
+                  <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
                 <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="user-managed"/>
-                <field:datetime dateTimePattern="${event_guntime_date_format}" field="gunTime" id="c_com_bibsmobile_model_Event_gunTime" z="1n6wNaY8F7Pt9/jsM4i0RLl8wDs="/>
-                <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="user-managed"/>
-            </sec:authorize>
-            <field:input field="lattitude" id="c_com_bibsmobile_model_Event_lattitude" z="user-managed"/>
+          	<field:input field="lattitude" id="c_com_bibsmobile_model_Event_lattitude" z="user-managed"/>
             <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed"/>
-            <field:input field="type" id="c_com_bibsmobile_model_Event_type" z="user-managed"/>
+            <field:input field="type" render="false" id="c_com_bibsmobile_model_Event_type" z="user-managed"/>
             <field:input field="website" id="c_com_bibsmobile_model_Event_website" z="user-managed"/>
             <field:input field="phone" id="c_com_bibsmobile_model_Event_phone" z="user-managed"/>
             <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/>
@@ -37,21 +33,21 @@
             <field:input field="map" id="c_com_bibsmobile_model_Event_map" z="user-managed"/>
             <field:input field="map2" id="c_com_bibsmobile_model_Event_map2" z="user-managed"/>
             <field:input field="map3" id="c_com_bibsmobile_model_Event_map3" z="user-managed"/>
-            <field:input field="results" id="c_com_bibsmobile_model_Event_results" z="user-managed"/>
-            <field:input field="results2" id="c_com_bibsmobile_model_Event_results2" z="user-managed"/>
-            <field:input field="results3" id="c_com_bibsmobile_model_Event_results3" z="user-managed"/>
+            <field:input field="results" render="false" id="c_com_bibsmobile_model_Event_results" z="user-managed"/>
+            <field:input field="results2" render="false" id="c_com_bibsmobile_model_Event_results2" z="user-managed"/>
+            <field:input field="results3" render="false" id="c_com_bibsmobile_model_Event_results3" z="user-managed"/>
             <field:input field="alert1" id="c_com_bibsmobile_model_Event_alert1" z="user-managed"/>
             <field:input field="alert2" id="c_com_bibsmobile_model_Event_alert2" z="user-managed"/>
             <field:input field="alert3" id="c_com_bibsmobile_model_Event_alert3" z="user-managed"/>
             <field:input field="donateUrl" id="c_com_bibsmobile_model_Event_donateUrl" z="user-managed"/>
             <field:input field="facebookUrl1" id="c_com_bibsmobile_model_Event_facebookUrl1" z="user-managed"/>
             <field:input field="facebookUrl2" id="c_com_bibsmobile_model_Event_facebookUrl2" z="user-managed"/>
-            <field:input field="photoUploadUrl" id="c_com_bibsmobile_model_Event_photoUploadUrl" z="user-managed"/>
-            <field:input field="coursemaps" id="c_com_bibsmobile_model_Event_coursemaps" z="user-managed"/>
-            <field:input field="merchandise" id="c_com_bibsmobile_model_Event_merchandise" z="user-managed"/>
-            <field:input field="beachEvents" id="c_com_bibsmobile_model_Event_beachEvents" z="user-managed"/>
-            <field:input field="shuttles" id="c_com_bibsmobile_model_Event_shuttles" z="user-managed"/>
-            <field:input field="courseRules" id="c_com_bibsmobile_model_Event_courseRules" z="user-managed"/>
+            <field:input field="photoUploadUrl" render="false" id="c_com_bibsmobile_model_Event_photoUploadUrl" z="user-managed"/>
+            <field:input field="coursemaps" render="false" id="c_com_bibsmobile_model_Event_coursemaps" z="user-managed"/>
+            <field:input field="merchandise" render="false" id="c_com_bibsmobile_model_Event_merchandise" z="user-managed"/>
+            <field:input field="beachEvents" render="false" id="c_com_bibsmobile_model_Event_beachEvents" z="user-managed"/>
+            <field:input field="shuttles" render="false" id="c_com_bibsmobile_model_Event_shuttles" z="user-managed"/>
+            <field:input field="courseRules" render="false" id="c_com_bibsmobile_model_Event_courseRules" z="user-managed"/>
             <field:datetime dateTimePattern="${event_updated_date_format}" field="updated" id="c_com_bibsmobile_model_Event_updated" render="false" z="user-managed"/>
             <field:simple field="raceResults" id="c_com_bibsmobile_model_Event_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" render="false" z="user-managed"/>
             <field:simple field="resultsFile" id="c_com_bibsmobile_model_Event_resultsFile" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" render="false" z="user-managed"/>
@@ -61,10 +57,17 @@
             <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" render="false" z="user-managed"/>
             <field:simple field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" render="false" z="user-managed"/>
             <field:input field="running" id="c_com_bibsmobile_model_Event_running" render="false" z="user-managed"/>
-            <div>
-                <a href="#" onclick="jQuery('#more').slideUp(400,           function(){jQuery('#less').show();})">Show less</a>
+            <field:input field="gunTimeStart"  render="false" id="c_com_bibsmobile_model_Event_gunTimeStart" z="aZwgjrgzPSW4GVmejOYTVcfDJy4="/>
+    		<div>
+                <a href="#" onclick="jQuery('#more').slideUp(400, function(){jQuery('#less').show();})">Show less</a>
             </div>
         </div>
-        <field:input field="gunTimeStart"  render="false" id="c_com_bibsmobile_model_Event_gunTimeStart" z="aZwgjrgzPSW4GVmejOYTVcfDJy4="/>
+        
+        <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+                <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="user-managed"/>
+       			<field:datetime dateTimePattern="${event_guntime_date_format}" field="gunTime" id="c_com_bibsmobile_model_Event_gunTime" z="1n6wNaY8F7Pt9/jsM4i0RLl8wDs="/>
+        		<field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
+        </sec:authorize>
+        
     </form:update>
 </div>
