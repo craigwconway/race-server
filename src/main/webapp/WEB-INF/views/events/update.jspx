@@ -56,7 +56,7 @@
             <field:simple field="resultsFiles" id="c_com_bibsmobile_model_Event_resultsFiles" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" render="false" z="user-managed"/>
             <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" render="false" z="user-managed"/>
             <field:simple field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" render="false" z="user-managed"/>
-            <field:input field="running" id="c_com_bibsmobile_model_Event_running" render="false" z="user-managed"/>
+            <field:input field="running" id="c_com_bibsmobile_model_Event_running" render="true" z="user-managed"/>
             <field:input field="gunTimeStart"  render="false" id="c_com_bibsmobile_model_Event_gunTimeStart" z="aZwgjrgzPSW4GVmejOYTVcfDJy4="/>
     		<div>
                 <a href="#" onclick="jQuery('#more').slideUp(400, function(){jQuery('#less').show();})">Show less</a>

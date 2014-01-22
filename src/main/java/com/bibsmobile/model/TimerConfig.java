@@ -21,12 +21,8 @@ public class TimerConfig {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + position;
-		result = prime * result + readPower;
-		result = prime * result + readTimeout;
 		result = prime * result + type;
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		result = prime * result + writePower;
 		return result;
 	}
 	@Override
@@ -38,20 +34,12 @@ public class TimerConfig {
 		if (getClass() != obj.getClass())
 			return false;
 		TimerConfig other = (TimerConfig) obj;
-		if (position != other.position)
-			return false;
-		if (readPower != other.readPower)
-			return false;
-		if (readTimeout != other.readTimeout)
-			return false;
 		if (type != other.type)
 			return false;
 		if (url == null) {
 			if (other.url != null)
 				return false;
 		} else if (!url.equals(other.url))
-			return false;
-		if (writePower != other.writePower)
 			return false;
 		return true;
 	}

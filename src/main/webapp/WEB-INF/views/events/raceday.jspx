@@ -110,8 +110,6 @@
 				<span id="done---event_id--">0</span> /
 				<span class="total---event_id--">0</span>
 			</span>
-			<button  type="button" class="btn btn-info"
-				onclick="window.location='/bibs-server/events/--event_id--?form'"> Edit </button> 
 			<button id="btn-done---event_id--" type="button" class="btn btn-default" 
 				onclick="stopRunning(--event_id--);"> Finish </button>
 			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
@@ -406,6 +404,7 @@ function setRunning(eventId,order){
 		if(msg!="true"){
 			// error
 		}
+		getRunning(); // already running?
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		// error
@@ -450,7 +449,7 @@ function gun(eventId){
 		});
 }
 
-function getRunning(eventId,order){
+function getRunning(){
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/running",
 		type: "GET",

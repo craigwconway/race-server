@@ -8,7 +8,8 @@
     }
     </style>
     <script>
-    var event = (undefined != GetURLParameter("event")) ? GetURLParameter("event") : 0;
+    var event = (undefined != getUrlParam("event")) ? getUrlParam("event") : 0;
+    
     
     window.onload=function(){
 		setEventSelection();
@@ -52,6 +53,7 @@
     }
     
     function search(){
+    	if(isNaN(event)) event = 0;
     	var request = $.ajax({
     		url: "/bibs-server/raceresults/search?event="+event+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
     		type: "GET",
@@ -68,6 +70,11 @@
     			alert("Error");
     			$("#query").focus();
     		});
+    }
+    
+    function getUrlParam(sParam)
+    {
+        return purl().param(sParam);
     }
     </script>
     <div class="pull-left">
