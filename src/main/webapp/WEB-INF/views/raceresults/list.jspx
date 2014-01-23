@@ -61,10 +61,7 @@
     		});
     	request.done(function( data ) {
     			var results = runnerSearchResultsTable(data);
-    			$('.table').hide();
-    			$('.table').empty();
     			$('.table').html(results);
-    			$('.table').show(500);
     		});
     	request.fail(function( jqXHR, textStatus ) {
     			alert("Error");

@@ -9,9 +9,9 @@
 		onclick="document.location='/bibs-server/userprofiles?form';">
 		Add User
 	</button>
-    <button type="button" class="btn btn-success btn-top"
+    <button type="button" class="btn btn-primary btn-top"
 		onclick="document.location='/bibs-server/timers';">
-		Manage Timers
+		Manage Readers
 	</button>
     <page:list id="pl_com_bibsmobile_model_UserProfile" items="${userprofiles}" z="1SzZRnyS7+fCTmjwHcV6wnTBQ7A=">
         <table:table data="${userprofiles}" id="l_com_bibsmobile_model_UserProfile" path="/userprofiles" z="skPQvI3EqZxrcsnFZTq+pwfTzpQ=">
@@ -20,7 +20,7 @@
             <table:column id="c_com_bibsmobile_model_UserProfile_lastname" property="lastname" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_accountNonLocked" property="accountNonLocked" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_credentialsNonExpired" property="credentialsNonExpired" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_UserProfile_email" property="email" z="user-managed"/>
+            <table:column render="false" id="c_com_bibsmobile_model_UserProfile_email" property="email" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

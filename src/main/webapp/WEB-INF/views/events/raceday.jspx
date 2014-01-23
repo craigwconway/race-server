@@ -5,9 +5,6 @@
     <jsp:output omit-xml-declaration="yes"/>
 	
 	<style>
-	button{
-		float:right;
-	}
 	.corners{
 		margin: 16px;
 		padding: 16px;
@@ -19,7 +16,7 @@
 	.event-row{
 		border:solid #DDD 1px;
 		border-radius: 5px;
-		width: 450px;
+		width: 400px;
 		overflow: hidden;
 		padding: 10px;
 		margin: 10px;
@@ -34,7 +31,7 @@
 	}
 	.reader{
 		float: left;
-		width: 450px;
+		width: 180px;
 	}
 	#event{
 		margin:10px; 
@@ -53,50 +50,39 @@
 	}
 	</style>
 	
-<div id="reader-list">
+
 	<div id="reader-template" style="display:none">
 		<div id="reader---id" class="reader corners">
 			<span id="reader-title---id--" class="reader-title"
 				style="margin:0;margin-left: 3px;"><strong>Reader --count-- </strong>  
 				<span id="reader-pos---id--"
-					style="margin:0;margin-left: 3px;">--position--, 
+					style="margin:0;margin-left: 3px;">--position--
 					</span>
+				<br/>
+				<span id="reader-status-label"
+					style="margin:0;margin-left:3px;font-weight:bold;">Status: </span>
 				<span id="reader-status---id--"
 					style="margin:0;margin-left: 3px;">Not Connected</span>
 				<span id="reader-progress---id--">
 					<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> </span>
 			</span>
+			<div>
 			<button id="btn-update---id--" type="button" class="btn btn-info" 
 				style="margin:0;margin-left: 3px;"
 				onclick="timerUpdate(--id--);">Edit</button>
 			<button id="btn-connect---id--" type="button" class="btn btn-default" 
 				style="margin:0;margin-left: 3px;"
 				onclick="timerConnect(--id--);">Connect</button>
-		<button id="btn-start---id--" type="button" class="btn btn-success" 
-			style="margin:0;margin-left: 3px;display:none;"
-			onclick="startReader(--id--);">Start</button>
-		<button id="btn-stop---id--" type="button" class="btn btn-danger" 
-			style="margin:0;margin-left: 3px;display:none;"
-			onclick="stopReader(--id--);">Stop</button>
+			<button id="btn-start---id--" type="button" class="btn btn-success" 
+				style="margin:0;margin-left: 3px;display:none;"
+				onclick="startReader(--id--);">Start</button>
+			<button id="btn-stop---id--" type="button" class="btn btn-danger" 
+				style="margin:0;margin-left: 3px;display:none;"
+				onclick="stopReader(--id--);">Stop</button>
+			</div>	
    		</div>
 	</div>
 	
-	<div id="readers" >
-	</div>
-</div>
-<div style="clear:both"/>
-<div id="mgmt-view" >
-
-	 <div id="events-dropdown" >
-        <select class="form-control" id="event" name="event"
-        	onchange="addEvent()">
-            <option value="0" selected="true">Manage an Event...</option>
-            <c:forEach items="${events}" var="event" varStatus="i">
-                <option value="${event.id}">${ event.name }</option>
-            </c:forEach> 
-        </select>
-    </div>
-    
 	<div id="eventTemplate" style="display:none;">
 		<div id="event---event_id--" class="event-row" style="display:none;">
 			<div>
@@ -126,9 +112,32 @@
 		</div>
 	</div>
 	
-	<div id="events"></div>
+<table id="table-split" width="100%">
+<tr><td valign="top">
 	
-</div>
+	<div id="mgmt-view" >
+		 <div id="events-dropdown" >
+	        <select class="form-control" id="event" name="event"
+	        	onchange="addEvent()">
+	            <option value="0" selected="true">Manage an Event...</option>
+	            <c:forEach items="${events}" var="event" varStatus="i">
+	                <option value="${event.id}">${ event.name }</option>
+	            </c:forEach> 
+	        </select>
+	    </div>
+		<div id="events"></div>
+	</div>
+
+</td><td style="width:415px" valign="top">
+
+	<button onclick="window.location='/bibs-server/timers?form'" 
+		type="button" class="btn btn-primary">
+		Add Reader
+		</button>
+	<div id="readers" class="corners"/>
+
+</td></tr></table>
+
 	
 <script>
 var runningEventCount = 1;

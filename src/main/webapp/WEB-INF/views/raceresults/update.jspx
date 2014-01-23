@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" versionField="Version" z="F9aarHhR5nq4t+oI83y+vKqDH/g=">
-        <field:select field="event" id="c_com_bibsmobile_model_RaceResult_event" itemValue="id" items="${events}" path="/events" z="YpLpEgB7+lftHhbBVFMLoS84U2A="/>
+        <field:select field="event" id="c_com_bibsmobile_model_RaceResult_event"  itemLabel="name" itemValue="id" items="${events}" path="/events" z="YpLpEgB7+lftHhbBVFMLoS84U2A="/>
         <field:input field="bib" id="c_com_bibsmobile_model_RaceResult_bib" required="true" z="hcgJpmS2s2exxb4PUp3zI+R6RlU="/>
         <field:input field="firstname" id="c_com_bibsmobile_model_RaceResult_firstname" z="zKn6S2DhCQNPre9I507NFqdbR+Y="/>
         <field:input field="lastname" id="c_com_bibsmobile_model_RaceResult_lastname" z="mbmpcyW9rdA70EKca3Hl8acqVVo="/>
@@ -21,12 +21,12 @@
         <field:input field="state" id="c_com_bibsmobile_model_RaceResult_state" z="BYXMVk0UAC6iGqpJ3cmxgqF45cA="/>
         
         <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-        <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed"/>
-        <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" render="true" z="user-managed"/>
+        <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed" render="false"/>
+        <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" render="false" z="user-managed"/>
         </sec:authorize>
         <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" z="user-managed"/>
         
-        <div id="less" style="margin:15px;">
+        <div id="less" style="margin:15px;display:none;">
             <a href="#" onclick="jQuery('#more').slideDown();jQuery('#less').hide();">Show more...</a>
         </div>
         <div id="more" style="margin:15px;display:none;">
@@ -86,6 +86,8 @@
         	if("F" == jQuery("#_"+field+"_id").val())	
         		document.getElementById(field+"-1").selected=true;
             jQuery("#_c_com_bibsmobile_model_RaceResult_"+field+"_id").hide();
+            // make official time readonly
+            jQuery("#_timeofficialdisplay_id").attr('readonly','true');
         };
        	function change(field){
        		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);

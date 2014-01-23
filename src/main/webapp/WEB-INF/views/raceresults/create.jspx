@@ -82,5 +82,12 @@
     function change(field){
    		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
     }
+
+    function removeNulls(){
+    	jQuery("#_event_id").each(function(index,element){
+    		if(element.innerHTML.indexOf(' null null 0')&gt;0)
+    			element.innerHTML=element.innerHTML.replace(' null null 0','');
+    	});
+    }
     </script>
 </div>
