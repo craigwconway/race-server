@@ -2,7 +2,6 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
     <style>
 	.event-name{
 		font-size: 28px;
@@ -15,9 +14,8 @@
 		margin-right: 12px;
 	}
     </style>
-    
-	<div class="event-name">${event.name}  <span class="event-location">${event.city} ${event.state}</span></div>
-    
+    <div class="event-name">${event.name}  <span class="event-location">${event.city} ${event.state}</span>
+    </div>
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
 		Awards
 	</button>
@@ -44,12 +42,12 @@
 	}
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-        <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="KCvuJyXjhI+esh4Khj9v+/5uf8E=" render="false"/>
+        <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" render="false" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" render="false" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_Event_timeEnd" object="${event}" render="false" z="user-managed"/>
         <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" render="false" z="user-managed"/>
-        <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="rjg6V8gVupqKmdsIqvFAxPS3CHI=" render="false"/>
-        <field:display field="state" id="s_com_bibsmobile_model_Event_state" object="${event}" z="Gc7Mpphzf9fIkMRlKcDvXh/sk1k=" render="false"/>
+        <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" render="false" z="user-managed"/>
+        <field:display field="state" id="s_com_bibsmobile_model_Event_state" object="${event}" render="false" z="user-managed"/>
         <field:display field="lattitude" id="s_com_bibsmobile_model_Event_lattitude" object="${event}" render="false" z="user-managed"/>
         <field:display field="longitude" id="s_com_bibsmobile_model_Event_longitude" object="${event}" render="false" z="user-managed"/>
         <field:display field="type" id="s_com_bibsmobile_model_Event_type" object="${event}" render="false" z="user-managed"/>
@@ -85,7 +83,7 @@
         <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" render="false" z="user-managed"/>
         <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" render="false" z="user-managed"/>
         <field:display field="gunFired" id="s_com_bibsmobile_model_Event_gunFired" object="${event}" render="false" z="user-managed"/>
-        <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" render="false" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="nqrHpcNegZtIDsWpidGprGh41zI="/>
-        <field:display field="gunTimeStart" render="false" id="s_com_bibsmobile_model_Event_gunTimeStart" object="${event}" z="JqrFBjTxWlqWfAjbksGdC6Ys2LY="/>
+        <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" render="false" z="user-managed"/>
+        <field:display field="gunTimeStart" id="s_com_bibsmobile_model_Event_gunTimeStart" object="${event}" render="false" z="user-managed"/>
     </page:show>
 </div>

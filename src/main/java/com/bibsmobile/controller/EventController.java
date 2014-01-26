@@ -93,10 +93,10 @@ public class EventController {
     
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
-    public String resultsQuery(@RequestParam(value = "event", required = true) int event_id){ 
+    public String resultsQuery(@RequestParam(value = "event", required = true) long event_id){ 
         try {
         	return RaceResult.toJsonArray(
-        			Event.findRaceResultsForAnnouncer(event_id, "", 0, 0, 1, 30));
+        			Event.findRaceResultsForAnnouncer(event_id, 1, 15));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -51,36 +51,53 @@ public class TimerConfigController {
 	@RequestMapping(value = "/connect/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String connect(@PathVariable(value = "id") long id){
-    	getTimer(id).disconnect(); 
-    	getTimer(id).connect();
+    	Timer timer = getTimer(id);
+    	if(timer.getStatus()==0)
+    		timer.connect();
+		if(timer.getStatus()==3){ // write
+    		timer.disconnect(); 
+			timer.connect();
+		}
         return "true";
     }
 	
 	@RequestMapping(value = "/disconnect/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String disconnect(@PathVariable(value = "id") long id){
-    	getTimer(id).disconnect();
+    	if(getTimer(id).getStatus()>0)
+    		getTimer(id).disconnect();
         return "true";
     }
     
     @RequestMapping(value = "/start/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String start(@PathVariable(value = "id") long id){
-    	getTimer(id).startReader();
+    public String start(@PathVariable(value = "id") long id) throws InterruptedException{
+    	Timer timer = getTimer(id);
+    	if(timer.getStatus() == 0)
+    		timer.connect();
+    	Thread.sleep(1500);
+    	timer.startReader();
         return "true";
     }
     
     @RequestMapping(value = "/stop/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String stop(@PathVariable(value = "id") long id){
-    	getTimer(id).stopReader();
+    	Timer timer = getTimer(id);
+    	if(timer.getStatus()>0) {
+	    	timer.stopReader();
+	    	timer.disconnect();
+    	}
         return "true";
     }
     
     @RequestMapping(value = "/write/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String write(@PathVariable(value = "id") long id) throws Exception{
-    	getTimer(1).write(id); // use timer 1 TODO ?
+    	Timer timer = getTimer(1); // use timer 1 TODO ?
+    	if(timer.getStatus()==0)
+    		timer.connect();
+    	timer.write(id); 
         return "true";
     } 
 

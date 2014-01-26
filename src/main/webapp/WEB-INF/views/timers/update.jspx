@@ -17,8 +17,8 @@
         <field:input field="url" id="c_com_bibsmobile_model_TimerConfig_url" z="YQG6sHqrsWv50OpnvgYxdIUonpM="/>
         <field:input field="readTimeout" id="c_com_bibsmobile_model_TimerConfig_readTimeout" z="/+mgpFRssYFOzU8d28QtwFU+oT8="/>
         <field:input field="events" id="c_com_bibsmobile_model_TimerConfig_events" render="false" z="user-managed"/>
-        <field:input render="false" field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" z="8WfNi44TqqgU9MbP0HqWem5pywM="/>
-        <field:input render="false" field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" z="21VSYhjitSQ8K0PLS7ZAkOt2Mt4="/>
+        <field:input field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" render="false" z="user-managed"/>
+        <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" render="false" z="user-managed"/>
         <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
     </form:update>
     <script>

@@ -68,6 +68,14 @@ privileged aspect UserProfile_Roo_JavaBean {
         this.email = email;
     }
     
+    public String UserProfile.getImage() {
+        return this.image;
+    }
+    
+    public void UserProfile.setImage(String image) {
+        this.image = image;
+    }
+    
     public Set<UserAuthority> UserProfile.getUserAuthorities() {
         return this.userAuthorities;
     }

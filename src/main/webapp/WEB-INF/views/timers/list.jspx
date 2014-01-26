@@ -4,12 +4,12 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:list id="pl_com_bibsmobile_model_TimerConfig" items="${timerconfigs}" z="21mRsfOwmhGthvwvny4D/kHR0oI=">
         <table:table data="${timerconfigs}" id="l_com_bibsmobile_model_TimerConfig" path="/timers" z="HOBF5DQvvbIVD4p/2xw3W/3V3ZY=">
-            <table:column render="false" id="c_com_bibsmobile_model_TimerConfig_position" property="position" z="KyRFxpeDGy9vtHohNV/YEXUaWBU="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_position" property="position" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>
-            <table:column render="false" id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" z="w3MPJFu1R5uA7dJrert4GMqoBDg="/>
-            <table:column render="false" id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" z="9ETveBEyYSMhalUJYMkq7ilWPa8="/>
-            <table:column render="false" id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" z="Rv2qRMTX4o7sxEtgzdKrmiAeoeA="/>
-            <table:column render="false" id="c_com_bibsmobile_model_TimerConfig_type" property="type" z="DnTzjIXPAechPe0BHlF0GokFjlY="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_type" property="type" render="false" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

@@ -27,6 +27,7 @@ public class UserProfile implements UserDetails {
     private int age;
     private String gender;
     private String email;
+    private String image;
     
     @ManyToMany
     @JoinTable(name = "user_authorities")

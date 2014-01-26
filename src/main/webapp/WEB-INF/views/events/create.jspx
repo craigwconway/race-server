@@ -53,7 +53,7 @@
         <field:input field="running" id="c_com_bibsmobile_model_Event_running" render="false" z="user-managed"/>
         <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" render="false" z="user-managed"/>
         <field:datetime dateTimePattern="${event_guntime_date_format}" field="gunTime" id="c_com_bibsmobile_model_Event_gunTime" render="false" z="user-managed"/>
-        <field:input render="false" field="gunTimeStart" id="c_com_bibsmobile_model_Event_gunTimeStart" z="aZwgjrgzPSW4GVmejOYTVcfDJy4="/>
+        <field:input field="gunTimeStart" id="c_com_bibsmobile_model_Event_gunTimeStart" render="false" z="user-managed"/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Event" render="${not empty dependencies}" z="97PxZzAnMjrQHEYGI+GbAcLkB+8="/>
     <script>

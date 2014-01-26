@@ -9,9 +9,9 @@
         <form-login login-processing-url="/resources/j_spring_security_check" login-page="/login" authentication-failure-url="/login?login_error=t" />
         <logout logout-url="/resources/j_spring_security_logout" />
   
+        <intercept-url pattern="/events/raceday"  access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')" />
         <intercept-url pattern="/events/**"  access="permitAll" method="GET"/>
         <intercept-url pattern="/events/**"  access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')"  method="POST"/>
-        <intercept-url pattern="/events/raceday"  access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')" />
         
         <intercept-url pattern="/raceresults/**" access="permitAll"  method="GET"/>
         <intercept-url pattern="/raceresults/**" access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')"  method="POST"/>

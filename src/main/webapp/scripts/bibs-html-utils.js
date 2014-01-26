@@ -1,12 +1,17 @@
 function makeRunnersTable(data,results,eventId){
 	results = "";
+	results += "<tr>";
+	results += "<th>Time</th>";
+	results += "<th>Bib</th>";
+	results += "<th>Name</th>";
+	results += "<th>City</th>";
+	results += "<th>State</th>";
+	results += "</tr>";
 	for(var i in data){
 		var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
 		var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
 		var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
 		var bib = (null!=data[i].bib) ? data[i].bib : "";
-		var gender = (null!=data[i].gender) ? data[i].gender : "";
-		var age = (null!=data[i].age) ? data[i].age : "";
 		var city = (null!=data[i].city) ? data[i].city : "";
 		var state = (null!=data[i].state) ? data[i].state : "";
 		
@@ -14,8 +19,6 @@ function makeRunnersTable(data,results,eventId){
 		results += "<td>"+timeofficialdisplay+"</td>";
 		results += "<td>"+bib+"</td>";
 		results += "<td>"+firstname+" "+lastname+"</td>";
-		results += "<td>"+age+"</td>";
-		results += "<td>"+gender+"</td>";
 		results += "<td>"+city+"</td>";
 		results += "<td>"+state+"</td>";
 		results += "</tr>";

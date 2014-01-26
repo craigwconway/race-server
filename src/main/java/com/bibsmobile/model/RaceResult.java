@@ -330,17 +330,17 @@ public class RaceResult implements Comparable<RaceResult>{
     	if(minutes>0 && minutes <=9) rtn = rtn + "0"+minutes;
     	else if(minutes > 9) rtn = rtn + ""+minutes;
     	else if (minutes == 0) rtn = rtn + "00";
-    	if(seconds>0 && seconds <=9) rtn = rtn + ":0"+seconds;
+    	if(seconds>=0 && seconds <=9) rtn = rtn + ":0"+seconds;
     	else if(seconds > 9) rtn = rtn + ":"+seconds;
     	// rtn = rtn + "."+millis;
-    	
+    	/*
     	int numyears = (int) Math.floor(seconds / 31536000);
     	int numdays = (int) Math.floor((seconds % 31536000) / 86400); 
     	if(numdays==1) rtn = numdays + " day "+rtn;
     	else if(numdays>0) rtn = numdays + " days "+rtn;
     	if(numyears==1) rtn = numdays + " year "+rtn;
     	else if(numyears>0) rtn = numdays + " years "+rtn;
-    	
+    	*/
 		return rtn;
 	}
 }

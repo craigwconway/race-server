@@ -2,7 +2,6 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
     <style>
 	.title{
 		font-size: 28px;
@@ -15,35 +14,35 @@
 		margin-right: 12px;
 	}
     </style>
-    
-	<div class="title">${userprofile.username}
-	<span class="subtext">${userprofile.firstname} ${userprofile.lastname}</span></div>
-    
+    <div class="title">${userprofile.username}
+	<span class="subtext">${userprofile.firstname} ${userprofile.lastname}</span>
+    </div>
     <page:show id="ps_com_bibsmobile_model_UserProfile" object="${userprofile}" path="/userprofiles" z="sBTUG3BAJNyhXpkk6T9rEdaoCkI=">
         <div style="display:none;">
-        <field:display field="username" id="s_com_bibsmobile_model_UserProfile_username" object="${userprofile}" z="kj/1KKkg0r+DIHZemGpfOI+Xb1U="/>
-        <field:display field="password" id="s_com_bibsmobile_model_UserProfile_password" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="accountNonExpired" id="s_com_bibsmobile_model_UserProfile_accountNonExpired" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="accountNonLocked" id="s_com_bibsmobile_model_UserProfile_accountNonLocked" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="credentialsNonExpired" id="s_com_bibsmobile_model_UserProfile_credentialsNonExpired" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="enabled" id="s_com_bibsmobile_model_UserProfile_enabled" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="userAuthorities" id="s_com_bibsmobile_model_UserProfile_userAuthorities" object="${userprofile}" z="rghF8Bp+j8M+YkEghoPtN99GYJw="/>
-        <field:display field="facebookId" id="s_com_bibsmobile_model_UserProfile_facebookId" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="twitterId" id="s_com_bibsmobile_model_UserProfile_twitterId" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="googleId" id="s_com_bibsmobile_model_UserProfile_googleId" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="age" id="s_com_bibsmobile_model_UserProfile_age" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="gender" id="s_com_bibsmobile_model_UserProfile_gender" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="email" id="s_com_bibsmobile_model_UserProfile_email" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="friends" id="s_com_bibsmobile_model_UserProfile_friends" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="rivals" id="s_com_bibsmobile_model_UserProfile_rivals" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="eventsSaved" id="s_com_bibsmobile_model_UserProfile_eventsSaved" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="eventsSearched" id="s_com_bibsmobile_model_UserProfile_eventsSearched" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="eventsViewed" id="s_com_bibsmobile_model_UserProfile_eventsViewed" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="raceimages" id="s_com_bibsmobile_model_UserProfile_raceimages" object="${userprofile}" render="false" z="user-managed"/>
-        <field:display field="firstname" id="s_com_bibsmobile_model_UserProfile_firstname" object="${userprofile}" z="QVKv4wiVTY/p1droEPr8cSAUA7o="/>
-        <field:display field="lastname" id="s_com_bibsmobile_model_UserProfile_lastname" object="${userprofile}" z="UBzaT/ZyYVmwv3fH0O7wbWjTniM="/>
-        <field:display field="city" id="s_com_bibsmobile_model_UserProfile_city" object="${userprofile}" z="nkiKew0Zy3Hq7VY6PD2HapBnFjc="/>
-        <field:display field="state" id="s_com_bibsmobile_model_UserProfile_state" object="${userprofile}" z="E4hur0PeVa284ORSqCmxaibU4gA="/>
-		</div>    
+            <field:display field="username" id="s_com_bibsmobile_model_UserProfile_username" object="${userprofile}" z="kj/1KKkg0r+DIHZemGpfOI+Xb1U="/>
+            <field:display field="password" id="s_com_bibsmobile_model_UserProfile_password" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="accountNonExpired" id="s_com_bibsmobile_model_UserProfile_accountNonExpired" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="accountNonLocked" id="s_com_bibsmobile_model_UserProfile_accountNonLocked" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="credentialsNonExpired" id="s_com_bibsmobile_model_UserProfile_credentialsNonExpired" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="enabled" id="s_com_bibsmobile_model_UserProfile_enabled" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="userAuthorities" id="s_com_bibsmobile_model_UserProfile_userAuthorities" object="${userprofile}" z="rghF8Bp+j8M+YkEghoPtN99GYJw="/>
+            <field:display field="facebookId" id="s_com_bibsmobile_model_UserProfile_facebookId" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="twitterId" id="s_com_bibsmobile_model_UserProfile_twitterId" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="googleId" id="s_com_bibsmobile_model_UserProfile_googleId" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="age" id="s_com_bibsmobile_model_UserProfile_age" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="gender" id="s_com_bibsmobile_model_UserProfile_gender" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="email" id="s_com_bibsmobile_model_UserProfile_email" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="friends" id="s_com_bibsmobile_model_UserProfile_friends" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="rivals" id="s_com_bibsmobile_model_UserProfile_rivals" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="eventsSaved" id="s_com_bibsmobile_model_UserProfile_eventsSaved" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="eventsSearched" id="s_com_bibsmobile_model_UserProfile_eventsSearched" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="eventsViewed" id="s_com_bibsmobile_model_UserProfile_eventsViewed" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="raceimages" id="s_com_bibsmobile_model_UserProfile_raceimages" object="${userprofile}" render="false" z="user-managed"/>
+            <field:display field="firstname" id="s_com_bibsmobile_model_UserProfile_firstname" object="${userprofile}" z="QVKv4wiVTY/p1droEPr8cSAUA7o="/>
+            <field:display field="lastname" id="s_com_bibsmobile_model_UserProfile_lastname" object="${userprofile}" z="UBzaT/ZyYVmwv3fH0O7wbWjTniM="/>
+            <field:display field="city" id="s_com_bibsmobile_model_UserProfile_city" object="${userprofile}" z="nkiKew0Zy3Hq7VY6PD2HapBnFjc="/>
+            <field:display field="state" id="s_com_bibsmobile_model_UserProfile_state" object="${userprofile}" z="E4hur0PeVa284ORSqCmxaibU4gA="/>
+        </div>
+        <field:display field="image" id="s_com_bibsmobile_model_UserProfile_image" object="${userprofile}" z="s6Wv+ed5fgN4z+igvKhkmNldfaI="/>
     </page:show>
 </div>

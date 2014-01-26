@@ -174,7 +174,7 @@ public class Event {
 		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
 		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
 		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
-		HQL += " order by o.timeofficial asc";
+		HQL += " order by (o.timeofficial-o.timestart) asc";
 		EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( HQL, RaceResult.class);
         q.setParameter("event", Event.findEvent(event) );
@@ -186,18 +186,12 @@ public class Event {
         return q.getResultList();
     }
 	
-	public static List<RaceResult> findRaceResultsForAnnouncer(long event, String gender, int min, int max, int page,int size) {
-		if(min>max)min=max;		
+	public static List<RaceResult> findRaceResultsForAnnouncer(long event, int page,int size) {
 		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
-		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
-		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
-		HQL += " order by o.timeofficial desc";
+		HQL += " order by (o.timeofficial - o.timestart) desc";
 		EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( HQL, RaceResult.class);
-        q.setParameter("event", Event.findEvent(event) );
-        if(!gender.isEmpty()) q.setParameter("gender", gender );
-        if(max > 0) q.setParameter("min", String.valueOf(min) );
-        if(max > 0) q.setParameter("max", String.valueOf(max) );
+        q.setParameter("event", Event.findEvent(event) ); 
         q.setFirstResult((page-1)*size);
         q.setMaxResults(size);
         return q.getResultList();
