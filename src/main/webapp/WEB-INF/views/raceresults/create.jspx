@@ -26,7 +26,10 @@
         </div>
         <field:input field="city" id="c_com_bibsmobile_model_RaceResult_city" z="NaUD9KS712aVBFoLI+iHu7qJSq8="/>
         <field:input field="state" id="c_com_bibsmobile_model_RaceResult_state" z="BYXMVk0UAC6iGqpJ3cmxgqF45cA="/>
-        <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" render="false" z="user-managed"/>
+        <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
+        <div style="display:none;">
+        <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
+    	<field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" render="false" z="user-managed"/>
         <field:input field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" render="false" z="user-managed"/>
         <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" render="false" z="user-managed"/>
         <field:input field="middlename2" id="c_com_bibsmobile_model_RaceResult_middlename2" render="false" z="user-managed"/>
@@ -68,8 +71,7 @@
         <field:datetime dateTimePattern="${raceResult_updated_date_format}" field="updated" id="c_com_bibsmobile_model_RaceResult_updated" render="false" z="user-managed"/>
         <field:simple field="raceImage" id="c_com_bibsmobile_model_RaceResult_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" render="false" z="user-managed"/>
         <field:select field="userProfile" id="c_com_bibsmobile_model_RaceResult_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" render="false" z="user-managed"/>
-        <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
-        <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
+        </div>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
     <script>

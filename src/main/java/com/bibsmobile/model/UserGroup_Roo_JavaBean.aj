@@ -18,12 +18,12 @@ privileged aspect UserGroup_Roo_JavaBean {
         this.name = name;
     }
     
-    public List<UserProfile> UserGroup.getUsers() {
-        return this.users;
+    public List<UserProfile> UserGroup.getUserProfiles() {
+        return this.userProfiles;
     }
     
-    public void UserGroup.setUsers(List<UserProfile> users) {
-        this.users = users;
+    public void UserGroup.setUserProfiles(List<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
     }
     
     public List<Event> UserGroup.getEvents() {

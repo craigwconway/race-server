@@ -26,51 +26,51 @@
         <field:display field="bib" id="s_com_bibsmobile_model_RaceResult_bib" object="${raceresult}" z="qDzxvPoKAz0fR8e09txv0uPAKUg="/>
         <field:display field="firstname" id="s_com_bibsmobile_model_RaceResult_firstname" object="${raceresult}" z="Sq7xuhXDz91mKP2YTNQONyXI8qU="/>
         <field:display field="lastname" id="s_com_bibsmobile_model_RaceResult_lastname" object="${raceresult}" z="gdWvMCyr+Nb5+kmms/xLoslRMuQ="/>
-        <field:display field="middlename" id="s_com_bibsmobile_model_RaceResult_middlename" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="middlename2" id="s_com_bibsmobile_model_RaceResult_middlename2" object="${raceresult}" render="false" z="user-managed"/>
+        <field:display field="middlename" id="s_com_bibsmobile_model_RaceResult_middlename" object="${raceresult}"  z="user-managed"/>
+        <field:display field="middlename2" id="s_com_bibsmobile_model_RaceResult_middlename2" object="${raceresult}"  z="user-managed"/>
         <field:display field="age" id="s_com_bibsmobile_model_RaceResult_age" object="${raceresult}" z="CwL//qBr/f5VOI9dIA7iBQp3cpU="/>
         <field:display field="gender" id="s_com_bibsmobile_model_RaceResult_gender" object="${raceresult}" z="ciqcTBsViWRzjH16GZEwcU4+c/E="/>
-        <field:display field="type" id="s_com_bibsmobile_model_RaceResult_type" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="time5k" id="s_com_bibsmobile_model_RaceResult_time5k" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="time10k" id="s_com_bibsmobile_model_RaceResult_time10k" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="time15k" id="s_com_bibsmobile_model_RaceResult_time15k" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timeoverall" id="s_com_bibsmobile_model_RaceResult_timeoverall" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timegun" id="s_com_bibsmobile_model_RaceResult_timegun" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timechip" id="s_com_bibsmobile_model_RaceResult_timechip" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timesplit" id="s_com_bibsmobile_model_RaceResult_timesplit" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timestart" id="s_com_bibsmobile_model_RaceResult_timestart" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timerun" id="s_com_bibsmobile_model_RaceResult_timerun" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timeswim" id="s_com_bibsmobile_model_RaceResult_timeswim" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timetrans1" id="s_com_bibsmobile_model_RaceResult_timetrans1" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timetrans2" id="s_com_bibsmobile_model_RaceResult_timetrans2" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timebike" id="s_com_bibsmobile_model_RaceResult_timebike" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timepace" id="s_com_bibsmobile_model_RaceResult_timepace" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="rankoverall" id="s_com_bibsmobile_model_RaceResult_rankoverall" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="rankage" id="s_com_bibsmobile_model_RaceResult_rankage" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="rankgender" id="s_com_bibsmobile_model_RaceResult_rankgender" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="rankclass" id="s_com_bibsmobile_model_RaceResult_rankclass" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="medal1" id="s_com_bibsmobile_model_RaceResult_medal1" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="medal2" id="s_com_bibsmobile_model_RaceResult_medal2" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="medal3" id="s_com_bibsmobile_model_RaceResult_medal3" object="${raceresult}" render="false" z="user-managed"/>
+        <field:display field="type" id="s_com_bibsmobile_model_RaceResult_type" object="${raceresult}"  z="user-managed"/>
+        <field:display field="time5k" id="s_com_bibsmobile_model_RaceResult_time5k" object="${raceresult}"  z="user-managed"/>
+        <field:display field="time10k" id="s_com_bibsmobile_model_RaceResult_time10k" object="${raceresult}"  z="user-managed"/>
+        <field:display field="time15k" id="s_com_bibsmobile_model_RaceResult_time15k" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timeoverall" id="s_com_bibsmobile_model_RaceResult_timeoverall" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timegun" id="s_com_bibsmobile_model_RaceResult_timegun" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timechip" id="s_com_bibsmobile_model_RaceResult_timechip" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timesplit" id="s_com_bibsmobile_model_RaceResult_timesplit" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timestart" id="s_com_bibsmobile_model_RaceResult_timestart" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timerun" id="s_com_bibsmobile_model_RaceResult_timerun" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timeswim" id="s_com_bibsmobile_model_RaceResult_timeswim" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timetrans1" id="s_com_bibsmobile_model_RaceResult_timetrans1" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timetrans2" id="s_com_bibsmobile_model_RaceResult_timetrans2" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timebike" id="s_com_bibsmobile_model_RaceResult_timebike" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timepace" id="s_com_bibsmobile_model_RaceResult_timepace" object="${raceresult}"  z="user-managed"/>
+        <field:display field="rankoverall" id="s_com_bibsmobile_model_RaceResult_rankoverall" object="${raceresult}"  z="user-managed"/>
+        <field:display field="rankage" id="s_com_bibsmobile_model_RaceResult_rankage" object="${raceresult}"  z="user-managed"/>
+        <field:display field="rankgender" id="s_com_bibsmobile_model_RaceResult_rankgender" object="${raceresult}"  z="user-managed"/>
+        <field:display field="rankclass" id="s_com_bibsmobile_model_RaceResult_rankclass" object="${raceresult}"  z="user-managed"/>
+        <field:display field="medal1" id="s_com_bibsmobile_model_RaceResult_medal1" object="${raceresult}"  z="user-managed"/>
+        <field:display field="medal2" id="s_com_bibsmobile_model_RaceResult_medal2" object="${raceresult}"  z="user-managed"/>
+        <field:display field="medal3" id="s_com_bibsmobile_model_RaceResult_medal3" object="${raceresult}"  z="user-managed"/>
         <field:display field="city" id="s_com_bibsmobile_model_RaceResult_city" object="${raceresult}" z="pfVi0cWGbZSKOe2uKjquIeUTVLg="/>
         <field:display field="state" id="s_com_bibsmobile_model_RaceResult_state" object="${raceresult}" z="pX9NRjProZBxQ/Q+nNym9vPiIH0="/>
-        <field:display field="country" id="s_com_bibsmobile_model_RaceResult_country" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="fullname" id="s_com_bibsmobile_model_RaceResult_fullname" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="lisencenumber" id="s_com_bibsmobile_model_RaceResult_lisencenumber" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="laps" id="s_com_bibsmobile_model_RaceResult_laps" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="award" id="s_com_bibsmobile_model_RaceResult_award" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timer" id="s_com_bibsmobile_model_RaceResult_timer" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timesplit1" id="s_com_bibsmobile_model_RaceResult_timesplit1" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timesplit2" id="s_com_bibsmobile_model_RaceResult_timesplit2" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timesplit3" id="s_com_bibsmobile_model_RaceResult_timesplit3" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timesplit4" id="s_com_bibsmobile_model_RaceResult_timesplit4" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timemile1" id="s_com_bibsmobile_model_RaceResult_timemile1" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timemile2" id="s_com_bibsmobile_model_RaceResult_timemile2" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timemile3" id="s_com_bibsmobile_model_RaceResult_timemile3" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timemile4" id="s_com_bibsmobile_model_RaceResult_timemile4" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display date="true" dateTimePattern="${raceResult_updated_date_format}" field="updated" id="s_com_bibsmobile_model_RaceResult_updated" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="userProfile" id="s_com_bibsmobile_model_RaceResult_userProfile" object="${raceresult}" render="false" z="user-managed"/>
-        <field:display field="timeofficial" id="s_com_bibsmobile_model_RaceResult_timeofficial" object="${raceresult}" render="false" z="user-managed"/>
+        <field:display field="country" id="s_com_bibsmobile_model_RaceResult_country" object="${raceresult}"  z="user-managed"/>
+        <field:display field="fullname" id="s_com_bibsmobile_model_RaceResult_fullname" object="${raceresult}"  z="user-managed"/>
+        <field:display field="lisencenumber" id="s_com_bibsmobile_model_RaceResult_lisencenumber" object="${raceresult}"  z="user-managed"/>
+        <field:display field="laps" id="s_com_bibsmobile_model_RaceResult_laps" object="${raceresult}"  z="user-managed"/>
+        <field:display field="award" id="s_com_bibsmobile_model_RaceResult_award" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timer" id="s_com_bibsmobile_model_RaceResult_timer" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timesplit1" id="s_com_bibsmobile_model_RaceResult_timesplit1" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timesplit2" id="s_com_bibsmobile_model_RaceResult_timesplit2" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timesplit3" id="s_com_bibsmobile_model_RaceResult_timesplit3" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timesplit4" id="s_com_bibsmobile_model_RaceResult_timesplit4" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timemile1" id="s_com_bibsmobile_model_RaceResult_timemile1" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timemile2" id="s_com_bibsmobile_model_RaceResult_timemile2" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timemile3" id="s_com_bibsmobile_model_RaceResult_timemile3" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timemile4" id="s_com_bibsmobile_model_RaceResult_timemile4" object="${raceresult}"  z="user-managed"/>
+        <field:display date="true" dateTimePattern="${raceResult_updated_date_format}" field="updated" id="s_com_bibsmobile_model_RaceResult_updated" object="${raceresult}"  z="user-managed"/>
+        <field:display field="userProfile" id="s_com_bibsmobile_model_RaceResult_userProfile" object="${raceresult}"  z="user-managed"/>
+        <field:display field="timeofficial" id="s_com_bibsmobile_model_RaceResult_timeofficial" object="${raceresult}"  z="user-managed"/>
         <field:display field="timeofficialdisplay" id="s_com_bibsmobile_model_RaceResult_timeofficialdisplay" object="${raceresult}" z="DbLNqHk2uuPTEv8Wdov6q4CZ0PM="/>
     	</div>
     </page:show>

@@ -38,15 +38,6 @@ privileged aspect EventController_Roo_Controller_Json {
         return new ResponseEntity<String>(Event.toJsonArray(result), headers, HttpStatus.OK);
     }
     
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> EventController.createFromJson(@RequestBody String json) {
-        Event event = Event.fromJsonToEvent(json);
-        event.persist();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-    
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> EventController.createFromJsonArray(@RequestBody String json) {
         for (Event event: Event.fromJsonArrayToEvents(json)) {

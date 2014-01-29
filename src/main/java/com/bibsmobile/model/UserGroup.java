@@ -21,7 +21,7 @@ public class UserGroup {
 
 	@ManyToMany
 	@JoinTable(name = "group_users")
-	private List<UserProfile> users;
+	private List<UserProfile> userProfiles;
 
 	@ManyToMany
 	@JoinTable(name = "group_events")

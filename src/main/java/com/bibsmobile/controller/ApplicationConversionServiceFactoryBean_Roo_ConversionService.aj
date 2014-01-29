@@ -30,7 +30,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<Event, String> ApplicationConversionServiceFactoryBean.getEventToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.Event, java.lang.String>() {
             public String convert(Event event) {
-                return new StringBuilder().append(event.getName()).append(' ').append(event.getTimeStart()).append(' ').append(event.getTimeEnd()).append(' ').append(event.getFeatured()).toString();
+                return event.getName();
             }
         };
     }

@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
@@ -51,7 +52,10 @@ public class UserProfile implements UserDetails {
     private Set<Event> eventsSaved;
     @ManyToMany
     private Set<RaceImage> raceimages;
-	
+
+    @ManyToOne
+    private UserGroup userGroup;
+    
 	@OneToMany(mappedBy = "userProfile")
 	private Set<RaceResult> raceResults; 
     

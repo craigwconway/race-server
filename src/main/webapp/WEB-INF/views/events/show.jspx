@@ -26,11 +26,28 @@
         <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
 		Export
 		</button>
-        <button class="btn btn-default btn-top" onclick="alert('Booooom!')" type="button">
+        <button class="btn btn-default btn-top" onclick="cloud()" type="button">
 		Cloud
 		</button>
     </sec:authorize>
     <script>
+	function cloud(){
+		var r = jQuery.ajax({
+			url: "/bibs-server/events/cloud?event=${event.id}",
+			type: "GET",
+			dataType: "html"
+			});
+		r.done(function(data){
+			if("true" == data){
+				alert("Cloud Sync Complete!");
+			}else{
+				alert("Cloud Sync Failed.");
+			}
+		});
+		r.fail(function( s,s ) {
+			alert("Could not connect to Cloud.");
+		});
+	}
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
 	}
@@ -42,48 +59,55 @@
 	}
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-        <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" render="false" z="user-managed"/>
-        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" render="false" z="user-managed"/>
-        <field:display date="true" dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_Event_timeEnd" object="${event}" render="false" z="user-managed"/>
-        <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" render="false" z="user-managed"/>
-        <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" render="false" z="user-managed"/>
-        <field:display field="state" id="s_com_bibsmobile_model_Event_state" object="${event}" render="false" z="user-managed"/>
-        <field:display field="lattitude" id="s_com_bibsmobile_model_Event_lattitude" object="${event}" render="false" z="user-managed"/>
-        <field:display field="longitude" id="s_com_bibsmobile_model_Event_longitude" object="${event}" render="false" z="user-managed"/>
-        <field:display field="type" id="s_com_bibsmobile_model_Event_type" object="${event}" render="false" z="user-managed"/>
-        <field:display field="website" id="s_com_bibsmobile_model_Event_website" object="${event}" render="false" z="user-managed"/>
-        <field:display field="phone" id="s_com_bibsmobile_model_Event_phone" object="${event}" render="false" z="user-managed"/>
-        <field:display field="email" id="s_com_bibsmobile_model_Event_email" object="${event}" render="false" z="user-managed"/>
-        <field:display field="registration" id="s_com_bibsmobile_model_Event_registration" object="${event}" render="false" z="user-managed"/>
-        <field:display field="parking" id="s_com_bibsmobile_model_Event_parking" object="${event}" render="false" z="user-managed"/>
-        <field:display field="general" id="s_com_bibsmobile_model_Event_general" object="${event}" render="false" z="user-managed"/>
-        <field:display field="description" id="s_com_bibsmobile_model_Event_description" object="${event}" render="false" z="user-managed"/>
-        <field:display field="organization" id="s_com_bibsmobile_model_Event_organization" object="${event}" render="false" z="user-managed"/>
-        <field:display field="photo" id="s_com_bibsmobile_model_Event_photo" object="${event}" render="false" z="user-managed"/>
-        <field:display field="photo2" id="s_com_bibsmobile_model_Event_photo2" object="${event}" render="false" z="user-managed"/>
-        <field:display field="photo3" id="s_com_bibsmobile_model_Event_photo3" object="${event}" render="false" z="user-managed"/>
-        <field:display field="map" id="s_com_bibsmobile_model_Event_map" object="${event}" render="false" z="user-managed"/>
-        <field:display field="map2" id="s_com_bibsmobile_model_Event_map2" object="${event}" render="false" z="user-managed"/>
-        <field:display field="map3" id="s_com_bibsmobile_model_Event_map3" object="${event}" render="false" z="user-managed"/>
-        <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" render="false" z="user-managed"/>
-        <field:display field="results2" id="s_com_bibsmobile_model_Event_results2" object="${event}" render="false" z="user-managed"/>
-        <field:display field="results3" id="s_com_bibsmobile_model_Event_results3" object="${event}" render="false" z="user-managed"/>
-        <field:display field="alert1" id="s_com_bibsmobile_model_Event_alert1" object="${event}" render="false" z="user-managed"/>
-        <field:display field="alert2" id="s_com_bibsmobile_model_Event_alert2" object="${event}" render="false" z="user-managed"/>
-        <field:display field="alert3" id="s_com_bibsmobile_model_Event_alert3" object="${event}" render="false" z="user-managed"/>
-        <field:display field="donateUrl" id="s_com_bibsmobile_model_Event_donateUrl" object="${event}" render="false" z="user-managed"/>
-        <field:display field="facebookUrl1" id="s_com_bibsmobile_model_Event_facebookUrl1" object="${event}" render="false" z="user-managed"/>
-        <field:display field="facebookUrl2" id="s_com_bibsmobile_model_Event_facebookUrl2" object="${event}" render="false" z="user-managed"/>
-        <field:display field="photoUploadUrl" id="s_com_bibsmobile_model_Event_photoUploadUrl" object="${event}" render="false" z="user-managed"/>
-        <field:display field="coursemaps" id="s_com_bibsmobile_model_Event_coursemaps" object="${event}" render="false" z="user-managed"/>
-        <field:display field="merchandise" id="s_com_bibsmobile_model_Event_merchandise" object="${event}" render="false" z="user-managed"/>
-        <field:display field="beachEvents" id="s_com_bibsmobile_model_Event_beachEvents" object="${event}" render="false" z="user-managed"/>
-        <field:display field="shuttles" id="s_com_bibsmobile_model_Event_shuttles" object="${event}" render="false" z="user-managed"/>
-        <field:display field="courseRules" id="s_com_bibsmobile_model_Event_courseRules" object="${event}" render="false" z="user-managed"/>
-        <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" render="false" z="user-managed"/>
-        <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" render="false" z="user-managed"/>
-        <field:display field="gunFired" id="s_com_bibsmobile_model_Event_gunFired" object="${event}" render="false" z="user-managed"/>
-        <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" render="false" z="user-managed"/>
-        <field:display field="gunTimeStart" id="s_com_bibsmobile_model_Event_gunTimeStart" object="${event}" render="false" z="user-managed"/>
+        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
+        <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
+        <div style="display:none;">
+            <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
+            <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="user-managed"/>
+            <field:display field="state" id="s_com_bibsmobile_model_Event_state" object="${event}" z="user-managed"/>
+            <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
+            <field:display date="true" dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_Event_timeEnd" object="${event}" z="user-managed"/>
+            <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" z="user-managed"/>
+            <field:display field="lattitude" id="s_com_bibsmobile_model_Event_lattitude" object="${event}" z="user-managed"/>
+            <field:display field="longitude" id="s_com_bibsmobile_model_Event_longitude" object="${event}" z="user-managed"/>
+            <field:display field="type" id="s_com_bibsmobile_model_Event_type" object="${event}" z="user-managed"/>
+            <field:display field="website" id="s_com_bibsmobile_model_Event_website" object="${event}" z="user-managed"/>
+            <field:display field="phone" id="s_com_bibsmobile_model_Event_phone" object="${event}" z="user-managed"/>
+            <field:display field="email" id="s_com_bibsmobile_model_Event_email" object="${event}" z="user-managed"/>
+            <field:display field="registration" id="s_com_bibsmobile_model_Event_registration" object="${event}" z="user-managed"/>
+            <field:display field="parking" id="s_com_bibsmobile_model_Event_parking" object="${event}" z="user-managed"/>
+            <field:display field="general" id="s_com_bibsmobile_model_Event_general" object="${event}" z="user-managed"/>
+            <field:display field="description" id="s_com_bibsmobile_model_Event_description" object="${event}" z="user-managed"/>
+            <field:display field="organization" id="s_com_bibsmobile_model_Event_organization" object="${event}" z="user-managed"/>
+            <field:display field="photo" id="s_com_bibsmobile_model_Event_photo" object="${event}" z="user-managed"/>
+            <field:display field="photo2" id="s_com_bibsmobile_model_Event_photo2" object="${event}" z="user-managed"/>
+            <field:display field="photo3" id="s_com_bibsmobile_model_Event_photo3" object="${event}" z="user-managed"/>
+            <field:display field="map" id="s_com_bibsmobile_model_Event_map" object="${event}" z="user-managed"/>
+            <field:display field="map2" id="s_com_bibsmobile_model_Event_map2" object="${event}" z="user-managed"/>
+            <field:display field="map3" id="s_com_bibsmobile_model_Event_map3" object="${event}" z="user-managed"/>
+            <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" z="user-managed"/>
+            <field:display field="results2" id="s_com_bibsmobile_model_Event_results2" object="${event}" z="user-managed"/>
+            <field:display field="results3" id="s_com_bibsmobile_model_Event_results3" object="${event}" z="user-managed"/>
+            <field:display field="alert1" id="s_com_bibsmobile_model_Event_alert1" object="${event}" z="user-managed"/>
+            <field:display field="alert2" id="s_com_bibsmobile_model_Event_alert2" object="${event}" z="user-managed"/>
+            <field:display field="alert3" id="s_com_bibsmobile_model_Event_alert3" object="${event}" z="user-managed"/>
+            <field:display field="donateUrl" id="s_com_bibsmobile_model_Event_donateUrl" object="${event}" z="user-managed"/>
+            <field:display field="facebookUrl1" id="s_com_bibsmobile_model_Event_facebookUrl1" object="${event}" z="user-managed"/>
+            <field:display field="facebookUrl2" id="s_com_bibsmobile_model_Event_facebookUrl2" object="${event}" z="user-managed"/>
+            <field:display field="photoUploadUrl" id="s_com_bibsmobile_model_Event_photoUploadUrl" object="${event}" z="user-managed"/>
+            <field:display field="coursemaps" id="s_com_bibsmobile_model_Event_coursemaps" object="${event}" z="user-managed"/>
+            <field:display field="merchandise" id="s_com_bibsmobile_model_Event_merchandise" object="${event}" z="user-managed"/>
+            <field:display field="beachEvents" id="s_com_bibsmobile_model_Event_beachEvents" object="${event}" z="user-managed"/>
+            <field:display field="shuttles" id="s_com_bibsmobile_model_Event_shuttles" object="${event}" z="user-managed"/>
+            <field:display field="courseRules" id="s_com_bibsmobile_model_Event_courseRules" object="${event}" z="user-managed"/>
+            <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" z="user-managed"/>
+            <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" z="user-managed"/>
+            <field:display field="gunFired" id="s_com_bibsmobile_model_Event_gunFired" object="${event}" z="user-managed"/>
+            <field:display field="gunTimeStart" id="s_com_bibsmobile_model_Event_gunTimeStart" object="${event}" z="user-managed"/>
+            <field:display field="sync" id="s_com_bibsmobile_model_Event_sync" object="${event}" z="user-managed"/>
+            <field:display field="syncId" id="s_com_bibsmobile_model_Event_syncId" object="${event}" z="user-managed"/>
+            <field:display field="userGroup" id="s_com_bibsmobile_model_Event_userGroup" object="${event}" z="user-managed"/>
+            <field:display field="country" id="s_com_bibsmobile_model_Event_country" object="${event}" z="Qv0Plvijr5HbvB1q+ZGx2JyZ01E="/>
+    	</div>
     </page:show>
 </div>

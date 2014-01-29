@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:show id="ps_com_bibsmobile_model_UserGroup" object="${usergroup}" path="/usergroups" z="VW+v2NV4h0idHhFHgl9tPFllaH0=">
         <field:display field="name" id="s_com_bibsmobile_model_UserGroup_name" object="${usergroup}" z="HU7uo7dVqmGK2/Dmbv/N29m3MF4="/>
-        <field:display field="users" id="s_com_bibsmobile_model_UserGroup_users" object="${usergroup}" z="ujQ1gwB+Qr5/CE8A74kfZNHaJbA="/>
         <field:display field="events" id="s_com_bibsmobile_model_UserGroup_events" object="${usergroup}" z="GkkQY5ZhW6d8FnKElggVF3oknbA="/>
+        <field:display field="userProfiles" id="s_com_bibsmobile_model_UserGroup_userProfiles" object="${usergroup}" z="68x6cE5pLghLDwkEhtHBhD9iRyU="/>
     </page:show>
 </div>

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -42,6 +43,9 @@ public class Event {
 	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
 	private Set<EventAwardCategory> eventAwardCategory;
 	
+    @ManyToOne
+    private UserGroup userGroup; 
+    
     @NotNull
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
@@ -50,9 +54,10 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date timeEnd;
-    private int featured;
+    private int featured; 
     private String city;
     private String state;
+    private String country;
     private String lattitude;
     private String longitude;
     private String type;
@@ -87,6 +92,8 @@ public class Event {
     private String courseRules;
     private int running;
     private boolean gunFired;
+    private boolean sync;
+    private String syncId;
     
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")

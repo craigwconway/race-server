@@ -9,11 +9,10 @@ import com.bibsmobile.model.EventAwardCategory;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.UserGroup;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,17 +21,6 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 privileged aspect EventController_Roo_Controller {
-    
-    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
-    public String EventController.create(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, event);
-            return "events/create";
-        }
-        uiModel.asMap().clear();
-        event.persist();
-        return "redirect:/events/" + encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
-    }
     
     @RequestMapping(params = "form", produces = "text/html")
     public String EventController.createForm(Model uiModel) {
@@ -94,6 +82,7 @@ privileged aspect EventController_Roo_Controller {
         uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
         uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
         uiModel.addAttribute("resultsfiles", ResultsFile.findAllResultsFiles());
+        uiModel.addAttribute("usergroups", UserGroup.findAllUserGroups());
     }
     
     String EventController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

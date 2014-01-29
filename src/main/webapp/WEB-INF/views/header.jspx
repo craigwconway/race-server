@@ -17,11 +17,9 @@
 <spring:url value="/events?page=1&amp;size=10" var="events_url" />
 <spring:url value="/raceresults?page=1&amp;size=10" var="runners_url" />
 <spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
+<spring:url value="/timers?page=1&amp;size=10" var="timers_url" />
  
     <ul class="nav nav-tabs pull-left" >
-		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN','ROLE_EVENT_ADMIN')">
-	  		<li id="nav_raceday"><a href="${raceday_url}">Race Day</a></li>
-	  	</sec:authorize>
 	  		<li id="nav_events"><a href="${events_url}">Events</a></li>
 	  		<li id="nav_runners"><a href="${runners_url}">Runners</a></li>
 		<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_EVENT_ADMIN,ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
@@ -29,8 +27,11 @@
 <!-- 			<li id="nav_profile"><a href="/bibs-server/userprofiles/byusername/${principal.username }" > -->
 <!-- 				Profile</a></li> -->
 		</sec:authorize>
+		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN','ROLE_EVENT_ADMIN')">
+	  		<li id="nav_raceday"><a href="${raceday_url}">Race Day</a></li>
+	  	</sec:authorize>
 		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-	  		<li id="nav_users"><a href="${users_url}">Admin</a></li>
+	  		<li id="nav_timers"><a href="${timers_url}">Admin</a></li>
 	  	</sec:authorize>
 		<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 			<spring:url var="login" value="/login" />
@@ -53,8 +54,7 @@
 	if((window.location+"").contains('raceday')) $( "#nav_raceday" ).addClass( "active" );
 	else if((window.location+"").contains('events')) $( "#nav_events" ).addClass( "active" );
 	else if((window.location+"").contains('results')) $( "#nav_runners" ).addClass( "active" );
-	//else if((window.location+"").contains('byusername')) $( "#nav_profile" ).addClass( "active" );
-	else if((window.location+"").contains('user')) $( "#nav_users" ).addClass( "active" );
+	else $( "#nav_timers" ).addClass( "active" );
 	}catch(e){}
 	</script>
 	

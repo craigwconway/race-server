@@ -8,6 +8,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import java.io.UnsupportedEncodingException;
@@ -92,6 +93,7 @@ privileged aspect UserProfileController_Roo_Controller {
         uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
         uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
         uiModel.addAttribute("userauthoritys", UserAuthority.findAllUserAuthoritys());
+        uiModel.addAttribute("usergroups", UserGroup.findAllUserGroups());
         uiModel.addAttribute("userprofiles", userProfileService.findAllUserProfiles());
     }
     

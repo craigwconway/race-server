@@ -16,11 +16,8 @@
 	.event-row{
 		border:solid #DDD 1px;
 		border-radius: 5px;
-		--width: 400px;
-		overflow: hidden;
 		padding: 10px;
 		margin: 10px;
-		float: left;
 	}
 	.event-name{
 		font-size: 28px;
@@ -30,18 +27,16 @@
 	.reader-title{
 	}
 	.reader{
+		width: 350px;
 		float: left;
-		width: 180px;
 	}
 	#event{
 		margin:10px; 
-		width:300px;
+		width: 350px;
 	}
 	#events{
-		float: left;
 	}
 	#readers{
-		float: left;
 	}
 	small{
 		color: grey;
@@ -50,9 +45,10 @@
 	}
 	</style>
 	
-
+<div id="templates">
 	<div id="reader-template" style="display:none">
 		<div id="reader---id" class="reader corners">
+			<div class="pull-left">
 			<span id="reader-title---id--" class="reader-title"
 				style="margin:0;margin-left: 3px;"><strong>Reader --count-- </strong>  
 				<span id="reader-pos---id--"
@@ -64,7 +60,8 @@
 				<span id="reader-status---id--"
 					style="margin:0;margin-left: 3px;">Not Connected</span>
 			</span>
-			<div>
+			</div>
+			<div class="pull-right">
 			<button id="btn-update---id--" type="button" class="btn btn-info" 
 				style="margin:0;margin-left: 3px;"
 				onclick="timerUpdate(--id--);">Edit</button>
@@ -76,7 +73,7 @@
 				onclick="stopReader(--id--);">Stop</button>
 			<span id="reader-progress---id--" style="margin:0;margin-left:6px;display:none;">
 				<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> </span>
-			</div>	
+			</div>
    		</div>
 	</div>
 	
@@ -110,33 +107,28 @@
 				style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
 		</div>
 	</div>
-	
-<table id="table-split" width="100%">
-<tr><td valign="top">
-	
-	<div id="mgmt-view" >
-		 <div id="events-dropdown" >
-	        <select class="form-control" id="event" name="event"
-	        	onchange="addEvent()">
-	            <option value="0" selected="true">Manage an Event...</option>
-	            <c:forEach items="${events}" var="event" varStatus="i">
-	                <option value="${event.id}">${ event.name }</option>
-	            </c:forEach> 
-	        </select>
-	    </div>
-		<div id="events"></div>
+</div>	
+
+<table width="100%"><tr>
+<td>
+	<div id="readers"> 
 	</div>
+</td></tr><tr><td>
 
-</td><td style="width:415px" valign="top">
+<div id="mgmt-view" >
+	 <div id="events-dropdown" >
+        <select class="form-control" id="event" name="event"
+        	onchange="addEvent()">
+            <option value="0" selected="true">Manage an Event...</option>
+            <c:forEach items="${events}" var="event" varStatus="i">
+                <option value="${event.id}">${ event.name }</option>
+            </c:forEach> 
+        </select>
+    </div>
+	<div id="events"> </div>
+</div>
 
-	<button onclick="window.location='/bibs-server/timers?form'" 
-		type="button" class="btn btn-primary">
-		Add Reader
-		</button>
-	<div id="readers" class="corners"/>
-
-</td></tr></table>
-
+</td></tr></table>	
 	
 <script>
 var readerOn=false;
@@ -220,7 +212,6 @@ function timerConnect(id){
 }
 
 function timerSync(id){
-	jQuery("#reader-progress-"+id).show();
 	var timerTime = jQuery.ajax({
 		url: "/bibs-server/timers/time/"+id,
 		type: "GET",
@@ -281,8 +272,7 @@ function makeEventRow(eventId,eventName){
 	jQuery("#event-"+eventId).slideDown();
 	jQuery("#event option[value='"+eventId+"']").remove();
 	readerQuery(eventId);
-	if(runningEventCount>1) jQuery(".event-row").css("width","400px");
-	else jQuery(".event-row").css("width","700px");
+	refreshMetrics(eventId);
 }
 
 function startReader(id){
@@ -404,8 +394,6 @@ function setRunning(eventId,order){
 
 function stopRunning(eventId){
 	runningEventCount--;
-	if(runningEventCount>1) jQuery(".event-row").css("width","400px");
-	else jQuery(".event-row").css("width","700px");
 	var request = jQuery.ajax({
 		url: "/bibs-server/events/done?event="+eventId,
 		type: "GET",

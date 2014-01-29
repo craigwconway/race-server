@@ -7,6 +7,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import java.util.Set;
 
@@ -162,6 +163,14 @@ privileged aspect UserProfile_Roo_JavaBean {
     
     public void UserProfile.setRaceimages(Set<RaceImage> raceimages) {
         this.raceimages = raceimages;
+    }
+    
+    public UserGroup UserProfile.getUserGroup() {
+        return this.userGroup;
+    }
+    
+    public void UserProfile.setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
     
     public Set<RaceResult> UserProfile.getRaceResults() {

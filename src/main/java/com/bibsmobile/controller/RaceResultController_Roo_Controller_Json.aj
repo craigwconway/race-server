@@ -40,15 +40,6 @@ privileged aspect RaceResultController_Roo_Controller_Json {
         return new ResponseEntity<String>(RaceResult.toJsonArray(result), headers, HttpStatus.OK);
     }
     
-    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> RaceResultController.createFromJson(@RequestBody String json) {
-        RaceResult raceResult = RaceResult.fromJsonToRaceResult(json);
-        raceResult.persist();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-    
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> RaceResultController.createFromJsonArray(@RequestBody String json) {
         for (RaceResult raceResult: RaceResult.fromJsonArrayToRaceResults(json)) {

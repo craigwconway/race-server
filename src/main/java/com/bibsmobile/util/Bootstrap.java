@@ -1,16 +1,23 @@
 package com.bibsmobile.util;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 
 @Component
@@ -28,17 +35,30 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 	@Autowired
 	private static TimerConfig timerConfig;
 	
+	@Autowired
+	private static UserGroup userGroup;
+	
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		
 			// readers
 			if(TimerConfig.countTimerConfigs() < 1){
-				new TimerConfig().persist(); // reader 1
-				new TimerConfig().persist(); // reader 2
+				TimerConfig timerConfig = new TimerConfig();
+				timerConfig.setUrl("tmr://bibs001.bibsmobile.com");
+				timerConfig.persist(); // reader 1
+				timerConfig = new TimerConfig();
+				timerConfig.setUrl("tmr://bibs002.bibsmobile.com");
+				timerConfig.setPosition(1);
+				timerConfig.persist(); // reader 2
 			}
 			
 			// users
 			if(UserProfile.countUserProfiles() < 1){
+			// group
+			List<UserProfile> users = new ArrayList<UserProfile>();
+			userGroup = new UserGroup();
+			userGroup.setName("My Organization (Unique:"+ new Date().getTime() +")");
+			userGroup.persist();
 			// system role and user
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_SYS_ADMIN");
@@ -51,7 +71,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile.setFirstname("System");
 			userProfile.setLastname("Administrator");
 			userProfile.setUserAuthorities(uas);
+			userProfile.setUserGroup(userGroup);
 			userProfile.persist();
+			users.add(userProfile);
 			// other roles
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_EVENT_ADMIN");
@@ -64,7 +86,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile.setFirstname("Event");
 			userProfile.setLastname("Administrator");
 			userProfile.setUserAuthorities(uas);
+			userProfile.setUserGroup(userGroup);
 			userProfile.persist();
+			users.add(userProfile);
 			// other roles
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_USER_ADMIN");
@@ -77,7 +101,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile.setFirstname("User");
 			userProfile.setLastname("Administrator");
 			userProfile.setUserAuthorities(uas);
+			userProfile.setUserGroup(userGroup);
 			userProfile.persist();
+			users.add(userProfile);
 			// user
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_USER");
@@ -90,7 +116,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile.setFirstname("Bibs");
 			userProfile.setLastname("User");
 			userProfile.setUserAuthorities(uas);
+			userProfile.setUserGroup(userGroup);
 			userProfile.persist();
+			users.add(userProfile);
+			// update group
+			userGroup.setUserProfiles(users);
+			userGroup.merge();
 		}
 		
 		// standard award categories

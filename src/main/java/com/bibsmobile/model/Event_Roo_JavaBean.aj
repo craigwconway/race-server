@@ -8,6 +8,7 @@ import com.bibsmobile.model.EventAwardCategory;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.UserGroup;
 import java.util.Date;
 import java.util.Set;
 
@@ -51,6 +52,14 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setEventAwardCategory(Set<EventAwardCategory> eventAwardCategory) {
         this.eventAwardCategory = eventAwardCategory;
+    }
+    
+    public UserGroup Event.getUserGroup() {
+        return this.userGroup;
+    }
+    
+    public void Event.setUserGroup(UserGroup userGroup) {
+        this.userGroup = userGroup;
     }
     
     public String Event.getName() {
@@ -99,6 +108,14 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setState(String state) {
         this.state = state;
+    }
+    
+    public String Event.getCountry() {
+        return this.country;
+    }
+    
+    public void Event.setCountry(String country) {
+        this.country = country;
     }
     
     public String Event.getLattitude() {
@@ -371,6 +388,22 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setGunFired(boolean gunFired) {
         this.gunFired = gunFired;
+    }
+    
+    public boolean Event.isSync() {
+        return this.sync;
+    }
+    
+    public void Event.setSync(boolean sync) {
+        this.sync = sync;
+    }
+    
+    public String Event.getSyncId() {
+        return this.syncId;
+    }
+    
+    public void Event.setSyncId(String syncId) {
+        this.syncId = syncId;
     }
     
     public Date Event.getGunTime() {

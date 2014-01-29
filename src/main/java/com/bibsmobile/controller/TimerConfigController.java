@@ -73,10 +73,12 @@ public class TimerConfigController {
     @ResponseBody
     public String start(@PathVariable(value = "id") long id) throws InterruptedException{
     	Timer timer = getTimer(id);
-    	if(timer.getStatus() == 0)
+    	if(timer.getStatus() == 0){
     		timer.connect();
-    	Thread.sleep(1500);
+    		Thread.sleep(1500);
+    	}
     	timer.startReader();
+		Thread.sleep(500);
         return "true";
     }
     

@@ -44,5 +44,6 @@
             <field:display field="state" id="s_com_bibsmobile_model_UserProfile_state" object="${userprofile}" z="E4hur0PeVa284ORSqCmxaibU4gA="/>
         </div>
         <field:display field="image" id="s_com_bibsmobile_model_UserProfile_image" object="${userprofile}" z="s6Wv+ed5fgN4z+igvKhkmNldfaI="/>
+        <field:display field="userGroup" id="s_com_bibsmobile_model_UserProfile_userGroup" object="${userprofile}" z="KyZm60qWlAr9eOSshOGA4owhaec="/>
     </page:show>
 </div>

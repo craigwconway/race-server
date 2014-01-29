@@ -298,6 +298,10 @@ public class RaceResult implements Comparable<RaceResult>{
 	public String toJson() {
         return new JSONSerializer().exclude("*.class","event").serialize(this);
     }
+	
+	public String toJson(boolean full) {
+        return new JSONSerializer().serialize(this);
+    }
 
 	public static RaceResult fromJsonToRaceResult(String json) {
         return new JSONDeserializer<RaceResult>().use(null, RaceResult.class).deserialize(json);
