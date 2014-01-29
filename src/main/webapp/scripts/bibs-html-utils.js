@@ -140,17 +140,6 @@ function GetURLParameter(sParam)
 }
 
 function beautifyAuthorities(){
-	jQuery("#_userAuthorities_id > option").each(function(index,element){
-		if(element.innerHTML=="ROLE_SYS_ADMIN"){
-			element.innerHTML="System Admin";
-		}else if(element.innerHTML=="ROLE_EVENT_ADMIN"){
-			element.innerHTML="Event Admin";
-		}else if(element.innerHTML=="ROLE_USER_ADMIN"){
-			element.innerHTML="Registration Admin";
-		}else if(element.innerHTML=="ROLE_USER"){
-			element.innerHTML="Registered Runner";
-		}
-	});
 }
 
 

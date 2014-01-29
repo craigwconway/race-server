@@ -18,6 +18,14 @@ privileged aspect UserGroup_Roo_JavaBean {
         this.name = name;
     }
     
+    public int UserGroup.getBibWrites() {
+        return this.bibWrites;
+    }
+    
+    public void UserGroup.setBibWrites(int bibWrites) {
+        this.bibWrites = bibWrites;
+    }
+    
     public List<UserProfile> UserGroup.getUserProfiles() {
         return this.userProfiles;
     }

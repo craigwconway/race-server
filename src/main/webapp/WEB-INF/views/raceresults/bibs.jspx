@@ -57,21 +57,25 @@
 <script>
 
 var readerOn=false;
+var licenseExpired=false;
 
 var currentBib = 0;
 
 function startReader(){
 	if(!validateMulti()) return;
 	readerOn=true;
+	licenseExpired=false;
 	jQuery("#program-stop").show();
 	jQuery("#program-start").hide();
 	jQuery("#status").show();
 	
 	// set current bib
 	if(currentBib==0) currentBib = jQuery("#bib-input0").val();
-	while(currentBib &lt;= jQuery("#bib-input1").val()){
+	while(currentBib &lt;= jQuery("#bib-input1").val() &amp;&amp; !licenseExpired){
+		if(licenseExpired) break;
 		// write bib
 		writeBib(currentBib);
+		// license
 		// pause for next bib
 		if(!confirm(currentBib+" done. Next bib...")){
 			stopReader();
@@ -119,11 +123,14 @@ function writeBib1(){
 		dataType: "html"
 		});
 	request.done(function( data ) {
-		if(data != "true"){
-			alert("Error writing bib.");
+		if(data == "none"){
+			alert("You have no more writes left on your license.");
+			licenseExpired=true;
+		}else if(data == "true"){
+			alert(bib+" Written");
+			jQuery("#status-bar").html(bib+" Written");
 		}else{
-			alert(jQuery("#bib-input").val()+" Written");
-			jQuery("#status-bar").html("Wrote "+bib);
+			alert("Error writing bib.");
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
@@ -139,10 +146,13 @@ function writeBib(bib){
 		dataType: "html"
 		});
 	request.done(function( data ) {
-		if(data != "true"){
-			alert("Error writing bib.");
-		}else{
+		if(data == "none"){
+			alert("You have no more writes left on your license.");
+			licenseExpired=true;
+		}else if(data == "true"){
 			jQuery("#status-bar").html(bib+" Written");
+		}else{
+			alert("Error writing bib.");
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {

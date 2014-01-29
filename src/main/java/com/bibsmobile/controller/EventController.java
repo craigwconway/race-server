@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -65,6 +66,11 @@ public class EventController {
         event.setUserGroup(user.getUserGroup());
         
         event.persist();
+        
+        List<Event> groupEvents = user.getUserGroup().getEvents();
+        groupEvents.add(event);
+        user.getUserGroup().setEvents(groupEvents);
+        user.getUserGroup().merge();
         
         return "redirect:/events/" + encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
     }
@@ -270,6 +276,19 @@ public class EventController {
             rtn.append(Event.toJsonArray(Event.findEventsByNameLike(eventName, page, size).getResultList()));
         } catch (Exception e) {
             //e.printStackTrace();
+        }
+        return rtn.toString();
+    }
+
+    @RequestMapping(value = "/name/{eventName}", method = RequestMethod.GET)
+    @ResponseBody
+    public static String byName(@PathVariable String eventName) {
+    	System.out.println("byName="+eventName);
+        StringWriter rtn = new StringWriter();
+        try {
+            rtn.append(Event.findEventByNameEquals(eventName).toJson());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return rtn.toString();
     }

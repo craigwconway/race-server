@@ -183,6 +183,7 @@ function timerStatus(id){
     		jQuery("#reader-progress-"+id).show();
     	}else if(readerStatus == 3){
     		rtn = "Writing...";
+    		stopReader(id);
     		jQuery("#btn-start-"+id).hide();
     		jQuery("#btn-stop-"+id).show();
     		jQuery("#btn-update-"+id).hide();

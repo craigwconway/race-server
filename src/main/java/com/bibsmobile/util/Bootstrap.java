@@ -54,11 +54,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			
 			// users
 			if(UserProfile.countUserProfiles() < 1){
-			// group
-			List<UserProfile> users = new ArrayList<UserProfile>();
+				
 			userGroup = new UserGroup();
 			userGroup.setName("My Organization (Unique:"+ new Date().getTime() +")");
+			userGroup.setBibWrites(3000);
 			userGroup.persist();
+			List<UserProfile> userProfiles = new ArrayList<UserProfile>();
+			
 			// system role and user
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_SYS_ADMIN");
@@ -73,7 +75,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile.setUserAuthorities(uas);
 			userProfile.setUserGroup(userGroup);
 			userProfile.persist();
-			users.add(userProfile);
+			userProfiles.add(userProfile);
 			// other roles
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_EVENT_ADMIN");
@@ -88,7 +90,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile.setUserAuthorities(uas);
 			userProfile.setUserGroup(userGroup);
 			userProfile.persist();
-			users.add(userProfile);
+			userProfiles.add(userProfile);
 			// other roles
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_USER_ADMIN");
@@ -103,7 +105,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile.setUserAuthorities(uas);
 			userProfile.setUserGroup(userGroup);
 			userProfile.persist();
-			users.add(userProfile);
+			userProfiles.add(userProfile);
 			// user
 			userAuthority = new UserAuthority();
 			userAuthority.setAuthority("ROLE_USER");
@@ -118,9 +120,10 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userProfile.setUserAuthorities(uas);
 			userProfile.setUserGroup(userGroup);
 			userProfile.persist();
-			users.add(userProfile);
-			// update group
-			userGroup.setUserProfiles(users);
+			userProfiles.add(userProfile);
+			
+			// groups
+			userGroup.setUserProfiles(userProfiles);
 			userGroup.merge();
 		}
 		

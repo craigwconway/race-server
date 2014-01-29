@@ -73,6 +73,25 @@
     {
         return purl().param(sParam);
     }
+    
+    function addRunner(){
+   		var request = jQuery.ajax({
+   			url: "/bibs-server/events/",
+   			type: "GET",
+   			dataType: "json"
+   			});
+   		request.done(function( data ) {
+				if(data.length > 0){
+					document.location='/bibs-server/raceresults?form&amp;event=${param.event}';
+				}else{
+					alert("Please create an Event first.");
+					document.location='/bibs-server/events?form';
+				}
+   			});
+   		request.fail(function( jqXHR, textStatus ) {
+   			// error
+   			});
+    }
     </script>
     <div class="pull-left">
         <div class="pull-left" style="padding:6px;">
@@ -86,7 +105,7 @@
         </select>
     </div>
     <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
-        <button class="btn btn-primary pull-left btn-top" onclick="document.location='/bibs-server/raceresults?form&amp;event=${param.event}';" style="margin:0;margin-left: 3px;" type="button">
+        <button class="btn btn-primary pull-left btn-top" onclick="addRunner()" style="margin:0;margin-left: 3px;" type="button">
 		Add Runner
 	</button>
     </sec:authorize>

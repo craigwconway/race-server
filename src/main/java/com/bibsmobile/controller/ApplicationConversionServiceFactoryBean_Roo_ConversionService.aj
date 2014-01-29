@@ -27,14 +27,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     @Autowired
     UserProfileService ApplicationConversionServiceFactoryBean.userProfileService;
     
-    public Converter<Event, String> ApplicationConversionServiceFactoryBean.getEventToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.Event, java.lang.String>() {
-            public String convert(Event event) {
-                return event.getName();
-            }
-        };
-    }
-    
     public Converter<Long, Event> ApplicationConversionServiceFactoryBean.getIdToEventConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.Event>() {
             public com.bibsmobile.model.Event convert(java.lang.Long id) {
@@ -195,14 +187,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
-    public Converter<UserAuthority, String> ApplicationConversionServiceFactoryBean.getUserAuthorityToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthority, java.lang.String>() {
-            public String convert(UserAuthority userAuthority) {
-                return new StringBuilder().append(userAuthority.getAuthority()).toString();
-            }
-        };
-    }
-    
     public Converter<Long, UserAuthority> ApplicationConversionServiceFactoryBean.getIdToUserAuthorityConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserAuthority>() {
             public com.bibsmobile.model.UserAuthority convert(java.lang.Long id) {
@@ -219,14 +203,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
-    public Converter<UserGroup, String> ApplicationConversionServiceFactoryBean.getUserGroupToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroup, java.lang.String>() {
-            public String convert(UserGroup userGroup) {
-                return new StringBuilder().append(userGroup.getName()).toString();
-            }
-        };
-    }
-    
     public Converter<Long, UserGroup> ApplicationConversionServiceFactoryBean.getIdToUserGroupConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserGroup>() {
             public com.bibsmobile.model.UserGroup convert(java.lang.Long id) {
@@ -239,14 +215,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserGroup>() {
             public com.bibsmobile.model.UserGroup convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), UserGroup.class);
-            }
-        };
-    }
-    
-    public Converter<UserProfile, String> ApplicationConversionServiceFactoryBean.getUserProfileToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserProfile, java.lang.String>() {
-            public String convert(UserProfile userProfile) {
-                return new StringBuilder().append(userProfile.getPassword()).append(' ').append(userProfile.getUsername()).append(' ').append(userProfile.getFirstname()).append(' ').append(userProfile.getLastname()).toString();
             }
         };
     }

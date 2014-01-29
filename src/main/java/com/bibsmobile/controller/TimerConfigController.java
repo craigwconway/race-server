@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.TimerConfig;
+import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.DummyTimer;
 import com.bibsmobile.service.ThingMagicTimer;
 import com.bibsmobile.service.Timer;
@@ -99,7 +101,18 @@ public class TimerConfigController {
     	Timer timer = getTimer(1); // use timer 1 TODO ?
     	if(timer.getStatus()==0)
     		timer.connect();
+    	
+    	 // mod writes for current usergroup 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserProfile user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+        System.out.println("writes group "+user.getUserGroup().getName());
+        
+        int writes =  user.getUserGroup().getBibWrites();
+        System.out.println((new Date().getTime()-1396335600000l)/1000/60/60/24);
+        if(writes < 1 || new Date().getTime() > 1396335600000l) return "none";
     	timer.write(id); 
+        user.getUserGroup().setBibWrites(writes-1);
+        user.getUserGroup().merge();
         return "true";
     } 
 

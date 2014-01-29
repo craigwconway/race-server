@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
-	xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
-	<jsp:directive.page contentType="text/html;charset=UTF-8" />
-	<jsp:output omit-xml-declaration="yes" />
-	<button class="btn btn-primary btn-top"
-		onclick="document.location='/bibs-server/timers?form';" type="button">
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/timers?form';" type="button">
 		Add Reader</button>
-	<button class="btn btn-default btn-top"
-		onclick="document.location='/bibs-server/userprofiles';" type="button">
+    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/userprofiles';" type="button">
 		Manage Users</button>
-	<page:list id="pl_com_bibsmobile_model_TimerConfig"
-		items="${timerconfigs}" z="21mRsfOwmhGthvwvny4D/kHR0oI=">
-		<table:table data="${timerconfigs}"
-			id="l_com_bibsmobile_model_TimerConfig" path="/timers"
-			z="HOBF5DQvvbIVD4p/2xw3W/3V3ZY=">
-			<table:column id="c_com_bibsmobile_model_TimerConfig_url"
-				property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc=" />
-			<table:column id="c_com_bibsmobile_model_TimerConfig_position"
-				property="position"  z="user-managed" />
-			<table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout"
-				property="readTimeout"  z="user-managed" />
-		</table:table>
-	</page:list>
+    <page:list id="pl_com_bibsmobile_model_TimerConfig" items="${timerconfigs}" z="21mRsfOwmhGthvwvny4D/kHR0oI=">
+        <table:table data="${timerconfigs}" id="l_com_bibsmobile_model_TimerConfig" path="/timers" z="HOBF5DQvvbIVD4p/2xw3W/3V3ZY=">
+            <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_position" property="position" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" z="user-managed" render="false"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" z="user-managed" render="false"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_type" property="type" z="user-managed" render="false"/>
+        </table:table>
+    </page:list>
 </div>

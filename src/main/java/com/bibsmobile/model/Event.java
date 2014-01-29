@@ -151,6 +151,13 @@ public class Event {
         return q;
     }
 
+	public static Event findEventByNameEquals(String name) {
+        EntityManager em = Event.entityManager();
+        TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE LOWER(o.name) EQ LOWER(:name)", Event.class);
+        q.setParameter("name", name);
+        return q.getSingleResult();
+    }
+
 	public static TypedQuery<Event> findEventsByTimeStartGreaterThanAndFeaturedEquals(Date timeStart, int featured, int page, int size) {
         if (timeStart == null) throw new IllegalArgumentException("The timeStart argument is required");
         EntityManager em = Event.entityManager();
