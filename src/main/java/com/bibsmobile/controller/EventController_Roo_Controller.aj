@@ -4,8 +4,8 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.EventController;
+import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.Event;
-import com.bibsmobile.model.EventAwardCategory;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
@@ -78,7 +78,7 @@ privileged aspect EventController_Roo_Controller {
     void EventController.populateEditForm(Model uiModel, Event event) {
         uiModel.addAttribute("event", event);
         addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("eventawardcategorys", EventAwardCategory.findAllEventAwardCategorys());
+        uiModel.addAttribute("awardcategorys", AwardCategory.findAllAwardCategorys());
         uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
         uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
         uiModel.addAttribute("resultsfiles", ResultsFile.findAllResultsFiles());

@@ -13,6 +13,7 @@
             <table:column id="c_com_bibsmobile_model_Event_city" property="city" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
             <table:column id="c_com_bibsmobile_model_Event_state" property="state" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
             <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeEnd" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_Event_userGroup" property="userGroup" z="user-managed" render="false"/>
         </table:table>
     </page:list>
 </div>

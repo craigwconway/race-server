@@ -5,8 +5,9 @@
     <page:list id="pl_com_bibsmobile_model_UserGroup" items="${usergroups}" z="USOiwa5wpfn8Jb7U2/89Bw/v1LE=">
         <table:table data="${usergroups}" id="l_com_bibsmobile_model_UserGroup" path="/usergroups" z="lRtEDuJs4xcuxcnx7D8ZobQ6+i8=">
             <table:column id="c_com_bibsmobile_model_UserGroup_name" property="name" z="EKPun6yMJEtw4Q2NxrYLlbR4PQQ="/>
-            <table:column id="c_com_bibsmobile_model_UserGroup_events" property="events" z="lNQV7Ws8vizKD/t0saISWw4D9U8="/>
+            <table:column id="c_com_bibsmobile_model_UserGroup_bibWrites" property="bibWrites" z="4UtPH0EZ3rp3eEYjuX+nYBAe62g="/>
             <table:column id="c_com_bibsmobile_model_UserGroup_userProfiles" property="userProfiles" z="tb6yRidCCHRBQ/sfjqxF8XUDzik="/>
+            <table:column id="c_com_bibsmobile_model_UserGroup_events" property="events" z="lNQV7Ws8vizKD/t0saISWw4D9U8="/>
         </table:table>
     </page:list>
 </div>

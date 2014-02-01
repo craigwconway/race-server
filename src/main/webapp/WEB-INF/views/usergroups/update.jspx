@@ -5,7 +5,7 @@
     <form:update id="fu_com_bibsmobile_model_UserGroup" modelAttribute="userGroup" path="/usergroups" versionField="Version" z="xpHyMxVf7h3xpll190YzkD5+Op8=">
         <field:input field="name" id="c_com_bibsmobile_model_UserGroup_name" z="cpwccjpO9MhYhYw0rMbr6+jWQjI="/>
         <field:select field="events" id="c_com_bibsmobile_model_UserGroup_events" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
-        <field:select field="userProfiles" id="c_com_bibsmobile_model_UserGroup_userProfiles" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="aVBvLl1lNJQ8MXlrJbaXx8/LbCM="/>
         <field:input field="bibWrites" id="c_com_bibsmobile_model_UserGroup_bibWrites" z="5NzzdMKh7ffLaoYW+cqe8a6P1fc="/>
+        <field:select field="userProfiles" id="c_com_bibsmobile_model_UserGroup_userProfiles" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="aVBvLl1lNJQ8MXlrJbaXx8/LbCM="/>
     </form:update>
 </div>

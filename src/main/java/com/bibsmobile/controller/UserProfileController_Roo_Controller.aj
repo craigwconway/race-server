@@ -29,13 +29,6 @@ privileged aspect UserProfileController_Roo_Controller {
     @Autowired
     UserProfileService UserProfileController.userProfileService;
     
-    @RequestMapping(value = "/{id}", produces = "text/html")
-    public String UserProfileController.show(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("userprofile", UserProfile.findUserProfile(id));
-        uiModel.addAttribute("itemId", id);
-        return "userprofiles/show";
-    }
-    
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String UserProfileController.create(@Valid UserProfile userProfile, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {

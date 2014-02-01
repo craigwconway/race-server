@@ -57,10 +57,11 @@
             <field:checkbox field="sync" id="c_com_bibsmobile_model_Event_sync" z="user-managed"/>
             <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
             <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
+            <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Event" render="${not empty dependencies}" z="97PxZzAnMjrQHEYGI+GbAcLkB+8="/>
+    		<field:simple field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Award Category" z="W/mlzVpnmu4H0G8oKjVQKgrW5bs="/>
     		<field:select field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="oo4ip/WoDNsEB0aJzYG0szVc5x8="/>
         </div>
     </form:create>
-    <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Event" render="${not empty dependencies}" z="97PxZzAnMjrQHEYGI+GbAcLkB+8="/>
     <script>
     window.onload = function(){
     	jQuery("#_name_id").focus();

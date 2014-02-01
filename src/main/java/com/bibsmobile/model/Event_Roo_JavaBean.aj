@@ -3,13 +3,14 @@
 
 package com.bibsmobile.model;
 
+import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.Event;
-import com.bibsmobile.model.EventAwardCategory;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.UserGroup;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 privileged aspect Event_Roo_JavaBean {
@@ -22,12 +23,12 @@ privileged aspect Event_Roo_JavaBean {
         this.raceResults = raceResults;
     }
     
-    public Set<EventAwardCategory> Event.getEventAwardCategorys() {
-        return this.eventAwardCategorys;
+    public List<AwardCategory> Event.getAwardCategorys() {
+        return this.awardCategorys;
     }
     
-    public void Event.setEventAwardCategorys(Set<EventAwardCategory> eventAwardCategorys) {
-        this.eventAwardCategorys = eventAwardCategorys;
+    public void Event.setAwardCategorys(List<AwardCategory> awardCategorys) {
+        this.awardCategorys = awardCategorys;
     }
     
     public Set<ResultsFile> Event.getResultsFiles() {
@@ -44,14 +45,6 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setRaceImages(Set<RaceImage> raceImages) {
         this.raceImages = raceImages;
-    }
-    
-    public Set<EventAwardCategory> Event.getEventAwardCategory() {
-        return this.eventAwardCategory;
-    }
-    
-    public void Event.setEventAwardCategory(Set<EventAwardCategory> eventAwardCategory) {
-        this.eventAwardCategory = eventAwardCategory;
     }
     
     public UserGroup Event.getUserGroup() {

@@ -81,7 +81,7 @@
    			dataType: "json"
    			});
    		request.done(function( data ) {
-				if(data.length > 0){
+				if(data.length &gt; 0){
 					document.location='/bibs-server/raceresults?form&amp;event=${param.event}';
 				}else{
 					alert("Please create an Event first.");
@@ -128,6 +128,7 @@
             <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
             <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" z="user-managed" render="false"/>
         </table:table>
     </page:list>
 </div>

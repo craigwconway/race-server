@@ -127,32 +127,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userGroup.merge();
 		}
 		
-		// standard award categories
-		if(AwardCategory.countAwardCategorys() < 1){
-			awardCategory = new AwardCategory();
-			awardCategory.setName("Overall Winners");
-			awardCategory.persist();
-			awardCategory = new AwardCategory();
-			awardCategory.setName("Men Overall");
-			awardCategory.setGender("M");
-			awardCategory.persist();
-			awardCategory = new AwardCategory();
-			awardCategory.setName("Women Overall");
-			awardCategory.setGender("F");
-			awardCategory.persist();
-			awardCategory = new AwardCategory();
-			awardCategory.setName("Ages 10 and Under");
-			awardCategory.setAgeMin(0);
-			awardCategory.setAgeMax(10);
-			awardCategory.persist();
-			awardCategory = new AwardCategory();
-			awardCategory.setName("Men's Masters");
-			awardCategory.setGender("M");
-			awardCategory.setAgeMin(40);
-			awardCategory.setAgeMax(49);
-			awardCategory.persist();
-		}
-		
 	}
 	
 }

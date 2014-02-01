@@ -29,23 +29,29 @@
         <button class="btn btn-default btn-top" onclick="cloud()" type="button">
 		Cloud
 		</button>
+		<span id="progress" style="margin:0;margin-left:6px;display:none;">
+			<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> </span>
     </sec:authorize>
     <script>
 	function cloud(){
+		jQuery("#progress").show();
 		var r = jQuery.ajax({
 			url: "/bibs-server/events/cloud?event=${event.id}",
 			type: "GET",
 			dataType: "html"
 			});
 		r.done(function(data){
+			jQuery("#progress").hide();
 			if("true" == data){
-				alert("Cloud Sync Complete!");
+				alert("Cloud Sync Complete.");
+			}else if("eventnotfound" == data){
+				alert("Event not found.");
 			}else{
 				alert("Cloud Sync Failed.");
 			}
 		});
 		r.fail(function( s,s ) {
-			alert("Could not connect to Cloud.");
+			jQuery("#progress").hide();
 		});
 	}
 	function redirectImport(){

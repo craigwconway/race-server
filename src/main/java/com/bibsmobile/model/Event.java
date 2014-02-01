@@ -32,16 +32,13 @@ public class Event {
 	private Set<RaceResult> raceResults;	
 	
 	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
-	private Set<EventAwardCategory> eventAwardCategorys;
+	private List<AwardCategory> awardCategorys;
 
 	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
 	private Set<ResultsFile> resultsFiles;
 
 	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
 	private Set<RaceImage> raceImages;
-	
-	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
-	private Set<EventAwardCategory> eventAwardCategory;
 	
     @ManyToOne
     private UserGroup userGroup; 

@@ -4,8 +4,25 @@
 package com.bibsmobile.model;
 
 import com.bibsmobile.model.AwardCategory;
+import com.bibsmobile.model.Event;
 
 privileged aspect AwardCategory_Roo_JavaBean {
+    
+    public Event AwardCategory.getEvent() {
+        return this.event;
+    }
+    
+    public void AwardCategory.setEvent(Event event) {
+        this.event = event;
+    }
+    
+    public int AwardCategory.getSortOrder() {
+        return this.sortOrder;
+    }
+    
+    public void AwardCategory.setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
     
     public String AwardCategory.getName() {
         return this.name;

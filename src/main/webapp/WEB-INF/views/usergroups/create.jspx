@@ -6,8 +6,8 @@
         <field:input field="name" id="c_com_bibsmobile_model_UserGroup_name" z="cpwccjpO9MhYhYw0rMbr6+jWQjI="/>
         <field:select field="users" id="c_com_bibsmobile_model_UserGroup_users" itemLabel="name" itemValue="id" items="${users}" path="/users" z="user-managed"/>
         <field:select field="events" id="c_com_bibsmobile_model_UserGroup_events" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/>
-        <field:select field="userProfiles" id="c_com_bibsmobile_model_UserGroup_userProfiles" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="aVBvLl1lNJQ8MXlrJbaXx8/LbCM="/>
         <field:input field="bibWrites" id="c_com_bibsmobile_model_UserGroup_bibWrites" z="5NzzdMKh7ffLaoYW+cqe8a6P1fc="/>
+        <field:select field="userProfiles" id="c_com_bibsmobile_model_UserGroup_userProfiles" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="aVBvLl1lNJQ8MXlrJbaXx8/LbCM="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserGroup" render="${not empty dependencies}" z="fdu7+pp0QaN15Mmcn8KtZ+g9by4="/>
 </div>
