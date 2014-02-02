@@ -45,6 +45,12 @@ public class ThingMagicTimer implements Timer {
 		if (null == reader)
 			return;
 		reader.stopReading();
+		try {
+			reader.gpoSet(new Reader.GpioPin[]{new Reader.GpioPin(1, true)});
+		} catch (ReaderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		reader.destroy();
 		reader = null;
 		status = 0;
@@ -68,6 +74,12 @@ public class ThingMagicTimer implements Timer {
 			reader.addReadListener(readListener);
 			reader.startReading();
 			status = 2;
+			try {
+				reader.gpoSet(new Reader.GpioPin[]{new Reader.GpioPin(1, false)});
+			} catch (ReaderException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -78,6 +90,12 @@ public class ThingMagicTimer implements Timer {
 		reader.stopReading();
 		reader.removeReadListener(readListener);
 		status = 1;
+		try {
+			reader.gpoSet(new Reader.GpioPin[]{new Reader.GpioPin(1, true)});
+		} catch (ReaderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 
