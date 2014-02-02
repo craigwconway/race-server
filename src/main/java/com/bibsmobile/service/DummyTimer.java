@@ -28,7 +28,6 @@ public class DummyTimer implements Timer, Runnable {
 		thread = new Thread(this);
 		thread.start();
 		status = 2;
-		notify();
 		System.out.println(log + " Started.");
 	}
 
@@ -50,7 +49,6 @@ public class DummyTimer implements Timer, Runnable {
 	public void connect() {
 		System.out.println(log + " Connecting...");
 		status = 1;
-		notify();
 		System.out.println(log + " Connected.");
 	}
 

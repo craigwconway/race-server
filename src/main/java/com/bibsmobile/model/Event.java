@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -40,7 +41,7 @@ public class Event {
 	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
 	private Set<RaceImage> raceImages;
 	
-    @ManyToOne
+	@ManyToOne
     private UserGroup userGroup; 
     
     @NotNull
@@ -184,14 +185,16 @@ public class Event {
 		if(min>max)min=max;		
 		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
 		if(!gender.isEmpty()) HQL += " AND o.gender = :gender ";
-		if(max > 0) HQL += "AND o.age >= :min AND o.age <= :max ";
+		if(min > 0 && max > 0) HQL += "AND (o.age >= :min AND o.age <= :max ) ";
 		HQL += " order by (o.timeofficial-o.timestart) asc";
 		EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery( HQL, RaceResult.class);
         q.setParameter("event", Event.findEvent(event) );
         if(!gender.isEmpty()) q.setParameter("gender", gender );
-        if(max > 0) q.setParameter("min", String.valueOf(min) );
-        if(max > 0) q.setParameter("max", String.valueOf(max) );
+        if(min > 0 && max > 0){
+        	q.setParameter("min", String.valueOf(min) );
+        	q.setParameter("max", String.valueOf(max) );
+        }
         q.setFirstResult((page-1)*size);
         q.setMaxResults(size);
         return q.getResultList();

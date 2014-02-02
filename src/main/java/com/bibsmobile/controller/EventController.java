@@ -74,7 +74,7 @@ public class EventController {
 
 		event.persist();
 
-		List<Event> groupEvents = user.getUserGroup().getEvents();
+		Set<Event> groupEvents = user.getUserGroup().getEvents();
 		groupEvents.add(event);
 		user.getUserGroup().setEvents(groupEvents);
 		user.getUserGroup().merge();
@@ -92,7 +92,7 @@ public class EventController {
 		return event.toJson();
 	}
 
-	public static String doPost(String targetURL, String data) {
+	public static String doPost(String targetURL, String data, boolean json) {
 		URL url;
 		HttpURLConnection connection = null;
 		try {
@@ -101,9 +101,11 @@ public class EventController {
 			System.out.println("doPost " + targetURL);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Accept", "application/json");
-			connection.setRequestProperty("Content-Type",
-					"application/json; charset=UTF-8");
+			if(json){
+				connection.setRequestProperty("Accept", "application/json");
+				connection.setRequestProperty("Content-Type",
+						"application/json; charset=UTF-8");
+			}
 			connection.setRequestProperty("Content-Length",
 					"" + Integer.toString(data.getBytes().length));
 			connection.setUseCaches(false);
@@ -202,29 +204,19 @@ public class EventController {
 			// find matching event
 			String eventSync = doGet(serverUrl + "/events/byname/"
 					+ event.getName());
-			System.out.println("doGet " + eventSync);
+			System.out.println("cloud " + eventSync);
 			Collection<Event> events = Event.fromJsonArrayToEvents(eventSync);
-			System.out.println("sync matched " + events.size() + " events");
+			System.out.println("cloud matched " + events.size() + " events");
 			if (events.size() < 1)
 				return "eventnotfound";
 			Event event1 = events.iterator().next();
-			System.out.println(event1.getId() + " " + event1.getName());
-			// loop through and remove runners TODO better
-			String jsonRunners0 = doGet(serverUrl + "/raceresults/byevent/"
-					+ event1.getName());
-			Pattern pattern = Pattern.compile("\"id\":(\\d+)");
-			Matcher matcher = pattern.matcher(jsonRunners0);
-			int deletes = 0;
-			while (matcher.find()) {
-				String _id = matcher.group().replace("\"id\":", "");
-				doDelete(serverUrl+"/raceresults/"+_id);
-				deletes++;
-			} 
-			System.out.println("deleted runners " + deletes);
-
+			System.out.println("cloud "+event1.getId() + " " + event1.getName());
+			// login TODO
+			// remove server runners
+			doPost(serverUrl+"/events/"+event1.getId(),"_method=DELETE&x=7&y=10",false);
+			System.out.println("cloud delete " + event1.getId() + " " + event1.getName());
 			// loop through and add runners
 			List<RaceResult> runners = Event.findRaceResults(_eventId, 1, 9999);
-			System.out.println("syncing runners " + runners.size());
 			StringWriter json = new StringWriter();
 			int i = 0;
 			json.append("[");
@@ -247,8 +239,8 @@ public class EventController {
 				json.append("\"}");
 			}
 			json.append("]");
-			System.out.println(json);
-			doPost(serverUrl + "/raceresults/jsonArray", json.toString());
+			System.out.println("cloud sync: "+json);
+			doPost(serverUrl + "/raceresults/jsonArray", json.toString(),true);
 
 			System.out.println("cloud synced ");
 			return "true";

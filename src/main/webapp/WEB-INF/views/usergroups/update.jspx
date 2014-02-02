@@ -6,6 +6,6 @@
         <field:input field="name" id="c_com_bibsmobile_model_UserGroup_name" z="cpwccjpO9MhYhYw0rMbr6+jWQjI="/>
         <field:select field="events" id="c_com_bibsmobile_model_UserGroup_events" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
         <field:input field="bibWrites" id="c_com_bibsmobile_model_UserGroup_bibWrites" z="5NzzdMKh7ffLaoYW+cqe8a6P1fc="/>
-        <field:select field="userProfiles" id="c_com_bibsmobile_model_UserGroup_userProfiles" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" z="aVBvLl1lNJQ8MXlrJbaXx8/LbCM="/>
+        <field:simple field="userProfiles" id="c_com_bibsmobile_model_UserGroup_userProfiles" messageCode="entity_reference_not_managed" messageCodeAttribute="User Profile" z="bMcUSFmmQWEsvqlXSicDz0++PIE="/>
     </form:update>
 </div>

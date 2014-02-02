@@ -130,7 +130,7 @@ function writeBib1(){
 			alert(bib+" Written");
 			jQuery("#status-bar").html(bib+" Written");
 		}else{
-			alert("Error writing bib.");
+			alert(data);
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
@@ -152,7 +152,7 @@ function writeBib(bib){
 		}else if(data == "true"){
 			jQuery("#status-bar").html(bib+" Written");
 		}else{
-			alert("Error writing bib.");
+			alert(data);
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {

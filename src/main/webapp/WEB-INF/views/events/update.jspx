@@ -61,7 +61,7 @@
             <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
             <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
             <field:simple field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Award Category" z="W/mlzVpnmu4H0G8oKjVQKgrW5bs="/>
-    		<field:select field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="oo4ip/WoDNsEB0aJzYG0szVc5x8="/>
+            <field:select field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="oo4ip/WoDNsEB0aJzYG0szVc5x8="/>
         </div>
     </form:update>
     <script>

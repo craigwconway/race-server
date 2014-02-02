@@ -97,7 +97,7 @@ public class TimerConfigController {
     
     @RequestMapping(value = "/write/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String write(@PathVariable(value = "id") long id) throws Exception{
+    public String write(@PathVariable(value = "id") long id){
     	Timer timer = getTimer(1); // use timer 1 TODO ?
     	if(timer.getStatus()==0)
     		timer.connect();
@@ -110,7 +110,11 @@ public class TimerConfigController {
         int writes =  user.getUserGroup().getBibWrites();
         System.out.println((new Date().getTime()-1396335600000l)/1000/60/60/24);
         if(writes < 1 || new Date().getTime() > 1396335600000l) return "none";
-    	timer.write(id); 
+    	try{
+    		timer.write(id); 
+    	}catch(Exception e){
+    		return e.getMessage();
+    	}
         user.getUserGroup().setBibWrites(writes-1);
         user.getUserGroup().merge();
         return "true";

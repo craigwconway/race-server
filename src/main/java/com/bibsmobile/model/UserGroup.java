@@ -1,8 +1,9 @@
 package com.bibsmobile.model;
 
-import java.util.List;
+import java.util.Set;
 
-import javax.persistence.ManyToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -16,10 +17,10 @@ public class UserGroup {
 	private String name;
 	private int bibWrites;
 
-	@ManyToMany
-	private List<UserProfile> userProfiles;
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "userGroup")
+	private Set<UserProfile> userProfiles;
 
-	@ManyToMany
-	private List<Event> events;
+	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "userGroup")
+	private Set<Event> events;
 	
 }

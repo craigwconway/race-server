@@ -5,7 +5,5 @@
     <page:show id="ps_com_bibsmobile_model_UserGroup" object="${usergroup}" path="/usergroups" z="VW+v2NV4h0idHhFHgl9tPFllaH0=">
         <field:display field="name" id="s_com_bibsmobile_model_UserGroup_name" object="${usergroup}" z="HU7uo7dVqmGK2/Dmbv/N29m3MF4="/>
         <field:display field="bibWrites" id="s_com_bibsmobile_model_UserGroup_bibWrites" object="${usergroup}" z="S7F9bf/JMVoRale6AciV7zCqPxw="/>
-        <field:display field="userProfiles" id="s_com_bibsmobile_model_UserGroup_userProfiles" object="${usergroup}" z="68x6cE5pLghLDwkEhtHBhD9iRyU="/>
-        <field:display field="events" id="s_com_bibsmobile_model_UserGroup_events" object="${usergroup}" z="GkkQY5ZhW6d8FnKElggVF3oknbA="/>
     </page:show>
 </div>

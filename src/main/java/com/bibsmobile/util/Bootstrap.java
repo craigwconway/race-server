@@ -59,7 +59,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			userGroup.setName("My Organization (Unique:"+ new Date().getTime() +")");
 			userGroup.setBibWrites(3000);
 			userGroup.persist();
-			List<UserProfile> userProfiles = new ArrayList<UserProfile>();
+			Set<UserProfile> userProfiles = new HashSet<UserProfile>();
 			
 			// system role and user
 			userAuthority = new UserAuthority();
@@ -125,6 +125,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 			// groups
 			userGroup.setUserProfiles(userProfiles);
 			userGroup.merge();
+			
+			
 		}
 		
 	}

@@ -167,6 +167,7 @@ function timerStatus(id){
     		jQuery("#btn-stop-"+id).hide();
     		jQuery("#btn-update-"+id).show();
         	jQuery("#reader-progress-"+id).hide();
+        	readerOn=false;
     	}else if(readerStatus == 1){
     		rtn = "Connected";
     		jQuery("#btn-start-"+id).show();
@@ -174,13 +175,14 @@ function timerStatus(id){
     		jQuery("#btn-update-"+id).show();
         	jQuery("#reader-progress-"+id).hide();
     		timerSync(id);
+    		readerOn=false;
     	}else if(readerStatus == 2){
     		rtn = "Reading...";
-    		startReader(id);
     		jQuery("#btn-start-"+id).hide();
     		jQuery("#btn-stop-"+id).show();
     		jQuery("#btn-update-"+id).hide();
     		jQuery("#reader-progress-"+id).show();
+    		readerOn=true;
     	}else if(readerStatus == 3){
     		rtn = "Writing...";
     		stopReader(id);
@@ -287,14 +289,13 @@ function startReader(id){
 		dataType: "html"
 		});
 	readerStart.done(function( msg ) {
-			jQuery("#reader-status-"+id).html("Reading...");
+		if(msg!="true") 	
+			alert("Reader not available.")
+		else
 			readerOn=true;
+		timerStatus(id);
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
-		jQuery('#btn-start-'+id).show();
-		jQuery('#btn-stop-'+id).hide();
-		jQuery("#btn-update-"+id).show();
-		jQuery("#reader-progress-"+id).hide();
 		timerStatus(id);
 	});
 }

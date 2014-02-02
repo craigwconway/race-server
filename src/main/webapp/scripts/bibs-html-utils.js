@@ -1,3 +1,36 @@
+function makeAwardsTable(data,title){
+		var results = "<table class='table awards-table'>";
+		results += "<tr><th colspan='6'><span class='awards-title'>"+title+"</span></th></tr>";
+		results += "<tr>";
+		results += "<th size='1'>Place</th>";
+		results += "<th>Time</th>";
+		results += "<th>Bib</th>";
+		results += "<th>Name</th>";
+		results += "<th>Age</th>";
+		results += "<th>Gender</th>";
+		results += "</tr>";
+		var place = 0;
+		for(var i in data){
+			var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
+			var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
+			var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
+			var bib = (null!=data[i].bib) ? data[i].bib : "";
+			var gender = (null!=data[i].gender) ? data[i].gender : "";
+			var age = (null!=data[i].age) ? data[i].age : "";
+			place++;
+			results += "<tr>";
+			results += "<td>"+place+"</td>";
+			results += "<td>"+timeofficialdisplay+"</td>";
+			results += "<td>"+bib+"</td>";
+			results += "<td>"+firstname+" "+lastname+"</td>";
+			results += "<td>"+age+"</td>";
+			results += "<td>"+gender+"</td>";
+			results += "</tr>";
+		}
+		results+="</table";
+		return results;
+	}
+
 function makeRunnersTable(data,results,eventId){
 	results = "";
 	results += "<tr>";
