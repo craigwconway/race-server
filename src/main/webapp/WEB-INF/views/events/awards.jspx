@@ -6,15 +6,27 @@
 	<h3>Awards <small id="award-title">Official Results</small></h3>
 	
 	<style>
+	b{
+		fint-size: 15px;
+	}
 	input{
 		margin-left: 6px;
 	}
 	label{
 		width:60px;
 	}
+	.awards-title{
+		font-size: 18px;
+	}
+	.awards-table{
+	}
 	</style>
 	
-	<form class="form-inline" role="form">
+	<button class="btn btn-primary" onclick="jQuery('#search-box').toggle()" type="button">
+		Custom
+	</button>
+	
+	<form id="search-box" class="form-inline" role="form" style="display:none;">
 	  	<div class="form-group">
 		    <label for="gender">Gender</label>
 			<select id="gender" name="gender" onchange="getAwards()" 
@@ -48,82 +60,89 @@
 	</form>
 	<div style="clear:both;"/>
 	
-	<table id="awards-table" class="table"><tr><td></td></tr></table>
-	
-	<script>
-	
-	window.onload=getAwards;
+	<div id="awards-table"></div>
 
-	var event = Math.max(0,GetURLParameter("event"));
-	var listSize = 10;
-	var gender = "";
-	var ageMin = 0;
-	var ageMax = 0;
+	<script>
+	window.onload=getAll;
 	
 	function getAwards(){
 		var event = Math.max(0,GetURLParameter("event"));
-		listSize = Math.max(jQuery('#listSize').val(),10);
-		listSize = Math.min(listSize,30);
+		var listSize = Math.round(jQuery('#listSize').val());
 		jQuery('#listSize').val(listSize);
-		gender = jQuery('#gender').val();
-		ageMin = Math.max(jQuery('#ageMin').val(),0);
-		ageMax = Math.max(jQuery('#ageMax').val(),0);
-		fetchAwards("?event="+event+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize);
+		var gender = jQuery('#gender').val();
+		var ageMin = Math.max(jQuery('#ageMin').val(),0);
+		var ageMax = Math.max(jQuery('#ageMax').val(),0);
+		fetchAwards(event,ageMin,ageMax,gender,listSize,"");
 	}
 	
-	function fetchAwards(params){
-		jQuery('#awards-table').hide();
+	function fetchAwards(event,ageMin,ageMax,gender,listSize,title){	
+		if(title==""){
+			if(gender=="M") title = "Male ";
+			if(gender=="F") title = "Female ";
+			if(ageMin>0 ){
+				if(ageMax>0){
+					title += "Ages " + ageMin +" to "+ageMax;
+				}
+			}
+		}
+		var params = "?event="+event+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize;
 		var request = jQuery.ajax({
 			url: "/bibs-server/events/timeofficial"+params,
 			type: "GET",
 			dataType: "json"
 			});
 		request.done(function( data ) {
-			var results =  makeTable(data,"");
-			document.getElementById('awards-table').innerHTML=results;
-			jQuery('#awards-table').show(500);
+			jQuery('#awards-table').html( makeAwardsTable(data,title));
 			});
 		request.fail(function( jqXHR, textStatus ) {
 			alert( "Error: " + textStatus );
 			});
 	}
 	
-	function makeTable(data,results,eventId){
-		results = "";
-		results += "<tr>";
-		results += "<th>Official Time</th>";
-		results += "<th>Bib</th>";
-		results += "<th>Name</th>";
-		results += "<th>Age</th>";
-		results += "<th>Gender</th>";
-		results += "<th>City</th>";
-		results += "<th>State</th>";
-		results += "</tr>";
-		for(var i in data){
-			var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
-			var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
-			var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
-			var bib = (null!=data[i].bib) ? data[i].bib : "";
-			var gender = (null!=data[i].gender) ? data[i].gender : "";
-			var age = (null!=data[i].age) ? data[i].age : "";
-			var city = (null!=data[i].city) ? data[i].city : "";
-			var state = (null!=data[i].state) ? data[i].state : "";
-			
-			results += "<tr>";
-			results += "<td>"+timeofficialdisplay+"</td>";
-			results += "<td>"+bib+"</td>";
-			results += "<td>"+firstname+" "+lastname+"</td>";
-			results += "<td>"+age+"</td>";
-			results += "<td>"+gender+"</td>";
-			results += "<td>"+city+"</td>";
-			results += "<td>"+state+"</td>";
-			results += "</tr>";
+	function appendAwards(event,ageMin,ageMax,gender,listSize,title,recurse){		
+		if(title==""){
+			if(gender=="M") title = "Male ";
+			if(gender=="F") title = "Female ";
+			if(ageMin>0 ){
+				if(ageMax > 0){
+					title += "Ages " + ageMin +" to "+ageMax;
+				}
+			}
 		}
-		return results;
+		var params = "?event="+event+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize;
+		var request = jQuery.ajax({
+			url: "/bibs-server/events/timeofficial"+params,
+			type: "GET",
+			dataType: "json"
+			});
+		request.done(function( data ) {
+			if(data.length &gt; 0) 
+				jQuery('#awards-table').append( makeAwardsTable(data,title));
+			if(recurse){
+				if(ageMin &lt;= 109){
+					ageMax++; ageMin=ageMax; ageMax=ageMax+4; 
+					appendAwards(event,ageMin,ageMax,"",10,"",true);
+				}
+			}
+			});
+		request.fail(function( jqXHR, textStatus ) {
+			alert( "Error: " + textStatus );
+			});
 	}
 	
-	function setTitle(title){
-		document.getElementById('award-title').innerHTML=title;
+	function getAll(){	
+		var event = Math.max(0,GetURLParameter("event"));
+		appendAwards(event,0,0,"",9999,"Overall Winners",false);
+		setTimeout(function(){
+			getMore();
+		},2000);
+	}
+
+	function getMore(){
+		var event = Math.max(0,GetURLParameter("event"));
+		appendAwards(event,1,10,"",10,"",false);
+		appendAwards(event,10,13,"",10,"",false);
+		appendAwards(event,14,19,"",10,"",true);
 	}
 	</script>
 	
