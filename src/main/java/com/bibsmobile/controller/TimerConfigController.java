@@ -127,7 +127,7 @@ public class TimerConfigController {
     	try{
     		timer.write(id); 
     	}catch(Exception e){
-    		if(e.getMessage().contains("tags present"))
+    		if(e.getMessage().contains("tags"))
         		return e.getMessage();
     		return "false";
     	}

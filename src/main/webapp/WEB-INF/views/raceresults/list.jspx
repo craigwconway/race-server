@@ -8,11 +8,10 @@
     }
     </style>
     <script>
-    var event = (undefined != getUrlParam("event")) ? getUrlParam("event") : 0;
-    
+    var event = getUrlParam('event');
     
     window.onload=function(){
-		setEventSelection();
+		setEventSelection(getUrlParam('event'));
 		removeNulls();
 	    // press enter submit
 	    $("input").keyup(function(e){
@@ -27,10 +26,8 @@
     			element.innerHTML=element.innerHTML.replace(' null null 0','');
     	});
     }
-    function setEventSelection(){
-    	try{
-    		document.getElementById("event-"+event).selected=true;
-    	}catch(e){}
+    function setEventSelection(id){
+    	jQuery("#event-"+id).prop('selected','true');
     }
     
     function filterByEvent(){

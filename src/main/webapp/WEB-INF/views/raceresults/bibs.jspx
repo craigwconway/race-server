@@ -95,7 +95,7 @@ function writeBib(){
 			alert("No more writes left on current license.");
 		}else if(data == "false"){
 			alert("Reader connection failed.");
-		}else if(data.length &lt; 20){
+		}else if(data.indexOf("tags") &lt; 20){
 			alert(data);
 		}else{
 			alert("Reader error.");
