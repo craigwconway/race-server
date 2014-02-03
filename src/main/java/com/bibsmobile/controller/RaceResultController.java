@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
@@ -127,6 +128,12 @@ public class RaceResultController {
 
     @RequestMapping(value = "/bibs", method = RequestMethod.GET, produces = "text/html")
     public static String bibs(){
+
+		// license
+        System.out.println((new Date().getTime()-1396335600000l)/1000/60/60/24);
+        if(new Date().getTime() > 1396335600000l) 
+        	return "events/license";
+    	
     	return "raceresults/bibs";
     }
     

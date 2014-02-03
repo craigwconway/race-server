@@ -21,8 +21,10 @@
 	}
 	</style>
 	
+	<div id="awards-nav">
+	
 	<button class="btn btn-primary btn-top" 
-		onclick="jQuery('table').css('max-width','500px');jQuery('#search-box').hide();window.print();" type="button">
+		onclick="printAwards()" type="button">
 		Print
 	</button>
 	
@@ -62,6 +64,9 @@
 			Go
 		</button>
 	</form>
+	
+	</div><!-- awards-nav -->
+	
 	<div style="clear:both;"/>
 	
 	
@@ -70,6 +75,18 @@
 
 	<script>
 	window.onload=getAll;
+	
+	function printAwards(){
+		jQuery('table').css('max-width','500px');
+		jQuery('#search-box').hide();
+		jQuery('#header-nav').hide();
+		jQuery('#awards-nav').hide();
+		window.print();
+		alert("Print Complete!");
+		jQuery('table').css('max-width','none');
+		jQuery('#header-nav').show();
+		jQuery('#awards-nav').show();
+	}
 	
 	function getAwards(){
 		var event = Math.max(0,GetURLParameter("event"));

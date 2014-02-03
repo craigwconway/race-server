@@ -397,6 +397,12 @@ public class EventController {
 
 	@RequestMapping(value = "/raceday", method = RequestMethod.GET)
 	public static String raceday(Model uiModel) {
+		
+		// license
+        System.out.println((new Date().getTime()-1396335600000l)/1000/60/60/24);
+        if(new Date().getTime() > 1396335600000l) 
+        	return "events/license";
+		
 		uiModel.addAttribute("events", Event.findAllEvents());
 		uiModel.addAttribute("eventsRunning", Event.findEventsByRunning());
 		return "events/raceday";

@@ -190,7 +190,6 @@ function timerStatus(id){
     		jQuery("#btn-update-"+id).hide();
         	jQuery("#reader-progress-"+id).show();
     	}
-		timerSync(id);
     	jQuery("#reader-status-"+id).html(rtn);
 	});
 	r.fail(function( jqXHR, textStatus ) {
@@ -221,7 +220,6 @@ function timerSync(id){
 		});
 	timerTime.done(function( data ) {
 		if(data != "true"){
-			alert("Timer not in sync! ");
 			jQuery("#reader-"+id).css("border","solid red 1px");
 		}
 	});
@@ -276,10 +274,12 @@ function makeEventRow(eventId,eventName){
 }
 
 function startReader(id){
+	timerSync(id);
 	jQuery('#btn-start-'+id).hide();
 	jQuery('#btn-stop-'+id).show();
 	jQuery("#btn-update-"+id).hide();
 	jQuery("#reader-progress-"+id).show();
+	jQuery("#reader-status-"+id).html("Connecting...");
 	var readerStart = jQuery.ajax({
 		url: "/bibs-server/timers/start/"+id,
 		type: "GET",

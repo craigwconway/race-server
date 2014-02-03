@@ -24,17 +24,13 @@ public class ThingMagicTimer implements Timer {
 	private TimerConfig timerConfig;
 
 	@Override
-	public void connect() { 
+	public void connect() throws Exception{ 
 		System.out.println("Connecting to " + timerConfig.getUrl() + " type:" + timerConfig.getType() + " "+getClass().getName());
-		try {
-			reader = Reader.create(timerConfig.getUrl()); 
-			reader.connect();
-			optimize();
-			status = 1;
-			System.out.println("Reader at " + timerConfig.getUrl() + " connected. (status="+status+")");
-		} catch (ReaderException e) {
-			e.printStackTrace();
-		}
+		reader = Reader.create(timerConfig.getUrl()); 
+		reader.connect();
+		optimize();
+		status = 1;
+		System.out.println("Reader at " + timerConfig.getUrl() + " connected. (status="+status+")");
 	}
 
 	@Override
@@ -63,7 +59,11 @@ public class ThingMagicTimer implements Timer {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			this.connect();
+			try {
+				this.connect();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		if (status == 1) {
 			if(timerConfig.getPosition() == 0) readListener = new StartLineListener();
@@ -74,7 +74,6 @@ public class ThingMagicTimer implements Timer {
 			try {
 				reader.gpoSet(new Reader.GpioPin[]{new Reader.GpioPin(1, false)});
 			} catch (ReaderException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

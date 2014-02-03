@@ -4,6 +4,8 @@
   <jsp:directive.page contentType="text/html;charset=UTF-8" />
   <jsp:output omit-xml-declaration="yes" />
 
+<div id="header-nav">
+
 	<div class="pull-left">
 	  <spring:url var="banner" value="/resources/images/bibsicon6-460x340.png" />
 	  <spring:url var="home" value="/" />
@@ -13,11 +15,11 @@
 	  </a>
 	</div>
  
-<spring:url value="/events/raceday" var="raceday_url" />
-<spring:url value="/events?page=1&amp;size=10" var="events_url" />
-<spring:url value="/raceresults?page=1&amp;size=10" var="runners_url" />
-<spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
-<spring:url value="/timers?page=1&amp;size=10" var="timers_url" />
+	<spring:url value="/events/raceday" var="raceday_url" />
+	<spring:url value="/events?page=1&amp;size=10" var="events_url" />
+	<spring:url value="/raceresults?page=1&amp;size=10" var="runners_url" />
+	<spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
+	<spring:url value="/timers?page=1&amp;size=10" var="timers_url" />
  
     <ul class="nav nav-tabs pull-left" >
 	  		<li id="nav_events"><a href="${events_url}">Events</a></li>
@@ -46,7 +48,9 @@
 		</sec:authorize>
 	</div>
 	
-	<div style="clear:both;"/>
+</div><!-- header-nav -->
+
+<div style="clear:both;"/>
 	
 	<script>
 	// derive active tab from current url
@@ -65,6 +69,10 @@
 	}
 	.dijitCheckBoxInput{
 		opacity: 1 !important;
+	}
+	.dijitValidationContainer {
+	    cursor: default;
+	    display: none!important;
 	}
 	h3{
 		padding-top: 0;

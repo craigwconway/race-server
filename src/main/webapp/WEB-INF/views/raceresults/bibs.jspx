@@ -98,7 +98,7 @@ function writeBib(){
 		}else if(data.length &lt; 20){
 			alert(data);
 		}else{
-			alert("Reader connection failed.");
+			alert("Reader error.");
 		}
 		jQuery("#program-stop").hide();
 		jQuery("#program-start").show();

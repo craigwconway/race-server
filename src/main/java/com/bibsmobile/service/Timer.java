@@ -10,7 +10,7 @@ public interface Timer {
 	
 	long getDateTime();
 
-	void connect();
+	void connect() throws Exception;
 
 	void disconnect();
 

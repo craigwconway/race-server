@@ -54,12 +54,16 @@ public class TimerConfigController {
     @ResponseBody
     public String connect(@PathVariable(value = "id") long id){
     	Timer timer = getTimer(id);
-    	if(timer.getStatus()==0)
-    		timer.connect();
-		if(timer.getStatus()==3){ // write
-    		timer.disconnect(); 
-			timer.connect();
-		}
+    	try{
+	    	if(timer.getStatus()==0)
+	    		timer.connect();
+			if(timer.getStatus()==3){ // write
+	    		timer.disconnect(); 
+				timer.connect();
+			}
+    	}catch(Exception e){
+    		return "false";
+    	}
         return "true";
     }
 	
@@ -73,13 +77,17 @@ public class TimerConfigController {
     
     @RequestMapping(value = "/start/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String start(@PathVariable(value = "id") long id) throws InterruptedException{
+    public String start(@PathVariable(value = "id") long id) {
     	Timer timer = getTimer(id);
-    	if(timer.getStatus() == 0){
-    		timer.connect();
-    	}
-    	if(timer.getStatus() != 2){
-    		timer.startReader();
+    	try{
+	    	if(timer.getStatus() == 0){
+	    		timer.connect();
+	    	}
+	    	if(timer.getStatus() != 2){
+	    		timer.startReader();
+	    	}
+    	}catch(Exception e){
+    		return "false";
     	}
     	return "true";
     }
@@ -119,7 +127,9 @@ public class TimerConfigController {
     	try{
     		timer.write(id); 
     	}catch(Exception e){
-    		return e.getMessage();
+    		if(e.getMessage().contains("tags present"))
+        		return e.getMessage();
+    		return "false";
     	}
         user.getUserGroup().setBibWrites(writes-1);
         user.getUserGroup().merge();
@@ -130,8 +140,16 @@ public class TimerConfigController {
     @RequestMapping(value = "/time/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String time(@PathVariable(value = "id") long id) {
-    	long timer = getTimer(id).getDateTime();
     	long server = new Date().getTime();
+    	long timer = 0;
+    	try{
+	    	if(getTimer(id).getStatus() == 0){
+	    		getTimer(id).connect();
+	    	}
+    	}catch(Exception e){
+    		return "true"; // reader not connected
+    	}
+    	timer = getTimer(id).getDateTime();
     	if(server - timer > 1000){ // 1 second
     		System.out.println("Timer/Server "+timer+"/"+server);
     		return "false";
