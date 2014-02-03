@@ -3,92 +3,44 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
  
- <div id="timer-functions" style="margin-bottom: 16px;" class="corners">
-	
-		<span id="reader-status-title"
-			style="margin:0;margin-left: 3px;"><strong>Reader Status:</strong> 
-		<span id="reader-status"
-			style="margin:0;margin-left: 3px;"> Not Connected </span>
-		</span>
-		<button id="btn-connect" type="button" class="btn btn-default" 
-			style="margin:0;margin-left: 3px;"
-			onclick="timerConnect();">Connect</button>
-		<span id="progress">
-			<img src="/bibs-server/resources/images/loading.gif" title="loading"/> 
-   		</span>
-	
-	</div>
-
-<div id="mgmt-view" style="display:none">
- 
 	<div style="margin:12px;">
 		<input type="text" class="form-control" id="bib-input0" 
 			style="display:inline;width:100px;" placeholder="First Bib" />
 		<input type="text" class="form-control" id="bib-input1" 
 			style="display:inline;width:100px;" placeholder="Last Bib" />
-		<button type="button" class="btn btn-success" 
+		<button type="button" class="btn btn-success btn-top" 
 			style="margin-right:2px;" id="program-start"
 			onclick="startReader();">Start Writing</button>
-		<button type="button" class="btn btn-danger" 
+		<button type="button" class="btn btn-danger btn-top" 
 			style="margin:0;margin-left: 3px;display:none;" id="program-stop"
 			onclick="stopReader();">Stop Writing</button>
-		<button type="button" class="btn" 
-			style="margin:0;margin-left: 3px;display:none;" id="status">
+		<button type="button" class="btn btn-default btn-top" 
+			style="margin:0;margin-left: 3px;display:none;" id="status-bar">
 				Write Many</button>
+		<span id="progress">
+			<img src="/bibs-server/resources/images/loading.gif" title="loading" style="display:none;"/> 
+   		</span>
 	</div>
 	
-	<div style="margin:12px;">
-	<div class="container"><h4>OR</h4></div>
-	</div>
-	
-	<div style="margin:12px;">
-			    <input type="text" class="form-control" id="bib-input" 
-			    	style="width:110px;display:inline;" placeholder="Bib Number"/>
-			  <button type="button" class="btn btn-success" 
-			  onclick="writeBib1()">
-			  Write One</button>
-	</div>
-	
-	<div id="results" class="row" style="margin:12px;"> 
-		<table id="raceresults" class="table"></table>
-	</div>
-</div>
     
 <script>
 
 var readerOn=false;
-var licenseExpired=false;
-
-var currentBib = 0;
+var bib0 = 0;
+var bib1 = 0;
 
 function startReader(){
 	if(!validateMulti()) return;
+	jQuery("#progress").show();
 	readerOn=true;
-	licenseExpired=false;
 	jQuery("#program-stop").show();
 	jQuery("#program-start").hide();
-	jQuery("#status").show();
+	jQuery("#status-bar").show();
 	
 	// set current bib
-	if(currentBib==0) currentBib = jQuery("#bib-input0").val();
-	while(currentBib &lt;= jQuery("#bib-input1").val() &amp;&amp; !licenseExpired){
-		if(licenseExpired) break;
-		// write bib
-		writeBib(currentBib);
-		// license
-		// pause for next bib
-		if(!confirm(currentBib+" done. Next bib...")){
-			stopReader();
-			return;
-		}
-		// increment bib
-		currentBib++;
-	}
-	alert("Done!");
-	jQuery("#program-stop").hide();
-	jQuery("#program-start").show();
-	jQuery("#status").hide();
-	timerConnect();
+	bib0 = jQuery("#bib-input0").val();
+	bib1 = jQuery("#bib-input1").val();
+	writeBib();
 }
 
 function stopReader(){
@@ -113,32 +65,17 @@ function stopReader(){
 		});
 }
 
-function writeBib1(){
-	var bib = jQuery("#bib-input").val();
-	jQuery("#status-bar").html("Writing...");
-	jQuery("#status-bar").show();
-	var request = jQuery.ajax({
-		url: "/bibs-server/timers/write/"+jQuery("#bib-input").val(),
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( data ) {
-		if(data == "none"){
-			alert("You have no more writes left on your license.");
-			licenseExpired=true;
-		}else if(data == "true"){
-			alert(bib+" Written");
-			jQuery("#status-bar").html(bib+" Written");
-		}else{
-			alert(data);
-		}
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		alert( "Error: " + textStatus );
-		});
-}
-function writeBib(bib){
-	jQuery("#status-bar").html("Writing...");
+function writeBib(){
+	jQuery("#progress").show();
+	var bib = bib0;
+	if(bib0 &gt; bib1){
+		jQuery("#program-stop").hide();
+		jQuery("#program-start").show();
+		jQuery("#status-bar").hide();
+		alert("Done.");
+		return;
+	}
+	jQuery("#status-bar").html("Writing "+bib+"...");
 	jQuery("#status-bar").show();
 	var request = jQuery.ajax({
 		url: "/bibs-server/timers/write/"+bib,
@@ -146,19 +83,37 @@ function writeBib(bib){
 		dataType: "html"
 		});
 	request.done(function( data ) {
-		if(data == "none"){
-			alert("You have no more writes left on your license.");
-			licenseExpired=true;
-		}else if(data == "true"){
+		if(data == "true"){
 			jQuery("#status-bar").html(bib+" Written");
-		}else{
+			// pause for next bib
+			if(confirm(bib+" done. Next bib...")){
+				bib0++;
+				writeBib(); // recursive
+				return;
+			}
+		}else if(data == "none"){
+			alert("No more writes left on current license.");
+		}else if(data == "false"){
+			alert("Reader connection failed.");
+		}else if(data.length &lt; 20){
 			alert(data);
+		}else{
+			alert("Reader connection failed.");
 		}
+		jQuery("#program-stop").hide();
+		jQuery("#program-start").show();
+		jQuery("#status-bar").hide();
+		jQuery("#progress").hide();
+		stopReader();
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert( "Error: " + textStatus );
 		stopReader();
 		jQuery("#bib-input0").val(currentBib);
+		jQuery("#program-stop").hide();
+		jQuery("#program-start").show();
+		jQuery("#status-bar").hide();
+		stopReader();
+		return;
 		});
 }
 
@@ -173,10 +128,13 @@ function validateMulti(){
 		jQuery("#bib-input1").focus();
 		return false;
 	}
+	if(jQuery("#bib-input1").val() &lt; jQuery("#bib-input0").val()){
+		alert("Last Bib must be greater than or equal to First Bib.")
+		jQuery("#bib-input1").focus();
+		return false;
+	}
 	return true;
 }
-
-window.onload = timerConnect;
 
 function timerStatus(){
 	var r = jQuery.ajax({
@@ -215,27 +173,6 @@ function timerStatus(){
 	r.fail(function( jqXHR, textStatus ) {
 		//alert("Timing Hardware Not Found");
 		jQuery("#mgmt-view").hide();
-	});
-}
-
-function timerConnect(){
-	jQuery("#progress").show();
-	var r = jQuery.ajax({
-		url: "/bibs-server/timers/connect/1",
-		type: "GET",
-		dataType: "html"
-		});
-	r.done(function( data ) {
-		if(data == "true"){
-  		jQuery("#mgmt-view").show();
-			jQuery("#btn-connect").hide(200);
-		}
-		jQuery("#progress").hide();
-		timerStatus();
-	});
-	r.fail(function( jqXHR, textStatus ) {
-		jQuery("#mgmt-view").hide();
-		jQuery("#progress").hide();
 	});
 }
 </script>

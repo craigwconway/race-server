@@ -77,18 +77,18 @@ public class TimerConfigController {
     	Timer timer = getTimer(id);
     	if(timer.getStatus() == 0){
     		timer.connect();
-    		Thread.sleep(1500);
     	}
-    	timer.startReader();
-		Thread.sleep(500);
-        return "true";
+    	if(timer.getStatus() != 2){
+    		timer.startReader();
+    	}
+    	return "true";
     }
     
     @RequestMapping(value = "/stop/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String stop(@PathVariable(value = "id") long id){
     	Timer timer = getTimer(id);
-    	if(timer.getStatus()>0) {
+    	if(timer.getStatus() > 0) {
 	    	timer.stopReader();
 	    	timer.disconnect();
     	}
@@ -99,8 +99,14 @@ public class TimerConfigController {
     @ResponseBody
     public String write(@PathVariable(value = "id") long id){
     	Timer timer = getTimer(1); // use timer 1 TODO ?
-    	if(timer.getStatus()==0)
-    		timer.connect();
+    	try{
+	    	if(timer.getStatus()==0)
+	    		timer.connect();
+	    	else if(timer.getStatus()==2)
+	    		timer.stopReader();
+    	}catch(Exception e){
+    		return "false";
+    	}
     	
     	 // mod writes for current usergroup 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -117,6 +123,7 @@ public class TimerConfigController {
     	}
         user.getUserGroup().setBibWrites(writes-1);
         user.getUserGroup().merge();
+        timer.disconnect();
         return "true";
     } 
 

@@ -203,7 +203,7 @@ public class EventController {
 
 			// find matching event
 			String eventSync = doGet(serverUrl + "/events/byname/"
-					+ event.getName());
+					+ URLEncoder.encode(event.getName(),"UTF-8"));
 			System.out.println("cloud " + eventSync);
 			Collection<Event> events = Event.fromJsonArrayToEvents(eventSync);
 			System.out.println("cloud matched " + events.size() + " events");
@@ -409,7 +409,8 @@ public class EventController {
 	}
 
 	@RequestMapping(value = "/awards", method = RequestMethod.GET)
-	public static String awards() {
+	public static String awards(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
+		uiModel.addAttribute("event", Event.findEvent(event)); 
 		return "events/awards";
 	}
 

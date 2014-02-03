@@ -3,7 +3,7 @@
 	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-	<h3>Awards <small id="award-title">Official Results</small></h3>
+	<h3>${event.name} <small id="award-title">Official Results</small></h3>
 	
 	<style>
 	b{
@@ -22,7 +22,12 @@
 	}
 	</style>
 	
-	<button class="btn btn-primary" onclick="jQuery('#search-box').toggle()" type="button">
+	<button class="btn btn-primary btn-top" 
+		onclick="jQuery('table').css('max-width','500px');jQuery('#search-box').hide();window.print();" type="button">
+		Print
+	</button>
+	
+	<button class="btn btn-warning btn-top" onclick="jQuery('#search-box').toggle()" type="button">
 		Custom
 	</button>
 	

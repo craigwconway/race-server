@@ -2,9 +2,6 @@ package com.bibsmobile.service;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.persistence.Transient;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;

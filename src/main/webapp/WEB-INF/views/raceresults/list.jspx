@@ -94,9 +94,6 @@
     }
     </script>
     <div class="pull-left">
-        <div class="pull-left" style="padding:6px;">
-            <strong>Filter by Event</strong>
-        </div>
         <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()" style="width:300px">
             <option id="event-0" value="0">All Events</option>
             <c:forEach items="${events}" var="event" varStatus="i">
