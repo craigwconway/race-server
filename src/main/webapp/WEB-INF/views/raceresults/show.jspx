@@ -2,25 +2,9 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
-    <style>
-	.title{
-		font-size: 28px;
-		font-weight: bold;
-		margin-right: 12px;
-	}
-	.subtext{
-		font-size: 18px;
-		font-weight: normal;
-		margin-right: 12px;
-	}
-    </style>
-    
-	<div class="title">${raceresult.firstname} ${raceresult.lastname} (${raceresult.bib})
-	<span class="subtext">${raceresult.timeofficialdisplay} ${raceresults.gender} ${raceresults.age}</span></div>
-    
-    
     <page:show id="ps_com_bibsmobile_model_RaceResult" object="${raceresult}" path="/raceresults" z="xkwjNPgv7crCtdJkXLNyd+HYYmI=">
+	<h3>${raceresult.firstname} ${raceresult.lastname} (${raceresult.bib})
+	<small>${raceresult.timeofficialdisplay} ${raceresults.gender} ${raceresults.age}</small></h3>
         <div style="display:none">
         <field:display field="event" id="s_com_bibsmobile_model_RaceResult_event" object="${raceresult}" z="Fhklm418oADrVmGeNkYHwkp7XtI="/>
         <field:display field="bib" id="s_com_bibsmobile_model_RaceResult_bib" object="${raceresult}" z="qDzxvPoKAz0fR8e09txv0uPAKUg="/>

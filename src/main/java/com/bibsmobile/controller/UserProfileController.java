@@ -18,10 +18,18 @@ import com.bibsmobile.model.UserProfile;
 public class UserProfileController {
 
     @RequestMapping(value = "/byusername/{username}", produces = "text/html")
-    public static String show(@PathVariable("username") String username, Model uiModel) {
+    public static String showUsername(@PathVariable("username") String username, Model uiModel) {
     	UserProfile u = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
         uiModel.addAttribute("userprofile", u);
         uiModel.addAttribute("itemId", u.getId());
         return "userprofiles/show";
     }    
+    
+    @RequestMapping(value = "/{id}", produces = "text/html")
+    public String show(@PathVariable("id") Long id, Model uiModel) {
+    	UserProfile u = UserProfile.findUserProfile(id);
+        uiModel.addAttribute("userprofile", u);
+        uiModel.addAttribute("itemId", u.getId());
+        return "userprofiles/show";
+    }
 }

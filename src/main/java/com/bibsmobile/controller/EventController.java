@@ -203,7 +203,7 @@ public class EventController {
 
 			// find matching event
 			String eventSync = doGet(serverUrl + "/events/byname/"
-					+ URLEncoder.encode(event.getName(),"UTF-8"));
+					+ event.getName().replace(" ", "%20") );
 			System.out.println("cloud " + eventSync);
 			Collection<Event> events = Event.fromJsonArrayToEvents(eventSync);
 			System.out.println("cloud matched " + events.size() + " events");

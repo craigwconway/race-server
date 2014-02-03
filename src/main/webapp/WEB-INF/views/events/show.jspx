@@ -14,8 +14,6 @@
 		margin-right: 12px;
 	}
     </style>
-    <div class="event-name">${event.name}  <span class="event-location">${event.city} ${event.state}</span>
-    </div>
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
 		Awards
 	</button>
@@ -65,6 +63,7 @@
 	}
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
+    <h3>${event.name}  <small>${event.city} ${event.state}</small></h3>
         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
         <div style="display:none;">

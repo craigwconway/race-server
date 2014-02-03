@@ -66,6 +66,10 @@
 	.dijitCheckBoxInput{
 		opacity: 1 !important;
 	}
+	h3{
+		padding-top: 0;
+		margin-top:0;
+	}
 	</style>
 	
 </div>

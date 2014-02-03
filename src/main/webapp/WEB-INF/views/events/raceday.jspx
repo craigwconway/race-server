@@ -47,7 +47,7 @@
 	
 <div id="templates">
 	<div id="reader-template" style="display:none">
-		<div id="reader---id" class="reader corners">
+		<div id="reader---id--" class="reader corners">
 			<div class="pull-left">
 			<span id="reader-title---id--" class="reader-title"
 				style="margin:0;margin-left: 3px;"><strong>Reader --count-- </strong>  
@@ -174,7 +174,6 @@ function timerStatus(id){
     		jQuery("#btn-stop-"+id).hide();
     		jQuery("#btn-update-"+id).show();
         	jQuery("#reader-progress-"+id).hide();
-    		timerSync(id);
     		readerOn=false;
     	}else if(readerStatus == 2){
     		rtn = "Reading...";
@@ -191,7 +190,7 @@ function timerStatus(id){
     		jQuery("#btn-update-"+id).hide();
         	jQuery("#reader-progress-"+id).show();
     	}
-    	
+		timerSync(id);
     	jQuery("#reader-status-"+id).html(rtn);
 	});
 	r.fail(function( jqXHR, textStatus ) {
@@ -222,10 +221,8 @@ function timerSync(id){
 		});
 	timerTime.done(function( data ) {
 		if(data != "true"){
-			alert("Timer not in sync! "+id);
+			alert("Timer not in sync! ");
 			jQuery("#reader-"+id).css("border","solid red 1px");
-		}else{
-			jQuery("#reader-"+id).css("border","solid green 1px");
 		}
 	});
 }
