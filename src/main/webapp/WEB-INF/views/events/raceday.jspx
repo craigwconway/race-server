@@ -274,7 +274,6 @@ function makeEventRow(eventId,eventName){
 }
 
 function startReader(id){
-	timerSync(id);
 	jQuery('#btn-start-'+id).hide();
 	jQuery('#btn-stop-'+id).show();
 	jQuery("#btn-update-"+id).hide();
