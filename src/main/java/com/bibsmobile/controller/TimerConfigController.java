@@ -26,7 +26,7 @@ public class TimerConfigController {
 	
 	private HashMap<TimerConfig,Timer> timers = new HashMap<TimerConfig,Timer>();
 
-	private Timer getTimer(long id){
+	private synchronized Timer getTimer(long id){
 		TimerConfig timerConfig = TimerConfig.findTimerConfig(id);
     	Timer timer = null;
     	if(timers.containsKey(timerConfig)){
@@ -106,7 +106,8 @@ public class TimerConfigController {
     @RequestMapping(value = "/write/{id}", method = RequestMethod.GET)
     @ResponseBody
     public String write(@PathVariable(value = "id") long id){
-    	Timer timer = getTimer(1); // use timer 1 TODO ?
+    	// get first timer
+    	Timer timer = getTimer(TimerConfig.findTimerConfigEntries(0, 1).get(0).getId()); // use timer 1 TODO ?
     	try{
 	    	if(timer.getStatus()==0)
 	    		timer.connect();
@@ -127,13 +128,18 @@ public class TimerConfigController {
     	try{
     		timer.write(id); 
     	}catch(Exception e){
-    		if(e.getMessage().contains("tags"))
-        		return e.getMessage();
-    		return "false";
+            System.out.println("writes error "+e.getMessage());
+    		if(e.getMessage().equals("No tags present")){
+        		return "notags";
+    		}else if(e.getMessage().equals("Too many tags present")){
+    	        return "manytags";
+    		}else{
+    	        return "false";
+    		}
     	}
         user.getUserGroup().setBibWrites(writes-1);
         user.getUserGroup().merge();
-        timer.disconnect();
+        
         return "true";
     } 
 

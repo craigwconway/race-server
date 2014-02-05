@@ -95,8 +95,10 @@ function writeBib(){
 			alert("No more writes left on current license.");
 		}else if(data == "false"){
 			alert("Reader connection failed.");
-		}else if(data.indexOf("tags") &lt; 20){
-			alert(data);
+		}else if(data == "notags"){
+			alert("No bibs seen.");
+		}else if(data == "manytags"){
+			alert("Too many bibs seen.");
 		}else{
 			alert("Reader error.");
 		}
