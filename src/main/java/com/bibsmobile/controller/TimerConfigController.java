@@ -123,8 +123,8 @@ public class TimerConfigController {
         System.out.println("writes group "+user.getUserGroup().getName());
         
         int writes =  user.getUserGroup().getBibWrites();
-        System.out.println((new Date().getTime()-1396335600000l)/1000/60/60/24);
-        if(writes < 1 || new Date().getTime() > 1396335600000l) return "none";
+        System.out.println("No Expiration Date on Bib Writes");
+        if(writes < 1) return "none";
     	try{
     		timer.write(id); 
     	}catch(Exception e){
