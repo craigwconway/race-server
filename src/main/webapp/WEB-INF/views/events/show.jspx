@@ -27,8 +27,9 @@
         <button class="btn btn-default btn-top" onclick="cloud()" type="button">
 		Cloud
 		</button>
-		<span id="progress" style="margin:0;margin-left:6px;display:none;">
-			<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> </span>
+        <span id="progress" style="margin:0;margin-left:6px;display:none;">
+            <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
+        </span>
     </sec:authorize>
     <script>
 	function cloud(){
@@ -63,7 +64,8 @@
 	}
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-    <h3>${event.name}  <small>${event.city} ${event.state}</small></h3>
+        <h3>${event.name}  <small>${event.city} ${event.state}</small>
+        </h3>
         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
         <div style="display:none;">
@@ -113,6 +115,9 @@
             <field:display field="syncId" id="s_com_bibsmobile_model_Event_syncId" object="${event}" z="user-managed"/>
             <field:display field="userGroup" id="s_com_bibsmobile_model_Event_userGroup" object="${event}" z="user-managed"/>
             <field:display field="country" id="s_com_bibsmobile_model_Event_country" object="${event}" z="Qv0Plvijr5HbvB1q+ZGx2JyZ01E="/>
-    	</div>
+        </div>
+        <field:display field="regEnabled" id="s_com_bibsmobile_model_Event_regEnabled" object="${event}" z="5ZHzTNt6g8XNaCI9F07G/pCqVY8="/>
+        <field:display date="true" dateTimePattern="${event_regstart_date_format}" field="regStart" id="s_com_bibsmobile_model_Event_regStart" object="${event}" z="bBscU1kAsStFikpX5tLH0AVKNkk="/>
+        <field:display date="true" dateTimePattern="${event_regend_date_format}" field="regEnd" id="s_com_bibsmobile_model_Event_regEnd" object="${event}" z="0OBWojydktrp1m6c6oQ+jq6jmKM="/>
     </page:show>
 </div>

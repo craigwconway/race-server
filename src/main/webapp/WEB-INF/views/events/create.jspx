@@ -61,6 +61,9 @@
             <field:simple field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Award Category" z="W/mlzVpnmu4H0G8oKjVQKgrW5bs="/>
             <field:select field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="oo4ip/WoDNsEB0aJzYG0szVc5x8="/>
         </div>
+        <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="/3fyPZerngMWWMJqq9ZJvrhAH7g="/>
+        <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
+        <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
     </form:create>
     <script>
     window.onload = function(){

@@ -1,5 +1,7 @@
 package com.bibsmobile.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -14,11 +16,13 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
@@ -27,18 +31,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJavaBean
 @RooJson
 @RooJpaActiveRecord()
+@RooEquals 
 public class Event {
 	
-	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "event")
 	private Set<RaceResult> raceResults;	
 	
-	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "event")
 	private List<AwardCategory> awardCategorys;
 
-	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "event")
 	private Set<ResultsFile> resultsFiles;
 
-	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
+	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "event")
 	private Set<RaceImage> raceImages;
 	
 	@ManyToOne
@@ -92,6 +97,14 @@ public class Event {
     private boolean gunFired;
     private boolean sync;
     private String syncId;
+    
+    private boolean regEnabled;
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
+    private Date regStart;
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
+    private Date regEnd;
     
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
@@ -180,6 +193,28 @@ public class Event {
         q.setMaxResults(size);
         return q;
     }
+	
+	public List<RaceResult> getAwards(String gender, int min, int max, int size) {
+		if(min>max)min=max;		
+		List<RaceResult> allResults = new ArrayList<RaceResult>(raceResults);
+		Collections.sort(allResults);
+		List<RaceResult> results = new ArrayList<RaceResult>();
+		for(RaceResult result:allResults){
+			int age = 0;
+			try{
+				age = Integer.valueOf(result.getAge());
+			}catch(Exception ex){}
+			if( results.size() < size 
+					&& result.getTimeofficial() > 0
+					&& (gender.isEmpty() || gender==null || gender.equals(result.getGender()) )
+					&& (min == 0 || (min <= age && age !=0) )
+					&& (max == 0 || (max >= age && age !=0)) ){
+				results.add(result);
+			}
+			if(results.size()==size && size!=0) break;
+		}
+		return results;
+	}
 	
 	public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page,int size) {
 		if(min>max)min=max;		

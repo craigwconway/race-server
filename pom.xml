@@ -371,6 +371,11 @@
 		    <artifactId>ltkjava</artifactId>
 		    <version>1.0.0.6</version>
 		</dependency>
+	 	<dependency>
+		    <groupId>anet-java-sdk</groupId>
+		    <artifactId>anet-java-sdk</artifactId>
+		    <version>1.4.6</version>
+		</dependency>
 		
     </dependencies>
     <build>

@@ -12,11 +12,16 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
+import net.authorize.sim.Fingerprint;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,16 +50,79 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.AwardCategory;
+import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventRegistration;
+import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 
 @RequestMapping("/events")
 @Controller
 @RooWebScaffold(path = "events", formBackingObject = Event.class)
 @RooWebJson(jsonObject = Event.class)
-public class EventController {
+public class EventController { 
+	
+	@RequestMapping(value = "/registrationComplete", method = RequestMethod.GET)
+	public static String registrationComplete(@RequestParam(value = "event", required = true) Long event, Model uiModel){
 
+	    return "events/registrationComplete";
+	}
+	
+	@RequestMapping(value = "/registration", method = RequestMethod.GET)
+	public static String registration(@RequestParam(value = "event", required = true) Long eventid, Model uiModel){
+		
+		boolean test=true; //??
+		
+		Event event = Event.findEvent(eventid);
+		uiModel.addAttribute("event", event); 
+		
+		Cart cart = new Cart();
+		EventRegistration reg = new EventRegistration();
+		reg.setEvent(event); // set price here?
+		Set<CartItem> cartItems = new LinkedHashSet<CartItem>(1);
+		cartItems.add(reg);
+		cart.setCartItems(cartItems);
+		cart.persist();
+		
+	    String apiLoginId = "7rWKZe476";
+	    uiModel.addAttribute("apiLoginId", apiLoginId); 
+	    
+	    String transactionKey = (test)?"5Fg6846nb7pAS4X4":""+cart.getId();
+	    System.out.println(transactionKey+" transactionKey");
+	    uiModel.addAttribute("transactionKey", transactionKey); 
+	    
+	    String relayResponseUrl = "http:/localhost:8080/bibs-server/events/registrationComplete?event=1";
+	    uiModel.addAttribute("relayResponseUrl", relayResponseUrl); 
+
+	    double amount = (test)?new Random().nextDouble()+.01:cart.getTotal();
+	    
+	    NumberFormat df = DecimalFormat.getInstance();
+	    df.setMaximumFractionDigits(2);
+	    String samount = df.format(amount);
+	    uiModel.addAttribute("amount", samount);  
+	    
+	    Fingerprint fingerprint = Fingerprint.createFingerprint(
+	        apiLoginId,
+	        transactionKey,
+	        1234567890,  // random sequence used for creating the finger print
+	        samount);
+
+	    long x_fp_sequence = fingerprint.getSequence();
+	    uiModel.addAttribute("x_fp_sequence", x_fp_sequence); 
+	    
+	    long x_fp_timestamp = fingerprint.getTimeStamp();
+	    uiModel.addAttribute("x_fp_timestamp", x_fp_timestamp); 
+	    
+	    String x_fp_hash = fingerprint.getFingerprintHash();
+	    uiModel.addAttribute("x_fp_hash", x_fp_hash); 
+
+	    return "events/registration";
+	}
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid Event event, BindingResult bindingResult,
 			Model uiModel, HttpServletRequest httpServletRequest) {
@@ -419,6 +489,8 @@ public class EventController {
 		uiModel.addAttribute("event", Event.findEvent(event)); 
 		return "events/awards";
 	}
+	
+	
 
 	@RequestMapping(value = "/timeofficial", method = RequestMethod.GET)
 	@ResponseBody
@@ -429,15 +501,19 @@ public class EventController {
 			@RequestParam(value = "max", required = false, defaultValue = "0") int max,
 			@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
 			@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
-		StringBuffer rtn = new StringBuffer();
-		try {
-			rtn.append(RaceResult.toJsonArray(Event
-					.findRaceResultsByAwardCategory(event, gender, min, max,
-							page, size)));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return rtn.toString();
+		
+		long t0 = new Date().getTime();
+//		List<RaceResult> results = Event.findRaceResultsByAwardCategory(event, gender, min, max,page, size);
+//		long t1 = new Date().getTime();
+//		System.out.println("timeofficial sql "+ (t1-t0)  + " # "+results.size());
+//		
+//		t0 = new Date().getTime();
+		Event e = Event.findEvent(event);
+		List<RaceResult> results = e.getAwards(gender, min, max, size);
+		double t1 = new Date().getTime();
+//		System.out.println("timeofficial sort "+ (t1-t0)  + " # "+results.size());
+		
+		return RaceResult.toJsonArray(results);
 	}
 
 	@RequestMapping(value = "/count", method = RequestMethod.GET)
@@ -475,6 +551,26 @@ public class EventController {
 		}
 		return "0";
 	}
+	
+
+    
+    void populateEditForm(Model uiModel, Event event) {
+        uiModel.addAttribute("event", event);
+//        addDateTimeFormatPatterns1(uiModel);
+//        uiModel.addAttribute("awardcategorys", AwardCategory.findAllAwardCategorys());
+//        uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
+//        uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
+//        uiModel.addAttribute("resultsfiles", ResultsFile.findAllResultsFiles());
+//        uiModel.addAttribute("usergroups", UserGroup.findAllUserGroups());
+    }
+    
+    void addDateTimeFormatPatterns1(Model uiModel) {
+        uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
+    }
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
 	public static void export(
