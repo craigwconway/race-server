@@ -11,20 +11,15 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,9 +28,6 @@ import javax.validation.Valid;
 
 import net.authorize.sim.Fingerprint;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,15 +41,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
-import com.bibsmobile.model.EventRegistration;
-import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 
 @RequestMapping("/events")
@@ -72,57 +59,6 @@ public class EventController {
 	    return "events/registrationComplete";
 	}
 	
-	@RequestMapping(value = "/registration", method = RequestMethod.GET)
-	public static String registration(@RequestParam(value = "event", required = true) Long eventid, Model uiModel){
-		
-		boolean test=true; //??
-		
-		Event event = Event.findEvent(eventid);
-		uiModel.addAttribute("event", event); 
-		
-		Cart cart = new Cart();
-		EventRegistration reg = new EventRegistration();
-		reg.setEvent(event); // set price here?
-		Set<CartItem> cartItems = new LinkedHashSet<CartItem>(1);
-		cartItems.add(reg);
-		cart.setCartItems(cartItems);
-		cart.persist();
-		
-	    String apiLoginId = "7rWKZe476";
-	    uiModel.addAttribute("apiLoginId", apiLoginId); 
-	    
-	    String transactionKey = (test)?"5Fg6846nb7pAS4X4":""+cart.getId();
-	    System.out.println(transactionKey+" transactionKey");
-	    uiModel.addAttribute("transactionKey", transactionKey); 
-	    
-	    String relayResponseUrl = "http:/localhost:8080/bibs-server/events/registrationComplete?event=1";
-	    uiModel.addAttribute("relayResponseUrl", relayResponseUrl); 
-
-	    double amount = (test)?new Random().nextDouble()+.01:cart.getTotal();
-	    
-	    NumberFormat df = DecimalFormat.getInstance();
-	    df.setMaximumFractionDigits(2);
-	    String samount = df.format(amount);
-	    uiModel.addAttribute("amount", samount);  
-	    
-	    Fingerprint fingerprint = Fingerprint.createFingerprint(
-	        apiLoginId,
-	        transactionKey,
-	        1234567890,  // random sequence used for creating the finger print
-	        samount);
-
-	    long x_fp_sequence = fingerprint.getSequence();
-	    uiModel.addAttribute("x_fp_sequence", x_fp_sequence); 
-	    
-	    long x_fp_timestamp = fingerprint.getTimeStamp();
-	    uiModel.addAttribute("x_fp_timestamp", x_fp_timestamp); 
-	    
-	    String x_fp_hash = fingerprint.getFingerprintHash();
-	    uiModel.addAttribute("x_fp_hash", x_fp_hash); 
-
-	    return "events/registration";
-	}
-	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid Event event, BindingResult bindingResult,
 			Model uiModel, HttpServletRequest httpServletRequest) {
@@ -135,20 +71,26 @@ public class EventController {
 		// awards
 
 		// add to current usergroup
+		boolean addGroup = false;
 		String username = SecurityContextHolder.getContext()
 				.getAuthentication().getName();
 		UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
 				username).getSingleResult();
-		System.out.println("event group " + user.getUserGroup().getName());
-		event.setUserGroup(user.getUserGroup());
+		if(user.getUserGroup() != null){
+			addGroup = true;
+			System.out.println("event group " + user.getUserGroup().getName());
+			event.setUserGroup(user.getUserGroup());
+		}
 
 		event.persist();
 
-		Set<Event> groupEvents = user.getUserGroup().getEvents();
-		groupEvents.add(event);
-		user.getUserGroup().setEvents(groupEvents);
-		user.getUserGroup().merge();
-
+		if(addGroup){
+			Set<Event> groupEvents = user.getUserGroup().getEvents();
+			groupEvents.add(event);
+			user.getUserGroup().setEvents(groupEvents);
+			user.getUserGroup().merge();
+		}
+		
 		return "redirect:/events/"
 				+ encodeUrlPathSegment(event.getId().toString(),
 						httpServletRequest);
@@ -468,11 +410,8 @@ public class EventController {
 	@RequestMapping(value = "/raceday", method = RequestMethod.GET)
 	public static String raceday(Model uiModel) {
 		
-		// license
-        System.out.println((new Date().getTime()-1396335600000l)/1000/60/60/24);
-        if(new Date().getTime() > 1396335600000l) 
-        	return "events/license";
-		
+		// license TODO
+
 		uiModel.addAttribute("events", Event.findAllEvents());
 		uiModel.addAttribute("eventsRunning", Event.findEventsByRunning());
 		return "events/raceday";

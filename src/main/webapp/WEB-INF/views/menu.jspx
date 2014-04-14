@@ -46,5 +46,9 @@
             <menu:item id="i_timerconfig_new" messageCode="global_menu_new" url="/timers?form" z="9bdkRkFhSlikRKjIHGu+ASAs2Uk="/>
             <menu:item id="i_timerconfig_list" messageCode="global_menu_list" url="/timers?page=1&amp;size=${empty param.size ? 10 : param.size}" z="9xzwd6cep7o2+pGgQpkOIALp0yE="/>
         </menu:category>
+        <menu:category id="c_eventcartitem" z="KljOV+G5tm7DEnzF1CYFmiWpUNM=">
+            <menu:item id="i_eventcartitem_new" messageCode="global_menu_new" url="/eventitems?form" z="CVXwxRXp/Tu3PRQy5/mPb+nImgI="/>
+            <menu:item id="i_eventcartitem_list" messageCode="global_menu_list" url="/eventitems?page=1&amp;size=${empty param.size ? 10 : param.size}" z="pgWb3LaJE1UQyyYvmK+jiI3D4YQ="/>
+        </menu:category>
     </menu:menu>
 </div>

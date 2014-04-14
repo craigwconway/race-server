@@ -3,12 +3,11 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+import java.util.Date;
 import java.util.Set;
 
 privileged aspect UserProfile_Roo_JavaBean {
@@ -51,6 +50,14 @@ privileged aspect UserProfile_Roo_JavaBean {
     
     public void UserProfile.setAge(int age) {
         this.age = age;
+    }
+    
+    public Date UserProfile.getBirthdate() {
+        return this.birthdate;
+    }
+    
+    public void UserProfile.setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
     }
     
     public String UserProfile.getGender() {
@@ -131,38 +138,6 @@ privileged aspect UserProfile_Roo_JavaBean {
     
     public void UserProfile.setGoogleId(String googleId) {
         this.googleId = googleId;
-    }
-    
-    public Set<UserProfile> UserProfile.getFriends() {
-        return this.friends;
-    }
-    
-    public void UserProfile.setFriends(Set<UserProfile> friends) {
-        this.friends = friends;
-    }
-    
-    public Set<UserProfile> UserProfile.getRivals() {
-        return this.rivals;
-    }
-    
-    public void UserProfile.setRivals(Set<UserProfile> rivals) {
-        this.rivals = rivals;
-    }
-    
-    public Set<Event> UserProfile.getEventsSaved() {
-        return this.eventsSaved;
-    }
-    
-    public void UserProfile.setEventsSaved(Set<Event> eventsSaved) {
-        this.eventsSaved = eventsSaved;
-    }
-    
-    public Set<RaceImage> UserProfile.getRaceimages() {
-        return this.raceimages;
-    }
-    
-    public void UserProfile.setRaceimages(Set<RaceImage> raceimages) {
-        this.raceimages = raceimages;
     }
     
     public UserGroup UserProfile.getUserGroup() {

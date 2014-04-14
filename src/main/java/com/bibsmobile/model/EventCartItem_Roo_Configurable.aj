@@ -3,11 +3,11 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.EventRegistration;
+import com.bibsmobile.model.EventCartItem;
 import org.springframework.beans.factory.annotation.Configurable;
 
-privileged aspect EventRegistration_Roo_Configurable {
+privileged aspect EventCartItem_Roo_Configurable {
     
-    declare @type: EventRegistration: @Configurable;
+    declare @type: EventCartItem: @Configurable;
     
 }

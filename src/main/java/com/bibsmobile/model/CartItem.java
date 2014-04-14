@@ -1,5 +1,7 @@
 package com.bibsmobile.model;
 
+import java.util.Date;
+
 import javax.persistence.ManyToOne;
 
 import org.springframework.roo.addon.equals.RooEquals;
@@ -11,11 +13,14 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooToString
 @RooJpaActiveRecord
 @RooEquals
-public abstract class CartItem {
+public class CartItem {
 
     @ManyToOne 
 	private Cart cart;
-	private String description;
-	private double price;
-
+    @ManyToOne
+    private EventCartItem eventCartItem;
+    private int quantity;
+	private Date created;
+	private Date updated;
+	private String comment;
 }

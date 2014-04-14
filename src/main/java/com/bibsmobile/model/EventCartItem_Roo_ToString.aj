@@ -3,13 +3,13 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.EventRegistration;
+import com.bibsmobile.model.EventCartItem;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-privileged aspect EventRegistration_Roo_ToString {
+privileged aspect EventCartItem_Roo_ToString {
     
-    public String EventRegistration.toString() {
+    public String EventCartItem.toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     

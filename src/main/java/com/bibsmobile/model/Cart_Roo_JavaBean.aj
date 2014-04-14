@@ -5,6 +5,7 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.UserProfile;
 import java.util.Date;
 import java.util.Set;
 
@@ -56,6 +57,14 @@ privileged aspect Cart_Roo_JavaBean {
     
     public void Cart.setStatus(int status) {
         this.status = status;
+    }
+    
+    public UserProfile Cart.getUser() {
+        return this.user;
+    }
+    
+    public void Cart.setUser(UserProfile user) {
+        this.user = user;
     }
     
 }
