@@ -24,6 +24,7 @@ public class EventCartItem {
 
     @ManyToOne 
 	private Event event;
+    
 	private String description;
 	private double price;
 	private int available;
@@ -33,9 +34,11 @@ public class EventCartItem {
 	private int couponsAvailable;
 	private int couponsUsed;
 	private boolean timeLimit;
+	
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
 	private Date timeStart;
+    
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
 	private Date timeEnd;

@@ -2,7 +2,8 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-
+<br/><br/><br/><br/><br/>
+<h2>Checkout</h2>
 <FORM NAME='secure_redirect_form' ID='secure_redirect_form_id'
  ACTION='https://test.authorize.net/gateway/transact.dll' METHOD='POST'>
   <label>CreditCardNumber</label><input type='text' class='text' name='x_card_num' size='15'

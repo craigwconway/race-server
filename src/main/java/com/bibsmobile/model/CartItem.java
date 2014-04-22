@@ -17,10 +17,13 @@ public class CartItem {
 
     @ManyToOne 
 	private Cart cart;
+    
     @ManyToOne
     private EventCartItem eventCartItem;
+    
     private int quantity;
 	private Date created;
 	private Date updated;
-	private String comment;
+	private String comment; 
+	private String coupon;
 }

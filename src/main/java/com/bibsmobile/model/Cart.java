@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,14 +26,18 @@ public class Cart {
 	public static final int COMPLETE = 0;
 	public static final int REFUND_REQUEST = 0;
 	public static final int REFUNDED = 0;
+
+	@ManyToOne
+	private UserProfile user;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "cart")
-	private Set<CartItem> cartItems;
+	private List<CartItem> cartItems;
+	
 	private double shipping;
 	private double total;
 	private Date created;
 	private Date updated;
 	private int status;
-	@ManyToOne
-	private UserProfile user;
+	private String coupons; 
+	
 }

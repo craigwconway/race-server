@@ -58,4 +58,12 @@ privileged aspect CartItem_Roo_JavaBean {
         this.comment = comment;
     }
     
+    public String CartItem.getCoupon() {
+        return this.coupon;
+    }
+    
+    public void CartItem.setCoupon(String coupon) {
+        this.coupon = coupon;
+    }
+    
 }

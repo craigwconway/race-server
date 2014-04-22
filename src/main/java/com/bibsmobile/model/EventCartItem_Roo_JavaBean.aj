@@ -3,11 +3,9 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import java.util.Date;
-import java.util.Set;
 
 privileged aspect EventCartItem_Roo_JavaBean {
     
@@ -105,14 +103,6 @@ privileged aspect EventCartItem_Roo_JavaBean {
     
     public void EventCartItem.setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
-    }
-    
-    public Set<CartItem> EventCartItem.getCartItems() {
-        return this.cartItems;
-    }
-    
-    public void EventCartItem.setCartItems(Set<CartItem> cartItems) {
-        this.cartItems = cartItems;
     }
     
 }

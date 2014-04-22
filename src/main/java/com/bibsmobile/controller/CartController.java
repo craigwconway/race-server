@@ -2,11 +2,10 @@ package com.bibsmobile.controller;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
 
 import net.authorize.sim.Fingerprint;
 
@@ -53,7 +52,7 @@ public class CartController {
     		cart.persist();
     	}
 		
-		Set<CartItem> items = (cart.getCartItems()!=null)?cart.getCartItems():new TreeSet<CartItem>();
+		List<CartItem> items = (cart.getCartItems()!=null)?cart.getCartItems():new ArrayList<CartItem>();
     	EventCartItem i = EventCartItem.findEventCartItem(eventCartItemId);
 		CartItem item = new CartItem();
 		item.setCart(cart);

@@ -16,7 +16,7 @@ import com.bibsmobile.model.EventCartItem;
 @RequestMapping("/eventitems")
 @Controller
 @RooWebScaffold(path = "eventitems", formBackingObject = EventCartItem.class)
-public class EventCartItemController {
+public class EventCartItemController { 
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(@RequestParam(value = "event", required = true) Long event, 

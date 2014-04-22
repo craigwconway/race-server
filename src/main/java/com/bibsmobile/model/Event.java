@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RooJpaActiveRecord()
 @RooEquals 
 public class Event {
-
+ 
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "event")
 	private Set<RaceResult> raceResults;	
 	
