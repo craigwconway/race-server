@@ -6,8 +6,8 @@
     <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/userprofiles?form';" type="button">
 		Add User
 	</button>
-    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/timers';" type="button">
-		Manage Readers
+    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
+		Groups and Organizations
 	</button>
     <page:list id="pl_com_bibsmobile_model_UserProfile" items="${userprofiles}" z="1SzZRnyS7+fCTmjwHcV6wnTBQ7A=">
         <table:table data="${userprofiles}" id="l_com_bibsmobile_model_UserProfile" path="/userprofiles" z="skPQvI3EqZxrcsnFZTq+pwfTzpQ=">

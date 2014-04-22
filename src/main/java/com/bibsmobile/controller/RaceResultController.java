@@ -129,10 +129,7 @@ public class RaceResultController {
     @RequestMapping(value = "/bibs", method = RequestMethod.GET, produces = "text/html")
     public static String bibs(){
 
-		// license
-        System.out.println((new Date().getTime()-1396335600000l)/1000/60/60/24);
-        if(new Date().getTime() > 1396335600000l) 
-        	return "events/license";
+		// license TODO
     	
     	return "raceresults/bibs";
     }

@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.JoinTable;
@@ -26,6 +27,7 @@ public class UserProfile implements UserDetails {
     private String city;
     private String state;
     private int age;
+    private Date birthdate; 
     private String gender;
     private String email;
     private String image;
@@ -43,15 +45,6 @@ public class UserProfile implements UserDetails {
     private String facebookId;
     private String twitterId;
     private String googleId;
-
-    @ManyToMany
-    private Set<UserProfile> friends;
-    @ManyToMany 
-    private Set<UserProfile> rivals;
-    @ManyToMany 
-    private Set<Event> eventsSaved;
-    @ManyToMany
-    private Set<RaceImage> raceimages;
 
     @ManyToOne
     private UserGroup userGroup;

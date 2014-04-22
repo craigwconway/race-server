@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,23 +18,29 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord
 @RooEquals
-public class CartCheckout {
+@RooJpaActiveRecord(finders = { "findEventCartItemsByEvent" })
+public class EventCartItem {
 
-	private Cart cart;
-	
-	private enum status{ NEW, PROCESSING, COMPLETED, WISHLIST }; 
-	
-	private enum paymentType {
-		
-	}
+    @ManyToOne 
+	private Event event;
+    
+	private String description;
+	private double price;
+	private int available;
+	private int purchased;
+	private String coupon;
+	private double couponPrice;
+	private int couponsAvailable;
+	private int couponsUsed;
+	private boolean timeLimit;
 	
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
-    private Date created;
-
+	private Date timeStart;
+    
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a") 
-    private Date updated;
+    @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
+	private Date timeEnd;
+	
 }

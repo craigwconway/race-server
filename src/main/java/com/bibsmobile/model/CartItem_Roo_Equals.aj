@@ -17,11 +17,11 @@ privileged aspect CartItem_Roo_Equals {
             return true;
         }
         CartItem rhs = (CartItem) obj;
-        return new EqualsBuilder().append(cart, rhs.cart).append(description, rhs.description).append(id, rhs.id).append(price, rhs.price).isEquals();
+        return new EqualsBuilder().append(cart, rhs.cart).append(comment, rhs.comment).append(coupon, rhs.coupon).append(created, rhs.created).append(eventCartItem, rhs.eventCartItem).append(id, rhs.id).append(quantity, rhs.quantity).append(updated, rhs.updated).isEquals();
     }
     
     public int CartItem.hashCode() {
-        return new HashCodeBuilder().append(cart).append(description).append(id).append(price).toHashCode();
+        return new HashCodeBuilder().append(cart).append(comment).append(coupon).append(created).append(eventCartItem).append(id).append(quantity).append(updated).toHashCode();
     }
     
 }

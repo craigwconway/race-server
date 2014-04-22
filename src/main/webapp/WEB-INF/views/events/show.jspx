@@ -16,6 +16,9 @@
     </style>
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
 		Awards
+	</button> 
+    <button class="btn btn-default btn-top" onclick="products()" type="button">
+		Products and Registration
 	</button>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <button class="btn btn-default btn-top" onclick="redirectImport()" type="button">
@@ -31,6 +34,7 @@
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
         </span>
     </sec:authorize>
+       
     <script>
 	function cloud(){
 		jQuery("#progress").show();
@@ -52,6 +56,9 @@
 		r.fail(function( s,s ) {
 			jQuery("#progress").hide();
 		});
+	}
+	function products(){
+		window.location="/bibs-server/eventitems?event=${event.id}";
 	}
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";

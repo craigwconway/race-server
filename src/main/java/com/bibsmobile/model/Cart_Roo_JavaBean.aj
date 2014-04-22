@@ -5,16 +5,25 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.UserProfile;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 privileged aspect Cart_Roo_JavaBean {
     
-    public Set<CartItem> Cart.getCartItems() {
+    public UserProfile Cart.getUser() {
+        return this.user;
+    }
+    
+    public void Cart.setUser(UserProfile user) {
+        this.user = user;
+    }
+    
+    public List<CartItem> Cart.getCartItems() {
         return this.cartItems;
     }
     
-    public void Cart.setCartItems(Set<CartItem> cartItems) {
+    public void Cart.setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
     }
     
@@ -56,6 +65,14 @@ privileged aspect Cart_Roo_JavaBean {
     
     public void Cart.setStatus(int status) {
         this.status = status;
+    }
+    
+    public String Cart.getCoupons() {
+        return this.coupons;
+    }
+    
+    public void Cart.setCoupons(String coupons) {
+        this.coupons = coupons;
     }
     
 }

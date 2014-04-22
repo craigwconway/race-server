@@ -3,73 +3,73 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.EventCartItem;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
-privileged aspect CartItem_Roo_Jpa_ActiveRecord {
+privileged aspect EventCartItem_Roo_Jpa_ActiveRecord {
     
     @PersistenceContext
-    transient EntityManager CartItem.entityManager;
+    transient EntityManager EventCartItem.entityManager;
     
-    public static final EntityManager CartItem.entityManager() {
-        EntityManager em = new CartItem().entityManager;
+    public static final EntityManager EventCartItem.entityManager() {
+        EntityManager em = new EventCartItem().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
     
-    public static long CartItem.countCartItems() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM CartItem o", Long.class).getSingleResult();
+    public static long EventCartItem.countEventCartItems() {
+        return entityManager().createQuery("SELECT COUNT(o) FROM EventCartItem o", Long.class).getSingleResult();
     }
     
-    public static List<CartItem> CartItem.findAllCartItems() {
-        return entityManager().createQuery("SELECT o FROM CartItem o", CartItem.class).getResultList();
+    public static List<EventCartItem> EventCartItem.findAllEventCartItems() {
+        return entityManager().createQuery("SELECT o FROM EventCartItem o", EventCartItem.class).getResultList();
     }
     
-    public static CartItem CartItem.findCartItem(Long id) {
+    public static EventCartItem EventCartItem.findEventCartItem(Long id) {
         if (id == null) return null;
-        return entityManager().find(CartItem.class, id);
+        return entityManager().find(EventCartItem.class, id);
     }
     
-    public static List<CartItem> CartItem.findCartItemEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM CartItem o", CartItem.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    public static List<EventCartItem> EventCartItem.findEventCartItemEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM EventCartItem o", EventCartItem.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional
-    public void CartItem.persist() {
+    public void EventCartItem.persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.persist(this);
     }
     
     @Transactional
-    public void CartItem.remove() {
+    public void EventCartItem.remove() {
         if (this.entityManager == null) this.entityManager = entityManager();
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            CartItem attached = CartItem.findCartItem(this.id);
+            EventCartItem attached = EventCartItem.findEventCartItem(this.id);
             this.entityManager.remove(attached);
         }
     }
     
     @Transactional
-    public void CartItem.flush() {
+    public void EventCartItem.flush() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.flush();
     }
     
     @Transactional
-    public void CartItem.clear() {
+    public void EventCartItem.clear() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.clear();
     }
     
     @Transactional
-    public CartItem CartItem.merge() {
+    public EventCartItem EventCartItem.merge() {
         if (this.entityManager == null) this.entityManager = entityManager();
-        CartItem merged = this.entityManager.merge(this);
+        EventCartItem merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }
