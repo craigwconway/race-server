@@ -5,7 +5,7 @@
     
     <script>
 	function addToCart(item){
-		window.location = "/bibs-server/cart/item/"+item;
+		window.location = "/bibs-server/carts/item/"+item;
 	}
 	</script>
 	<h2>Shop Products for ${ event.name }</h2>
