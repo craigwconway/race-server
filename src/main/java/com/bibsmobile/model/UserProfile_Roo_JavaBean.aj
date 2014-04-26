@@ -139,10 +139,7 @@ privileged aspect UserProfile_Roo_JavaBean {
     public void UserProfile.setGoogleId(String googleId) {
         this.googleId = googleId;
     }
-    
-    public UserGroup UserProfile.getUserGroup() {
-        return this.userGroup;
-    }
+   
     
     public void UserProfile.setUserGroup(UserGroup userGroup) {
         this.userGroup = userGroup;

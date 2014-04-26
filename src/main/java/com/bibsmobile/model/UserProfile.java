@@ -52,10 +52,17 @@ public class UserProfile implements UserDetails {
 	@OneToMany(mappedBy = "userProfile")
 	private Set<RaceResult> raceResults; 
     
-    @Override
+    @Override    
+    @JSON(include=false) 
     public Set<com.bibsmobile.model.UserAuthority> getAuthorities() {
         return userAuthorities;
+    }    
+    
+    @JSON(include=false)  
+    public UserGroup getUserGroup() { 
+        return userGroup;
     }
+
 
     @Override
     @JSON(include=false) 
