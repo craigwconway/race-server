@@ -122,12 +122,9 @@ public class TimerConfigController {
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
         System.out.println("writes group "+user.getUserGroup().getName());
         
+        // TODO license check
+        
         int writes =  user.getUserGroup().getBibWrites();
-<<<<<<< HEAD
-        System.out.println("No Expiration Date on Bib Writes");
-=======
-        // license TODO
->>>>>>> c4ba72a61d89a5cc3da6d1dd3bc7434c122b6055
         if(writes < 1) return "none";
     	try{
     		timer.write(id); 

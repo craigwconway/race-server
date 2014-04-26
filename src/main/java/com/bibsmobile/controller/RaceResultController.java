@@ -130,11 +130,6 @@ public class RaceResultController {
     public static String bibs(){
 
 		// license TODO
-<<<<<<< HEAD
-//      if(validLicense) 
-//      	return "events/license";
-=======
->>>>>>> c4ba72a61d89a5cc3da6d1dd3bc7434c122b6055
     	
     	return "raceresults/bibs";
     }
