@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_Cart" object="${cart}" path="/carts" z="TvoX+NBQYzCFwafe/yrfgVFzNGQ=">
+        <field:display field="user" id="s_com_bibsmobile_model_Cart_user" object="${cart}" z="RCJBL6uVGuqOT8PY/t6M1LvYCUQ="/>
+        <field:display field="shipping" id="s_com_bibsmobile_model_Cart_shipping" object="${cart}" z="Ycifr0Y7BAISAu+mjbA6NoqX9N4="/>
+        <field:display field="total" id="s_com_bibsmobile_model_Cart_total" object="${cart}" z="T0qSyQi1dKHBYw/K3cU9UU6CEvQ="/>
+        <field:display date="true" dateTimePattern="${cart_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Cart_updated" object="${cart}" z="HlAY1slYvh5f9bO8ICrXni5+iOU="/>
+        <field:display field="status" id="s_com_bibsmobile_model_Cart_status" object="${cart}" z="MbnkT81rizIr4DgIU2DlnXyogco="/>
+        <field:display field="coupons" id="s_com_bibsmobile_model_Cart_coupons" object="${cart}" z="7l67X04o+md5zEYKPCki6/+QdhQ="/>
+    </page:show>
+</div>

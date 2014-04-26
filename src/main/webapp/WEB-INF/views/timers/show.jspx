@@ -10,5 +10,6 @@
         <field:display field="readPower" id="s_com_bibsmobile_model_TimerConfig_readPower" object="${timerconfig}" z="JEEoWcdnlaBRbH2lEX2qXGgqlZs="/>
         <field:display field="writePower" id="s_com_bibsmobile_model_TimerConfig_writePower" object="${timerconfig}" z="GAEYQnVzIi6VjA/5qYIr/1XljLw="/>
         <field:display field="type" id="s_com_bibsmobile_model_TimerConfig_type" object="${timerconfig}" z="E9uB+ki3S4kJe4CzJMG/TE+G//Y="/>
+        <field:display field="ports" id="s_com_bibsmobile_model_TimerConfig_ports" object="${timerconfig}" z="cZAqeDJmKzoYRuSOsq9UBB3L0Xs="/>
     </page:show>
 </div>

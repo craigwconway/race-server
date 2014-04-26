@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_Cart" items="${carts}" z="LTLBUt9amv+iy0ngt9b5n2oNSKg=">
+        <table:table data="${carts}" id="l_com_bibsmobile_model_Cart" path="/carts" z="mnrAQukwSzjiyZQWKoWsh24qAps=">
+            <table:column id="c_com_bibsmobile_model_Cart_user" property="user" z="EEVSdRZ+3gXQTpGKqshDrJAUU2Y="/>
+            <table:column id="c_com_bibsmobile_model_Cart_shipping" property="shipping" z="mncDFMGeuFkI5ospE2OG6n7Lo+M="/>
+            <table:column id="c_com_bibsmobile_model_Cart_total" property="total" z="do20Seqrq8xmng0yatt8iV2hXzA="/>
+            <table:column date="true" dateTimePattern="${cart_created_date_format}" id="c_com_bibsmobile_model_Cart_created" property="created" z="ypP1LpSl+Lyt1cgIx7Q4INn39K8="/>
+            <table:column date="true" dateTimePattern="${cart_updated_date_format}" id="c_com_bibsmobile_model_Cart_updated" property="updated" z="MfOd3hmqcDln/N8z2z7WJGoe878="/>
+        </table:table>
+    </page:list>
+</div>

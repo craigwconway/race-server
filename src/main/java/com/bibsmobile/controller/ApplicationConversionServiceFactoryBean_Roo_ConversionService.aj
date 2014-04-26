@@ -4,7 +4,9 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
+import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
@@ -27,6 +29,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     @Autowired
     UserProfileService ApplicationConversionServiceFactoryBean.userProfileService;
     
+    public Converter<Cart, String> ApplicationConversionServiceFactoryBean.getCartToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.Cart, java.lang.String>() {
+            public String convert(Cart cart) {
+                return new StringBuilder().append(cart.getShipping()).append(' ').append(cart.getTotal()).append(' ').append(cart.getCreated()).append(' ').append(cart.getUpdated()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, Cart> ApplicationConversionServiceFactoryBean.getIdToCartConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.Cart>() {
+            public com.bibsmobile.model.Cart convert(java.lang.Long id) {
+                return Cart.findCart(id);
+            }
+        };
+    }
+    
+    public Converter<String, Cart> ApplicationConversionServiceFactoryBean.getStringToCartConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Cart>() {
+            public com.bibsmobile.model.Cart convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), Cart.class);
+            }
+        };
+    }
+    
     public Converter<Long, Event> ApplicationConversionServiceFactoryBean.getIdToEventConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.Event>() {
             public com.bibsmobile.model.Event convert(java.lang.Long id) {
@@ -39,6 +65,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Event>() {
             public com.bibsmobile.model.Event convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), Event.class);
+            }
+        };
+    }
+    
+    public Converter<EventCartItem, String> ApplicationConversionServiceFactoryBean.getEventCartItemToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventCartItem, java.lang.String>() {
+            public String convert(EventCartItem eventCartItem) {
+                return new StringBuilder().append(eventCartItem.getDescription()).append(' ').append(eventCartItem.getPrice()).append(' ').append(eventCartItem.getAvailable()).append(' ').append(eventCartItem.getPurchased()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, EventCartItem> ApplicationConversionServiceFactoryBean.getIdToEventCartItemConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventCartItem>() {
+            public com.bibsmobile.model.EventCartItem convert(java.lang.Long id) {
+                return EventCartItem.findEventCartItem(id);
+            }
+        };
+    }
+    
+    public Converter<String, EventCartItem> ApplicationConversionServiceFactoryBean.getStringToEventCartItemConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventCartItem>() {
+            public com.bibsmobile.model.EventCartItem convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), EventCartItem.class);
             }
         };
     }
@@ -236,9 +286,15 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     }
     
     public void ApplicationConversionServiceFactoryBean.installLabelConverters(FormatterRegistry registry) {
+        registry.addConverter(getCartToStringConverter());
+        registry.addConverter(getIdToCartConverter());
+        registry.addConverter(getStringToCartConverter());
         registry.addConverter(getEventToStringConverter());
         registry.addConverter(getIdToEventConverter());
         registry.addConverter(getStringToEventConverter());
+        registry.addConverter(getEventCartItemToStringConverter());
+        registry.addConverter(getIdToEventCartItemConverter());
+        registry.addConverter(getStringToEventCartItemConverter());
         registry.addConverter(getRaceImageToStringConverter());
         registry.addConverter(getIdToRaceImageConverter());
         registry.addConverter(getStringToRaceImageConverter());

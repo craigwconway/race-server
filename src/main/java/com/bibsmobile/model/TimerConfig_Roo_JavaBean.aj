@@ -51,4 +51,12 @@ privileged aspect TimerConfig_Roo_JavaBean {
         this.type = type;
     }
     
+    public String TimerConfig.getPorts() {
+        return this.ports;
+    }
+    
+    public void TimerConfig.setPorts(String ports) {
+        this.ports = ports;
+    }
+    
 }

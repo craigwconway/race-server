@@ -22,6 +22,7 @@ public class ThingMagicTimer implements Timer {
 	private Reader reader;
 	private ReadListener readListener; 
 	private TimerConfig timerConfig;
+	
 
 	@Override
 	public void connect() throws Exception{ 
@@ -32,7 +33,7 @@ public class ThingMagicTimer implements Timer {
 		status = 1;
 		System.out.println("Reader at " + timerConfig.getUrl() + " connected. (status="+status+")");
 	}
-
+	
 	@Override
 	public void disconnect() {
 		if (null == reader)
@@ -135,7 +136,7 @@ public class ThingMagicTimer implements Timer {
 
 	private void optimize() {
 		try {
-			reader.paramSet("/reader/read/plan", new SimpleReadPlan(null,
+			reader.paramSet("/reader/read/plan", new SimpleReadPlan(getPorts(timerConfig.getPorts()),
 					TagProtocol.GEN2, true));
 		} catch (ReaderException e) {
 			e.printStackTrace();
@@ -259,6 +260,21 @@ public class ThingMagicTimer implements Timer {
 	@Override
 	public void setTimerConfig(TimerConfig timerConfig) {
 		this.timerConfig = timerConfig;
+	}
+	
+	protected int[] getPorts(String ports){
+		int[] iPorts = null;
+		try{
+			String[] sPorts = ports.split(",");
+			iPorts = new int[sPorts.length];
+			for(int i=0;i<iPorts.length;i++){
+				iPorts[i]=Integer.parseInt(sPorts[i]);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		System.out.println("ports="+iPorts);
+		return iPorts;
 	}
 
 }
