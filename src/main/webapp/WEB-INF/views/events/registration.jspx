@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+<br/><br/><br/><br/><br/>
+<h2>Checkout</h2>
+<FORM NAME='secure_redirect_form' ID='secure_redirect_form_id'
+ ACTION='https://test.authorize.net/gateway/transact.dll' METHOD='POST'>
+  <label>CreditCardNumber</label><input type='text' class='text' name='x_card_num' size='15'
+  	value="4007000000027">
+    </input>
+  <label>Exp.</label><input type='text' class='text' name='x_exp_date' size='4'
+  	value="0420"></input>
+  <label>Amount</label><input type='text' class='text' name='x_amount' size='9'
+    readonly="true" value='${amount }'></input>
+  <input type='hidden' NAME='x_invoice_num' VALUE='${ transactionKey }'/>
+  <input type='hidden' NAME='x_relay_url' VALUE='${relayResponseUrl }'/>
+  <input type='hidden' NAME='x_login' VALUE='${apiLoginId }'/>
+  <input type='hidden' NAME='x_fp_sequence' VALUE='${x_fp_sequence}'/>
+  <input type='hidden' NAME='x_fp_timestamp' VALUE='${x_fp_timestamp}'/>
+  <input type='hidden' NAME='x_fp_hash' VALUE='${x_fp_hash}'/>
+  <input type='hidden' NAME='x_version' VALUE='3.1'/>
+  <input type='hidden' NAME='x_method' VALUE='CC'/>
+  <input type='hidden' NAME='x_type' VALUE='AUTH_CAPTURE'/>
+  <input type='hidden' NAME='x_amount' VALUE='0.07'/>
+  <input type='hidden' NAME='x_test_request' VALUE='FALSE'/>
+  <input type='hidden' NAME='notes' VALUE='extra hot please'/>
+  <input type='SUBMIT' NAME='buy_button' VALUE='BUY'/>
+</FORM>
+
+</div>

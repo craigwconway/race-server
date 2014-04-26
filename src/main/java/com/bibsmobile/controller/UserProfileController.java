@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 
 @RequestMapping("/userprofiles")
@@ -32,4 +36,11 @@ public class UserProfileController {
         uiModel.addAttribute("itemId", u.getId());
         return "userprofiles/show";
     }
+
+    void populateEditForm(Model uiModel, UserProfile userProfile) {
+        uiModel.addAttribute("userProfile", userProfile);
+        uiModel.addAttribute("userauthoritys", UserAuthority.findAllUserAuthoritys());
+        uiModel.addAttribute("usergroups", UserGroup.findAllUserGroups());
+    }
+    
 }

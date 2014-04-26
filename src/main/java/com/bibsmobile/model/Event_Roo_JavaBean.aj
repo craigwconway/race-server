@@ -399,6 +399,30 @@ privileged aspect Event_Roo_JavaBean {
         this.syncId = syncId;
     }
     
+    public boolean Event.isRegEnabled() {
+        return this.regEnabled;
+    }
+    
+    public void Event.setRegEnabled(boolean regEnabled) {
+        this.regEnabled = regEnabled;
+    }
+    
+    public Date Event.getRegStart() {
+        return this.regStart;
+    }
+    
+    public void Event.setRegStart(Date regStart) {
+        this.regStart = regStart;
+    }
+    
+    public Date Event.getRegEnd() {
+        return this.regEnd;
+    }
+    
+    public void Event.setRegEnd(Date regEnd) {
+        this.regEnd = regEnd;
+    }
+    
     public Date Event.getGunTime() {
         return this.gunTime;
     }

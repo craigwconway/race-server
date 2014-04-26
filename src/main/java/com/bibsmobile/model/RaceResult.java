@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -23,7 +24,9 @@ import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Index;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
@@ -32,13 +35,14 @@ import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 @RooJavaBean
+@RooEquals
 @RooJson
 @RooJpaActiveRecord(finders = { "findRaceResultsByEvent", "findRaceResultsByEventAndBibEquals", 
 		"findRaceResultsByEventAndFirstnameLike", "findRaceResultsByEventAndLastnameLike",
 		"findRaceResultsByEventAndFirstnameLikeAndLastnameLike"})
 public class RaceResult implements Comparable<RaceResult>{
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) 
     private Event event;
     
     @ManyToOne
@@ -48,10 +52,13 @@ public class RaceResult implements Comparable<RaceResult>{
 	private Set<RaceImage> raceImage;
 
     @NotNull 
+    @Index(name="bib_index") // search field
     private String bib;
 
+    @Index(name="name_index") // search field
     private String firstname;
 
+    @Index(name="name_index") // search field
     private String lastname;
 
     private String middlename;
@@ -316,8 +323,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 	
 	public int compareTo(RaceResult other) {
-		long val = timer - other.timer;
-		return (int) val;
+		return (int) ((other.timestart-other.timeofficial) - (this.timestart-this.timeofficial) );
 	}
 	
 	public static String toHumanTime(long start,long finish) {
@@ -336,15 +342,6 @@ public class RaceResult implements Comparable<RaceResult>{
     	else if (minutes == 0) rtn = rtn + "00";
     	if(seconds>=0 && seconds <=9) rtn = rtn + ":0"+seconds;
     	else if(seconds > 9) rtn = rtn + ":"+seconds;
-    	// rtn = rtn + "."+millis;
-    	/*
-    	int numyears = (int) Math.floor(seconds / 31536000);
-    	int numdays = (int) Math.floor((seconds % 31536000) / 86400); 
-    	if(numdays==1) rtn = numdays + " day "+rtn;
-    	else if(numdays>0) rtn = numdays + " days "+rtn;
-    	if(numyears==1) rtn = numdays + " year "+rtn;
-    	else if(numyears>0) rtn = numdays + " years "+rtn;
-    	*/
 		return rtn;
 	}
 }

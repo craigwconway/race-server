@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_EventCartItem" object="${eventcartitem}" path="/eventitems" z="0Vio973EeZc1TEtv7EngzcpLOg0=">
+        <field:display field="event" id="s_com_bibsmobile_model_EventCartItem_event" object="${eventcartitem}" z="kUWTdCJULj5f7xzBlreY2fW2Ls4="/>
+        <field:display field="description" id="s_com_bibsmobile_model_EventCartItem_description" object="${eventcartitem}" z="mCCYhaC4YuyDD8OiMy9CMEOJ8rw="/>
+        <field:display field="coupon" id="s_com_bibsmobile_model_EventCartItem_coupon" object="${eventcartitem}" z="cXA/jZ8wwETHYCZTLiNc0mLU+u8="/>
+        <field:display field="price" id="s_com_bibsmobile_model_EventCartItem_price" object="${eventcartitem}" z="3YHpSkJ+Bw3vnWGttus+yS8o0dA="/>
+        <field:display field="couponPrice" id="s_com_bibsmobile_model_EventCartItem_couponPrice" object="${eventcartitem}" z="xfeZuyqDFWIVq4D5bXxRizY5wPA="/>
+        <field:display field="couponsAvailable" id="s_com_bibsmobile_model_EventCartItem_couponsAvailable" object="${eventcartitem}" z="9JBjzfJGYLZbxC0j9LKqn2cVCrU="/>
+        <field:display field="couponsUsed" id="s_com_bibsmobile_model_EventCartItem_couponsUsed" object="${eventcartitem}" z="5BAh+PqaOb/nkOM09CAdAgEm7us="/>
+        <field:display field="timeLimit" id="s_com_bibsmobile_model_EventCartItem_timeLimit" object="${eventcartitem}" z="plu3qggjRCWuZyHT9uAFuyC0e48="/>
+        <field:display field="purchased" id="s_com_bibsmobile_model_EventCartItem_purchased" object="${eventcartitem}" z="H5D4q0bpmcWRFuWAuTF8uBvI8/Y="/>
+        <field:display date="true" dateTimePattern="${eventCartItem_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_EventCartItem_timeStart" object="${eventcartitem}" z="ez2n8gsY7sk4qMHe91tE4WGwgJQ="/>
+        <field:display date="true" dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_EventCartItem_timeEnd" object="${eventcartitem}" z="2PA4wA6Rn6RebAbmSCHKt5oJOfA="/>
+        <field:display field="available" id="s_com_bibsmobile_model_EventCartItem_available" object="${eventcartitem}" z="twLTBBz7EJt8xNiUicYdNKI3qD0="/>
+    </page:show>
+</div>
