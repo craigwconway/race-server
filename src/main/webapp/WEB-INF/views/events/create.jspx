@@ -62,12 +62,25 @@
             <field:select field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="oo4ip/WoDNsEB0aJzYG0szVc5x8="/>
         </div>
         <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="/3fyPZerngMWWMJqq9ZJvrhAH7g="/>
-        <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
-        <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
+        <div id="regDates">
+	        <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
+	        <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
+        </div>
     </form:create>
     <script>
     window.onload = function(){
     	jQuery("#_name_id").focus();
+    	var myRegEnabled = jQuery("#_regEnabled_id");
+    	var myRegDates = jQuery("#regDates");
+    	if(myRegEnabled.attr("checked")){
+    		myRegDates.show();
+    	}else{
+    		myRegDates.hide();
+    	}
+    	// add toggle to myRegEnabled
+    	myRegEnabled.click(function(){
+    		myRegDates.toggle('slow');
+    	});
     }
 	</script>
 </div>

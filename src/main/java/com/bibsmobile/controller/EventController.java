@@ -495,12 +495,7 @@ public class EventController {
     
     void populateEditForm(Model uiModel, Event event) {
         uiModel.addAttribute("event", event);
-//        addDateTimeFormatPatterns1(uiModel);
-//        uiModel.addAttribute("awardcategorys", AwardCategory.findAllAwardCategorys());
-//        uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
-//        uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
-//        uiModel.addAttribute("resultsfiles", ResultsFile.findAllResultsFiles());
-//        uiModel.addAttribute("usergroups", UserGroup.findAllUserGroups());
+        addDateTimeFormatPatterns1(uiModel);
     }
     
     void addDateTimeFormatPatterns1(Model uiModel) {
@@ -508,7 +503,9 @@ public class EventController {
         uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
     }
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)

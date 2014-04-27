@@ -77,9 +77,6 @@ public class ResultsImportController {
     }
 
     public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
-        System.out.println("values " + Arrays.asList(nextLine).toString());
-        System.out.println("map " + Arrays.asList(map).toString());
-        System.out.println(nextLine.length+"="+map.length);
         if (nextLine.length != map.length || nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
