@@ -138,6 +138,9 @@ public class ThingMagicTimer implements Timer {
 		try {
 			reader.paramSet("/reader/read/plan", new SimpleReadPlan(getPorts(timerConfig.getPorts()),
 					TagProtocol.GEN2, true));
+			if(null!=getPorts(timerConfig.getPorts())){ 
+				reader.paramSet( "/reader/antenna/checkPort", false); // default is true
+			} 
 		} catch (ReaderException e) {
 			e.printStackTrace();
 		}
