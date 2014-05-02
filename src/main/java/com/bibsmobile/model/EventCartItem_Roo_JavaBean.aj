@@ -114,4 +114,20 @@ privileged aspect EventCartItem_Roo_JavaBean {
         this.type = type;
     }
     
+    public double EventCartItem.getDonationAmount() {
+        return this.donationAmount;
+    }
+    
+    public void EventCartItem.setDonationAmount(double donationAmount) {
+        this.donationAmount = donationAmount;
+    }
+    
+    public String EventCartItem.getCharityName() {
+        return this.charityName;
+    }
+    
+    public void EventCartItem.setCharityName(String charityName) {
+        this.charityName = charityName;
+    }
+    
 }

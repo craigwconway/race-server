@@ -17,5 +17,7 @@
         <field:input field="purchased" id="c_com_bibsmobile_model_EventCartItem_purchased" z="SBP90uqaOyaKhGK95DUBM9ONqJ0="/>
         <field:select field="event" id="c_com_bibsmobile_model_EventCartItem_event" itemValue="id" items="${events}" path="/events" z="Mpt8K6YrAEB3O0PYBS7l4NwMCU8="/>
         <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" z="wopshbkxY6Zb6b7JRuyVxfq4Gck="/>
+        <field:input field="donationAmount" id="c_com_bibsmobile_model_EventCartItem_donationAmount" z="VZFWFkpuJC9h6reOZuaam4TV3tA="/>
+        <field:input field="charityName" id="c_com_bibsmobile_model_EventCartItem_charityName" z="tkvJAEiBX0M6TeamUAzmlX2kFrw="/>
     </form:update>
 </div>

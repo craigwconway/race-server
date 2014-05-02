@@ -53,4 +53,12 @@ public class EventCartItem {
      */
     @Enumerated
     private EventCartItemTypeEnum type;
+
+    /**
+     */
+    private double donationAmount;
+
+    /**
+     */
+    private String charityName;
 }

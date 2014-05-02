@@ -16,5 +16,7 @@
         <field:display date="true" dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_EventCartItem_timeEnd" object="${eventcartitem}" z="2PA4wA6Rn6RebAbmSCHKt5oJOfA="/>
         <field:display field="available" id="s_com_bibsmobile_model_EventCartItem_available" object="${eventcartitem}" z="twLTBBz7EJt8xNiUicYdNKI3qD0="/>
         <field:display field="type" id="s_com_bibsmobile_model_EventCartItem_type" object="${eventcartitem}" z="KwyOSZQcg5o2G1wtiyn8ecWnsT8="/>
+        <field:display field="donationAmount" id="s_com_bibsmobile_model_EventCartItem_donationAmount" object="${eventcartitem}" z="i+de6jGKwapUT0VvaDgBF8+By7Q="/>
+        <field:display field="charityName" id="s_com_bibsmobile_model_EventCartItem_charityName" object="${eventcartitem}" z="nTReWLZpZtmMDu2TSenTf9hNe3I="/>
     </page:show>
 </div>
