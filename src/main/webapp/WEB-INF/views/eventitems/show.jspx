@@ -18,5 +18,8 @@
         <field:display field="type" id="s_com_bibsmobile_model_EventCartItem_type" object="${eventcartitem}" z="KwyOSZQcg5o2G1wtiyn8ecWnsT8="/>
         <field:display field="donationAmount" id="s_com_bibsmobile_model_EventCartItem_donationAmount" object="${eventcartitem}" z="i+de6jGKwapUT0VvaDgBF8+By7Q="/>
         <field:display field="charityName" id="s_com_bibsmobile_model_EventCartItem_charityName" object="${eventcartitem}" z="nTReWLZpZtmMDu2TSenTf9hNe3I="/>
+        <field:display field="tshortSizes" id="s_com_bibsmobile_model_EventCartItem_tshortSizes" object="${eventcartitem}" z="/PSVoIoQsvVj+3wZyZCF/Aau3yk="/>
+        <field:display field="tshortColors" id="s_com_bibsmobile_model_EventCartItem_tshortColors" object="${eventcartitem}" z="jTxocReDJUwikNAk9fp9rG/XiSE="/>
+        <field:display field="tshortImageUrls" id="s_com_bibsmobile_model_EventCartItem_tshortImageUrls" object="${eventcartitem}" z="ibRf+okA1Fm5ZeQFZ6drMooAhF4="/>
     </page:show>
 </div>

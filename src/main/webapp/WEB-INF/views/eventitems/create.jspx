@@ -15,9 +15,12 @@
         <field:datetime dateTimePattern="${eventCartItem_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_EventCartItem_timeStart" z="R67dcL0GUsFRBsgYDAp1Zl48lYc="/>
         <field:datetime dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_EventCartItem_timeEnd" z="kq5uOMjsGDgMTTJLRga/lgiNCI0="/>
         <field:input field="available" id="c_com_bibsmobile_model_EventCartItem_available" z="zHPmOaa/kg0T8qHJQjSiKu0Wu8s="/>
-        <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" z="wopshbkxY6Zb6b7JRuyVxfq4Gck="/>
+        <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" required="true" z="g+W9OR2k/yrQ4Pj87bO3WG88/SU="/>
         <field:input field="donationAmount" id="c_com_bibsmobile_model_EventCartItem_donationAmount" z="VZFWFkpuJC9h6reOZuaam4TV3tA="/>
         <field:input field="charityName" id="c_com_bibsmobile_model_EventCartItem_charityName" z="tkvJAEiBX0M6TeamUAzmlX2kFrw="/>
+        <field:input field="tshortSizes" id="c_com_bibsmobile_model_EventCartItem_tshortSizes" z="azTo7d7+sWbNRr05aKH2woVYKzo="/>
+        <field:input field="tshortColors" id="c_com_bibsmobile_model_EventCartItem_tshortColors" z="SjKhaF5VXR25F+nA2F2k8JE+gXg="/>
+        <field:input field="tshortImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshortImageUrls" z="2Hw5nFO2gSOzyTna5gphjHf3jBU="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 </div>

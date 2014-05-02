@@ -13,6 +13,7 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
 
 @RooJavaBean
 @RooToString
@@ -51,6 +52,7 @@ public class EventCartItem {
 
     /**
      */
+    @NotNull
     @Enumerated
     private EventCartItemTypeEnum type;
 
@@ -61,4 +63,16 @@ public class EventCartItem {
     /**
      */
     private String charityName;
+
+    /**
+     */
+    private String tshortSizes;
+
+    /**
+     */
+    private String tshortColors;
+
+    /**
+     */
+    private String tshortImageUrls;
 }
