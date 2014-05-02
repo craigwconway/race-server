@@ -10,10 +10,33 @@ import javax.persistence.TypedQuery;
 
 privileged aspect ResultsImport_Roo_Finder {
     
+    public static Long ResultsImport.countFindResultsImportsByResultsFile(ResultsFile resultsFile) {
+        if (resultsFile == null) throw new IllegalArgumentException("The resultsFile argument is required");
+        EntityManager em = ResultsImport.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ResultsImport AS o WHERE o.resultsFile = :resultsFile", Long.class);
+        q.setParameter("resultsFile", resultsFile);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<ResultsImport> ResultsImport.findResultsImportsByResultsFile(ResultsFile resultsFile) {
         if (resultsFile == null) throw new IllegalArgumentException("The resultsFile argument is required");
         EntityManager em = ResultsImport.entityManager();
         TypedQuery<ResultsImport> q = em.createQuery("SELECT o FROM ResultsImport AS o WHERE o.resultsFile = :resultsFile", ResultsImport.class);
+        q.setParameter("resultsFile", resultsFile);
+        return q;
+    }
+    
+    public static TypedQuery<ResultsImport> ResultsImport.findResultsImportsByResultsFile(ResultsFile resultsFile, String sortFieldName, String sortOrder) {
+        if (resultsFile == null) throw new IllegalArgumentException("The resultsFile argument is required");
+        EntityManager em = ResultsImport.entityManager();
+        String jpaQuery = "SELECT o FROM ResultsImport AS o WHERE o.resultsFile = :resultsFile";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<ResultsImport> q = em.createQuery(jpaQuery, ResultsImport.class);
         q.setParameter("resultsFile", resultsFile);
         return q;
     }

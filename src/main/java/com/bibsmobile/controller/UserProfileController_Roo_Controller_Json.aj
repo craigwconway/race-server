@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
 privileged aspect UserProfileController_Roo_Controller_Json {
     
-    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> UserProfileController.showJson(@PathVariable("id") Long id) {
         UserProfile userProfile = userProfileService.findUserProfile(id);
@@ -40,11 +41,13 @@ privileged aspect UserProfileController_Roo_Controller_Json {
     }
     
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> UserProfileController.createFromJson(@RequestBody String json) {
+    public ResponseEntity<String> UserProfileController.createFromJson(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
         userProfileService.saveUserProfile(userProfile);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location",uriBuilder.path(a.value()[0]+"/"+userProfile.getId().toString()).build().toUriString());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
     
@@ -58,25 +61,14 @@ privileged aspect UserProfileController_Roo_Controller_Json {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
     
-    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> UserProfileController.updateFromJson(@RequestBody String json) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> UserProfileController.updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
+        userProfile.setId(id);
         if (userProfileService.updateUserProfile(userProfile) == null) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
-    
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> UserProfileController.updateFromJsonArray(@RequestBody String json) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        for (UserProfile userProfile: UserProfile.fromJsonArrayToUserProfiles(json)) {
-            if (userProfileService.updateUserProfile(userProfile) == null) {
-                return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-            }
         }
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }

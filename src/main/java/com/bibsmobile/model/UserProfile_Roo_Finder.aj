@@ -9,10 +9,33 @@ import javax.persistence.TypedQuery;
 
 privileged aspect UserProfile_Roo_Finder {
     
+    public static Long UserProfile.countFindUserProfilesByUsernameEquals(String username) {
+        if (username == null || username.length() == 0) throw new IllegalArgumentException("The username argument is required");
+        EntityManager em = UserProfile.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.username = :username", Long.class);
+        q.setParameter("username", username);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<UserProfile> UserProfile.findUserProfilesByUsernameEquals(String username) {
         if (username == null || username.length() == 0) throw new IllegalArgumentException("The username argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.username = :username", UserProfile.class);
+        q.setParameter("username", username);
+        return q;
+    }
+    
+    public static TypedQuery<UserProfile> UserProfile.findUserProfilesByUsernameEquals(String username, String sortFieldName, String sortOrder) {
+        if (username == null || username.length() == 0) throw new IllegalArgumentException("The username argument is required");
+        EntityManager em = UserProfile.entityManager();
+        String jpaQuery = "SELECT o FROM UserProfile AS o WHERE o.username = :username";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<UserProfile> q = em.createQuery(jpaQuery, UserProfile.class);
         q.setParameter("username", username);
         return q;
     }

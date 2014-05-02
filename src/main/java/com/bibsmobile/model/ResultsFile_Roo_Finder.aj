@@ -10,10 +10,43 @@ import javax.persistence.TypedQuery;
 
 privileged aspect ResultsFile_Roo_Finder {
     
+    public static Long ResultsFile.countFindResultsFilesByEvent(Event event) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = ResultsFile.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ResultsFile AS o WHERE o.event = :event", Long.class);
+        q.setParameter("event", event);
+        return ((Long) q.getSingleResult());
+    }
+    
+    public static Long ResultsFile.countFindResultsFilesByNameEqualsAndEvent(String name, Event event) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = ResultsFile.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ResultsFile AS o WHERE o.name = :name  AND o.event = :event", Long.class);
+        q.setParameter("name", name);
+        q.setParameter("event", event);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<ResultsFile> ResultsFile.findResultsFilesByEvent(Event event) {
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = ResultsFile.entityManager();
         TypedQuery<ResultsFile> q = em.createQuery("SELECT o FROM ResultsFile AS o WHERE o.event = :event", ResultsFile.class);
+        q.setParameter("event", event);
+        return q;
+    }
+    
+    public static TypedQuery<ResultsFile> ResultsFile.findResultsFilesByEvent(Event event, String sortFieldName, String sortOrder) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = ResultsFile.entityManager();
+        String jpaQuery = "SELECT o FROM ResultsFile AS o WHERE o.event = :event";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<ResultsFile> q = em.createQuery(jpaQuery, ResultsFile.class);
         q.setParameter("event", event);
         return q;
     }
@@ -23,6 +56,23 @@ privileged aspect ResultsFile_Roo_Finder {
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = ResultsFile.entityManager();
         TypedQuery<ResultsFile> q = em.createQuery("SELECT o FROM ResultsFile AS o WHERE o.name = :name  AND o.event = :event", ResultsFile.class);
+        q.setParameter("name", name);
+        q.setParameter("event", event);
+        return q;
+    }
+    
+    public static TypedQuery<ResultsFile> ResultsFile.findResultsFilesByNameEqualsAndEvent(String name, Event event, String sortFieldName, String sortOrder) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = ResultsFile.entityManager();
+        String jpaQuery = "SELECT o FROM ResultsFile AS o WHERE o.name = :name  AND o.event = :event";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<ResultsFile> q = em.createQuery(jpaQuery, ResultsFile.class);
         q.setParameter("name", name);
         q.setParameter("event", event);
         return q;

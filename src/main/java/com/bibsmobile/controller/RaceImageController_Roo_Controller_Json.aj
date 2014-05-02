@@ -16,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
 privileged aspect RaceImageController_Roo_Controller_Json {
     
-    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> RaceImageController.showJson(@PathVariable("id") Long id) {
         RaceImage raceImage = RaceImage.findRaceImage(id);
@@ -41,11 +42,13 @@ privileged aspect RaceImageController_Roo_Controller_Json {
     }
     
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> RaceImageController.createFromJson(@RequestBody String json) {
+    public ResponseEntity<String> RaceImageController.createFromJson(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         RaceImage raceImage = RaceImage.fromJsonToRaceImage(json);
         raceImage.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location",uriBuilder.path(a.value()[0]+"/"+raceImage.getId().toString()).build().toUriString());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
     
@@ -59,25 +62,14 @@ privileged aspect RaceImageController_Roo_Controller_Json {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
     
-    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> RaceImageController.updateFromJson(@RequestBody String json) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> RaceImageController.updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         RaceImage raceImage = RaceImage.fromJsonToRaceImage(json);
+        raceImage.setId(id);
         if (raceImage.merge() == null) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
-    
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> RaceImageController.updateFromJsonArray(@RequestBody String json) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        for (RaceImage raceImage: RaceImage.fromJsonArrayToRaceImages(json)) {
-            if (raceImage.merge() == null) {
-                return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-            }
         }
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }

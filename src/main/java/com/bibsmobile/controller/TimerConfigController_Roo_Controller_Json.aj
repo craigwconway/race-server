@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
 
 privileged aspect TimerConfigController_Roo_Controller_Json {
     
-    @RequestMapping(value = "/{id}", headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> TimerConfigController.showJson(@PathVariable("id") Long id) {
         TimerConfig timerConfig = TimerConfig.findTimerConfig(id);
@@ -39,11 +40,13 @@ privileged aspect TimerConfigController_Roo_Controller_Json {
     }
     
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> TimerConfigController.createFromJson(@RequestBody String json) {
+    public ResponseEntity<String> TimerConfigController.createFromJson(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         TimerConfig timerConfig = TimerConfig.fromJsonToTimerConfig(json);
         timerConfig.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location",uriBuilder.path(a.value()[0]+"/"+timerConfig.getId().toString()).build().toUriString());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
     
@@ -57,25 +60,14 @@ privileged aspect TimerConfigController_Roo_Controller_Json {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
     
-    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> TimerConfigController.updateFromJson(@RequestBody String json) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> TimerConfigController.updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         TimerConfig timerConfig = TimerConfig.fromJsonToTimerConfig(json);
+        timerConfig.setId(id);
         if (timerConfig.merge() == null) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
-    
-    @RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> TimerConfigController.updateFromJsonArray(@RequestBody String json) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
-        for (TimerConfig timerConfig: TimerConfig.fromJsonArrayToTimerConfigs(json)) {
-            if (timerConfig.merge() == null) {
-                return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
-            }
         }
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }

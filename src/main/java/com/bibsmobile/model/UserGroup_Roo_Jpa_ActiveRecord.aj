@@ -14,6 +14,8 @@ privileged aspect UserGroup_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager UserGroup.entityManager;
     
+    public static final List<String> UserGroup.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "bibWrites", "userProfiles", "events");
+    
     public static final EntityManager UserGroup.entityManager() {
         EntityManager em = new UserGroup().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect UserGroup_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM UserGroup o", UserGroup.class).getResultList();
     }
     
+    public static List<UserGroup> UserGroup.findAllUserGroups(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM UserGroup o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, UserGroup.class).getResultList();
+    }
+    
     public static UserGroup UserGroup.findUserGroup(Long id) {
         if (id == null) return null;
         return entityManager().find(UserGroup.class, id);
@@ -35,6 +48,17 @@ privileged aspect UserGroup_Roo_Jpa_ActiveRecord {
     
     public static List<UserGroup> UserGroup.findUserGroupEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM UserGroup o", UserGroup.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<UserGroup> UserGroup.findUserGroupEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM UserGroup o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, UserGroup.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

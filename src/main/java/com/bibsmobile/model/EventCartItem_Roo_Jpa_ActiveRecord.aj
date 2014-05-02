@@ -14,6 +14,8 @@ privileged aspect EventCartItem_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager EventCartItem.entityManager;
     
+    public static final List<String> EventCartItem.fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "description", "price", "available", "purchased", "coupon", "couponPrice", "couponsAvailable", "couponsUsed", "timeLimit", "timeStart", "timeEnd", "type");
+    
     public static final EntityManager EventCartItem.entityManager() {
         EntityManager em = new EventCartItem().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect EventCartItem_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM EventCartItem o", EventCartItem.class).getResultList();
     }
     
+    public static List<EventCartItem> EventCartItem.findAllEventCartItems(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EventCartItem o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EventCartItem.class).getResultList();
+    }
+    
     public static EventCartItem EventCartItem.findEventCartItem(Long id) {
         if (id == null) return null;
         return entityManager().find(EventCartItem.class, id);
@@ -35,6 +48,17 @@ privileged aspect EventCartItem_Roo_Jpa_ActiveRecord {
     
     public static List<EventCartItem> EventCartItem.findEventCartItemEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EventCartItem o", EventCartItem.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<EventCartItem> EventCartItem.findEventCartItemEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM EventCartItem o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, EventCartItem.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

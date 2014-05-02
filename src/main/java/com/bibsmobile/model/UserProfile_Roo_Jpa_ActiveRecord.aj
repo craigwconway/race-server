@@ -14,6 +14,8 @@ privileged aspect UserProfile_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager UserProfile.entityManager;
     
+    public static final List<String> UserProfile.fieldNames4OrderClauseFilter = java.util.Arrays.asList("firstname", "lastname", "city", "state", "age", "birthdate", "gender", "email", "image", "userAuthorities", "username", "password", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled", "facebookId", "twitterId", "googleId", "userGroup", "raceResults");
+    
     public static final EntityManager UserProfile.entityManager() {
         EntityManager em = new UserProfile().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect UserProfile_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM UserProfile o", UserProfile.class).getResultList();
     }
     
+    public static List<UserProfile> UserProfile.findAllUserProfiles(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM UserProfile o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, UserProfile.class).getResultList();
+    }
+    
     public static UserProfile UserProfile.findUserProfile(Long id) {
         if (id == null) return null;
         return entityManager().find(UserProfile.class, id);
@@ -35,6 +48,17 @@ privileged aspect UserProfile_Roo_Jpa_ActiveRecord {
     
     public static List<UserProfile> UserProfile.findUserProfileEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM UserProfile o", UserProfile.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<UserProfile> UserProfile.findUserProfileEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM UserProfile o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, UserProfile.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

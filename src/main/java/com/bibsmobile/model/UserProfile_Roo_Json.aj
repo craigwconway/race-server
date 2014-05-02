@@ -13,15 +13,23 @@ import java.util.List;
 privileged aspect UserProfile_Roo_Json {
     
     public static UserProfile UserProfile.fromJsonToUserProfile(String json) {
-        return new JSONDeserializer<UserProfile>().use(null, UserProfile.class).deserialize(json);
+        return new JSONDeserializer<UserProfile>()
+        .use(null, UserProfile.class).deserialize(json);
     }
     
     public static String UserProfile.toJsonArray(Collection<UserProfile> collection) {
-        return new JSONSerializer().exclude("*.class").serialize(collection);
+        return new JSONSerializer()
+        .exclude("*.class").serialize(collection);
+    }
+    
+    public static String UserProfile.toJsonArray(Collection<UserProfile> collection, String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(collection);
     }
     
     public static Collection<UserProfile> UserProfile.fromJsonArrayToUserProfiles(String json) {
-        return new JSONDeserializer<List<UserProfile>>().use(null, ArrayList.class).use("values", UserProfile.class).deserialize(json);
+        return new JSONDeserializer<List<UserProfile>>()
+        .use("values", UserProfile.class).deserialize(json);
     }
     
 }

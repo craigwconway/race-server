@@ -14,6 +14,8 @@ privileged aspect ResultsImport_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager ResultsImport.entityManager;
     
+    public static final List<String> ResultsImport.fieldNames4OrderClauseFilter = java.util.Arrays.asList("runDate", "resultsFile", "resultsFileMapping", "rowsProcessed", "errors", "errorRows");
+    
     public static final EntityManager ResultsImport.entityManager() {
         EntityManager em = new ResultsImport().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect ResultsImport_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM ResultsImport o", ResultsImport.class).getResultList();
     }
     
+    public static List<ResultsImport> ResultsImport.findAllResultsImports(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM ResultsImport o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, ResultsImport.class).getResultList();
+    }
+    
     public static ResultsImport ResultsImport.findResultsImport(Long id) {
         if (id == null) return null;
         return entityManager().find(ResultsImport.class, id);
@@ -35,6 +48,17 @@ privileged aspect ResultsImport_Roo_Jpa_ActiveRecord {
     
     public static List<ResultsImport> ResultsImport.findResultsImportEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM ResultsImport o", ResultsImport.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<ResultsImport> ResultsImport.findResultsImportEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM ResultsImport o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, ResultsImport.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

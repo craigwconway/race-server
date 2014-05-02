@@ -14,6 +14,8 @@ privileged aspect CartItem_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager CartItem.entityManager;
     
+    public static final List<String> CartItem.fieldNames4OrderClauseFilter = java.util.Arrays.asList("cart", "eventCartItem", "quantity", "created", "updated", "comment", "coupon");
+    
     public static final EntityManager CartItem.entityManager() {
         EntityManager em = new CartItem().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect CartItem_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM CartItem o", CartItem.class).getResultList();
     }
     
+    public static List<CartItem> CartItem.findAllCartItems(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM CartItem o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, CartItem.class).getResultList();
+    }
+    
     public static CartItem CartItem.findCartItem(Long id) {
         if (id == null) return null;
         return entityManager().find(CartItem.class, id);
@@ -35,6 +48,17 @@ privileged aspect CartItem_Roo_Jpa_ActiveRecord {
     
     public static List<CartItem> CartItem.findCartItemEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM CartItem o", CartItem.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<CartItem> CartItem.findCartItemEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM CartItem o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, CartItem.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

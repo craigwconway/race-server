@@ -10,10 +10,33 @@ import javax.persistence.TypedQuery;
 
 privileged aspect EventCartItem_Roo_Finder {
     
+    public static Long EventCartItem.countFindEventCartItemsByEvent(Event event) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.event = :event", Long.class);
+        q.setParameter("event", event);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByEvent(Event event) {
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event", EventCartItem.class);
+        q.setParameter("event", event);
+        return q;
+    }
+    
+    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByEvent(Event event, String sortFieldName, String sortOrder) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.event = :event";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<EventCartItem> q = em.createQuery(jpaQuery, EventCartItem.class);
         q.setParameter("event", event);
         return q;
     }

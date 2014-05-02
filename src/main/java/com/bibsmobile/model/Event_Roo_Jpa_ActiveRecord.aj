@@ -14,6 +14,8 @@ privileged aspect Event_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager Event.entityManager;
     
+    public static final List<String> Event.fieldNames4OrderClauseFilter = java.util.Arrays.asList("raceResults", "awardCategorys", "resultsFiles", "raceImages", "userGroup", "name", "timeStart", "timeEnd", "featured", "city", "state", "country", "lattitude", "longitude", "type", "website", "phone", "email", "registration", "parking", "general", "description", "organization", "photo", "photo2", "photo3", "map", "map2", "map3", "results", "results2", "results3", "alert1", "alert2", "alert3", "donateUrl", "facebookUrl1", "facebookUrl2", "photoUploadUrl", "coursemaps", "merchandise", "beachEvents", "shuttles", "courseRules", "running", "gunFired", "sync", "syncId", "regEnabled", "regStart", "regEnd", "gunTime", "gunTimeStart", "created", "updated");
+    
     public static final EntityManager Event.entityManager() {
         EntityManager em = new Event().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect Event_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM Event o", Event.class).getResultList();
     }
     
+    public static List<Event> Event.findAllEvents(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM Event o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, Event.class).getResultList();
+    }
+    
     public static Event Event.findEvent(Long id) {
         if (id == null) return null;
         return entityManager().find(Event.class, id);
@@ -35,6 +48,17 @@ privileged aspect Event_Roo_Jpa_ActiveRecord {
     
     public static List<Event> Event.findEventEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM Event o", Event.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<Event> Event.findEventEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM Event o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, Event.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional
