@@ -15,6 +15,7 @@
         <field:datetime dateTimePattern="${eventCartItem_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_EventCartItem_timeStart" z="R67dcL0GUsFRBsgYDAp1Zl48lYc="/>
         <field:datetime dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_EventCartItem_timeEnd" z="kq5uOMjsGDgMTTJLRga/lgiNCI0="/>
         <field:input field="available" id="c_com_bibsmobile_model_EventCartItem_available" z="zHPmOaa/kg0T8qHJQjSiKu0Wu8s="/>
+        <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" z="wopshbkxY6Zb6b7JRuyVxfq4Gck="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 </div>

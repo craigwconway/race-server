@@ -5,6 +5,7 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import java.util.Date;
 
 privileged aspect EventCartItem_Roo_JavaBean {
@@ -103,6 +104,14 @@ privileged aspect EventCartItem_Roo_JavaBean {
     
     public void EventCartItem.setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
+    }
+    
+    public EventCartItemTypeEnum EventCartItem.getType() {
+        return this.type;
+    }
+    
+    public void EventCartItem.setType(EventCartItemTypeEnum type) {
+        this.type = type;
     }
     
 }

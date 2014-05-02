@@ -15,5 +15,6 @@
         <field:display date="true" dateTimePattern="${eventCartItem_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_EventCartItem_timeStart" object="${eventcartitem}" z="ez2n8gsY7sk4qMHe91tE4WGwgJQ="/>
         <field:display date="true" dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_EventCartItem_timeEnd" object="${eventcartitem}" z="2PA4wA6Rn6RebAbmSCHKt5oJOfA="/>
         <field:display field="available" id="s_com_bibsmobile_model_EventCartItem_available" object="${eventcartitem}" z="twLTBBz7EJt8xNiUicYdNKI3qD0="/>
+        <field:display field="type" id="s_com_bibsmobile_model_EventCartItem_type" object="${eventcartitem}" z="KwyOSZQcg5o2G1wtiyn8ecWnsT8="/>
     </page:show>
 </div>

@@ -17,11 +17,11 @@ privileged aspect EventCartItem_Roo_Equals {
             return true;
         }
         EventCartItem rhs = (EventCartItem) obj;
-        return new EqualsBuilder().append(available, rhs.available).append(coupon, rhs.coupon).append(couponPrice, rhs.couponPrice).append(couponsAvailable, rhs.couponsAvailable).append(couponsUsed, rhs.couponsUsed).append(description, rhs.description).append(event, rhs.event).append(id, rhs.id).append(price, rhs.price).append(purchased, rhs.purchased).append(timeEnd, rhs.timeEnd).append(timeLimit, rhs.timeLimit).append(timeStart, rhs.timeStart).isEquals();
+        return new EqualsBuilder().append(available, rhs.available).append(coupon, rhs.coupon).append(couponPrice, rhs.couponPrice).append(couponsAvailable, rhs.couponsAvailable).append(couponsUsed, rhs.couponsUsed).append(description, rhs.description).append(event, rhs.event).append(id, rhs.id).append(price, rhs.price).append(purchased, rhs.purchased).append(timeEnd, rhs.timeEnd).append(timeLimit, rhs.timeLimit).append(timeStart, rhs.timeStart).append(type, rhs.type).isEquals();
     }
     
     public int EventCartItem.hashCode() {
-        return new HashCodeBuilder().append(available).append(coupon).append(couponPrice).append(couponsAvailable).append(couponsUsed).append(description).append(event).append(id).append(price).append(purchased).append(timeEnd).append(timeLimit).append(timeStart).toHashCode();
+        return new HashCodeBuilder().append(available).append(coupon).append(couponPrice).append(couponsAvailable).append(couponsUsed).append(description).append(event).append(id).append(price).append(purchased).append(timeEnd).append(timeLimit).append(timeStart).append(type).toHashCode();
     }
     
 }
