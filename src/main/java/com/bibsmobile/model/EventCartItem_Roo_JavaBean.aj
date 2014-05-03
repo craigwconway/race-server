@@ -5,8 +5,10 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import java.util.Date;
+import java.util.Set;
 
 privileged aspect EventCartItem_Roo_JavaBean {
     
@@ -16,6 +18,14 @@ privileged aspect EventCartItem_Roo_JavaBean {
     
     public void EventCartItem.setEvent(Event event) {
         this.event = event;
+    }
+    
+    public String EventCartItem.getName() {
+        return this.name;
+    }
+    
+    public void EventCartItem.setName(String name) {
+        this.name = name;
     }
     
     public String EventCartItem.getDescription() {
@@ -152,6 +162,14 @@ privileged aspect EventCartItem_Roo_JavaBean {
     
     public void EventCartItem.setTshortImageUrls(String tshortImageUrls) {
         this.tshortImageUrls = tshortImageUrls;
+    }
+    
+    public Set<EventCartItemPriceChange> EventCartItem.getPriceChanges() {
+        return this.priceChanges;
+    }
+    
+    public void EventCartItem.setPriceChanges(Set<EventCartItemPriceChange> priceChanges) {
+        this.priceChanges = priceChanges;
     }
     
 }

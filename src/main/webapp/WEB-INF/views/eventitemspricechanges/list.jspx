@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <h2>Manage Price Changes for Product ${ eventitem.name }</h2>
+        <button class="btn btn-default btn-top" onclick="addItemPriceChange()" type="button">
+            Add a Price Change
+        </button>
+        <script>
+            function addItemPriceChange(){
+                window.location="/bibs-server/eventitemspricechanges?form&amp;eventitem=${eventitem.id}";
+            }
+        </script>
+        <page:list id="pl_com_bibsmobile_model_EventCartItemPriceChange" items="${eventcartitempricechanges}" z="WMiJzrJ1IWZWaft43kpuzLU+jlw=">
+            <table:table data="${eventcartitempricechanges}" id="l_com_bibsmobile_model_EventCartItemPriceChange" path="/eventitemspricechanges" z="XooZereYxZTyK+skkYrQfdMU68w=">
+                <table:column date="true" dateTimePattern="${eventCartItemPriceChange_startdate_date_format}" id="c_com_bibsmobile_model_EventCartItemPriceChange_startDate" property="startDate" z="Tk27/JhDb8kv8+6dFPoeB36Frhc="/>
+                <table:column date="true" dateTimePattern="${eventCartItemPriceChange_enddate_date_format}" id="c_com_bibsmobile_model_EventCartItemPriceChange_endDate" property="endDate" z="KJfwfKLOmms+dwtzLdfcBobgZSI="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItemPriceChange_eventCartItem" property="eventCartItem" z="1me9MSrtuxXZPRgNF7cAhhfc+bM="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItemPriceChange_price" property="price" z="POzSQCF5duZhplUrt+x/Yzomo04="/>
+            </table:table>
+        </page:list>
+    </sec:authorize>
+</div>

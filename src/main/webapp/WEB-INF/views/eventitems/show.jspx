@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <button class="btn btn-default btn-top" onclick="priceChanges()" type="button">
+        Price Changes
+    </button>
+    <script>
+        function priceChanges(){
+            window.location="/bibs-server/eventitemspricechanges?eventitem=${eventcartitem.id}";
+        }
+    </script>
     <page:show id="ps_com_bibsmobile_model_EventCartItem" object="${eventcartitem}" path="/eventitems" z="0Vio973EeZc1TEtv7EngzcpLOg0=">
         <field:display field="event" id="s_com_bibsmobile_model_EventCartItem_event" object="${eventcartitem}" z="kUWTdCJULj5f7xzBlreY2fW2Ls4="/>
+        <field:display field="name" id="s_com_bibsmobile_model_EventCartItem_name" object="${eventcartitem}" z="fSF3/h1qoAcKUYWkoVBG3N6LFb8="/>
         <field:display field="description" id="s_com_bibsmobile_model_EventCartItem_description" object="${eventcartitem}" z="mCCYhaC4YuyDD8OiMy9CMEOJ8rw="/>
         <field:display field="coupon" id="s_com_bibsmobile_model_EventCartItem_coupon" object="${eventcartitem}" z="cXA/jZ8wwETHYCZTLiNc0mLU+u8="/>
         <field:display field="price" id="s_com_bibsmobile_model_EventCartItem_price" object="${eventcartitem}" z="3YHpSkJ+Bw3vnWGttus+yS8o0dA="/>
@@ -18,8 +27,10 @@
         <field:display field="type" id="s_com_bibsmobile_model_EventCartItem_type" object="${eventcartitem}" z="KwyOSZQcg5o2G1wtiyn8ecWnsT8="/>
         <field:display field="donationAmount" id="s_com_bibsmobile_model_EventCartItem_donationAmount" object="${eventcartitem}" z="i+de6jGKwapUT0VvaDgBF8+By7Q="/>
         <field:display field="charityName" id="s_com_bibsmobile_model_EventCartItem_charityName" object="${eventcartitem}" z="nTReWLZpZtmMDu2TSenTf9hNe3I="/>
-        <field:display field="tshortSizes" id="s_com_bibsmobile_model_EventCartItem_tshortSizes" object="${eventcartitem}" z="/PSVoIoQsvVj+3wZyZCF/Aau3yk="/>
-        <field:display field="tshortColors" id="s_com_bibsmobile_model_EventCartItem_tshortColors" object="${eventcartitem}" z="jTxocReDJUwikNAk9fp9rG/XiSE="/>
-        <field:display field="tshortImageUrls" id="s_com_bibsmobile_model_EventCartItem_tshortImageUrls" object="${eventcartitem}" z="ibRf+okA1Fm5ZeQFZ6drMooAhF4="/>
+        <c:if test="${eventcartitem.type eq 'T_SHORT'}">
+            <field:display field="tshortSizes" id="s_com_bibsmobile_model_EventCartItem_tshortSizes" object="${eventcartitem}" z="/PSVoIoQsvVj+3wZyZCF/Aau3yk="/>
+            <field:display field="tshortColors" id="s_com_bibsmobile_model_EventCartItem_tshortColors" object="${eventcartitem}" z="jTxocReDJUwikNAk9fp9rG/XiSE="/>
+            <field:display field="tshortImageUrls" id="s_com_bibsmobile_model_EventCartItem_tshortImageUrls" object="${eventcartitem}" z="ibRf+okA1Fm5ZeQFZ6drMooAhF4="/>
+        </c:if>
     </page:show>
 </div>

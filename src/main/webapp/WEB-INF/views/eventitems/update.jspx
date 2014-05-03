@@ -4,6 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     ${eventCartItem.event.name}
     <form:update id="fu_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" versionField="Version" z="PdYR4Rq85GJZ0+pKtpmrAP5I3PY=">
+        <field:input field="name" id="c_com_bibsmobile_model_EventCartItem_name" z="dSVCfVY0Ubmxz6e6aYw3W6ve1ic="/>
         <field:input field="description" id="c_com_bibsmobile_model_EventCartItem_description" z="PUHaF+kcXtSHZosW2pLOs4XAOYc="/>
         <field:input field="price" id="c_com_bibsmobile_model_EventCartItem_price" z="5a38EjZfb2r/0Aw0kSlEQrbjT2E="/>
         <field:input field="available" id="c_com_bibsmobile_model_EventCartItem_available" z="zHPmOaa/kg0T8qHJQjSiKu0Wu8s="/>
@@ -19,8 +20,12 @@
         <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" required="true" z="g+W9OR2k/yrQ4Pj87bO3WG88/SU="/>
         <field:input field="donationAmount" id="c_com_bibsmobile_model_EventCartItem_donationAmount" z="VZFWFkpuJC9h6reOZuaam4TV3tA="/>
         <field:input field="charityName" id="c_com_bibsmobile_model_EventCartItem_charityName" z="tkvJAEiBX0M6TeamUAzmlX2kFrw="/>
-        <field:input field="tshortSizes" id="c_com_bibsmobile_model_EventCartItem_tshortSizes" z="azTo7d7+sWbNRr05aKH2woVYKzo="/>
-        <field:input field="tshortColors" id="c_com_bibsmobile_model_EventCartItem_tshortColors" z="SjKhaF5VXR25F+nA2F2k8JE+gXg="/>
-        <field:input field="tshortImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshortImageUrls" z="2Hw5nFO2gSOzyTna5gphjHf3jBU="/>
+
+        <div is="tshortInfo">
+            <field:input field="tshortSizes" id="c_com_bibsmobile_model_EventCartItem_tshortSizes" z="azTo7d7+sWbNRr05aKH2woVYKzo="/>
+            <field:input field="tshortColors" id="c_com_bibsmobile_model_EventCartItem_tshortColors" z="SjKhaF5VXR25F+nA2F2k8JE+gXg="/>
+            <field:input field="tshortImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshortImageUrls" z="2Hw5nFO2gSOzyTna5gphjHf3jBU="/>
+        </div>
+        <field:simple field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Cart Item Price Change" z="user-managed" render="false"/>
     </form:update>
 </div>

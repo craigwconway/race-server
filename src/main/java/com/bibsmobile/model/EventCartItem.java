@@ -14,6 +14,8 @@ import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import javax.persistence.ManyToMany;
 
 @RooJavaBean
 @RooToString
@@ -23,6 +25,8 @@ public class EventCartItem {
 
     @ManyToOne
     private Event event;
+
+    private String name;
 
     private String description;
 
@@ -75,4 +79,10 @@ public class EventCartItem {
     /**
      */
     private String tshortImageUrls;
+
+    /**
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "eventCartItem")
+    private Set<EventCartItemPriceChange> priceChanges;
+
 }

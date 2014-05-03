@@ -35,7 +35,7 @@ public class EventCartItemController {
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         EventCartItem i = EventCartItem.findEventCartItem(id);
-        List<Event> l = new ArrayList<Event>();
+        List<Event> l = new ArrayList<>();
         l.add(i.getEvent());
         uiModel.addAttribute("events", l);
         populateEditForm(uiModel, i);
