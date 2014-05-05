@@ -18,6 +18,14 @@ privileged aspect EventCartItem_Roo_Finder {
         return ((Long) q.getSingleResult());
     }
     
+    public static Long EventCartItem.countFindEventCartItemsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.name = :name", Long.class);
+        q.setParameter("name", name);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByEvent(Event event) {
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = EventCartItem.entityManager();
@@ -38,6 +46,29 @@ privileged aspect EventCartItem_Roo_Finder {
         }
         TypedQuery<EventCartItem> q = em.createQuery(jpaQuery, EventCartItem.class);
         q.setParameter("event", event);
+        return q;
+    }
+    
+    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.name = :name", EventCartItem.class);
+        q.setParameter("name", name);
+        return q;
+    }
+    
+    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByNameEquals(String name, String sortFieldName, String sortOrder) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.name = :name";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<EventCartItem> q = em.createQuery(jpaQuery, EventCartItem.class);
+        q.setParameter("name", name);
         return q;
     }
     

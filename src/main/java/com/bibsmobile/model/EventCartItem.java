@@ -23,7 +23,7 @@ import javax.persistence.ManyToMany;
 @RooToString
 @RooEquals
 @RooJson
-@RooJpaActiveRecord(finders = { "findEventCartItemsByEvent" })
+@RooJpaActiveRecord(finders = { "findEventCartItemsByEvent", "findEventCartItemsByNameEquals" })
 public class EventCartItem {
 
     @ManyToOne
@@ -98,6 +98,7 @@ public class EventCartItem {
      */
     @Enumerated
     private EventCartItemGenderEnum gender;
+
     public double getActualPrice() {
         if (CollectionUtils.isEmpty(priceChanges)) {
             return price;

@@ -1,4 +1,5 @@
 package com.bibsmobile.controller;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -6,6 +7,9 @@ import java.util.List;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import flexjson.JSON;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +31,7 @@ public class EventCartItemController {
         EventCartItem i = new EventCartItem();
         Event e = Event.findEvent(event);
         i.setEvent(e);
-        List<Event> l = new ArrayList<Event>();
+        List<Event> l = new ArrayList<>();
         l.add(e);
         uiModel.addAttribute("events", l);
         populateEditForm(uiModel, i);
@@ -79,7 +83,15 @@ public class EventCartItemController {
         return eventCartItem.toJson();
     }
 
-    /*
+    @RequestMapping(value="/search", params = "find=ByNameEquals", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindEventCartItemsByNameEquals(@RequestParam("name") String name) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByNameEquals(name).getResultList()), headers, HttpStatus.OK);
+    }
+
+     /*
      * Model attributes
      * */
     @ModelAttribute("eventcartitemtypeenums")
