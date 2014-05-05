@@ -24,7 +24,10 @@
             <field:input field="tshortColors" id="c_com_bibsmobile_model_EventCartItem_tshortColors" z="SjKhaF5VXR25F+nA2F2k8JE+gXg="/>
             <field:input field="tshortImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshortImageUrls" z="2Hw5nFO2gSOzyTna5gphjHf3jBU="/>
         </div>
-        <field:simple field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Cart Item Price Change" z="user-managed" render="false"/>
+        <field:simple field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Cart Item Price Change" render="false" z="user-managed"/>
+        <field:input field="minAge" id="c_com_bibsmobile_model_EventCartItem_minAge" z="gLMoH8RvkqgTOLu7e6f+ru8/Akg="/>
+        <field:input field="maxAge" id="c_com_bibsmobile_model_EventCartItem_maxAge" z="gxKwAx4uoNx6quMhyMo4rXfd2jA="/>
+        <field:select field="gender" id="c_com_bibsmobile_model_EventCartItem_gender" items="${eventcartitemgenderenums}" path="eventcartitemgenderenums" z="+Jg/WI19uo3scDKsAgDOwlnJVVA="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 </div>

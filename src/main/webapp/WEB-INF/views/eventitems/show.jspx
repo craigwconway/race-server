@@ -32,5 +32,8 @@
             <field:display field="tshortColors" id="s_com_bibsmobile_model_EventCartItem_tshortColors" object="${eventcartitem}" z="jTxocReDJUwikNAk9fp9rG/XiSE="/>
             <field:display field="tshortImageUrls" id="s_com_bibsmobile_model_EventCartItem_tshortImageUrls" object="${eventcartitem}" z="ibRf+okA1Fm5ZeQFZ6drMooAhF4="/>
         </c:if>
+        <field:display field="minAge" id="s_com_bibsmobile_model_EventCartItem_minAge" object="${eventcartitem}" z="X7xbnmgxiIuCaQajDLOg/1gyU7w="/>
+        <field:display field="maxAge" id="s_com_bibsmobile_model_EventCartItem_maxAge" object="${eventcartitem}" z="JRw1Z09/k0Gy1IiowcNMEvu5E+Q="/>
+        <field:display field="gender" id="s_com_bibsmobile_model_EventCartItem_gender" object="${eventcartitem}" z="bRa/Rrqy/vTC3PltGly4nJn6qjI="/>
     </page:show>
 </div>

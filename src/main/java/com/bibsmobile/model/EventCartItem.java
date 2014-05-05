@@ -7,7 +7,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
@@ -86,9 +85,19 @@ public class EventCartItem {
 
     /**
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "eventCartItem")
+    private int minAge;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "eventCartItem")
     private Set<EventCartItemPriceChange> priceChanges;
 
+    /**
+     */
+    private int maxAge;
+
+    /**
+     */
+    @Enumerated
+    private EventCartItemGenderEnum gender;
     public double getActualPrice() {
         if (CollectionUtils.isEmpty(priceChanges)) {
             return price;
@@ -101,5 +110,4 @@ public class EventCartItem {
         }
         return price;
     }
-
 }

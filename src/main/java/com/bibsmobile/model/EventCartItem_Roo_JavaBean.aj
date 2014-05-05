@@ -5,6 +5,7 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import java.util.Date;
@@ -164,12 +165,36 @@ privileged aspect EventCartItem_Roo_JavaBean {
         this.tshortImageUrls = tshortImageUrls;
     }
     
+    public int EventCartItem.getMinAge() {
+        return this.minAge;
+    }
+    
+    public void EventCartItem.setMinAge(int minAge) {
+        this.minAge = minAge;
+    }
+    
     public Set<EventCartItemPriceChange> EventCartItem.getPriceChanges() {
         return this.priceChanges;
     }
     
     public void EventCartItem.setPriceChanges(Set<EventCartItemPriceChange> priceChanges) {
         this.priceChanges = priceChanges;
+    }
+    
+    public int EventCartItem.getMaxAge() {
+        return this.maxAge;
+    }
+    
+    public void EventCartItem.setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
+    }
+    
+    public EventCartItemGenderEnum EventCartItem.getGender() {
+        return this.gender;
+    }
+    
+    public void EventCartItem.setGender(EventCartItemGenderEnum gender) {
+        this.gender = gender;
     }
     
 }

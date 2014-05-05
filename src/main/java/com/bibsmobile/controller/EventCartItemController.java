@@ -2,6 +2,8 @@ package com.bibsmobile.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import flexjson.JSON;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
@@ -83,5 +85,10 @@ public class EventCartItemController {
     @ModelAttribute("eventcartitemtypeenums")
     public List<EventCartItemTypeEnum> getEventCartItemTypeEnums() {
         return Arrays.asList(EventCartItemTypeEnum.values());
+    }
+
+    @ModelAttribute("eventcartitemgenderenums")
+    public List<EventCartItemGenderEnum> getEventCartItemGenderEnums() {
+        return Arrays.asList(EventCartItemGenderEnum.values());
     }
 }
