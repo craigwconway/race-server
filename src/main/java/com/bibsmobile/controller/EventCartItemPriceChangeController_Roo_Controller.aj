@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -47,16 +46,6 @@ privileged aspect EventCartItemPriceChangeController_Roo_Controller {
         uiModel.asMap().clear();
         eventCartItemPriceChange.merge();
         return "redirect:/eventitemspricechanges/" + encodeUrlPathSegment(eventCartItemPriceChange.getId().toString(), httpServletRequest);
-    }
-    
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String EventCartItemPriceChangeController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        EventCartItemPriceChange eventCartItemPriceChange = EventCartItemPriceChange.findEventCartItemPriceChange(id);
-        eventCartItemPriceChange.remove();
-        uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/eventitemspricechanges";
     }
     
     void EventCartItemPriceChangeController.addDateTimeFormatPatterns(Model uiModel) {

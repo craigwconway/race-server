@@ -7,10 +7,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
+import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
@@ -20,6 +23,7 @@ import javax.persistence.ManyToMany;
 @RooJavaBean
 @RooToString
 @RooEquals
+@RooJson
 @RooJpaActiveRecord(finders = { "findEventCartItemsByEvent" })
 public class EventCartItem {
 
@@ -84,5 +88,18 @@ public class EventCartItem {
      */
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "eventCartItem")
     private Set<EventCartItemPriceChange> priceChanges;
+
+    public double getActualPrice() {
+        if (CollectionUtils.isEmpty(priceChanges)) {
+            return price;
+        }
+        Date now = new Date();
+        for (EventCartItemPriceChange priceChange : priceChanges) {
+            if (now.after(priceChange.getStartDate()) && now.before(priceChange.getEndDate())) {
+                return priceChange.getPrice();
+            }
+        }
+        return price;
+    }
 
 }

@@ -49,6 +49,7 @@
         <menu:category id="c_eventcartitem" z="KljOV+G5tm7DEnzF1CYFmiWpUNM=">
             <menu:item id="i_eventcartitem_new" messageCode="global_menu_new" url="/eventitems?form" z="CVXwxRXp/Tu3PRQy5/mPb+nImgI="/>
             <menu:item id="i_eventcartitem_list" messageCode="global_menu_list" url="/eventitems?page=1&amp;size=${empty param.size ? 10 : param.size}" z="pgWb3LaJE1UQyyYvmK+jiI3D4YQ="/>
+            <menu:item id="fi_eventcartitem_event" messageCode="global_menu_find" url="/eventitems?find=ByEvent&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="6lLfoA8blOxS1l8f4QD0xh8qOpE="/>
         </menu:category>
         <menu:category id="c_cart" z="Sfk2pSq0DoUuPX2dMrHuxw6OQso=">
             <menu:item id="i_cart_new" messageCode="global_menu_new" url="/carts?form" z="3si9ahaKFvN+M4KrpDqjODd7wFM="/>
@@ -57,6 +58,7 @@
         <menu:category id="c_eventcartitempricechange" z="/xr9YYytNX2nsNHYM/ecCU3bEZY=">
             <menu:item id="i_eventcartitempricechange_new" messageCode="global_menu_new" url="/eventcartitempricechanges?form" z="Szd/++BdgkZkjJb08k+7OZtPGrI="/>
             <menu:item id="i_eventcartitempricechange_list" messageCode="global_menu_list" url="/eventcartitempricechanges?page=1&amp;size=${empty param.size ? 10 : param.size}" z="qG04VRiFsYy0bOfMOh018RAvGOY="/>
+            <menu:item id="fi_eventcartitempricechange_eventcartitem" messageCode="global_menu_find" url="/eventitemspricechanges?find=ByEventCartItem&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="GkXdG3SnEksdmRjW23TT2rkceFA="/>
         </menu:category>
     </menu:menu>
 </div>

@@ -13,4 +13,7 @@
 <definition extends="default" name="eventitems/update">
         <put-attribute name="body" value="/WEB-INF/views/eventitems/update.jspx"/>
     </definition>
+<definition extends="default" name="eventitems/findEventCartItemsByEvent">
+        <put-attribute name="body" value="/WEB-INF/views/eventitems/findEventCartItemsByEvent.jspx"/>
+    </definition>
 </tiles-definitions>

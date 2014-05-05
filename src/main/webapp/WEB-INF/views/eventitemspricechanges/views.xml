@@ -13,4 +13,7 @@
 <definition extends="default" name="eventitemspricechanges/update">
         <put-attribute name="body" value="/WEB-INF/views/eventitemspricechanges/update.jspx"/>
     </definition>
+<definition extends="default" name="eventitemspricechanges/findEventCartItemPriceChangesByEventCartItem">
+        <put-attribute name="body" value="/WEB-INF/views/eventitemspricechanges/findEventCartItemPriceChangesByEventCartItem.jspx"/>
+    </definition>
 </tiles-definitions>
