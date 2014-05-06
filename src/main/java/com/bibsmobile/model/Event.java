@@ -337,6 +337,26 @@ public class Event {
         return q;
     }
 
+
+    public static TypedQuery<String> findAllEventsCountries() {
+        EntityManager em = Event.entityManager();
+        TypedQuery<String> q = em.createQuery("SELECT distinct event.country FROM Event AS event", String.class);
+        return q;
+    }
+
+    public static TypedQuery<String> findAllEventsCities() {
+        EntityManager em = Event.entityManager();
+        TypedQuery<String> q = em.createQuery("SELECT distinct event.city FROM Event AS event", String.class);
+        return q;
+    }
+
+    public static TypedQuery<String> findAllEventsCitiesByCountry(String country) {
+        EntityManager em = Event.entityManager();
+        TypedQuery<String> q = em.createQuery("SELECT distinct event.city FROM Event AS event WHERE event.country = :country", String.class);
+        q.setParameter("country", country);
+        return q;
+    }
+
     public static TypedQuery<Event> findEventsByStateEqualsAndCityEquals(String state, String city, int firstResult, int maxResults) {
         if (state == null || state.length() == 0) throw new IllegalArgumentException("The state argument is required");
         if (city == null || city.length() == 0) throw new IllegalArgumentException("The city argument is required");

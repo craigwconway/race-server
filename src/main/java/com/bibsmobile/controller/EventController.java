@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
+import flexjson.JSONSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
@@ -556,6 +557,21 @@ public class EventController {
                                    @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                    @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return Event.toJsonArray(Event.findEventsByTypeEquals(type, (page - 1) * size, size).getResultList());
+    }
+
+    @RequestMapping(value = "/cities", method = RequestMethod.GET)
+    @ResponseBody
+    public String findEventsCities(@RequestParam(value = "country", required = false) String country) {
+        if (StringUtils.isEmpty(country)) {
+            return new JSONSerializer().serialize(Event.findAllEventsCities().getResultList());
+        }
+        return new JSONSerializer().serialize(Event.findAllEventsCitiesByCountry(country).getResultList());
+    }
+
+    @RequestMapping(value = "/countries", method = RequestMethod.GET)
+    @ResponseBody
+    public String findEventsCountries() {
+        return new JSONSerializer().serialize(Event.findAllEventsCountries().getResultList());
     }
 
 }
