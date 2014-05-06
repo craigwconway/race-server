@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 privileged aspect EventController_Roo_Controller_Json {
@@ -70,6 +71,30 @@ privileged aspect EventController_Roo_Controller_Json {
         }
         event.remove();
         return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByStateEquals", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> EventController.jsonFindEventsByStateEquals(@RequestParam("state") String state) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(Event.toJsonArray(Event.findEventsByStateEquals(state).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByStateEqualsAndCityEquals", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> EventController.jsonFindEventsByStateEqualsAndCityEquals(@RequestParam("state") String state, @RequestParam("city") String city) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(Event.toJsonArray(Event.findEventsByStateEqualsAndCityEquals(state, city).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByTypeEquals", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> EventController.jsonFindEventsByTypeEquals(@RequestParam("type") String type) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(Event.toJsonArray(Event.findEventsByTypeEquals(type).getResultList()), headers, HttpStatus.OK);
     }
     
 }

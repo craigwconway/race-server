@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <script>
 	function addToCart(item){
-		window.location = "/bibs-server/carts/item/" + item + "?quantity=1";
+		window.location = "/bibs-server/carts/item/" + item + "/updatequantity?quantity=1";
 	}
 	</script>
     <h2>Shop Products for ${ event.name }</h2>

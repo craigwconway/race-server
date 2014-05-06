@@ -28,7 +28,7 @@
 
         <script>
             function updateQuantity(item, quantity){
-                window.location = "/bibs-server/carts/item/" +item + "?quantity=" + quantity;
+                window.location = "/bibs-server/carts/item/" +item + "/updatequantity?quantity=" + quantity;
             }
         </script>
 

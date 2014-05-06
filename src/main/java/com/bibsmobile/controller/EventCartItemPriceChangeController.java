@@ -14,7 +14,6 @@ import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
 @Controller
 @RooWebScaffold(path = "eventitemspricechanges", formBackingObject = EventCartItemPriceChange.class)
 @RooWebJson(jsonObject = EventCartItemPriceChange.class)
-@RooWebFinder
 public class EventCartItemPriceChangeController {
 
     @RequestMapping(params = "form", produces = "text/html")
