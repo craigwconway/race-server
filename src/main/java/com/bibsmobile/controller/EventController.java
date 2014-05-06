@@ -5,6 +5,8 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import flexjson.JSONSerializer;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -27,6 +28,8 @@ import java.util.*;
 @RooWebScaffold(path = "events", formBackingObject = Event.class)
 @RooWebJson(jsonObject = Event.class)
 public class EventController {
+
+    private static final Logger log = LoggerFactory.getLogger(EventController.class);
 
     @RequestMapping(value = "/registrationComplete", method = RequestMethod.GET)
     public static String registrationComplete(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
@@ -53,7 +56,7 @@ public class EventController {
                 username).getSingleResult();
         if (user.getUserGroup() != null) {
             addGroup = true;
-            System.out.println("event group " + user.getUserGroup().getName());
+            log.info("event group " + user.getUserGroup().getName());
             event.setUserGroup(user.getUserGroup());
         }
 
@@ -85,7 +88,7 @@ public class EventController {
         try {
             // Create connection
             url = new URL(targetURL);
-            System.out.println("doPost " + targetURL);
+            log.info("doPost " + targetURL);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             if (json) {
@@ -116,8 +119,7 @@ public class EventController {
             rd.close();
             return response.toString();
         } catch (Exception e) {
-
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return null;
 
         } finally {
@@ -135,7 +137,7 @@ public class EventController {
         String line;
         String result = "";
         try {
-            System.out.println(targetURL);
+            log.info(targetURL);
             url = new URL(targetURL);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -146,9 +148,9 @@ public class EventController {
             }
             rd.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return result;
     }
@@ -160,7 +162,7 @@ public class EventController {
         String line;
         String result = "";
         try {
-            System.out.println("doDelete " + targetURL);
+            log.info("doDelete " + targetURL);
             url = new URL(targetURL);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("DELETE");
@@ -171,9 +173,9 @@ public class EventController {
             }
             rd.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return result;
     }
@@ -191,17 +193,17 @@ public class EventController {
             // find matching event
             String eventSync = doGet(serverUrl + "/events/byname/"
                     + event.getName().replace(" ", "%20"));
-            System.out.println("cloud " + eventSync);
+            log.info("cloud " + eventSync);
             Collection<Event> events = Event.fromJsonArrayToEvents(eventSync);
-            System.out.println("cloud matched " + events.size() + " events");
+            log.info("cloud matched " + events.size() + " events");
             if (events.size() < 1)
                 return "eventnotfound";
             Event event1 = events.iterator().next();
-            System.out.println("cloud " + event1.getId() + " " + event1.getName());
+            log.info("cloud " + event1.getId() + " " + event1.getName());
             // login TODO
             // remove server runners
             doPost(serverUrl + "/events/" + event1.getId(), "_method=DELETE&x=7&y=10", false);
-            System.out.println("cloud delete " + event1.getId() + " " + event1.getName());
+            log.info("cloud delete " + event1.getId() + " " + event1.getName());
             // loop through and add runners
             List<RaceResult> runners = Event.findRaceResults(_eventId, 1, 9999);
             StringWriter json = new StringWriter();
@@ -226,13 +228,13 @@ public class EventController {
                 json.append("\"}");
             }
             json.append("]");
-            System.out.println("cloud sync: " + json);
+            log.info("cloud sync: " + json);
             doPost(serverUrl + "/raceresults/jsonArray", json.toString(), true);
 
-            System.out.println("cloud synced ");
+            log.info("cloud synced ");
             return "true";
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
         }
         return "false";
     }
@@ -246,8 +248,8 @@ public class EventController {
             e.setGunFired(true);
             e.setGunTime(new Date());
             e.merge();
-        } catch (Exception x) {
-            x.printStackTrace();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             return "false";
         }
         return "true";
@@ -262,8 +264,8 @@ public class EventController {
             Event e = Event.findEvent(event);
             e.setRunning(order);
             e.merge();
-        } catch (Exception x) {
-            x.printStackTrace();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             return "false";
         }
         return "true";
@@ -273,13 +275,13 @@ public class EventController {
     @ResponseBody
     public static String timerDone(
             @RequestParam(value = "event", required = true) long event) {
-        System.out.println("event done " + event);
+        log.info("event done " + event);
         try {
             Event e = Event.findEvent(event);
             e.setRunning(0);
             e.merge();
-        } catch (Exception x) {
-            x.printStackTrace();
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             return "false";
         }
         return "true";
@@ -293,7 +295,7 @@ public class EventController {
             return RaceResult.toJsonArray(Event.findRaceResultsForAnnouncer(
                     event_id, 1, 15));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return "false";
     }
@@ -308,7 +310,7 @@ public class EventController {
             rtn.append(Event.toJsonArray(Event.findEventsByFeaturedGreaterThan(
                     0, page, size).getResultList()));
         } catch (Exception e) {
-            // e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return rtn.toString();
     }
@@ -324,7 +326,7 @@ public class EventController {
             rtn.append(Event.toJsonArray(Event.findEventsByNameLike(eventName,
                     page, size).getResultList()));
         } catch (Exception e) {
-            // e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return rtn.toString();
     }
@@ -332,12 +334,12 @@ public class EventController {
     @RequestMapping(value = "/name/{eventName}", method = RequestMethod.GET)
     @ResponseBody
     public static String byName(@PathVariable String eventName) {
-        System.out.println("byName=" + eventName);
+        log.info("byName=" + eventName);
         StringWriter rtn = new StringWriter();
         try {
             rtn.append(Event.findEventByNameEquals(eventName).toJson());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return rtn.toString();
     }
@@ -358,7 +360,7 @@ public class EventController {
                     .findEventsByTimeStartGreaterThanAndFeaturedEquals(
                             today.getTime(), 0, page, size).getResultList()));
         } catch (Exception e) {
-            // e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return rtn.toString();
     }
@@ -377,7 +379,7 @@ public class EventController {
             rtn.append(Event.toJsonArray(Event.findEventsByTimeStartLessThan(
                     today.getTime(), page, size).getResultList()));
         } catch (Exception e) {
-            // e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return rtn.toString();
     }
@@ -415,16 +417,8 @@ public class EventController {
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
 
-        long t0 = new Date().getTime();
-//		List<RaceResult> results = Event.findRaceResultsByAwardCategory(event, gender, min, max,page, size);
-//		long t1 = new Date().getTime();
-//		System.out.println("timeofficial sql "+ (t1-t0)  + " # "+results.size());
-//		
-//		t0 = new Date().getTime();
         Event e = Event.findEvent(event);
         List<RaceResult> results = e.getAwards(gender, min, max, size);
-        double t1 = new Date().getTime();
-//		System.out.println("timeofficial sort "+ (t1-t0)  + " # "+results.size());
 
         return RaceResult.toJsonArray(results);
     }
@@ -436,7 +430,7 @@ public class EventController {
         try {
             return String.valueOf(Event.countRaceResults(event));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return "0";
     }
@@ -448,7 +442,7 @@ public class EventController {
         try {
             return String.valueOf(Event.countRaceResultsStarted(event));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return "0";
     }
@@ -460,7 +454,7 @@ public class EventController {
         try {
             return String.valueOf(Event.countRaceResultsComplete(event));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return "0";
     }
@@ -484,7 +478,6 @@ public class EventController {
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public static void export(
             @RequestParam(value = "event", required = true) Long event,
-            HttpSession session, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         Event _event = Event.findEvent(event);
         response.setContentType("text/csv;charset=utf-8");
@@ -506,8 +499,6 @@ public class EventController {
 
     }
 
-    ;
-
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid Event event, BindingResult bindingResult,
                          Model uiModel, HttpServletRequest httpServletRequest) {
@@ -518,12 +509,10 @@ public class EventController {
 
         Date time0 = new Date(event.getGunTimeStart());
         Date time1 = event.getGunTime();
-        System.out.println("update2 " + (time0 == time1) + " " + time0 + " "
+        log.info("update2 " + (time0 == time1) + " " + time0 + " "
                 + time1);
 
         if (time0 != time1 && null != event.getGunTime()) {
-            // Event.updateRaceResultsStarttimeByByEvent(event, time0.getTime(),
-            // time1.getTime());
             for (RaceResult r : RaceResult.findRaceResultsByEvent(event)
                     .getResultList()) {
                 r.setTimestart(time1.getTime());
