@@ -71,8 +71,8 @@
             <menu:item id="i_eventresult_list" messageCode="global_menu_list" url="/eventresults?page=1&amp;size=${empty param.size ? 10 : param.size}" z="zw1g5DLvosHlSBn9LVARbdLTCWY="/>
         </menu:category>
         <menu:category id="c_eventphoto" z="Kl36kkRL9Vrp/w+Dh7a79BIADw0=">
-            <menu:item id="i_eventphoto_new" messageCode="global_menu_new" url="/eventphotoes?form" z="rknTaEsiIhKE3ukqppv/YutNzNw="/>
-            <menu:item id="i_eventphoto_list" messageCode="global_menu_list" url="/eventphotoes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="ezBR9Yj5t5seDk4Db2irXUFXYiE="/>
+            <menu:item id="i_eventphoto_new" messageCode="global_menu_new" url="/eventphotos?form" z="qsPNnXcvP4O3ibp7BzWr5LclL4A="/>
+            <menu:item id="i_eventphoto_list" messageCode="global_menu_list" url="/eventphotos?page=1&amp;size=${empty param.size ? 10 : param.size}" z="gghLMra+1RUAo6xwd81vLMvz0u4="/>
         </menu:category>
     </menu:menu>
 </div>

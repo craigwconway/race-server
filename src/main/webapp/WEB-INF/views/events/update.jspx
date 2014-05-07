@@ -62,15 +62,14 @@
             <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
             <field:simple field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Award Category" z="W/mlzVpnmu4H0G8oKjVQKgrW5bs="/>
             <field:select field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="oo4ip/WoDNsEB0aJzYG0szVc5x8="/>
+            <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="eQ2XmJuhHRvEjLmGf3Sm1x/npSc="/>
+            <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="GuyHuvTW7Qjs7vmkj96arvJWQ1g="/>
+            <field:simple field="eventResults" id="c_com_bibsmobile_model_Event_eventResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Result" z="7M/vjlzePMmO+tn4GAspAsUJriQ="/>
         </div>
         <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="/3fyPZerngMWWMJqq9ZJvrhAH7g="/>
         <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
         <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
-        <field:simple field="photos" id="c_com_bibsmobile_model_Event_photos" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Photo" z="5zoh51B8E6el04Y/nsPNdRLbE9A="/>
-        <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="eQ2XmJuhHRvEjLmGf3Sm1x/npSc="/>
-        <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="GuyHuvTW7Qjs7vmkj96arvJWQ1g="/>
-        <field:simple field="eventResults" id="c_com_bibsmobile_model_Event_eventResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Result" z="7M/vjlzePMmO+tn4GAspAsUJriQ="/>
-    </form:update>
+            </form:update>
     <script>
     window.onload = function(){
     	jQuery("#_name_id").focus();

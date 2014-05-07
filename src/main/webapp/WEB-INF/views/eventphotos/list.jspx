@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <page:list id="pl_com_bibsmobile_model_EventPhoto" items="${eventphotoes}" z="rWlUOvVrzvTCdm7LF5LM1QgUppY=">
-        <table:table data="${eventphotoes}" id="l_com_bibsmobile_model_EventPhoto" path="/eventphotoes" z="zA1TGZOvZ4HCiVVs4GLvM1yk4yo=">
+        <table:table data="${eventphotoes}" id="l_com_bibsmobile_model_EventPhoto" path="/eventphotos" z="o69ghsmOdHT1mkPWJz7vzh4P9Pg=">
             <table:column id="c_com_bibsmobile_model_EventPhoto_url" property="url" z="IYAByzKj64tGCaZP+q5eFxZKYoI="/>
             <table:column id="c_com_bibsmobile_model_EventPhoto_event" property="event" z="UNbZl53BYfXs6pji6pfzl2bQPiE="/>
         </table:table>

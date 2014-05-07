@@ -24,24 +24,24 @@ privileged aspect EventPhotoController_Roo_Controller {
     public String EventPhotoController.create(@Valid EventPhoto eventPhoto, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, eventPhoto);
-            return "eventphotoes/create";
+            return "eventphotos/create";
         }
         uiModel.asMap().clear();
         eventPhoto.persist();
-        return "redirect:/eventphotoes/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
+        return "redirect:/eventphotos/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(params = "form", produces = "text/html")
     public String EventPhotoController.createForm(Model uiModel) {
         populateEditForm(uiModel, new EventPhoto());
-        return "eventphotoes/create";
+        return "eventphotos/create";
     }
     
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String EventPhotoController.show(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("eventphoto", EventPhoto.findEventPhoto(id));
         uiModel.addAttribute("itemId", id);
-        return "eventphotoes/show";
+        return "eventphotos/show";
     }
     
     @RequestMapping(produces = "text/html")
@@ -55,24 +55,24 @@ privileged aspect EventPhotoController_Roo_Controller {
         } else {
             uiModel.addAttribute("eventphotoes", EventPhoto.findAllEventPhotoes(sortFieldName, sortOrder));
         }
-        return "eventphotoes/list";
+        return "eventphotos/list";
     }
     
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String EventPhotoController.update(@Valid EventPhoto eventPhoto, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, eventPhoto);
-            return "eventphotoes/update";
+            return "eventphotos/update";
         }
         uiModel.asMap().clear();
         eventPhoto.merge();
-        return "redirect:/eventphotoes/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
+        return "redirect:/eventphotos/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
     }
     
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String EventPhotoController.updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, EventPhoto.findEventPhoto(id));
-        return "eventphotoes/update";
+        return "eventphotos/update";
     }
     
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
@@ -82,7 +82,7 @@ privileged aspect EventPhotoController_Roo_Controller {
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/eventphotoes";
+        return "redirect:/eventphotos";
     }
     
     void EventPhotoController.populateEditForm(Model uiModel, EventPhoto eventPhoto) {
