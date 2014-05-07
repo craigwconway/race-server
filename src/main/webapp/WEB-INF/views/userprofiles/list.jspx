@@ -20,7 +20,8 @@
             <table:column id="c_com_bibsmobile_model_UserProfile_password" property="password" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_accountNonExpired" property="accountNonExpired" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_userAuthorities" property="userAuthorities" render="true" z="user-managed"/>
-        	<table:column id="c_com_bibsmobile_model_UserProfile_enabled" property="enabled" render="true" z="user-managed"/>
-           </table:table>
+            <table:column id="c_com_bibsmobile_model_UserProfile_enabled" property="enabled" render="true" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_UserProfile_userGroup" property="userGroup" z="WNiD0cwyE9xYekcRw9qhEjCTLuE="/>
+        </table:table>
     </page:list>
 </div>

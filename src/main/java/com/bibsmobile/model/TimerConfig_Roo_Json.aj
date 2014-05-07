@@ -13,19 +13,33 @@ import java.util.List;
 privileged aspect TimerConfig_Roo_Json {
     
     public String TimerConfig.toJson() {
-        return new JSONSerializer().exclude("*.class").serialize(this);
+        return new JSONSerializer()
+        .exclude("*.class").serialize(this);
+    }
+    
+    public String TimerConfig.toJson(String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(this);
     }
     
     public static TimerConfig TimerConfig.fromJsonToTimerConfig(String json) {
-        return new JSONDeserializer<TimerConfig>().use(null, TimerConfig.class).deserialize(json);
+        return new JSONDeserializer<TimerConfig>()
+        .use(null, TimerConfig.class).deserialize(json);
     }
     
     public static String TimerConfig.toJsonArray(Collection<TimerConfig> collection) {
-        return new JSONSerializer().exclude("*.class").serialize(collection);
+        return new JSONSerializer()
+        .exclude("*.class").serialize(collection);
+    }
+    
+    public static String TimerConfig.toJsonArray(Collection<TimerConfig> collection, String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(collection);
     }
     
     public static Collection<TimerConfig> TimerConfig.fromJsonArrayToTimerConfigs(String json) {
-        return new JSONDeserializer<List<TimerConfig>>().use(null, ArrayList.class).use("values", TimerConfig.class).deserialize(json);
+        return new JSONDeserializer<List<TimerConfig>>()
+        .use("values", TimerConfig.class).deserialize(json);
     }
     
 }

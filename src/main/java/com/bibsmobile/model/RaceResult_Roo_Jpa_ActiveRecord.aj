@@ -14,6 +14,8 @@ privileged aspect RaceResult_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager RaceResult.entityManager;
     
+    public static final List<String> RaceResult.fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "userProfile", "raceImage", "bib", "firstname", "lastname", "middlename", "middlename2", "age", "gender", "type", "time5k", "time10k", "time15k", "timeoverall", "timegun", "timechip", "timesplit", "timestart", "timerun", "timeswim", "timetrans1", "timetrans2", "timebike", "timepace", "timeofficial", "timeofficialdisplay", "rankoverall", "rankage", "rankgender", "rankclass", "medal1", "medal2", "medal3", "city", "state", "country", "fullname", "lisencenumber", "laps", "award", "timer", "timesplit1", "timesplit2", "timesplit3", "timesplit4", "timemile1", "timemile2", "timemile3", "timemile4", "created", "updated");
+    
     public static final EntityManager RaceResult.entityManager() {
         EntityManager em = new RaceResult().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect RaceResult_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM RaceResult o", RaceResult.class).getResultList();
     }
     
+    public static List<RaceResult> RaceResult.findAllRaceResults(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM RaceResult o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, RaceResult.class).getResultList();
+    }
+    
     public static RaceResult RaceResult.findRaceResult(Long id) {
         if (id == null) return null;
         return entityManager().find(RaceResult.class, id);
@@ -35,6 +48,17 @@ privileged aspect RaceResult_Roo_Jpa_ActiveRecord {
     
     public static List<RaceResult> RaceResult.findRaceResultEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM RaceResult o", RaceResult.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<RaceResult> RaceResult.findRaceResultEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM RaceResult o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, RaceResult.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

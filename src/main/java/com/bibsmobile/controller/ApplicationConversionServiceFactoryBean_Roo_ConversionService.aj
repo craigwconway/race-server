@@ -7,6 +7,7 @@ import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
@@ -72,7 +73,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<EventCartItem, String> ApplicationConversionServiceFactoryBean.getEventCartItemToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventCartItem, java.lang.String>() {
             public String convert(EventCartItem eventCartItem) {
-                return new StringBuilder().append(eventCartItem.getDescription()).append(' ').append(eventCartItem.getPrice()).append(' ').append(eventCartItem.getAvailable()).append(' ').append(eventCartItem.getPurchased()).toString();
+                return new StringBuilder().append(eventCartItem.getName()).append(' ').append(eventCartItem.getDescription()).append(' ').append(eventCartItem.getPrice()).append(' ').append(eventCartItem.getAvailable()).toString();
             }
         };
     }
@@ -89,6 +90,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventCartItem>() {
             public com.bibsmobile.model.EventCartItem convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventCartItem.class);
+            }
+        };
+    }
+    
+    public Converter<EventCartItemPriceChange, String> ApplicationConversionServiceFactoryBean.getEventCartItemPriceChangeToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventCartItemPriceChange, java.lang.String>() {
+            public String convert(EventCartItemPriceChange eventCartItemPriceChange) {
+                return new StringBuilder().append(eventCartItemPriceChange.getStartDate()).append(' ').append(eventCartItemPriceChange.getEndDate()).append(' ').append(eventCartItemPriceChange.getPrice()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, EventCartItemPriceChange> ApplicationConversionServiceFactoryBean.getIdToEventCartItemPriceChangeConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventCartItemPriceChange>() {
+            public com.bibsmobile.model.EventCartItemPriceChange convert(java.lang.Long id) {
+                return EventCartItemPriceChange.findEventCartItemPriceChange(id);
+            }
+        };
+    }
+    
+    public Converter<String, EventCartItemPriceChange> ApplicationConversionServiceFactoryBean.getStringToEventCartItemPriceChangeConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventCartItemPriceChange>() {
+            public com.bibsmobile.model.EventCartItemPriceChange convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), EventCartItemPriceChange.class);
             }
         };
     }
@@ -295,6 +320,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getEventCartItemToStringConverter());
         registry.addConverter(getIdToEventCartItemConverter());
         registry.addConverter(getStringToEventCartItemConverter());
+        registry.addConverter(getEventCartItemPriceChangeToStringConverter());
+        registry.addConverter(getIdToEventCartItemPriceChangeConverter());
+        registry.addConverter(getStringToEventCartItemPriceChangeConverter());
         registry.addConverter(getRaceImageToStringConverter());
         registry.addConverter(getIdToRaceImageConverter());
         registry.addConverter(getStringToRaceImageConverter());

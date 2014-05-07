@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_bibsmobile_model_EventCartItemPriceChange" modelAttribute="eventCartItemPriceChange" path="/eventitemspricechanges" versionField="Version" z="Wyca5zHBZYym8zqL1AUqnvyppmw=">
+        <field:select field="eventCartItem" id="c_com_bibsmobile_model_EventCartItemPriceChange_eventCartItem" itemValue="id" items="${eventcartitems}" itemLabel="name" path="/eventitems" z="user-managed"/>
+        <field:datetime dateTimePattern="${eventCartItemPriceChange_startdate_date_format}" field="startDate" id="c_com_bibsmobile_model_EventCartItemPriceChange_startDate" z="QqSP7wTQfSDlKK6eoew9/rdoBTE="/>
+        <field:datetime dateTimePattern="${eventCartItemPriceChange_enddate_date_format}" field="endDate" id="c_com_bibsmobile_model_EventCartItemPriceChange_endDate" z="7S9Uj+2fEFqxOQpQjiSQBlxRsLc="/>
+        <field:input field="price" id="c_com_bibsmobile_model_EventCartItemPriceChange_price" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
+    </form:update>
+</div>

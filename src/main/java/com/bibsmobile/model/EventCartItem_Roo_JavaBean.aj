@@ -5,7 +5,11 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemGenderEnum;
+import com.bibsmobile.model.EventCartItemPriceChange;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import java.util.Date;
+import java.util.Set;
 
 privileged aspect EventCartItem_Roo_JavaBean {
     
@@ -15,6 +19,14 @@ privileged aspect EventCartItem_Roo_JavaBean {
     
     public void EventCartItem.setEvent(Event event) {
         this.event = event;
+    }
+    
+    public String EventCartItem.getName() {
+        return this.name;
+    }
+    
+    public void EventCartItem.setName(String name) {
+        this.name = name;
     }
     
     public String EventCartItem.getDescription() {
@@ -103,6 +115,86 @@ privileged aspect EventCartItem_Roo_JavaBean {
     
     public void EventCartItem.setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
+    }
+    
+    public EventCartItemTypeEnum EventCartItem.getType() {
+        return this.type;
+    }
+    
+    public void EventCartItem.setType(EventCartItemTypeEnum type) {
+        this.type = type;
+    }
+    
+    public double EventCartItem.getDonationAmount() {
+        return this.donationAmount;
+    }
+    
+    public void EventCartItem.setDonationAmount(double donationAmount) {
+        this.donationAmount = donationAmount;
+    }
+    
+    public String EventCartItem.getCharityName() {
+        return this.charityName;
+    }
+    
+    public void EventCartItem.setCharityName(String charityName) {
+        this.charityName = charityName;
+    }
+    
+    public String EventCartItem.getTshortSizes() {
+        return this.tshortSizes;
+    }
+    
+    public void EventCartItem.setTshortSizes(String tshortSizes) {
+        this.tshortSizes = tshortSizes;
+    }
+    
+    public String EventCartItem.getTshortColors() {
+        return this.tshortColors;
+    }
+    
+    public void EventCartItem.setTshortColors(String tshortColors) {
+        this.tshortColors = tshortColors;
+    }
+    
+    public String EventCartItem.getTshortImageUrls() {
+        return this.tshortImageUrls;
+    }
+    
+    public void EventCartItem.setTshortImageUrls(String tshortImageUrls) {
+        this.tshortImageUrls = tshortImageUrls;
+    }
+    
+    public int EventCartItem.getMinAge() {
+        return this.minAge;
+    }
+    
+    public void EventCartItem.setMinAge(int minAge) {
+        this.minAge = minAge;
+    }
+    
+    public Set<EventCartItemPriceChange> EventCartItem.getPriceChanges() {
+        return this.priceChanges;
+    }
+    
+    public void EventCartItem.setPriceChanges(Set<EventCartItemPriceChange> priceChanges) {
+        this.priceChanges = priceChanges;
+    }
+    
+    public int EventCartItem.getMaxAge() {
+        return this.maxAge;
+    }
+    
+    public void EventCartItem.setMaxAge(int maxAge) {
+        this.maxAge = maxAge;
+    }
+    
+    public EventCartItemGenderEnum EventCartItem.getGender() {
+        return this.gender;
+    }
+    
+    public void EventCartItem.setGender(EventCartItemGenderEnum gender) {
+        this.gender = gender;
     }
     
 }

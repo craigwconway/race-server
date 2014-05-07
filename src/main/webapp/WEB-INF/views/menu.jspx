@@ -54,5 +54,9 @@
             <menu:item id="i_cart_new" messageCode="global_menu_new" url="/carts?form" z="3si9ahaKFvN+M4KrpDqjODd7wFM="/>
             <menu:item id="i_cart_list" messageCode="global_menu_list" url="/carts?page=1&amp;size=${empty param.size ? 10 : param.size}" z="/3/Bv0bhM4GhS0CROxv1IrrQx9M="/>
         </menu:category>
+        <menu:category id="c_eventcartitempricechange" z="/xr9YYytNX2nsNHYM/ecCU3bEZY=">
+            <menu:item id="i_eventcartitempricechange_new" messageCode="global_menu_new" url="/eventcartitempricechanges?form" z="Szd/++BdgkZkjJb08k+7OZtPGrI="/>
+            <menu:item id="i_eventcartitempricechange_list" messageCode="global_menu_list" url="/eventcartitempricechanges?page=1&amp;size=${empty param.size ? 10 : param.size}" z="qG04VRiFsYy0bOfMOh018RAvGOY="/>
+        </menu:category>
     </menu:menu>
 </div>

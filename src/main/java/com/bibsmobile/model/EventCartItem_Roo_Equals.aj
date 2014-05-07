@@ -17,11 +17,11 @@ privileged aspect EventCartItem_Roo_Equals {
             return true;
         }
         EventCartItem rhs = (EventCartItem) obj;
-        return new EqualsBuilder().append(available, rhs.available).append(coupon, rhs.coupon).append(couponPrice, rhs.couponPrice).append(couponsAvailable, rhs.couponsAvailable).append(couponsUsed, rhs.couponsUsed).append(description, rhs.description).append(event, rhs.event).append(id, rhs.id).append(price, rhs.price).append(purchased, rhs.purchased).append(timeEnd, rhs.timeEnd).append(timeLimit, rhs.timeLimit).append(timeStart, rhs.timeStart).isEquals();
+        return new EqualsBuilder().append(available, rhs.available).append(charityName, rhs.charityName).append(coupon, rhs.coupon).append(couponPrice, rhs.couponPrice).append(couponsAvailable, rhs.couponsAvailable).append(couponsUsed, rhs.couponsUsed).append(description, rhs.description).append(donationAmount, rhs.donationAmount).append(event, rhs.event).append(gender, rhs.gender).append(id, rhs.id).append(maxAge, rhs.maxAge).append(minAge, rhs.minAge).append(name, rhs.name).append(price, rhs.price).append(purchased, rhs.purchased).append(timeEnd, rhs.timeEnd).append(timeLimit, rhs.timeLimit).append(timeStart, rhs.timeStart).append(tshortColors, rhs.tshortColors).append(tshortImageUrls, rhs.tshortImageUrls).append(tshortSizes, rhs.tshortSizes).append(type, rhs.type).isEquals();
     }
     
     public int EventCartItem.hashCode() {
-        return new HashCodeBuilder().append(available).append(coupon).append(couponPrice).append(couponsAvailable).append(couponsUsed).append(description).append(event).append(id).append(price).append(purchased).append(timeEnd).append(timeLimit).append(timeStart).toHashCode();
+        return new HashCodeBuilder().append(available).append(charityName).append(coupon).append(couponPrice).append(couponsAvailable).append(couponsUsed).append(description).append(donationAmount).append(event).append(gender).append(id).append(maxAge).append(minAge).append(name).append(price).append(purchased).append(timeEnd).append(timeLimit).append(timeStart).append(tshortColors).append(tshortImageUrls).append(tshortSizes).append(type).toHashCode();
     }
     
 }

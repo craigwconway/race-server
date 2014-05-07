@@ -14,6 +14,8 @@ privileged aspect ResultsFileMapping_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager ResultsFileMapping.entityManager;
     
+    public static final List<String> ResultsFileMapping.fieldNames4OrderClauseFilter = java.util.Arrays.asList("resultsImport", "name", "resultsFile", "skipFirstRow", "map", "row1", "row2", "options");
+    
     public static final EntityManager ResultsFileMapping.entityManager() {
         EntityManager em = new ResultsFileMapping().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -28,6 +30,17 @@ privileged aspect ResultsFileMapping_Roo_Jpa_ActiveRecord {
         return entityManager().createQuery("SELECT o FROM ResultsFileMapping o", ResultsFileMapping.class).getResultList();
     }
     
+    public static List<ResultsFileMapping> ResultsFileMapping.findAllResultsFileMappings(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM ResultsFileMapping o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, ResultsFileMapping.class).getResultList();
+    }
+    
     public static ResultsFileMapping ResultsFileMapping.findResultsFileMapping(Long id) {
         if (id == null) return null;
         return entityManager().find(ResultsFileMapping.class, id);
@@ -35,6 +48,17 @@ privileged aspect ResultsFileMapping_Roo_Jpa_ActiveRecord {
     
     public static List<ResultsFileMapping> ResultsFileMapping.findResultsFileMappingEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM ResultsFileMapping o", ResultsFileMapping.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public static List<ResultsFileMapping> ResultsFileMapping.findResultsFileMappingEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM ResultsFileMapping o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, ResultsFileMapping.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional

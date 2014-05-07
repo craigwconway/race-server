@@ -12,11 +12,13 @@ import javax.persistence.OneToMany;
 import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
+import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
 @RooEquals
+@RooJson
 @RooJpaActiveRecord(finders = { "findCartsByUser" })
 public class Cart {
 	

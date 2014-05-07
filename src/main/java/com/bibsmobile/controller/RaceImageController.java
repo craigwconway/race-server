@@ -1,5 +1,7 @@
 package com.bibsmobile.controller;
 
+import com.bibsmobile.model.Event;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bibsmobile.model.RaceImage;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @RequestMapping("/raceimages")
 @Controller
@@ -31,6 +36,21 @@ public class RaceImageController {
         raceImage.persist();
         HttpHeaders headers = new HttpHeaders();
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/search", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindRaceImagesByEventId(@RequestParam Long eventId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        Event event = Event.findEvent(eventId);
+        if (event != null) {
+            List<RaceImage> raceImages = RaceImage.findRaceImagesByEvent(event).setFirstResult((page - 1) * size).setMaxResults(size).getResultList();
+            if (CollectionUtils.isNotEmpty(raceImages)) {
+                return new ResponseEntity<>(RaceImage.toJsonArray(raceImages),headers, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 	
 }

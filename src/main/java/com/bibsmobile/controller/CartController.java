@@ -1,14 +1,11 @@
 package com.bibsmobile.controller;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-
+import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.UserProfile;
 import net.authorize.sim.Fingerprint;
-
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,104 +13,159 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bibsmobile.model.Cart;
-import com.bibsmobile.model.CartItem;
-import com.bibsmobile.model.EventCartItem;
-import com.bibsmobile.model.UserProfile;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 @RequestMapping("/carts")
 @Controller
 @RooWebScaffold(path = "carts", formBackingObject = Cart.class)
 @RooWebJson(jsonObject = Cart.class)
-public class CartController { 
-    
+public class CartController {
+
     @RequestMapping(value = "/item/{id}", produces = "text/html")
-    public String addItem(@PathVariable("id") Long eventCartItemId, Model uiModel) {
-    	String username = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
-		UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
-				username).getSingleResult();
-		Cart cart = new Cart();
-		try{
-			List<Cart> carts = Cart.findCartsByUser(user).getResultList();
-			for(Cart c : carts){
-				if(c.getStatus()==Cart.NEW){
-					cart = c;
-				}
-			}
-		}catch(Exception e){ System.out.println("ERROR ADDING TO CART");}
-    	
-		Date now = new Date();
-		
-		if(cart.getId()==null){
-    		cart = new Cart();
-    		cart.setStatus(Cart.NEW);
-    		
-    		cart.setCreated(now);
-    		cart.setUpdated(now);
-    		cart.setUser(user);
-    		cart.persist();
-    	}
-		
-		List<CartItem> items = (cart.getCartItems()!=null)?cart.getCartItems():new ArrayList<CartItem>();
-    	EventCartItem i = EventCartItem.findEventCartItem(eventCartItemId);
-		CartItem item = new CartItem();
-		item.setCart(cart);
-		item.setEventCartItem(i);
-		item.setQuantity(1);
-		item.setCreated(now);
-		item.setUpdated(now);
-		item.persist();
-		
-		items.add(item);
-		cart.setCartItems(items);
-		double total = 0;
-		for(CartItem cartItem : items){
-			total += (cartItem.getQuantity() * cartItem.getEventCartItem().getPrice());
-		}
-		cart.setTotal(total);
-		cart.merge();
-		
-		setupPaymentForm(uiModel, cart, true);
-    	
-    	uiModel.addAttribute("cart", cart);
+    public String view(@PathVariable("id") Long eventCartItemId) {
         return "cart";
     }
 
-	private void setupPaymentForm(Model uiModel, Cart cart, boolean test) {
-		
-		   String apiLoginId = "7rWKZe476";
-		    uiModel.addAttribute("apiLoginId", apiLoginId); 
-		    
-		    String transactionKey = (test)?"5Fg6846nb7pAS4X4":""+cart.getId();
-		    System.out.println(transactionKey+" transactionKey");
-		    uiModel.addAttribute("transactionKey", transactionKey); 
-		    
-		    String relayResponseUrl = "http:/localhost:8080/bibs-server/events/registrationComplete?event=1";
-		    uiModel.addAttribute("relayResponseUrl", relayResponseUrl); 
+    @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
+    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel) {
+        if (quantity < 0) {
+            quantity = 0;
+        }
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+        UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
+                username).getSingleResult();
+        Cart cart = null;
+        try {
+            List<Cart> carts = Cart.findCartsByUser(user).getResultList();
+            for (Cart c : carts) {
+                if (c.getStatus() == Cart.NEW) {
+                    cart = c;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR ADDING TO CART");
+        }
 
-		    double amount = (test)?new Random().nextDouble()+.01:cart.getTotal();
-		    
-		    NumberFormat df = DecimalFormat.getInstance();
-		    df.setMaximumFractionDigits(2);
-		    String samount = df.format(amount);
-		    uiModel.addAttribute("amount", samount);  
-		    
-		    Fingerprint fingerprint = Fingerprint.createFingerprint(
-		        apiLoginId,
-		        transactionKey,
-		        1234567890,  // random sequence used for creating the finger print
-		        samount);
+        Date now = new Date();
 
-		    long x_fp_sequence = fingerprint.getSequence();
-		    uiModel.addAttribute("x_fp_sequence", x_fp_sequence); 
-		    
-		    long x_fp_timestamp = fingerprint.getTimeStamp();
-		    uiModel.addAttribute("x_fp_timestamp", x_fp_timestamp); 
-		    
-		    String x_fp_hash = fingerprint.getFingerprintHash();
-		    uiModel.addAttribute("x_fp_hash", x_fp_hash); 
-		
-	}
+        //create cart if it doesn't exist yet.
+        if (cart == null) {
+            cart = new Cart();
+            cart.setStatus(Cart.NEW);
+            cart.setCreated(now);
+            cart.setUpdated(now);
+            cart.setUser(user);
+            cart.persist();
+        }
+
+        EventCartItem i = EventCartItem.findEventCartItem(eventCartItemId);
+        CartItem cartItem;
+        //if doesn't have product in cart and adding new not removing
+        if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
+            cartItem = getCartItem(cart, now, i);
+            cartItem.persist();
+            cart.getCartItems().add(cartItem);
+        } else {
+            boolean existedCartItem = false;
+            EventCartItem eventCartItem;
+            for (CartItem ci : cart.getCartItems()) {
+                eventCartItem = ci.getEventCartItem();
+                //if product already exists in cart
+                if (eventCartItem.getId().equals(eventCartItemId)) {
+                    //adding
+                    if (quantity > 0) {
+
+                        //>0 increasing, <0 decreasing
+                        int diff = quantity - ci.getQuantity();
+                        //only if increasing
+                        if (diff > eventCartItem.getAvailable()) {
+                            quantity = eventCartItem.getAvailable();
+                        }
+                        ci.setQuantity(quantity);
+                        ci.setUpdated(now);
+                        ci.persist();
+                        eventCartItem.setAvailable(eventCartItem.getAvailable() - diff);
+                        eventCartItem.persist();
+                    }
+                    //removing
+                    else {
+                        ci.remove();
+                    }
+                    existedCartItem = true;
+                    break;
+                }
+            }
+            if (!existedCartItem && quantity > 0) {
+                cartItem = getCartItem(cart, now, i);
+                cartItem.persist();
+                cart.getCartItems().add(cartItem);
+            }
+        }
+
+        double total = 0;
+        for (CartItem ci : cart.getCartItems()) {
+            total += (ci.getQuantity() * ci.getEventCartItem().getActualPrice());
+        }
+        cart.setTotal(total);
+        cart.merge();
+
+        //setupPaymentForm(uiModel, cart, true);
+
+        uiModel.addAttribute("cart", cart);
+        return "redirect:/carts/item/" + eventCartItemId;
+    }
+
+    private CartItem getCartItem(Cart cart, Date now, EventCartItem i) {
+        CartItem cartItem;
+        cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setEventCartItem(i);
+        cartItem.setQuantity(1);
+        cartItem.setCreated(now);
+        cartItem.setUpdated(now);
+        return cartItem;
+    }
+
+    private void setupPaymentForm(Model uiModel, Cart cart, boolean test) {
+
+        String apiLoginId = "7rWKZe476";
+        uiModel.addAttribute("apiLoginId", apiLoginId);
+
+        String transactionKey = (test) ? "5Fg6846nb7pAS4X4" : "" + cart.getId();
+        System.out.println(transactionKey + " transactionKey");
+        uiModel.addAttribute("transactionKey", transactionKey);
+
+        String relayResponseUrl = "http:/localhost:8080/bibs-server/events/registrationComplete?event=1";
+        uiModel.addAttribute("relayResponseUrl", relayResponseUrl);
+
+        double amount = (test) ? new Random().nextDouble() + .01 : cart.getTotal();
+
+        NumberFormat df = DecimalFormat.getInstance();
+        df.setMaximumFractionDigits(2);
+        String samount = df.format(amount);
+        uiModel.addAttribute("amount", samount);
+
+        Fingerprint fingerprint = Fingerprint.createFingerprint(
+                apiLoginId,
+                transactionKey,
+                1234567890,  // random sequence used for creating the finger print
+                samount);
+
+        long x_fp_sequence = fingerprint.getSequence();
+        uiModel.addAttribute("x_fp_sequence", x_fp_sequence);
+
+        long x_fp_timestamp = fingerprint.getTimeStamp();
+        uiModel.addAttribute("x_fp_timestamp", x_fp_timestamp);
+
+        String x_fp_hash = fingerprint.getFingerprintHash();
+        uiModel.addAttribute("x_fp_hash", x_fp_hash);
+
+    }
 }

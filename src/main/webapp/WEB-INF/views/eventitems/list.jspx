@@ -1,56 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div  xmlns:sec="http://www.springframework.org/security/tags" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
     <script>
 	function addToCart(item){
-		window.location = "/bibs-server/carts/item/"+item;
+		window.location = "/bibs-server/carts/item/" + item + "/updatequantity?quantity=1";
 	}
 	</script>
-	<h2>Shop Products for ${ event.name }</h2>
+    <h2>Shop Products for ${ event.name }</h2>
     <table>
-    <c:forEach items="${eventcartitems}" var="item" varStatus="i">
-        <tr class="${(i.index % 2 eq 0) ? 'row-alt' :''}">
-            <td>
-                <button class="btn btn-default btn-top" type="button"
-                	 onclick="addToCart('${item.id}')">
+        <c:forEach items="${eventcartitems}" var="item" varStatus="i">
+            <tr class="${(i.index % 2 eq 0) ? 'row-alt' :''}">
+                <td>
+                    <button class="btn btn-default btn-top" onclick="addToCart('${item.id}')" type="button">
                 	 Add to Cart
                	</button>
-            </td>
-            <td>
-                <c:out value="${item.description}"/>
-            </td>
-            <td>
-                <c:out value="${item.price}"/>
-            </td>
-        </tr>
-    </c:forEach>
+                </td>
+                <td>
+                    <c:out value="${item.name}"/>
+                    (<c:out value="${item.description}"/>)
+                </td>
+                <td>
+                    <c:out value="${item.price}"/>
+                </td>
+            </tr>
+        </c:forEach>
     </table>
-	
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-	
-	<h2>Manage Products for ${ event.name }</h2>
-        <button class="btn btn-default btn-top" 
-        	onclick="addItem()" type="button">
+        <h2>Manage Products for ${ event.name }</h2>
+        <button class="btn btn-default btn-top" onclick="addItem()" type="button">
 		Add a Product
 		</button>
-    <script>
+        <script>
 	function addItem(){
 		window.location="/bibs-server/eventitems?form&amp;event=${event.id}";
 	}
 	</script>
-    <page:list id="pl_com_bibsmobile_model_EventCartItem" items="${eventcartitems}" z="zp1ngwnIlBdFFjgmz3ro9p5OEmw=">
-        <table:table data="${eventcartitems}" id="l_com_bibsmobile_model_EventCartItem" path="/eventitems" z="OsuVDAhDSJw9IUFeaH8m9t1H1uQ=">
-            <table:column id="c_com_bibsmobile_model_EventCartItem_event" property="event" z="ev9lCWn4+ZT3PKWP2fpalsOyBa0="/>
-            <table:column id="c_com_bibsmobile_model_EventCartItem_description" property="description" z="540sRjqhJ00sFpRD+4vGPH4+ymQ="/>
-            <table:column id="c_com_bibsmobile_model_EventCartItem_coupon" property="coupon" z="bqvJGeBCtIktTxI6mtOkpvztlwk="/>
-            <table:column id="c_com_bibsmobile_model_EventCartItem_price" property="price" z="bLxdn9fqJQDmeOMWN+sCZn7T64g="/>
-            <table:column id="c_com_bibsmobile_model_EventCartItem_purchased" property="purchased" z="K1BDhfnEI9twWJjWoATUFeW6juI="/>
-            <table:column id="c_com_bibsmobile_model_EventCartItem_available" property="available" z="L/zFgiG4tO8o926SyKF+uh9y78w="/>
-        </table:table>
-    </page:list>
-    
+        <page:list id="pl_com_bibsmobile_model_EventCartItem" items="${eventcartitems}" z="zp1ngwnIlBdFFjgmz3ro9p5OEmw=">
+            <table:table data="${eventcartitems}" id="l_com_bibsmobile_model_EventCartItem" path="/eventitems" z="OsuVDAhDSJw9IUFeaH8m9t1H1uQ=">
+                <table:column id="c_com_bibsmobile_model_EventCartItem_event" property="event" z="ev9lCWn4+ZT3PKWP2fpalsOyBa0="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItem_name" property="name" z="user-managed"/>
+                <table:column id="c_com_bibsmobile_model_EventCartItem_type" property="type" z="540sRjqhJ00sFpRD+4vGPH4+ymQ="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItem_description" property="description" z="540sRjqhJ00sFpRD+4vGPH4+ymQ="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItem_price" property="price" z="bLxdn9fqJQDmeOMWN+sCZn7T64g="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItem_purchased" property="purchased" z="K1BDhfnEI9twWJjWoATUFeW6juI="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItem_available" property="available" z="L/zFgiG4tO8o926SyKF+uh9y78w="/>
+            </table:table>
+        </page:list>
     </sec:authorize>
-    
 </div>

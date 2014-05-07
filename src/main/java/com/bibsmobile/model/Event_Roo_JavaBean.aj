@@ -15,20 +15,20 @@ import java.util.Set;
 
 privileged aspect Event_Roo_JavaBean {
     
+    public Set<RaceImage> Event.getRaceImages() {
+        return this.raceImages;
+    }
+    
+    public void Event.setRaceImages(Set<RaceImage> raceImages) {
+        this.raceImages = raceImages;
+    }
+    
     public Set<RaceResult> Event.getRaceResults() {
         return this.raceResults;
     }
     
     public void Event.setRaceResults(Set<RaceResult> raceResults) {
         this.raceResults = raceResults;
-    }
-    
-    public List<AwardCategory> Event.getAwardCategorys() {
-        return this.awardCategorys;
-    }
-    
-    public void Event.setAwardCategorys(List<AwardCategory> awardCategorys) {
-        this.awardCategorys = awardCategorys;
     }
     
     public Set<ResultsFile> Event.getResultsFiles() {
@@ -39,12 +39,12 @@ privileged aspect Event_Roo_JavaBean {
         this.resultsFiles = resultsFiles;
     }
     
-    public Set<RaceImage> Event.getRaceImages() {
-        return this.raceImages;
+    public List<AwardCategory> Event.getAwardCategorys() {
+        return this.awardCategorys;
     }
     
-    public void Event.setRaceImages(Set<RaceImage> raceImages) {
-        this.raceImages = raceImages;
+    public void Event.setAwardCategorys(List<AwardCategory> awardCategorys) {
+        this.awardCategorys = awardCategorys;
     }
     
     public UserGroup Event.getUserGroup() {

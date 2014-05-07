@@ -10,10 +10,33 @@ import javax.persistence.TypedQuery;
 
 privileged aspect ResultsFileMapping_Roo_Finder {
     
+    public static Long ResultsFileMapping.countFindResultsFileMappingsByResultsFile(ResultsFile resultsFile) {
+        if (resultsFile == null) throw new IllegalArgumentException("The resultsFile argument is required");
+        EntityManager em = ResultsFileMapping.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ResultsFileMapping AS o WHERE o.resultsFile = :resultsFile", Long.class);
+        q.setParameter("resultsFile", resultsFile);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<ResultsFileMapping> ResultsFileMapping.findResultsFileMappingsByResultsFile(ResultsFile resultsFile) {
         if (resultsFile == null) throw new IllegalArgumentException("The resultsFile argument is required");
         EntityManager em = ResultsFileMapping.entityManager();
         TypedQuery<ResultsFileMapping> q = em.createQuery("SELECT o FROM ResultsFileMapping AS o WHERE o.resultsFile = :resultsFile", ResultsFileMapping.class);
+        q.setParameter("resultsFile", resultsFile);
+        return q;
+    }
+    
+    public static TypedQuery<ResultsFileMapping> ResultsFileMapping.findResultsFileMappingsByResultsFile(ResultsFile resultsFile, String sortFieldName, String sortOrder) {
+        if (resultsFile == null) throw new IllegalArgumentException("The resultsFile argument is required");
+        EntityManager em = ResultsFileMapping.entityManager();
+        String jpaQuery = "SELECT o FROM ResultsFileMapping AS o WHERE o.resultsFile = :resultsFile";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<ResultsFileMapping> q = em.createQuery(jpaQuery, ResultsFileMapping.class);
         q.setParameter("resultsFile", resultsFile);
         return q;
     }

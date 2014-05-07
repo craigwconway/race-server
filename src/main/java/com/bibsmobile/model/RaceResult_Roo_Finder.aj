@@ -10,10 +10,103 @@ import javax.persistence.TypedQuery;
 
 privileged aspect RaceResult_Roo_Finder {
     
+    public static Long RaceResult.countFindRaceResultsByEvent(Event event) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event", Long.class);
+        q.setParameter("event", event);
+        return ((Long) q.getSingleResult());
+    }
+    
+    public static Long RaceResult.countFindRaceResultsByEventAndBibEquals(Event event, String bib) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        if (bib == null || bib.length() == 0) throw new IllegalArgumentException("The bib argument is required");
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib", Long.class);
+        q.setParameter("event", event);
+        q.setParameter("bib", bib);
+        return ((Long) q.getSingleResult());
+    }
+    
+    public static Long RaceResult.countFindRaceResultsByEventAndFirstnameLike(Event event, String firstname) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        if (firstname == null || firstname.length() == 0) throw new IllegalArgumentException("The firstname argument is required");
+        firstname = firstname.replace('*', '%');
+        if (firstname.charAt(0) != '%') {
+            firstname = "%" + firstname;
+        }
+        if (firstname.charAt(firstname.length() - 1) != '%') {
+            firstname = firstname + "%";
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event AND LOWER(o.firstname) LIKE LOWER(:firstname)", Long.class);
+        q.setParameter("event", event);
+        q.setParameter("firstname", firstname);
+        return ((Long) q.getSingleResult());
+    }
+    
+    public static Long RaceResult.countFindRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event event, String firstname, String lastname) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        if (firstname == null || firstname.length() == 0) throw new IllegalArgumentException("The firstname argument is required");
+        firstname = firstname.replace('*', '%');
+        if (firstname.charAt(0) != '%') {
+            firstname = "%" + firstname;
+        }
+        if (firstname.charAt(firstname.length() - 1) != '%') {
+            firstname = firstname + "%";
+        }
+        if (lastname == null || lastname.length() == 0) throw new IllegalArgumentException("The lastname argument is required");
+        lastname = lastname.replace('*', '%');
+        if (lastname.charAt(0) != '%') {
+            lastname = "%" + lastname;
+        }
+        if (lastname.charAt(lastname.length() - 1) != '%') {
+            lastname = lastname + "%";
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event AND LOWER(o.firstname) LIKE LOWER(:firstname)  AND LOWER(o.lastname) LIKE LOWER(:lastname)", Long.class);
+        q.setParameter("event", event);
+        q.setParameter("firstname", firstname);
+        q.setParameter("lastname", lastname);
+        return ((Long) q.getSingleResult());
+    }
+    
+    public static Long RaceResult.countFindRaceResultsByEventAndLastnameLike(Event event, String lastname) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        if (lastname == null || lastname.length() == 0) throw new IllegalArgumentException("The lastname argument is required");
+        lastname = lastname.replace('*', '%');
+        if (lastname.charAt(0) != '%') {
+            lastname = "%" + lastname;
+        }
+        if (lastname.charAt(lastname.length() - 1) != '%') {
+            lastname = lastname + "%";
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event AND LOWER(o.lastname) LIKE LOWER(:lastname)", Long.class);
+        q.setParameter("event", event);
+        q.setParameter("lastname", lastname);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<RaceResult> RaceResult.findRaceResultsByEvent(Event event) {
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event", RaceResult.class);
+        q.setParameter("event", event);
+        return q;
+    }
+    
+    public static TypedQuery<RaceResult> RaceResult.findRaceResultsByEvent(Event event, String sortFieldName, String sortOrder) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = RaceResult.entityManager();
+        String jpaQuery = "SELECT o FROM RaceResult AS o WHERE o.event = :event";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<RaceResult> q = em.createQuery(jpaQuery, RaceResult.class);
         q.setParameter("event", event);
         return q;
     }
@@ -25,6 +118,104 @@ privileged aspect RaceResult_Roo_Finder {
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib", RaceResult.class);
         q.setParameter("event", event);
         q.setParameter("bib", bib);
+        return q;
+    }
+    
+    public static TypedQuery<RaceResult> RaceResult.findRaceResultsByEventAndBibEquals(Event event, String bib, String sortFieldName, String sortOrder) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        if (bib == null || bib.length() == 0) throw new IllegalArgumentException("The bib argument is required");
+        EntityManager em = RaceResult.entityManager();
+        String jpaQuery = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<RaceResult> q = em.createQuery(jpaQuery, RaceResult.class);
+        q.setParameter("event", event);
+        q.setParameter("bib", bib);
+        return q;
+    }
+    
+    public static TypedQuery<RaceResult> RaceResult.findRaceResultsByEventAndFirstnameLike(Event event, String firstname, String sortFieldName, String sortOrder) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        if (firstname == null || firstname.length() == 0) throw new IllegalArgumentException("The firstname argument is required");
+        firstname = firstname.replace('*', '%');
+        if (firstname.charAt(0) != '%') {
+            firstname = "%" + firstname;
+        }
+        if (firstname.charAt(firstname.length() - 1) != '%') {
+            firstname = firstname + "%";
+        }
+        EntityManager em = RaceResult.entityManager();
+        String jpaQuery = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND LOWER(o.firstname) LIKE LOWER(:firstname)";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<RaceResult> q = em.createQuery(jpaQuery, RaceResult.class);
+        q.setParameter("event", event);
+        q.setParameter("firstname", firstname);
+        return q;
+    }
+    
+    public static TypedQuery<RaceResult> RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event event, String firstname, String lastname, String sortFieldName, String sortOrder) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        if (firstname == null || firstname.length() == 0) throw new IllegalArgumentException("The firstname argument is required");
+        firstname = firstname.replace('*', '%');
+        if (firstname.charAt(0) != '%') {
+            firstname = "%" + firstname;
+        }
+        if (firstname.charAt(firstname.length() - 1) != '%') {
+            firstname = firstname + "%";
+        }
+        if (lastname == null || lastname.length() == 0) throw new IllegalArgumentException("The lastname argument is required");
+        lastname = lastname.replace('*', '%');
+        if (lastname.charAt(0) != '%') {
+            lastname = "%" + lastname;
+        }
+        if (lastname.charAt(lastname.length() - 1) != '%') {
+            lastname = lastname + "%";
+        }
+        EntityManager em = RaceResult.entityManager();
+        String jpaQuery = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND LOWER(o.firstname) LIKE LOWER(:firstname)  AND LOWER(o.lastname) LIKE LOWER(:lastname)";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<RaceResult> q = em.createQuery(jpaQuery, RaceResult.class);
+        q.setParameter("event", event);
+        q.setParameter("firstname", firstname);
+        q.setParameter("lastname", lastname);
+        return q;
+    }
+    
+    public static TypedQuery<RaceResult> RaceResult.findRaceResultsByEventAndLastnameLike(Event event, String lastname, String sortFieldName, String sortOrder) {
+        if (event == null) throw new IllegalArgumentException("The event argument is required");
+        if (lastname == null || lastname.length() == 0) throw new IllegalArgumentException("The lastname argument is required");
+        lastname = lastname.replace('*', '%');
+        if (lastname.charAt(0) != '%') {
+            lastname = "%" + lastname;
+        }
+        if (lastname.charAt(lastname.length() - 1) != '%') {
+            lastname = lastname + "%";
+        }
+        EntityManager em = RaceResult.entityManager();
+        String jpaQuery = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND LOWER(o.lastname) LIKE LOWER(:lastname)";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<RaceResult> q = em.createQuery(jpaQuery, RaceResult.class);
+        q.setParameter("event", event);
+        q.setParameter("lastname", lastname);
         return q;
     }
     

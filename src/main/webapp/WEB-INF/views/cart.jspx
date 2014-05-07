@@ -11,13 +11,27 @@
                 <c:out value="${item.eventCartItem.description}"/>
             </td>
             <td>
-                <input name="quantity" value="${item.quantity}"/>
+                <input id="${cart.id}_quantity" value="${item.quantity}" />
             </td>
             <td>
-                <c:out value="${item.eventCartItem.price}"/>
+                <button class="btn btn-default btn-top" onclick="updateQuantity(${item.id}, jQuery('#${cart.id}_quantity').val())" type="button">
+                    Update quantity
+                </button>
+            </td>
+
+
+            <td>
+                <c:out value="${item.eventCartItem.actualPrice}"/>
             </td>
         </tr>
     </c:forEach>
+
+        <script>
+            function updateQuantity(item, quantity){
+                window.location = "/bibs-server/carts/item/" +item + "/updatequantity?quantity=" + quantity;
+            }
+        </script>
+
         <tr>
             <td colspan="2"><b>Total</b></td>
             <td>
