@@ -11,7 +11,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders = { "findRaceImagesByEvent"})
+@RooJpaActiveRecord(finders = { "findRaceImagesByEvent", "findRaceImagesByRaceResults"})
 public class RaceImage {
 	
 	@NotNull
