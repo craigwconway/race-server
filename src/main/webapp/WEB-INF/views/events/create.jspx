@@ -63,9 +63,13 @@
         </div>
         <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="/3fyPZerngMWWMJqq9ZJvrhAH7g="/>
         <div id="regDates">
-	        <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
-	        <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
+            <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
+            <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
         </div>
+        <field:simple field="photos" id="c_com_bibsmobile_model_Event_photos" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Photo" z="5zoh51B8E6el04Y/nsPNdRLbE9A="/>
+        <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="eQ2XmJuhHRvEjLmGf3Sm1x/npSc="/>
+        <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="GuyHuvTW7Qjs7vmkj96arvJWQ1g="/>
+        <field:simple field="eventResults" id="c_com_bibsmobile_model_Event_eventResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Result" z="7M/vjlzePMmO+tn4GAspAsUJriQ="/>
     </form:create>
     <script>
     window.onload = function(){

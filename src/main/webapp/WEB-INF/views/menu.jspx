@@ -58,5 +58,21 @@
             <menu:item id="i_eventcartitempricechange_new" messageCode="global_menu_new" url="/eventcartitempricechanges?form" z="Szd/++BdgkZkjJb08k+7OZtPGrI="/>
             <menu:item id="i_eventcartitempricechange_list" messageCode="global_menu_list" url="/eventcartitempricechanges?page=1&amp;size=${empty param.size ? 10 : param.size}" z="qG04VRiFsYy0bOfMOh018RAvGOY="/>
         </menu:category>
+        <menu:category id="c_eventalert" z="kMM2FqSceaR9u5e5tw+admkPV80=">
+            <menu:item id="i_eventalert_new" messageCode="global_menu_new" url="/eventalerts?form" z="SPQS1lO/2BpGUTpYH/2jY64hjF8="/>
+            <menu:item id="i_eventalert_list" messageCode="global_menu_list" url="/eventalerts?page=1&amp;size=${empty param.size ? 10 : param.size}" z="RdzZUYODwDMG+lCqypZTXTk5eRM="/>
+        </menu:category>
+        <menu:category id="c_eventmap" z="JQ+qk2ynWApxehTMuT9xNzBinv8=">
+            <menu:item id="i_eventmap_new" messageCode="global_menu_new" url="/eventmaps?form" z="Hw/LW+vQ3YzBehVouVQ4nhjeYpw="/>
+            <menu:item id="i_eventmap_list" messageCode="global_menu_list" url="/eventmaps?page=1&amp;size=${empty param.size ? 10 : param.size}" z="qbdObY2g/QZXVGuxH7E9TE0B2b8="/>
+        </menu:category>
+        <menu:category id="c_eventresult" z="ZdDnxBogGk1moUf8a9FuczdVVFE=">
+            <menu:item id="i_eventresult_new" messageCode="global_menu_new" url="/eventresults?form" z="OFiYDPg243IFfyQ80ZvtPcYQlLo="/>
+            <menu:item id="i_eventresult_list" messageCode="global_menu_list" url="/eventresults?page=1&amp;size=${empty param.size ? 10 : param.size}" z="zw1g5DLvosHlSBn9LVARbdLTCWY="/>
+        </menu:category>
+        <menu:category id="c_eventphoto" z="Kl36kkRL9Vrp/w+Dh7a79BIADw0=">
+            <menu:item id="i_eventphoto_new" messageCode="global_menu_new" url="/eventphotoes?form" z="rknTaEsiIhKE3ukqppv/YutNzNw="/>
+            <menu:item id="i_eventphoto_list" messageCode="global_menu_list" url="/eventphotoes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="ezBR9Yj5t5seDk4Db2irXUFXYiE="/>
+        </menu:category>
     </menu:menu>
 </div>

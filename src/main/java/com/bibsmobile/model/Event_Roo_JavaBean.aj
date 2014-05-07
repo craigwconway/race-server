@@ -5,6 +5,10 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventAlert;
+import com.bibsmobile.model.EventMap;
+import com.bibsmobile.model.EventPhoto;
+import com.bibsmobile.model.EventResult;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
@@ -453,6 +457,38 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setUpdated(Date updated) {
         this.updated = updated;
+    }
+    
+    public List<EventPhoto> Event.getPhotos() {
+        return this.photos;
+    }
+    
+    public void Event.setPhotos(List<EventPhoto> photos) {
+        this.photos = photos;
+    }
+    
+    public List<EventAlert> Event.getAlerts() {
+        return this.alerts;
+    }
+    
+    public void Event.setAlerts(List<EventAlert> alerts) {
+        this.alerts = alerts;
+    }
+    
+    public List<EventMap> Event.getMaps() {
+        return this.maps;
+    }
+    
+    public void Event.setMaps(List<EventMap> maps) {
+        this.maps = maps;
+    }
+    
+    public List<EventResult> Event.getEventResults() {
+        return this.eventResults;
+    }
+    
+    public void Event.setEventResults(List<EventResult> eventResults) {
+        this.eventResults = eventResults;
     }
     
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_bibsmobile_model_EventPhoto" modelAttribute="eventPhoto" path="/eventphotoes" versionField="Version" z="u6A0Xq3ndaCGo37W0rhMv1bQIxs=">
+        <field:input field="url" id="c_com_bibsmobile_model_EventPhoto_url" z="+cW3PSDumrZHixExLLVyux3vMfA="/>
+        <field:select field="event" id="c_com_bibsmobile_model_EventPhoto_event" itemValue="id" items="${events}" path="/events" z="0+6w5H8YCcM4buI0EtN58Tk1+5Y="/>
+    </form:update>
+</div>

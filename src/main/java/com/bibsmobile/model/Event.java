@@ -24,6 +24,7 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.transaction.annotation.Transactional;
+import javax.persistence.ManyToMany;
 
 @RooJavaBean
 @RooJson
@@ -160,6 +161,26 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date updated;
+
+    /**
+     */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private List<EventPhoto> photos = new ArrayList<EventPhoto>();
+
+    /**
+     */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private List<EventAlert> alerts = new ArrayList<EventAlert>();
+
+    /**
+     */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private List<EventMap> maps = new ArrayList<EventMap>();
+
+    /**
+     */
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    private List<EventResult> eventResults = new ArrayList<EventResult>();
 
     @PrePersist
     protected void onCreate() {
@@ -337,7 +358,6 @@ public class Event {
         return q;
     }
 
-
     public static TypedQuery<String> findAllEventsCountries() {
         EntityManager em = Event.entityManager();
         TypedQuery<String> q = em.createQuery("SELECT distinct event.country FROM Event AS event", String.class);
@@ -378,4 +398,5 @@ public class Event {
         q.setMaxResults(maxResults);
         return q;
     }
+
 }

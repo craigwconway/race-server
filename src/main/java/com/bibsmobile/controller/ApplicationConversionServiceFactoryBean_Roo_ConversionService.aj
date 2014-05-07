@@ -6,8 +6,12 @@ package com.bibsmobile.controller;
 import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventAlert;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemPriceChange;
+import com.bibsmobile.model.EventMap;
+import com.bibsmobile.model.EventPhoto;
+import com.bibsmobile.model.EventResult;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
@@ -70,6 +74,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
+    public Converter<EventAlert, String> ApplicationConversionServiceFactoryBean.getEventAlertToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventAlert, java.lang.String>() {
+            public String convert(EventAlert eventAlert) {
+                return new StringBuilder().append(eventAlert.getText()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, EventAlert> ApplicationConversionServiceFactoryBean.getIdToEventAlertConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventAlert>() {
+            public com.bibsmobile.model.EventAlert convert(java.lang.Long id) {
+                return EventAlert.findEventAlert(id);
+            }
+        };
+    }
+    
+    public Converter<String, EventAlert> ApplicationConversionServiceFactoryBean.getStringToEventAlertConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventAlert>() {
+            public com.bibsmobile.model.EventAlert convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), EventAlert.class);
+            }
+        };
+    }
+    
     public Converter<EventCartItem, String> ApplicationConversionServiceFactoryBean.getEventCartItemToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventCartItem, java.lang.String>() {
             public String convert(EventCartItem eventCartItem) {
@@ -114,6 +142,78 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventCartItemPriceChange>() {
             public com.bibsmobile.model.EventCartItemPriceChange convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventCartItemPriceChange.class);
+            }
+        };
+    }
+    
+    public Converter<EventMap, String> ApplicationConversionServiceFactoryBean.getEventMapToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventMap, java.lang.String>() {
+            public String convert(EventMap eventMap) {
+                return new StringBuilder().append(eventMap.getUrl()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, EventMap> ApplicationConversionServiceFactoryBean.getIdToEventMapConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventMap>() {
+            public com.bibsmobile.model.EventMap convert(java.lang.Long id) {
+                return EventMap.findEventMap(id);
+            }
+        };
+    }
+    
+    public Converter<String, EventMap> ApplicationConversionServiceFactoryBean.getStringToEventMapConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventMap>() {
+            public com.bibsmobile.model.EventMap convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), EventMap.class);
+            }
+        };
+    }
+    
+    public Converter<EventPhoto, String> ApplicationConversionServiceFactoryBean.getEventPhotoToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventPhoto, java.lang.String>() {
+            public String convert(EventPhoto eventPhoto) {
+                return new StringBuilder().append(eventPhoto.getUrl()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, EventPhoto> ApplicationConversionServiceFactoryBean.getIdToEventPhotoConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventPhoto>() {
+            public com.bibsmobile.model.EventPhoto convert(java.lang.Long id) {
+                return EventPhoto.findEventPhoto(id);
+            }
+        };
+    }
+    
+    public Converter<String, EventPhoto> ApplicationConversionServiceFactoryBean.getStringToEventPhotoConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventPhoto>() {
+            public com.bibsmobile.model.EventPhoto convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), EventPhoto.class);
+            }
+        };
+    }
+    
+    public Converter<EventResult, String> ApplicationConversionServiceFactoryBean.getEventResultToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventResult, java.lang.String>() {
+            public String convert(EventResult eventResult) {
+                return new StringBuilder().append(eventResult.getText()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, EventResult> ApplicationConversionServiceFactoryBean.getIdToEventResultConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventResult>() {
+            public com.bibsmobile.model.EventResult convert(java.lang.Long id) {
+                return EventResult.findEventResult(id);
+            }
+        };
+    }
+    
+    public Converter<String, EventResult> ApplicationConversionServiceFactoryBean.getStringToEventResultConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventResult>() {
+            public com.bibsmobile.model.EventResult convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), EventResult.class);
             }
         };
     }
@@ -317,12 +417,24 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getEventToStringConverter());
         registry.addConverter(getIdToEventConverter());
         registry.addConverter(getStringToEventConverter());
+        registry.addConverter(getEventAlertToStringConverter());
+        registry.addConverter(getIdToEventAlertConverter());
+        registry.addConverter(getStringToEventAlertConverter());
         registry.addConverter(getEventCartItemToStringConverter());
         registry.addConverter(getIdToEventCartItemConverter());
         registry.addConverter(getStringToEventCartItemConverter());
         registry.addConverter(getEventCartItemPriceChangeToStringConverter());
         registry.addConverter(getIdToEventCartItemPriceChangeConverter());
         registry.addConverter(getStringToEventCartItemPriceChangeConverter());
+        registry.addConverter(getEventMapToStringConverter());
+        registry.addConverter(getIdToEventMapConverter());
+        registry.addConverter(getStringToEventMapConverter());
+        registry.addConverter(getEventPhotoToStringConverter());
+        registry.addConverter(getIdToEventPhotoConverter());
+        registry.addConverter(getStringToEventPhotoConverter());
+        registry.addConverter(getEventResultToStringConverter());
+        registry.addConverter(getIdToEventResultConverter());
+        registry.addConverter(getStringToEventResultConverter());
         registry.addConverter(getRaceImageToStringConverter());
         registry.addConverter(getIdToRaceImageConverter());
         registry.addConverter(getStringToRaceImageConverter());

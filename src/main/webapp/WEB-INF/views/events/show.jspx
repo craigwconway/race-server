@@ -16,7 +16,7 @@
     </style>
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
 		Awards
-	</button> 
+	</button>
     <button class="btn btn-default btn-top" onclick="products()" type="button">
 		Products and Registration
 	</button>
@@ -34,7 +34,6 @@
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
         </span>
     </sec:authorize>
-       
     <script>
 	function cloud(){
 		jQuery("#progress").show();

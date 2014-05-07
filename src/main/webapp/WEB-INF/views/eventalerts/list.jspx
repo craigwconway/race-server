@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_bibsmobile_model_EventAlert" items="${eventalerts}" z="BkorI8xWrnihHndBbGie2fS3zlI=">
+        <table:table data="${eventalerts}" id="l_com_bibsmobile_model_EventAlert" path="/eventalerts" z="27erxZtKfSk4VcxmBqnPN102XKc=">
+            <table:column id="c_com_bibsmobile_model_EventAlert_text" property="text" z="l30basEq5ARqx9cw2e28ZKFgM3o="/>
+            <table:column id="c_com_bibsmobile_model_EventAlert_event" property="event" z="H2Cm+MBSIPb2A1ocRPkbBN8S9FA="/>
+        </table:table>
+    </page:list>
+</div>
