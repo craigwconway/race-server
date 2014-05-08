@@ -4,6 +4,7 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.EventMapController;
+import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventMap;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -82,6 +84,14 @@ privileged aspect EventMapController_Roo_Controller_Json {
         }
         eventMap.remove();
         return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> EventMapController.jsonFindEventMapsByEvent(@RequestParam("event") Event event) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(EventMap.toJsonArray(EventMap.findEventMapsByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
     
 }

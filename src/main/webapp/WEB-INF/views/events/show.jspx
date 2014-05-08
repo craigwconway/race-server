@@ -18,8 +18,20 @@
 		Awards
 	</button>
     <button class="btn btn-default btn-top" onclick="products()" type="button">
-		Products and Registration
-	</button>
+        Products and Registration
+    </button>
+    <button class="btn btn-default btn-top" onclick="alerts()" type="button">
+        Alerts
+    </button>
+    <button class="btn btn-default btn-top" onclick="maps()" type="button">
+        Maps
+    </button>
+    <button class="btn btn-default btn-top" onclick="photos()" type="button">
+        Photos
+    </button>
+    <button class="btn btn-default btn-top" onclick="results()" type="button">
+        Results
+    </button>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <button class="btn btn-default btn-top" onclick="redirectImport()" type="button">
 		Import
@@ -56,9 +68,21 @@
 			jQuery("#progress").hide();
 		});
 	}
-	function products(){
-		window.location="/bibs-server/eventitems?event=${event.id}";
-	}
+    function alerts(){
+        window.location="/bibs-server/eventalerts?event=${event.id}";
+    }
+    function maps(){
+        window.location="/bibs-server/eventmaps?event=${event.id}";
+    }
+    function photos(){
+        window.location="/bibs-server/eventphotos?event=${event.id}";
+    }
+    function results(){
+        window.location="/bibs-server/eventresults?event=${event.id}";
+    }
+    function products(){
+        window.location="/bibs-server/eventproducts?event=${event.id}";
+    }
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
 	}
@@ -98,7 +122,7 @@
             <field:display field="map" id="s_com_bibsmobile_model_Event_map" object="${event}" z="user-managed"/>
             <field:display field="map2" id="s_com_bibsmobile_model_Event_map2" object="${event}" z="user-managed"/>
             <field:display field="map3" id="s_com_bibsmobile_model_Event_map3" object="${event}" z="user-managed"/>
-            <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" z="user-managed"/>
+            <field:display field="results1" id="s_com_bibsmobile_model_Event_results1" object="${event}" z="user-managed"/>
             <field:display field="results2" id="s_com_bibsmobile_model_Event_results2" object="${event}" z="user-managed"/>
             <field:display field="results3" id="s_com_bibsmobile_model_Event_results3" object="${event}" z="user-managed"/>
             <field:display field="alert1" id="s_com_bibsmobile_model_Event_alert1" object="${event}" z="user-managed"/>
@@ -125,5 +149,14 @@
         <field:display field="regEnabled" id="s_com_bibsmobile_model_Event_regEnabled" object="${event}" z="5ZHzTNt6g8XNaCI9F07G/pCqVY8="/>
         <field:display date="true" dateTimePattern="${event_regstart_date_format}" field="regStart" id="s_com_bibsmobile_model_Event_regStart" object="${event}" z="bBscU1kAsStFikpX5tLH0AVKNkk="/>
         <field:display date="true" dateTimePattern="${event_regend_date_format}" field="regEnd" id="s_com_bibsmobile_model_Event_regEnd" object="${event}" z="0OBWojydktrp1m6c6oQ+jq6jmKM="/>
+        <field:display field="raceImages" id="s_com_bibsmobile_model_Event_raceImages" object="${event}" z="Kgz/ISPfw6PlNqYhtpbAy3AbQG0="/>
+        <field:display field="raceResults" id="s_com_bibsmobile_model_Event_raceResults" object="${event}" z="d/cAwbYQjX7B/rd6LQ/wkcHqYpg="/>
+        <field:display field="resultsFiles" id="s_com_bibsmobile_model_Event_resultsFiles" object="${event}" z="Z8aFmz+7kJVkSmLlrYIHQexTOww="/>
+        <field:display field="awardCategorys" id="s_com_bibsmobile_model_Event_awardCategorys" object="${event}" z="E+X4Y24quMFGgLqEzNLLx96WIOU="/>
+        <field:display field="photos" id="s_com_bibsmobile_model_Event_photos" object="${event}" z="user-managed"/>
+        <field:display field="alerts" id="s_com_bibsmobile_model_Event_alerts" object="${event}" z="user-managed"/>
+        <field:display field="maps" id="s_com_bibsmobile_model_Event_maps" object="${event}" z="user-managed"/>
+        <field:display field="results" id="s_com_bibsmobile_model_Event_maps" object="${event}" z="user-managed"/>
+        <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" z="WdvZR59X1V7e8ffITTcnvnFuB14="/>
     </page:show>
 </div>

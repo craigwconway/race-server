@@ -16,10 +16,6 @@ privileged aspect EventMap_Roo_JavaBean {
         this.url = url;
     }
     
-    public Event EventMap.getEvent() {
-        return this.event;
-    }
-    
     public void EventMap.setEvent(Event event) {
         this.event = event;
     }

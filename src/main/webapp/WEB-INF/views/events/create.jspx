@@ -27,7 +27,7 @@
             <field:input field="map" id="c_com_bibsmobile_model_Event_map" z="user-managed"/>
             <field:input field="map2" id="c_com_bibsmobile_model_Event_map2" z="user-managed"/>
             <field:input field="map3" id="c_com_bibsmobile_model_Event_map3" z="user-managed"/>
-            <field:input field="results" id="c_com_bibsmobile_model_Event_results" z="user-managed"/>
+            <field:input field="results1" id="c_com_bibsmobile_model_Event_results1" z="user-managed"/>
             <field:input field="results2" id="c_com_bibsmobile_model_Event_results2" z="user-managed"/>
             <field:input field="results3" id="c_com_bibsmobile_model_Event_results3" z="user-managed"/>
             <field:input field="alert1" id="c_com_bibsmobile_model_Event_alert1" z="user-managed"/>
@@ -58,17 +58,18 @@
             <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
             <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
             <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Event" render="${not empty dependencies}" z="97PxZzAnMjrQHEYGI+GbAcLkB+8="/>
-            <field:simple field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Award Category" z="W/mlzVpnmu4H0G8oKjVQKgrW5bs="/>
-            <field:select field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="oo4ip/WoDNsEB0aJzYG0szVc5x8="/>
+            <field:input field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" z="3DmdaoAlr4tuRBA+G/h/8/CKxFw="/>
+            <field:input field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" z="rlTrxZa+jmdkcZ9YtEouYBbvG9Y="/>
+            <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="user-managed"/>
+            <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="user-managed"/>
+            <field:simple field="photos" id="c_com_bibsmobile_model_Event_photos" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Photo" z="user-managed"/>
+            <field:simple field="results" id="c_com_bibsmobile_model_Event_results" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Result" z="user-managed"/>
         </div>
         <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="/3fyPZerngMWWMJqq9ZJvrhAH7g="/>
         <div id="regDates">
             <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
             <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
         </div>
-        <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="eQ2XmJuhHRvEjLmGf3Sm1x/npSc="/>
-        <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="GuyHuvTW7Qjs7vmkj96arvJWQ1g="/>
-        <field:simple field="eventResults" id="c_com_bibsmobile_model_Event_eventResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Result" z="7M/vjlzePMmO+tn4GAspAsUJriQ="/>
     </form:create>
     <script>
     window.onload = function(){

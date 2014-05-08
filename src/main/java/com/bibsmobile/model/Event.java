@@ -4,18 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Query;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -24,7 +13,6 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.ManyToMany;
 
 @RooJavaBean
 @RooJson
@@ -100,7 +88,8 @@ public class Event {
 
     private String map3;
 
-    private String results;
+    @Column(name = "results")
+    private String results1;
 
     private String results2;
 
@@ -164,23 +153,23 @@ public class Event {
 
     /**
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
     private List<EventPhoto> photos = new ArrayList<EventPhoto>();
 
     /**
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
     private List<EventAlert> alerts = new ArrayList<EventAlert>();
 
     /**
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
     private List<EventMap> maps = new ArrayList<EventMap>();
 
     /**
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
-    private List<EventResult> eventResults = new ArrayList<EventResult>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    private List<EventResult> results = new ArrayList<EventResult>();
 
     @PrePersist
     protected void onCreate() {

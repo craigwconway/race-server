@@ -251,12 +251,12 @@ privileged aspect Event_Roo_JavaBean {
         this.map3 = map3;
     }
     
-    public String Event.getResults() {
-        return this.results;
+    public String Event.getResults1() {
+        return this.results1;
     }
     
-    public void Event.setResults(String results) {
-        this.results = results;
+    public void Event.setResults1(String results1) {
+        this.results1 = results1;
     }
     
     public String Event.getResults2() {
@@ -483,12 +483,12 @@ privileged aspect Event_Roo_JavaBean {
         this.maps = maps;
     }
     
-    public List<EventResult> Event.getEventResults() {
-        return this.eventResults;
+    public List<EventResult> Event.getResults() {
+        return this.results;
     }
     
-    public void Event.setEventResults(List<EventResult> eventResults) {
-        this.eventResults = eventResults;
+    public void Event.setResults(List<EventResult> results) {
+        this.results = results;
     }
     
 }

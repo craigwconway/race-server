@@ -16,10 +16,6 @@ privileged aspect EventPhoto_Roo_JavaBean {
         this.url = url;
     }
     
-    public Event EventPhoto.getEvent() {
-        return this.event;
-    }
-    
     public void EventPhoto.setEvent(Event event) {
         this.event = event;
     }

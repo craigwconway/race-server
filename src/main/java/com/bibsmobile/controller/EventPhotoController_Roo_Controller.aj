@@ -4,7 +4,6 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.EventPhotoController;
-import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventPhoto;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -31,31 +29,11 @@ privileged aspect EventPhotoController_Roo_Controller {
         return "redirect:/eventphotos/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
     }
     
-    @RequestMapping(params = "form", produces = "text/html")
-    public String EventPhotoController.createForm(Model uiModel) {
-        populateEditForm(uiModel, new EventPhoto());
-        return "eventphotos/create";
-    }
-    
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String EventPhotoController.show(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("eventphoto", EventPhoto.findEventPhoto(id));
         uiModel.addAttribute("itemId", id);
         return "eventphotos/show";
-    }
-    
-    @RequestMapping(produces = "text/html")
-    public String EventPhotoController.list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
-        if (page != null || size != null) {
-            int sizeNo = size == null ? 10 : size.intValue();
-            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("eventphotoes", EventPhoto.findEventPhotoEntries(firstResult, sizeNo, sortFieldName, sortOrder));
-            float nrOfPages = (float) EventPhoto.countEventPhotoes() / sizeNo;
-            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        } else {
-            uiModel.addAttribute("eventphotoes", EventPhoto.findAllEventPhotoes(sortFieldName, sortOrder));
-        }
-        return "eventphotos/list";
     }
     
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
@@ -67,27 +45,6 @@ privileged aspect EventPhotoController_Roo_Controller {
         uiModel.asMap().clear();
         eventPhoto.merge();
         return "redirect:/eventphotos/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
-    }
-    
-    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
-    public String EventPhotoController.updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, EventPhoto.findEventPhoto(id));
-        return "eventphotos/update";
-    }
-    
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String EventPhotoController.delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        EventPhoto eventPhoto = EventPhoto.findEventPhoto(id);
-        eventPhoto.remove();
-        uiModel.asMap().clear();
-        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
-        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/eventphotos";
-    }
-    
-    void EventPhotoController.populateEditForm(Model uiModel, EventPhoto eventPhoto) {
-        uiModel.addAttribute("eventPhoto", eventPhoto);
-        uiModel.addAttribute("events", Event.findAllEvents());
     }
     
     String EventPhotoController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

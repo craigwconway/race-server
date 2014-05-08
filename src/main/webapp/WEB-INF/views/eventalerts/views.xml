@@ -4,13 +4,13 @@
     <definition extends="default" name="eventalerts/list">
         <put-attribute name="body" value="/WEB-INF/views/eventalerts/list.jspx"/>
     </definition>
-<definition extends="default" name="eventalerts/show">
+    <definition extends="default" name="eventalerts/show">
         <put-attribute name="body" value="/WEB-INF/views/eventalerts/show.jspx"/>
     </definition>
-<definition extends="default" name="eventalerts/create">
+    <definition extends="default" name="eventalerts/create">
         <put-attribute name="body" value="/WEB-INF/views/eventalerts/create.jspx"/>
     </definition>
-<definition extends="default" name="eventalerts/update">
+    <definition extends="default" name="eventalerts/update">
         <put-attribute name="body" value="/WEB-INF/views/eventalerts/update.jspx"/>
     </definition>
 </tiles-definitions>

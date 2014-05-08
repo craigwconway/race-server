@@ -16,10 +16,6 @@ privileged aspect EventResult_Roo_JavaBean {
         this.text = text;
     }
     
-    public Event EventResult.getEvent() {
-        return this.event;
-    }
-    
     public void EventResult.setEvent(Event event) {
         this.event = event;
     }
