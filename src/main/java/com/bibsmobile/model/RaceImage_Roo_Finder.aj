@@ -3,10 +3,9 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.RaceImage;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 privileged aspect RaceImage_Roo_Finder {
     
@@ -38,6 +37,14 @@ privileged aspect RaceImage_Roo_Finder {
         }
         TypedQuery<RaceImage> q = em.createQuery(jpaQuery, RaceImage.class);
         q.setParameter("event", event);
+        return q;
+    }
+
+    public static TypedQuery<RaceImage> RaceImage.findRaceImagesByRaceResults(List<RaceResult> raceResults) {
+        if (raceResults == null) throw new IllegalArgumentException("The raceResults argument is required");
+        EntityManager em = RaceImage.entityManager();
+        TypedQuery<RaceImage> q = em.createQuery("SELECT o FROM RaceImage AS o WHERE o.raceResult IN (:raceResults)", RaceImage.class);
+        q.setParameter("raceResults", raceResults);
         return q;
     }
     
