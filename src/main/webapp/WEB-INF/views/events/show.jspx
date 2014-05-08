@@ -81,7 +81,7 @@
         window.location="/bibs-server/eventresults?event=${event.id}";
     }
     function products(){
-        window.location="/bibs-server/eventproducts?event=${event.id}";
+        window.location="/bibs-server/eventitems?event=${event.id}";
     }
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
