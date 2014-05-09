@@ -40,7 +40,7 @@
 
     <filter>
         <filter-name>CORSFilter</filter-name>
-        <filter-class>com.bibsmobile.filter.CORSFilter</filter-class>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
 
     <filter>
@@ -87,7 +87,7 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
+
     <filter>
 	   <filter-name>multipartFilter</filter-name>
 	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -97,12 +97,12 @@
 	   <url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-    
+
     <!-- Creates the Spring Container shared by all Servlets and Filters -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-    
+
     <!-- Handles Spring requests -->
     <servlet>
         <servlet-name>bibs-server</servlet-name>
