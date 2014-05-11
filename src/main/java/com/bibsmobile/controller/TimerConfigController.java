@@ -120,7 +120,7 @@ public class TimerConfigController {
     	 // mod writes for current usergroup 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
-        System.out.println("writes group "+user.getUserGroup().getName());
+     /*   System.out.println("writes group "+user.getUserGroup().getName());
         
         // TODO license check
         
@@ -140,7 +140,7 @@ public class TimerConfigController {
     	}
         user.getUserGroup().setBibWrites(writes-1);
         user.getUserGroup().merge();
-        
+        */
         return "true";
     } 
 

@@ -2,9 +2,6 @@ package com.bibsmobile.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;

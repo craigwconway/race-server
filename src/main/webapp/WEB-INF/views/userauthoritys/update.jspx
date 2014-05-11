@@ -4,5 +4,6 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_com_bibsmobile_model_UserAuthority" modelAttribute="userAuthority" path="/userauthoritys" versionField="Version" z="q6kpZCErtxskAoAkx8DFCGCD+HM=">
         <field:input field="authority" id="c_com_bibsmobile_model_UserAuthority_authority" required="true" z="SLFv2En+KxXulYfo6ufCzW93TGA="/>
+        <field:simple field="userAuthorities" id="c_com_bibsmobile_model_UserAuthority_userAuthorities" messageCode="entity_reference_not_managed" messageCodeAttribute="User Authorities" z="Creu/EWOixiihqHKC4GDXTQ2iCc="/>
     </form:update>
 </div>

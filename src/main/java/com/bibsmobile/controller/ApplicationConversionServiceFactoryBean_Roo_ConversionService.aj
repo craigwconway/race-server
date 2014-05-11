@@ -378,6 +378,14 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
+    public Converter<UserGroup, String> ApplicationConversionServiceFactoryBean.getUserGroupToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroup, java.lang.String>() {
+            public String convert(UserGroup userGroup) {
+                return new StringBuilder().append(userGroup.getName()).append(' ').append(userGroup.getBibWrites()).toString();
+            }
+        };
+    }
+    
     public Converter<Long, UserGroup> ApplicationConversionServiceFactoryBean.getIdToUserGroupConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserGroup>() {
             public com.bibsmobile.model.UserGroup convert(java.lang.Long id) {

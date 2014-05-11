@@ -3,10 +3,6 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <menu:menu id="_menu" z="nZaf43BjUg1iM0v70HJVEsXDopc=">
-        <menu:category id="c_usergroup" z="6n4mxuM13Vme4SaV4E/aybwe+SQ=">
-            <menu:item id="i_usergroup_new" messageCode="global_menu_new" url="/usergroups?form" z="1YPU41wmuKyO4UjuLvx4ZshF8Qo="/>
-            <menu:item id="i_usergroup_list" messageCode="global_menu_list" url="/usergroups?page=1&amp;size=${empty param.size ? 10 : param.size}" z="9MCwnnDDT5VNYio4ofj/E7YmN7o="/>
-        </menu:category>
         <menu:category id="c_resultsimport" z="M5zMmVMSGohOavsHDcJSn39vi2M=">
             <menu:item id="i_resultsimport_new" messageCode="global_menu_new" url="/resultsimports?form" z="RB/V4xluIpyTBrUQwrwJUqYnHZw="/>
             <menu:item id="i_resultsimport_list" messageCode="global_menu_list" url="/resultsimports?page=1&amp;size=${empty param.size ? 10 : param.size}" z="fbcSe/Fa3FZuBvAdGTb0cs8+RlU="/>
@@ -73,6 +69,10 @@
         <menu:category id="c_eventphoto" z="Kl36kkRL9Vrp/w+Dh7a79BIADw0=">
             <menu:item id="i_eventphoto_new" messageCode="global_menu_new" url="/eventphotos?form" z="qsPNnXcvP4O3ibp7BzWr5LclL4A="/>
             <menu:item id="i_eventphoto_list" messageCode="global_menu_list" url="/eventphotos?page=1&amp;size=${empty param.size ? 10 : param.size}" z="gghLMra+1RUAo6xwd81vLMvz0u4="/>
+        </menu:category>
+        <menu:category id="c_usergroup" z="6n4mxuM13Vme4SaV4E/aybwe+SQ=">
+            <menu:item id="i_usergroup_new" messageCode="global_menu_new" url="/usergroups?form" z="1YPU41wmuKyO4UjuLvx4ZshF8Qo="/>
+            <menu:item id="i_usergroup_list" messageCode="global_menu_list" url="/usergroups?page=1&amp;size=${empty param.size ? 10 : param.size}" z="9MCwnnDDT5VNYio4ofj/E7YmN7o="/>
         </menu:category>
     </menu:menu>
 </div>

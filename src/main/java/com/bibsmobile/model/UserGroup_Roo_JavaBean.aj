@@ -4,8 +4,9 @@
 package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroup;
-import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.UserGroupType;
 import java.util.Set;
 
 privileged aspect UserGroup_Roo_JavaBean {
@@ -26,12 +27,12 @@ privileged aspect UserGroup_Roo_JavaBean {
         this.bibWrites = bibWrites;
     }
     
-    public Set<UserProfile> UserGroup.getUserProfiles() {
-        return this.userProfiles;
+    public UserGroupType UserGroup.getGroupType() {
+        return this.groupType;
     }
     
-    public void UserGroup.setUserProfiles(Set<UserProfile> userProfiles) {
-        this.userProfiles = userProfiles;
+    public void UserGroup.setGroupType(UserGroupType groupType) {
+        this.groupType = groupType;
     }
     
     public Set<Event> UserGroup.getEvents() {
@@ -40,6 +41,14 @@ privileged aspect UserGroup_Roo_JavaBean {
     
     public void UserGroup.setEvents(Set<Event> events) {
         this.events = events;
+    }
+    
+    public Set<UserAuthorities> UserGroup.getAuthorities() {
+        return this.authorities;
+    }
+    
+    public void UserGroup.setAuthorities(Set<UserAuthorities> authorities) {
+        this.authorities = authorities;
     }
     
 }

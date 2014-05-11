@@ -54,7 +54,7 @@ public class EventController {
                 .getAuthentication().getName();
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
                 username).getSingleResult();
-        if (user.getUserGroup() != null) {
+       /* if (user.getUserGroup() != null) {
             addGroup = true;
             log.info("event group " + user.getUserGroup().getName());
             event.setUserGroup(user.getUserGroup());
@@ -67,7 +67,7 @@ public class EventController {
             groupEvents.add(event);
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
-        }
+        }*/
 
         return "redirect:/events/"
                 + encodeUrlPathSegment(event.getId().toString(),

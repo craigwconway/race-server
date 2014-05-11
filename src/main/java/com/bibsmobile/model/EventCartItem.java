@@ -16,8 +16,6 @@ import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import javax.persistence.ManyToMany;
 
 @RooJavaBean
 @RooToString

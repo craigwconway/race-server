@@ -8,7 +8,7 @@
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <field:input field="password" id="c_com_bibsmobile_model_UserProfile_password" z="Whdn67AqYvdSEM0tyxpxFiZzPh8="/>
             </sec:authorize>
-            <field:select field="userAuthorities" id="c_com_bibsmobile_model_UserProfile_userAuthorities" itemValue="id" items="${userauthoritys}" multiple="true" path="/userauthoritys" z="user-managed"/>
+            <field:select field="userAuthorities" id="c_com_bibsmobile_model_UserProfile_userAuthorities" itemValue="id" items="${userauthoritys}" multiple="true" path="/userauthoritys" z="user-managed" render="false"/>
             <field:checkbox field="enabled" id="c_com_bibsmobile_model_UserProfile_enabled" z="user-managed"/>
             <field:input field="firstname" id="c_com_bibsmobile_model_UserProfile_firstname" z="msDyOI2fDyyI15IUAeBmry/wFgY="/>
             <field:input field="lastname" id="c_com_bibsmobile_model_UserProfile_lastname" z="xXnmVi5/ZyP/DW7BblQPPudW9mQ="/>
@@ -25,10 +25,9 @@
                 <field:checkbox field="accountNonLocked" id="c_com_bibsmobile_model_UserProfile_accountNonLocked" render="false" z="user-managed"/>
                 <field:checkbox field="credentialsNonExpired" id="c_com_bibsmobile_model_UserProfile_credentialsNonExpired" render="false" z="user-managed"/>
                 <field:input field="image" id="c_com_bibsmobile_model_UserProfile_image" z="user-managed"/>
-                <field:select field="userGroup" id="c_com_bibsmobile_model_UserProfile_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="user-managed"/>
+                <field:input field="age" id="c_com_bibsmobile_model_UserProfile_age" z="RAn/1VjWyIiBnu+vJjHwKPEMH5c="/>
+                <field:input field="raceResults" id="c_com_bibsmobile_model_UserProfile_raceResults" z="oQz7xnJM3dio7WLpURsyqPZBbwE="/>
             </div>
         </sec:authorize>
-        <field:input field="age" id="c_com_bibsmobile_model_UserProfile_age" z="RAn/1VjWyIiBnu+vJjHwKPEMH5c="/>
-        <field:simple field="raceResults" id="c_com_bibsmobile_model_UserProfile_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" z="/bGpUN/BqajHRNdmskh1b9EfgtU="/>
     </form:update>
 </div>

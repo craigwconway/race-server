@@ -4,6 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_UserAuthority" modelAttribute="userAuthority" path="/userauthoritys" render="${empty dependencies}" z="+yZDptc6VWtOrdD2aTgc/OXG+mw=">
         <field:input field="authority" id="c_com_bibsmobile_model_UserAuthority_authority" required="true" z="SLFv2En+KxXulYfo6ufCzW93TGA="/>
+        <field:simple field="userAuthorities" id="c_com_bibsmobile_model_UserAuthority_userAuthorities" messageCode="entity_reference_not_managed" messageCodeAttribute="User Authorities" z="Creu/EWOixiihqHKC4GDXTQ2iCc="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserAuthority" render="${not empty dependencies}" z="xb8863HDB8MmppGzL4CSYRVqaW4="/>
 </div>

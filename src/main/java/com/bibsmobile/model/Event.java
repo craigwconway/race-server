@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
@@ -33,7 +33,7 @@ public class Event {
     private List<AwardCategory> awardCategorys;
 
     @ManyToOne
-    private UserGroup userGroup;
+    private UserGroup eventUserGroup;
 
     @NotNull
     private String name;

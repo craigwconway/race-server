@@ -143,7 +143,8 @@
             <field:display field="gunTimeStart" id="s_com_bibsmobile_model_Event_gunTimeStart" object="${event}" z="user-managed"/>
             <field:display field="sync" id="s_com_bibsmobile_model_Event_sync" object="${event}" z="user-managed"/>
             <field:display field="syncId" id="s_com_bibsmobile_model_Event_syncId" object="${event}" z="user-managed"/>
-            <field:display field="userGroup" id="s_com_bibsmobile_model_Event_userGroup" object="${event}" z="user-managed"/>
+            <!--<field:display field="userGroup" id="s_com_bibsmobile_model_Event_userGroup" object="${event}" z="user-managed"/>
+         -->
             <field:display field="country" id="s_com_bibsmobile_model_Event_country" object="${event}" z="Qv0Plvijr5HbvB1q+ZGx2JyZ01E="/>
         </div>
         <field:display field="regEnabled" id="s_com_bibsmobile_model_Event_regEnabled" object="${event}" z="5ZHzTNt6g8XNaCI9F07G/pCqVY8="/>
@@ -157,5 +158,6 @@
         <field:display field="alerts" id="s_com_bibsmobile_model_Event_alerts" object="${event}" render="false" z="user-managed"/>
         <field:display field="maps" id="s_com_bibsmobile_model_Event_maps" object="${event}" render="false" z="user-managed"/>
         <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" render="false" z="user-managed"/>
+        <field:display field="eventUserGroup" id="s_com_bibsmobile_model_Event_eventUserGroup" object="${event}" z="31CvZowi35b831r72RqoYzQXP4A="/>
     </page:show>
 </div>

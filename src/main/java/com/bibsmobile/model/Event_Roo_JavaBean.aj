@@ -51,12 +51,12 @@ privileged aspect Event_Roo_JavaBean {
         this.awardCategorys = awardCategorys;
     }
     
-    public UserGroup Event.getUserGroup() {
-        return this.userGroup;
+    public UserGroup Event.getEventUserGroup() {
+        return this.eventUserGroup;
     }
     
-    public void Event.setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
+    public void Event.setEventUserGroup(UserGroup eventUserGroup) {
+        this.eventUserGroup = eventUserGroup;
     }
     
     public String Event.getName() {

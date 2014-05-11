@@ -6,22 +6,18 @@
     <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/userprofiles?form';" type="button">
 		Add User
 	</button>
-    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
-		Groups and Organizations
-	</button>
     <page:list id="pl_com_bibsmobile_model_UserProfile" items="${userprofiles}" z="1SzZRnyS7+fCTmjwHcV6wnTBQ7A=">
         <table:table data="${userprofiles}" id="l_com_bibsmobile_model_UserProfile" path="/userprofiles" z="skPQvI3EqZxrcsnFZTq+pwfTzpQ=">
-            <table:column id="c_com_bibsmobile_model_UserProfile_username" property="username" z="Iy3Q1HWj7a1aVU94RUb2sdaqe5U="/>
+            <table:column id="c_com_bibsmobile_model_UserProfile_username" property="username" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_firstname" property="firstname" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_UserProfile_lastname" property="lastname" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_UserProfile_lastname" property="lastname" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_accountNonLocked" property="accountNonLocked" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_credentialsNonExpired" property="credentialsNonExpired" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_email" property="email" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_password" property="password" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_accountNonExpired" property="accountNonExpired" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_UserProfile_userAuthorities" property="userAuthorities" render="true" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_UserProfile_userAuthorities" property="userAuthorities" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserProfile_enabled" property="enabled" render="true" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_UserProfile_userGroup" property="userGroup" z="WNiD0cwyE9xYekcRw9qhEjCTLuE="/>
         </table:table>
     </page:list>
 </div>

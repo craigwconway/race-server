@@ -3,12 +3,22 @@
 
 package com.bibsmobile.model;
 
+import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
+import java.util.Set;
 
 privileged aspect UserAuthority_Roo_JavaBean {
     
     public void UserAuthority.setAuthority(String authority) {
         this.authority = authority;
+    }
+    
+    public Set<UserAuthorities> UserAuthority.getUserAuthorities() {
+        return this.userAuthorities;
+    }
+    
+    public void UserAuthority.setUserAuthorities(Set<UserAuthorities> userAuthorities) {
+        this.userAuthorities = userAuthorities;
     }
     
 }

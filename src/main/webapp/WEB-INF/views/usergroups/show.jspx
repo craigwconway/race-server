@@ -2,8 +2,14 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
+        Back to User Groups
+    </button>
     <page:show id="ps_com_bibsmobile_model_UserGroup" object="${usergroup}" path="/usergroups" z="VW+v2NV4h0idHhFHgl9tPFllaH0=">
         <field:display field="name" id="s_com_bibsmobile_model_UserGroup_name" object="${usergroup}" z="HU7uo7dVqmGK2/Dmbv/N29m3MF4="/>
         <field:display field="bibWrites" id="s_com_bibsmobile_model_UserGroup_bibWrites" object="${usergroup}" z="S7F9bf/JMVoRale6AciV7zCqPxw="/>
+        <field:display field="groupType" id="s_com_bibsmobile_model_UserGroup_groupType" object="${usergroup}" z="n3RTCxuaNCnxaCUiRdsPnD5zUlM="/>
+        <field:display field="events" id="s_com_bibsmobile_model_UserGroup_events" object="${usergroup}" z="user-managed" render="false"/>
+        <field:display field="authorities" id="s_com_bibsmobile_model_UserGroup_authorities" object="${usergroup}" z="user-managed" render="false"/>
     </page:show>
 </div>

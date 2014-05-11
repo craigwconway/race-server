@@ -7,7 +7,6 @@ import org.springframework.roo.addon.web.mvc.controller.converter.RooConversionS
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.UserAuthority;
-import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 
 /**
@@ -56,11 +55,4 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         };
     }
     
-    public Converter<UserGroup, String> getUserGroupToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroup, java.lang.String>() {
-            public String convert(UserGroup userGroup) {
-                return userGroup.getName();
-            }
-        };
-    }
 }

@@ -5,12 +5,13 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.UserGroupController;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroup;
-import com.bibsmobile.service.UserProfileService;
+import com.bibsmobile.model.UserGroupType;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +22,6 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 privileged aspect UserGroupController_Roo_Controller {
-    
-    @Autowired
-    UserProfileService UserGroupController.userProfileService;
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String UserGroupController.create(@Valid UserGroup userGroup, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -93,7 +91,8 @@ privileged aspect UserGroupController_Roo_Controller {
     void UserGroupController.populateEditForm(Model uiModel, UserGroup userGroup) {
         uiModel.addAttribute("userGroup", userGroup);
         uiModel.addAttribute("events", Event.findAllEvents());
-        uiModel.addAttribute("userprofiles", userProfileService.findAllUserProfiles());
+        uiModel.addAttribute("userauthoritieses", UserAuthorities.findAllUserAuthoritieses());
+        uiModel.addAttribute("usergrouptypes", Arrays.asList(UserGroupType.values()));
     }
     
     String UserGroupController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

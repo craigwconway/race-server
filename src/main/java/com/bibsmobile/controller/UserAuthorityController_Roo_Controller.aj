@@ -4,6 +4,7 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.UserAuthorityController;
+import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
@@ -86,6 +87,7 @@ privileged aspect UserAuthorityController_Roo_Controller {
     
     void UserAuthorityController.populateEditForm(Model uiModel, UserAuthority userAuthority) {
         uiModel.addAttribute("userAuthority", userAuthority);
+        uiModel.addAttribute("userauthoritieses", UserAuthorities.findAllUserAuthoritieses());
     }
     
     String UserAuthorityController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

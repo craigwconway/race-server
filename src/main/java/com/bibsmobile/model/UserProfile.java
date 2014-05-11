@@ -1,13 +1,12 @@
 package com.bibsmobile.model;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
+import org.apache.commons.collections.SetUtils;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
@@ -31,10 +30,9 @@ public class UserProfile implements UserDetails {
     private String gender;
     private String email;
     private String image;
-    
-    @ManyToMany
-    @JoinTable(name = "user_authorities")
-    private Set<UserAuthority> userAuthorities;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.userProfile", cascade = CascadeType.ALL)
+    private Set<UserAuthorities> userAuthorities;
     private String username;
     private String password;
     private boolean accountNonExpired = true;
@@ -46,23 +44,18 @@ public class UserProfile implements UserDetails {
     private String twitterId;
     private String googleId;
 
-    @ManyToOne
-    private UserGroup userGroup;
-    
 	@OneToMany(mappedBy = "userProfile")
-	private Set<RaceResult> raceResults; 
-    
-    @Override    
-    @JSON(include=false) 
-    public Set<com.bibsmobile.model.UserAuthority> getAuthorities() {
-        return userAuthorities;
-    }    
-    
-    @JSON(include=false)  
-    public UserGroup getUserGroup() { 
-        return userGroup;
-    }
+	private Set<RaceResult> raceResults;
 
+    @Override
+    @JSON(include = false)
+    public Set<com.bibsmobile.model.UserAuthority> getAuthorities() {
+        Set<UserAuthority> authorities = new HashSet<>();
+        for(UserAuthorities uas: userAuthorities) {
+            authorities.add(uas.getId().getUserAuthority()) ;
+        }
+        return authorities;
+    }
 
     @Override
     @JSON(include=false) 

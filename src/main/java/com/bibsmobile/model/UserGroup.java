@@ -1,35 +1,39 @@
 package com.bibsmobile.model;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-
-import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 
-import flexjson.JSONSerializer;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
+//company or team
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
-@RooEquals
 public class UserGroup {
-	
-	private String name;
-	private int bibWrites;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "userGroup")
-	private Set<UserProfile> userProfiles;
+    /**
+     */
+    private String name;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, mappedBy = "userGroup")
-	private Set<Event> events;
-	
-    public String toJson() {
-        return new JSONSerializer().exclude("*.class","userProfiles","events").serialize(this);
-    }
-	
+    private int bibWrites;
+
+    /**
+     */
+    @NotNull
+    @Enumerated
+    private UserGroupType groupType;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = {javax.persistence.CascadeType.ALL}, mappedBy = "eventUserGroup")
+    private Set<Event> events;
+
+    /**
+     */
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(joinColumns = {@JoinColumn(name = "userGroupId")},
+            inverseJoinColumns = {@JoinColumn(name = "userProfileId"), @JoinColumn(name = "userAuthorityId")})
+    private Set<UserAuthorities> authorities = new HashSet<UserAuthorities>();
 }

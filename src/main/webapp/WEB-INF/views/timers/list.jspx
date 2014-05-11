@@ -5,7 +5,9 @@
     <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/timers?form';" type="button">
 		Add Reader</button>
     <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/userprofiles';" type="button">
-		Manage Users</button>
+        Manage Users</button>
+    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
+        Manage User Groups</button>
     <page:list id="pl_com_bibsmobile_model_TimerConfig" items="${timerconfigs}" z="21mRsfOwmhGthvwvny4D/kHR0oI=">
         <table:table data="${timerconfigs}" id="l_com_bibsmobile_model_TimerConfig" path="/timers" z="HOBF5DQvvbIVD4p/2xw3W/3V3ZY=">
             <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>

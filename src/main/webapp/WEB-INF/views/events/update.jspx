@@ -61,7 +61,6 @@
             <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
             <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
             <field:input field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" z="3DmdaoAlr4tuRBA+G/h/8/CKxFw="/>
-            <field:input field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" z="rlTrxZa+jmdkcZ9YtEouYBbvG9Y="/>
             <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="user-managed"/>
             <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="user-managed"/>
             <field:simple field="photos" id="c_com_bibsmobile_model_Event_photos" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Photo" z="user-managed"/>
@@ -70,6 +69,7 @@
         <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="/3fyPZerngMWWMJqq9ZJvrhAH7g="/>
         <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
         <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
+        <field:input field="eventUserGroup" id="c_com_bibsmobile_model_Event_eventUserGroup" z="QsY7q/QFLDtFTtbjhYguD6qrRaQ="/>
     </form:update>
     <script>
     window.onload = function(){

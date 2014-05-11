@@ -4,8 +4,7 @@
 package com.bibsmobile.model;
 
 import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.UserAuthority;
-import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserProfile;
 import java.util.Date;
 import java.util.Set;
@@ -84,11 +83,11 @@ privileged aspect UserProfile_Roo_JavaBean {
         this.image = image;
     }
     
-    public Set<UserAuthority> UserProfile.getUserAuthorities() {
+    public Set<UserAuthorities> UserProfile.getUserAuthorities() {
         return this.userAuthorities;
     }
     
-    public void UserProfile.setUserAuthorities(Set<UserAuthority> userAuthorities) {
+    public void UserProfile.setUserAuthorities(Set<UserAuthorities> userAuthorities) {
         this.userAuthorities = userAuthorities;
     }
     
@@ -138,10 +137,6 @@ privileged aspect UserProfile_Roo_JavaBean {
     
     public void UserProfile.setGoogleId(String googleId) {
         this.googleId = googleId;
-    }
-    
-    public void UserProfile.setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
     }
     
     public Set<RaceResult> UserProfile.getRaceResults() {
