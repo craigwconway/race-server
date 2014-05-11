@@ -74,5 +74,9 @@
             <menu:item id="i_usergroup_new" messageCode="global_menu_new" url="/usergroups?form" z="1YPU41wmuKyO4UjuLvx4ZshF8Qo="/>
             <menu:item id="i_usergroup_list" messageCode="global_menu_list" url="/usergroups?page=1&amp;size=${empty param.size ? 10 : param.size}" z="9MCwnnDDT5VNYio4ofj/E7YmN7o="/>
         </menu:category>
+        <menu:category id="c_userauthorities" z="WXAtZZmlhSiPHnqwye2OxZuM4Wo=">
+            <menu:item id="i_userauthorities_new" messageCode="global_menu_new" url="/userauthoritieses?form" z="LX9/DgR3I8FeJbPNO+rZVCjEoUk="/>
+            <menu:item id="i_userauthorities_list" messageCode="global_menu_list" url="/userauthoritieses?page=1&amp;size=${empty param.size ? 10 : param.size}" z="os1HhoIeLTxLlZnHnkZCHNO7yjk="/>
+        </menu:category>
     </menu:menu>
 </div>
