@@ -461,6 +461,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getTimerConfigToStringConverter());
         registry.addConverter(getIdToTimerConfigConverter());
         registry.addConverter(getStringToTimerConfigConverter());
+        registry.addConverter(getUserAuthoritiesToStringConverter());
+        registry.addConverter(getIdToUserAuthoritiesConverter());
+        registry.addConverter(getStringToUserAuthoritiesConverter());
         registry.addConverter(getUserAuthorityToStringConverter());
         registry.addConverter(getIdToUserAuthorityConverter());
         registry.addConverter(getStringToUserAuthorityConverter());

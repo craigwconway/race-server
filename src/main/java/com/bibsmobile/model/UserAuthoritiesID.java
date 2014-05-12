@@ -24,7 +24,6 @@ public final class UserAuthoritiesID {
     private UserAuthority userAuthority;
 
     public UserAuthoritiesID(){
-
     }
 
     public void setUserAuthority(UserAuthority userAuthority) {

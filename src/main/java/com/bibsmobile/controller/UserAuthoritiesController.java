@@ -1,7 +1,9 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.*;
-import com.bibsmobile.service.UserProfileService;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserAuthoritiesID;
+import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
@@ -20,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RequestMapping("/userauthorities")
@@ -35,9 +36,7 @@ public class UserAuthoritiesController {
     public String createForm(@RequestParam(value = "userprofile", required = true) Long userProfileId, Model uiModel) {
         UserAuthorities userAuthorities = new UserAuthorities();
         UserProfile userProfile = UserProfile.findUserProfile(userProfileId);
-        UserAuthoritiesID id = new UserAuthoritiesID();
-        id.setUserProfile(userProfile);
-        id.setUserAuthority(userProfile.getNotAddedAuthorities().get(0));
+        UserAuthoritiesID id = new UserAuthoritiesID(userProfile, userProfile.getNotAddedAuthorities().get(0));
         userAuthorities.setId(id);
 
         populateEditForm(uiModel, userAuthorities);
@@ -47,13 +46,17 @@ public class UserAuthoritiesController {
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid UserAuthorities userAuthorities, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (bindingResult.hasErrors()) {
+        UserAuthoritiesID id = new UserAuthoritiesID();
+        id.setUserAuthority(userAuthorities.getUserAuthority());
+        id.setUserProfile(userAuthorities.getUserProfile());
+        userAuthorities.setId(id);
+        if (bindingResult.hasErrors() && bindingResult.getFieldError("id") != null) {
             populateEditForm(uiModel, userAuthorities);
             return "userauthorities/create";
         }
         uiModel.asMap().clear();
         userAuthorities.persist();
-        return "redirect:/userauthorities/" + encodeUrlPathSegment(conversionService.convert(userAuthorities.getId(), String.class), httpServletRequest);
+        return "redirect:/userauthorities?userprofile=" + userAuthorities.getUserProfile().getId();
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
