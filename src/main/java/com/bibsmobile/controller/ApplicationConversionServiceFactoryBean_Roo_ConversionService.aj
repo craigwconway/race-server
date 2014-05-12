@@ -18,13 +18,10 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.TimerConfig;
-import com.bibsmobile.model.UserAuthorities;
-import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.convert.converter.Converter;
@@ -365,30 +362,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
-    public Converter<UserAuthorities, String> ApplicationConversionServiceFactoryBean.getUserAuthoritiesToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthorities, java.lang.String>() {
-            public String convert(UserAuthorities userAuthorities) {
-                return "(no displayable fields)";
-            }
-        };
-    }
-    
-    public Converter<UserAuthoritiesID, UserAuthorities> ApplicationConversionServiceFactoryBean.getIdToUserAuthoritiesConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthoritiesID, com.bibsmobile.model.UserAuthorities>() {
-            public com.bibsmobile.model.UserAuthorities convert(com.bibsmobile.model.UserAuthoritiesID id) {
-                return UserAuthorities.findUserAuthorities(id);
-            }
-        };
-    }
-    
-    public Converter<String, UserAuthorities> ApplicationConversionServiceFactoryBean.getStringToUserAuthoritiesConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserAuthorities>() {
-            public com.bibsmobile.model.UserAuthorities convert(String id) {
-                return getObject().convert(getObject().convert(id, UserAuthoritiesID.class), UserAuthorities.class);
-            }
-        };
-    }
-    
     public Converter<Long, UserAuthority> ApplicationConversionServiceFactoryBean.getIdToUserAuthorityConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserAuthority>() {
             public com.bibsmobile.model.UserAuthority convert(java.lang.Long id) {
@@ -445,22 +418,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
-    public Converter<String, UserAuthoritiesID> ApplicationConversionServiceFactoryBean.getJsonToUserAuthoritiesIDConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserAuthoritiesID>() {
-            public UserAuthoritiesID convert(String encodedJson) {
-                return UserAuthoritiesID.fromJsonToUserAuthoritiesID(new String(Base64.decodeBase64(encodedJson)));
-            }
-        };
-    }
-    
-    public Converter<UserAuthoritiesID, String> ApplicationConversionServiceFactoryBean.getUserAuthoritiesIDToJsonConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthoritiesID, java.lang.String>() {
-            public String convert(UserAuthoritiesID userAuthoritiesID) {
-                return Base64.encodeBase64URLSafeString(userAuthoritiesID.toJson().getBytes());
-            }
-        };
-    }
-    
     public void ApplicationConversionServiceFactoryBean.installLabelConverters(FormatterRegistry registry) {
         registry.addConverter(getCartToStringConverter());
         registry.addConverter(getIdToCartConverter());
@@ -504,9 +461,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getTimerConfigToStringConverter());
         registry.addConverter(getIdToTimerConfigConverter());
         registry.addConverter(getStringToTimerConfigConverter());
-        registry.addConverter(getUserAuthoritiesToStringConverter());
-        registry.addConverter(getIdToUserAuthoritiesConverter());
-        registry.addConverter(getStringToUserAuthoritiesConverter());
         registry.addConverter(getUserAuthorityToStringConverter());
         registry.addConverter(getIdToUserAuthorityConverter());
         registry.addConverter(getStringToUserAuthorityConverter());
@@ -516,8 +470,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getUserProfileToStringConverter());
         registry.addConverter(getIdToUserProfileConverter());
         registry.addConverter(getStringToUserProfileConverter());
-        registry.addConverter(getJsonToUserAuthoritiesIDConverter());
-        registry.addConverter(getUserAuthoritiesIDToJsonConverter());
     }
     
     public void ApplicationConversionServiceFactoryBean.afterPropertiesSet() {

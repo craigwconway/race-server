@@ -1,16 +1,14 @@
 package com.bibsmobile.model;
-
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(identifierType = UserAuthoritiesID.class)
+@RooJpaActiveRecord(identifierType = UserAuthoritiesID.class, finders = { "findUserAuthoritiesesByUserProfile" })
 public class UserAuthorities {
 
     @MapsId("id")

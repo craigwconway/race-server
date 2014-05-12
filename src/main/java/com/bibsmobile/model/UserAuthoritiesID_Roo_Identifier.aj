@@ -18,10 +18,6 @@ privileged aspect UserAuthoritiesID_Roo_Identifier {
         this.userAuthority = userAuthority;
     }
 
-    private UserAuthoritiesID.new() {
-        super();
-    }
-
     public UserProfile UserAuthoritiesID.getUserProfile() {
         return userProfile;
     }

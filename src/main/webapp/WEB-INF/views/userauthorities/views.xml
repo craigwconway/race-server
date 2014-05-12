@@ -10,7 +10,5 @@
 <definition extends="default" name="userauthorities/create">
         <put-attribute name="body" value="/WEB-INF/views/userauthorities/create.jspx"/>
     </definition>
-<definition extends="default" name="userauthorities/update">
-        <put-attribute name="body" value="/WEB-INF/views/userauthorities/update.jspx"/>
-    </definition>
+
 </tiles-definitions>

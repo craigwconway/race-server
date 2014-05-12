@@ -22,4 +22,16 @@ public final class UserAuthoritiesID {
     @ManyToOne
     @JoinColumn(name = "userAuthorityId", insertable=false, updatable=false)
     private UserAuthority userAuthority;
+
+    public UserAuthoritiesID(){
+
+    }
+
+    public void setUserAuthority(UserAuthority userAuthority) {
+        this.userAuthority = userAuthority;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
 }

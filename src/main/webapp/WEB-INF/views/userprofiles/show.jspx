@@ -5,8 +5,12 @@
     <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/userprofiles';" type="button">
         Back to Users
     </button>
+    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/userauthorities?userprofile=${userprofile.id}';" type="button">
+        User Roles
+    </button>
     <page:show id="ps_com_bibsmobile_model_UserProfile" object="${userprofile}" path="/userprofiles" z="sBTUG3BAJNyhXpkk6T9rEdaoCkI=">
-        <h3>${userprofile.username} <small>${userprofile.firstname} ${userprofile.lastname}</small></h3>
+        <h3>${userprofile.username} <small>${userprofile.firstname} ${userprofile.lastname}</small>
+        </h3>
         <div style="display:none;">
             <field:display field="username" id="s_com_bibsmobile_model_UserProfile_username" object="${userprofile}" z="kj/1KKkg0r+DIHZemGpfOI+Xb1U="/>
             <field:display field="password" id="s_com_bibsmobile_model_UserProfile_password" object="${userprofile}" render="false" z="user-managed"/>
@@ -31,9 +35,9 @@
             <field:display field="city" id="s_com_bibsmobile_model_UserProfile_city" object="${userprofile}" z="nkiKew0Zy3Hq7VY6PD2HapBnFjc="/>
             <field:display field="image" id="s_com_bibsmobile_model_UserProfile_image" object="${userprofile}" z="s6Wv+ed5fgN4z+igvKhkmNldfaI="/>
             <field:display field="state" id="s_com_bibsmobile_model_UserProfile_state" object="${userprofile}" z="E4hur0PeVa284ORSqCmxaibU4gA="/>
-            <field:display field="raceResults" id="s_com_bibsmobile_model_UserProfile_raceResults" object="${userprofile}" z="S5t1NBjTH7x7Qj8BZ4uo61R2qYU="/>
-            <field:display date="true" dateTimePattern="${userProfile_birthdate_date_format}" field="birthdate" id="s_com_bibsmobile_model_UserProfile_birthdate" object="${userprofile}" z="nk/T5DLjR/QoAKpq1UlxIx3sr2Q="/>
-            <field:display field="userAuthorities" id="s_com_bibsmobile_model_UserProfile_userAuthorities" object="${userprofile}" z="user-managed" render="false"/>
+            <field:display field="userAuthorities" id="s_com_bibsmobile_model_UserProfile_userAuthorities" object="${userprofile}" render="false" z="user-managed"/>
         </div>
+        <field:display field="birthdate" id="s_com_bibsmobile_model_UserProfile_birthdate" object="${userprofile}" z="9VQSMGlAPSiIwNU4ozjerwX+PBk="/>
+        <field:display field="raceResults" id="s_com_bibsmobile_model_UserProfile_raceResults" object="${userprofile}" z="S5t1NBjTH7x7Qj8BZ4uo61R2qYU="/>
     </page:show>
 </div>

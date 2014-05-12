@@ -2,11 +2,14 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/userauthorities?form&amp;userprofile=${userprofile.id}';" type="button">
+        Assign Role
+    </button>
     <page:list id="pl_com_bibsmobile_model_UserAuthorities" items="${userauthoritieses}" z="0tmhEhhgOVVZil3gXQz4AdQjrgQ=">
-        <table:table data="${userauthoritieses}" id="l_com_bibsmobile_model_UserAuthorities" path="/userauthorities" z="54uNMhAcpogx9txe4zkrxKWYkdY=">
-            <table:column id="c_com_bibsmobile_model_UserAuthorities_userProfile" property="userProfile" z="zp5cpl0SY16b2fwn3GTeYOds+Ok="/>
+        <table:table data="${userauthoritieses}" id="l_com_bibsmobile_model_UserAuthorities" path="/userauthorities" update="false" z="Nk94eLCXwSpLsL7zM873xzmuyYs=">
+            <table:column id="c_com_bibsmobile_model_UserAuthorities_userProfile" property="userProfile" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_UserAuthorities_userGroups" property="userGroups" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserAuthorities_userAuthority" property="userAuthority" z="h5GX6t68y6O3A3T75Zpx6i4gxbU="/>
-            <table:column id="c_com_bibsmobile_model_UserAuthorities_userGroups" property="userGroups" z="wQUOR/DCSuW+Jd5QcwU9ymD9DjQ="/>
         </table:table>
     </page:list>
 </div>
