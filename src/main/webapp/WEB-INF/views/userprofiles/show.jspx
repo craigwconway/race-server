@@ -37,7 +37,6 @@
             <field:display field="state" id="s_com_bibsmobile_model_UserProfile_state" object="${userprofile}" z="E4hur0PeVa284ORSqCmxaibU4gA="/>
             <field:display field="userAuthorities" id="s_com_bibsmobile_model_UserProfile_userAuthorities" object="${userprofile}" render="false" z="user-managed"/>
         </div>
-        <field:display field="birthdate" id="s_com_bibsmobile_model_UserProfile_birthdate" object="${userprofile}" z="9VQSMGlAPSiIwNU4ozjerwX+PBk="/>
-        <field:display field="raceResults" id="s_com_bibsmobile_model_UserProfile_raceResults" object="${userprofile}" z="S5t1NBjTH7x7Qj8BZ4uo61R2qYU="/>
+        <field:display date="true" dateTimePattern="${userProfile_birthdate_date_format}" field="birthdate" id="s_com_bibsmobile_model_UserProfile_birthdate" object="${userprofile}" z="nk/T5DLjR/QoAKpq1UlxIx3sr2Q="/>
     </page:show>
 </div>

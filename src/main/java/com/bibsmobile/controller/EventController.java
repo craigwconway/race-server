@@ -68,6 +68,7 @@ public class EventController {
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
         }*/
+        event.persist();
 
         return "redirect:/events/"
                 + encodeUrlPathSegment(event.getId().toString(),

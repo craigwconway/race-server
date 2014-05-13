@@ -5,6 +5,9 @@
     <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
         Back to User Groups
     </button>
+    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups?form';" type="button">
+        Add user to the Group
+    </button>
     <page:show id="ps_com_bibsmobile_model_UserGroup" object="${usergroup}" path="/usergroups" z="VW+v2NV4h0idHhFHgl9tPFllaH0=">
         <field:display field="name" id="s_com_bibsmobile_model_UserGroup_name" object="${usergroup}" z="HU7uo7dVqmGK2/Dmbv/N29m3MF4="/>
         <field:display field="bibWrites" id="s_com_bibsmobile_model_UserGroup_bibWrites" object="${usergroup}" z="S7F9bf/JMVoRale6AciV7zCqPxw="/>

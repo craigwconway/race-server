@@ -39,6 +39,7 @@ public class UserProfileController {
     void populateEditForm(Model uiModel, UserProfile userProfile) {
         uiModel.addAttribute("userProfile", userProfile);
         uiModel.addAttribute("userauthoritys", UserAuthority.findAllUserAuthoritys());
+        addDateTimeFormatPatterns(uiModel);
     }
     
 }

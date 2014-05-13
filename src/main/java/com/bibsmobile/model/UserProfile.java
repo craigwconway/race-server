@@ -2,6 +2,7 @@ package com.bibsmobile.model;
 
 import flexjson.JSON;
 import flexjson.JSONSerializer;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
@@ -10,7 +11,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import java.util.*;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("serial")
 @RooJavaBean
@@ -23,6 +30,8 @@ public class UserProfile implements UserDetails {
     private String city;
     private String state;
     private int age;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "MM-dd-yyyy")
     private Date birthdate;
     private String gender;
     private String email;
@@ -55,7 +64,7 @@ public class UserProfile implements UserDetails {
     }
 
     @JSON(include = false)
-    public List<com.bibsmobile.model.UserAuthority> getNotAddedAuthorities() {
+    public List<UserAuthority> getNotAddedAuthorities() {
         List<UserAuthority> notAddedAuthorities = new ArrayList<>();
         List<UserAuthority> allAuthorities = UserAuthority.findAllUserAuthoritys();
         List<UserAuthority> assignedAuthorities = new ArrayList<>(getAuthorities());
