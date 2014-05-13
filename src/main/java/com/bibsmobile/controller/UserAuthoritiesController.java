@@ -50,7 +50,7 @@ public class UserAuthoritiesController {
         id.setUserAuthority(userAuthorities.getUserAuthority());
         id.setUserProfile(userAuthorities.getUserProfile());
         userAuthorities.setId(id);
-        if (bindingResult.hasErrors() && bindingResult.getFieldError("id") != null) {
+        if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, userAuthorities);
             return "userauthorities/createUA";
         }
@@ -59,10 +59,12 @@ public class UserAuthoritiesController {
         return "redirect:/userauthorities?userprofile=" + userAuthorities.getUserProfile().getId();
     }
 
-    @RequestMapping(value = "/{id}", produces = "text/html")
-    public String show(@PathVariable("id") UserAuthoritiesID id, Model uiModel) {
-        uiModel.addAttribute("userauthorities", UserAuthorities.findUserAuthorities(id));
-        uiModel.addAttribute("itemId", conversionService.convert(id, String.class));
+    @RequestMapping(value = "/{id}/{aid}", produces = "text/html")
+    public String show(@PathVariable("id") Long userProfileId, @PathVariable("aid") Long authorityId, Model uiModel) {
+        UserAuthorities userAuthorities = UserAuthorities.findUserAuthorities(
+                new UserAuthoritiesID(UserProfile.findUserProfile(userProfileId), UserAuthority.findUserAuthority(authorityId)));
+        uiModel.addAttribute("userauthorities", userAuthorities);
+        uiModel.addAttribute("itemId", userProfileId + "/" + authorityId);
         return "userauthorities/show";
     }
 
@@ -72,7 +74,7 @@ public class UserAuthoritiesController {
         TypedQuery<UserAuthorities> userAuthoritiesesByUserProfile = UserAuthorities.findUserAuthoritiesesByUserProfile(userProfile);
         uiModel.addAttribute("userauthoritieses", userAuthoritiesesByUserProfile.getResultList());
         uiModel.addAttribute("userprofile", userProfile);
-        return "userauthorities/list";
+        return "userauthorities/listUA";
     }
 
     @RequestMapping(value = "/{id}/{aid}", method = RequestMethod.DELETE, produces = "text/html")
@@ -83,7 +85,7 @@ public class UserAuthoritiesController {
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/userauthorities";
+        return "redirect:/userauthorities?userprofile=" + userAuthorities.getUserProfile().getId();
     }
 
     void populateEditForm(Model uiModel, UserAuthorities userAuthorities) {

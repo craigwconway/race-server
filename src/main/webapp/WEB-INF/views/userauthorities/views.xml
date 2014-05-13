@@ -4,7 +4,10 @@
     <definition extends="default" name="userauthorities/list">
         <put-attribute name="body" value="/WEB-INF/views/userauthorities/list.jspx"/>
     </definition>
-<definition extends="default" name="userauthorities/show">
+    <definition extends="default" name="userauthorities/listUA">
+        <put-attribute name="body" value="/WEB-INF/views/userauthorities/listUA.jspx"/>
+    </definition>
+    <definition extends="default" name="userauthorities/show">
         <put-attribute name="body" value="/WEB-INF/views/userauthorities/show.jspx"/>
     </definition>
     <definition extends="default" name="userauthorities/create">
