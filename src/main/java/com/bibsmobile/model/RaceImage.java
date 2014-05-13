@@ -1,16 +1,15 @@
 package com.bibsmobile.model;
 
-import javax.persistence.EntityManager;
+import java.util.List;
+
 import javax.persistence.ManyToOne;
-import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
-
-import java.util.List;
 
 @RooJavaBean
 @RooToString
@@ -44,12 +43,14 @@ public class RaceImage {
 		this.event = Event.findEvent(eventId);
 		this.raceResult = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
 	}
-
-    public static TypedQuery<RaceImage> findRaceImagesByRaceResults(List<RaceResult> raceResults) {
-        if (raceResults == null) throw new IllegalArgumentException("The raceResults argument is required");
-        EntityManager em = RaceImage.entityManager();
-        TypedQuery<RaceImage> q = em.createQuery("SELECT o FROM RaceImage AS o WHERE o.raceResult IN (:raceResults)", RaceImage.class);
-        q.setParameter("raceResults", raceResults);
-        return q;
-    }
+	
+	public RaceImage(String filePath, long eventId, String[] bibs){
+		this.filePath = filePath;
+		this.event = Event.findEvent(eventId);
+		if (this.event != null) {
+			this.raceResult = (RaceResult) RaceResult.findRaceResultsByEventAndMultipleBibs(event, bibs);
+		} else {
+			throw new ObjectRetrievalFailureException(Event.class, eventId);
+		}		
+	}
 }

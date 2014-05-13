@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.Validate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,13 +29,27 @@ public class RaceImageController {
     public ResponseEntity<String> api(
     		@RequestParam(value="filePath") String filePath, 
     		@RequestParam(value="raceId") long raceId,
-    		@RequestParam(value="bib",required=false) String bib) {
+    		@RequestParam(value="bib",required=false) String[] bibs) {
         RaceImage raceImage;
-        if(null!=bib)
-        	raceImage = new RaceImage(filePath,raceId,bib);
-        else 
-        	raceImage = new RaceImage(filePath,raceId);
+               
+        try {
+        	/* Validate <code>bibs</code> argument, throwing <code>IllegalArgumentException</code>
+        	 * if the argument array is null or has null elements.
+        	 */
+        	Validate.noNullElements(bibs);
+        	
+        	if (bibs.length == 0) { // Empty Array! no parameter for bib has been passed
+        		raceImage = new RaceImage(filePath,raceId);
+        	} else if (bibs.length == 1) { // only one parameter for bib has been passed
+        		raceImage = new RaceImage(filePath,raceId,bibs[0]);        		
+			} else {
+				raceImage = new RaceImage(filePath,raceId,bibs);				
+			}        	
+        } catch (IllegalArgumentException e) {
+        	raceImage = new RaceImage(filePath,raceId);        	
+        }        
         raceImage.persist();
+        
         HttpHeaders headers = new HttpHeaders();
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
