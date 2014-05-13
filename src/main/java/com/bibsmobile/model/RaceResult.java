@@ -5,6 +5,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -254,9 +255,24 @@ public class RaceResult implements Comparable<RaceResult>{
         q.setParameter("lastname", lastname);
         return q;
     }
+	
+	public static List<RaceResult> findRaceResultsByEventAndMultipleBibs(Event event, String[] bibs) {
+		EntityManager em = RaceResult.entityManager();
+		
+		String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib IN (:bibs)" ;
+		
+		// the collection of BIB's to search from
+		Collection<String> bibsCollection = Arrays.asList(bibs);
+		
+		TypedQuery<RaceResult> q = em.createQuery(HQL , RaceResult.class);
+		q.setParameter("event", event);
+		q.setParameter("bibs", bibsCollection);
+		
+		return q.getResultList();
+	}
     
 	public static List<RaceResult> search(Long eventId, String name, String bib) {
-            EntityManager em = RaceResult.entityManager();
+        EntityManager em = RaceResult.entityManager();
         
         Event event = new Event();
         if(null!=eventId && eventId > 0) event = Event.findEvent(eventId);

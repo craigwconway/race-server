@@ -22,7 +22,7 @@ public class EventResultController {
         EventResult eventResult = new EventResult();
         Event event = Event.findEvent(eventId);
         eventResult.setEvent(event);
-        List<Event> events = new ArrayList<>();
+        List<Event> events = new ArrayList<Event>();
         events.add(event);
         uiModel.addAttribute("events", events);
         populateEditForm(uiModel, eventResult);
@@ -32,7 +32,7 @@ public class EventResultController {
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         EventResult eventResult = EventResult.findEventResult(id);
-        List<Event> events = new ArrayList<>();
+        List<Event> events = new ArrayList<Event>();
         events.add(eventResult.getEvent());
         uiModel.addAttribute("events", events);
         populateEditForm(uiModel, eventResult);
