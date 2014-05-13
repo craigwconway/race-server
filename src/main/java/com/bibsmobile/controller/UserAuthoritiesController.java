@@ -40,7 +40,7 @@ public class UserAuthoritiesController {
         userAuthorities.setId(id);
 
         populateEditForm(uiModel, userAuthorities);
-        return "userauthorities/create";
+        return "userauthorities/createUA";
     }
 
 
@@ -52,7 +52,7 @@ public class UserAuthoritiesController {
         userAuthorities.setId(id);
         if (bindingResult.hasErrors() && bindingResult.getFieldError("id") != null) {
             populateEditForm(uiModel, userAuthorities);
-            return "userauthorities/create";
+            return "userauthorities/createUA";
         }
         uiModel.asMap().clear();
         userAuthorities.persist();

@@ -7,8 +7,11 @@
 <definition extends="default" name="userauthorities/show">
         <put-attribute name="body" value="/WEB-INF/views/userauthorities/show.jspx"/>
     </definition>
-<definition extends="default" name="userauthorities/create">
+    <definition extends="default" name="userauthorities/create">
         <put-attribute name="body" value="/WEB-INF/views/userauthorities/create.jspx"/>
+    </definition>
+    <definition extends="default" name="userauthorities/createUA">
+        <put-attribute name="body" value="/WEB-INF/views/userauthorities/createUA.jspx"/>
     </definition>
 
 </tiles-definitions>

@@ -2,7 +2,9 @@ package com.bibsmobile.model;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.ManyToOne;
+import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.orm.ObjectRetrievalFailureException;
@@ -53,4 +55,12 @@ public class RaceImage {
 			throw new ObjectRetrievalFailureException(Event.class, eventId);
 		}		
 	}
+
+    public static TypedQuery<RaceImage> findRaceImagesByRaceResults(List<RaceResult> raceResults) {
+        if (raceResults == null) throw new IllegalArgumentException("The raceResults argument is required");
+        EntityManager em = RaceImage.entityManager();
+        TypedQuery<RaceImage> q = em.createQuery("SELECT o FROM RaceImage AS o WHERE o.raceResult IN (:raceResults)", RaceImage.class);
+        q.setParameter("raceResults", raceResults);
+        return q;
+    }
 }
