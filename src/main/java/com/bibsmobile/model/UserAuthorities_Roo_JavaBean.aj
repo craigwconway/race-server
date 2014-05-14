@@ -5,7 +5,7 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
-import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.UserProfile;
 import java.util.Set;
 
@@ -27,12 +27,12 @@ privileged aspect UserAuthorities_Roo_JavaBean {
         this.userAuthority = userAuthority;
     }
     
-    public Set<UserGroup> UserAuthorities.getUserGroups() {
-        return this.userGroups;
+    public Set<UserGroupUserAuthority> UserAuthorities.getUserGroupUserAuthorities() {
+        return this.userGroupUserAuthorities;
     }
     
-    public void UserAuthorities.setUserGroups(Set<UserGroup> userGroups) {
-        this.userGroups = userGroups;
+    public void UserAuthorities.setUserGroupUserAuthorities(Set<UserGroupUserAuthority> userGroupUserAuthorities) {
+        this.userGroupUserAuthorities = userGroupUserAuthorities;
     }
     
 }

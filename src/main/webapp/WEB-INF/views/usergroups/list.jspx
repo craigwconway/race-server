@@ -9,8 +9,9 @@
             <table:column id="c_com_bibsmobile_model_UserGroup_name" property="name" z="EKPun6yMJEtw4Q2NxrYLlbR4PQQ="/>
             <table:column id="c_com_bibsmobile_model_UserGroup_bibWrites" property="bibWrites" z="4UtPH0EZ3rp3eEYjuX+nYBAe62g="/>
             <table:column id="c_com_bibsmobile_model_UserGroup_groupType" property="groupType" z="cqfzdY9hsUrKi1gMPBEXZSa7CRs="/>
-            <table:column id="c_com_bibsmobile_model_UserGroup_events" property="events" z="user-managed" render="false"/>
-            <table:column id="c_com_bibsmobile_model_UserGroup_authorities" property="authorities" z="user-managed" render="false"/>
+            <table:column id="c_com_bibsmobile_model_UserGroup_events" property="events" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_UserGroup_authorities" property="authorities" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_UserGroup_userGroupUserAuthorities" property="userGroupUserAuthorities" render="false" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

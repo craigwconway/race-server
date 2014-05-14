@@ -10,6 +10,7 @@
             <table:column id="c_com_bibsmobile_model_UserAuthorities_userProfile" property="userProfile" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserAuthorities_userGroups" property="userGroups" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserAuthorities_userAuthority" property="userAuthority" z="h5GX6t68y6O3A3T75Zpx6i4gxbU="/>
+            <table:column id="c_com_bibsmobile_model_UserAuthorities_userGroupUserAuthorities" property="userGroupUserAuthorities" z="lbrH4Cd6XG9OkI5RqMPV9BN7S8g="/>
         </table:table>
     </page:list>
 </div>

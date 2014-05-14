@@ -4,9 +4,9 @@
 package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
-import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupType;
+import com.bibsmobile.model.UserGroupUserAuthority;
 import java.util.Set;
 
 privileged aspect UserGroup_Roo_JavaBean {
@@ -43,12 +43,12 @@ privileged aspect UserGroup_Roo_JavaBean {
         this.events = events;
     }
     
-    public Set<UserAuthorities> UserGroup.getAuthorities() {
-        return this.authorities;
+    public Set<UserGroupUserAuthority> UserGroup.getUserGroupUserAuthorities() {
+        return this.userGroupUserAuthorities;
     }
     
-    public void UserGroup.setAuthorities(Set<UserAuthorities> authorities) {
-        this.authorities = authorities;
+    public void UserGroup.setUserGroupUserAuthorities(Set<UserGroupUserAuthority> userGroupUserAuthorities) {
+        this.userGroupUserAuthorities = userGroupUserAuthorities;
     }
     
 }

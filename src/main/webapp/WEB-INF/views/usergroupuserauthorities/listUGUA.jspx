@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/authoritiesingroup?form&amp;usergroup=${usergroup.id}';"
+            type="button">
+        Assign User to the Group ${usergroup.name}(${usergroup.groupType})
+    </button>
+    <page:list id="pl_com_bibsmobile_model_UserGroup_authorities" items="${usergroup.authorities}" z="user-managed">
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="table-btn"></th>
+                <th></th>
+                <th>Assigned users</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${usergroup.authorities}" var="userauthorities">
+                <tr>
+                    <td class="utilbox">
+                        <a title="Show User Authorities" alt="Show User Authorities"
+                           href="/bibs-server/authoritiesingroup/${userauthorities.userProfile.id}/${userauthorities.userAuthority.id}">
+                            <img title="Show User Assigned to the Group" src="/bibs-server/resources/images/show.png" class="image" alt="Show User Assigned to the Group"/>
+                        </a>
+                    </td>
+                    <td class="utilbox">
+                        <sec:authorize ifAnyGranted="ROLE_EVENT_ADMIN, ROLE_SYS_ADMIN">
+                            <form id="command" action="/bibs-server/userauthorities/${userauthorities.userProfile.id}/${userauthorities.userAuthority.id}"
+                                  method="post">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <input onclick="return confirm('Are you sure want to delete this item?');" value="Delete User from the Group" type="image"
+                                       title="Delete User from the Group" src="/bibs-server/resources/images/delete.png" class="image"
+                                       alt="Delete User from the Groups"/>
+                            </form>
+                        </sec:authorize>
+                    </td>
+                    <td>${userauthorities.userProfile.fullName}$({userauthorities.userAuthority})</td>
+                </tr>
+            </c:forEach>
+            <tr class="footer">
+                <td colspan="3">
+                    <span class="new"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </page:list>
+</div>

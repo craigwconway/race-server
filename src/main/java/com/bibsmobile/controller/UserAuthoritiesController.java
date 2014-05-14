@@ -29,9 +29,6 @@ import java.util.List;
 @RooWebScaffold(path = "userauthorities", formBackingObject = UserAuthorities.class, update = false)
 public class UserAuthoritiesController {
 
-    @Autowired
-    private ConversionService conversionService;
-
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(@RequestParam(value = "userprofile", required = true) Long userProfileId, Model uiModel) {
         UserAuthorities userAuthorities = new UserAuthorities();

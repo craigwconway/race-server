@@ -21,8 +21,7 @@ public class UserAuthorities {
     @JoinColumn(name = "userAuthorityId", insertable = false, updatable = false)
     private UserAuthority userAuthority;
 
-    /**
-     */
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "authorities")
-    private Set<UserGroup> userGroups = new HashSet<UserGroup>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.userAuthorities", cascade = CascadeType.ALL)
+    private Set<UserGroupUserAuthority> userGroupUserAuthorities;
+
 }

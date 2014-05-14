@@ -30,10 +30,6 @@ public class UserGroup {
     @OneToMany(fetch = FetchType.LAZY, cascade = {javax.persistence.CascadeType.ALL}, mappedBy = "eventUserGroup")
     private Set<Event> events;
 
-    /**
-     */
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(joinColumns = {@JoinColumn(name = "userGroupId")},
-            inverseJoinColumns = {@JoinColumn(name = "userProfileId"), @JoinColumn(name = "userAuthorityId")})
-    private Set<UserAuthorities> authorities = new HashSet<UserAuthorities>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.userGroup", cascade = CascadeType.ALL)
+    private Set<UserGroupUserAuthority> userGroupUserAuthorities;
 }

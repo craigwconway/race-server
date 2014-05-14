@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_UserGroupUserAuthority" object="${usergroupuserauthority}" path="/usergroupuserauthorities" z="ErgJubtWuCzbcwMtSfuwJB8svN0=">
+        <field:display field="userGroup" id="s_com_bibsmobile_model_UserGroupUserAuthority_userGroup" object="${usergroupuserauthority}" z="CcpM7gw2uhCOcO8JDD8POugaXM0="/>
+        <field:display field="userAuthorities" id="s_com_bibsmobile_model_UserGroupUserAuthority_userAuthorities" object="${usergroupuserauthority}" z="ds6uPM5dbPey8zhski4LzDGZDaw="/>
+    </page:show>
+</div>

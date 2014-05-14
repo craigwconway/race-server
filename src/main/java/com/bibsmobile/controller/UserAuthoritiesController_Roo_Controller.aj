@@ -10,6 +10,8 @@ import org.springframework.core.convert.ConversionService;
 
 privileged aspect UserAuthoritiesController_Roo_Controller {
     
+    private ConversionService UserAuthoritiesController.conversionService;
+    
     @Autowired
     public UserAuthoritiesController.new(ConversionService conversionService) {
         super();

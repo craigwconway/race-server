@@ -5,7 +5,8 @@
     <form:create compositePkField="id" id="fc_com_bibsmobile_model_UserAuthorities" modelAttribute="userAuthorities" path="/userauthorities" render="${empty dependencies}" z="i7NpAN+RRvP3jpfOs48mGcJP8eQ=">
         <field:select disableFormBinding="true" field="id.userProfile" id="c_com_bibsmobile_model_UserAuthorities_id_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" z="Ss4kjA1okBKsCfU+87/rIFc7HHQ="/>
         <field:select disableFormBinding="true" field="id.userAuthority" id="c_com_bibsmobile_model_UserAuthorities_id_userAuthority" itemValue="id" items="${userauthoritys}" path="/userauthoritys" z="HSvRk63dieJRjr5NrY0SP4fSldM="/>
-        <field:input field="userGroups" id="c_com_bibsmobile_model_UserAuthorities_userGroups" z="Ah4lPjB3oZoTpvnIZVHkf2o8uIU="/>
+        <field:input disableFormBinding="true" field="id.serialVersionUID" id="c_com_bibsmobile_model_UserAuthorities_id_serialVersionUID" z="V83y5VKJkaXY3A5xr47nQaHI24s="/>
+        <field:input field="userGroupUserAuthorities" id="c_com_bibsmobile_model_UserAuthorities_userGroupUserAuthorities" z="0tvbIJJtDXvKyH9vtozO0B5+Kug="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserAuthorities" render="${not empty dependencies}" z="BIdfS/CxTu/YZOaG31OCE9L/tWw="/>
 </div>

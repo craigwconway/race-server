@@ -5,11 +5,14 @@ import org.springframework.roo.addon.jpa.identifier.RooIdentifier;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 @RooToString
 @RooEquals
 @RooIdentifier
-public final class UserAuthoritiesID {
+public final class UserAuthoritiesID implements Serializable{
+
+    private static final long serialVersionUID = 1L;
 
     /**
      */

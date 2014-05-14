@@ -2,6 +2,7 @@ package com.bibsmobile.model;
 
 import flexjson.JSON;
 import flexjson.JSONSerializer;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -122,5 +123,10 @@ public class UserProfile implements UserDetails {
 
     public String toJson() {
         return new JSONSerializer().exclude("*.class").deepSerialize(this);
+    }
+
+    public String getFullName() {
+        return new StringBuilder(StringUtils.isEmpty(firstname) ? StringUtils.EMPTY : firstname).append(" ").
+                append(StringUtils.isEmpty(lastname) ? StringUtils.EMPTY : lastname).toString();
     }
 }

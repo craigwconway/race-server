@@ -16,8 +16,6 @@
         </c:otherwise>
     </c:choose>
     <page:list id="pl_com_bibsmobile_model_UserAuthorities" items="${userauthoritieses}" z="0tmhEhhgOVVZil3gXQz4AdQjrgQ=">
-
-
         <table class="table">
             <thead>
             <tr>
