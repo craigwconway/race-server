@@ -29,29 +29,13 @@ public class RaceImageController {
     public ResponseEntity<String> api(
     		@RequestParam(value="filePath") String filePath, 
     		@RequestParam(value="raceId") long raceId,
-    		@RequestParam(value="bib",required=false) String[] bibs) {
-        RaceImage raceImage;
-               
-        try {
-        	/* Validate <code>bibs</code> argument, throwing <code>IllegalArgumentException</code>
-        	 * if the argument array is null or has null elements.
-        	 */
-        	Validate.noNullElements(bibs);
-        	
-        	if (bibs.length == 0) { // Empty Array! no parameter for bib has been passed
-        		raceImage = new RaceImage(filePath,raceId);
-        	} else if (bibs.length == 1) { // only one parameter for bib has been passed
-        		raceImage = new RaceImage(filePath,raceId,bibs[0]);        		
-			} else {
-				raceImage = new RaceImage(filePath,raceId,bibs);				
-			}        	
-        } catch (IllegalArgumentException e) {
-        	raceImage = new RaceImage(filePath,raceId);        	
-        }        
-        raceImage.persist();
-        
+    		@RequestParam(value="bib",required=false) List<String> bib) {
+        RaceImage raceImage = new RaceImage(filePath, raceId, bib);
+        if (CollectionUtils.isEmpty(bib)) {
+            raceImage.persist();
+        }
         HttpHeaders headers = new HttpHeaders();
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/search", headers = "Accept=application/json")
