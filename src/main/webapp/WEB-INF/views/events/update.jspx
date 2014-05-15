@@ -70,6 +70,7 @@
         <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
         <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
         <field:input field="eventUserGroup" id="c_com_bibsmobile_model_Event_eventUserGroup" z="QsY7q/QFLDtFTtbjhYguD6qrRaQ="/>
+        <field:select field="userGroups" id="c_com_bibsmobile_model_Event_userGroups" itemValue="id" items="${usergroups}" multiple="true" path="/usergroups" z="5RtMHbeVjUm9f6gAY7I05uiOBbo="/>
     </form:update>
     <script>
     window.onload = function(){

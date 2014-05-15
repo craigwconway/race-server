@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.HashSet;
+import javax.persistence.CascadeType;
+import javax.persistence.ManyToMany;
 
 @RooJavaBean
 @RooJson
@@ -388,4 +390,8 @@ public class Event {
         return q;
     }
 
+    /**
+     */
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<UserGroup> userGroups = new HashSet<UserGroup>();
 }

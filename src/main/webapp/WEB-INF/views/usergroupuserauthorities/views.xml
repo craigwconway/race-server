@@ -10,10 +10,11 @@
 <definition extends="default" name="usergroupuserauthorities/show">
         <put-attribute name="body" value="/WEB-INF/views/usergroupuserauthorities/show.jspx"/>
     </definition>
-<definition extends="default" name="usergroupuserauthorities/create">
+    <definition extends="default" name="usergroupuserauthorities/create">
         <put-attribute name="body" value="/WEB-INF/views/usergroupuserauthorities/create.jspx"/>
     </definition>
-<definition extends="default" name="usergroupuserauthorities/update">
-        <put-attribute name="body" value="/WEB-INF/views/usergroupuserauthorities/update.jspx"/>
+    <definition extends="default" name="usergroupuserauthorities/createUGUA">
+        <put-attribute name="body" value="/WEB-INF/views/usergroupuserauthorities/createUGUA.jspx"/>
     </definition>
+
 </tiles-definitions>

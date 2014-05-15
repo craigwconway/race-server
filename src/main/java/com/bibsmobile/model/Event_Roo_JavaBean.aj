@@ -491,4 +491,12 @@ privileged aspect Event_Roo_JavaBean {
         this.results = results;
     }
     
+    public Set<UserGroup> Event.getUserGroups() {
+        return this.userGroups;
+    }
+    
+    public void Event.setUserGroups(Set<UserGroup> userGroups) {
+        this.userGroups = userGroups;
+    }
+    
 }

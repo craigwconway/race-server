@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <page:list id="pl_com_bibsmobile_model_UserGroupUserAuthority" items="${usergroupuserauthoritys}" z="bYDSi9qye0RQN8kleE6Il5uIEZI=">
-        <table:table data="${usergroupuserauthoritys}" id="l_com_bibsmobile_model_UserGroupUserAuthority" path="/usergroupuserauthorities" z="unk+eVZYGaenRllaetKsEwIgtvA=">
+        <table:table data="${usergroupuserauthoritys}" id="l_com_bibsmobile_model_UserGroupUserAuthority" path="/usergroupuserauthorities" update="false" z="bDQscXzBMqwybprA+oyMUwKhqaA=">
             <table:column id="c_com_bibsmobile_model_UserGroupUserAuthority_userGroup" property="userGroup" z="geEv1AdhGKrUISvNp7a8NAMz/34="/>
             <table:column id="c_com_bibsmobile_model_UserGroupUserAuthority_userAuthorities" property="userAuthorities" z="/thpg9SLwe1tGfXc9nbTY25Aiwk="/>
         </table:table>

@@ -3,9 +3,9 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create compositePkField="id" id="fc_com_bibsmobile_model_UserGroupUserAuthority" modelAttribute="userGroupUserAuthority" path="/usergroupuserauthorities" render="${empty dependencies}" z="Yz5JoaHLR/RywBMjODWNOka8+Wo=">
-        <field:input disableFormBinding="true" field="id.serialVersionUID" id="c_com_bibsmobile_model_UserGroupUserAuthority_id_serialVersionUID" z="NcFb1xg8Cjluh7bQSE4hewpU6is="/>
         <field:select disableFormBinding="true" field="id.userGroup" id="c_com_bibsmobile_model_UserGroupUserAuthority_id_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="brrdL0NiuaQaLdvcOjzVZKQvsrE="/>
         <field:select disableFormBinding="true" field="id.userAuthorities" id="c_com_bibsmobile_model_UserGroupUserAuthority_id_userAuthorities" itemValue="id" items="${userauthoritieses}" path="/userauthorities" z="1FAzqTDeFiOaHPRlMLRdZ0eEJ3s="/>
+        <field:input disableFormBinding="true" field="id.serialVersionUID" id="c_com_bibsmobile_model_UserGroupUserAuthority_id_serialVersionUID" z="NcFb1xg8Cjluh7bQSE4hewpU6is="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserGroupUserAuthority" render="${not empty dependencies}" z="Q0ftCawUkN6NXn/NKLFRI8v2u2Q="/>
 </div>

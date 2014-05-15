@@ -159,5 +159,6 @@
         <field:display field="maps" id="s_com_bibsmobile_model_Event_maps" object="${event}" render="false" z="user-managed"/>
         <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" render="false" z="user-managed"/>
         <field:display field="eventUserGroup" id="s_com_bibsmobile_model_Event_eventUserGroup" object="${event}" z="31CvZowi35b831r72RqoYzQXP4A="/>
+        <field:display field="userGroups" id="s_com_bibsmobile_model_Event_userGroups" object="${event}" z="mQZrrtoVUeOprvdh0rT0+0S3K5w="/>
     </page:show>
 </div>

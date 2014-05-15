@@ -4,8 +4,6 @@ import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserProfile;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,7 +40,7 @@ public class UserAuthoritiesController {
 
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
-    public String create(@Valid UserAuthorities userAuthorities, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(@Valid UserAuthorities userAuthorities, BindingResult bindingResult, Model uiModel) {
         UserAuthoritiesID id = new UserAuthoritiesID();
         id.setUserAuthority(userAuthorities.getUserAuthority());
         id.setUserProfile(userAuthorities.getUserProfile());
@@ -68,21 +66,28 @@ public class UserAuthoritiesController {
     @RequestMapping(produces = "text/html")
     public String list(@RequestParam(value = "userprofile", required = true) Long userProfileId, Model uiModel) {
         UserProfile userProfile = UserProfile.findUserProfile(userProfileId);
-        TypedQuery<UserAuthorities> userAuthoritiesesByUserProfile = UserAuthorities.findUserAuthoritiesesByUserProfile(userProfile);
-        uiModel.addAttribute("userauthoritieses", userAuthoritiesesByUserProfile.getResultList());
+        if (userProfile != null) {
+            TypedQuery<UserAuthorities> userAuthoritiesesByUserProfile = UserAuthorities.findUserAuthoritiesesByUserProfile(userProfile);
+            uiModel.addAttribute("userauthoritieses", userAuthoritiesesByUserProfile.getResultList());
+        }
         uiModel.addAttribute("userprofile", userProfile);
         return "userauthorities/listUA";
     }
 
     @RequestMapping(value = "/{id}/{aid}", method = RequestMethod.DELETE, produces = "text/html")
     public String delete(@PathVariable("id") Long userProfileId, @PathVariable("aid") Long authorityId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
-        UserAuthorities userAuthorities = UserAuthorities.findUserAuthorities(
-                new UserAuthoritiesID(UserProfile.findUserProfile(userProfileId), UserAuthority.findUserAuthority(authorityId)));
-        userAuthorities.remove();
+        UserProfile userProfile = UserProfile.findUserProfile(userProfileId);
+        UserAuthority userAuthority = UserAuthority.findUserAuthority(authorityId);
+        if (userAuthority != null && userProfile != null) {
+            UserAuthorities userAuthorities = UserAuthorities.findUserAuthorities(new UserAuthoritiesID(userProfile, userAuthority));
+            if (userAuthorities != null) {
+                userAuthorities.remove();
+            }
+        }
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        return "redirect:/userauthorities?userprofile=" + userAuthorities.getUserProfile().getId();
+        return "redirect:/userauthorities?userprofile=" + userProfileId;
     }
 
     void populateEditForm(Model uiModel, UserAuthorities userAuthorities) {

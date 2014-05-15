@@ -5,7 +5,7 @@
     <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
         Back to User Groups
     </button>
-    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups?form';" type="button">
+    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroupuserauthorities?usergroup=${usergroup.id}';" type="button">
         Manage Users in the Group
     </button>
     <page:show id="ps_com_bibsmobile_model_UserGroup" object="${usergroup}" path="/usergroups" z="VW+v2NV4h0idHhFHgl9tPFllaH0=">

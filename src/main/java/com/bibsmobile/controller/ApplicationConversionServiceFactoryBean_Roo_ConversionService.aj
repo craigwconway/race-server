@@ -5,7 +5,6 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
 import com.bibsmobile.model.Cart;
-import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAlert;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemPriceChange;
@@ -57,22 +56,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Cart>() {
             public com.bibsmobile.model.Cart convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), Cart.class);
-            }
-        };
-    }
-    
-    public Converter<Long, Event> ApplicationConversionServiceFactoryBean.getIdToEventConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.Event>() {
-            public com.bibsmobile.model.Event convert(java.lang.Long id) {
-                return Event.findEvent(id);
-            }
-        };
-    }
-    
-    public Converter<String, Event> ApplicationConversionServiceFactoryBean.getStringToEventConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Event>() {
-            public com.bibsmobile.model.Event convert(String id) {
-                return getObject().convert(getObject().convert(id, Long.class), Event.class);
             }
         };
     }
@@ -465,9 +448,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getCartToStringConverter());
         registry.addConverter(getIdToCartConverter());
         registry.addConverter(getStringToCartConverter());
-        registry.addConverter(getEventToStringConverter());
-        registry.addConverter(getIdToEventConverter());
-        registry.addConverter(getStringToEventConverter());
         registry.addConverter(getEventAlertToStringConverter());
         registry.addConverter(getIdToEventAlertConverter());
         registry.addConverter(getStringToEventAlertConverter());
