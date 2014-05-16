@@ -13,7 +13,6 @@ import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.UserGroup;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -50,14 +49,6 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setAwardCategorys(List<AwardCategory> awardCategorys) {
         this.awardCategorys = awardCategorys;
-    }
-    
-    public UserGroup Event.getEventUserGroup() {
-        return this.eventUserGroup;
-    }
-    
-    public void Event.setEventUserGroup(UserGroup eventUserGroup) {
-        this.eventUserGroup = eventUserGroup;
     }
     
     public String Event.getName() {

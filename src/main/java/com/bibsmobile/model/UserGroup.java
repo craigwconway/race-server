@@ -18,7 +18,7 @@ import javax.persistence.ManyToMany;
 @RooToString
 @RooEquals
 @RooJson
-@RooJpaActiveRecord
+@RooJpaActiveRecord(finders = { "findUserGroupsByGroupType" })
 public class UserGroup {
 
     /**

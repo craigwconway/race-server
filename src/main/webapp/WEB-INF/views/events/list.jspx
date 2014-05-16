@@ -20,7 +20,6 @@
             <table:column id="c_com_bibsmobile_model_Event_raceResults" property="raceResults" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_Event_resultsFiles" property="resultsFiles" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_Event_awardCategorys" property="awardCategorys" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_Event_eventUserGroup" property="eventUserGroup" z="RcU/13ydbP3Un2Uf0MffrXNhCrA="/>
         </table:table>
     </page:list>
 </div>

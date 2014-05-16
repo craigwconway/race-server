@@ -1,7 +1,10 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.UserProfile;
 import flexjson.JSONSerializer;
 import org.apache.commons.lang3.StringUtils;
@@ -564,4 +567,20 @@ public class EventController {
         return new JSONSerializer().serialize(Event.findAllEventsCountries().getResultList());
     }
 
+
+    @RequestMapping(value = "/search/byusergroup/{userGroupId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String findByUserGroup(@PathVariable Long userGroupId) {
+        UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
+        Map<Long, Event> events = new HashMap<>();
+        if (userGroup != null) {
+            for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
+                Event event = eventUserGroup.getEvent();
+                if (!events.containsKey(event.getId())) {
+                    events.put(event.getId(), event);
+                }
+            }
+        }
+        return Event.toJsonArray(events.values());
+    }
 }

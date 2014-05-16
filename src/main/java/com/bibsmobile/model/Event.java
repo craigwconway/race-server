@@ -19,7 +19,7 @@ import javax.persistence.ManyToMany;
 @RooJavaBean
 @RooJson
 @RooEquals
-@RooJpaActiveRecord(finders = { "findEventsByTypeEquals", "findEventsByStateEquals", "findEventsByStateEqualsAndCityEquals" })
+@RooJpaActiveRecord(finders = { "findEventsByTypeEquals", "findEventsByStateEquals", "findEventsByStateEqualsAndCityEquals", "findEventsByEventUserGroup" })
 public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
@@ -33,9 +33,6 @@ public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
     private List<AwardCategory> awardCategorys;
-
-    @ManyToOne
-    private UserGroup eventUserGroup;
 
     @NotNull
     private String name;
@@ -392,5 +389,4 @@ public class Event {
         q.setMaxResults(maxResults);
         return q;
     }
-
 }
