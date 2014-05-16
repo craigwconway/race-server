@@ -82,5 +82,9 @@
             <menu:item id="i_usergroupuserauthority_new" messageCode="global_menu_new" url="/usergroupuserauthorities?form" z="user-managed"/>
             <menu:item id="i_usergroupuserauthority_list" messageCode="global_menu_list" url="/usergroupuserauthorities?page=1&amp;size=${empty param.size ? 10 : param.size}" z="user-managed"/>
         </menu:category>
+        <menu:category id="c_eventusergroup" z="yRyCp8iF1EA47U8q72Rv/Hdlpkc=">
+            <menu:item id="i_eventusergroup_new" messageCode="global_menu_new" url="/eventusergroups?form" z="wDZwyk4w63xnKBMj8h2Ki8D4VAs="/>
+            <menu:item id="i_eventusergroup_list" messageCode="global_menu_list" url="/eventusergroups?page=1&amp;size=${empty param.size ? 10 : param.size}" z="uhU3MrwC18vdD4Zw3vEI359HEKs="/>
+        </menu:category>
     </menu:menu>
 </div>

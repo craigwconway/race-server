@@ -9,6 +9,7 @@
         <field:input field="events" id="c_com_bibsmobile_model_UserGroup_events" render="false" z="user-managed"/>
         <field:input field="authorities" id="c_com_bibsmobile_model_UserGroup_authorities" render="false" z="user-managed"/>
         <field:input field="userGroupUserAuthorities" id="c_com_bibsmobile_model_UserGroup_userGroupUserAuthorities" render="false" z="user-managed"/>
+        <field:input field="eventUserGroups" id="c_com_bibsmobile_model_UserGroup_eventUserGroups" z="user-managed" render="false"/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserGroup" render="${not empty dependencies}" z="fdu7+pp0QaN15Mmcn8KtZ+g9by4="/>
 </div>

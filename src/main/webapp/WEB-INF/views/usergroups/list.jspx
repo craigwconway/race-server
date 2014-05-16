@@ -12,6 +12,7 @@
             <table:column id="c_com_bibsmobile_model_UserGroup_events" property="events" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserGroup_authorities" property="authorities" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_UserGroup_userGroupUserAuthorities" property="userGroupUserAuthorities" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_UserGroup_eventUserGroups" property="eventUserGroups" z="user-managed" render="false"/>
         </table:table>
     </page:list>
 </div>

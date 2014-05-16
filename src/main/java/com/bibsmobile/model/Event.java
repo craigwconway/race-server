@@ -173,6 +173,9 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
     private List<EventResult> results = new ArrayList<EventResult>();
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    private List<EventUserGroup> eventUserGroups = new ArrayList<EventUserGroup>();
+
     @PrePersist
     protected void onCreate() {
         created = new Date();
@@ -390,8 +393,4 @@ public class Event {
         return q;
     }
 
-    /**
-     */
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<UserGroup> userGroups = new HashSet<UserGroup>();
 }

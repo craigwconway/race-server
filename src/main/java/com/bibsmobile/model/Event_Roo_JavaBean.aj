@@ -9,6 +9,7 @@ import com.bibsmobile.model.EventAlert;
 import com.bibsmobile.model.EventMap;
 import com.bibsmobile.model.EventPhoto;
 import com.bibsmobile.model.EventResult;
+import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
@@ -491,12 +492,12 @@ privileged aspect Event_Roo_JavaBean {
         this.results = results;
     }
     
-    public Set<UserGroup> Event.getUserGroups() {
-        return this.userGroups;
+    public List<EventUserGroup> Event.getEventUserGroups() {
+        return this.eventUserGroups;
     }
     
-    public void Event.setUserGroups(Set<UserGroup> userGroups) {
-        this.userGroups = userGroups;
+    public void Event.setEventUserGroups(List<EventUserGroup> eventUserGroups) {
+        this.eventUserGroups = eventUserGroups;
     }
     
 }

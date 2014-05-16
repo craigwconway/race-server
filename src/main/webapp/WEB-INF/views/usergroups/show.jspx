@@ -15,5 +15,6 @@
         <field:display field="events" id="s_com_bibsmobile_model_UserGroup_events" object="${usergroup}" render="false" z="user-managed"/>
         <field:display field="authorities" id="s_com_bibsmobile_model_UserGroup_authorities" object="${usergroup}" render="false" z="user-managed"/>
         <field:display field="userGroupUserAuthorities" id="s_com_bibsmobile_model_UserGroup_userGroupUserAuthorities" object="${usergroup}" render="false" z="user-managed"/>
+        <field:display field="eventUserGroups" id="s_com_bibsmobile_model_UserGroup_eventUserGroups" object="${usergroup}" z="user-managed" render="false"/>
     </page:show>
 </div>

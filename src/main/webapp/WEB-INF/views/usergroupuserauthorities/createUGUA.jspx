@@ -11,9 +11,9 @@
                  render="${empty dependencies}" z="Yz5JoaHLR/RywBMjODWNOka8+Wo=">
         <field:select field="userGroup" id="c_com_bibsmobile_model_UserGroupUserAuthority_userGroup" itemValue="id"
                       items="${usergroups}" path="/usergroups" z="user-mamanged"/>
-        <field:select field="userAuthorities.userProfile" id="c_com_bibsmobile_model_UserGroupUserAuthority_userAuthorities"
+        <field:select field="userAuthorities.userProfile" id="c_com_bibsmobile_model_UserGroupUserAuthority_userAuthority"
                       itemValue="id" items="${userprofiles}" path="/userprofiles" z="user-managed"/>
-        <field:select field="userAuthorities.userAuthority" id="c_com_bibsmobile_model_UserGroupUserAuthority_userAuthorities"
+        <field:select field="userAuthorities.userAuthority" id="c_com_bibsmobile_model_UserGroupUserAuthority_userProfile"
                       itemValue="id" items="${userauthorities}" path="/userauthorities?userprofile=${userGroupUserAuthority.userAuthorities.userProfile.id}" z="user-managed"/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserGroupUserAuthority" render="${not empty dependencies}"

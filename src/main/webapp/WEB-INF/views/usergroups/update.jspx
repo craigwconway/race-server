@@ -9,5 +9,6 @@
         <field:input field="events" id="c_com_bibsmobile_model_UserGroup_events" render="false" z="user-managed"/>
         <field:input field="authorities" id="c_com_bibsmobile_model_UserGroup_authorities" render="false" z="user-managed"/>
         <field:input field="userGroupUserAuthorities" id="c_com_bibsmobile_model_UserGroup_userGroupUserAuthorities" render="false" z="user-managed"/>
+        <field:input field="eventUserGroups" id="c_com_bibsmobile_model_UserGroup_eventUserGroups" z="user-managed" render="false"/>
     </form:update>
 </div>
