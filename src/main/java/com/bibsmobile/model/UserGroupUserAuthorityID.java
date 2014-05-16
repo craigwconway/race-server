@@ -26,8 +26,8 @@ public final class UserGroupUserAuthorityID implements Serializable {
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "userProfileId", insertable = false, updatable = false),
-            @JoinColumn(name = "userAuthorityId", insertable = false, updatable = false)})
+            @JoinColumn(name = "user_profile", insertable = false, updatable = false),
+            @JoinColumn(name = "user_authorities", insertable = false, updatable = false)})
     private UserAuthorities userAuthorities;
 
     public UserGroupUserAuthorityID(){

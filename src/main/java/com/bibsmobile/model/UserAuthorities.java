@@ -17,12 +17,12 @@ public class UserAuthorities {
 
     @MapsId("id")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userProfileId", referencedColumnName = "id",  insertable = false, updatable = false)
+    @JoinColumn(name = "user_profile", referencedColumnName = "id",  insertable = false, updatable = false)
     private UserProfile userProfile;
 
     @MapsId("id")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "userAuthorityId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_authorities", referencedColumnName = "id", insertable = false, updatable = false)
     private UserAuthority userAuthority;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.userAuthorities", cascade = CascadeType.ALL)

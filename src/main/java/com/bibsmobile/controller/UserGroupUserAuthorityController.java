@@ -62,24 +62,25 @@ public class UserGroupUserAuthorityController {
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid UserGroupUserAuthority userGroupUserAuthority, BindingResult bindingResult, Model uiModel) {
-        UserGroupUserAuthorityID id = new UserGroupUserAuthorityID();
+        UserGroupUserAuthority userGroupUserAuthorityToSave = new UserGroupUserAuthority();
         UserAuthoritiesID userAuthoritiesID = new UserAuthoritiesID();
         userAuthoritiesID.setUserAuthority(userGroupUserAuthority.getUserAuthorities().getUserAuthority());
         userAuthoritiesID.setUserProfile(userGroupUserAuthority.getUserAuthorities().getUserProfile());
         UserAuthorities userAuthorities = UserAuthorities.findUserAuthorities(userAuthoritiesID);
-        userGroupUserAuthority.setUserAuthorities(userAuthorities);
+        UserGroup userGroup = UserGroup.findUserGroup(userGroupUserAuthority.getUserGroup().getId());
+        userGroupUserAuthorityToSave.setUserAuthorities(userAuthorities);
+        userGroupUserAuthorityToSave.setUserGroup(userGroup);
+        UserGroupUserAuthorityID id = new UserGroupUserAuthorityID();
         id.setUserAuthorities(userAuthorities);
-        id.setUserGroup(userGroupUserAuthority.getUserGroup());
-        userGroupUserAuthority.setId(id);
+        id.setUserGroup(userGroup);
+        userGroupUserAuthorityToSave.setId(id);
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("userprofiles", UserProfile.findAllUserProfiles());
             populateEditForm(uiModel, userGroupUserAuthority);
             return "usergroupuserauthorities/createUGUA";
         }
         uiModel.asMap().clear();
-        userGroupUserAuthority.getUserAuthorities().getUserGroupUserAuthorities().add(userGroupUserAuthority);
-        userGroupUserAuthority.getUserGroup().getUserGroupUserAuthorities().add(userGroupUserAuthority);
-        userGroupUserAuthority.persist();
+        userGroupUserAuthorityToSave.persist();
         return "redirect:/usergroupuserauthorities?usergroup=" + userGroupUserAuthority.getUserGroup().getId();
     }
 
@@ -163,8 +164,6 @@ public class UserGroupUserAuthorityController {
                     userRoles.add(userAuthorities.getUserAuthority());
                 }
             }
-        } else {
-            userRoles = UserAuthority.findAllUserAuthoritys();
         }
         uiModel.addAttribute("userGroupUserAuthority", userGroupUserAuthority);
         uiModel.addAttribute("userauthorities", userRoles);

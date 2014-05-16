@@ -23,6 +23,6 @@ public class UserGroupUserAuthority {
 
     @MapsId("id")
     @ManyToOne
-    @JoinColumns({ @javax.persistence.JoinColumn(name = "userProfileId", insertable = false, updatable = false), @javax.persistence.JoinColumn(name = "userAuthorityId", insertable = false, updatable = false) })
+    @JoinColumns({ @javax.persistence.JoinColumn(name = "user_profile", insertable = false, updatable = false), @javax.persistence.JoinColumn(name = "user_authorities", insertable = false, updatable = false) })
     private UserAuthorities userAuthorities;
 }

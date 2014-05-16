@@ -31,5 +31,4 @@
         <field:datetime dateTimePattern="${userProfile_birthdate_date_format}" field="birthdate" id="c_com_bibsmobile_model_UserProfile_birthdate" z="MiMz4DGf1VWzCQv72upHcq7xsWo="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserProfile" render="${not empty dependencies}" z="bjmbow3uaKPnQKxTUw7asq9aKLc="/>
-   zzz ${userProfile_birthdate_date_format}
 </div>

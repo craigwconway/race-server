@@ -194,7 +194,7 @@ function checkUserProfileChange() {
     if (userProfileHidden != null && userProfileHidden != defaultUserProfile) {
         window.location = updateQueryStringParameter(window.location.href, "userprofile", userProfileHidden);
     }
-    window.setTimeout(checkUserProfileChange, 200);
+    window.setTimeout(checkUserProfileChange, 1000);
 }
 
 function beautifyAuthorities(){
