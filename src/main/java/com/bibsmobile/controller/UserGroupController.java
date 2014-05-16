@@ -68,8 +68,12 @@ public class UserGroupController {
             populateEditForm(uiModel, userGroup);
             return "usergroups/update";
         }
+        UserGroup ugToUpdate = UserGroup.findUserGroup(userGroup.getId());
+        ugToUpdate.setBibWrites(userGroup.getBibWrites());
+        ugToUpdate.setName(userGroup.getName());
+        ugToUpdate.setGroupType(userGroup.getGroupType());
         uiModel.asMap().clear();
-        userGroup.merge();
+        ugToUpdate.merge();
         return "redirect:/usergroups/" + encodeUrlPathSegment(userGroup.getId().toString(), httpServletRequest);
     }
 
