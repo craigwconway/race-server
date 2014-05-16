@@ -3,97 +3,97 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.PictureType;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
-privileged aspect RaceImage_Roo_Jpa_ActiveRecord {
+privileged aspect PictureType_Roo_Jpa_ActiveRecord {
     
     @PersistenceContext
-    transient EntityManager RaceImage.entityManager;
+    transient EntityManager PictureType.entityManager;
     
-    public static final List<String> RaceImage.fieldNames4OrderClauseFilter = java.util.Arrays.asList("filePath", "raceResult", "event", "userProfile", "nonPublic", "pictureTypes");
+    public static final List<String> PictureType.fieldNames4OrderClauseFilter = java.util.Arrays.asList("pictureType", "raceImages");
     
-    public static final EntityManager RaceImage.entityManager() {
-        EntityManager em = new RaceImage().entityManager;
+    public static final EntityManager PictureType.entityManager() {
+        EntityManager em = new PictureType().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
     
-    public static long RaceImage.countRaceImages() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM RaceImage o", Long.class).getSingleResult();
+    public static long PictureType.countPictureTypes() {
+        return entityManager().createQuery("SELECT COUNT(o) FROM PictureType o", Long.class).getSingleResult();
     }
     
-    public static List<RaceImage> RaceImage.findAllRaceImages() {
-        return entityManager().createQuery("SELECT o FROM RaceImage o", RaceImage.class).getResultList();
+    public static List<PictureType> PictureType.findAllPictureTypes() {
+        return entityManager().createQuery("SELECT o FROM PictureType o", PictureType.class).getResultList();
     }
     
-    public static List<RaceImage> RaceImage.findAllRaceImages(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM RaceImage o";
+    public static List<PictureType> PictureType.findAllPictureTypes(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM PictureType o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, RaceImage.class).getResultList();
+        return entityManager().createQuery(jpaQuery, PictureType.class).getResultList();
     }
     
-    public static RaceImage RaceImage.findRaceImage(Long id) {
+    public static PictureType PictureType.findPictureType(Long id) {
         if (id == null) return null;
-        return entityManager().find(RaceImage.class, id);
+        return entityManager().find(PictureType.class, id);
     }
     
-    public static List<RaceImage> RaceImage.findRaceImageEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM RaceImage o", RaceImage.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    public static List<PictureType> PictureType.findPictureTypeEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM PictureType o", PictureType.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
-    public static List<RaceImage> RaceImage.findRaceImageEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM RaceImage o";
+    public static List<PictureType> PictureType.findPictureTypeEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM PictureType o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, RaceImage.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        return entityManager().createQuery(jpaQuery, PictureType.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional
-    public void RaceImage.persist() {
+    public void PictureType.persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.persist(this);
     }
     
     @Transactional
-    public void RaceImage.remove() {
+    public void PictureType.remove() {
         if (this.entityManager == null) this.entityManager = entityManager();
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            RaceImage attached = RaceImage.findRaceImage(this.id);
+            PictureType attached = PictureType.findPictureType(this.id);
             this.entityManager.remove(attached);
         }
     }
     
     @Transactional
-    public void RaceImage.flush() {
+    public void PictureType.flush() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.flush();
     }
     
     @Transactional
-    public void RaceImage.clear() {
+    public void PictureType.clear() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.clear();
     }
     
     @Transactional
-    public RaceImage RaceImage.merge() {
+    public PictureType PictureType.merge() {
         if (this.entityManager == null) this.entityManager = entityManager();
-        RaceImage merged = this.entityManager.merge(this);
+        PictureType merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }

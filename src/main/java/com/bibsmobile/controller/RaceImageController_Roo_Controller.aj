@@ -5,6 +5,7 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.RaceImageController;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.PictureType;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.service.UserProfileService;
@@ -94,6 +95,7 @@ privileged aspect RaceImageController_Roo_Controller {
     void RaceImageController.populateEditForm(Model uiModel, RaceImage raceImage) {
         uiModel.addAttribute("raceImage", raceImage);
         uiModel.addAttribute("events", Event.findAllEvents());
+        uiModel.addAttribute("picturetypes", PictureType.findAllPictureTypes());
         uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
         uiModel.addAttribute("userprofiles", userProfileService.findAllUserProfiles());
     }
