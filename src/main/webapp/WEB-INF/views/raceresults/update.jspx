@@ -85,5 +85,14 @@
        		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
         }
         </script>
+        <field:datetime dateTimePattern="${raceResult_birthdate_date_format}" field="birthDate" id="c_com_bibsmobile_model_RaceResult_birthDate" z="QfCqoEynxG9+P3LBDI+NzLfFYRM="/>
+        <field:input field="email" id="c_com_bibsmobile_model_RaceResult_email" validationMessageCode="field_invalid_email" z="4DYfF4pCv+NarpmMvTbqENFIbWY="/>
+        <field:input field="phone" id="c_com_bibsmobile_model_RaceResult_phone" z="6zoOavdZmmdT1MzqVc5faXxXhHM="/>
+        <field:input field="addressLine1" id="c_com_bibsmobile_model_RaceResult_addressLine1" z="qjFJWVLQ+rLxQLDSEOOMv/ZWqUU="/>
+        <field:input field="addressLine2" id="c_com_bibsmobile_model_RaceResult_addressLine2" z="60LCC7ED0jDf9EPUfRrgJZDwuwg="/>
+        <field:input field="zipCode" id="c_com_bibsmobile_model_RaceResult_zipCode" z="9d41WubvXExnc1mTwAAl1wfLBnU="/>
+        <field:input field="emergencyContactName" id="c_com_bibsmobile_model_RaceResult_emergencyContactName" z="3uApU+ExY0wwkUJDTglNv8wC9jc="/>
+        <field:input field="emergencyContactPhone" id="c_com_bibsmobile_model_RaceResult_emergencyContactPhone" z="U4CSNcaRfLK4f8CGH62lC6yEqoA="/>
+        <field:input field="hearFrom" id="c_com_bibsmobile_model_RaceResult_hearFrom" z="95wyWcfoNq5zf5ClkLN5n6apJGc="/>
     </form:update>
 </div>
