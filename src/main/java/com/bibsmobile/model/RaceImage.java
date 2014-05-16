@@ -81,4 +81,13 @@ public class RaceImage {
         this.persist();
     }
 
+
+    public static TypedQuery<RaceImage> findRaceImagesByRaceResults(List<RaceResult> raceResults) {
+        if (raceResults == null) throw new IllegalArgumentException("The raceResults argument is required");
+        EntityManager em = RaceImage.entityManager();
+        TypedQuery<RaceImage> q = em.createQuery("SELECT o FROM RaceImage AS o WHERE o.raceResult IN (:raceResults)", RaceImage.class);
+        q.setParameter("raceResults", raceResults);
+        return q;
+    }
+
 }
