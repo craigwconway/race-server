@@ -4,11 +4,17 @@
     <definition extends="default" name="eventusergroups/list">
         <put-attribute name="body" value="/WEB-INF/views/eventusergroups/list.jspx"/>
     </definition>
+    <definition extends="default" name="eventusergroups/listUG">
+        <put-attribute name="body" value="/WEB-INF/views/eventusergroups/listUG.jspx"/>
+    </definition>
 <definition extends="default" name="eventusergroups/show">
         <put-attribute name="body" value="/WEB-INF/views/eventusergroups/show.jspx"/>
     </definition>
-<definition extends="default" name="eventusergroups/create">
+    <definition extends="default" name="eventusergroups/create">
         <put-attribute name="body" value="/WEB-INF/views/eventusergroups/create.jspx"/>
+    </definition>
+    <definition extends="default" name="eventusergroups/createUG">
+        <put-attribute name="body" value="/WEB-INF/views/eventusergroups/createUG.jspx"/>
     </definition>
 <definition extends="default" name="eventusergroups/update">
         <put-attribute name="body" value="/WEB-INF/views/eventusergroups/update.jspx"/>

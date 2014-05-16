@@ -2,6 +2,9 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroupuserauthorities?usergroup=${eventusergroup.userGroup.id}';" type="button">
+        Manage Users in the Group
+    </button>
     <page:show id="ps_com_bibsmobile_model_EventUserGroup" object="${eventusergroup}" path="/eventusergroups" z="BwedhfaN8zkLiO6rdgCnYu/Gdpc=">
         <field:display field="event" id="s_com_bibsmobile_model_EventUserGroup_event" object="${eventusergroup}" z="9Z5Crcyz3YIvoK3dTvI8ec2rcJk="/>
         <field:display field="userGroup" id="s_com_bibsmobile_model_EventUserGroup_userGroup" object="${eventusergroup}" z="jwkcYSCkvsB8jXUJKLtoR+OzghE="/>
