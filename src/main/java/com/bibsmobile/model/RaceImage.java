@@ -1,39 +1,41 @@
 package com.bibsmobile.model;
-
 import java.util.List;
-
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
+import java.util.HashSet;
+import java.util.Set;
 
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders = { "findRaceImagesByEvent", "findRaceImagesByRaceResults"})
+@RooJpaActiveRecord(finders = { "findRaceImagesByEvent", "findRaceImagesByRaceResults" })
 public class RaceImage {
-	
+
 	@NotNull
 	String filePath;
 
     @ManyToOne
 	RaceResult raceResult;
 
-    @ManyToOne 
+    @ManyToOne
 	Event event;
 
     @ManyToOne
 	UserProfile userProfile;
-	
+
 	boolean nonPublic;
-	
+
+    @ManyToMany
+    Set<PictureType> pictureTypes = new HashSet<>();
+
 	public RaceImage(){}
-	
+
 	public RaceImage(String filePath, long eventId){
 		this.filePath = filePath;
 		this.event = Event.findEvent(eventId);
@@ -59,6 +61,24 @@ public class RaceImage {
                 new RaceImage(filePath, raceResult, event).persist();
             }
         }
+    }
+
+    public RaceImage(String filePath, long eventId, List<String> bibs, List<String> types) {
+        this(filePath, eventId, bibs);
+        if (CollectionUtils.isNotEmpty(types)) {
+            for (String type : types) {
+                PictureType pictureType;
+                if (PictureType.countFindPictureTypesByPictureTypeEquals(type) > 0) {
+                    pictureType = PictureType.findPictureTypesByPictureTypeEquals(type).getSingleResult();
+                } else {
+                    pictureType = new PictureType();
+                    pictureType.setPictureType(type);
+                    pictureType.persist();
+                }
+                pictureTypes.add(pictureType);
+            }
+        }
+        this.persist();
     }
 
 }

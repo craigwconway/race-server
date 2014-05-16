@@ -9,6 +9,7 @@
             <table:column id="c_com_bibsmobile_model_RaceImage_event" property="event" z="wg/dEiF2j7VuobgbEemH4Bz15LY="/>
             <table:column id="c_com_bibsmobile_model_RaceImage_userProfile" property="userProfile" z="pT21oSjWfKavFZ2YuddjcP9XKn4="/>
             <table:column id="c_com_bibsmobile_model_RaceImage_nonPublic" property="nonPublic" z="gBFgTANZyuDTYPMyG5rsw5xj0Z8="/>
+            <table:column id="c_com_bibsmobile_model_RaceImage_pictureTypes" property="pictureTypes" z="kv9J5zUz2thT/YTuyJcnGbR1VJg="/>
         </table:table>
     </page:list>
 </div>

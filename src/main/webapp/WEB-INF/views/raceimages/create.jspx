@@ -4,10 +4,11 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_RaceImage" modelAttribute="raceImage" path="/raceimages" render="${empty dependencies}" z="7ICUvvftjqP4cO4wAuEJYNnAU0A=">
         <field:input field="filePath" id="c_com_bibsmobile_model_RaceImage_filePath" required="true" z="UuxovfG+86RKFB0os8sQVHwXwNc="/>
-        <field:select field="raceResult" id="c_com_bibsmobile_model_RaceImage_raceResult" itemValue="id" items="${raceresults}" path="/raceresults" z="rOxk4NTjPxcIXi59PtOpG7hHqIU="/>
+        <field:input field="raceResult" id="c_com_bibsmobile_model_RaceImage_raceResult" z="vRcMPOU74ZIYfbtfsGv2Mlezfzs="/>
         <field:select field="event" id="c_com_bibsmobile_model_RaceImage_event" itemValue="id" items="${events}" path="/events" render="false" z="user-managed"/>
         <field:select field="userProfile" id="c_com_bibsmobile_model_RaceImage_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" render="false" z="user-managed"/>
         <field:checkbox field="nonPublic" id="c_com_bibsmobile_model_RaceImage_nonPublic" z="pSjEQEPNnXhXahtnFf0heQkc0f0="/>
+        <field:input field="pictureTypes" id="c_com_bibsmobile_model_RaceImage_pictureTypes" z="ICovvQuOF2qx6qOumac1QBDaV48="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceImage" render="${not empty dependencies}" z="uilELfYkBFwREE+PYmsIKuYTopU="/>
 </div>

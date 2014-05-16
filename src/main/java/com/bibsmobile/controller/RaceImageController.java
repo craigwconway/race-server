@@ -1,6 +1,7 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.PictureType;
 import com.bibsmobile.model.RaceResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.Validate;
@@ -29,8 +30,9 @@ public class RaceImageController {
     public ResponseEntity<String> api(
     		@RequestParam(value="filePath") String filePath, 
     		@RequestParam(value="raceId") long raceId,
-    		@RequestParam(value="bib",required=false) List<String> bib) {
-        RaceImage raceImage = new RaceImage(filePath, raceId, bib);
+    		@RequestParam(value="bib",required=false) List<String> bib,
+            @RequestParam(value="type", required=false) List<String> types) {
+        RaceImage raceImage = new RaceImage(filePath, raceId, bib, types);
         if (CollectionUtils.isEmpty(bib)) {
             raceImage.persist();
         }
