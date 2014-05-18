@@ -86,5 +86,9 @@
             <menu:item id="i_eventusergroup_new" messageCode="global_menu_new" url="/eventusergroups?form" z="wDZwyk4w63xnKBMj8h2Ki8D4VAs="/>
             <menu:item id="i_eventusergroup_list" messageCode="global_menu_list" url="/eventusergroups?page=1&amp;size=${empty param.size ? 10 : param.size}" z="uhU3MrwC18vdD4Zw3vEI359HEKs="/>
         </menu:category>
+        <menu:category id="c_eventtype" z="YIw08qf9woeDNJxEEEDzMaqJT+M=">
+            <menu:item id="i_eventtype_new" messageCode="global_menu_new" url="/eventtypes?form" z="dkIqwPAyQiGGzqS01OADXehl6Fk="/>
+            <menu:item id="i_eventtype_list" messageCode="global_menu_list" url="/eventtypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="v3FoaMcbz5SDOG4Qz/sq9yQxZIw="/>
+        </menu:category>
     </menu:menu>
 </div>
