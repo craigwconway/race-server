@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_EventType" object="${eventtype}" path="/eventtypes" z="8RdsqXI+rXpRe/JsgRFlQHC19yY=">
+        <field:display field="typeName" id="s_com_bibsmobile_model_EventType_typeName" object="${eventtype}" z="dQKa4WqG4hWaolg0sC4oIQ8q/qs="/>
+        <field:display date="true" dateTimePattern="${eventType_starttime_date_format}" field="startTime" id="s_com_bibsmobile_model_EventType_startTime" object="${eventtype}" z="7tgJeNkZqMJuvfvHg74AW9rnSrs="/>
+        <field:display field="events" id="s_com_bibsmobile_model_EventType_events" object="${eventtype}" z="oONbBVYRPqP/xBb3W/KlN4juVQI="/>
+    </page:show>
+</div>

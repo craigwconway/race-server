@@ -12,6 +12,7 @@ import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventMap;
 import com.bibsmobile.model.EventPhoto;
 import com.bibsmobile.model.EventResult;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.EventUserGroupId;
 import com.bibsmobile.model.RaceImage;
@@ -70,7 +71,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
             }
         };
     }
-    
+
     public Converter<String, Event> ApplicationConversionServiceFactoryBean.getStringToEventConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Event>() {
             public com.bibsmobile.model.Event convert(String id) {
@@ -78,7 +79,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
             }
         };
     }
-    
+
     public Converter<EventAlert, String> ApplicationConversionServiceFactoryBean.getEventAlertToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventAlert, java.lang.String>() {
             public String convert(EventAlert eventAlert) {
@@ -219,6 +220,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventResult>() {
             public com.bibsmobile.model.EventResult convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventResult.class);
+            }
+        };
+    }
+    
+    public Converter<EventType, String> ApplicationConversionServiceFactoryBean.getEventTypeToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventType, java.lang.String>() {
+            public String convert(EventType eventType) {
+                return new StringBuilder().append(eventType.getTypeName()).append(' ').append(eventType.getStartTime()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, EventType> ApplicationConversionServiceFactoryBean.getIdToEventTypeConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventType>() {
+            public com.bibsmobile.model.EventType convert(java.lang.Long id) {
+                return EventType.findEventType(id);
+            }
+        };
+    }
+    
+    public Converter<String, EventType> ApplicationConversionServiceFactoryBean.getStringToEventTypeConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventType>() {
+            public com.bibsmobile.model.EventType convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), EventType.class);
             }
         };
     }
@@ -528,6 +553,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getEventResultToStringConverter());
         registry.addConverter(getIdToEventResultConverter());
         registry.addConverter(getStringToEventResultConverter());
+        registry.addConverter(getEventTypeToStringConverter());
+        registry.addConverter(getIdToEventTypeConverter());
+        registry.addConverter(getStringToEventTypeConverter());
         registry.addConverter(getEventUserGroupToStringConverter());
         registry.addConverter(getIdToEventUserGroupConverter());
         registry.addConverter(getStringToEventUserGroupConverter());
