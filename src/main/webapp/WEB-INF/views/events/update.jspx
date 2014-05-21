@@ -71,6 +71,7 @@
         <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
         <field:input field="eventUserGroup" id="c_com_bibsmobile_model_Event_eventUserGroup" z="user-managed" render="false"/>
         <field:input field="eventUserGroups" id="c_com_bibsmobile_model_Event_eventUserGroups" z="user-managed" render="false"/>
+        <field:select field="eventTypes" id="c_com_bibsmobile_model_Event_eventTypes" itemValue="id" items="${eventtypes}" multiple="true" path="/eventtypes" z="IAV39d3gnOz6oaXPsSbO2ZBUxDs="/>
     </form:update>
     <script>
     window.onload = function(){

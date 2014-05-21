@@ -57,7 +57,11 @@ public class Event {
 
     private String longitude;
 
+    @Deprecated
     private String type;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<EventType> eventTypes = new HashSet<>();
 
     private String website;
 

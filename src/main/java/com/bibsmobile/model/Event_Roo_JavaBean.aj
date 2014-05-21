@@ -9,6 +9,7 @@ import com.bibsmobile.model.EventAlert;
 import com.bibsmobile.model.EventMap;
 import com.bibsmobile.model.EventPhoto;
 import com.bibsmobile.model.EventResult;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
@@ -489,6 +490,14 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setEventUserGroups(List<EventUserGroup> eventUserGroups) {
         this.eventUserGroups = eventUserGroups;
+    }
+    
+    public Set<EventType> Event.getEventTypes() {
+        return this.eventTypes;
+    }
+    
+    public void Event.setEventTypes(Set<EventType> eventTypes) {
+        this.eventTypes = eventTypes;
     }
     
 }
