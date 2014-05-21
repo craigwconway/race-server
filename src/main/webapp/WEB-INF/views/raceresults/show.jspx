@@ -57,5 +57,14 @@
         <field:display field="timeofficial" id="s_com_bibsmobile_model_RaceResult_timeofficial" object="${raceresult}"  z="user-managed"/>
         <field:display field="timeofficialdisplay" id="s_com_bibsmobile_model_RaceResult_timeofficialdisplay" object="${raceresult}" z="DbLNqHk2uuPTEv8Wdov6q4CZ0PM="/>
     	</div>
+        <field:display date="true" dateTimePattern="${raceResult_birthdate_date_format}" field="birthDate" id="s_com_bibsmobile_model_RaceResult_birthDate" object="${raceresult}" z="NodOFyoukK2Rq5w0uPNJ3McL7WU="/>
+        <field:display field="email" id="s_com_bibsmobile_model_RaceResult_email" object="${raceresult}" z="mkPMtCAGJeSUoeDM9Hw8lR4WqFI="/>
+        <field:display field="phone" id="s_com_bibsmobile_model_RaceResult_phone" object="${raceresult}" z="EVBZIhG7UvzzTuXHsjUoO99l14k="/>
+        <field:display field="addressLine1" id="s_com_bibsmobile_model_RaceResult_addressLine1" object="${raceresult}" z="Wx1c7cwKS2G7K11WLWmHb110woY="/>
+        <field:display field="addressLine2" id="s_com_bibsmobile_model_RaceResult_addressLine2" object="${raceresult}" z="POQZtPb5Om/FkdRugw5Nt/cT/NY="/>
+        <field:display field="zipCode" id="s_com_bibsmobile_model_RaceResult_zipCode" object="${raceresult}" z="M9vuf41k4ifQXFmHbl0MX+/Aa5w="/>
+        <field:display field="emergencyContactName" id="s_com_bibsmobile_model_RaceResult_emergencyContactName" object="${raceresult}" z="aD++VMhdycIX/3pKWR5aFmTEy4w="/>
+        <field:display field="emergencyContactPhone" id="s_com_bibsmobile_model_RaceResult_emergencyContactPhone" object="${raceresult}" z="Kg7dSM+WhfhlbJ5+00O6GcjbuRs="/>
+        <field:display field="hearFrom" id="s_com_bibsmobile_model_RaceResult_hearFrom" object="${raceresult}" z="A5Hny5lmIdtqEapBtCBBVfwem18="/>
     </page:show>
 </div>

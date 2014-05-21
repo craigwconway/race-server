@@ -38,21 +38,21 @@ import flexjson.JSONSerializer;
 @RooJavaBean
 @RooEquals
 @RooJson
-@RooJpaActiveRecord(finders = { "findRaceResultsByEvent", "findRaceResultsByEventAndBibEquals", 
+@RooJpaActiveRecord(finders = { "findRaceResultsByEvent", "findRaceResultsByEventAndBibEquals",
 		"findRaceResultsByEventAndFirstnameLike", "findRaceResultsByEventAndLastnameLike",
 		"findRaceResultsByEventAndFirstnameLikeAndLastnameLike"})
 public class RaceResult implements Comparable<RaceResult>{
 
-    @ManyToOne(fetch = FetchType.LAZY) 
+    @ManyToOne(fetch = FetchType.LAZY)
     private Event event;
-    
+
     @ManyToOne
     private UserProfile userProfile;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "raceResult")
 	private Set<RaceImage> raceImage;
 
-    @NotNull 
+    @NotNull
     @Index(name="bib_index") // search field
     private String bib;
 
@@ -73,11 +73,11 @@ public class RaceResult implements Comparable<RaceResult>{
     private String type;
 
     private String time5k;
-    
+
     private String time10k;
-    
+
     private String time15k;
-    
+
     private String timeoverall;
 
     private String timegun;
@@ -85,7 +85,7 @@ public class RaceResult implements Comparable<RaceResult>{
     private String timechip;
 
     private String timesplit;
-    
+
     private long timestart;
 
     private String timerun;
@@ -101,7 +101,7 @@ public class RaceResult implements Comparable<RaceResult>{
     private String timepace;
 
     private long timeofficial;
-    
+
     private String timeofficialdisplay;
 
     private String rankoverall;
@@ -129,25 +129,25 @@ public class RaceResult implements Comparable<RaceResult>{
     private String lisencenumber;
 
     private String laps;
-    
+
     private String award;
-    
+
     private long timer = 0l;
 
-    private String timesplit1; 
-    
+    private String timesplit1;
+
     private String timesplit2;
-    
+
     private String timesplit3;
-    
+
     private String timesplit4;
-    
+
     private String timemile1;
-    
+
     private String timemile2;
-    
+
     private String timemile3;
-    
+
     private String timemile4;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -157,23 +157,43 @@ public class RaceResult implements Comparable<RaceResult>{
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date updated;
-    
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "MM/dd/yyyy")
+    private Date birthDate;
+
+    private String email;
+
+    private String phone;
+
+    private String addressLine1;
+
+    private String addressLine2;
+
+    private String zipCode;
+
+    private String emergencyContactName;
+
+    private String emergencyContactPhone;
+
+    private String hearFrom;
+
     @PreUpdate
     protected void onUpdate() {
         if(created==null) created = new Date();
         updated = new Date();
     }
-    
+
     @Override
     public String toString(){
     	return event.toString() + " " + bib + " " + firstname + " " + lastname;
     }
-    
+
     public String getTimeofficialdisplay(){
     	if(timestart == 0 || timeofficial == 0) return "";
     	return RaceResult.toHumanTime(timestart, timeofficial);
     }
-    
+
     /**
      * Over-write current fields with non-null values from new object
      * @param raceResult
@@ -255,7 +275,7 @@ public class RaceResult implements Comparable<RaceResult>{
         q.setParameter("lastname", lastname);
         return q;
     }
-	
+
 	public static List<RaceResult> findRaceResultsByEventAndMultipleBibs(Event event, List<String> bibs) {
         if (bibs == null) {
             throw new IllegalArgumentException("The bibs argument is required");
@@ -267,29 +287,29 @@ public class RaceResult implements Comparable<RaceResult>{
         q.setParameter("bibs", bibs);
         return q.getResultList();
     }
-    
+
 	public static List<RaceResult> search(Long eventId, String name, String bib) {
         EntityManager em = RaceResult.entityManager();
-        
+
         Event event = new Event();
         if(null!=eventId && eventId > 0) event = Event.findEvent(eventId);
-        
+
         String firstname = "";
         String lastname = "";
         if(name.contains(" ")){
         	firstname = name.split(" ")[0];
         	lastname = name.split(" ")[1];
         }
-        
+
         String HQL = "SELECT o FROM RaceResult AS o WHERE " ;
 
-        if(null!=eventId && eventId > 0) 
+        if(null!=eventId && eventId > 0)
         	HQL += " o.event = :event AND ";
-        
-        if(!bib.isEmpty()) 
+
+        if(!bib.isEmpty())
         	HQL += " o.bib = :bib AND ";
 
-        if(!firstname.isEmpty() && !lastname.isEmpty()) { 
+        if(!firstname.isEmpty() && !lastname.isEmpty()) {
         	firstname += "%";
         	lastname += "%";
         	HQL += " LOWER(o.firstname) LIKE LOWER(:firstname) AND LOWER(o.lastname) LIKE LOWER(:lastname) ";
@@ -297,12 +317,12 @@ public class RaceResult implements Comparable<RaceResult>{
         	name += "%";
         	HQL += " (LOWER(o.firstname) LIKE LOWER(:name) OR LOWER(o.lastname) LIKE LOWER(:name)) ";
         }
-        
+
         TypedQuery<RaceResult> q = em.createQuery( HQL , RaceResult.class);
 
-        if(null!=eventId && eventId > 0) 
+        if(null!=eventId && eventId > 0)
         	q.setParameter("event", event);
-        if(!bib.isEmpty()) 
+        if(!bib.isEmpty())
         	q.setParameter("bib", bib);
         if(!firstname.isEmpty() && !lastname.isEmpty()){
         	q.setParameter("firstname", firstname);
@@ -311,14 +331,14 @@ public class RaceResult implements Comparable<RaceResult>{
         	q.setParameter("name", name);
         }
         q.setMaxResults(100);
-        
+
         return q.getResultList();
     }
 
 	public String toJson() {
         return new JSONSerializer().exclude("*.class","event").serialize(this);
     }
-	
+
 	public String toJson(boolean full) {
         return new JSONSerializer().serialize(this);
     }
@@ -334,11 +354,11 @@ public class RaceResult implements Comparable<RaceResult>{
 	public static Collection<RaceResult> fromJsonArrayToRaceResults(String json) {
         return new JSONDeserializer<List<RaceResult>>().use(null, ArrayList.class).use("values", RaceResult.class).deserialize(json);
     }
-	
+
 	public int compareTo(RaceResult other) {
 		return (int) ((other.timestart-other.timeofficial) - (this.timestart-this.timeofficial) );
 	}
-	
+
 	public static String toHumanTime(long start,long finish) {
 		long l = finish - start;
     	String rtn = "";
