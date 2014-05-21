@@ -48,7 +48,7 @@ public class RaceImageController {
         if (event != null) {
             List<RaceImage> raceImages = null;
             if (bib != null) {
-                List<RaceResult> raceResults = RaceResult.findRaceResultsByEvent(event).getResultList();
+                List<RaceResult> raceResults = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getResultList();
                 if (CollectionUtils.isNotEmpty(raceResults)) {
                     raceImages = RaceImage.findRaceImagesByRaceResults(raceResults).setFirstResult((page - 1) * size).setMaxResults(size).getResultList();
                 }
