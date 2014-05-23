@@ -7,7 +7,6 @@ import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAlert;
-import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventMap;
 import com.bibsmobile.model.EventPhoto;
@@ -23,6 +22,8 @@ import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import org.apache.commons.codec.binary.Base64;
@@ -69,7 +70,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
             }
         };
     }
-
+    
     public Converter<String, Event> ApplicationConversionServiceFactoryBean.getStringToEventConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Event>() {
             public com.bibsmobile.model.Event convert(String id) {
@@ -77,7 +78,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
             }
         };
     }
-
+    
     public Converter<EventAlert, String> ApplicationConversionServiceFactoryBean.getEventAlertToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventAlert, java.lang.String>() {
             public String convert(EventAlert eventAlert) {
@@ -98,30 +99,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventAlert>() {
             public com.bibsmobile.model.EventAlert convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventAlert.class);
-            }
-        };
-    }
-    
-    public Converter<EventCartItem, String> ApplicationConversionServiceFactoryBean.getEventCartItemToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventCartItem, java.lang.String>() {
-            public String convert(EventCartItem eventCartItem) {
-                return new StringBuilder().append(eventCartItem.getName()).append(' ').append(eventCartItem.getDescription()).append(' ').append(eventCartItem.getPrice()).append(' ').append(eventCartItem.getAvailable()).toString();
-            }
-        };
-    }
-    
-    public Converter<Long, EventCartItem> ApplicationConversionServiceFactoryBean.getIdToEventCartItemConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventCartItem>() {
-            public com.bibsmobile.model.EventCartItem convert(java.lang.Long id) {
-                return EventCartItem.findEventCartItem(id);
-            }
-        };
-    }
-    
-    public Converter<String, EventCartItem> ApplicationConversionServiceFactoryBean.getStringToEventCartItemConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventCartItem>() {
-            public com.bibsmobile.model.EventCartItem convert(String id) {
-                return getObject().convert(getObject().convert(id, Long.class), EventCartItem.class);
             }
         };
     }
@@ -454,6 +431,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
+    public Converter<UserGroupUserAuthority, String> ApplicationConversionServiceFactoryBean.getUserGroupUserAuthorityToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroupUserAuthority, java.lang.String>() {
+            public String convert(UserGroupUserAuthority userGroupUserAuthority) {
+                return "(no displayable fields)";
+            }
+        };
+    }
+    
+    public Converter<UserGroupUserAuthorityID, UserGroupUserAuthority> ApplicationConversionServiceFactoryBean.getIdToUserGroupUserAuthorityConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroupUserAuthorityID, com.bibsmobile.model.UserGroupUserAuthority>() {
+            public com.bibsmobile.model.UserGroupUserAuthority convert(com.bibsmobile.model.UserGroupUserAuthorityID id) {
+                return UserGroupUserAuthority.findUserGroupUserAuthority(id);
+            }
+        };
+    }
+    
+    public Converter<String, UserGroupUserAuthority> ApplicationConversionServiceFactoryBean.getStringToUserGroupUserAuthorityConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserGroupUserAuthority>() {
+            public com.bibsmobile.model.UserGroupUserAuthority convert(String id) {
+                return getObject().convert(getObject().convert(id, UserGroupUserAuthorityID.class), UserGroupUserAuthority.class);
+            }
+        };
+    }
+    
     public Converter<Long, UserProfile> ApplicationConversionServiceFactoryBean.getIdToUserProfileConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserProfile>() {
             public com.bibsmobile.model.UserProfile convert(java.lang.Long id) {
@@ -466,6 +467,22 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserProfile>() {
             public com.bibsmobile.model.UserProfile convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), UserProfile.class);
+            }
+        };
+    }
+    
+    public Converter<String, UserGroupUserAuthorityID> ApplicationConversionServiceFactoryBean.getJsonToUserGroupUserAuthorityIDConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserGroupUserAuthorityID>() {
+            public UserGroupUserAuthorityID convert(String encodedJson) {
+                return UserGroupUserAuthorityID.fromJsonToUserGroupUserAuthorityID(new String(Base64.decodeBase64(encodedJson)));
+            }
+        };
+    }
+    
+    public Converter<UserGroupUserAuthorityID, String> ApplicationConversionServiceFactoryBean.getUserGroupUserAuthorityIDToJsonConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroupUserAuthorityID, java.lang.String>() {
+            public String convert(UserGroupUserAuthorityID userGroupUserAuthorityID) {
+                return Base64.encodeBase64URLSafeString(userGroupUserAuthorityID.toJson().getBytes());
             }
         };
     }
@@ -496,9 +513,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getEventAlertToStringConverter());
         registry.addConverter(getIdToEventAlertConverter());
         registry.addConverter(getStringToEventAlertConverter());
-        registry.addConverter(getEventCartItemToStringConverter());
-        registry.addConverter(getIdToEventCartItemConverter());
-        registry.addConverter(getStringToEventCartItemConverter());
         registry.addConverter(getEventCartItemPriceChangeToStringConverter());
         registry.addConverter(getIdToEventCartItemPriceChangeConverter());
         registry.addConverter(getStringToEventCartItemPriceChangeConverter());
@@ -544,9 +558,14 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getUserGroupToStringConverter());
         registry.addConverter(getIdToUserGroupConverter());
         registry.addConverter(getStringToUserGroupConverter());
+        registry.addConverter(getUserGroupUserAuthorityToStringConverter());
+        registry.addConverter(getIdToUserGroupUserAuthorityConverter());
+        registry.addConverter(getStringToUserGroupUserAuthorityConverter());
         registry.addConverter(getUserProfileToStringConverter());
         registry.addConverter(getIdToUserProfileConverter());
         registry.addConverter(getStringToUserProfileConverter());
+        registry.addConverter(getJsonToUserGroupUserAuthorityIDConverter());
+        registry.addConverter(getUserGroupUserAuthorityIDToJsonConverter());
         registry.addConverter(getJsonToEventUserGroupIdConverter());
         registry.addConverter(getEventUserGroupIdToJsonConverter());
     }

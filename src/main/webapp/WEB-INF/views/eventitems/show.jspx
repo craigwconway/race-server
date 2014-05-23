@@ -27,10 +27,10 @@
         <field:display field="type" id="s_com_bibsmobile_model_EventCartItem_type" object="${eventcartitem}" z="KwyOSZQcg5o2G1wtiyn8ecWnsT8="/>
         <field:display field="donationAmount" id="s_com_bibsmobile_model_EventCartItem_donationAmount" object="${eventcartitem}" z="i+de6jGKwapUT0VvaDgBF8+By7Q="/>
         <field:display field="charityName" id="s_com_bibsmobile_model_EventCartItem_charityName" object="${eventcartitem}" z="nTReWLZpZtmMDu2TSenTf9hNe3I="/>
-        <c:if test="${eventcartitem.type eq 'T_SHORT'}">
-            <field:display field="tshortSizes" id="s_com_bibsmobile_model_EventCartItem_tshortSizes" object="${eventcartitem}" z="/PSVoIoQsvVj+3wZyZCF/Aau3yk="/>
-            <field:display field="tshortColors" id="s_com_bibsmobile_model_EventCartItem_tshortColors" object="${eventcartitem}" z="jTxocReDJUwikNAk9fp9rG/XiSE="/>
-            <field:display field="tshortImageUrls" id="s_com_bibsmobile_model_EventCartItem_tshortImageUrls" object="${eventcartitem}" z="ibRf+okA1Fm5ZeQFZ6drMooAhF4="/>
+        <c:if test="${eventcartitem.type eq 'T_SHIRT'}">
+            <field:display field="tshirtSizes" id="s_com_bibsmobile_model_EventCartItem_tshirtSizes" object="${eventcartitem}" z="szfIfFH5u8eCIWnB5JuZRro4ZYU="/>
+            <field:display field="tshirtColors" id="s_com_bibsmobile_model_EventCartItem_tshirtColors" object="${eventcartitem}" z="ua3WpS0RC++GNXwbyGakradMe3E="/>
+            <field:display field="tshirtImageUrls" id="s_com_bibsmobile_model_EventCartItem_tshirtImageUrls" object="${eventcartitem}" z="Fg2hhOE+ghMnnK2XYXxAbhpBLl8="/>
         </c:if>
         <field:display field="minAge" id="s_com_bibsmobile_model_EventCartItem_minAge" object="${eventcartitem}" z="X7xbnmgxiIuCaQajDLOg/1gyU7w="/>
         <field:display field="maxAge" id="s_com_bibsmobile_model_EventCartItem_maxAge" object="${eventcartitem}" z="JRw1Z09/k0Gy1IiowcNMEvu5E+Q="/>

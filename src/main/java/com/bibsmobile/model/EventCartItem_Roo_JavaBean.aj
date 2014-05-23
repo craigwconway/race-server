@@ -141,28 +141,28 @@ privileged aspect EventCartItem_Roo_JavaBean {
         this.charityName = charityName;
     }
     
-    public String EventCartItem.getTshortSizes() {
-        return this.tshortSizes;
+    public String EventCartItem.getTshirtSizes() {
+        return this.tshirtSizes;
     }
     
-    public void EventCartItem.setTshortSizes(String tshortSizes) {
-        this.tshortSizes = tshortSizes;
+    public void EventCartItem.setTshirtSizes(String tshirtSizes) {
+        this.tshirtSizes = tshirtSizes;
     }
     
-    public String EventCartItem.getTshortColors() {
-        return this.tshortColors;
+    public String EventCartItem.getTshirtColors() {
+        return this.tshirtColors;
     }
     
-    public void EventCartItem.setTshortColors(String tshortColors) {
-        this.tshortColors = tshortColors;
+    public void EventCartItem.setTshirtColors(String tshirtColors) {
+        this.tshirtColors = tshirtColors;
     }
     
-    public String EventCartItem.getTshortImageUrls() {
-        return this.tshortImageUrls;
+    public String EventCartItem.getTshirtImageUrls() {
+        return this.tshirtImageUrls;
     }
     
-    public void EventCartItem.setTshortImageUrls(String tshortImageUrls) {
-        this.tshortImageUrls = tshortImageUrls;
+    public void EventCartItem.setTshirtImageUrls(String tshirtImageUrls) {
+        this.tshirtImageUrls = tshirtImageUrls;
     }
     
     public int EventCartItem.getMinAge() {

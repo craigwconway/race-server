@@ -7,6 +7,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import flexjson.JSON;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
@@ -71,21 +73,21 @@ public class EventCartItem {
 
     /**
      */
-    private String tshortSizes;
+    private String tshirtSizes;
 
     /**
      */
-    private String tshortColors;
+    private String tshirtColors;
 
     /**
      */
-    private String tshortImageUrls;
+    private String tshirtImageUrls;
 
     /**
      */
     private int minAge;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "eventCartItem")
+    @OneToMany(fetch = FetchType.EAGER, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "eventCartItem")
     private Set<EventCartItemPriceChange> priceChanges;
 
     /**

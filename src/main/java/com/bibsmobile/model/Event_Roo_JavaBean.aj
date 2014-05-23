@@ -132,6 +132,14 @@ privileged aspect Event_Roo_JavaBean {
         this.type = type;
     }
     
+    public Set<EventType> Event.getEventTypes() {
+        return this.eventTypes;
+    }
+    
+    public void Event.setEventTypes(Set<EventType> eventTypes) {
+        this.eventTypes = eventTypes;
+    }
+    
     public String Event.getWebsite() {
         return this.website;
     }
@@ -490,14 +498,6 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setEventUserGroups(List<EventUserGroup> eventUserGroups) {
         this.eventUserGroups = eventUserGroups;
-    }
-    
-    public Set<EventType> Event.getEventTypes() {
-        return this.eventTypes;
-    }
-    
-    public void Event.setEventTypes(Set<EventType> eventTypes) {
-        this.eventTypes = eventTypes;
     }
     
 }

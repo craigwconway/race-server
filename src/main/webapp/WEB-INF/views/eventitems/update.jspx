@@ -20,10 +20,10 @@
         <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" required="true" z="g+W9OR2k/yrQ4Pj87bO3WG88/SU="/>
         <field:input field="donationAmount" id="c_com_bibsmobile_model_EventCartItem_donationAmount" z="VZFWFkpuJC9h6reOZuaam4TV3tA="/>
         <field:input field="charityName" id="c_com_bibsmobile_model_EventCartItem_charityName" z="tkvJAEiBX0M6TeamUAzmlX2kFrw="/>
-        <div is="tshortInfo">
-            <field:input field="tshortSizes" id="c_com_bibsmobile_model_EventCartItem_tshortSizes" z="azTo7d7+sWbNRr05aKH2woVYKzo="/>
-            <field:input field="tshortColors" id="c_com_bibsmobile_model_EventCartItem_tshortColors" z="SjKhaF5VXR25F+nA2F2k8JE+gXg="/>
-            <field:input field="tshortImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshortImageUrls" z="2Hw5nFO2gSOzyTna5gphjHf3jBU="/>
+        <div is="tshirtInfo">
+            <field:input field="tshirtSizes" id="c_com_bibsmobile_model_EventCartItem_tshirtSizes" z="n9MPSxEZOJb9R0u5w3gBYJirwS0="/>
+            <field:input field="tshirtColors" id="c_com_bibsmobile_model_EventCartItem_tshirtColors" z="aKV7pvNxff0M/QCV3pMsYdw7FcQ="/>
+            <field:input field="tshirtImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshirtImageUrls" z="t0koesrChFSIhqrDu/8zGjTcupQ="/>
         </div>
         <field:simple field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Cart Item Price Change" render="false" z="user-managed"/>
         <field:input field="minAge" id="c_com_bibsmobile_model_EventCartItem_minAge" z="gLMoH8RvkqgTOLu7e6f+ru8/Akg="/>
