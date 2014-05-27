@@ -2,7 +2,9 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.AuthorizeData;
 import com.bibsmobile.model.Cart;
+import net.authorize.ResponseField;
 import net.authorize.sim.Fingerprint;
+import net.authorize.sim.Result;
 import net.authorize.util.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,29 +24,31 @@ import java.text.NumberFormat;
 @Controller
 public class AuthorizeNetController {
 
+    private static final String API_LOGIN_ID = "7rWKZe476";
+    private static final String TRANSACTION_TEST_KEY = "5Fg6846nb7pAS4X4";
+    private static final boolean TEST_MODE = true;
+
     @RequestMapping(value = "/cartdata/{cart}", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonAuthorizeNetCart(HttpServletRequest request, @PathVariable("cart") Long cartId) {
         Cart cart = Cart.findCart(cartId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        boolean test = true;
         if (cart == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        String apiLoginId = "7rWKZe476";
 
-        String transactionKey = (test) ? "5Fg6846nb7pAS4X4" : "" + cart.getId();
+        String trKey = (TEST_MODE) ? TRANSACTION_TEST_KEY : cart.getId().toString();
 
-        String relayResponseUrl = getURLWithContextPath(request)+ "/authorize/response";
+        String relayResponseUrl = getURLWithContextPath(request) + "/authorize/response";
 
         NumberFormat df = DecimalFormat.getInstance();
         df.setMaximumFractionDigits(2);
         String amount = df.format(cart.getTotal());
 
         Fingerprint fingerprint = Fingerprint.createFingerprint(
-                apiLoginId,
-                transactionKey,
+                API_LOGIN_ID,
+                trKey,
                 1234567890,
                 amount);
 
@@ -59,7 +63,7 @@ public class AuthorizeNetController {
         data.setXFpHash(StringUtils.sanitizeString(x_fp_hash));
         data.setXFpSequence(StringUtils.sanitizeString(Long.toString(x_fp_sequence)));
         data.setXFpTimestamp(StringUtils.sanitizeString(Long.toString(x_fp_timestamp)));
-        data.setXLogin(StringUtils.sanitizeString(apiLoginId));
+        data.setXLogin(StringUtils.sanitizeString(API_LOGIN_ID));
         data.setXRelayUrl(relayResponseUrl);
 
         return new ResponseEntity<>(data.toJson(), headers, HttpStatus.OK);
@@ -67,7 +71,61 @@ public class AuthorizeNetController {
 
     @RequestMapping("/response")
     public void getAuthorizeResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("http://google.com");
+        Result result = Result.createResult(API_LOGIN_ID, API_LOGIN_ID, request.getParameterMap());
+        if (result == null) {
+            redirectError(request, response);
+        } else if (result.isApproved()) {
+            redirectTransactionSuccess(result, request, response);
+        } else {
+            redirectTransactionFail(result, request, response);
+        }
+    }
+
+    private void redirectError(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        StringBuilder redirectUrl = new StringBuilder();
+        String baseUrl = getBaseUrl(request);
+        redirectUrl.append(baseUrl);
+        redirectUrl.append("/app/registration.html#!/response?error=1");
+        response.sendRedirect(redirectUrl.toString());
+    }
+
+    private void redirectTransactionSuccess(Result result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        StringBuilder redirectUrl = new StringBuilder();
+
+        String baseUrl = getBaseUrl(request);
+        redirectUrl.append(baseUrl);
+
+        String transactionId = result.getResponseMap().get(ResponseField.TRANSACTION_ID.getFieldName());
+
+        redirectUrl.append("/app/registration.html#!/response?response_code=1&transaction_id=<transaction_id_from_authorize_net>".
+                replace("<transaction_id_from_authorize_net>", transactionId));
+
+        response.sendRedirect(redirectUrl.toString());
+    }
+
+    private void redirectTransactionFail(Result result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        StringBuilder redirectUrl = new StringBuilder();
+
+        String baseUrl = getBaseUrl(request);
+        redirectUrl.append(baseUrl);
+
+        String responseCode = result.getResponseMap().get(ResponseField.RESPONSE_CODE.getFieldName());
+        String transactionId = result.getResponseMap().get(ResponseField.TRANSACTION_ID.getFieldName());
+        String responseReasonText = result.getResponseMap().get(ResponseField.RESPONSE_REASON_TEXT.getFieldName());
+        String responseReasonCode = result.getResponseMap().get(ResponseField.RESPONSE_REASON_CODE.getFieldName());
+
+        redirectUrl.append("app/registration.html#!/response?response_code=<response_code_from_authorize_net>&transaction_id=<transaction_id_from_authorize_net>\n" +
+                "&response_reason_text=<response_reason_text_from_authorize_net>&response_reason_code=<response_reason_code_from_authorize_net>".
+                        replace("<response_code_from_authorize_net>", responseCode).
+                        replace("<transaction_id_from_authorize_net>", transactionId).
+                        replace("<response_reason_text_from_authorize_net>", responseReasonText).
+                        replace("<response_reason_code_from_authorize_net>", responseReasonCode));
+
+        response.sendRedirect(redirectUrl.toString());
+    }
+
+    private String getBaseUrl(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
     }
 
     private String getURLWithContextPath(HttpServletRequest request) {
