@@ -74,5 +74,9 @@
             <menu:item id="i_eventphoto_new" messageCode="global_menu_new" url="/eventphotos?form" z="qsPNnXcvP4O3ibp7BzWr5LclL4A="/>
             <menu:item id="i_eventphoto_list" messageCode="global_menu_list" url="/eventphotos?page=1&amp;size=${empty param.size ? 10 : param.size}" z="gghLMra+1RUAo6xwd81vLMvz0u4="/>
         </menu:category>
+        <menu:category id="c_cartitem" z="k+1Gz3l4mFqqxyNCujw92ZDGKkk=">
+            <menu:item id="i_cartitem_new" messageCode="global_menu_new" url="/cartitems?form" z="nQPhk7t1zlnqf2djPcSJ4HvmTRQ="/>
+            <menu:item id="i_cartitem_list" messageCode="global_menu_list" url="/cartitems?page=1&amp;size=${empty param.size ? 10 : param.size}" z="jNgA43I7JH70A26E2Yi3LRJtYVk="/>
+        </menu:category>
     </menu:menu>
 </div>

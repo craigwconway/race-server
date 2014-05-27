@@ -14,7 +14,7 @@ privileged aspect UserGroup_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager UserGroup.entityManager;
     
-    public static final List<String> UserGroup.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "bibWrites", "userProfiles", "events");
+    public static final List<String> UserGroup.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "bibWrites", "events", "userProfiles");
     
     public static final EntityManager UserGroup.entityManager() {
         EntityManager em = new UserGroup().entityManager;

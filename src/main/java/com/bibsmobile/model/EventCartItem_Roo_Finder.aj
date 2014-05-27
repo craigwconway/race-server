@@ -5,8 +5,10 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 privileged aspect EventCartItem_Roo_Finder {
     
@@ -26,11 +28,27 @@ privileged aspect EventCartItem_Roo_Finder {
         return ((Long) q.getSingleResult());
     }
     
+    public static Long EventCartItem.countFindEventCartItemsByType(EventCartItemTypeEnum type) {
+        if (type == null) throw new IllegalArgumentException("The type argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.type = :type", Long.class);
+        q.setParameter("type", type);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByEvent(Event event) {
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event", EventCartItem.class);
         q.setParameter("event", event);
+        return q;
+    }
+
+    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByEvents(List<Event> events) {
+        if (events == null) throw new IllegalArgumentException("The events argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event IN (:events)", EventCartItem.class);
+        q.setParameter("events", events);
         return q;
     }
     
@@ -69,6 +87,29 @@ privileged aspect EventCartItem_Roo_Finder {
         }
         TypedQuery<EventCartItem> q = em.createQuery(jpaQuery, EventCartItem.class);
         q.setParameter("name", name);
+        return q;
+    }
+    
+    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByType(EventCartItemTypeEnum type) {
+        if (type == null) throw new IllegalArgumentException("The type argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.type = :type", EventCartItem.class);
+        q.setParameter("type", type);
+        return q;
+    }
+    
+    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByType(EventCartItemTypeEnum type, String sortFieldName, String sortOrder) {
+        if (type == null) throw new IllegalArgumentException("The type argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.type = :type";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<EventCartItem> q = em.createQuery(jpaQuery, EventCartItem.class);
+        q.setParameter("type", type);
         return q;
     }
     

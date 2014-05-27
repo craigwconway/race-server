@@ -26,20 +26,20 @@ privileged aspect UserGroup_Roo_JavaBean {
         this.bibWrites = bibWrites;
     }
     
-    public Set<UserProfile> UserGroup.getUserProfiles() {
-        return this.userProfiles;
-    }
-    
-    public void UserGroup.setUserProfiles(Set<UserProfile> userProfiles) {
-        this.userProfiles = userProfiles;
-    }
-    
     public Set<Event> UserGroup.getEvents() {
         return this.events;
     }
     
     public void UserGroup.setEvents(Set<Event> events) {
         this.events = events;
+    }
+    
+    public Set<UserProfile> UserGroup.getUserProfiles() {
+        return this.userProfiles;
+    }
+    
+    public void UserGroup.setUserProfiles(Set<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
     }
     
 }

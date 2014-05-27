@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
-        <field:select field="event" id="c_com_bibsmobile_model_EventCartItem_event" itemValue="id" items="${events}" path="/events" z="Mpt8K6YrAEB3O0PYBS7l4NwMCU8="/>
+        <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="dqCOnEaenQMpFIG1RInSSI/A16A="/>
         <field:input field="name" id="c_com_bibsmobile_model_EventCartItem_name" z="dSVCfVY0Ubmxz6e6aYw3W6ve1ic="/>
         <field:input field="description" id="c_com_bibsmobile_model_EventCartItem_description" z="PUHaF+kcXtSHZosW2pLOs4XAOYc="/>
         <field:input field="coupon" id="c_com_bibsmobile_model_EventCartItem_coupon" z="bmAFeWE+t1iQ7Qe9JqfSRKF+XU4="/>

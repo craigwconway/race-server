@@ -6,6 +6,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.controller.EventCartItemController;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -80,6 +81,14 @@ privileged aspect EventCartItemController_Roo_Controller_Json {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByEvent(event).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByType", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> EventCartItemController.jsonFindEventCartItemsByType(@RequestParam("type") EventCartItemTypeEnum type) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByType(type).getResultList()), headers, HttpStatus.OK);
     }
     
 }
