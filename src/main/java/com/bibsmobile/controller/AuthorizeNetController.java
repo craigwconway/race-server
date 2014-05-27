@@ -95,7 +95,7 @@ public class AuthorizeNetController {
         String baseUrl = getBaseUrl(request);
         redirectUrl.append(baseUrl);
 
-        String transactionId = result.getResponseMap().get(ResponseField.TRANSACTION_ID.getFieldName());
+        String transactionId = StringUtils.sanitizeString(org.apache.commons.lang3.StringUtils.trimToEmpty(result.getResponseMap().get(ResponseField.TRANSACTION_ID.getFieldName())));
 
         redirectUrl.append("/app/registration.html#!/response?response_code=1&transaction_id=<transaction_id_from_authorize_net>".
                 replace("<transaction_id_from_authorize_net>", transactionId));
@@ -109,17 +109,16 @@ public class AuthorizeNetController {
         String baseUrl = getBaseUrl(request);
         redirectUrl.append(baseUrl);
 
-        String responseCode = result.getResponseMap().get(ResponseField.RESPONSE_CODE.getFieldName());
-        String transactionId = result.getResponseMap().get(ResponseField.TRANSACTION_ID.getFieldName());
-        String responseReasonText = result.getResponseMap().get(ResponseField.RESPONSE_REASON_TEXT.getFieldName());
-        String responseReasonCode = result.getResponseMap().get(ResponseField.RESPONSE_REASON_CODE.getFieldName());
+        String responseCode = StringUtils.sanitizeString(org.apache.commons.lang3.StringUtils.trimToEmpty(result.getResponseMap().get(ResponseField.RESPONSE_CODE.getFieldName())));
+        String transactionId = StringUtils.sanitizeString(org.apache.commons.lang3.StringUtils.trimToEmpty(result.getResponseMap().get(ResponseField.TRANSACTION_ID.getFieldName())));
+        String responseReasonText = StringUtils.sanitizeString(org.apache.commons.lang3.StringUtils.trimToEmpty(result.getResponseMap().get(ResponseField.RESPONSE_REASON_TEXT.getFieldName())));
+        String responseReasonCode = StringUtils.sanitizeString(org.apache.commons.lang3.StringUtils.trimToEmpty(result.getResponseMap().get(ResponseField.RESPONSE_REASON_CODE.getFieldName())));
 
-        redirectUrl.append("app/registration.html#!/response?response_code=<response_code_from_authorize_net>&transaction_id=<transaction_id_from_authorize_net>\n" +
-                "&response_reason_text=<response_reason_text_from_authorize_net>&response_reason_code=<response_reason_code_from_authorize_net>".
-                        replace("<response_code_from_authorize_net>", responseCode).
-                        replace("<transaction_id_from_authorize_net>", transactionId).
-                        replace("<response_reason_text_from_authorize_net>", responseReasonText).
-                        replace("<response_reason_code_from_authorize_net>", responseReasonCode));
+        redirectUrl.append("/app/registration.html#!/response?response_code=<response_code_from_authorize_net>&transaction_id=<transaction_id_from_authorize_net>&response_reason_text=<response_reason_text_from_authorize_net>&response_reason_code=<response_reason_code_from_authorize_net>".
+                replace("<response_code_from_authorize_net>", responseCode).
+                replace("<transaction_id_from_authorize_net>", transactionId).
+                replace("<response_reason_text_from_authorize_net>", responseReasonText).
+                replace("<response_reason_code_from_authorize_net>", responseReasonCode));
 
         response.sendRedirect(redirectUrl.toString());
     }
