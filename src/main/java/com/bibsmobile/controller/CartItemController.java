@@ -57,7 +57,8 @@ public class CartItemController {
                 return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>("[]", headers, HttpStatus.OK);
+        List<CartItem> cartItems = CartItem.findAllCartItems();
+        return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
     }
 
 }
