@@ -57,7 +57,7 @@ public class CartItemController {
                 return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
             }
         }
-        List<CartItem> cartItems = CartItem.findAllCartItems();
+        List<CartItem> cartItems = CartItem.findAllCartItems(fromDate, toDate);
         return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
     }
 
