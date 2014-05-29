@@ -165,5 +165,6 @@
         <field:display field="eventUserGroup" id="s_com_bibsmobile_model_Event_eventUserGroup" object="${event}" z="user-managed" render="false"/>
         <field:display field="eventUserGroups" id="s_com_bibsmobile_model_Event_eventUserGroups" object="${event}" z="user-managed" render="false"/>
         <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
+        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
     </page:show>
 </div>

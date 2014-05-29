@@ -500,4 +500,12 @@ privileged aspect Event_Roo_JavaBean {
         this.eventUserGroups = eventUserGroups;
     }
     
+    public String Event.getWaiver() {
+        return this.waiver;
+    }
+    
+    public void Event.setWaiver(String waiver) {
+        this.waiver = waiver;
+    }
+    
 }

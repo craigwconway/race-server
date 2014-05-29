@@ -177,6 +177,10 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
     private List<EventUserGroup> eventUserGroups = new ArrayList<EventUserGroup>();
 
+    /**
+     */
+    private String waiver;
+
     @PrePersist
     protected void onCreate() {
         created = new Date();

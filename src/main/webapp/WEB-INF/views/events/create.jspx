@@ -72,6 +72,7 @@
         <field:input field="eventUserGroup" id="c_com_bibsmobile_model_Event_eventUserGroup" z="user-managed" render="false"/>
         <field:input field="eventUserGroups" id="c_com_bibsmobile_model_Event_eventUserGroups" z="user-managed" render="false"/>
         <field:select field="eventTypes" id="c_com_bibsmobile_model_Event_eventTypes" itemValue="id" items="${eventtypes}" multiple="true" path="/eventtypes" z="IAV39d3gnOz6oaXPsSbO2ZBUxDs="/>
+        <field:input field="waiver" id="c_com_bibsmobile_model_Event_waiver" z="6jFLnmgp5aXDMO+F/Z5txj7Xtco="/>
     </form:create>
     <script>
     window.onload = function(){
