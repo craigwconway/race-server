@@ -6,6 +6,9 @@ import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.UserProfile;
 import net.authorize.sim.Fingerprint;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +16,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -32,8 +37,29 @@ public class CartController {
         return "cart";
     }
 
+    @RequestMapping(value = "/item/{id}/updatequantity", method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> updateOrCreateCartJson(@PathVariable("id") Long eventCartItemId, @RequestParam Integer eventCartItemQuantity) {
+        Cart cart = updateOrCreateCart(eventCartItemId, eventCartItemQuantity);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (cart == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(cart.toJson(), headers, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
     public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel) {
+        Cart cart = updateOrCreateCart(eventCartItemId, quantity);
+
+        //setupPaymentForm(uiModel, cart, true);
+
+        uiModel.addAttribute("cart", cart);
+        return "redirect:/carts/item/" + eventCartItemId;
+    }
+
+    private Cart updateOrCreateCart(Long eventCartItemId, Integer quantity) {
         if (quantity < 0) {
             quantity = 0;
         }
@@ -115,11 +141,7 @@ public class CartController {
         }
         cart.setTotal(total);
         cart.merge();
-
-        //setupPaymentForm(uiModel, cart, true);
-
-        uiModel.addAttribute("cart", cart);
-        return "redirect:/carts/item/" + eventCartItemId;
+        return cart;
     }
 
     private CartItem getCartItem(Cart cart, Date now, EventCartItem i) {
