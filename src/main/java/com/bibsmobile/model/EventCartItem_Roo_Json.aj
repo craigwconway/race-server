@@ -28,7 +28,7 @@ privileged aspect EventCartItem_Roo_Json {
     }
     
     public static String EventCartItem.toJsonArray(Collection<EventCartItem> collection) {
-        return new JSONSerializer()
+        return new JSONSerializer().include("*.priceChanges")
         .exclude("*.class").serialize(collection);
     }
     
