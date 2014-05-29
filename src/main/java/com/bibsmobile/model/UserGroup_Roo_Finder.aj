@@ -40,5 +40,36 @@ privileged aspect UserGroup_Roo_Finder {
         q.setParameter("groupType", groupType);
         return q;
     }
+
+    public static Long UserGroup.countFindUserGroupsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = UserGroup.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserGroup AS o WHERE o.name = :name", Long.class);
+        q.setParameter("name", name);
+        return ((Long) q.getSingleResult());
+    }
+
+    public static TypedQuery<UserGroup> UserGroup.findUserGroupsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = UserGroup.entityManager();
+        TypedQuery<UserGroup> q = em.createQuery("SELECT o FROM UserGroup AS o WHERE o.name = :name", UserGroup.class);
+        q.setParameter("name", name);
+        return q;
+    }
+
+    public static TypedQuery<UserGroup> UserGroup.findUserGroupsByNameEquals(String name, String sortFieldName, String sortOrder) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = UserGroup.entityManager();
+        String jpaQuery = "SELECT o FROM UserGroup AS o WHERE o.name = :name";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<UserGroup> q = em.createQuery(jpaQuery, UserGroup.class);
+        q.setParameter("name", name);
+        return q;
+    }
     
 }

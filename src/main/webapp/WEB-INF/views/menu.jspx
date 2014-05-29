@@ -90,5 +90,9 @@
             <menu:item id="i_eventtype_new" messageCode="global_menu_new" url="/eventtypes?form" z="dkIqwPAyQiGGzqS01OADXehl6Fk="/>
             <menu:item id="i_eventtype_list" messageCode="global_menu_list" url="/eventtypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="v3FoaMcbz5SDOG4Qz/sq9yQxZIw="/>
         </menu:category>
+        <menu:category id="c_cartitem" z="k+1Gz3l4mFqqxyNCujw92ZDGKkk=">
+            <menu:item id="i_cartitem_new" messageCode="global_menu_new" url="/cartitems?form" z="nQPhk7t1zlnqf2djPcSJ4HvmTRQ="/>
+            <menu:item id="i_cartitem_list" messageCode="global_menu_list" url="/cartitems?page=1&amp;size=${empty param.size ? 10 : param.size}" z="jNgA43I7JH70A26E2Yi3LRJtYVk="/>
+        </menu:category>
     </menu:menu>
 </div>

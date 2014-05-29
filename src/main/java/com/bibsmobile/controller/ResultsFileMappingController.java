@@ -25,6 +25,8 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +43,13 @@ import org.springframework.web.util.WebUtils;
 @Controller
 @RooWebScaffold(path = "resultsfilemappings", formBackingObject = ResultsFileMapping.class)
 public class ResultsFileMappingController {
+
+    @RequestMapping(value = "/updateForm.json")
+    public ResponseEntity<String> updateFormJson(Long id, Model uiModel) {
+        updateForm(id, uiModel);
+        ResultsFileMapping resultsFileMapping = (ResultsFileMapping) uiModel.asMap().get("resultsFileMapping");
+        return new ResponseEntity<>(resultsFileMapping.toJson(), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
@@ -156,6 +165,16 @@ public class ResultsFileMappingController {
             uiModel.addAttribute("resultsfilemappings", ResultsFileMapping.findAllResultsFileMappings());
         }
         return "resultsfilemappings/list";
+    }
+
+    @RequestMapping(value = "/update.json", method = RequestMethod.PUT)
+    public ResponseEntity<String> updateJson(@Valid ResultsFileMapping resultsFileMapping, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        String result = update(resultsFileMapping, bindingResult, uiModel, httpServletRequest);
+        if (result.startsWith("redirect")) {
+            return new ResponseEntity<>("OK", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("FAIL", HttpStatus.OK);
+        }
     }
 
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
