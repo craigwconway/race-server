@@ -30,7 +30,9 @@ public class CartItemController {
             List<UserGroup> userGroups = UserGroup.findUserGroupsByNameEquals(userGroup).getResultList();
             List<Event> events = new ArrayList<>();
             for (UserGroup group : userGroups) {
-                events.addAll(group.getEvents());
+                for (EventUserGroup eventUserGroup : group.getEventUserGroups()) {
+                    events.add(eventUserGroup.getEvent());
+                }
             }
             if (!events.isEmpty()) {
                 List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvents(events).getResultList();
