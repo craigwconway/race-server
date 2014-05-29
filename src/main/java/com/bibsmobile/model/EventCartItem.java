@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
@@ -9,6 +10,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import flexjson.JSON;
+import javax.persistence.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
@@ -16,14 +18,14 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 
 @RooJavaBean
 @RooToString
 @RooEquals
 @RooJson
-@RooJpaActiveRecord(finders = { "findEventCartItemsByEvent", "findEventCartItemsByNameEquals" })
+@RooJpaActiveRecord(finders = { "findEventCartItemsByEvent", "findEventCartItemsByNameEquals", "findEventCartItemsByType" })
 public class EventCartItem {
 
     @ManyToOne
