@@ -107,8 +107,10 @@ public class EventCartItem {
         }
         Date now = new Date();
         for (EventCartItemPriceChange priceChange : priceChanges) {
-            if (now.after(priceChange.getStartDate()) && now.before(priceChange.getEndDate())) {
-                return priceChange.getPrice();
+            if (priceChange.getStartDate() != null && priceChange.getEndDate() != null) {
+                if (now.after(priceChange.getStartDate()) && now.before(priceChange.getEndDate())) {
+                    return priceChange.getPrice();
+                }
             }
         }
         return price;
