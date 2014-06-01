@@ -41,8 +41,7 @@ public class CartItemController {
                     return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
                 }
             }
-        }
-        if (eventId != null) {
+        } else if (eventId != null) {
             Event event = Event.findEvent(eventId);
             if (event != null) {
                 List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
@@ -51,16 +50,17 @@ public class CartItemController {
                     return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
                 }
             }
-        }
-        if (eventCartItemType != null) {
+        } else if (eventCartItemType != null) {
             List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByType(eventCartItemType).getResultList();
             if (!eventCartItems.isEmpty()) {
                 List<CartItem> cartItems = CartItem.findCartItemsByEventCartItems(eventCartItems, fromDate, toDate).getResultList();
                 return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
             }
+        } else {
+            List<CartItem> cartItems = CartItem.findAllCartItems(fromDate, toDate);
+            return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
         }
-        List<CartItem> cartItems = CartItem.findAllCartItems(fromDate, toDate);
-        return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
+        return new ResponseEntity<>(CartItem.toJsonArray(new ArrayList<CartItem>()), headers, HttpStatus.OK);
     }
 
 }
