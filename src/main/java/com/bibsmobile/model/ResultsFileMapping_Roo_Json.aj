@@ -13,7 +13,7 @@ import java.util.List;
 privileged aspect ResultsFileMapping_Roo_Json {
     
     public String ResultsFileMapping.toJson() {
-        return new JSONSerializer().include("*.row1", "*.row2")
+        return new JSONSerializer().include("*.row1", "*.row2", "*.options")
         .exclude("*.class").serialize(this);
     }
     
