@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,26 +71,29 @@ public class AuthorizeNetController {
     }
 
     @RequestMapping("/response")
-    public void getAuthorizeResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String getAuthorizeResponse(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
         Result result = Result.createResult(API_LOGIN_ID, API_LOGIN_ID, request.getParameterMap());
+        String redirectUrl;
         if (result == null) {
-            redirectError(request, response);
+            redirectUrl = redirectErrorUrl(request, response);
         } else if (result.isApproved()) {
-            redirectTransactionSuccess(result, request, response);
+            redirectUrl = redirectTransactionSuccessUrl(result, request, response);
         } else {
-            redirectTransactionFail(result, request, response);
+            redirectUrl = redirectTransactionFailUrl(result, request, response);
         }
+        model.addAttribute("redirectUrl", redirectUrl);
+        return "jsRedirect";
     }
 
-    private void redirectError(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private String redirectErrorUrl(HttpServletRequest request, HttpServletResponse response) throws IOException {
         StringBuilder redirectUrl = new StringBuilder();
         String baseUrl = getBaseUrl(request);
         redirectUrl.append(baseUrl);
         redirectUrl.append("/app/registration.html#!/response?error=1");
-        response.sendRedirect(redirectUrl.toString());
+        return redirectUrl.toString();
     }
 
-    private void redirectTransactionSuccess(Result result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private String redirectTransactionSuccessUrl(Result result, HttpServletRequest request, HttpServletResponse response) throws IOException {
         StringBuilder redirectUrl = new StringBuilder();
 
         String baseUrl = getBaseUrl(request);
@@ -100,10 +104,10 @@ public class AuthorizeNetController {
         redirectUrl.append("/app/registration.html#!/response?response_code=1&transaction_id=<transaction_id_from_authorize_net>".
                 replace("<transaction_id_from_authorize_net>", transactionId));
 
-        response.sendRedirect(redirectUrl.toString());
+        return redirectUrl.toString();
     }
 
-    private void redirectTransactionFail(Result result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private String redirectTransactionFailUrl(Result result, HttpServletRequest request, HttpServletResponse response) throws IOException {
         StringBuilder redirectUrl = new StringBuilder();
 
         String baseUrl = getBaseUrl(request);
@@ -120,7 +124,7 @@ public class AuthorizeNetController {
                 replace("<response_reason_text_from_authorize_net>", responseReasonText).
                 replace("<response_reason_code_from_authorize_net>", responseReasonCode));
 
-        response.sendRedirect(redirectUrl.toString());
+        return redirectUrl.toString();
     }
 
     private String getBaseUrl(HttpServletRequest request) {
