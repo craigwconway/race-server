@@ -81,7 +81,6 @@ privileged aspect RaceResultController_Roo_Controller {
     void RaceResultController.addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("raceResult_created_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("raceResult_updated_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("raceResult_birthdate_date_format", "MM/dd/yyyy");
     }
     
     void RaceResultController.populateEditForm(Model uiModel, RaceResult raceResult) {

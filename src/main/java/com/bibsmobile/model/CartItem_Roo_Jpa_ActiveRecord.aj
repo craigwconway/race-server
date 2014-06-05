@@ -7,9 +7,6 @@ import com.bibsmobile.model.CartItem;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import java.util.Date;
-
 import org.springframework.transaction.annotation.Transactional;
 
 privileged aspect CartItem_Roo_Jpa_ActiveRecord {
@@ -17,7 +14,7 @@ privileged aspect CartItem_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager CartItem.entityManager;
     
-    public static final List<String> CartItem.fieldNames4OrderClauseFilter = java.util.Arrays.asList("cart", "eventCartItem", "quantity", "created", "updated", "comment", "coupon");
+    public static final List<String> CartItem.fieldNames4OrderClauseFilter = java.util.Arrays.asList("cart", "eventCartItem", "userProfile", "quantity", "created", "updated", "comment", "coupon");
     
     public static final EntityManager CartItem.entityManager() {
         EntityManager em = new CartItem().entityManager;
@@ -31,26 +28,6 @@ privileged aspect CartItem_Roo_Jpa_ActiveRecord {
     
     public static List<CartItem> CartItem.findAllCartItems() {
         return entityManager().createQuery("SELECT o FROM CartItem o", CartItem.class).getResultList();
-    }
-
-    public static List<CartItem> CartItem.findAllCartItems(Date from, Date to) {
-        EntityManager em = CartItem.entityManager();
-        String jpaQuery = "SELECT o FROM CartItem AS o";
-        if (from != null && to != null) {
-            jpaQuery = "SELECT o FROM CartItem AS o WHERE o.created > :fromDate AND o.created < :toDate";
-        } else if (from != null) {
-            jpaQuery = "SELECT o FROM CartItem AS o WHERE o.created > :fromDate";
-        } else if (to != null) {
-            jpaQuery = "SELECT o FROM CartItem AS o WHERE o.created < :toDate";
-        }
-        TypedQuery<CartItem> q = em.createQuery(jpaQuery, CartItem.class);
-        if (from != null) {
-            q.setParameter("fromDate", from);
-        }
-        if (to != null) {
-            q.setParameter("toDate", to);
-        }
-        return q.getResultList();
     }
     
     public static List<CartItem> CartItem.findAllCartItems(String sortFieldName, String sortOrder) {

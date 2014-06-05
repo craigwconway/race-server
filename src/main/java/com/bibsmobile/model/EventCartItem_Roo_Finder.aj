@@ -8,7 +8,6 @@ import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import java.util.List;
 
 privileged aspect EventCartItem_Roo_Finder {
     
@@ -41,14 +40,6 @@ privileged aspect EventCartItem_Roo_Finder {
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event", EventCartItem.class);
         q.setParameter("event", event);
-        return q;
-    }
-
-    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByEvents(List<Event> events) {
-        if (events == null) throw new IllegalArgumentException("The events argument is required");
-        EntityManager em = EventCartItem.entityManager();
-        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event IN (:events)", EventCartItem.class);
-        q.setParameter("events", events);
         return q;
     }
     

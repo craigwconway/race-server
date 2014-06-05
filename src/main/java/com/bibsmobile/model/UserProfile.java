@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.ArrayList;
@@ -53,6 +54,23 @@ public class UserProfile implements UserDetails {
 
     @OneToMany(mappedBy = "userProfile")
     private Set<RaceResult> raceResults;
+
+    private String phone;
+
+    private String addressLine1;
+
+    private String addressLine2;
+
+    private String zipCode;
+
+    private String emergencyContactName;
+
+    private String emergencyContactPhone;
+
+    private String hearFrom;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private CartItem cartItem;
 
     @Override
     @JSON(include = false)

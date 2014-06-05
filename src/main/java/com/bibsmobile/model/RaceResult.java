@@ -158,26 +158,6 @@ public class RaceResult implements Comparable<RaceResult>{
     @DateTimeFormat(pattern="MM/dd/yyyy h:mm:ss a")
     private Date updated;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy")
-    private Date birthDate;
-
-    private String email;
-
-    private String phone;
-
-    private String addressLine1;
-
-    private String addressLine2;
-
-    private String zipCode;
-
-    private String emergencyContactName;
-
-    private String emergencyContactPhone;
-
-    private String hearFrom;
-
     @PreUpdate
     protected void onUpdate() {
         if(created==null) created = new Date();

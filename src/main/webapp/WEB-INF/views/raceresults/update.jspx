@@ -27,9 +27,9 @@
         <field:input field="city" id="c_com_bibsmobile_model_RaceResult_city" z="NaUD9KS712aVBFoLI+iHu7qJSq8="/>
         <field:input field="state" id="c_com_bibsmobile_model_RaceResult_state" z="BYXMVk0UAC6iGqpJ3cmxgqF45cA="/>
         <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" z="user-managed"/>
-       	<div style="display:none;">
+        <div style="display:none;">
             <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
-        	<field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed"/>
+            <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed"/>
             <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" z="user-managed"/>
             <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" z="user-managed"/>
             <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" z="user-managed"/>
@@ -60,17 +60,17 @@
             <field:input field="medal3" id="c_com_bibsmobile_model_RaceResult_medal3" z="user-managed"/>
             <field:input field="award" id="c_com_bibsmobile_model_RaceResult_award" z="user-managed"/>
             <field:input field="timer" id="c_com_bibsmobile_model_RaceResult_timer" z="user-managed"/>
-            <field:input field="timesplit1" id="c_com_bibsmobile_model_RaceResult_timesplit1"  z="user-managed"/>
-            <field:input field="timesplit2" id="c_com_bibsmobile_model_RaceResult_timesplit2"  z="user-managed"/>
-            <field:input field="timesplit3" id="c_com_bibsmobile_model_RaceResult_timesplit3"  z="user-managed"/>
-            <field:input field="timesplit4" id="c_com_bibsmobile_model_RaceResult_timesplit4"  z="user-managed"/>
-            <field:input field="timemile1" id="c_com_bibsmobile_model_RaceResult_timemile1"  z="user-managed"/>
+            <field:input field="timesplit1" id="c_com_bibsmobile_model_RaceResult_timesplit1" z="user-managed"/>
+            <field:input field="timesplit2" id="c_com_bibsmobile_model_RaceResult_timesplit2" z="user-managed"/>
+            <field:input field="timesplit3" id="c_com_bibsmobile_model_RaceResult_timesplit3" z="user-managed"/>
+            <field:input field="timesplit4" id="c_com_bibsmobile_model_RaceResult_timesplit4" z="user-managed"/>
+            <field:input field="timemile1" id="c_com_bibsmobile_model_RaceResult_timemile1" z="user-managed"/>
             <field:input field="timemile2" id="c_com_bibsmobile_model_RaceResult_timemile2" z="user-managed"/>
             <field:input field="timemile3" id="c_com_bibsmobile_model_RaceResult_timemile3" z="user-managed"/>
             <field:input field="timemile4" id="c_com_bibsmobile_model_RaceResult_timemile4" z="user-managed"/>
-            <field:datetime dateTimePattern="${raceResult_updated_date_format}" field="updated" id="c_com_bibsmobile_model_RaceResult_updated"  z="user-managed"/>
-            <field:simple field="raceImage" id="c_com_bibsmobile_model_RaceResult_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image"  z="user-managed"/>
-            <field:select field="userProfile" id="c_com_bibsmobile_model_RaceResult_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles"  z="user-managed"/>
+            <field:datetime dateTimePattern="${raceResult_updated_date_format}" field="updated" id="c_com_bibsmobile_model_RaceResult_updated" z="user-managed"/>
+            <field:simple field="raceImage" id="c_com_bibsmobile_model_RaceResult_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
+            <field:select field="userProfile" id="c_com_bibsmobile_model_RaceResult_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" z="user-managed"/>
         </div>
         <script>
         window.onload=function(){
@@ -85,14 +85,5 @@
        		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
         }
         </script>
-        <field:datetime dateTimePattern="${raceResult_birthdate_date_format}" field="birthDate" id="c_com_bibsmobile_model_RaceResult_birthDate" z="QfCqoEynxG9+P3LBDI+NzLfFYRM="/>
-        <field:input field="email" id="c_com_bibsmobile_model_RaceResult_email" validationMessageCode="field_invalid_email" z="4DYfF4pCv+NarpmMvTbqENFIbWY="/>
-        <field:input field="phone" id="c_com_bibsmobile_model_RaceResult_phone" z="6zoOavdZmmdT1MzqVc5faXxXhHM="/>
-        <field:input field="addressLine1" id="c_com_bibsmobile_model_RaceResult_addressLine1" z="qjFJWVLQ+rLxQLDSEOOMv/ZWqUU="/>
-        <field:input field="addressLine2" id="c_com_bibsmobile_model_RaceResult_addressLine2" z="60LCC7ED0jDf9EPUfRrgJZDwuwg="/>
-        <field:input field="zipCode" id="c_com_bibsmobile_model_RaceResult_zipCode" z="9d41WubvXExnc1mTwAAl1wfLBnU="/>
-        <field:input field="emergencyContactName" id="c_com_bibsmobile_model_RaceResult_emergencyContactName" z="3uApU+ExY0wwkUJDTglNv8wC9jc="/>
-        <field:input field="emergencyContactPhone" id="c_com_bibsmobile_model_RaceResult_emergencyContactPhone" z="U4CSNcaRfLK4f8CGH62lC6yEqoA="/>
-        <field:input field="hearFrom" id="c_com_bibsmobile_model_RaceResult_hearFrom" z="95wyWcfoNq5zf5ClkLN5n6apJGc="/>
     </form:update>
 </div>

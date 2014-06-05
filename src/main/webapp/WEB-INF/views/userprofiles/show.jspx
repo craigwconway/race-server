@@ -38,5 +38,13 @@
             <field:display field="userAuthorities" id="s_com_bibsmobile_model_UserProfile_userAuthorities" object="${userprofile}" render="false" z="user-managed"/>
         </div>
         <field:display date="true" dateTimePattern="${userProfile_birthdate_date_format}" field="birthdate" id="s_com_bibsmobile_model_UserProfile_birthdate" object="${userprofile}" z="nk/T5DLjR/QoAKpq1UlxIx3sr2Q="/>
+        <field:display field="phone" id="s_com_bibsmobile_model_UserProfile_phone" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="addressLine1" id="s_com_bibsmobile_model_UserProfile_addressLine1" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="addressLine2" id="s_com_bibsmobile_model_UserProfile_addressLine2" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="zipCode" id="s_com_bibsmobile_model_UserProfile_zipCode" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="emergencyContactName" id="s_com_bibsmobile_model_UserProfile_emergencyContactName" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="emergencyContactPhone" id="s_com_bibsmobile_model_UserProfile_emergencyContactPhone" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="hearFrom" id="s_com_bibsmobile_model_UserProfile_hearFrom" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="cartItem" id="s_com_bibsmobile_model_UserProfile_cartItem" object="${userprofile}" render="false" z="user-managed"/>
     </page:show>
 </div>

@@ -3,6 +3,7 @@
 
 package com.bibsmobile.model;
 
+import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserProfile;
@@ -145,6 +146,70 @@ privileged aspect UserProfile_Roo_JavaBean {
     
     public void UserProfile.setRaceResults(Set<RaceResult> raceResults) {
         this.raceResults = raceResults;
+    }
+    
+    public String UserProfile.getPhone() {
+        return this.phone;
+    }
+    
+    public void UserProfile.setPhone(String phone) {
+        this.phone = phone;
+    }
+    
+    public String UserProfile.getAddressLine1() {
+        return this.addressLine1;
+    }
+    
+    public void UserProfile.setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+    }
+    
+    public String UserProfile.getAddressLine2() {
+        return this.addressLine2;
+    }
+    
+    public void UserProfile.setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
+    }
+    
+    public String UserProfile.getZipCode() {
+        return this.zipCode;
+    }
+    
+    public void UserProfile.setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+    
+    public String UserProfile.getEmergencyContactName() {
+        return this.emergencyContactName;
+    }
+    
+    public void UserProfile.setEmergencyContactName(String emergencyContactName) {
+        this.emergencyContactName = emergencyContactName;
+    }
+    
+    public String UserProfile.getEmergencyContactPhone() {
+        return this.emergencyContactPhone;
+    }
+    
+    public void UserProfile.setEmergencyContactPhone(String emergencyContactPhone) {
+        this.emergencyContactPhone = emergencyContactPhone;
+    }
+    
+    public String UserProfile.getHearFrom() {
+        return this.hearFrom;
+    }
+    
+    public void UserProfile.setHearFrom(String hearFrom) {
+        this.hearFrom = hearFrom;
+    }
+    
+    public CartItem UserProfile.getCartItem() {
+        return this.cartItem;
+    }
+    
+    public void UserProfile.setCartItem(CartItem cartItem) {
+        this.cartItem = cartItem;
     }
     
 }

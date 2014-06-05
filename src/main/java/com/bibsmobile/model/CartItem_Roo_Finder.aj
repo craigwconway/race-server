@@ -6,7 +6,6 @@ package com.bibsmobile.model;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -56,27 +55,6 @@ privileged aspect CartItem_Roo_Finder {
         EntityManager em = CartItem.entityManager();
         TypedQuery<CartItem> q = em.createQuery("SELECT o FROM CartItem AS o WHERE o.eventCartItem = :eventCartItem", CartItem.class);
         q.setParameter("eventCartItem", eventCartItem);
-        return q;
-    }
-
-    public static TypedQuery<CartItem> CartItem.findCartItemsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
-        if (eventCartItems == null) throw new IllegalArgumentException("The eventCartItems argument is required");
-        EntityManager em = CartItem.entityManager();
-        String jpaQuery = "SELECT o FROM CartItem AS o WHERE o.eventCartItem IN (:eventCartItems)";
-        if (greaterThan != null) {
-            jpaQuery += " AND o.created > :fromDate";
-        }
-        if (lessThan != null) {
-            jpaQuery += " AND o.created < :toDate";
-        }
-        TypedQuery<CartItem> q = em.createQuery(jpaQuery, CartItem.class);
-        q.setParameter("eventCartItems", eventCartItems);
-        if (greaterThan != null) {
-            q.setParameter("fromDate", greaterThan);
-        }
-        if (lessThan != null) {
-            q.setParameter("toDate", lessThan);
-        }
         return q;
     }
     

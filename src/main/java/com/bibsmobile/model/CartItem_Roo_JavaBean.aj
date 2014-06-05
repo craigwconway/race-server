@@ -6,6 +6,7 @@ package com.bibsmobile.model;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.UserProfile;
 import java.util.Date;
 
 privileged aspect CartItem_Roo_JavaBean {
@@ -24,6 +25,14 @@ privileged aspect CartItem_Roo_JavaBean {
     
     public void CartItem.setEventCartItem(EventCartItem eventCartItem) {
         this.eventCartItem = eventCartItem;
+    }
+    
+    public UserProfile CartItem.getUserProfile() {
+        return this.userProfile;
+    }
+    
+    public void CartItem.setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
     
     public int CartItem.getQuantity() {
