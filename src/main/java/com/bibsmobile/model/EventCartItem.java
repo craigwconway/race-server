@@ -115,4 +115,11 @@ public class EventCartItem {
         }
         return price;
     }
+    public static TypedQuery<EventCartItem> findEventCartItemsByEvents(List<Event> events) {
+        if (events == null) throw new IllegalArgumentException("The events argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event IN (:events)", EventCartItem.class);
+        q.setParameter("events", events);
+        return q;
+    }
 }
