@@ -3,10 +3,12 @@ package com.bibsmobile.util;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserProfile;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +16,7 @@ import java.util.List;
  * Created by Jevgeni on 4.06.2014.
  */
 public class CartUtil {
-    public static Cart updateOrCreateCart(Long eventCartItemId, Integer quantity) {
+    public static Cart updateOrCreateCart(Long eventCartItemId, Integer quantity, UserProfile userProfile) {
         if (quantity < 0) {
             quantity = 0;
         }
@@ -50,7 +52,7 @@ public class CartUtil {
         CartItem cartItem;
         //if doesn't have product in cart and adding new not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
-            cartItem = getCartItem(cart, now, i);
+            cartItem = getCartItem(cart, now, i, userProfile);
             cartItem.persist();
             cart.getCartItems().add(cartItem);
         } else {
@@ -84,7 +86,7 @@ public class CartUtil {
                 }
             }
             if (!existedCartItem && quantity > 0) {
-                cartItem = getCartItem(cart, now, i);
+                cartItem = getCartItem(cart, now, i, userProfile);
                 cartItem.persist();
                 cart.getCartItems().add(cartItem);
             }
@@ -99,14 +101,17 @@ public class CartUtil {
         return cart;
     }
 
-    private  static CartItem getCartItem(Cart cart, Date now, EventCartItem i) {
-        CartItem cartItem;
-        cartItem = new CartItem();
+    private static CartItem getCartItem(Cart cart, Date now, EventCartItem i, UserProfile userProfile) {
+        CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setEventCartItem(i);
         cartItem.setQuantity(1);
         cartItem.setCreated(now);
         cartItem.setUpdated(now);
+        //registration
+        if(i.getType() == EventCartItemTypeEnum.TICKET) {
+            cartItem.setUserProfile(userProfile);
+        }
         return cartItem;
     }
 

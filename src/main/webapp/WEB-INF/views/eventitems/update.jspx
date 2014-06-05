@@ -16,7 +16,7 @@
         <field:datetime dateTimePattern="${eventCartItem_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_EventCartItem_timeStart" z="R67dcL0GUsFRBsgYDAp1Zl48lYc="/>
         <field:datetime dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_EventCartItem_timeEnd" z="kq5uOMjsGDgMTTJLRga/lgiNCI0="/>
         <field:input field="purchased" id="c_com_bibsmobile_model_EventCartItem_purchased" z="SBP90uqaOyaKhGK95DUBM9ONqJ0="/>
-        <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="dqCOnEaenQMpFIG1RInSSI/A16A="/>
+        <field:select field="event" id="c_com_bibsmobile_model_EventCartItem_event" itemValue="id" items="${events}" path="/events" z="Mpt8K6YrAEB3O0PYBS7l4NwMCU8="/>
         <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" required="true" z="g+W9OR2k/yrQ4Pj87bO3WG88/SU="/>
         <field:input field="donationAmount" id="c_com_bibsmobile_model_EventCartItem_donationAmount" z="VZFWFkpuJC9h6reOZuaam4TV3tA="/>
         <field:input field="charityName" id="c_com_bibsmobile_model_EventCartItem_charityName" z="tkvJAEiBX0M6TeamUAzmlX2kFrw="/>
@@ -29,5 +29,14 @@
         <field:input field="minAge" id="c_com_bibsmobile_model_EventCartItem_minAge" z="gLMoH8RvkqgTOLu7e6f+ru8/Akg="/>
         <field:input field="maxAge" id="c_com_bibsmobile_model_EventCartItem_maxAge" z="gxKwAx4uoNx6quMhyMo4rXfd2jA="/>
         <field:select field="gender" id="c_com_bibsmobile_model_EventCartItem_gender" items="${eventcartitemgenderenums}" path="eventcartitemgenderenums" z="+Jg/WI19uo3scDKsAgDOwlnJVVA="/>
+        <field:datetime dateTimePattern="${eventCartItem_birthdate_date_format}" field="birthDate" id="c_com_bibsmobile_model_EventCartItem_birthDate" z="user-managed" render="false"/>
+        <field:input field="email" id="c_com_bibsmobile_model_EventCartItem_email" validationMessageCode="field_invalid_email" z="user-managed" render="false"/>
+        <field:input field="phone" id="c_com_bibsmobile_model_EventCartItem_phone" z="user-managed" render="false"/>
+        <field:input field="addressLine1" id="c_com_bibsmobile_model_EventCartItem_addressLine1" z="user-managed" render="false"/>
+        <field:input field="addressLine2" id="c_com_bibsmobile_model_EventCartItem_addressLine2" z="user-managed" render="false"/>
+        <field:input field="zipCode" id="c_com_bibsmobile_model_EventCartItem_zipCode" z="user-managed" render="false"/>
+        <field:input field="emergencyContactName" id="c_com_bibsmobile_model_EventCartItem_emergencyContactName" z="user-managed" render="false"/>
+        <field:input field="emergencyContactPhone" id="c_com_bibsmobile_model_EventCartItem_emergencyContactPhone" z="user-managed" render="false"/>
+        <field:input field="hearFrom" id="c_com_bibsmobile_model_EventCartItem_hearFrom" z="user-managed" render="false"/>
     </form:update>
 </div>

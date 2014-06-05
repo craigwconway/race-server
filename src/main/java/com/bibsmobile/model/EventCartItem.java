@@ -101,6 +101,26 @@ public class EventCartItem {
     @Enumerated
     private EventCartItemGenderEnum gender;
 
+    @Transient
+    private Date birthDate;
+    @Transient
+    private String email;
+    @Transient
+    private String phone;
+    @Transient
+    private String addressLine1;
+    @Transient
+    private String addressLine2;
+    @Transient
+    private String zipCode;
+    @Transient
+    private String emergencyContactName;
+    @Transient
+    private String emergencyContactPhone;
+    @Transient
+    private String hearFrom;
+
+
     public double getActualPrice() {
         if (CollectionUtils.isEmpty(priceChanges)) {
             return price;

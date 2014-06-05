@@ -197,4 +197,76 @@ privileged aspect EventCartItem_Roo_JavaBean {
         this.gender = gender;
     }
     
+    public Date EventCartItem.getBirthDate() {
+        return this.birthDate;
+    }
+    
+    public void EventCartItem.setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+    
+    public String EventCartItem.getEmail() {
+        return this.email;
+    }
+    
+    public void EventCartItem.setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String EventCartItem.getPhone() {
+        return this.phone;
+    }
+    
+    public void EventCartItem.setPhone(String phone) {
+        this.phone = phone;
+    }
+    
+    public String EventCartItem.getAddressLine1() {
+        return this.addressLine1;
+    }
+    
+    public void EventCartItem.setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+    }
+    
+    public String EventCartItem.getAddressLine2() {
+        return this.addressLine2;
+    }
+    
+    public void EventCartItem.setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
+    }
+    
+    public String EventCartItem.getZipCode() {
+        return this.zipCode;
+    }
+    
+    public void EventCartItem.setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+    
+    public String EventCartItem.getEmergencyContactName() {
+        return this.emergencyContactName;
+    }
+    
+    public void EventCartItem.setEmergencyContactName(String emergencyContactName) {
+        this.emergencyContactName = emergencyContactName;
+    }
+    
+    public String EventCartItem.getEmergencyContactPhone() {
+        return this.emergencyContactPhone;
+    }
+    
+    public void EventCartItem.setEmergencyContactPhone(String emergencyContactPhone) {
+        this.emergencyContactPhone = emergencyContactPhone;
+    }
+    
+    public String EventCartItem.getHearFrom() {
+        return this.hearFrom;
+    }
+    
+    public void EventCartItem.setHearFrom(String hearFrom) {
+        this.hearFrom = hearFrom;
+    }
+    
 }
