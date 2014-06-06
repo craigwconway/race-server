@@ -10,18 +10,13 @@
         <beans:property name="authenticationEntryPoint" ref="restAuthenticationEntryPoint"/>
     </beans:bean>
 
-    <beans:bean id="restUsernamePasswordAuthenticationFilter" class="com.bibsmobile.rest.security.RestUsernamePasswordAuthenticationFilter">
-        <beans:property name="authenticationManager" ref="authenticationManager"/>
-        <beans:property name="authenticationSuccessHandler" ref="restAuthenticationSuccessHandler"/>
-        <beans:property name="authenticationFailureHandler"  ref="restAuthenticationFailureHandler"/>
-        <beans:property name="filterProcessesUrl" value="/rest/login" />
-    </beans:bean>
-
     <http auto-config="false" pattern="/rest/**" use-expressions="true" entry-point-ref="restAuthenticationEntryPoint">
-        <custom-filter ref="restUsernamePasswordAuthenticationFilter" before="FIRST" />
         <intercept-url pattern="/rest/login" access="isAnonymous()"/>
         <intercept-url pattern="/rest/**" access="isAuthenticated()"/>
+        <form-login login-processing-url="/rest/login" username-parameter="username" password-parameter="password"
+                    authentication-success-handler-ref="restAuthenticationSuccessHandler" authentication-failure-handler-ref="restAuthenticationFailureHandler"/>
         <logout logout-url="/rest/logout" success-handler-ref="restLogoutSuccessHandler"/>
+
     </http>
 
 
