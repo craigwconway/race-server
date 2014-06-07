@@ -78,14 +78,13 @@ public class AuthorizeNetController {
 
         } else if (result.isApproved()) {
             redirectUrl = redirectTransactionSuccessUrl(result, request);
-        } else {
-
             String cartIdStr = org.apache.commons.lang3.StringUtils.trimToEmpty(result.getResponseMap().get(ResponseField.TRANSACTION_ID.getFieldName()));
             Cart cart = Cart.findCart(Long.valueOf(cartIdStr));
             if (cart != null) {
                 cart.setStatus(Cart.COMPLETE);
                 cart.persist();
             }
+        } else {
             redirectUrl = redirectTransactionFailUrl(result, request);
         }
 
