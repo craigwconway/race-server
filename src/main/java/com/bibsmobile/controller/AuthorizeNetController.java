@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -71,21 +70,30 @@ public class AuthorizeNetController {
     }
 
     @RequestMapping("/response")
-    public String getAuthorizeResponse(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
+    public String getAuthorizeResponse(HttpServletRequest request, Model model) throws IOException {
         Result result = Result.createResult(API_LOGIN_ID, API_LOGIN_ID, request.getParameterMap());
         String redirectUrl;
         if (result == null) {
-            redirectUrl = redirectErrorUrl(request, response);
+            redirectUrl = redirectErrorUrl(request);
+
         } else if (result.isApproved()) {
-            redirectUrl = redirectTransactionSuccessUrl(result, request, response);
+            redirectUrl = redirectTransactionSuccessUrl(result, request);
         } else {
-            redirectUrl = redirectTransactionFailUrl(result, request, response);
+
+            String cartIdStr = org.apache.commons.lang3.StringUtils.trimToEmpty(result.getResponseMap().get(ResponseField.TRANSACTION_ID.getFieldName()));
+            Cart cart = Cart.findCart(Long.valueOf(cartIdStr));
+            if (cart != null) {
+                cart.setStatus(Cart.COMPLETE);
+                cart.persist();
+            }
+            redirectUrl = redirectTransactionFailUrl(result, request);
         }
+
         model.addAttribute("redirectUrl", redirectUrl);
         return "jsRedirect";
     }
 
-    private String redirectErrorUrl(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private String redirectErrorUrl(HttpServletRequest request) throws IOException {
         StringBuilder redirectUrl = new StringBuilder();
         String baseUrl = getBaseUrl(request);
         redirectUrl.append(baseUrl);
@@ -93,7 +101,7 @@ public class AuthorizeNetController {
         return redirectUrl.toString();
     }
 
-    private String redirectTransactionSuccessUrl(Result result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private String redirectTransactionSuccessUrl(Result result, HttpServletRequest request) throws IOException {
         StringBuilder redirectUrl = new StringBuilder();
 
         String baseUrl = getBaseUrl(request);
@@ -107,7 +115,7 @@ public class AuthorizeNetController {
         return redirectUrl.toString();
     }
 
-    private String redirectTransactionFailUrl(Result result, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private String redirectTransactionFailUrl(Result result, HttpServletRequest request) throws IOException {
         StringBuilder redirectUrl = new StringBuilder();
 
         String baseUrl = getBaseUrl(request);
