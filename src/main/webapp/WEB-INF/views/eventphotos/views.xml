@@ -10,7 +10,10 @@
 <definition extends="default" name="eventphotos/create">
         <put-attribute name="body" value="/WEB-INF/views/eventphotos/create.jspx"/>
     </definition>
-<definition extends="default" name="eventphotos/update">
+    <definition extends="default" name="eventphotos/update">
         <put-attribute name="body" value="/WEB-INF/views/eventphotos/update.jspx"/>
+    </definition>
+    <definition extends="default" name="eventphotos/upload">
+        <put-attribute name="body" value="/WEB-INF/views/eventphotos/upload.jspx"/>
     </definition>
 </tiles-definitions>
