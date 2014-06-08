@@ -1,15 +1,13 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.EventUserGroup;
-import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.UserGroup;
-import com.bibsmobile.model.UserGroupUserAuthority;
-import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.*;
 import flexjson.JSONSerializer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +31,13 @@ import java.util.*;
 public class EventController {
 
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
+
+    @Autowired
+    private JavaMailSenderImpl mailSender;
+
+    @Autowired
+    private SimpleMailMessage eventMessage;
+
 
     @RequestMapping(value = "/registrationComplete", method = RequestMethod.GET)
     public static String registrationComplete(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
@@ -583,4 +588,41 @@ public class EventController {
         }
         return Event.toJsonArray(events.values());
     }
+
+    @RequestMapping(value = "/notify")
+    public @ResponseBody String notifyParticipants(@RequestParam Long eventId) {
+        Event event = Event.findEvent(eventId);
+        if (event == null) {
+            return "[]";
+        }
+        List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        List<EventCartItem> validEventCartItems = new ArrayList<>();
+        for (EventCartItem eventCartItem : eventCartItems) {
+            if (eventCartItem.getType().equals(EventCartItemTypeEnum.TICKET)) {
+                validEventCartItems.add(eventCartItem);
+            }
+        }
+        if (validEventCartItems.isEmpty()) {
+            return "[]";
+        }
+        List<CartItem> cartItems = CartItem.findCartItemsByEventCartItems(validEventCartItems, null, null).getResultList();
+        List<UserProfile> users = new ArrayList<>();
+        List<String> sentTo = new ArrayList<>();
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getCart().getStatus() == Cart.COMPLETE) {
+                users.add(cartItem.getCart().getUser());
+            }
+        }
+        for (UserProfile user : users) {
+            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                if (!sentTo.contains(user.getEmail())) {
+                    eventMessage.setTo(user.getEmail());
+                    mailSender.send(eventMessage);
+                    sentTo.add(user.getEmail());
+                }
+            }
+        }
+        return sentTo.toString();
+    }
+
 }

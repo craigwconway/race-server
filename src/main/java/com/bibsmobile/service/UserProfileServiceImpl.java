@@ -2,6 +2,9 @@ package com.bibsmobile.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +17,12 @@ import com.bibsmobile.model.UserProfile;
 //@Service
 //@Transactional
 public class UserProfileServiceImpl implements UserProfileService, UserDetailsService {
+
+    @Autowired
+    private JavaMailSenderImpl mailSender;
+
+    @Autowired
+    private SimpleMailMessage registrationMessage;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username)
@@ -51,6 +60,10 @@ public class UserProfileServiceImpl implements UserProfileService, UserDetailsSe
 
 	public void saveUserProfile(UserProfile userProfile) {
         userProfile.persist();
+        if (userProfile.getEmail() != null && !userProfile.getEmail().isEmpty()) {
+            registrationMessage.setTo(userProfile.getEmail());
+            mailSender.send(registrationMessage);
+        }
     }
 
 	public UserProfile updateUserProfile(UserProfile userProfile) {

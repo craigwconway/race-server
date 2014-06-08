@@ -47,16 +47,16 @@
         <context:exclude-filter expression=".*_Roo_.*" type="regex"/>
         <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
-    
+
     <bean class="org.springframework.web.multipart.support.MultipartFilter" id="multipartFilter">
         <property name="multipartResolverBeanName" value="multipartResolver"/>
     </bean>
     <bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
-            <property name="maxUploadSize">
-			<value>10614400</value>
-		</property>
-	</bean>
-	
+        <property name="maxUploadSize">
+            <value>10614400</value>
+        </property>
+    </bean>
+
     <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
         <property name="driverClassName" value="${database.driverClassName}"/>
         <property name="url" value="${database.url}"/>
@@ -77,5 +77,28 @@
     <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
         <property name="persistenceUnitName" value="persistenceUnit"/>
         <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean class="org.springframework.mail.javamail.JavaMailSenderImpl" id="mailSender">
+        <property name="host" value="${email.host}"/>
+        <property name="protocol" value="${email.protocol}"/>
+        <property name="port" value="${email.port}"/>
+        <property name="username" value="${email.username}"/>
+        <property name="password" value="${email.password}"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+    <bean class="org.springframework.mail.SimpleMailMessage" id="registrationMessage">
+        <property name="from" value="${email.username}"/>
+        <property name="subject" value="${email.registration.subject}"/>
+        <property name="text" value="${email.registration.text}"/>
+    </bean>
+    <bean class="org.springframework.mail.SimpleMailMessage" id="eventMessage">
+        <property name="from" value="${email.username}"/>
+        <property name="subject" value="${email.event.subject}"/>
+        <property name="text" value="${email.event.text}"/>
     </bean>
 </beans>
