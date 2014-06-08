@@ -38,6 +38,5 @@
         <field:input field="emergencyContactPhone" id="c_com_bibsmobile_model_EventCartItem_emergencyContactPhone" z="user-managed" render="false"/>
         <field:input field="hearFrom" id="c_com_bibsmobile_model_EventCartItem_hearFrom" z="user-managed" render="false"/>
     </form:create>
-    <field:select field="gender" id="c_com_bibsmobile_model_EventCartItem_gender" items="${eventcartitemgenderenums}" path="eventcartitemgenderenums" z="+Jg/WI19uo3scDKsAgDOwlnJVVA="/>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 </div>
