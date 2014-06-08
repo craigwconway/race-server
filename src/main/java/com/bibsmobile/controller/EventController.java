@@ -614,7 +614,7 @@ public class EventController {
             }
         }
         for (UserProfile user : users) {
-            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            if (StringUtils.isNotEmpty(user.getEmail())) {
                 if (!sentTo.contains(user.getEmail())) {
                     eventMessage.setTo(user.getEmail());
                     mailSender.send(eventMessage);

@@ -2,6 +2,7 @@ package com.bibsmobile.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -60,7 +61,7 @@ public class UserProfileServiceImpl implements UserProfileService, UserDetailsSe
 
 	public void saveUserProfile(UserProfile userProfile) {
         userProfile.persist();
-        if (userProfile.getEmail() != null && !userProfile.getEmail().isEmpty()) {
+        if (StringUtils.isNotEmpty(userProfile.getEmail())) {
             registrationMessage.setTo(userProfile.getEmail());
             mailSender.send(registrationMessage);
         }
