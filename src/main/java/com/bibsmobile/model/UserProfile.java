@@ -7,12 +7,8 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.security.core.userdetails.UserDetails;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -163,4 +159,21 @@ public class UserProfile implements UserDetails {
     /**
      */
     private String forgotPasswordCode;
+
+    public static Long countFindUserProfilesByEmailEquals(String email) {
+        if (email == null || email.length() == 0) throw new IllegalArgumentException("The email argument is required");
+        EntityManager em = UserProfile.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.email = :email AND o.username IS NOT NULL", Long.class);
+        q.setParameter("email", email);
+        return ((Long) q.getSingleResult());
+    }
+
+    public static TypedQuery<UserProfile> findUserProfilesByEmailEquals(String email) {
+        if (email == null || email.length() == 0) throw new IllegalArgumentException("The email argument is required");
+        EntityManager em = UserProfile.entityManager();
+        TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.email = :email AND o.username IS NOT NULL", UserProfile.class);
+        q.setParameter("email", email);
+        return q;
+    }
+
 }

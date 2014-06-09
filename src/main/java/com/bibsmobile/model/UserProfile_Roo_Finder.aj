@@ -9,14 +9,6 @@ import javax.persistence.TypedQuery;
 
 privileged aspect UserProfile_Roo_Finder {
     
-    public static Long UserProfile.countFindUserProfilesByEmailEquals(String email) {
-        if (email == null || email.length() == 0) throw new IllegalArgumentException("The email argument is required");
-        EntityManager em = UserProfile.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.email = :email", Long.class);
-        q.setParameter("email", email);
-        return ((Long) q.getSingleResult());
-    }
-    
     public static Long UserProfile.countFindUserProfilesByForgotPasswordCodeEquals(String forgotPasswordCode) {
         if (forgotPasswordCode == null || forgotPasswordCode.length() == 0) throw new IllegalArgumentException("The forgotPasswordCode argument is required");
         EntityManager em = UserProfile.entityManager();
@@ -31,14 +23,6 @@ privileged aspect UserProfile_Roo_Finder {
         TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.username = :username", Long.class);
         q.setParameter("username", username);
         return ((Long) q.getSingleResult());
-    }
-    
-    public static TypedQuery<UserProfile> UserProfile.findUserProfilesByEmailEquals(String email) {
-        if (email == null || email.length() == 0) throw new IllegalArgumentException("The email argument is required");
-        EntityManager em = UserProfile.entityManager();
-        TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.email = :email", UserProfile.class);
-        q.setParameter("email", email);
-        return q;
     }
     
     public static TypedQuery<UserProfile> UserProfile.findUserProfilesByEmailEquals(String email, String sortFieldName, String sortOrder) {
