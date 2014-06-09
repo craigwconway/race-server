@@ -2,6 +2,7 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import java.util.UUID;
 
 @Controller
@@ -22,6 +24,9 @@ public class PasswordController {
 
     @Autowired
     private SimpleMailMessage forgotPassword;
+
+    @Value("#{myProps['email.forgotPassword.text']}")
+    private String resetPasswordText;
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
     public String forgotPassword() {
@@ -36,8 +41,7 @@ public class PasswordController {
             String forgotPasswordCode = UUID.randomUUID().toString();
             userProfile.setForgotPasswordCode(forgotPasswordCode);
             userProfile.persist();
-            String body = forgotPassword.getText();
-            body = body.replace("{link}", resetPasswordUrl + forgotPasswordCode);
+            String body = resetPasswordText.replace("{link}", resetPasswordUrl + forgotPasswordCode);
             forgotPassword.setText(body);
             forgotPassword.setTo(userProfile.getEmail());
             mailSender.send(forgotPassword);
