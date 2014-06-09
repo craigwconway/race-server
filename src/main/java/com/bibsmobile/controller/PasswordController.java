@@ -20,7 +20,7 @@ public class PasswordController {
     private JavaMailSenderImpl mailSender;
 
     @Autowired
-    private SimpleMailMessage forgotPassword;
+    private SimpleMailMessage forgotPasswordMessage;
 
     @Value("#{myProps['email.forgotPassword.text']}")
     private String resetPasswordText;
@@ -42,9 +42,9 @@ public class PasswordController {
             userProfile.setForgotPasswordCode(forgotPasswordCode);
             userProfile.persist();
             String body = resetPasswordText.replace("{link}", resetPasswordUrl + forgotPasswordCode);
-            forgotPassword.setText(body);
-            forgotPassword.setTo(userProfile.getEmail());
-            mailSender.send(forgotPassword);
+            forgotPasswordMessage.setText(body);
+            forgotPasswordMessage.setTo(userProfile.getEmail());
+            mailSender.send(forgotPasswordMessage);
             modelAndView.addObject("success", true);
             return modelAndView;
         }
