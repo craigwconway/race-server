@@ -1,5 +1,4 @@
 package com.bibsmobile.model;
-
 import flexjson.JSON;
 import flexjson.JSONSerializer;
 import org.apache.commons.lang3.StringUtils;
@@ -8,7 +7,6 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -24,32 +22,48 @@ import java.util.Set;
 @SuppressWarnings("serial")
 @RooJavaBean
 @RooJson
-@RooJpaActiveRecord(finders = {"findUserProfilesByUsernameEquals"})
+@RooJpaActiveRecord(finders = { "findUserProfilesByUsernameEquals", "findUserProfilesByForgotPasswordCodeEquals", "findUserProfilesByEmailEquals" })
 public class UserProfile implements UserDetails {
 
     private String firstname;
+
     private String lastname;
+
     private String city;
+
     private String state;
+
     private int age;
+
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "MM-dd-yyyy")
     private Date birthdate;
+
     private String gender;
+
     private String email;
+
     private String image;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.userProfile", cascade = CascadeType.ALL)
     private Set<UserAuthorities> userAuthorities;
+
     private String username;
+
     private String password;
+
     private boolean accountNonExpired = true;
+
     private boolean accountNonLocked = true;
+
     private boolean credentialsNonExpired = true;
+
     private boolean enabled = true;
 
     private String facebookId;
+
     private String twitterId;
+
     private String googleId;
 
     @OneToMany(mappedBy = "userProfile")
@@ -89,8 +103,7 @@ public class UserProfile implements UserDetails {
         List<UserAuthority> assignedAuthorities = new ArrayList<>(getAuthorities());
         for (UserAuthority availableAuthority : allAuthorities) {
             boolean exists = false;
-            existedLoop:
-            for (UserAuthority assignedAuthority : assignedAuthorities) {
+            existedLoop: for (UserAuthority assignedAuthority : assignedAuthorities) {
                 if (availableAuthority.getId().equals(assignedAuthority.getId())) {
                     exists = true;
                     break existedLoop;
@@ -144,7 +157,10 @@ public class UserProfile implements UserDetails {
     }
 
     public String getFullName() {
-        return new StringBuilder(StringUtils.isEmpty(firstname) ? StringUtils.EMPTY : firstname).append(" ").
-                append(StringUtils.isEmpty(lastname) ? StringUtils.EMPTY : lastname).toString();
+        return new StringBuilder(StringUtils.isEmpty(firstname) ? StringUtils.EMPTY : firstname).append(" ").append(StringUtils.isEmpty(lastname) ? StringUtils.EMPTY : lastname).toString();
     }
+
+    /**
+     */
+    private String forgotPasswordCode;
 }

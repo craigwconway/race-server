@@ -101,4 +101,9 @@
         <property name="subject" value="${email.event.subject}"/>
         <property name="text" value="${email.event.text}"/>
     </bean>
+    <bean class="org.springframework.mail.SimpleMailMessage" id="forgotPassword">
+        <property name="from" value="${email.username}"/>
+        <property name="subject" value="${email.forgotPassword.subject}"/>
+        <property name="text" value="${email.forgotPassword.text}"/>
+    </bean>
 </beans>

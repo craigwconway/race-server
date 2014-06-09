@@ -212,4 +212,12 @@ privileged aspect UserProfile_Roo_JavaBean {
         this.cartItem = cartItem;
     }
     
+    public String UserProfile.getForgotPasswordCode() {
+        return this.forgotPasswordCode;
+    }
+    
+    public void UserProfile.setForgotPasswordCode(String forgotPasswordCode) {
+        this.forgotPasswordCode = forgotPasswordCode;
+    }
+    
 }
