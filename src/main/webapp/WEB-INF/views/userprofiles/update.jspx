@@ -37,6 +37,6 @@
         <field:input field="emergencyContactPhone" id="c_com_bibsmobile_model_UserProfile_emergencyContactPhone" render="false" z="user-managed"/>
         <field:input field="hearFrom" id="c_com_bibsmobile_model_UserProfile_hearFrom" render="false" z="user-managed"/>
         <field:select field="cartItem" id="c_com_bibsmobile_model_UserProfile_cartItem" itemValue="id" items="${cartitems}" path="/cartitems" render="false" z="user-managed"/>
-        <field:input field="forgotPasswordCode" id="c_com_bibsmobile_model_UserProfile_forgotPasswordCode" render="false" z="xU/m0kiqOVxH1jzzR8ZuSK4Qz3c="/>
+        <field:input field="forgotPasswordCode" id="c_com_bibsmobile_model_UserProfile_forgotPasswordCode" render="false" z="user-managed"/>
     </form:update>
 </div>
