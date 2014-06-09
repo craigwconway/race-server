@@ -11,13 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
 import java.util.UUID;
 
 @Controller
 public class PasswordController {
-
-    private static final String resetPasswordUrl = "http://localhost:8080/bibs-server/resetPassword?code=";
 
     @Autowired
     private JavaMailSenderImpl mailSender;
@@ -27,6 +24,9 @@ public class PasswordController {
 
     @Value("#{myProps['email.forgotPassword.text']}")
     private String resetPasswordText;
+
+    @Value("#{myProps['email.forgotPassword.url']}")
+    private String resetPasswordUrl;
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
     public String forgotPassword() {
