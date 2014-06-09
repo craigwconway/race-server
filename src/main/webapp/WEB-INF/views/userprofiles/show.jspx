@@ -46,5 +46,6 @@
         <field:display field="emergencyContactPhone" id="s_com_bibsmobile_model_UserProfile_emergencyContactPhone" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="hearFrom" id="s_com_bibsmobile_model_UserProfile_hearFrom" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="cartItem" id="s_com_bibsmobile_model_UserProfile_cartItem" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="forgotPasswordCode" id="s_com_bibsmobile_model_UserProfile_forgotPasswordCode" object="${userprofile}" render="false" z="user-managed"/>
     </page:show>
 </div>
