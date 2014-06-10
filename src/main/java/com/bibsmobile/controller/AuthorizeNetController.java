@@ -34,7 +34,7 @@ public class AuthorizeNetController {
         Cart cart = Cart.findCart(cartId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        if (cart == null) {
+        if (cart == null || cart.getStatus() != cart.NEW) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
 

@@ -45,6 +45,8 @@
         <intercept-url pattern="/usergroups/**" access="hasRole('ROLE_SYS_ADMIN')" />
         <intercept-url pattern="/userprofiles/**" access="hasRole('ROLE_SYS_ADMIN')" />
 
+        <intercept-url pattern="/authorize/**" access="isAuthenticated()"/>
+
         <intercept-url pattern="/resources/**" access="permitAll" />
 
         <intercept-url pattern="/" access="permitAll" />
