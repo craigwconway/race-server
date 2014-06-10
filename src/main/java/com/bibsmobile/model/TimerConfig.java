@@ -18,6 +18,16 @@ public class TimerConfig {
 	private int writePower;
 	private int type; // Dummy, ThingMagic, etc 
 	private String ports; // comma seperated list of ints 
+	private int connectionTimeout;
+	private String filename;
+	
+	public int getConnectionTimeout(){
+		return connectionTimeout;
+	}
+	
+	public String getFilename(){
+		return filename;
+	}
 	 
 	public void setReadTimeout(int t){ 
 		if(t >= 1)

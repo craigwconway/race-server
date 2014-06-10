@@ -8,7 +8,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 
-public class DummyTimer implements Timer, Runnable {
+public class DummyTimer extends AbstractTimer implements Timer, Runnable {
 
 	private TimerConfig timerConfig;
 	private int status;

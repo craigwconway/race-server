@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.service.BibsLLRPTimer;
 import com.bibsmobile.service.DummyTimer;
-import com.bibsmobile.service.ThingMagicTimer;
 import com.bibsmobile.service.Timer;
 
 @RequestMapping("/timers")
@@ -33,10 +33,11 @@ public class TimerConfigController {
     		System.out.println("Found cached timer!");
     		timer = timers.get(timerConfig);
     	}else{
-    		if(timerConfig.getType() == 0)
+    		if(timerConfig.getType() == 0){
     			timer = new DummyTimer();
-    		else if(timerConfig.getType() == 1)
-    			timer = new ThingMagicTimer();
+    		}else if(timerConfig.getType() == 1){
+    			timer = new BibsLLRPTimer(timerConfig);
+    		}
     		timers.put(timerConfig, timer);
     		System.out.println("Put cached timer!");
     	}
