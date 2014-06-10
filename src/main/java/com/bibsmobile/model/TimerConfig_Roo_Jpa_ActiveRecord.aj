@@ -14,7 +14,7 @@ privileged aspect TimerConfig_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager TimerConfig.entityManager;
     
-    public static final List<String> TimerConfig.fieldNames4OrderClauseFilter = java.util.Arrays.asList("position", "url", "readTimeout", "readPower", "writePower", "type", "ports");
+    public static final List<String> TimerConfig.fieldNames4OrderClauseFilter = java.util.Arrays.asList("position", "url", "readTimeout", "readPower", "writePower", "type", "ports", "connectionTimeout", "filename");
     
     public static final EntityManager TimerConfig.entityManager() {
         EntityManager em = new TimerConfig().entityManager;

@@ -11,5 +11,7 @@
         <field:display field="writePower" id="s_com_bibsmobile_model_TimerConfig_writePower" object="${timerconfig}" z="GAEYQnVzIi6VjA/5qYIr/1XljLw="/>
         <field:display field="type" id="s_com_bibsmobile_model_TimerConfig_type" object="${timerconfig}" z="E9uB+ki3S4kJe4CzJMG/TE+G//Y="/>
         <field:display field="ports" id="s_com_bibsmobile_model_TimerConfig_ports" object="${timerconfig}" z="cZAqeDJmKzoYRuSOsq9UBB3L0Xs="/>
+        <field:display field="connectionTimeout" id="s_com_bibsmobile_model_TimerConfig_connectionTimeout" object="${timerconfig}" z="aEGWISPJQg57FshxQlYpWbrmz/o="/>
+        <field:display field="filename" id="s_com_bibsmobile_model_TimerConfig_filename" object="${timerconfig}" z="kHrusc0x2o33GVSo0qrVI0DA2z4="/>
     </page:show>
 </div>

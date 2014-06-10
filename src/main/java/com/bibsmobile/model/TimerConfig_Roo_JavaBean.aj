@@ -59,4 +59,12 @@ privileged aspect TimerConfig_Roo_JavaBean {
         this.ports = ports;
     }
     
+    public void TimerConfig.setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+    
+    public void TimerConfig.setFilename(String filename) {
+        this.filename = filename;
+    }
+    
 }

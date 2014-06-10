@@ -13,9 +13,11 @@
             <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_position" property="position" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" z="user-managed" render="false"/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" z="user-managed" render="false"/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_type" property="type" z="user-managed" render="false"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_type" property="type" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_connectionTimeout" property="connectionTimeout" z="7qQts1pPhzjyb4XWeBfFVmAGBGQ="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_filename" property="filename" z="h9wZUDo6+wCThlsAAXyVaotqrjk="/>
         </table:table>
     </page:list>
 </div>

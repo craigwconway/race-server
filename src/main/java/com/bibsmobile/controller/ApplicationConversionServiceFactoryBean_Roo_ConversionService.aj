@@ -5,7 +5,6 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
 import com.bibsmobile.model.Cart;
-import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAlert;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemPriceChange;
@@ -63,23 +62,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
             }
         };
     }
-
-    public Converter<Long, Event> ApplicationConversionServiceFactoryBean.getIdToEventConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.Event>() {
-            public com.bibsmobile.model.Event convert(java.lang.Long id) {
-                return Event.findEvent(id);
-            }
-        };
-    }
-
-    public Converter<String, Event> ApplicationConversionServiceFactoryBean.getStringToEventConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Event>() {
-            public com.bibsmobile.model.Event convert(String id) {
-                return getObject().convert(getObject().convert(id, Long.class), Event.class);
-            }
-        };
-    }
-
+    
     public Converter<EventAlert, String> ApplicationConversionServiceFactoryBean.getEventAlertToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventAlert, java.lang.String>() {
             public String convert(EventAlert eventAlert) {
@@ -395,7 +378,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<TimerConfig, String> ApplicationConversionServiceFactoryBean.getTimerConfigToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.TimerConfig, java.lang.String>() {
             public String convert(TimerConfig timerConfig) {
-                return new StringBuilder().append(timerConfig.getPosition()).append(' ').append(timerConfig.getUrl()).append(' ').append(timerConfig.getReadTimeout()).append(' ').append(timerConfig.getReadPower()).toString();
+                return new StringBuilder().append(timerConfig.getConnectionTimeout()).append(' ').append(timerConfig.getFilename()).append(' ').append(timerConfig.getPosition()).append(' ').append(timerConfig.getUrl()).toString();
             }
         };
     }
@@ -532,9 +515,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getCartToStringConverter());
         registry.addConverter(getIdToCartConverter());
         registry.addConverter(getStringToCartConverter());
-        registry.addConverter(getEventToStringConverter());
-        registry.addConverter(getIdToEventConverter());
-        registry.addConverter(getStringToEventConverter());
         registry.addConverter(getEventAlertToStringConverter());
         registry.addConverter(getIdToEventAlertConverter());
         registry.addConverter(getStringToEventAlertConverter());

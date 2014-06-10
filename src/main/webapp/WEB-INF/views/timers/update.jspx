@@ -13,15 +13,13 @@
         </select>
     </div>
     <form:update id="fu_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" versionField="Version" z="gHW4sjp6C91L58dzI5umszglaCQ=">
-        
         <div id="selectPorts">
-        	<strong>Ports:</strong>  
-	        <input type="checkbox" name="port" value="1" onclick="updatePorts()">1</input>
-	        <input type="checkbox" name="port" value="2" onclick="updatePorts()">2</input>
-	        <input type="checkbox" name="port" value="3" onclick="updatePorts()">3</input>
-	        <input type="checkbox" name="port" value="4" onclick="updatePorts()">4</input>
-	    </div>
-        	
+            <strong>Ports:</strong>
+            <input name="port" onclick="updatePorts()" type="checkbox" value="1">1</input>
+            <input name="port" onclick="updatePorts()" type="checkbox" value="2">2</input>
+            <input name="port" onclick="updatePorts()" type="checkbox" value="3">3</input>
+            <input name="port" onclick="updatePorts()" type="checkbox" value="4">4</input>
+        </div>
         <field:input field="position" id="c_com_bibsmobile_model_TimerConfig_position" z="yamQ8KWzGfWz+41JyeNXITbQ6K4="/>
         <field:input field="url" id="c_com_bibsmobile_model_TimerConfig_url" z="YQG6sHqrsWv50OpnvgYxdIUonpM="/>
         <field:input field="readTimeout" id="c_com_bibsmobile_model_TimerConfig_readTimeout" z="/+mgpFRssYFOzU8d28QtwFU+oT8="/>
@@ -30,6 +28,8 @@
         <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" render="false" z="user-managed"/>
         <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
         <field:input field="ports" id="c_com_bibsmobile_model_TimerConfig_ports" z="rf0jhsCCYnzTYenBS4pjvKpBnEg="/>
+        <field:input field="connectionTimeout" id="c_com_bibsmobile_model_TimerConfig_connectionTimeout" z="y+l45Se+jgHmr0AJawxJc7Ou7/E="/>
+        <field:input field="filename" id="c_com_bibsmobile_model_TimerConfig_filename" z="DpYTidu0C9wlXeI3kL0MkybazoI="/>
     </form:update>
     <script>
     window.onload=function(){
@@ -53,7 +53,7 @@
    	function updatePorts(){
    		var ports = "";
    		$('#selectPorts :checked').each(function() {
-   			if(ports.length > 0 ) ports += ',';
+   			if(ports.length &gt; 0 ) ports += ',';
    	       	ports += $(this).val();
    	     });
    		jQuery("#_ports_id").val(ports);
@@ -61,7 +61,7 @@
    	function initPorts(){
    		var ports = jQuery("#_ports_id").val();
    		$('#selectPorts :input').each(function() {
-   			if(ports.indexOf($(this).val()) > -1){
+   			if(ports.indexOf($(this).val()) &gt; -1){
    				$(this).prop('checked','true'); 
    			}
    	     });
