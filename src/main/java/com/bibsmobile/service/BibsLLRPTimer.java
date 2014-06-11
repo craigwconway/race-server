@@ -24,6 +24,7 @@ import org.llrp.ltk.generated.messages.DELETE_ROSPEC;
 import org.llrp.ltk.generated.messages.DELETE_ROSPEC_RESPONSE;
 import org.llrp.ltk.generated.messages.ENABLE_ROSPEC;
 import org.llrp.ltk.generated.messages.ENABLE_ROSPEC_RESPONSE;
+import org.llrp.ltk.generated.messages.READER_EVENT_NOTIFICATION;
 import org.llrp.ltk.generated.messages.RO_ACCESS_REPORT;
 import org.llrp.ltk.generated.messages.SET_READER_CONFIG;
 import org.llrp.ltk.generated.messages.SET_READER_CONFIG_RESPONSE;
@@ -33,6 +34,7 @@ import org.llrp.ltk.generated.messages.STOP_ROSPEC;
 import org.llrp.ltk.generated.messages.STOP_ROSPEC_RESPONSE;
 import org.llrp.ltk.generated.parameters.AISpec;
 import org.llrp.ltk.generated.parameters.AISpecStopTrigger;
+import org.llrp.ltk.generated.parameters.ConnectionAttemptEvent;
 import org.llrp.ltk.generated.parameters.EPCData;
 import org.llrp.ltk.generated.parameters.EPC_96;
 import org.llrp.ltk.generated.parameters.InventoryParameterSpec;
@@ -41,6 +43,7 @@ import org.llrp.ltk.generated.parameters.ROSpec;
 import org.llrp.ltk.generated.parameters.ROSpecStartTrigger;
 import org.llrp.ltk.generated.parameters.ROSpecStopTrigger;
 import org.llrp.ltk.generated.parameters.TagReportData;
+import org.llrp.ltk.generated.parameters.UTCTimestamp;
 import org.llrp.ltk.net.LLRPConnection;
 import org.llrp.ltk.net.LLRPConnectionAttemptFailedException;
 import org.llrp.ltk.net.LLRPConnector;
@@ -64,6 +67,8 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 	private TimerConfig timerConfig;
     private ROSpec rospec;
     private int MessageID=1;
+    private long usReaderOffset;
+    private long usCurrentOffset;
     
     public BibsLLRPTimer(TimerConfig timerConfig){
     	this.timerConfig = timerConfig;
@@ -302,13 +307,14 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             if( epcp.getName().equals("EPC_96")) {
                 EPC_96 epc96 = (EPC_96) epcp;
                 epcString += epc96.getEPC().toString();
-                System.out.println("ERROR Non-Bibs chip read");
+                System.out.println("ERROR Non-Bibs chip read " + epcString);
+                logUnregisteredBib(epcString, timerConfig.getPosition());
             } else if ( epcp.getName().equals("EPCData")) {
                 EPCData epcData = (EPCData) epcp;
                 epcString += epcData.getEPC().toString();
                 BitArray_HEX bibdata = epcData.getEPC();
-            	long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong();
-                System.out.println(" %%%%%%%%%%% FOUND "+bibdata.toString()+" "+bibtime);
+            	// long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong();
+            	long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong()-this.usReaderOffset+this.usCurrentOffset;
                 int bib = Integer.parseInt(bibdata.toString(), 8);
                 System.out.println(" %%%%%%%%%%% FOUND "+bib+" "+bibtime);
                 logTime(bib, bibtime, timerConfig);
@@ -369,8 +375,15 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             for(TagReportData data:list){
             	lineReadHandler(data);
             }
-
-        }else{
+        }else if (bibRead.getTypeNum() == READER_EVENT_NOTIFICATION.TYPENUM) {
+        	READER_EVENT_NOTIFICATION eventNotification = (READER_EVENT_NOTIFICATION) bibRead;
+        	ConnectionAttemptEvent conn = eventNotification.getReaderEventNotificationData().getConnectionAttemptEvent();
+        	if(conn.getStatus() != null) {
+        		//we probably connected
+        		this.usCurrentOffset = 1000 * System.currentTimeMillis();
+        		this.usReaderOffset = ((UTCTimestamp) eventNotification.getReaderEventNotificationData().getTimestamp()).getMicroseconds().toLong();
+        	}
+        } else{
     		try {
 				System.out.println("bibRead.getTypeNum() "+bibRead.toXMLString());
 			} catch (InvalidLLRPMessageException e) {
@@ -450,7 +463,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             start.setMessageID(getUniqueMessageID());
             start.setROSpecID(rospec.getROSpecID());
      
-            response =  reader.transact(start, 30000);
+            response =  reader.transact(start, timerConfig.getConnectionTimeout());
 
             // check whether ROSpec addition was successful
             StatusCode status = ((START_ROSPEC_RESPONSE)response).getLLRPStatus().getStatusCode();

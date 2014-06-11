@@ -45,6 +45,18 @@ public class TimerConfigController {
     	return timer;
 	}
 	
+
+    @RequestMapping(value = "/bib-report/{id}", method = RequestMethod.GET)
+	@ResponseBody
+    public String bibReport(@PathVariable(value = "id") long id) {
+        return getTimer(id).createReport();
+    }
+
+    @RequestMapping(value = "/clear-bib-report/{id}", method = RequestMethod.GET)
+    public void clearBibReport(@PathVariable(value = "id") long id) {
+        getTimer(id).clearReport();
+    }
+	
 	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public String status(@PathVariable(value = "id") long id) {

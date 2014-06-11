@@ -45,6 +45,30 @@
 	}
 	</style>
 	
+	<div>
+			<button id="btn-update---id--" type="button" class="btn btn-info" 
+				style="margin:0;margin-left: 3px;"
+				onclick="printReport()">Print Report</button>
+				
+			<button id="btn-update---id--" type="button" class="btn btn-info" 
+				style="margin:0;margin-left: 3px;"
+				onclick="clearReport()">Clear Report</button>
+				
+			<script>
+			function printReport(){
+				window.open("/bibs-server/timers/bib-report/1","_blank");
+			}
+			function clearReport(){
+				var url = "/bibs-server/timers/clear-bib-report/1";
+				var request = jQuery.ajax({
+					url: url,
+					type: "GET",
+					dataType: "html"
+					});
+			}
+			</script>
+	</div>	
+	
 <div id="templates">
 	<div id="reader-template" style="display:none">
 		<div id="reader---id--" class="reader corners">
