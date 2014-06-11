@@ -14,15 +14,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RequestMapping("/rest/carts")
 @Controller
 public class CartRestController {
     @RequestMapping(value = "/item/{id}/updatequantity/{eventCartItemQuantity}", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> updateOrCreateCartJson(@PathVariable("id") Long eventCartItemId, @PathVariable Integer eventCartItemQuantity,
-                                                         @RequestBody String userProfileJson) {
+                                                         @RequestBody String userProfileJson, HttpServletRequest request) {
         UserProfile eventCartUserProfile = UserProfile.fromJsonToUserProfile(userProfileJson);
-        Cart cart = CartUtil.updateOrCreateCart(eventCartItemId, eventCartItemQuantity, eventCartUserProfile);
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, eventCartItemQuantity, eventCartUserProfile);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<>(cart.toJson(), headers, HttpStatus.OK);

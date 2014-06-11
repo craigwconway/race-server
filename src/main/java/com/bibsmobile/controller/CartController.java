@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -41,8 +42,8 @@ public class CartController {
 
     @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
     public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel,
-                                     @ModelAttribute UserProfile userProfile) {
-        Cart cart = CartUtil.updateOrCreateCart(eventCartItemId, quantity, userProfile);
+                                     @ModelAttribute UserProfile userProfile, HttpServletRequest request) {
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile);
         uiModel.addAttribute("cart", cart);
         return "redirect:/carts/item/" + eventCartItemId;
     }

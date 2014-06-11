@@ -2,6 +2,7 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.AuthorizeData;
 import com.bibsmobile.model.Cart;
+import com.bibsmobile.util.CartUtil;
 import net.authorize.ResponseField;
 import net.authorize.sim.Fingerprint;
 import net.authorize.sim.Result;
@@ -28,10 +29,14 @@ public class AuthorizeNetController {
     private static final String TRANSACTION_TEST_KEY = "5Fg6846nb7pAS4X4";
     private static final boolean TEST_MODE = true;
 
-    @RequestMapping(value = "/cartdata/{cart}", headers = "Accept=application/json")
+    @RequestMapping(value = "/cartdata", headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> jsonAuthorizeNetCart(HttpServletRequest request, @PathVariable("cart") Long cartId) {
-        Cart cart = Cart.findCart(cartId);
+    public ResponseEntity<String> jsonAuthorizeNetCart(HttpServletRequest request) {
+        Long cartIdFromSession = (Long)request.getSession().getAttribute(CartUtil.SESSION_ATTR_CART_ID);
+        Cart cart = null;
+        if(cartIdFromSession != null) {
+             Cart.findCart(cartIdFromSession);
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (cart == null || cart.getStatus() != cart.NEW) {
@@ -83,6 +88,7 @@ public class AuthorizeNetController {
             if (cart != null) {
                 cart.setStatus(Cart.COMPLETE);
                 cart.persist();
+                request.getSession().removeAttribute(CartUtil.SESSION_ATTR_CART_ID);
             }
         } else {
             redirectUrl = redirectTransactionFailUrl(result, request);
