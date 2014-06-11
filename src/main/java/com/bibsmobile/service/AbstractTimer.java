@@ -1,17 +1,11 @@
 package com.bibsmobile.service;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
@@ -21,6 +15,7 @@ public abstract class AbstractTimer implements Timer {
 
 	private static Map<String, Integer> bibsByReader = new HashMap<String, Integer>(); // position, count
 	private static List<String> bibCache = new ArrayList<String>();
+	private static Set<String> uniqueBibs = new TreeSet<String>();
 	
 	@Override
 	public void logTime(final int bibnum, long bibtime, final TimerConfig timerConfig) {
@@ -95,6 +90,7 @@ public abstract class AbstractTimer implements Timer {
 
 	public synchronized void logUnregisteredBib(String bib, String reader){
 		System.out.println("UNREGISTERED '" + bib + "' @ "+reader);
+		uniqueBibs.add(bib);
 		if(!bibCache.contains(bib+"-"+reader)){
 			bibCache.add(bib+"-"+reader);
 			if(bibsByReader.containsKey(reader)){
@@ -112,7 +108,8 @@ public abstract class AbstractTimer implements Timer {
 		for(String reader:bibsByReader.keySet()){
 			sb.append("Reader "+reader+": "+bibsByReader.get(reader)+"          \t<br/>\n");
 		}
-		sb.append("Total bibs: "+ bibCache.size());
+		sb.append("Unique bibs: "+ uniqueBibs.size()+"          \t<br/>\n");
+		sb.append("Total reads: "+ bibCache.size());
 		
 		// write file
 //		Writer writer = null;
@@ -134,6 +131,7 @@ public abstract class AbstractTimer implements Timer {
 		// clear out cache
 		bibCache.clear();
 		bibsByReader.clear();
+		uniqueBibs.clear();
 	}
 	
 //	public static void main(String[] args){
