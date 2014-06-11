@@ -22,6 +22,8 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         registry.addConverter(getUserAuthoritiesToStringConverter());
         registry.addConverter(getIdToUserAuthoritiesConverter());
         registry.addConverter(getStringToUserAuthoritiesConverter());
+        registry.addConverter(getEventToStringConverter());
+
     }
 
     public Converter<Event, String> getEventToStringConverter() {
