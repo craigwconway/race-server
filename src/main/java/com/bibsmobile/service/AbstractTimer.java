@@ -19,8 +19,8 @@ import com.bibsmobile.model.TimerConfig;
 
 public abstract class AbstractTimer implements Timer {
 
-	private static Map<Integer, Integer> bibCountByPosition = new HashMap<Integer, Integer>(); // position, count
-	private static List<String> bibPositionCache = new ArrayList<String>();
+	private static Map<String, Integer> bibsByReader = new HashMap<String, Integer>(); // position, count
+	private static List<String> bibCache = new ArrayList<String>();
 	
 	@Override
 	public void logTime(final int bibnum, long bibtime, final TimerConfig timerConfig) {
@@ -28,7 +28,7 @@ public abstract class AbstractTimer implements Timer {
 		final String slog = Thread.currentThread().getName() +" " + getClass().getName();
 		final String cacheKey = bibnum+"-"+timerConfig.getPosition();
 		System.out.println(slog+" logging '"+bibnum + "' @ "+bibtime+ ", position "+timerConfig.getPosition());
-		logUnregisteredBib(String.valueOf(bibnum),timerConfig.getPosition());// test logging
+		logUnregisteredBib(String.valueOf(bibnum),timerConfig.getUrl());// test logging
 		if (!bibTimes.containsKey(cacheKey)) 
 			bibTimes.put(cacheKey, bibtime);
 
@@ -93,14 +93,14 @@ public abstract class AbstractTimer implements Timer {
 		}
 	}
 
-	public synchronized void logUnregisteredBib(String bib, int position){
-		System.out.println("UNREGISTERED '" + bib + "' @ "+position);
-		if(!bibPositionCache.contains(bib+"-"+position)){
-			bibPositionCache.add(bib+"-"+position);
-			if(bibCountByPosition.containsKey(position)){
-				bibCountByPosition.put(position, bibCountByPosition.get(position)+1);
+	public synchronized void logUnregisteredBib(String bib, String reader){
+		System.out.println("UNREGISTERED '" + bib + "' @ "+reader);
+		if(!bibCache.contains(bib+"-"+reader)){
+			bibCache.add(bib+"-"+reader);
+			if(bibsByReader.containsKey(reader)){
+				bibsByReader.put(reader, bibsByReader.get(reader)+1);
 			}else{
-				bibCountByPosition.put(position, 1);
+				bibsByReader.put(reader, 1);
 			}
 		}
 	}
@@ -109,10 +109,10 @@ public abstract class AbstractTimer implements Timer {
 	public String createReport(){
 		// create file
 		StringBuilder sb = new StringBuilder();
-		for(Integer position:bibCountByPosition.keySet()){
-			sb.append("Reader "+(position+1)+": "+bibCountByPosition.get(position)+"          \t<br/>\n");
+		for(String reader:bibsByReader.keySet()){
+			sb.append("Reader "+reader+": "+bibsByReader.get(reader)+"          \t<br/>\n");
 		}
-		sb.append("Total bibs: "+ bibPositionCache.size());
+		sb.append("Total bibs: "+ bibCache.size());
 		
 		// write file
 //		Writer writer = null;
@@ -132,8 +132,8 @@ public abstract class AbstractTimer implements Timer {
 	@Override
 	public void clearReport(){
 		// clear out cache
-		bibPositionCache.clear();
-		bibCountByPosition.clear();
+		bibCache.clear();
+		bibsByReader.clear();
 	}
 	
 //	public static void main(String[] args){
