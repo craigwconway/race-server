@@ -35,7 +35,7 @@ public class AuthorizeNetController {
         Long cartIdFromSession = (Long)request.getSession().getAttribute(CartUtil.SESSION_ATTR_CART_ID);
         Cart cart = null;
         if(cartIdFromSession != null) {
-             Cart.findCart(cartIdFromSession);
+            cart = Cart.findCart(cartIdFromSession);
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");

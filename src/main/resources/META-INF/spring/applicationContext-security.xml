@@ -12,6 +12,8 @@
 
     <http auto-config="false" pattern="/rest/**" use-expressions="true" entry-point-ref="restAuthenticationEntryPoint">
         <intercept-url pattern="/rest/login" access="isAnonymous()"/>
+        <intercept-url pattern="/rest/userprofiles" access="permitAll" method="POST" />
+
         <form-login login-processing-url="/rest/login" username-parameter="username" password-parameter="password"
                     authentication-success-handler-ref="restAuthenticationSuccessHandler" authentication-failure-handler-ref="restAuthenticationFailureHandler"/>
         <logout logout-url="/rest/logout" success-handler-ref="restLogoutSuccessHandler"/>
