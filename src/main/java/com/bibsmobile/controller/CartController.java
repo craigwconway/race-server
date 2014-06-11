@@ -5,6 +5,7 @@ import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.CartUtil;
+import com.bibsmobile.util.UserProfileUtil;
 import net.authorize.sim.Fingerprint;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.HttpHeaders;
@@ -43,6 +44,10 @@ public class CartController {
     @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
     public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel,
                                      @ModelAttribute UserProfile userProfile, HttpServletRequest request) {
+        UserProfileUtil.disableUserProfile(userProfile);
+        if (userProfile.getId() == null) {
+            userProfileService.saveUserProfile(userProfile);
+        }
         Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile);
         uiModel.addAttribute("cart", cart);
         return "redirect:/carts/item/" + eventCartItemId;
