@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Created by Jevgeni on 11.06.2014.
  */
-@Controller("/rest/userpofiles")
+@RequestMapping("/rest/userpofiles")
+@Controller
 public class UserProfileRestController {
 
     @Autowired
