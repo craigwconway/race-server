@@ -4,6 +4,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.TypedQuery;
@@ -27,7 +28,8 @@ public class CartItem {
     @ManyToOne
     private EventCartItem eventCartItem;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cartItem", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="user_profile_id")
     private UserProfile userProfile;
 
     private int quantity;

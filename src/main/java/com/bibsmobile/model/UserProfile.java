@@ -79,7 +79,7 @@ public class UserProfile implements UserDetails {
 
     private String hearFrom;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "userProfile")
     private CartItem cartItem;
 
     @Override

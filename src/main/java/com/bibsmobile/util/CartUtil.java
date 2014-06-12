@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +62,7 @@ public class CartUtil {
             cart.setStatus(Cart.NEW);
             cart.setCreated(now);
             cart.setUpdated(now);
+            cart.setCartItems(new ArrayList<CartItem>());
             //user=null if anonymous
             cart.setUser(user);
             cart.persist();
