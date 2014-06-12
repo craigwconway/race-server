@@ -30,7 +30,9 @@ public class CartUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null) {
             String username = authentication.getName();
-            user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            if (!username.equals("anonymousUser")) {
+                user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            }
         }
 
         Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);

@@ -5,6 +5,7 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.CartUtil;
 import com.bibsmobile.util.UserProfileUtil;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 @RequestMapping("/rest/carts")
 @Controller
@@ -37,6 +39,6 @@ public class CartRestController {
         Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, eventCartItemQuantity, registrationProfile);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<>(cart.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user,")), headers, HttpStatus.OK);
     }
 }
