@@ -1,7 +1,9 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.*;
+
 import flexjson.JSONSerializer;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -623,6 +628,72 @@ public class EventController {
             }
         }
         return sentTo.toString();
+    }
+    
+    @RequestMapping(params = "form", produces = "text/html")
+    public String createForm(Model uiModel) {
+        populateEditForm(uiModel, new Event());
+        return "events/create";
+    }
+    
+    @RequestMapping(value = "/{id}", produces = "text/html")
+    public String show(@PathVariable("id") Long id, Model uiModel) {
+        addDateTimeFormatPatterns(uiModel);
+        uiModel.addAttribute("event", Event.findEvent(id));
+        uiModel.addAttribute("itemId", id);
+        return "events/show";
+    }
+    
+    @RequestMapping(produces = "text/html")
+    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("events", Event.findEventEntries(firstResult, sizeNo, sortFieldName, sortOrder));
+            float nrOfPages = (float) Event.countEvents() / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("events", Event.findAllEvents(sortFieldName, sortOrder));
+        }
+        addDateTimeFormatPatterns(uiModel);
+        return "events/list";
+    }
+    
+    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    public String updateForm(@PathVariable("id") Long id, Model uiModel) {
+        populateEditForm(uiModel, Event.findEvent(id));
+        return "events/update";
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        Event event = Event.findEvent(id);
+        event.remove();
+        uiModel.asMap().clear();
+        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
+        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        return "redirect:/events";
+    }
+    
+    void addDateTimeFormatPatterns(Model uiModel) {
+        uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
+    }
+    
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {}
+        return pathSegment;
     }
 
 }

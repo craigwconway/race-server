@@ -47,5 +47,6 @@
         <field:display field="hearFrom" id="s_com_bibsmobile_model_UserProfile_hearFrom" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="cartItem" id="s_com_bibsmobile_model_UserProfile_cartItem" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="forgotPasswordCode" id="s_com_bibsmobile_model_UserProfile_forgotPasswordCode" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="raceResults" id="s_com_bibsmobile_model_UserProfile_raceResults" object="${userprofile}" render="false" z="S5t1NBjTH7x7Qj8BZ4uo61R2qYU="/>
     </page:show>
 </div>

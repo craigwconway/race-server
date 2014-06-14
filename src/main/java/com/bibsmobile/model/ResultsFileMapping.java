@@ -15,6 +15,8 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 
+import flexjson.JSONSerializer;
+
 @RooJavaBean
 @RooJpaActiveRecord(finders = { "findResultsFileMappingsByResultsFile" })
 @RooJson
@@ -39,6 +41,11 @@ public class ResultsFileMapping {
     @Override
     public String toString() {
         return map;
+    }
+
+    public String toJson() {
+        return new JSONSerializer().include("*.row1", "*.row2", "*.options")
+        .exclude("*.class").serialize(this);
     }
 
 }

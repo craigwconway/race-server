@@ -5,7 +5,7 @@
     <form:create compositePkField="id" id="fc_com_bibsmobile_model_EventUserGroup" modelAttribute="eventUserGroup" path="/eventusergroups" render="${empty dependencies}" z="yQu7StxTNYSTjc6sZ4FH+K8Quvk=">
         <field:input disableFormBinding="true" field="id.serialVersionUID" id="c_com_bibsmobile_model_EventUserGroup_id_serialVersionUID" z="/cyZs+Y2RE31EvIS4etqIPvH6uE="/>
         <field:select disableFormBinding="true" field="id.event" id="c_com_bibsmobile_model_EventUserGroup_id_event" itemValue="id" items="${events}" path="/events" z="s3puY/F87drabdiGN6V8OfL1H/g="/>
-        <field:select disableFormBinding="true" field="id.userGroup" id="c_com_bibsmobile_model_EventUserGroup_id_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="36OxDTvLjhanwm4xP9Qbqhdzx8o="/>
+        <field:input disableFormBinding="true" field="id.userGroup" id="c_com_bibsmobile_model_EventUserGroup_id_userGroup" z="5EKTqI8HvOqAlfbQ/vFJ/LG1QD0="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventUserGroup" render="${not empty dependencies}" z="S4V5j1uzjJZB2ZOit488ZVl3jxk="/>
 </div>

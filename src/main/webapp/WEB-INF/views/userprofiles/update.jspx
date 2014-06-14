@@ -28,7 +28,7 @@
                 <field:input field="age" id="c_com_bibsmobile_model_UserProfile_age" z="user-managed"/>
             </div>
         </sec:authorize>
-        <field:simple field="raceResults" id="c_com_bibsmobile_model_UserProfile_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" z="/bGpUN/BqajHRNdmskh1b9EfgtU="/>
+        <field:input field="raceResults" id="c_com_bibsmobile_model_UserProfile_raceResults" z="oQz7xnJM3dio7WLpURsyqPZBbwE="/>
         <field:input field="phone" id="c_com_bibsmobile_model_UserProfile_phone" render="false" z="user-managed"/>
         <field:input field="addressLine1" id="c_com_bibsmobile_model_UserProfile_addressLine1" render="false" z="user-managed"/>
         <field:input field="addressLine2" id="c_com_bibsmobile_model_UserProfile_addressLine2" render="false" z="user-managed"/>

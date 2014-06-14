@@ -10,11 +10,11 @@ import javax.persistence.TypedQuery;
 
 privileged aspect UserGroup_Roo_Finder {
     
-    public static Long UserGroup.countFindUserGroupsByGroupType(UserGroupType groupType) {
-        if (groupType == null) throw new IllegalArgumentException("The groupType argument is required");
+    public static Long UserGroup.countFindUserGroupsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
         EntityManager em = UserGroup.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserGroup AS o WHERE o.groupType = :groupType", Long.class);
-        q.setParameter("groupType", groupType);
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserGroup AS o WHERE o.name = :name", Long.class);
+        q.setParameter("name", name);
         return ((Long) q.getSingleResult());
     }
     
@@ -40,15 +40,7 @@ privileged aspect UserGroup_Roo_Finder {
         q.setParameter("groupType", groupType);
         return q;
     }
-
-    public static Long UserGroup.countFindUserGroupsByNameEquals(String name) {
-        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
-        EntityManager em = UserGroup.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserGroup AS o WHERE o.name = :name", Long.class);
-        q.setParameter("name", name);
-        return ((Long) q.getSingleResult());
-    }
-
+    
     public static TypedQuery<UserGroup> UserGroup.findUserGroupsByNameEquals(String name) {
         if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
         EntityManager em = UserGroup.entityManager();
@@ -56,7 +48,7 @@ privileged aspect UserGroup_Roo_Finder {
         q.setParameter("name", name);
         return q;
     }
-
+    
     public static TypedQuery<UserGroup> UserGroup.findUserGroupsByNameEquals(String name, String sortFieldName, String sortOrder) {
         if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
         EntityManager em = UserGroup.entityManager();

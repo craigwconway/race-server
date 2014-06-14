@@ -122,4 +122,21 @@ public class EventCartItemController {
     public List<EventCartItemGenderEnum> getEventCartItemGenderEnums() {
         return Arrays.asList(EventCartItemGenderEnum.values());
     }
+    
+    @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindEventCartItemsByEvent(@RequestParam("event") Event event) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByEvent(event).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByType", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindEventCartItemsByType(@RequestParam("type") EventCartItemTypeEnum type) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByType(type).getResultList()), headers, HttpStatus.OK);
+    }
+    
 }

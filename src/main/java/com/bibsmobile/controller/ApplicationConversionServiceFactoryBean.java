@@ -100,6 +100,29 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
             }
         };
     }
-
+    public Converter<UserGroup, String> getUserGroupToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroup, java.lang.String>() {
+            public String convert(UserGroup userGroup) {
+                return new StringBuilder().append(userGroup.getName()).append(' ').append(userGroup.getBibWrites()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, UserGroup> getIdToUserGroupConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserGroup>() {
+            public com.bibsmobile.model.UserGroup convert(java.lang.Long id) {
+                return UserGroup.findUserGroup(id);
+            }
+        };
+    }
+    
+    public Converter<String, UserGroup> getStringToUserGroupConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserGroup>() {
+            public com.bibsmobile.model.UserGroup convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), UserGroup.class);
+            }
+        };
+    }
+    
 
 }

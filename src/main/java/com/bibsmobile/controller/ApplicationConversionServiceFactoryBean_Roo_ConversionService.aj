@@ -21,7 +21,6 @@ import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthority;
-import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
@@ -411,30 +410,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserAuthority>() {
             public com.bibsmobile.model.UserAuthority convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), UserAuthority.class);
-            }
-        };
-    }
-    
-    public Converter<UserGroup, String> ApplicationConversionServiceFactoryBean.getUserGroupToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroup, java.lang.String>() {
-            public String convert(UserGroup userGroup) {
-                return new StringBuilder().append(userGroup.getName()).append(' ').append(userGroup.getBibWrites()).toString();
-            }
-        };
-    }
-    
-    public Converter<Long, UserGroup> ApplicationConversionServiceFactoryBean.getIdToUserGroupConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserGroup>() {
-            public com.bibsmobile.model.UserGroup convert(java.lang.Long id) {
-                return UserGroup.findUserGroup(id);
-            }
-        };
-    }
-    
-    public Converter<String, UserGroup> ApplicationConversionServiceFactoryBean.getStringToUserGroupConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserGroup>() {
-            public com.bibsmobile.model.UserGroup convert(String id) {
-                return getObject().convert(getObject().convert(id, Long.class), UserGroup.class);
             }
         };
     }

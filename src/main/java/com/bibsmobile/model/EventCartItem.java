@@ -1,7 +1,9 @@
 package com.bibsmobile.model;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -10,7 +12,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import flexjson.JSON;
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
+
 import javax.persistence.*;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
@@ -18,7 +24,9 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
+
 import javax.validation.constraints.NotNull;
+
 import java.util.HashSet;
 
 @RooJavaBean
@@ -142,4 +150,36 @@ public class EventCartItem {
         q.setParameter("events", events);
         return q;
     }
+
+    
+    public String toJson() {
+        return new JSONSerializer()
+        .exclude("*.class").serialize(this);
+    }
+    
+    public String toJson(String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(this);
+    }
+    
+    public static EventCartItem fromJsonToEventCartItem(String json) {
+        return new JSONDeserializer<EventCartItem>()
+        .use(null, EventCartItem.class).deserialize(json);
+    }
+    
+    public static Collection<EventCartItem> fromJsonArrayToEventCartItems(String json) {
+        return new JSONDeserializer<List<EventCartItem>>()
+        .use("values", EventCartItem.class).deserialize(json);
+    }
+
+    public static String toJsonArray(Collection<EventCartItem> collection) {
+        return new JSONSerializer()
+        .exclude("*.class").serialize(collection);
+    }
+    
+    public static String toJsonArray(Collection<EventCartItem> collection, String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(collection);
+    }
+    
 }

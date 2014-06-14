@@ -12,16 +12,6 @@ import java.util.List;
 
 privileged aspect ResultsFileMapping_Roo_Json {
     
-    public String ResultsFileMapping.toJson() {
-        return new JSONSerializer().include("*.row1", "*.row2", "*.options")
-        .exclude("*.class").serialize(this);
-    }
-    
-    public String ResultsFileMapping.toJson(String[] fields) {
-        return new JSONSerializer()
-        .include(fields).exclude("*.class").serialize(this);
-    }
-    
     public static ResultsFileMapping ResultsFileMapping.fromJsonToResultsFileMapping(String json) {
         return new JSONDeserializer<ResultsFileMapping>()
         .use(null, ResultsFileMapping.class).deserialize(json);
