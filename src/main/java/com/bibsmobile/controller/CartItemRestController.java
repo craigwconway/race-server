@@ -25,18 +25,18 @@ public class CartItemRestController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ResponseEntity<String> search(
-            @RequestParam(required = false) String userGroup,
+            @RequestParam(required = false) Long userGroupId,
             @RequestParam(required = false) Long eventId,
             @RequestParam(required = false) EventCartItemTypeEnum eventCartItemType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "ddMMyyyy") Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "ddMMyyyy") Date toDate) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        if (userGroup != null && !userGroup.isEmpty()) {
-            List<UserGroup> userGroups = UserGroup.findUserGroupsByNameEquals(userGroup).getResultList();
+        if (userGroupId != null) {
+            UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
             List<Event> events = new ArrayList<>();
-            for (UserGroup group : userGroups) {
-                for (EventUserGroup eventUserGroup : group.getEventUserGroups()) {
+            if (userGroup != null) {
+                for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
                     events.add(eventUserGroup.getEvent());
                 }
             }
