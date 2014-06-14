@@ -5,6 +5,7 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.UserGroup;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -15,6 +16,14 @@ privileged aspect EventUserGroup_Roo_Finder {
         EntityManager em = EventUserGroup.entityManager();
         TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventUserGroup AS o WHERE o.event = :event", Long.class);
         q.setParameter("event", event);
+        return ((Long) q.getSingleResult());
+    }
+    
+    public static Long EventUserGroup.countFindEventUserGroupsByUserGroup(UserGroup userGroup) {
+        if (userGroup == null) throw new IllegalArgumentException("The userGroup argument is required");
+        EntityManager em = EventUserGroup.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventUserGroup AS o WHERE o.userGroup = :userGroup", Long.class);
+        q.setParameter("userGroup", userGroup);
         return ((Long) q.getSingleResult());
     }
     
@@ -38,6 +47,29 @@ privileged aspect EventUserGroup_Roo_Finder {
         }
         TypedQuery<EventUserGroup> q = em.createQuery(jpaQuery, EventUserGroup.class);
         q.setParameter("event", event);
+        return q;
+    }
+    
+    public static TypedQuery<EventUserGroup> EventUserGroup.findEventUserGroupsByUserGroup(UserGroup userGroup) {
+        if (userGroup == null) throw new IllegalArgumentException("The userGroup argument is required");
+        EntityManager em = EventUserGroup.entityManager();
+        TypedQuery<EventUserGroup> q = em.createQuery("SELECT o FROM EventUserGroup AS o WHERE o.userGroup = :userGroup", EventUserGroup.class);
+        q.setParameter("userGroup", userGroup);
+        return q;
+    }
+    
+    public static TypedQuery<EventUserGroup> EventUserGroup.findEventUserGroupsByUserGroup(UserGroup userGroup, String sortFieldName, String sortOrder) {
+        if (userGroup == null) throw new IllegalArgumentException("The userGroup argument is required");
+        EntityManager em = EventUserGroup.entityManager();
+        String jpaQuery = "SELECT o FROM EventUserGroup AS o WHERE o.userGroup = :userGroup";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<EventUserGroup> q = em.createQuery(jpaQuery, EventUserGroup.class);
+        q.setParameter("userGroup", userGroup);
         return q;
     }
     

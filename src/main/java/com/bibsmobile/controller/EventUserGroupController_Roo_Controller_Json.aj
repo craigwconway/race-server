@@ -7,6 +7,7 @@ import com.bibsmobile.controller.EventUserGroupController;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.EventUserGroupId;
+import com.bibsmobile.model.UserGroup;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -93,6 +94,14 @@ privileged aspect EventUserGroupController_Roo_Controller_Json {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<String>(EventUserGroup.toJsonArray(EventUserGroup.findEventUserGroupsByEvent(event).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByUserGroup", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> EventUserGroupController.jsonFindEventUserGroupsByUserGroup(@RequestParam("userGroup") UserGroup userGroup) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(EventUserGroup.toJsonArray(EventUserGroup.findEventUserGroupsByUserGroup(userGroup).getResultList()), headers, HttpStatus.OK);
     }
     
 }

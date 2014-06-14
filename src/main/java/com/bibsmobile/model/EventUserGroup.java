@@ -13,7 +13,7 @@ import javax.persistence.MapsId;
 @RooToString
 @RooEquals
 @RooJson
-@RooJpaActiveRecord(identifierType = EventUserGroupId.class, finders = { "findEventUserGroupsByEvent" })
+@RooJpaActiveRecord(identifierType = EventUserGroupId.class, finders = { "findEventUserGroupsByEvent", "findEventUserGroupsByUserGroup" })
 public class EventUserGroup {
 
     @MapsId("id")
