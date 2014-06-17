@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.TypedQuery;
-
 import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -29,7 +28,7 @@ public class CartItem {
     private EventCartItem eventCartItem;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="user_profile_id")
+    @JoinColumn(name = "user_profile_id")
     private UserProfile userProfile;
 
     private int quantity;
@@ -41,6 +40,8 @@ public class CartItem {
     private String comment;
 
     private String coupon;
+
+    private Boolean exported;
 
     public static TypedQuery<CartItem> findCartItemsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
         if (eventCartItems == null) throw new IllegalArgumentException("The eventCartItems argument is required");
@@ -63,6 +64,18 @@ public class CartItem {
         return q;
     }
 
+    public static TypedQuery<CartItem> findCompletedCartItemsByEventCartItems(List<EventCartItem> eventCartItems, boolean all) {
+        if (eventCartItems == null) throw new IllegalArgumentException("The eventCartItems argument is required");
+        EntityManager em = CartItem.entityManager();
+        String jpaQuery = "SELECT o FROM CartItem AS o WHERE o.eventCartItem IN (:eventCartItems) and o.cart.status = 3";
+        if (!all) {
+            jpaQuery += " AND o.exported != true";
+        }
+        TypedQuery<CartItem> q = em.createQuery(jpaQuery, CartItem.class);
+        q.setParameter("eventCartItems", eventCartItems);
+        return q;
+    }
+
     public static List<CartItem> findAllCartItems(Date from, Date to) {
         EntityManager em = CartItem.entityManager();
         String jpaQuery = "SELECT o FROM CartItem AS o";
@@ -82,5 +95,4 @@ public class CartItem {
         }
         return q.getResultList();
     }
-
 }

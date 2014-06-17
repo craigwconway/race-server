@@ -9,7 +9,7 @@
             <table:column id="c_com_bibsmobile_model_CartItem_quantity" property="quantity" z="DvVnz5v67GAbN6tc1HUy9RgNoMs="/>
             <table:column date="true" dateTimePattern="${cartItem_created_date_format}" id="c_com_bibsmobile_model_CartItem_created" property="created" z="l6eJAQrBZbK7o0HmGu1JlDU8pUo="/>
             <table:column date="true" dateTimePattern="${cartItem_updated_date_format}" id="c_com_bibsmobile_model_CartItem_updated" property="updated" z="uLgAqkYKko6S2URCL+n/wj0EEig="/>
-            <table:column id="c_com_bibsmobile_model_CartItem_comment" property="comment" z="XOShD6hw/agfyNHdPzzPKnIU/t0="/>
+            <table:column id="c_com_bibsmobile_model_CartItem_userProfile" property="userProfile" z="user-managed" render="false"/>
         </table:table>
     </page:list>
 </div>

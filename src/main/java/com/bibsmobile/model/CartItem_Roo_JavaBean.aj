@@ -75,4 +75,12 @@ privileged aspect CartItem_Roo_JavaBean {
         this.coupon = coupon;
     }
     
+    public Boolean CartItem.getExported() {
+        return this.exported;
+    }
+    
+    public void CartItem.setExported(Boolean exported) {
+        this.exported = exported;
+    }
+    
 }

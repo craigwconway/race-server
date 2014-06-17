@@ -5,6 +5,7 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
 import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventAlert;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemPriceChange;
@@ -58,6 +59,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Cart>() {
             public com.bibsmobile.model.Cart convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), Cart.class);
+            }
+        };
+    }
+    
+    public Converter<CartItem, String> ApplicationConversionServiceFactoryBean.getCartItemToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.CartItem, java.lang.String>() {
+            public String convert(CartItem cartItem) {
+                return new StringBuilder().append(cartItem.getQuantity()).append(' ').append(cartItem.getCreated()).append(' ').append(cartItem.getUpdated()).append(' ').append(cartItem.getComment()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, CartItem> ApplicationConversionServiceFactoryBean.getIdToCartItemConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.CartItem>() {
+            public com.bibsmobile.model.CartItem convert(java.lang.Long id) {
+                return CartItem.findCartItem(id);
+            }
+        };
+    }
+    
+    public Converter<String, CartItem> ApplicationConversionServiceFactoryBean.getStringToCartItemConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.CartItem>() {
+            public com.bibsmobile.model.CartItem convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), CartItem.class);
             }
         };
     }
@@ -490,6 +515,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getCartToStringConverter());
         registry.addConverter(getIdToCartConverter());
         registry.addConverter(getStringToCartConverter());
+        registry.addConverter(getCartItemToStringConverter());
+        registry.addConverter(getIdToCartItemConverter());
+        registry.addConverter(getStringToCartItemConverter());
         registry.addConverter(getEventAlertToStringConverter());
         registry.addConverter(getIdToEventAlertConverter());
         registry.addConverter(getStringToEventAlertConverter());

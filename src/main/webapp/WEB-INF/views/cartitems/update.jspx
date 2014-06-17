@@ -9,5 +9,7 @@
         <field:datetime dateTimePattern="${cartItem_updated_date_format}" field="updated" id="c_com_bibsmobile_model_CartItem_updated" z="Im91inYjymDQKGdAW+5/Sl6ZuwU="/>
         <field:input field="comment" id="c_com_bibsmobile_model_CartItem_comment" z="rLXRUC7FrPS+yD0S8V7urd4DyIE="/>
         <field:input field="coupon" id="c_com_bibsmobile_model_CartItem_coupon" z="u68zmPLaFn8JdrwTZ4fHt9zUOXs="/>
+        <field:select field="userProfile" id="c_com_bibsmobile_model_CartItem_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" z="2xFQk8Ut/wvnQ9tAXg6/nj4h0JI="/>
+        <field:checkbox field="exported" id="c_com_bibsmobile_model_CartItem_exported" z="user-managed" render="false"/>
     </form:update>
 </div>

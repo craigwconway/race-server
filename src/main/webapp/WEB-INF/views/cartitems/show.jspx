@@ -9,5 +9,7 @@
         <field:display date="true" dateTimePattern="${cartItem_updated_date_format}" field="updated" id="s_com_bibsmobile_model_CartItem_updated" object="${cartitem}" z="5Vl2bvMX1ORtC1xE+O/b45ryO00="/>
         <field:display field="comment" id="s_com_bibsmobile_model_CartItem_comment" object="${cartitem}" z="ALk3QzL8PyJMqri4T+5wJR1Tajo="/>
         <field:display field="coupon" id="s_com_bibsmobile_model_CartItem_coupon" object="${cartitem}" z="FmYeSHXTc0K+ZwSLpN7or5HbN7M="/>
+        <field:display field="userProfile" id="s_com_bibsmobile_model_CartItem_userProfile" object="${cartitem}" z="nHwoZhXgLgu5auMY1NT097DQ5wE="/>
+        <field:display field="exported" id="s_com_bibsmobile_model_CartItem_exported" object="${cartitem}" z="user-managed" render="false"/>
     </page:show>
 </div>

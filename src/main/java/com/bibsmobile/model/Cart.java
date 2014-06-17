@@ -22,11 +22,11 @@ import java.util.List;
 public class Cart {
 
     public static final int NEW = 0;
-    public static final int SAVED = 0;
-    public static final int PROCESSING = 0;
-    public static final int COMPLETE = 0;
-    public static final int REFUND_REQUEST = 0;
-    public static final int REFUNDED = 0;
+    public static final int SAVED = 1;
+    public static final int PROCESSING = 2;
+    public static final int COMPLETE = 3;
+    public static final int REFUND_REQUEST = 4;
+    public static final int REFUNDED = 5;
 
     @ManyToOne
     private UserProfile user;

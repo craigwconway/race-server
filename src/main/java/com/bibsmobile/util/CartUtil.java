@@ -133,10 +133,7 @@ public class CartUtil {
         cartItem.setQuantity(quantity);
         cartItem.setCreated(now);
         cartItem.setUpdated(now);
-        //registration
-        if (i.getType() == EventCartItemTypeEnum.TICKET) {
-            cartItem.setUserProfile(userProfile);
-        }
+        cartItem.setUserProfile(userProfile);
 
         //updating available quantity in eventcartitem
         i.setAvailable(i.getAvailable() - quantity);
