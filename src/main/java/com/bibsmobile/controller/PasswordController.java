@@ -22,10 +22,10 @@ public class PasswordController {
     @Autowired
     private SimpleMailMessage forgotPasswordMessage;
 
-    @Value("#{myProps['email.forgotPassword.text']}")
+    @Value("${email.forgotPassword.text}")
     private String resetPasswordText;
 
-    @Value("#{myProps['email.forgotPassword.url']}")
+    @Value("${email.forgotPassword.url}")
     private String resetPasswordUrl;
 
     @RequestMapping(value = "/forgotPassword", method = RequestMethod.GET)
