@@ -3,11 +3,17 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupType;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.wrapper.UserProfileWrapper;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.UserProfileUtil;
 import flexjson.JSONSerializer;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +26,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Jevgeni on 11.06.2014.
@@ -72,7 +80,9 @@ public class UserProfileRestController {
 
     @RequestMapping(value = "/eventadmin", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createEventAdminFromJson(@RequestBody String json) {
-        UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
+        UserProfileWrapper userProfileWrapper = UserProfileWrapper.fromJsonToUserProfileWrapper(json);
+        UserProfile userProfile = userProfileWrapper.getUserProfile();
+        String userGroupName = userProfileWrapper.getUserGroupName();
         List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_EVENT_ADMIN).getResultList();
         UserAuthority roleUserAuthority;
         if (CollectionUtils.isEmpty(roleUserAuthorities)) {
@@ -90,6 +100,27 @@ public class UserProfileRestController {
         userProfile.getUserAuthorities().add(userAuthorities);
         userProfileService.saveUserProfile(userProfile);
         userAuthorities.persist();
+
+        if (StringUtils.isNotEmpty(userGroupName)) {
+            UserGroup userGroup = new UserGroup();
+            userGroup.setName(userGroupName);
+            userGroup.setGroupType(UserGroupType.COMPANY);
+
+            Set<UserGroupUserAuthority> userGroupUserAuthorities = new HashSet<>();
+
+            UserGroupUserAuthority userGroupUserAuthority = new UserGroupUserAuthority();
+            UserGroupUserAuthorityID userGroupUserAuthorityID = new UserGroupUserAuthorityID();
+            userGroupUserAuthorityID.setUserAuthorities(userAuthorities);
+            userGroupUserAuthorityID.setUserGroup(userGroup);
+            userGroupUserAuthority.setId(userGroupUserAuthorityID);
+
+            userGroupUserAuthorities.add(userGroupUserAuthority);
+
+            userGroup.setUserGroupUserAuthorities(userGroupUserAuthorities);
+
+            //Cascade.ALL to userGroupUserAuthorities
+            userGroup.persist();
+        }
         authenticateRegisteredUser(userProfile);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -99,6 +130,12 @@ public class UserProfileRestController {
     private void authenticateRegisteredUser(UserProfile userProfile) {
         Authentication auth = new UsernamePasswordAuthenticationToken(userProfile, null, userProfile.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
+    }
+
+    private static class EventAdminWrapper {
+        private UserProfile userProfile;
+        private String userGroupName;
+
     }
 
 

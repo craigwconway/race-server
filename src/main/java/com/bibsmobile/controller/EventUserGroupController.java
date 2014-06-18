@@ -127,7 +127,7 @@ public class EventUserGroupController {
 
 
     @RequestMapping(value = "deleteByIds/{id}/{ugid}", method = RequestMethod.DELETE, headers = "Accept=application/json")
-    public ResponseEntity<String> deleteByIds(@PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public ResponseEntity<String> deleteByIds(@PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId) {
         Event event = Event.findEvent(eventId);
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
         HttpHeaders headers = new HttpHeaders();
@@ -143,7 +143,7 @@ public class EventUserGroupController {
     }
 
     @RequestMapping(value = "createByIds/{id}/{ugid}", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createByIds(@PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public ResponseEntity<String> createByIds(@PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId) {
         Event event = Event.findEvent(eventId);
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
         HttpHeaders headers = new HttpHeaders();
@@ -157,7 +157,7 @@ public class EventUserGroupController {
     }
 
     @RequestMapping(value = "updateByIds/{id}/{ugid}", method = RequestMethod.PUT, headers = "Accept=application/json")
-    public ResponseEntity<String> updateByIds(@RequestBody String json, @PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public ResponseEntity<String> updateByIds(@RequestBody String json, @PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId) {
         Event event = Event.findEvent(eventId);
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
         HttpHeaders headers = new HttpHeaders();
