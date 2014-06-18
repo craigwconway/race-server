@@ -2,12 +2,12 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.AuthorizeData;
 import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
 import com.bibsmobile.util.CartUtil;
 import net.authorize.ResponseField;
 import net.authorize.sim.Fingerprint;
 import net.authorize.sim.Result;
 import net.authorize.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,9 +47,9 @@ public class AuthorizeNetController {
     @RequestMapping(value = "/cartdata", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonAuthorizeNetCart(HttpServletRequest request) {
-        Long cartIdFromSession = (Long)request.getSession().getAttribute(CartUtil.SESSION_ATTR_CART_ID);
+        Long cartIdFromSession = (Long) request.getSession().getAttribute(CartUtil.SESSION_ATTR_CART_ID);
         Cart cart = null;
-        if(cartIdFromSession != null) {
+        if (cartIdFromSession != null) {
             cart = Cart.findCart(cartIdFromSession);
         }
         HttpHeaders headers = new HttpHeaders();
@@ -102,6 +102,10 @@ public class AuthorizeNetController {
                 cart.setStatus(Cart.COMPLETE);
                 cart.persist();
                 request.getSession().removeAttribute(CartUtil.SESSION_ATTR_CART_ID);
+            }
+            for (CartItem cartItem : cart.getCartItems()) {
+                cartItem.getEventCartItem().setPurchased(cartItem.getEventCartItem().getPurchased() + cartItem.getQuantity());
+                cartItem.getEventCartItem().persist();
             }
         } else {
             redirectUrl = redirectTransactionFailUrl(result);

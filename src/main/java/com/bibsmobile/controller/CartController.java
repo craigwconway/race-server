@@ -44,8 +44,8 @@ public class CartController {
     @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
     public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel,
                                      @ModelAttribute UserProfile userProfile, HttpServletRequest request) {
-        UserProfileUtil.disableUserProfile(userProfile);
         if (userProfile.getId() == null) {
+            UserProfileUtil.disableUserProfile(userProfile);
             userProfileService.saveUserProfile(userProfile);
         }
         //TODO: implement if needed color and size in admin panel

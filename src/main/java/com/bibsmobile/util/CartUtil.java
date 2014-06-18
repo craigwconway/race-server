@@ -85,20 +85,28 @@ public class CartUtil {
 
                     //adding
                     if (quantity > 0) {
-                        //>0 increasing, <0 decreasing
-                        int diff = quantity - ci.getQuantity();
-                        //only if increasing
-                        if (diff > eventCartItem.getAvailable()) {
+                        boolean increasing = quantity >= ci.getQuantity();
+
+                        if (increasing) {
+                            //only if increasing
                             quantity = eventCartItem.getAvailable();
+                            eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
+                        } else {
+                            // ci.getQuantity() > quantity
+                            //diff>0
+                            int diff = ci.getQuantity() - quantity;
+                            //add removed quantity to available
+                            eventCartItem.setAvailable(eventCartItem.getAvailable() + diff);
                         }
                         ci.setQuantity(quantity);
                         ci.setUpdated(now);
                         ci.persist();
-                        eventCartItem.setAvailable(eventCartItem.getAvailable() - diff);
                         eventCartItem.persist();
                     }
                     //removing
                     else {
+                        //add removed quantity to available
+                        eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
                         ci.remove();
                     }
                     existedCartItem = true;
@@ -114,7 +122,7 @@ public class CartUtil {
 
         double total = 0;
         for (CartItem ci : cart.getCartItems()) {
-            total += (ci.getQuantity() * ci.getEventCartItem().getActualPrice());
+            total += (ci.getQuantity() * ci.getPrice());
         }
         cart.setTotal(total);
         cart.merge();
