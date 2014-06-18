@@ -3,7 +3,9 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,7 @@ import java.util.List;
 @RequestMapping("/userauthorities")
 @Controller
 @RooWebScaffold(path = "userauthorities", formBackingObject = UserAuthorities.class, update = false)
+@RooWebJson(jsonObject = UserAuthorities.class)
 public class UserAuthoritiesController {
 
     @RequestMapping(params = "form", produces = "text/html")
