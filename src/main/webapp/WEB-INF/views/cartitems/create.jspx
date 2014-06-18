@@ -10,7 +10,10 @@
         <field:input field="comment" id="c_com_bibsmobile_model_CartItem_comment" z="rLXRUC7FrPS+yD0S8V7urd4DyIE="/>
         <field:input field="coupon" id="c_com_bibsmobile_model_CartItem_coupon" z="u68zmPLaFn8JdrwTZ4fHt9zUOXs="/>
         <field:select field="userProfile" id="c_com_bibsmobile_model_CartItem_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" z="2xFQk8Ut/wvnQ9tAXg6/nj4h0JI="/>
-        <field:checkbox field="exported" id="c_com_bibsmobile_model_CartItem_exported" z="user-managed" render="false"/>
+        <field:checkbox field="exported" id="c_com_bibsmobile_model_CartItem_exported" render="false" z="user-managed"/>
+        <field:input field="color" id="c_com_bibsmobile_model_CartItem_color" z="no+Q1ADARMFfpxkQSC0VTTSA8mI="/>
+        <field:input field="size" id="c_com_bibsmobile_model_CartItem_size" z="lzL4c6Uxk1h/LlG/RH6RG3v/TS4="/>
+        <field:input field="price" id="c_com_bibsmobile_model_CartItem_price" z="i+5+BwREMM8hbO2jI8x4R1brdbY="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_CartItem" render="${not empty dependencies}" z="JXYaOYjdtEvyijO2/8OWQknMHGM="/>
 </div>

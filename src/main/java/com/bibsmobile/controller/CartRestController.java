@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class CartRestController {
     @RequestMapping(value = "/item/{id}/updatequantity/{eventCartItemQuantity}", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> updateOrCreateCartJson(@PathVariable("id") Long eventCartItemId, @PathVariable Integer eventCartItemQuantity,
+                                                         @RequestParam(required = false) String color, @RequestParam(required = false) String size,
                                                          @RequestBody String userProfileJson, HttpServletRequest request) {
 
         UserProfile registrationProfile = UserProfile.fromJsonToUserProfile(userProfileJson);
@@ -36,9 +38,9 @@ public class CartRestController {
         if (registrationProfile.getId() == null) {
             userProfileService.saveUserProfile(registrationProfile);
         }
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, eventCartItemQuantity, registrationProfile);
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, eventCartItemQuantity, registrationProfile, color, size);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user,")), headers, HttpStatus.OK);
+        return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);
     }
 }

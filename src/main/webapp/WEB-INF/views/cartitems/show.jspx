@@ -10,6 +10,9 @@
         <field:display field="comment" id="s_com_bibsmobile_model_CartItem_comment" object="${cartitem}" z="ALk3QzL8PyJMqri4T+5wJR1Tajo="/>
         <field:display field="coupon" id="s_com_bibsmobile_model_CartItem_coupon" object="${cartitem}" z="FmYeSHXTc0K+ZwSLpN7or5HbN7M="/>
         <field:display field="userProfile" id="s_com_bibsmobile_model_CartItem_userProfile" object="${cartitem}" z="nHwoZhXgLgu5auMY1NT097DQ5wE="/>
-        <field:display field="exported" id="s_com_bibsmobile_model_CartItem_exported" object="${cartitem}" z="user-managed" render="false"/>
+        <field:display field="exported" id="s_com_bibsmobile_model_CartItem_exported" object="${cartitem}" render="false" z="user-managed"/>
+        <field:display field="color" id="s_com_bibsmobile_model_CartItem_color" object="${cartitem}" z="AE8SCL2UPIneZ85TjbSuP/i7eMg="/>
+        <field:display field="size" id="s_com_bibsmobile_model_CartItem_size" object="${cartitem}" z="ebNpqQuox2IC2LMP71zTHRt7dA4="/>
+        <field:display field="price" id="s_com_bibsmobile_model_CartItem_price" object="${cartitem}" z="ZzAktEDmCjOPp8OHi7DATikrfU0="/>
     </page:show>
 </div>

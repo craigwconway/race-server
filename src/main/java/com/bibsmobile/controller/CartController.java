@@ -48,7 +48,8 @@ public class CartController {
         if (userProfile.getId() == null) {
             userProfileService.saveUserProfile(userProfile);
         }
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile);
+        //TODO: implement if needed color and size in admin panel
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile, null, null);
         uiModel.addAttribute("cart", cart);
         return "redirect:/carts/item/" + eventCartItemId;
     }

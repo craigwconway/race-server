@@ -40,6 +40,7 @@ import java.util.Map;
 @RooWebJson(jsonObject = EventPhoto.class)
 public class EventPhotoController {
 
+    //TODO: move to properties
     private static final AWSCredentials AWS_CREDENTIALS = new BasicAWSCredentials("AKIAJGFZDMCYWJZZAL2Q", "Hg7Xe+CQuCnooQk6suYD4micA9vOWCXVER0JGTI+");
     private static final String AWS_BUCKET = "bibstest";
     private static final String AWS_BUCKET_URL_PREFIX = "http://bibstest.s3.amazonaws.com/";

@@ -11,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class CartUtil {
 
     public static final String SESSION_ATTR_CART_ID = "cartId";
 
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, Integer quantity, UserProfile userProfile) {
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, Integer quantity, UserProfile userProfile, String color, String size) {
         if (quantity < 0) {
             quantity = 0;
         }
@@ -73,7 +72,7 @@ public class CartUtil {
         CartItem cartItem;
         //if doesn't have product in cart and adding new not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
-            cartItem = getCartItem(cart, now, i, userProfile, quantity);
+            cartItem = getCartItem(cart, now, i, userProfile, quantity, color, size);
             cartItem.persist();
             cart.getCartItems().add(cartItem);
         } else {
@@ -107,7 +106,7 @@ public class CartUtil {
                 }
             }
             if (!existedCartItem && quantity > 0) {
-                cartItem = getCartItem(cart, now, i, userProfile, quantity);
+                cartItem = getCartItem(cart, now, i, userProfile, quantity, color, size);
                 cartItem.persist();
                 cart.getCartItems().add(cartItem);
             }
@@ -122,8 +121,13 @@ public class CartUtil {
         return cart;
     }
 
-    private static CartItem getCartItem(Cart cart, Date now, EventCartItem i, UserProfile userProfile, Integer quantity) {
+    private static CartItem getCartItem(Cart cart, Date now, EventCartItem i, UserProfile userProfile, Integer quantity, String color, String size) {
         CartItem cartItem = new CartItem();
+        if (i.getType() == EventCartItemTypeEnum.T_SHIRT) {
+            cartItem.setColor(color);
+            cartItem.setSize(size);
+        }
+        cartItem.setPrice(i.getActualPrice());
         cartItem.setCart(cart);
         cartItem.setEventCartItem(i);
         //add maximum available quantity

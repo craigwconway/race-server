@@ -43,6 +43,12 @@ public class CartItem {
 
     private Boolean exported;
 
+    private String color;
+
+    private String size;
+
+    private double price;
+
     public static TypedQuery<CartItem> findCartItemsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
         if (eventCartItems == null) throw new IllegalArgumentException("The eventCartItems argument is required");
         EntityManager em = CartItem.entityManager();

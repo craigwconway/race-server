@@ -119,6 +119,9 @@ public class CartItemController {
             String str = cartItem.getCreated() + ", "
                     + cartItem.getQuantity() + ", "
                     + cartItem.getCoupon() + ", "
+                    + cartItem.getPrice() + ", "
+                    + cartItem.getSize() + ", "
+                    + cartItem.getColor() + ", "
                     + eventCartItem.getType() + ", "
                     + eventCartItem.getName() + ", "
                     + eventCartItem.getPrice() + ", ";

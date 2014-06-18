@@ -83,4 +83,28 @@ privileged aspect CartItem_Roo_JavaBean {
         this.exported = exported;
     }
     
+    public String CartItem.getColor() {
+        return this.color;
+    }
+    
+    public void CartItem.setColor(String color) {
+        this.color = color;
+    }
+    
+    public String CartItem.getSize() {
+        return this.size;
+    }
+    
+    public void CartItem.setSize(String size) {
+        this.size = size;
+    }
+    
+    public double CartItem.getPrice() {
+        return this.price;
+    }
+    
+    public void CartItem.setPrice(double price) {
+        this.price = price;
+    }
+    
 }
