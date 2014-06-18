@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,13 +49,12 @@ public class UserProfileRestController {
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
         List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_USER).getResultList();
         UserAuthority roleUserAuthority;
-        if(CollectionUtils.isEmpty(roleUserAuthorities)){
+        if (CollectionUtils.isEmpty(roleUserAuthorities)) {
             roleUserAuthority = new UserAuthority();
             roleUserAuthority.setAuthority(ROLE_USER);
             roleUserAuthority.persist();
-        }
-        else{
-            roleUserAuthority =roleUserAuthorities.get(0);
+        } else {
+            roleUserAuthority = roleUserAuthorities.get(0);
         }
         UserAuthorities userAuthorities = new UserAuthorities();
         UserAuthoritiesID id = new UserAuthoritiesID();
@@ -62,6 +64,7 @@ public class UserProfileRestController {
         userProfile.getUserAuthorities().add(userAuthorities);
         userProfileService.saveUserProfile(userProfile);
         userAuthorities.persist();
+        authenticateRegisteredUser(userProfile);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(new JSONSerializer().exclude("*.class").serialize(userProfile), headers, HttpStatus.CREATED);
@@ -72,13 +75,12 @@ public class UserProfileRestController {
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
         List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_EVENT_ADMIN).getResultList();
         UserAuthority roleUserAuthority;
-        if(CollectionUtils.isEmpty(roleUserAuthorities)){
+        if (CollectionUtils.isEmpty(roleUserAuthorities)) {
             roleUserAuthority = new UserAuthority();
             roleUserAuthority.setAuthority(ROLE_EVENT_ADMIN);
             roleUserAuthority.persist();
-        }
-        else{
-            roleUserAuthority =roleUserAuthorities.get(0);
+        } else {
+            roleUserAuthority = roleUserAuthorities.get(0);
         }
         UserAuthorities userAuthorities = new UserAuthorities();
         UserAuthoritiesID id = new UserAuthoritiesID();
@@ -88,9 +90,15 @@ public class UserProfileRestController {
         userProfile.getUserAuthorities().add(userAuthorities);
         userProfileService.saveUserProfile(userProfile);
         userAuthorities.persist();
+        authenticateRegisteredUser(userProfile);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(new JSONSerializer().exclude("*.class").serialize(userProfile), headers, HttpStatus.CREATED);
+    }
+
+    private void authenticateRegisteredUser(UserProfile userProfile) {
+        Authentication auth = new UsernamePasswordAuthenticationToken(userProfile, null, userProfile.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
 
