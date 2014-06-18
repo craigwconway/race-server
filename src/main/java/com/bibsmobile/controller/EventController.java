@@ -8,6 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
@@ -592,6 +595,15 @@ public class EventController {
             }
         }
         return Event.toJsonArray(events.values());
+    }
+
+    @RequestMapping(headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> listJson() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        List<Event> result = Event.findAllEvents();
+        return new ResponseEntity<String>(Event.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/notify")

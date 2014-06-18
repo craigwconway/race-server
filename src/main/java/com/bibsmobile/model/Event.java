@@ -17,8 +17,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 
 @RooJavaBean
-@RooJson
 @RooEquals
+@RooJson
 @RooJpaActiveRecord(finders = { "findEventsByTypeEquals", "findEventsByStateEquals", "findEventsByStateEqualsAndCityEquals", "findEventsByEventUserGroup" })
 public class Event {
 

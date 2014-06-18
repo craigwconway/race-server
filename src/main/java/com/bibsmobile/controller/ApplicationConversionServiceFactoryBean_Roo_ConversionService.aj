@@ -21,6 +21,7 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.TimerConfig;
+import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
@@ -422,6 +423,22 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         };
     }
     
+    public Converter<Long, UserAuthority> ApplicationConversionServiceFactoryBean.getIdToUserAuthorityConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserAuthority>() {
+            public com.bibsmobile.model.UserAuthority convert(java.lang.Long id) {
+                return UserAuthority.findUserAuthority(id);
+            }
+        };
+    }
+    
+    public Converter<String, UserAuthority> ApplicationConversionServiceFactoryBean.getStringToUserAuthorityConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserAuthority>() {
+            public com.bibsmobile.model.UserAuthority convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), UserAuthority.class);
+            }
+        };
+    }
+    
     public Converter<UserGroupUserAuthority, String> ApplicationConversionServiceFactoryBean.getUserGroupUserAuthorityToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroupUserAuthority, java.lang.String>() {
             public String convert(UserGroupUserAuthority userGroupUserAuthority) {
@@ -546,6 +563,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         registry.addConverter(getUserAuthoritiesToStringConverter());
         registry.addConverter(getIdToUserAuthoritiesConverter());
         registry.addConverter(getStringToUserAuthoritiesConverter());
+        registry.addConverter(getUserAuthorityToStringConverter());
+        registry.addConverter(getIdToUserAuthorityConverter());
+        registry.addConverter(getStringToUserAuthorityConverter());
         registry.addConverter(getUserGroupToStringConverter());
         registry.addConverter(getIdToUserGroupConverter());
         registry.addConverter(getStringToUserGroupConverter());
