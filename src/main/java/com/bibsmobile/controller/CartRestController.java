@@ -30,7 +30,7 @@ public class CartRestController {
     @ResponseBody
     public ResponseEntity<String> updateOrCreateCartJson(@PathVariable("id") Long eventCartItemId, @PathVariable Integer eventCartItemQuantity,
                                                          @RequestBody String json, HttpServletRequest request) {
-        CartItemReqWrapper cartItemRequestWrapper = CartItemReqWrapper.fromJsonToCartItemRequestWrapper(json);
+        CartItemReqWrapper cartItemRequestWrapper = CartItemReqWrapper.fromJsonToCartItemReqWrapper(json);
         UserProfile registrationProfile = cartItemRequestWrapper.getUserProfile();
         String color = cartItemRequestWrapper.getColor();
         String size = cartItemRequestWrapper.getSize();
