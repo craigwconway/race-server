@@ -25,9 +25,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -39,6 +43,14 @@ public class UserProfileRestController {
 
     private static final String ROLE_USER = "ROLE_USER";
     private static final String ROLE_EVENT_ADMIN = "ROLE_EVENT_ADMIN";
+
+    private static final Map<String, String> userNameExistsResponse = Collections.unmodifiableMap(
+            new HashMap<String, String>() {{
+                put("status", "error");
+                put("msg", "Username already exist");
+            }}
+    );
+
     @Autowired
     private UserProfileService userProfileService;
 
@@ -52,9 +64,27 @@ public class UserProfileRestController {
         return new ResponseEntity<>(userProfile.toJson(), headers, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/checkusername", headers = "Accept=application/json")
+    public ResponseEntity<String> checkUsername(@RequestParam(value = "username") String userName) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
+        if (CollectionUtils.isNotEmpty(UserProfile.findUserProfilesByUsernameEquals(userName).getResultList())) {
+            return new ResponseEntity<>(new JSONSerializer().serialize(userNameExistsResponse), headers, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/regularuser", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createRegularUserFromJson(@RequestBody String json) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
+
+        if (CollectionUtils.isNotEmpty(UserProfile.findUserProfilesByUsernameEquals(userProfile.getUsername()).getResultList())) {
+            return new ResponseEntity<>(new JSONSerializer().serialize(userNameExistsResponse), headers, HttpStatus.OK);
+        }
         List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_USER).getResultList();
         UserAuthority roleUserAuthority;
         if (CollectionUtils.isEmpty(roleUserAuthorities)) {
@@ -73,15 +103,21 @@ public class UserProfileRestController {
         userProfileService.saveUserProfile(userProfile);
         userAuthorities.persist();
         authenticateRegisteredUser(userProfile);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(new JSONSerializer().exclude("*.class").serialize(userProfile), headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/eventadmin", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createEventAdminFromJson(@RequestBody String json) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
         UserProfileWrapper userProfileWrapper = UserProfileWrapper.fromJsonToUserProfileWrapper(json);
         UserProfile userProfile = userProfileWrapper.getUserProfile();
+
+        if (CollectionUtils.isNotEmpty(UserProfile.findUserProfilesByUsernameEquals(userProfile.getUsername()).getResultList())) {
+            return new ResponseEntity<>(new JSONSerializer().serialize(userNameExistsResponse), headers, HttpStatus.OK);
+        }
+
         String userGroupName = userProfileWrapper.getUserGroupName();
         List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_EVENT_ADMIN).getResultList();
         UserAuthority roleUserAuthority;
@@ -122,8 +158,6 @@ public class UserProfileRestController {
             userGroup.persist();
         }
         authenticateRegisteredUser(userProfile);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(new JSONSerializer().exclude("*.class").serialize(userProfile), headers, HttpStatus.CREATED);
     }
 
@@ -131,12 +165,5 @@ public class UserProfileRestController {
         Authentication auth = new UsernamePasswordAuthenticationToken(userProfile, null, userProfile.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
-
-    private static class EventAdminWrapper {
-        private UserProfile userProfile;
-        private String userGroupName;
-
-    }
-
 
 }
