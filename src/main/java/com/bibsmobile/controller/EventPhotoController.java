@@ -13,6 +13,7 @@ import com.bibsmobile.model.EventPhoto;
 import com.bibsmobile.model.UploadFile;
 import flexjson.JSONSerializer;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,10 +42,20 @@ import java.util.Map;
 @RooWebJson(jsonObject = EventPhoto.class)
 public class EventPhotoController {
 
-    //TODO: move to properties
-    private static final AWSCredentials AWS_CREDENTIALS = new BasicAWSCredentials("AKIAJGFZDMCYWJZZAL2Q", "Hg7Xe+CQuCnooQk6suYD4micA9vOWCXVER0JGTI+");
-    private static final String AWS_BUCKET = "bibstest";
-    private static final String AWS_BUCKET_URL_PREFIX = "http://bibstest.s3.amazonaws.com/";
+    private static AWSCredentials awsS3Credentials;
+    @Value("${amazon.aws.s3.access-key}")
+    private String awsS3AccessKey;
+    @Value("${amazon.aws.s3.secret-key}")
+    private String awsS3SecretKey;
+    @Value("${amazon.aws.s3.bucket}")
+    private String awsS3Bucket;
+    @Value("${amazon.aws.s3.url-prefix}")
+    private String awsS3UrlPrefix;
+
+    @PostConstruct
+    public void init() {
+        awsS3Credentials = new BasicAWSCredentials(awsS3AccessKey, awsS3SecretKey);
+    }
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(@RequestParam(value = "event", required = true) Long eventId, Model uiModel) {
@@ -115,7 +127,7 @@ public class EventPhotoController {
             fileInfo.put("fileType", file.getContentType());
             fileInfo.put("fileSize", file.getSize());
             fileInfo.put("s3FileName", fileNameStr);
-            fileInfo.put("s3Url", AWS_BUCKET_URL_PREFIX.concat(fileNameStr));
+            fileInfo.put("s3Url", awsS3UrlPrefix.concat(fileNameStr));
         }
         return new JSONSerializer().serialize(fileInfo);
     }
@@ -127,15 +139,15 @@ public class EventPhotoController {
     }
 
     private PutObjectResult uploadFileToS3(MultipartFile file, String fileName) throws IOException {
-        AmazonS3 s3Client = new AmazonS3Client(AWS_CREDENTIALS);
+        AmazonS3 s3Client = new AmazonS3Client(awsS3Credentials);
         ByteArrayInputStream stream = new ByteArrayInputStream(file.getBytes());
-        PutObjectRequest putObjectRequest = new PutObjectRequest(AWS_BUCKET, fileName, stream, new ObjectMetadata());
+        PutObjectRequest putObjectRequest = new PutObjectRequest(awsS3Bucket, fileName, stream, new ObjectMetadata());
         return s3Client.putObject(putObjectRequest);
     }
 
     private void deleteFileFromS3(String fileName) {
-        AmazonS3 s3Client = new AmazonS3Client(AWS_CREDENTIALS);
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(AWS_BUCKET, fileName);
+        AmazonS3 s3Client = new AmazonS3Client(awsS3Credentials);
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(awsS3Bucket, fileName);
         s3Client.deleteObject(deleteObjectRequest);
     }
 }
