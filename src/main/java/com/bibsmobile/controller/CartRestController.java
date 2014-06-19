@@ -34,10 +34,11 @@ public class CartRestController {
         UserProfile registrationProfile = cartItemRequestWrapper.getUserProfile();
         String color = cartItemRequestWrapper.getColor();
         String size = cartItemRequestWrapper.getSize();
-
-        UserProfileUtil.disableUserProfile(registrationProfile);
-        if (registrationProfile.getId() == null) {
-            userProfileService.saveUserProfile(registrationProfile);
+        if(registrationProfile != null) {
+            UserProfileUtil.disableUserProfile(registrationProfile);
+            if (registrationProfile.getId() == null) {
+                userProfileService.saveUserProfile(registrationProfile);
+            }
         }
         Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, eventCartItemQuantity, registrationProfile, color, size);
         HttpHeaders headers = new HttpHeaders();
