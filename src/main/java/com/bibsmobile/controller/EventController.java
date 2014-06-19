@@ -641,6 +641,18 @@ public class EventController {
         }
         return sentTo.toString();
     }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
+        Event event = Event.findEvent(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (event == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        event.remove();
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
     
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
