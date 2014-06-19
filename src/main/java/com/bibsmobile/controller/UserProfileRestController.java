@@ -57,8 +57,10 @@ public class UserProfileRestController {
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJson(@RequestBody String json) {
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
-        UserProfileUtil.disableUserProfile(userProfile);
-        userProfileService.saveUserProfile(userProfile);
+        if (userProfile.getId() == null) {
+            UserProfileUtil.disableUserProfile(userProfile);
+            userProfileService.saveUserProfile(userProfile);
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(userProfile.toJson(), headers, HttpStatus.CREATED);
