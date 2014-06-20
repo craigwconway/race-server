@@ -81,7 +81,7 @@ public class AuthorizeNetController {
 
         String x_fp_hash = fingerprint.getFingerprintHash();
 
-        String x_invoice_num = fingerprint.getFingerprintHash();
+        String x_invoice_num = cart.getId().toString();
 
         AuthorizeData data = new AuthorizeData();
         data.setAmount(amount);
