@@ -46,7 +46,7 @@ public class CartController {
                                      @ModelAttribute UserProfile userProfile, HttpServletRequest request) {
         if (userProfile.getId() == null) {
             UserProfileUtil.disableUserProfile(userProfile);
-            userProfileService.saveUserProfile(userProfile);
+            userProfile.persist();
         }
         //TODO: implement if needed color and size in admin panel
         Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile, null, null);

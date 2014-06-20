@@ -3,15 +3,19 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.AuthorizeData;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.CartUtil;
 import net.authorize.ResponseField;
 import net.authorize.sim.Fingerprint;
 import net.authorize.sim.Result;
 import net.authorize.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +41,12 @@ public class AuthorizeNetController {
 
     @Value("${authorize.net.transaction.redirect-base-url}")
     private String redirectBaseUrl;
+
+    @Autowired
+    private SimpleMailMessage registrationMessage;
+
+    @Autowired
+    private JavaMailSenderImpl mailSender;
 
     @RequestMapping(value = "/cartdata", headers = "Accept=application/json")
     @ResponseBody
@@ -95,6 +105,13 @@ public class AuthorizeNetController {
             if (cart != null) {
                 cart.setStatus(Cart.COMPLETE);
                 cart.persist();
+                for (CartItem cartItem : cart.getCartItems()) {
+                    UserProfile userProfile = cartItem.getUserProfile();
+                    if (userProfile != null && org.apache.commons.lang3.StringUtils.isNotEmpty(userProfile.getEmail())) {
+                        registrationMessage.setTo(userProfile.getEmail());
+                        mailSender.send(registrationMessage);
+                    }
+                }
                 request.getSession().removeAttribute(CartUtil.SESSION_ATTR_CART_ID);
             }
             for (CartItem cartItem : cart.getCartItems()) {

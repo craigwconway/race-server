@@ -24,7 +24,7 @@ public class UserProfileServiceImpl implements UserProfileService, UserDetailsSe
 
     @Autowired
     private SimpleMailMessage registrationMessage;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
