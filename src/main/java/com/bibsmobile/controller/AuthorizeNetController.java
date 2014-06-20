@@ -29,12 +29,6 @@ public class AuthorizeNetController {
     @Value("${authorize.net.api.login.id}")
     private String apiLoginId;
 
-    @Value("${authorize.net.transaction.test.key}")
-    private String transactionTestKey;
-
-    @Value("${authorize.net.transaction.test}")
-    private Boolean testMode;
-
     @Value("${authorize.net.transaction.sequence}")
     private long transactionSequence;
 
@@ -58,7 +52,7 @@ public class AuthorizeNetController {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
 
-        String trKey = testMode ? transactionTestKey : cart.getId().toString();
+        String trKey = cart.getId().toString();
 
         NumberFormat df = DecimalFormat.getInstance();
         df.setMaximumFractionDigits(2);
