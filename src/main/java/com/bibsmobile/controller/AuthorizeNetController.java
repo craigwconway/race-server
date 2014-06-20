@@ -36,6 +36,9 @@ public class AuthorizeNetController {
     @Value("${authorize.net.transaction.sequence}")
     private long transactionSequence;
 
+    @Value("${authorize.net.transaction.key}")
+    private String transactionKey;
+
     @Value("${authorize.net.transaction.relay-response-url}")
     private String relayResponseUrl;
 
@@ -62,15 +65,13 @@ public class AuthorizeNetController {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
 
-        String trKey = cart.getId().toString();
-
         NumberFormat df = DecimalFormat.getInstance();
         df.setMaximumFractionDigits(2);
         String amount = df.format(cart.getTotal());
 
         Fingerprint fingerprint = Fingerprint.createFingerprint(
                 apiLoginId,
-                trKey,
+                transactionKey,
                 transactionSequence,
                 amount);
 
@@ -80,6 +81,8 @@ public class AuthorizeNetController {
 
         String x_fp_hash = fingerprint.getFingerprintHash();
 
+        String x_invoice_num = fingerprint.getFingerprintHash();
+
         AuthorizeData data = new AuthorizeData();
         data.setAmount(amount);
         data.setXFpHash(StringUtils.sanitizeString(x_fp_hash));
@@ -87,6 +90,7 @@ public class AuthorizeNetController {
         data.setXFpTimestamp(StringUtils.sanitizeString(Long.toString(x_fp_timestamp)));
         data.setXLogin(StringUtils.sanitizeString(apiLoginId));
         data.setXRelayUrl(relayResponseUrl);
+        data.setXInvoiceNum(StringUtils.sanitizeString(x_invoice_num));
 
         return new ResponseEntity<>(data.toJson(), headers, HttpStatus.OK);
     }
