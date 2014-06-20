@@ -117,10 +117,10 @@ public class AuthorizeNetController {
                     }
                 }
                 request.getSession().removeAttribute(CartUtil.SESSION_ATTR_CART_ID);
-            }
-            for (CartItem cartItem : cart.getCartItems()) {
-                cartItem.getEventCartItem().setPurchased(cartItem.getEventCartItem().getPurchased() + cartItem.getQuantity());
-                cartItem.getEventCartItem().persist();
+                for (CartItem cartItem : cart.getCartItems()) {
+                    cartItem.getEventCartItem().setPurchased(cartItem.getEventCartItem().getPurchased() + cartItem.getQuantity());
+                    cartItem.getEventCartItem().persist();
+                }
             }
         } else {
             redirectUrl = redirectTransactionFailUrl(result);
