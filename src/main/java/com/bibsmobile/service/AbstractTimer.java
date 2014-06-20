@@ -13,13 +13,13 @@ import com.bibsmobile.model.TimerConfig;
 
 public abstract class AbstractTimer implements Timer {
 
-	private static Map<String, Integer> bibsByReader = new HashMap<String, Integer>(); // position, count
-	private static List<String> bibCache = new ArrayList<String>();
-	private static Set<String> uniqueBibs = new TreeSet<String>();
+	private Map<String, Integer> bibsByReader = new HashMap<String, Integer>(); // position, count
+	private List<String> bibCache = new ArrayList<String>();
+	private Set<String> uniqueBibs = new TreeSet<String>();
+	private Map<String, Long> bibTimes = new HashMap<String, Long>();
 	
 	@Override
 	public void logTime(final int bibnum, long bibtime, final TimerConfig timerConfig) {
-		Map<String, Long> bibTimes = new HashMap<String, Long>();
 		final String slog = Thread.currentThread().getName() +" " + getClass().getName();
 		final String cacheKey = bibnum+"-"+timerConfig.getPosition();
 		System.out.println(slog+" logging '"+bibnum + "' @ "+bibtime+ ", position "+timerConfig.getPosition());

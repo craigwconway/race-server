@@ -463,7 +463,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             start.setMessageID(getUniqueMessageID());
             start.setROSpecID(rospec.getROSpecID());
      
-            response =  reader.transact(start, timerConfig.getConnectionTimeout());
+            response =  reader.transact(start, timerConfig.getConnectionTimeout() * 1000);
 
             // check whether ROSpec addition was successful
             StatusCode status = ((START_ROSPEC_RESPONSE)response).getLLRPStatus().getStatusCode();
