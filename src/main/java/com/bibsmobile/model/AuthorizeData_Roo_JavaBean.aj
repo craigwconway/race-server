@@ -55,4 +55,12 @@ privileged aspect AuthorizeData_Roo_JavaBean {
         this.xRelayUrl = xRelayUrl;
     }
     
+    public String AuthorizeData.getXInvoiceNum() {
+        return this.xInvoiceNum;
+    }
+    
+    public void AuthorizeData.setXInvoiceNum(String xInvoiceNum) {
+        this.xInvoiceNum = xInvoiceNum;
+    }
+    
 }

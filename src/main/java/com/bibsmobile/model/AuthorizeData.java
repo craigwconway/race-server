@@ -18,4 +18,5 @@ public class AuthorizeData {
     private String xFpTimestamp;
     private String xFpHash;
     private String xRelayUrl;
+    private String xInvoiceNum;
 }
