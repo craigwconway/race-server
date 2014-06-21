@@ -68,40 +68,43 @@ public class CartUtil {
             session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
         }
 
-        EventCartItem i = EventCartItem.findEventCartItem(eventCartItemId);
+        EventCartItem eventCartItem = EventCartItem.findEventCartItem(eventCartItemId);
         CartItem cartItem;
-        //if doesn't have product in cart and adding new not removing
+        //if doesn't have product in cart and not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
-            cartItem = getCartItem(cart, now, i, userProfile, quantity, color, size);
+            cartItem = getCartItem(cart, now, eventCartItem, userProfile, quantity, color, size);
             cartItem.persist();
             cart.getCartItems().add(cartItem);
         } else {
             boolean existedCartItem = false;
-            EventCartItem eventCartItem;
             for (CartItem ci : cart.getCartItems()) {
-                eventCartItem = ci.getEventCartItem();
                 //if product already exists in cart
-                if (eventCartItem.getId().equals(eventCartItemId)) {
+                if (ci.getEventCartItem().getId().equals(eventCartItemId)) {
 
+                    existedCartItem = true;
                     //adding
                     if (quantity > 0) {
-                        boolean increasing = quantity >= ci.getQuantity();
 
-                        if (increasing) {
-                            //only if increasing
-                            quantity = eventCartItem.getAvailable();
-                            eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
-                        } else {
-                            // ci.getQuantity() > quantity
-                            //diff>0
-                            int diff = ci.getQuantity() - quantity;
-                            //add removed quantity to available
-                            eventCartItem.setAvailable(eventCartItem.getAvailable() + diff);
+                        if (quantity != ci.getQuantity()) {
+                            if (quantity > ci.getQuantity()) {
+                                //only if increasing
+                                if (eventCartItem.getAvailable() < quantity) {
+                                    quantity = eventCartItem.getAvailable();
+                                }
+                                eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
+                            } else {
+                                //quantity < ci.getQuantity()
+                                //diff>0
+                                int diff = ci.getQuantity() - quantity;
+                                //add removed quantity to available
+                                eventCartItem.setAvailable(eventCartItem.getAvailable() + diff);
+                            }
+                            eventCartItem.merge();
+                            ci.setQuantity(quantity);
+                            ci.setUpdated(now);
+                            ci.persist();
                         }
-                        ci.setQuantity(quantity);
-                        ci.setUpdated(now);
-                        ci.persist();
-                        eventCartItem.persist();
+
                     }
                     //removing
                     else {
@@ -109,15 +112,17 @@ public class CartUtil {
                         eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
                         ci.remove();
                     }
-                    existedCartItem = true;
+                    eventCartItem.merge();
                     break;
                 }
             }
+
             if (!existedCartItem && quantity > 0) {
-                cartItem = getCartItem(cart, now, i, userProfile, quantity, color, size);
+                cartItem = getCartItem(cart, now, eventCartItem, userProfile, quantity, color, size);
                 cartItem.persist();
                 cart.getCartItems().add(cartItem);
             }
+
         }
 
         double total = 0;
@@ -129,18 +134,18 @@ public class CartUtil {
         return cart;
     }
 
-    private static CartItem getCartItem(Cart cart, Date now, EventCartItem i, UserProfile userProfile, Integer quantity, String color, String size) {
+    private static CartItem getCartItem(Cart cart, Date now, EventCartItem eventCartItem, UserProfile userProfile, Integer quantity, String color, String size) {
         CartItem cartItem = new CartItem();
-        if (i.getType() == EventCartItemTypeEnum.T_SHIRT) {
+        if (eventCartItem.getType() == EventCartItemTypeEnum.T_SHIRT) {
             cartItem.setColor(color);
             cartItem.setSize(size);
         }
-        cartItem.setPrice(i.getActualPrice());
+        cartItem.setPrice(eventCartItem.getActualPrice());
         cartItem.setCart(cart);
-        cartItem.setEventCartItem(i);
+        cartItem.setEventCartItem(eventCartItem);
         //add maximum available quantity
-        if (i.getAvailable() < quantity) {
-            quantity = i.getAvailable();
+        if (eventCartItem.getAvailable() < quantity) {
+            quantity = eventCartItem.getAvailable();
         }
         cartItem.setQuantity(quantity);
         cartItem.setCreated(now);
@@ -148,8 +153,8 @@ public class CartUtil {
         cartItem.setUserProfile(userProfile);
 
         //updating available quantity in eventcartitem
-        i.setAvailable(i.getAvailable() - quantity);
-        i.persist();
+        eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
+        eventCartItem.merge();
         return cartItem;
     }
 
