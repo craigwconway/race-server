@@ -108,7 +108,7 @@ public class AuthorizeNetController {
             Cart cart = Cart.findCart(Long.valueOf(cartIdStr));
             if (cart != null) {
                 cart.setStatus(Cart.COMPLETE);
-                cart.persist();
+                cart.merge();
                 for (CartItem cartItem : cart.getCartItems()) {
                     UserProfile userProfile = cartItem.getUserProfile();
                     if (userProfile != null && org.apache.commons.lang3.StringUtils.isNotEmpty(userProfile.getEmail())) {
