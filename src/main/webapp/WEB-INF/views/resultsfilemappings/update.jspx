@@ -30,7 +30,7 @@
                         <c:out value="${cell}"/>
                     </td>
                     <td>
-REMOVED BY CRAIG
+                        <c:out value="${(i.index lt resultsFileMapping.row2.size()) ? resultsFileMapping.row2.get(i.index) :''}"/>
                     </td>
                     <td>
                         <select id="label-${ i.index }" onChange="javascript:helpSelect(this);">
