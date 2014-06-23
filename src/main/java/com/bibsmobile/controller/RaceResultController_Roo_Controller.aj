@@ -26,17 +26,6 @@ privileged aspect RaceResultController_Roo_Controller {
     @Autowired
     UserProfileService RaceResultController.userProfileService;
     
-    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
-    public String RaceResultController.create(@Valid RaceResult raceResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, raceResult);
-            return "raceresults/create";
-        }
-        uiModel.asMap().clear();
-        raceResult.persist();
-        return "redirect:/raceresults/" + encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
-    }
-    
     @RequestMapping(params = "form", produces = "text/html")
     public String RaceResultController.createForm(Model uiModel) {
         populateEditForm(uiModel, new RaceResult());

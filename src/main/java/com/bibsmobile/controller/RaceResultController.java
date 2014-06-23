@@ -6,6 +6,9 @@ import com.bibsmobile.model.RaceResult;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -132,6 +136,20 @@ public class RaceResultController {
 		// license TODO
     	
     	return "raceresults/bibs";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    public String create(@Valid RaceResult raceResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            populateEditForm(uiModel, raceResult);
+            return "raceresults/create";
+        }
+        uiModel.asMap().clear();
+        raceResult.persist();
+        return "redirect:/raceresults/?form&added=" 
+        		 + encodeUrlPathSegment(raceResult.getBib()
+        		 +" "+ raceResult.getFirstname()
+        		 +" "+ raceResult.getLastname(), httpServletRequest);
     }
     
 }

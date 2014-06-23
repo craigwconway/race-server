@@ -2,6 +2,7 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <div id="added" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;">Runner Added</div>
     <form:create id="fc_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" render="${empty dependencies}" z="lDbQbfi+ahMJ+wsQw7rqYz4MxJc=">
         <field:select field="event" id="c_com_bibsmobile_model_RaceResult_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/>
         <field:input field="bib" id="c_com_bibsmobile_model_RaceResult_bib" required="true" z="hcgJpmS2s2exxb4PUp3zI+R6RlU="/>
@@ -76,10 +77,16 @@
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
     <script>
     // select event based on param
-    $('[name=event]').val( Math.max(0,GetURLParameter("event")) );
 	window.onload=function(){
+	    jQuery('[name=event]').val( Math.max(0,GetURLParameter("event")) );
 		jQuery("#_gender_id").val("M");
 		jQuery("#_c_com_bibsmobile_model_RaceResult_gender_id").hide();
+		
+		if(GetURLParameter("added")){
+			jQuery("#added").show().delay(3000).fadeOut();
+			//jQuery("#added").html("Runner " + GetURLParameter("added") + " added.").replace("/%20/g"," ");
+		}
+		
 		};
     function change(field){
    		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
@@ -91,5 +98,6 @@
     			element.innerHTML=element.innerHTML.replace(' null null 0','');
     	});
     }
+    
     </script>
 </div>
