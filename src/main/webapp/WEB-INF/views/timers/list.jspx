@@ -4,10 +4,12 @@
     <jsp:output omit-xml-declaration="yes"/>
     <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/timers?form';" type="button">
 		Add Reader</button>
+	<!--
     <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/userprofiles';" type="button">
         Manage Users</button>
     <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
         Manage User Groups</button>
+       -->
     <page:list id="pl_com_bibsmobile_model_TimerConfig" items="${timerconfigs}" z="21mRsfOwmhGthvwvny4D/kHR0oI=">
         <table:table data="${timerconfigs}" id="l_com_bibsmobile_model_TimerConfig" path="/timers" z="HOBF5DQvvbIVD4p/2xw3W/3V3ZY=">
             <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>
@@ -17,7 +19,7 @@
             <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_type" property="type" render="false" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_TimerConfig_connectionTimeout" property="connectionTimeout" z="7qQts1pPhzjyb4XWeBfFVmAGBGQ="/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_filename" property="filename" z="h9wZUDo6+wCThlsAAXyVaotqrjk="/>
+            <table:column id="c_com_bibsmobile_model_TimerConfig_filename" property="filename" render="false" z="user-managed"/>
         </table:table>
     </page:list>
 </div>

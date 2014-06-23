@@ -17,24 +17,7 @@
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
 		Awards
 	</button>
-    <button class="btn btn-default btn-top" onclick="products()" type="button">
-        Products and Registration
-    </button>
-    <button class="btn btn-default btn-top" onclick="alerts()" type="button">
-        Alerts
-    </button>
-    <button class="btn btn-default btn-top" onclick="maps()" type="button">
-        Maps
-    </button>
-    <button class="btn btn-default btn-top" onclick="photos()" type="button">
-        Photos
-    </button>
-    <button class="btn btn-default btn-top" onclick="results()" type="button">
-        Results
-    </button>
-    <button class="btn btn-default btn-top" onclick="userGroups()" type="button">
-        User Groups
-    </button>
+    
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <button class="btn btn-default btn-top" onclick="redirectImport()" type="button">
 		Import
@@ -71,21 +54,7 @@
 			jQuery("#progress").hide();
 		});
 	}
-    function alerts(){
-        window.location="/bibs-server/eventalerts?event=${event.id}";
-    }
-    function maps(){
-        window.location="/bibs-server/eventmaps?event=${event.id}";
-    }
-    function photos(){
-        window.location="/bibs-server/eventphotos?event=${event.id}";
-    }
-    function results(){
-        window.location="/bibs-server/eventresults?event=${event.id}";
-    }
-    function products(){
-        window.location="/bibs-server/eventitems?event=${event.id}";
-    }
+    
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
 	}
@@ -94,9 +63,6 @@
 	}
     function redirectAwards(){
         window.location="/bibs-server/events/awards?event=${event.id}";
-    }
-    function userGroups(){
-        window.location="/bibs-server/eventusergroups?event=${event.id}";
     }
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
@@ -150,21 +116,21 @@
             <field:display field="sync" id="s_com_bibsmobile_model_Event_sync" object="${event}" z="user-managed"/>
             <field:display field="syncId" id="s_com_bibsmobile_model_Event_syncId" object="${event}" z="user-managed"/>
             <field:display field="country" id="s_com_bibsmobile_model_Event_country" object="${event}" z="Qv0Plvijr5HbvB1q+ZGx2JyZ01E="/>
-        </div>
-        <field:display field="regEnabled" id="s_com_bibsmobile_model_Event_regEnabled" object="${event}" z="5ZHzTNt6g8XNaCI9F07G/pCqVY8="/>
-        <field:display date="true" dateTimePattern="${event_regstart_date_format}" field="regStart" id="s_com_bibsmobile_model_Event_regStart" object="${event}" z="bBscU1kAsStFikpX5tLH0AVKNkk="/>
-        <field:display date="true" dateTimePattern="${event_regend_date_format}" field="regEnd" id="s_com_bibsmobile_model_Event_regEnd" object="${event}" z="0OBWojydktrp1m6c6oQ+jq6jmKM="/>
-        <field:display field="raceImages" id="s_com_bibsmobile_model_Event_raceImages" object="${event}" render="false" z="user-managed"/>
-        <field:display field="raceResults" id="s_com_bibsmobile_model_Event_raceResults" object="${event}" render="false" z="user-managed"/>
-        <field:display field="resultsFiles" id="s_com_bibsmobile_model_Event_resultsFiles" object="${event}" render="false" z="user-managed"/>
-        <field:display field="awardCategorys" id="s_com_bibsmobile_model_Event_awardCategorys" object="${event}" render="false" z="user-managed"/>
-        <field:display field="photos" id="s_com_bibsmobile_model_Event_photos" object="${event}" render="false" z="user-managed"/>
-        <field:display field="alerts" id="s_com_bibsmobile_model_Event_alerts" object="${event}" render="false" z="user-managed"/>
-        <field:display field="maps" id="s_com_bibsmobile_model_Event_maps" object="${event}" render="false" z="user-managed"/>
-        <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" render="false" z="user-managed"/>
-        <field:display field="eventUserGroup" id="s_com_bibsmobile_model_Event_eventUserGroup" object="${event}" z="user-managed" render="false"/>
-        <field:display field="eventUserGroups" id="s_com_bibsmobile_model_Event_eventUserGroups" object="${event}" z="user-managed" render="false"/>
-        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
-        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
-    </page:show>
+            <field:display field="regEnabled" id="s_com_bibsmobile_model_Event_regEnabled" object="${event}" z="5ZHzTNt6g8XNaCI9F07G/pCqVY8="/>
+	        <field:display date="true" dateTimePattern="${event_regstart_date_format}" field="regStart" id="s_com_bibsmobile_model_Event_regStart" object="${event}" z="bBscU1kAsStFikpX5tLH0AVKNkk="/>
+	        <field:display date="true" dateTimePattern="${event_regend_date_format}" field="regEnd" id="s_com_bibsmobile_model_Event_regEnd" object="${event}" z="0OBWojydktrp1m6c6oQ+jq6jmKM="/>
+	        <field:display field="raceImages" id="s_com_bibsmobile_model_Event_raceImages" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="raceResults" id="s_com_bibsmobile_model_Event_raceResults" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="resultsFiles" id="s_com_bibsmobile_model_Event_resultsFiles" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="awardCategorys" id="s_com_bibsmobile_model_Event_awardCategorys" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="photos" id="s_com_bibsmobile_model_Event_photos" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="alerts" id="s_com_bibsmobile_model_Event_alerts" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="maps" id="s_com_bibsmobile_model_Event_maps" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="eventUserGroup" id="s_com_bibsmobile_model_Event_eventUserGroup" object="${event}" z="user-managed" render="false"/>
+	        <field:display field="eventUserGroups" id="s_com_bibsmobile_model_Event_eventUserGroups" object="${event}" z="user-managed" render="false"/>
+	        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
+	        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
+	    </div>
+	    </page:show>
 </div>
