@@ -317,6 +317,34 @@ public class EventController {
         return "false";
     }
 
+    @RequestMapping(value = "/manual", method = RequestMethod.GET)
+    @ResponseBody
+    public static String setTimeManual(
+            @RequestParam(value = "event", required = true) long event_id,
+            @RequestParam(value = "bib", required = true) String bib) {
+    	RaceResult result = new RaceResult();
+        try {
+        	long bibtime = System.currentTimeMillis();
+        	Event event = Event.findEvent(event_id);
+        	result = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
+			// bib vs chip start
+			long starttime = 0l;
+			if(result.getTimestart()>0){
+				starttime = Long.valueOf(result.getTimestart()) ;
+			}else{
+				starttime = event.getGunTime().getTime(); 
+				result.setTimestart( starttime );
+			}
+			final String strTime = RaceResult.toHumanTime(starttime, bibtime);
+			result.setTimeofficial( bibtime );
+			result.setTimeofficialdisplay( strTime );
+			result.merge();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result.toJson();
+    }
+
     @RequestMapping(value = "/featured", method = RequestMethod.GET)
     @ResponseBody
     public static String featured(
@@ -487,7 +515,7 @@ public class EventController {
         uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
     }

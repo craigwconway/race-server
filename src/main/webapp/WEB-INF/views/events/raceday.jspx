@@ -125,6 +125,9 @@
 					</span>
 				</div>
 			</div>
+			<button id="btn-manual---event_id--" type="button" class="btn btn-danger"
+				style="display:none"
+				onclick="manual(--event_id--);"> Manual Time Set </button>
 			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
 				onclick="gun(--event_id--);"> Fire Gun! </button> 
 			<table id="results--event_id--" class="table" 
@@ -445,11 +448,31 @@ function gun(eventId){
 		if(msg=="true") {
 			jQuery("#btn-gun-"+eventId).hide();
 			jQuery("#btn-done-"+eventId).show();
+			jQuery("#btn-manual-"+eventId).show();
 			initTimer(eventId);
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert("Error firing gun.")
+		});
+}
+
+
+function manual(eventId){
+	var bib = window.prompt("Bib");
+	if(bib.trim()==""){
+		return true;
+	}
+	var request = jQuery.ajax({
+		url: "/bibs-server/events/manual?event="+eventId+"&amp;bib="+bib,
+		type: "GET",
+		dataType: "html"
+		});
+	request.done(function( msg ) {
+		readerQuery(eventId);
+		});
+	request.fail(function( jqXHR, textStatus ) {
+		alert("Error")
 		});
 }
 
@@ -470,6 +493,7 @@ function getRunning(){
 			if(data[i].gunFired == true){
 				jQuery("#btn-gun-"+eventId).hide();
 				jQuery("#btn-done-"+eventId).show();
+				jQuery("#btn-manual-"+eventId).show();
 			}
 		}
 		getReaderResults();
