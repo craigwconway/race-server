@@ -4,7 +4,10 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
+
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +16,7 @@ import java.util.Set;
 @RooEquals
 @RooJson
 @RooJpaActiveRecord(identifierType = UserAuthoritiesID.class, finders = { "findUserAuthoritiesesByUserProfile", "findUserAuthoritiesesByUserAuthority" })
-public class UserAuthorities {
+public class UserAuthorities implements Serializable {
 
     @MapsId("id")
     @ManyToOne(fetch = FetchType.EAGER)

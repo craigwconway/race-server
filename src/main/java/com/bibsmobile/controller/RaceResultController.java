@@ -146,7 +146,11 @@ public class RaceResultController {
         }
         uiModel.asMap().clear();
         raceResult.persist();
-        return "redirect:/raceresults/?form&added=" 
+        long eventId = 0;
+        if(null!=raceResult.getEvent()){
+        	eventId = raceResult.getEvent().getId();
+        }
+        return "redirect:/raceresults/?form&event="+eventId+"&added=" 
         		 + encodeUrlPathSegment(raceResult.getBib()
         		 +" "+ raceResult.getFirstname()
         		 +" "+ raceResult.getLastname(), httpServletRequest);

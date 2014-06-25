@@ -33,7 +33,8 @@
         <intercept-url pattern="/events/**"  access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')"  method="POST"/>
 
         <intercept-url pattern="/raceresults/**" access="permitAll"  method="GET"/>
-        <intercept-url pattern="/raceresults/**" access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')"  method="POST"/>
+        <intercept-url pattern="/raceresults/**" access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')"  method="PUT"/>
+<!--         <intercept-url pattern="/raceresults/**" access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')"  method="POST"/> -->
 
         <intercept-url pattern="/raceimages/**" access="permitAll"  method="GET"/>
         <intercept-url pattern="/raceimages/**" access="hasAnyRole('ROLE_SYS_ADMIN')"  method="POST"/>
