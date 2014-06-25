@@ -316,7 +316,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             	// long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong();
             	long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong()-this.usReaderOffset+this.usCurrentOffset;
                 int bib = Integer.parseInt(bibdata.toString(), 8);
-                System.out.println(" %%%%%%%%%%% FOUND "+bib+" "+bibtime);
+                System.out.println(" ANTENNE FOUND "+bib+" "+bibtime);
                 logTime(bib, bibtime, timerConfig);
             }
         } else {
@@ -382,7 +382,9 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
         		//we probably connected
         		this.usCurrentOffset = 1000 * System.currentTimeMillis();
         		this.usReaderOffset = ((UTCTimestamp) eventNotification.getReaderEventNotificationData().getTimestamp()).getMicroseconds().toLong();
-        	}
+        		System.out.println("usCurrentOffset ################ "+usCurrentOffset);
+        		System.out.println("usReaderOffset ################ "+usReaderOffset);
+            	}
         } else{
     		try {
 				System.out.println("bibRead.getTypeNum() "+bibRead.toXMLString());

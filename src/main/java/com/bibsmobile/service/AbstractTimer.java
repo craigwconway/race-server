@@ -20,6 +20,7 @@ public abstract class AbstractTimer implements Timer {
 	
 	@Override
 	public void logTime(final int bibnum, long bibtime, final TimerConfig timerConfig) {
+		bibtime = bibtime / 1000; //microseconds
 		final String slog = Thread.currentThread().getName() +" " + getClass().getName();
 		final String cacheKey = bibnum+"-"+timerConfig.getPosition();
 		System.out.println(slog+" logging '"+bibnum + "' @ "+bibtime+ ", position "+timerConfig.getPosition());
@@ -129,6 +130,7 @@ public abstract class AbstractTimer implements Timer {
 	@Override
 	public void clearReport(){
 		// clear out cache
+		bibTimes.clear();
 		bibCache.clear();
 		bibsByReader.clear();
 		uniqueBibs.clear();
