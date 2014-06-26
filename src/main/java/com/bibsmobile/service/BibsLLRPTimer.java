@@ -315,7 +315,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
                 BitArray_HEX bibdata = epcData.getEPC();
             	// long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong();
             	long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong()-this.usReaderOffset+this.usCurrentOffset;
-                int bib = Integer.parseInt(bibdata.toString(), 8);
+                int bib = Integer.decode("0x"+bibdata.toString());
                 System.out.println(" ANTENNE FOUND "+bib+" "+bibtime);
                 logTime(bib, bibtime, timerConfig);
             }
