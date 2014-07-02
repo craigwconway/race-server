@@ -5,10 +5,12 @@ import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.CartUtil;
+
 import net.authorize.ResponseField;
 import net.authorize.sim.Fingerprint;
 import net.authorize.sim.Result;
 import net.authorize.util.StringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -112,8 +115,12 @@ public class AuthorizeNetController {
                 for (CartItem cartItem : cart.getCartItems()) {
                     UserProfile userProfile = cartItem.getUserProfile();
                     if (userProfile != null && org.apache.commons.lang3.StringUtils.isNotEmpty(userProfile.getEmail())) {
-                        registrationMessage.setTo(userProfile.getEmail());
-                        mailSender.send(registrationMessage);
+                    	try{
+            	            registrationMessage.setTo(userProfile.getEmail());
+            	            mailSender.send(registrationMessage);
+                    	}catch(Exception e){
+                    		System.out.println("EXCEPTION: Email Send Fail - "+e.getMessage());
+                    	}
                     }
                 }
                 request.getSession().removeAttribute(CartUtil.SESSION_ATTR_CART_ID);

@@ -661,9 +661,13 @@ public class EventController {
         for (UserProfile user : users) {
             if (StringUtils.isNotEmpty(user.getEmail())) {
                 if (!sentTo.contains(user.getEmail())) {
-                    eventMessage.setTo(user.getEmail());
-                    mailSender.send(eventMessage);
-                    sentTo.add(user.getEmail());
+                	try{
+                        eventMessage.setTo(user.getEmail());
+                        mailSender.send(eventMessage);
+                        sentTo.add(user.getEmail());
+                	}catch(Exception e){
+                		System.out.println("EXCEPTION: Email Send Fail - "+e.getMessage());
+                	}
                 }
             }
         }

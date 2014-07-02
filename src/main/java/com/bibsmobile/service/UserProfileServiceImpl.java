@@ -62,8 +62,12 @@ public class UserProfileServiceImpl implements UserProfileService, UserDetailsSe
 	public void saveUserProfile(UserProfile userProfile) {
         userProfile.persist();
         if (StringUtils.isNotEmpty(userProfile.getEmail())) {
-            registrationMessage.setTo(userProfile.getEmail());
-            mailSender.send(registrationMessage);
+        	try{
+	            registrationMessage.setTo(userProfile.getEmail());
+	            mailSender.send(registrationMessage);
+        	}catch(Exception e){
+        		System.out.println("EXCEPTION: Email Send Fail - "+e.getMessage());
+        	}
         }
     }
 

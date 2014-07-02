@@ -1,6 +1,7 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.UserProfile;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -44,7 +45,11 @@ public class PasswordController {
             String body = resetPasswordText.replace("{link}", resetPasswordUrl + forgotPasswordCode);
             forgotPasswordMessage.setText(body);
             forgotPasswordMessage.setTo(userProfile.getEmail());
-            mailSender.send(forgotPasswordMessage);
+            try{
+            	mailSender.send(forgotPasswordMessage);
+	    	}catch(Exception e){
+	    		System.out.println("EXCEPTION: Email Send Fail - "+e.getMessage());
+	    	}
             modelAndView.addObject("success", true);
             return modelAndView;
         }
