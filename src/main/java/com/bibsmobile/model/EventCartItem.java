@@ -50,6 +50,8 @@ public class EventCartItem {
     private int purchased;
 
     private String coupon;
+    
+    private String eventType;
 
     private double couponPrice;
 

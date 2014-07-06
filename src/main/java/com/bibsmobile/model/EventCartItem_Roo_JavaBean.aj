@@ -69,6 +69,14 @@ privileged aspect EventCartItem_Roo_JavaBean {
         this.coupon = coupon;
     }
     
+    public String EventCartItem.getEventType() {
+        return this.eventType;
+    }
+    
+    public void EventCartItem.setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+    
     public double EventCartItem.getCouponPrice() {
         return this.couponPrice;
     }

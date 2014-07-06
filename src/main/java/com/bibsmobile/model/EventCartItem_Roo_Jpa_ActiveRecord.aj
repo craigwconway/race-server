@@ -14,7 +14,7 @@ privileged aspect EventCartItem_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager EventCartItem.entityManager;
     
-    public static final List<String> EventCartItem.fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon", "couponPrice", "couponsAvailable", "couponsUsed", "timeLimit", "timeStart", "timeEnd", "type", "donationAmount", "charityName", "tshirtSizes", "tshirtColors", "tshirtImageUrls", "minAge", "priceChanges", "maxAge", "gender", "birthDate", "email", "phone", "addressLine1", "addressLine2", "zipCode", "emergencyContactName", "emergencyContactPhone", "hearFrom");
+    public static final List<String> EventCartItem.fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon", "eventType", "couponPrice", "couponsAvailable", "couponsUsed", "timeLimit", "timeStart", "timeEnd", "type", "donationAmount", "charityName", "tshirtSizes", "tshirtColors", "tshirtImageUrls", "minAge", "priceChanges", "maxAge", "gender", "birthDate", "email", "phone", "addressLine1", "addressLine2", "zipCode", "emergencyContactName", "emergencyContactPhone", "hearFrom");
     
     public static final EntityManager EventCartItem.entityManager() {
         EntityManager em = new EventCartItem().entityManager;

@@ -35,14 +35,15 @@
         <field:display field="minAge" id="s_com_bibsmobile_model_EventCartItem_minAge" object="${eventcartitem}" z="X7xbnmgxiIuCaQajDLOg/1gyU7w="/>
         <field:display field="maxAge" id="s_com_bibsmobile_model_EventCartItem_maxAge" object="${eventcartitem}" z="JRw1Z09/k0Gy1IiowcNMEvu5E+Q="/>
         <field:display field="gender" id="s_com_bibsmobile_model_EventCartItem_gender" object="${eventcartitem}" z="bRa/Rrqy/vTC3PltGly4nJn6qjI="/>
-        <field:display date="true" dateTimePattern="${eventCartItem_birthdate_date_format}" field="birthDate" id="s_com_bibsmobile_model_EventCartItem_birthDate" object="${eventcartitem}" z="user-managed" render="false"/>
-        <field:display field="email" id="s_com_bibsmobile_model_EventCartItem_email" object="${eventcartitem}" z="user-managed" render="false"/>
-        <field:display field="phone" id="s_com_bibsmobile_model_EventCartItem_phone" object="${eventcartitem}" z="user-managed" render="false"/>
-        <field:display field="addressLine1" id="s_com_bibsmobile_model_EventCartItem_addressLine1" object="${eventcartitem}" z="user-managed" render="false"/>
-        <field:display field="addressLine2" id="s_com_bibsmobile_model_EventCartItem_addressLine2" object="${eventcartitem}" z="user-managed" render="false"/>
-        <field:display field="zipCode" id="s_com_bibsmobile_model_EventCartItem_zipCode" object="${eventcartitem}" z="user-managed" render="false"/>
-        <field:display field="emergencyContactName" id="s_com_bibsmobile_model_EventCartItem_emergencyContactName" object="${eventcartitem}" z="user-managed" render="false"/>
-        <field:display field="emergencyContactPhone" id="s_com_bibsmobile_model_EventCartItem_emergencyContactPhone" object="${eventcartitem}" z="user-managed" render="false"/>
-        <field:display field="hearFrom" id="s_com_bibsmobile_model_EventCartItem_hearFrom" object="${eventcartitem}" z="user-managed" render="false"/>
+        <field:display date="true" dateTimePattern="${eventCartItem_birthdate_date_format}" field="birthDate" id="s_com_bibsmobile_model_EventCartItem_birthDate" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="email" id="s_com_bibsmobile_model_EventCartItem_email" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="phone" id="s_com_bibsmobile_model_EventCartItem_phone" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="addressLine1" id="s_com_bibsmobile_model_EventCartItem_addressLine1" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="addressLine2" id="s_com_bibsmobile_model_EventCartItem_addressLine2" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="zipCode" id="s_com_bibsmobile_model_EventCartItem_zipCode" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="emergencyContactName" id="s_com_bibsmobile_model_EventCartItem_emergencyContactName" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="emergencyContactPhone" id="s_com_bibsmobile_model_EventCartItem_emergencyContactPhone" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="hearFrom" id="s_com_bibsmobile_model_EventCartItem_hearFrom" object="${eventcartitem}" render="false" z="user-managed"/>
+        <field:display field="eventType" id="s_com_bibsmobile_model_EventCartItem_eventType" object="${eventcartitem}" z="DGhQGLPXojrSSsjKfB195kuWXwY="/>
     </page:show>
 </div>
