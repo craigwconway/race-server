@@ -84,6 +84,22 @@ privileged aspect Event_Roo_JavaBean {
         this.featured = featured;
     }
     
+    public String Event.getAddress1() {
+        return this.address1;
+    }
+    
+    public void Event.setAddress1(String address1) {
+        this.address1 = address1;
+    }
+    
+    public String Event.getAddress2() {
+        return this.address2;
+    }
+    
+    public void Event.setAddress2(String address2) {
+        this.address2 = address2;
+    }
+    
     public String Event.getCity() {
         return this.city;
     }
@@ -98,6 +114,14 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setState(String state) {
         this.state = state;
+    }
+    
+    public String Event.getZip() {
+        return this.zip;
+    }
+    
+    public void Event.setZip(String zip) {
+        this.zip = zip;
     }
     
     public String Event.getCountry() {
