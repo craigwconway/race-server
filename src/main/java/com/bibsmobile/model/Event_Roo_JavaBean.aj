@@ -164,6 +164,14 @@ privileged aspect Event_Roo_JavaBean {
         this.email = email;
     }
     
+    public String Event.getContactPerson() {
+        return this.contactPerson;
+    }
+    
+    public void Event.setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
+    }
+    
     public String Event.getRegistration() {
         return this.registration;
     }

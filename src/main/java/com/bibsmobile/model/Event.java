@@ -68,6 +68,8 @@ public class Event {
     private String phone;
 
     private String email;
+    
+    private String contactPerson;
 
     private String registration;
 
