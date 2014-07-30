@@ -9,5 +9,8 @@
         <field:display field="contentType" id="s_com_bibsmobile_model_ResultsFile_contentType" object="${resultsfile}" z="iZsV2xJanCFXiXh+6g8O6CY8gIU="/>
         <field:display field="content" id="s_com_bibsmobile_model_ResultsFile_content" object="${resultsfile}" z="HoZDe0ejrZVp6d22qag1UyV6K7k="/>
         <field:display field="name" id="s_com_bibsmobile_model_ResultsFile_name" object="${resultsfile}" z="opDYhTY3jD8DMMAv/yrjefR3UFU="/>
+        <field:display field="importUser" id="s_com_bibsmobile_model_ResultsFile_importUser" object="${resultsfile}" render="false" z="user-managed"/>
+        <field:display field="dropboxPath" id="s_com_bibsmobile_model_ResultsFile_dropboxPath" object="${resultsfile}" render="false" z="user-managed"/>
+        <field:display field="sha1Checksum" id="s_com_bibsmobile_model_ResultsFile_sha1Checksum" object="${resultsfile}" render="false" z="user-managed"/>
     </page:show>
 </div>

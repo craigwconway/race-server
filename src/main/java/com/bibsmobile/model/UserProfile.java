@@ -18,7 +18,7 @@ import java.util.Set;
 @SuppressWarnings("serial")
 @RooJavaBean
 @RooJson
-@RooJpaActiveRecord(finders = { "findUserProfilesByUsernameEquals", "findUserProfilesByForgotPasswordCodeEquals", "findUserProfilesByEmailEquals" })
+@RooJpaActiveRecord(finders = { "findUserProfilesByUsernameEquals", "findUserProfilesByForgotPasswordCodeEquals", "findUserProfilesByEmailEquals", "findUserProfilesByDropboxIdEquals" })
 public class UserProfile implements UserDetails {
 
     private String firstname;
@@ -78,6 +78,13 @@ public class UserProfile implements UserDetails {
     private String emergencyContactPhone;
 
     private String hearFrom;
+
+    private String dropboxId;
+
+    private String dropboxAccessToken;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "importUser")
+    private Set<ResultsFile> resultsFiles;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "userProfile")
     private CartItem cartItem;

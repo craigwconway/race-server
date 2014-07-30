@@ -38,6 +38,9 @@
         <field:input field="hearFrom" id="c_com_bibsmobile_model_UserProfile_hearFrom" render="false" z="user-managed"/>
         <field:select field="cartItem" id="c_com_bibsmobile_model_UserProfile_cartItem" itemValue="id" items="${cartitems}" path="/cartitems" render="false" z="user-managed"/>
         <field:input field="forgotPasswordCode" id="c_com_bibsmobile_model_UserProfile_forgotPasswordCode" render="false" z="user-managed"/>
+        <field:input field="dropboxAccessToken" id="c_com_bibsmobile_model_UserProfile_dropboxAccessToken" render="false" z="user-managed"/>
+        <field:input field="dropboxId" id="c_com_bibsmobile_model_UserProfile_dropboxId" render="false" z="user-managed"/>
+        <field:input field="resultsFiles" id="c_com_bibsmobile_model_UserProfile_resultsFiles" render="false" z="user-managed"/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserProfile" render="${not empty dependencies}" z="bjmbow3uaKPnQKxTUw7asq9aKLc="/>
 </div>

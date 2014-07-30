@@ -5,6 +5,7 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserProfile;
 import java.util.Date;
@@ -202,6 +203,30 @@ privileged aspect UserProfile_Roo_JavaBean {
     
     public void UserProfile.setHearFrom(String hearFrom) {
         this.hearFrom = hearFrom;
+    }
+    
+    public String UserProfile.getDropboxId() {
+        return this.dropboxId;
+    }
+    
+    public void UserProfile.setDropboxId(String dropboxId) {
+        this.dropboxId = dropboxId;
+    }
+    
+    public String UserProfile.getDropboxAccessToken() {
+        return this.dropboxAccessToken;
+    }
+    
+    public void UserProfile.setDropboxAccessToken(String dropboxAccessToken) {
+        this.dropboxAccessToken = dropboxAccessToken;
+    }
+    
+    public Set<ResultsFile> UserProfile.getResultsFiles() {
+        return this.resultsFiles;
+    }
+    
+    public void UserProfile.setResultsFiles(Set<ResultsFile> resultsFiles) {
+        this.resultsFiles = resultsFiles;
     }
     
     public CartItem UserProfile.getCartItem() {
