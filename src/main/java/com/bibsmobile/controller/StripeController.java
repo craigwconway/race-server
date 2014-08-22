@@ -266,7 +266,7 @@ public class StripeController {
       return new ResponseEntity<String>("card charged", HttpStatus.OK);
     } finally {
       // reset card to initial state in case payment failed
-      if (c.getStatus().equals(Cart.PROCESSING)) {
+      if (c.getStatus() == Cart.PROCESSING) {
         c.setStatus(Cart.NEW);
         c.persist();
       }
