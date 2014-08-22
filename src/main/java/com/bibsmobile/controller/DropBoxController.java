@@ -24,10 +24,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import javax.crypto.Mac;
@@ -47,11 +49,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping("/dropbox")
 @Controller
@@ -59,7 +63,10 @@ public class DropBoxController {
   private static final Logger log = LoggerFactory.getLogger(DropBoxController.class);
   private static final String START_URL = "authorize";
   private static final String REDIRECT_URL = "authorized";
+  private static final String DEAUTH_URL = "deauth";
   private static final String IMPORT_URL = "importFile";
+  private static final String PICKER_URL = "filepicker";
+  private static final String PICKER_CONTENT_URL = "directory";
   private static final String MAPPING_URL = "resultsfilemappings";
   @Value("${dropbox.com.api.key}")
   private String appKey;
@@ -201,14 +208,13 @@ public class DropBoxController {
   }
 
   @RequestMapping(value = "/" + START_URL, method = RequestMethod.GET)
-  public void authorize(@RequestParam(value="eventId", required=false) Long eventId, @RequestParam(value="dropboxPath", required=false) String dropboxPath, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void authorize(@RequestParam(value="eventId", required=false) Long eventId, HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserProfile up = getLoggedInUserProfile(request);
     if (up == null) {
       response.sendError(401);
       return;
     }
     request.getSession().setAttribute("dropboxEventId", eventId);
-    request.getSession().setAttribute("dropboxPath", dropboxPath);
     if (up.getDropboxAccessToken() != null) {
       response.sendRedirect(getDropboxUrl(request, REDIRECT_URL));
       return;
@@ -249,13 +255,49 @@ public class DropBoxController {
     }
 
     Long eventId = (Long)request.getSession().getAttribute("dropboxEventId");
-    String dropboxPath = (String)request.getSession().getAttribute("dropboxPath");
-    request.getSession().setAttribute("dropboxPath", null);
     String redirectUrl = null;
-    if (dropboxPath != null && !dropboxPath.isEmpty()) redirectUrl = getDropboxUrl(request, IMPORT_URL + "?eventId=" + String.valueOf(eventId) + "&dropboxPath=" + dropboxPath);
+    if (eventId != null) redirectUrl = getDropboxUrl(request, PICKER_URL + "?eventId=" + String.valueOf(eventId));
     else redirectUrl = getUrl(request, "");
     response.sendRedirect(redirectUrl);
     return new ResponseEntity<String>(redirectUrl, HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/" + PICKER_CONTENT_URL, method = RequestMethod.GET)
+  public @ResponseBody ResponseEntity<String> filepickerContent(@RequestParam(value="dropboxPath", required=false) String dropboxPath, HttpServletRequest request, HttpServletResponse response) throws DbxException, IOException {
+    String dbToken = getLoggedInAccessToken(request);
+    if (dbToken == null) return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+    if (dropboxPath == null || dropboxPath.isEmpty()) dropboxPath = "/";
+    DbxEntry.WithChildren listing = getDbxClient(dbToken).getMetadataWithChildren(dropboxPath);
+    List<DirectoryListEntry> dirEntries = new LinkedList<DirectoryListEntry>();
+    for (DbxEntry child : listing.children) {
+      dirEntries.add(new DirectoryListEntry(child.name, child.isFolder(), child.path));
+    }
+    DirectoryListRoot dirRoot = new DirectoryListRoot(dropboxPath, dirEntries);
+    ObjectMapper mapper = new ObjectMapper();
+    StringWriter strW = new StringWriter();
+    mapper.writeValue(strW, dirRoot);
+    return new ResponseEntity<String>(strW.toString(), HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/" + PICKER_URL, method = RequestMethod.GET)
+  public String filepicker(@RequestParam("eventId") Long eventId, @RequestParam(value="dropboxPath", required=false) String dropboxPath, Model uiModel, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    if (getLoggedInAccessToken(request) == null) {
+      return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId));
+    }
+    uiModel.addAttribute("eventId", eventId);
+    uiModel.addAttribute("path", ((dropboxPath == null || dropboxPath.isEmpty()) ? "/" : dropboxPath));
+    return "dropbox/filepicker";
+  }
+
+  @RequestMapping(value = "/" + DEAUTH_URL, method = RequestMethod.POST)
+  public @ResponseBody ResponseEntity<String> deauth(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserProfile up = getLoggedInUserProfile(request);
+    if (up == null) return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
+    // TODO call dropbox api disable_access_token
+    up.setDropboxId(null);
+    up.setDropboxAccessToken(null);
+    up.persist();
+    return new ResponseEntity<String>("", HttpStatus.OK);
   }
 
   @RequestMapping(value = "/" + IMPORT_URL, method = RequestMethod.POST)
@@ -272,7 +314,7 @@ public class DropBoxController {
     // get dropbox credentials
     String accessToken = this.getLoggedInAccessToken(request);
     if (accessToken == null) {
-      response.sendRedirect(getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId) + "&dropboxPath=" + dropboxPath));
+      response.sendRedirect(getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId)));
       return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
     }
     
@@ -337,7 +379,40 @@ public class DropBoxController {
   }
 
   /*
-   * classes represneting the json the dropbox webhook delivers
+   * classes representing the json for the filepicker
+   */
+  protected static class DirectoryListRoot {
+    private String fullPath;
+    private List<DirectoryListEntry> entries;
+    public DirectoryListRoot(String fullPath, List<DirectoryListEntry> entries) {
+      this.fullPath = ((fullPath == null || fullPath.isEmpty()) ? "/" : fullPath);
+      this.entries = entries;
+    }
+    public String getFullPath() { return this.fullPath; }
+    public void setFullPath(String fullPath) { this.fullPath = fullPath; }
+    public List<DirectoryListEntry> getEntries() { return this.entries; }
+    public void setEntries(List<DirectoryListEntry> entries) { this.entries = entries; }
+  }
+
+  protected static class DirectoryListEntry {
+    private String name;
+    private boolean directory;
+    private String fullPath;
+    public DirectoryListEntry(String name, boolean directory, String fullPath) {
+      this.name = name;
+      this.directory = directory;
+      this.fullPath = fullPath;
+    }
+    public String getName() { return this.name; }
+    public void setName(String name) { this.name = name; }
+    public String getFullPath() { return this.fullPath; }
+    public void setFullPath(String fullPath) { this.fullPath = fullPath; }
+    public boolean isDirectory() { return this.directory; }
+    public void setDirectory(boolean directory) { this.directory = directory; }
+  }
+
+  /*
+   * classes representing the json the dropbox webhook delivers
    */
   protected static class WebhookRoot {
     private WebhookDelta delta;

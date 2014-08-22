@@ -22,6 +22,12 @@
         <button class="btn btn-default btn-top" onclick="redirectImport()" type="button">
 		Import
 		</button>
+        <button class="btn btn-default btn-top" onclick="redirectDropboxImport()" type="button">
+        Import from Dropbox
+        </button>
+        <button class="btn btn-default btn-top" onclick="redirectDropboxDeauth()" type="button">
+        Unlink Dropbox Account
+        </button>
         <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
 		Export
 		</button>
@@ -58,6 +64,19 @@
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
 	}
+    function redirectDropboxImport(){
+        window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
+    }
+    function redirectDropboxDeauth(){
+        jQuery.ajax({
+            url: "/bibs-server/dropbox/deauth",
+            type: "POST",
+            dataType: "json",
+            complete: function() {
+                window.reload();
+            }
+        });
+    }
 	function redirectExport(){
 		window.location="/bibs-server/events/export?event=${event.id}";
 	}
