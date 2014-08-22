@@ -83,6 +83,8 @@ public class UserProfile implements UserDetails {
 
     private String dropboxAccessToken;
 
+    private String stripeCustomerId;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "importUser")
     private Set<ResultsFile> resultsFiles;
 

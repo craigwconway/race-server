@@ -51,5 +51,6 @@
         <field:display field="dropboxAccessToken" id="s_com_bibsmobile_model_UserProfile_dropboxAccessToken" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="dropboxId" id="s_com_bibsmobile_model_UserProfile_dropboxId" object="${userprofile}" render="false" z="user-managed"/>
         <field:display field="resultsFiles" id="s_com_bibsmobile_model_UserProfile_resultsFiles" object="${userprofile}" render="false" z="user-managed"/>
+        <field:display field="stripeCustomerId" id="s_com_bibsmobile_model_UserProfile_stripeCustomerId" object="${userprofile}" render="false" z="user-managed"/>
     </page:show>
 </div>

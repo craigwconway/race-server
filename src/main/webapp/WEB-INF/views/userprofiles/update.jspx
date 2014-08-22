@@ -41,5 +41,6 @@
         <field:input field="dropboxAccessToken" id="c_com_bibsmobile_model_UserProfile_dropboxAccessToken" render="false" z="user-managed"/>
         <field:input field="dropboxId" id="c_com_bibsmobile_model_UserProfile_dropboxId" render="false" z="user-managed"/>
         <field:input field="resultsFiles" id="c_com_bibsmobile_model_UserProfile_resultsFiles" render="false" z="user-managed"/>
+        <field:input field="stripeCustomerId" id="c_com_bibsmobile_model_UserProfile_stripeCustomerId" render="false" z="user-managed"/>
     </form:update>
 </div>

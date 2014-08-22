@@ -221,6 +221,14 @@ privileged aspect UserProfile_Roo_JavaBean {
         this.dropboxAccessToken = dropboxAccessToken;
     }
     
+    public String UserProfile.getStripeCustomerId() {
+        return this.stripeCustomerId;
+    }
+    
+    public void UserProfile.setStripeCustomerId(String stripeCustomerId) {
+        this.stripeCustomerId = stripeCustomerId;
+    }
+    
     public Set<ResultsFile> UserProfile.getResultsFiles() {
         return this.resultsFiles;
     }

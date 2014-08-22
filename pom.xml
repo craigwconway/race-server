@@ -434,6 +434,11 @@
 			<artifactId>quartz</artifactId>
 			<version>1.8.6</version>
 		</dependency>
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>1.16.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
