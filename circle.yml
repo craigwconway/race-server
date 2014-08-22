@@ -3,4 +3,4 @@ machine:
     America/Los_Angeles # Set the timezone
 test:
   post:
-    cp target/bibs-server-0.1.0.BUILD-SNAPSHOT.war ${CIRCLE_ARTIFACTS}/bibs-server-${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}.war
+    - cp target/bibs-server-0.1.0.BUILD-SNAPSHOT.war ${CIRCLE_ARTIFACTS}/bibs-server-${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}.war
