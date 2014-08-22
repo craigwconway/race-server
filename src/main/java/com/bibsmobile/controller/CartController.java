@@ -6,7 +6,6 @@ import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.CartUtil;
 import com.bibsmobile.util.UserProfileUtil;
-import net.authorize.sim.Fingerprint;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
