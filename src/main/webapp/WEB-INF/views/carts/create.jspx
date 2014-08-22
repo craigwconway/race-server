@@ -11,6 +11,7 @@
         <field:input field="status" id="c_com_bibsmobile_model_Cart_status" z="TgtNqjteReO1zI9I1BL7BtwJV8o="/>
         <field:input field="coupons" id="c_com_bibsmobile_model_Cart_coupons" z="ER4DGfumz29I28+NQRocApROdRg="/>
         <field:input field="timeout" id="c_com_bibsmobile_model_Cart_timeout" z="3ZXFtrWckAq+o8yHsu1L8t/n8T4="/>
+        <field:input field="stripeChargeId" id="c_com_bibsmobile_model_Cart_stripeChargeId" z="h1KufDkad79CXx2+TvWLLCiwYEw="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Cart" render="${not empty dependencies}" z="FMykSKORh+PZAPYCHUAAx63MnFg="/>
 </div>

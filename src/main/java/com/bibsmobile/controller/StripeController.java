@@ -247,8 +247,9 @@ public class StripeController {
       initialMetadata.put("order_id", c.getId().toString());
       chargeParams.put("metadata", initialMetadata);
 
+      Charge stripeCharge = null;
       try {
-        Charge.create(chargeParams);
+        stripeCharge = Charge.create(chargeParams);
       } catch (CardException e) {
         return new ResponseEntity<String>(e.getMessage(), HttpStatus.UNAUTHORIZED);
       } catch (InvalidRequestException e) {
@@ -261,9 +262,15 @@ public class StripeController {
         return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
-      c.setStatus(Cart.COMPLETE);
-      c.persist();
-      return new ResponseEntity<String>("card charged", HttpStatus.OK);
+
+      if (stripeCharge != null) {
+        c.setStatus(Cart.COMPLETE);
+        c.setStripeChargeId(stripeCharge.getId());
+        c.persist();
+        return new ResponseEntity<String>("card charged", HttpStatus.OK);
+      } else {
+        return new ResponseEntity<String>("card charge failed", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     } finally {
       // reset card to initial state in case payment failed
       if (c.getStatus() == Cart.PROCESSING) {

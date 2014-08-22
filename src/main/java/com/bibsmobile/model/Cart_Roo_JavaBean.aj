@@ -83,4 +83,12 @@ privileged aspect Cart_Roo_JavaBean {
         this.timeout = timeout;
     }
     
+    public String Cart.getStripeChargeId() {
+        return this.stripeChargeId;
+    }
+    
+    public void Cart.setStripeChargeId(String stripeChargeId) {
+        this.stripeChargeId = stripeChargeId;
+    }
+    
 }
