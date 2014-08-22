@@ -43,8 +43,8 @@
                 <table:column id="c_com_bibsmobile_model_EventCartItem_type" property="type" z="540sRjqhJ00sFpRD+4vGPH4+ymQ="/>
                 <table:column id="c_com_bibsmobile_model_EventCartItem_description" property="description" z="540sRjqhJ00sFpRD+4vGPH4+ymQ="/>
                 <table:column id="c_com_bibsmobile_model_EventCartItem_price" property="price" z="bLxdn9fqJQDmeOMWN+sCZn7T64g="/>
-                <table:column id="c_com_bibsmobile_model_EventCartItem_purchased" property="purchased" z="K1BDhfnEI9twWJjWoATUFeW6juI="/>
                 <table:column id="c_com_bibsmobile_model_EventCartItem_available" property="available" z="L/zFgiG4tO8o926SyKF+uh9y78w="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItem_purchased" property="purchased" z="K1BDhfnEI9twWJjWoATUFeW6juI="/>
             </table:table>
         </page:list>
     </sec:authorize>

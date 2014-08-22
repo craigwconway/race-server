@@ -75,4 +75,12 @@ privileged aspect Cart_Roo_JavaBean {
         this.coupons = coupons;
     }
     
+    public int Cart.getTimeout() {
+        return this.timeout;
+    }
+    
+    public void Cart.setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+    
 }

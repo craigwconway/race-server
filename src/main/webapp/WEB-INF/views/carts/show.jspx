@@ -9,5 +9,6 @@
         <field:display date="true" dateTimePattern="${cart_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Cart_updated" object="${cart}" z="HlAY1slYvh5f9bO8ICrXni5+iOU="/>
         <field:display field="status" id="s_com_bibsmobile_model_Cart_status" object="${cart}" z="MbnkT81rizIr4DgIU2DlnXyogco="/>
         <field:display field="coupons" id="s_com_bibsmobile_model_Cart_coupons" object="${cart}" z="7l67X04o+md5zEYKPCki6/+QdhQ="/>
+        <field:display field="timeout" id="s_com_bibsmobile_model_Cart_timeout" object="${cart}" z="8cPOnntAbXhFG0dB1H8pqusruOc="/>
     </page:show>
 </div>

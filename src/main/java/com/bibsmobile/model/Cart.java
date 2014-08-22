@@ -41,6 +41,8 @@ public class Cart {
     private int status;
     private String coupons;
 
+    private int timeout;
+
     public static Cart fromJsonToCartWithUser(String json) {
         return new JSONDeserializer<Cart>().use(null, Cart.class).use("user", UserProfile.class).deserialize(json);
     }
