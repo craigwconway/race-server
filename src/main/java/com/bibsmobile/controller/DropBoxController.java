@@ -5,6 +5,7 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.MailgunUtil;
 
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
@@ -102,7 +103,7 @@ public class DropBoxController {
   }
 
   private String getDropboxUrl(HttpServletRequest request, String path) {
-    return getUrl(request, "dropbox/" + path, "https");
+    return getUrl(request, "dropbox/" + path, (request.getServerName().equals("localhost") ? "http" : "https"));
   }
 
   private DbxWebAuth getDbxWebAuth(HttpServletRequest request) {
@@ -179,6 +180,23 @@ public class DropBoxController {
     ResultsImport latestImport = ResultsImport.findResultsImportsByResultsFile(file, "run_date", "DESC").getResultList().get(0);
     newImport.setResultsFileMapping(latestImport.getResultsFileMapping());
     importController.doImport(newImport);
+
+    String mailTo = newImport.getResultsFile().getImportUser().getEmail();
+    String mailSubject = "Automatic results file import failed";
+    String mailMessage = "The automatic import of your changes to " +
+        newImport.getResultsFile().getName() + " failed with " + newImport.getErrors() + " errors";
+    if (newImport.getErrors() > 0) {
+      if (mailTo != null) {
+        boolean res = MailgunUtil.send(mailTo, mailSubject, mailMessage);
+        if (res) {
+          log.info("Automatic Import notification sent");
+        } else {
+          log.error("Automatic Import notification sending failed");
+        }
+      } else {
+        log.warn("Automatic Import notification skipped because user " + newImport.getResultsFile().getImportUser().getId() + " has no email");
+      }
+    }
   }
 
   private int updateFile(ResultsFile file) throws IOException, InvalidFormatException {
@@ -293,7 +311,12 @@ public class DropBoxController {
   public @ResponseBody ResponseEntity<String> deauth(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserProfile up = getLoggedInUserProfile(request);
     if (up == null) return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
-    // TODO call dropbox api disable_access_token
+    try {
+      if (up.getDropboxAccessToken() != null)
+        this.getDbxClient(up.getDropboxAccessToken()).disableAccessToken();
+    } catch (DbxException ex) {
+      return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     up.setDropboxId(null);
     up.setDropboxAccessToken(null);
     up.persist();

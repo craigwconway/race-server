@@ -60,5 +60,21 @@ public class ResultsFile {
     public String toString(){
     	return name;
     }
+
+    public ResultsImport getLatestImport() {
+        ResultsImport latest = null;
+        for (ResultsImport ri : this.resultsImport) {
+            if (latest == null || latest.getRunDate().compareTo(ri.getRunDate()) > 0) {
+                latest = ri;
+            }
+        }
+        return latest;
+    }
+
+    public ResultsFileMapping getLatestImportMapping() {
+        ResultsImport latestImport = this.getLatestImport();
+        if (latestImport == null) return null;
+        return latestImport.getResultsFileMapping();
+    }
     
 }

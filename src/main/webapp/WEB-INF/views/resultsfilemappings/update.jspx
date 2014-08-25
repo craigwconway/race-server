@@ -40,7 +40,14 @@
                         <select id="label-${ i.index }" onChange="javascript:helpSelect(this);">
                             <option value="-">Unused / Ignore</option>
                             <c:forEach items="${resultsFileMapping.options}" var="option">
-                                <option value="${option.key}">${option.value}</option>
+                                <c:choose>
+                                    <c:when test="${resultsFileMapping.getMapForRow(i.index) == option.key}">
+                                        <option value="${option.key}" selected="selected">${option.value}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${option.key}">${option.value}</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:forEach>
                         </select>
                     </td>

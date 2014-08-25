@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
@@ -25,15 +25,22 @@
         <button class="btn btn-default btn-top" onclick="redirectDropboxImport()" type="button">
         Import from Dropbox
         </button>
-        <button class="btn btn-default btn-top" onclick="redirectDropboxDeauth()" type="button">
-        Unlink Dropbox Account
-        </button>
+        <c:if test="${dropboxUnlink == true}">
+            <button class="btn btn-default btn-top" onclick="redirectDropboxDeauth()" type="button">
+            Unlink Dropbox Account
+            </button>
+        </c:if>
         <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
 		Export
 		</button>
         <button class="btn btn-default btn-top" onclick="cloud()" type="button">
 		Cloud
 		</button>
+        <c:if test="${lastImport != null}">
+            <button class="btn btn-default btn-top" onclick="redirectChangeFileMapping()" type="button">
+            Change file mapping
+            </button>
+        </c:if>
         <span id="progress" style="margin:0;margin-left:6px;display:none;">
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
         </span>
@@ -73,7 +80,7 @@
             type: "POST",
             dataType: "json",
             complete: function() {
-                window.reload();
+                window.location.reload();
             }
         });
     }
@@ -83,12 +90,21 @@
     function redirectAwards(){
         window.location="/bibs-server/events/awards?event=${event.id}";
     }
+    function redirectChangeFileMapping(){
+        window.location="/bibs-server/resultsfilemappings/${lastMapping.id}?form";
+    }
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
         <h3>${event.name}  <small>${event.city} ${event.state}</small>
         </h3>
         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
+        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+            <c:if test="${lastImport != null}">
+                <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+            </c:if>
+        </sec:authorize>
         <div style="display:none;">
             <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
             <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="user-managed"/>

@@ -48,4 +48,10 @@ public class ResultsFileMapping {
         .exclude("*.class").serialize(this);
     }
 
+    public String getMapForRow(int idx) {
+        String mapSplits[] = this.map.split(",");
+        if (idx < mapSplits.length) return mapSplits[idx];
+        else return null;
+    }
+
 }

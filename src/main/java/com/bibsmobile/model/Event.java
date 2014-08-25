@@ -405,4 +405,16 @@ public class Event {
         q.setMaxResults(maxResults);
         return q;
     }
+
+    public ResultsFile getLatestImportFile() {
+        ResultsImport latest = null;
+        for (ResultsFile rf : this.resultsFiles) {
+            ResultsImport tmp = rf.getLatestImport();
+            if (latest == null || latest.getRunDate().compareTo(tmp.getRunDate()) > 0) {
+                latest = tmp;
+            }
+        }
+        if (latest == null) return null;
+        return latest.getResultsFile();
+    }
 }
