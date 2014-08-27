@@ -8,5 +8,5 @@ deployment:
   production:
     branch: develop
     commands:
-      - ./deploy_bibslabs.sh
+      - deployment/deploy_bibslabs.sh
 
