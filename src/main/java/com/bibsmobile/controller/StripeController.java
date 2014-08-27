@@ -9,9 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -24,15 +28,21 @@ import com.stripe.model.Card;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RequestMapping("/stripe")
 @Controller
 public class StripeController {
+  private static final Logger log = LoggerFactory.getLogger(DropBoxController.class);
+
   @Value("${stripe.com.secret.key}")
   private String secretKey;
 
@@ -182,9 +192,15 @@ public class StripeController {
     return "stripe/form";
   }
 
-  @RequestMapping(value = "/chargeCard", method = RequestMethod.POST)
+  @RequestMapping(value = "/chargeCard", method = RequestMethod.POST, headers = "Accept=application/json")
   @ResponseBody
-  public ResponseEntity<String> chargeCardProcessing(@RequestParam("cart") Long cartId, @RequestParam(value="stripeToken", required=false) String stripeCardToken, @RequestParam(value="rememberCard", required=false) boolean rememberCard, HttpServletRequest request) {
+  public ResponseEntity<String> chargeCardProcessing(@RequestBody String body, HttpServletRequest request) throws IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    ChargeCardBody parsedJson = mapper.readValue(body, ChargeCardBody.class);
+    Long cartId = parsedJson.getCart();
+    String stripeCardToken = parsedJson.getCard();
+    boolean rememberCard = parsedJson.getRememberCard();
+
     Cart c = Cart.findCart(cartId);
     if (c == null)
       return new ResponseEntity<String>("cart not found", HttpStatus.NOT_FOUND);
@@ -262,7 +278,6 @@ public class StripeController {
         return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
       }
 
-
       if (stripeCharge != null) {
         c.setStatus(Cart.COMPLETE);
         c.setStripeChargeId(stripeCharge.getId());
@@ -278,5 +293,15 @@ public class StripeController {
         c.persist();
       }
     }
+  }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  protected static class ChargeCardBody {
+    private Long cart = null; // shopping cart
+    private String card = null; // CC
+    private Boolean rememberCard = null;
+    public Long getCart() { return this.cart; }
+    public String getCard() { return this.card; }
+    public boolean getRememberCard() { return this.rememberCard != null && this.rememberCard.booleanValue(); }
   }
 }

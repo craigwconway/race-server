@@ -42,6 +42,7 @@ public class Cart {
     private String coupons;
 
     private int timeout;
+
     private String stripeChargeId;
 
     public static Cart fromJsonToCartWithUser(String json) {
