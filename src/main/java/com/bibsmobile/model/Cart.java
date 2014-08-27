@@ -28,6 +28,8 @@ public class Cart {
     public static final int REFUND_REQUEST = 4;
     public static final int REFUNDED = 5;
 
+    public static final int DEFAULT_TIMEOUT = 600;
+
     @ManyToOne
     private UserProfile user;
 

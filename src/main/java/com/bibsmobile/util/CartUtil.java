@@ -64,6 +64,7 @@ public class CartUtil {
             cart.setCartItems(new ArrayList<CartItem>());
             //user=null if anonymous
             cart.setUser(user);
+            cart.setTimeout(Cart.DEFAULT_TIMEOUT);
             cart.persist();
             session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
         }
