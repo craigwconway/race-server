@@ -4,9 +4,9 @@ machine:
 test:
   post:
     - cp target/bibs-server-0.1.0.BUILD-SNAPSHOT.war ${CIRCLE_ARTIFACTS}/bibs-server-${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}.war
-deployment:
-  production:
-    branch: develop
-    commands:
-      - deployment/deploy_bibslabs.sh
+#deployment:
+#  production:
+#    branch: develop
+#    commands:
+#      - deployment/deploy_bibslabs.sh
 
