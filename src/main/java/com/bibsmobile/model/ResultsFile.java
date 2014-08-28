@@ -63,6 +63,7 @@ public class ResultsFile {
 
     public ResultsImport getLatestImport() {
         ResultsImport latest = null;
+        if (this.resultsImport == null) return null;
         for (ResultsImport ri : this.resultsImport) {
             if (latest == null || latest.getRunDate().compareTo(ri.getRunDate()) > 0) {
                 latest = ri;

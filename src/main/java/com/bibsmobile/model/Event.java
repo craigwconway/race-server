@@ -408,6 +408,7 @@ public class Event {
 
     public ResultsFile getLatestImportFile() {
         ResultsImport latest = null;
+        if (this.resultsFiles == null) return null;
         for (ResultsFile rf : this.resultsFiles) {
             ResultsImport tmp = rf.getLatestImport();
             if (latest == null || latest.getRunDate().compareTo(tmp.getRunDate()) > 0) {
