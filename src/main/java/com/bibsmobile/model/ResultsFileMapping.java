@@ -49,6 +49,7 @@ public class ResultsFileMapping {
     }
 
     public String getMapForRow(int idx) {
+        if (this.map == null) return null;
         String mapSplits[] = this.map.split(",");
         if (idx < mapSplits.length) return mapSplits[idx];
         else return null;

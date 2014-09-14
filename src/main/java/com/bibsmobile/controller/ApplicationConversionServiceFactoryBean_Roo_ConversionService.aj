@@ -4,6 +4,7 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.controller.ApplicationConversionServiceFactoryBean;
+import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventAlert;
 import com.bibsmobile.model.EventCartItem;
@@ -37,6 +38,30 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     
     @Autowired
     UserProfileService ApplicationConversionServiceFactoryBean.userProfileService;
+    
+    public Converter<Cart, String> ApplicationConversionServiceFactoryBean.getCartToStringConverter() {
+        return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.Cart, java.lang.String>() {
+            public String convert(Cart cart) {
+                return new StringBuilder().append(cart.getShipping()).append(' ').append(cart.getTotal()).append(' ').append(cart.getCreated()).append(' ').append(cart.getUpdated()).toString();
+            }
+        };
+    }
+    
+    public Converter<Long, Cart> ApplicationConversionServiceFactoryBean.getIdToCartConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.Cart>() {
+            public com.bibsmobile.model.Cart convert(java.lang.Long id) {
+                return Cart.findCart(id);
+            }
+        };
+    }
+    
+    public Converter<String, Cart> ApplicationConversionServiceFactoryBean.getStringToCartConverter() {
+        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Cart>() {
+            public com.bibsmobile.model.Cart convert(String id) {
+                return getObject().convert(getObject().convert(id, Long.class), Cart.class);
+            }
+        };
+    }
     
     public Converter<CartItem, String> ApplicationConversionServiceFactoryBean.getCartItemToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.CartItem, java.lang.String>() {
@@ -487,6 +512,9 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     }
     
     public void ApplicationConversionServiceFactoryBean.installLabelConverters(FormatterRegistry registry) {
+        registry.addConverter(getCartToStringConverter());
+        registry.addConverter(getIdToCartConverter());
+        registry.addConverter(getStringToCartConverter());
         registry.addConverter(getCartItemToStringConverter());
         registry.addConverter(getIdToCartItemConverter());
         registry.addConverter(getStringToCartItemConverter());
