@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.Arrays;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToOne;
@@ -48,11 +49,11 @@ public class ResultsFileMapping {
         .exclude("*.class").serialize(this);
     }
 
-    public String getMapForRow(int idx) {
+    public List<String> getSelection() {
+        // this pretents to spring as if a property with the name "selection" exists
         if (this.map == null) return null;
         String mapSplits[] = this.map.split(",");
-        if (idx < mapSplits.length) return mapSplits[idx];
-        else return null;
+        return Arrays.asList(mapSplits);
     }
 
 }
