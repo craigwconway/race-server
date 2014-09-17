@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,6 +56,12 @@ public class UserProfileRestController {
     @Autowired
     private UserProfileService userProfileService;
 
+    private UserProfile getLoggedInUserProfile(HttpServletRequest request) {
+        String loggedinUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (loggedinUsername.equals("anonymousUser")) return null;
+        return UserProfile.findUserProfilesByUsernameEquals(loggedinUsername).getResultList().get(0);
+    }
+
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJson(@RequestBody String json) {
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
@@ -64,6 +72,49 @@ public class UserProfileRestController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(userProfile.toJson(), headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/current", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> updateCurrentUser(@RequestBody String json, HttpServletRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+
+        UserProfile currentUser = this.getLoggedInUserProfile(request);
+        if (currentUser == null) return new ResponseEntity<String>("{\"status\": \"error\", \"msg\": \"not logged in\"}", HttpStatus.UNAUTHORIZED);
+
+        UserProfile updatedUser = UserProfile.fromJsonToUserProfile(json);
+
+        // check that username and id are equal
+        boolean sameId = currentUser.getId().equals(updatedUser.getId());
+        if (!sameId) return new ResponseEntity<String>("{\"status\": \"error\", \"msg\": \"your user is " + currentUser.getId() + "\"}", HttpStatus.UNAUTHORIZED);
+        boolean usernameChanged = !currentUser.getUsername().equals(updatedUser.getUsername());
+        if (usernameChanged && CollectionUtils.isNotEmpty(UserProfile.findUserProfilesByUsernameEquals(updatedUser.getUsername()).getResultList())) {
+            return new ResponseEntity<>(new JSONSerializer().serialize(userNameExistsResponse), headers, HttpStatus.BAD_REQUEST);
+        }
+
+        // only overwrite whitelisted attributes
+        if (updatedUser.getFirstname() != null) currentUser.setFirstname(updatedUser.getFirstname());
+        if (updatedUser.getLastname() != null) currentUser.setLastname(updatedUser.getLastname());
+        if (updatedUser.getCity() != null) currentUser.setCity(updatedUser.getCity());
+        if (updatedUser.getState() != null) currentUser.setState(updatedUser.getState());
+        if (updatedUser.getBirthdate() != null) currentUser.setBirthdate(updatedUser.getBirthdate());
+        if (updatedUser.getGender() != null) currentUser.setGender(updatedUser.getGender());
+        if (updatedUser.getEmail() != null) currentUser.setEmail(updatedUser.getEmail());
+        if (updatedUser.getUsername() != null) currentUser.setUsername(updatedUser.getUsername());
+        if (updatedUser.getPassword() != null) currentUser.setPassword(updatedUser.getPassword());
+        if (updatedUser.getFacebookId() != null) currentUser.setFacebookId(updatedUser.getFacebookId());
+        if (updatedUser.getTwitterId() != null) currentUser.setTwitterId(updatedUser.getTwitterId());
+        if (updatedUser.getGoogleId() != null) currentUser.setGoogleId(updatedUser.getGoogleId());
+        if (updatedUser.getAddressLine1() != null) currentUser.setAddressLine1(updatedUser.getAddressLine1());
+        if (updatedUser.getAddressLine2() != null) currentUser.setAddressLine2(updatedUser.getAddressLine2());
+        if (updatedUser.getZipCode() != null) currentUser.setZipCode(updatedUser.getZipCode());
+        if (updatedUser.getEmergencyContactName() != null) currentUser.setEmergencyContactName(updatedUser.getEmergencyContactName());
+        if (updatedUser.getEmergencyContactPhone() != null) currentUser.setEmergencyContactPhone(updatedUser.getEmergencyContactPhone());
+        if (updatedUser.getHearFrom() != null) currentUser.setHearFrom(updatedUser.getHearFrom());
+
+        currentUser.persist();
+
+        return new ResponseEntity<String>(updatedUser.toJson(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/checkusername", headers = "Accept=application/json")
