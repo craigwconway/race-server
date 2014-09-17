@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.bibsmobile.model.Event;
@@ -14,12 +15,12 @@ public class ResultsImportControllerUT {
 	
 	ResultsImportController resultsImportController; 
 
-	@Test
+	@Test @Ignore
 	public void testCreate() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	@Test @Ignore
 	public void testDoImport() {
 		fail("Not yet implemented");
 	}
@@ -63,12 +64,12 @@ public class ResultsImportControllerUT {
 		assertTrue(1==1);
 	}
 
-	@Test
+	@Test @Ignore
 	public void testSaveRaceResult_existing_no_match() {
 		fail("Not yet implemented");
 	}
 
-	@Test
+	@Test @Ignore
 	public void testSaveRaceResult_new() {
 		fail("Not yet implemented");
 	}
