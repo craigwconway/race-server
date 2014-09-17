@@ -43,7 +43,7 @@ public class ResultsImportController {
         return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }
 
-    public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
+    public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException { 
         System.out.println("Starting import...");
         resultsImport.setRunDate(new Date());
         ResultsFileMapping resultsFileMapping = resultsImport.getResultsFileMapping();
