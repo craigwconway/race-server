@@ -61,7 +61,7 @@ public class ResultsImportController {
             reader.close();
         } else if (StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".xls") || StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".xlsx")) {
             XlsToCsv csv = new XlsToCsv();
-            Workbook wb = WorkbookFactory.create(file);
+            Workbook wb = WorkbookFactory.create(file); 
             Sheet sheet = wb.getSheetAt(0);
             for (int i = (resultsFileMapping.isSkipFirstRow() ? 1 : 0); i <= sheet.getLastRowNum(); i++) {
                 final String nextLine[] = csv.rowToCSV(sheet.getRow(i)).split(",");
