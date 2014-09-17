@@ -1,12 +1,15 @@
 package com.bibsmobile.controller;
 
 import au.com.bytecode.opencsv.CSVReader; 
+
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.service.RaceResultService;
 import com.bibsmobile.util.XlsToCsv;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,6 +34,14 @@ import java.util.Date;
 @Controller
 @RooWebScaffold(path = "resultsimports", formBackingObject = ResultsImport.class)
 public class ResultsImportController {
+	
+	private RaceResultService raceResultService;
+	
+	public ResultsImportController(){}
+	
+	protected ResultsImportController(RaceResultService raceResultService){
+		this.raceResultService = raceResultService;
+	}
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid ResultsImport resultsImport, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) throws InvalidFormatException, IOException {
@@ -75,6 +87,7 @@ public class ResultsImportController {
         if (nextLine.length != map.length || nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
+            resultsImport.merge();
             return;
         }
         StringBuffer json = new StringBuffer("{");
@@ -84,24 +97,24 @@ public class ResultsImportController {
             json.append(map[j] + ":\"" + nextLine[j] + "\"");
         }
         json.append("}");
-        RaceResult result = RaceResult.fromJsonToRaceResult(json.toString());
+        RaceResult result = raceResultService.fromJsonToRaceResult(json.toString());
         result.setEvent(event);
         boolean same = false;
         RaceResult exists = null;
         try {
-            exists = RaceResult.findRaceResultsByEventAndBibEquals(event, result.getBib()).getSingleResult();
-            if(!exists.equals(result)){
+            exists = raceResultService.findRaceResultsByEventAndBibEquals(event, result.getBib());
+            if(exists.equals(result)){
             	same = true;
             }
         } catch (Exception e) {
         }
         if (null != exists && !same) {
-            exists.merge(result);
-            exists.merge();
-        } else {
-            result.persist();
+        	raceResultService.update(exists,result);
+        } else if(null == exists){
+        	raceResultService.persist(result);
         }
         resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);
+        resultsImport.merge();
     }
 
 }
