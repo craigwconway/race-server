@@ -54,7 +54,7 @@ public class ResultsImportController {
         String[] map = resultsFileMapping.getMap().split(",");
         if (StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".csv") || StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".txt")) {
             CSVReader reader = new CSVReader(new FileReader(file));
-            String[] nextLine;
+            String[] nextLine; 
             while ((nextLine = reader.readNext()) != null) {
                 saveRaceResult(resultsImport, event, nextLine, map);
             }
