@@ -86,12 +86,16 @@ public class ResultsImportController {
         json.append("}");
         RaceResult result = RaceResult.fromJsonToRaceResult(json.toString());
         result.setEvent(event);
+        boolean same = false;
         RaceResult exists = null;
         try {
             exists = RaceResult.findRaceResultsByEventAndBibEquals(event, result.getBib()).getSingleResult();
+            if(!exists.equals(result)){
+            	same = true;
+            }
         } catch (Exception e) {
         }
-        if (null != exists) {
+        if (null != exists && !same) {
             exists.merge(result);
             exists.merge();
         } else {
