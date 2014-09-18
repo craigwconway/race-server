@@ -2,6 +2,7 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.MailgunUtil;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -282,6 +283,19 @@ public class StripeController {
         c.setStatus(Cart.COMPLETE);
         c.setStripeChargeId(stripeCharge.getId());
         c.persist();
+        String resultString = new String();
+        resultString = "Hey " + loggedInUser.getFirstname() + ",\n";
+        resultString += "Thank you for registering for ";
+        resultString += "EVENT_NAME_HERE"; //grab event with associated items here
+        resultString += " using bibs.";
+        resultString += "Your total comes to ";
+        //TODO: Handle different types of currency here in the future.
+        resultString += "$" + cartTotal + ":\n";
+        resultString += "Cart body here.\n";
+        resultString += "See you on RACEDAY!\n";
+        resultString += "- the bibs team";
+        
+        MailgunUtil.send(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
         return new ResponseEntity<String>("card charged", HttpStatus.OK);
       } else {
         return new ResponseEntity<String>("card charge failed", HttpStatus.INTERNAL_SERVER_ERROR);
