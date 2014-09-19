@@ -93,6 +93,8 @@ public class UserProfileRestController {
         }
 
         // only overwrite whitelisted attributes
+        if (updatedUser.getBirthdate() != null) currentUser.setBirthdate(updatedUser.getBirthdate());
+        if (updatedUser.getPhone() != null) currentUser.setPhone(updatedUser.getPhone());
         if (updatedUser.getFirstname() != null) currentUser.setFirstname(updatedUser.getFirstname());
         if (updatedUser.getLastname() != null) currentUser.setLastname(updatedUser.getLastname());
         if (updatedUser.getCity() != null) currentUser.setCity(updatedUser.getCity());
