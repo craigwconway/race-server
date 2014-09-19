@@ -1,6 +1,8 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.Event;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.MailgunUtil;
 
@@ -30,6 +32,7 @@ import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -283,19 +286,28 @@ public class StripeController {
         c.setStatus(Cart.COMPLETE);
         c.setStripeChargeId(stripeCharge.getId());
         c.persist();
+
+        // this assumes that all cartitems belong to the same event, so only grabbing first one
+        Event cartEvent = c.getCartItems().get(0).getEventCartItem().getEvent();
+
+        // built text for order confirmation mail
         String resultString = new String();
         resultString = "Hey " + loggedInUser.getFirstname() + ",\n";
         resultString += "Thank you for registering for ";
-        resultString += "EVENT_NAME_HERE"; //grab event with associated items here
+        resultString += cartEvent.getName(); //grab event with associated items here
         resultString += " using bibs.";
         resultString += "Your total comes to ";
         //TODO: Handle different types of currency here in the future.
         resultString += "$" + cartTotal + ":\n";
-        resultString += "Cart body here.\n";
-        resultString += "See you on RACEDAY!\n";
+        for (CartItem ci : c.getCartItems()) {
+          resultString += "- " + ci.getEventCartItem().getDescription() + "\n";
+        }
+        resultString += "\n";
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        resultString += "See you on " + sdf.format(cartEvent.getTimeStart()) + "!\n";
         resultString += "- the bibs team";
-        
         MailgunUtil.send(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
+
         return new ResponseEntity<String>("card charged", HttpStatus.OK);
       } else {
         return new ResponseEntity<String>("card charge failed", HttpStatus.INTERNAL_SERVER_ERROR);
