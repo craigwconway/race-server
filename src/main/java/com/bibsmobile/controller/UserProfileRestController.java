@@ -56,19 +56,37 @@ public class UserProfileRestController {
     @Autowired
     private UserProfileService userProfileService;
 
-    private UserProfile getLoggedInUserProfile(HttpServletRequest request) {
-        String loggedinUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (loggedinUsername.equals("anonymousUser")) return null;
-        return UserProfile.findUserProfilesByUsernameEquals(loggedinUsername).getResultList().get(0);
-    }
-
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJson(@RequestBody String json) {
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
+        // set standard user permissions
+        List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_USER).getResultList();
+        UserAuthority roleUserAuthority;
+        if (CollectionUtils.isEmpty(roleUserAuthorities)) {
+            roleUserAuthority = new UserAuthority();
+            roleUserAuthority.setAuthority(ROLE_USER);
+            roleUserAuthority.persist();
+        } else {
+            roleUserAuthority = roleUserAuthorities.get(0);
+        }
+        UserAuthorities userAuthorities = new UserAuthorities();
+        UserAuthoritiesID id = new UserAuthoritiesID();
+        id.setUserAuthority(roleUserAuthority);
+        id.setUserProfile(userProfile);
+        userAuthorities.setId(id);
+        userProfile.setUserAuthorities(new HashSet<UserAuthorities>());
+        userProfile.getUserAuthorities().add(userAuthorities);
+        userProfileService.saveUserProfile(userProfile);
+        userAuthorities.persist();
+
         if (userProfile.getId() == null) {
             UserProfileUtil.disableUserProfile(userProfile);
             userProfileService.saveUserProfile(userProfile);
         }
+
+        // automatically authenticate user
+        authenticateRegisteredUser(userProfile);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         return new ResponseEntity<>(userProfile.toJson(), headers, HttpStatus.CREATED);
@@ -79,7 +97,7 @@ public class UserProfileRestController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
 
-        UserProfile currentUser = this.getLoggedInUserProfile(request);
+        UserProfile currentUser = UserProfileUtil.getLoggedInUserProfile();
         if (currentUser == null) return new ResponseEntity<String>("{\"status\": \"error\", \"msg\": \"not logged in\"}", HttpStatus.UNAUTHORIZED);
 
         UserProfile updatedUser = UserProfile.fromJsonToUserProfile(json);

@@ -3,7 +3,7 @@
   <jsp:output omit-xml-declaration="yes" />
 
   <div>
-    <form action="" method="POST" id="payment-form">
+    <form action="chargeCardForm" method="POST" id="payment-form">
       <span class="payment-errors"><jsp:text/></span>
 
       <div class="form-row">
@@ -46,7 +46,7 @@
       <div class="form-row">
         <label>
           <span>Shopping Cart ID</span>
-          <input type="text" size="4" name="cart" value="16" />
+          <input type="text" size="4" name="cart" value="1" />
         </label>
       </div>
 

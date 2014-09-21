@@ -1,6 +1,7 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.*;
+import com.bibsmobile.util.UserProfileUtil;
 
 import flexjson.JSONSerializer;
 
@@ -703,19 +704,6 @@ public class EventController {
         populateEditForm(uiModel, new Event());
         return "events/create";
     }
-    
-
-    private UserProfile getLoggedInUserProfile(HttpServletRequest request) {
-        String loggedinUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (loggedinUsername.equals("anonymousUser")) return null;
-        return UserProfile.findUserProfilesByUsernameEquals(loggedinUsername).getResultList().get(0);
-    }
-
-    private String getLoggedInDropboxAccessToken(HttpServletRequest request) {
-        UserProfile up = this.getLoggedInUserProfile(request);
-        if (up == null) return null;
-        return up.getDropboxAccessToken();
-    }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel, HttpServletRequest request) {
@@ -725,7 +713,7 @@ public class EventController {
         ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());
         ResultsFileMapping latestMapping = ((latestImport == null) ? null : latestImport.getResultsFileMapping());
         uiModel.addAttribute("event", e);
-        uiModel.addAttribute("dropboxUnlink", (this.getLoggedInDropboxAccessToken(request) != null));
+        uiModel.addAttribute("dropboxUnlink", (UserProfileUtil.getLoggedInDropboxAccessToken() != null));
         uiModel.addAttribute("lastImport", latestImport);
         uiModel.addAttribute("lastMapping", latestMapping);
         uiModel.addAttribute("itemId", id);

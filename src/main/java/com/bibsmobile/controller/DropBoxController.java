@@ -6,6 +6,7 @@ import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.MailgunUtil;
+import com.bibsmobile.util.UserProfileUtil;
 
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
@@ -117,18 +118,6 @@ public class DropBoxController {
     return new DbxClient(this.appConfig, token);
   }
 
-  private UserProfile getLoggedInUserProfile(HttpServletRequest request) {
-    String loggedinUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-    if (loggedinUsername.equals("anonymousUser")) return null;
-    return UserProfile.findUserProfilesByUsernameEquals(loggedinUsername).getResultList().get(0);
-  }
-
-  private String getLoggedInAccessToken(HttpServletRequest request) {
-    UserProfile up = this.getLoggedInUserProfile(request);
-    if (up == null) return null;
-    return up.getDropboxAccessToken();
-  }
-
   private String guessMimeType(File file) throws IOException {
     if (FilenameUtils.getExtension(file.getAbsolutePath()).equals("csv")) return "text/csv";
     // TODO more guessing
@@ -173,6 +162,8 @@ public class DropBoxController {
     }
   }
 
+  // this method assumes a successful import already happened with the file
+  // i.e. a previous mapping exists
   private void doActualImport(ResultsFile file) throws IOException, InvalidFormatException {
     ResultsImport newImport = new ResultsImport();
     newImport.setResultsFile(file);
@@ -227,7 +218,7 @@ public class DropBoxController {
 
   @RequestMapping(value = "/" + START_URL, method = RequestMethod.GET)
   public void authorize(@RequestParam(value="eventId", required=false) Long eventId, HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserProfile up = getLoggedInUserProfile(request);
+    UserProfile up = UserProfileUtil.getLoggedInUserProfile();
     if (up == null) {
       response.sendError(401);
       return;
@@ -243,7 +234,7 @@ public class DropBoxController {
 
   @RequestMapping(value = "/" + REDIRECT_URL, method = RequestMethod.GET)
   public @ResponseBody ResponseEntity<String> authorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserProfile up = getLoggedInUserProfile(request);
+    UserProfile up = UserProfileUtil.getLoggedInUserProfile();
     if (up == null) {
       return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
     }
@@ -282,7 +273,7 @@ public class DropBoxController {
 
   @RequestMapping(value = "/" + PICKER_CONTENT_URL, method = RequestMethod.GET)
   public @ResponseBody ResponseEntity<String> filepickerContent(@RequestParam(value="dropboxPath", required=false) String dropboxPath, HttpServletRequest request, HttpServletResponse response) throws DbxException, IOException {
-    String dbToken = getLoggedInAccessToken(request);
+    String dbToken = UserProfileUtil.getLoggedInDropboxAccessToken();
     if (dbToken == null) return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
     if (dropboxPath == null || dropboxPath.isEmpty()) dropboxPath = "/";
     DbxEntry.WithChildren listing = getDbxClient(dbToken).getMetadataWithChildren(dropboxPath);
@@ -299,7 +290,7 @@ public class DropBoxController {
 
   @RequestMapping(value = "/" + PICKER_URL, method = RequestMethod.GET)
   public String filepicker(@RequestParam("eventId") Long eventId, @RequestParam(value="dropboxPath", required=false) String dropboxPath, Model uiModel, HttpServletRequest request, HttpServletResponse response) throws IOException {
-    if (getLoggedInAccessToken(request) == null) {
+    if (UserProfileUtil.getLoggedInDropboxAccessToken() == null) {
       return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId));
     }
     uiModel.addAttribute("eventId", eventId);
@@ -309,7 +300,7 @@ public class DropBoxController {
 
   @RequestMapping(value = "/" + DEAUTH_URL, method = RequestMethod.POST)
   public @ResponseBody ResponseEntity<String> deauth(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserProfile up = getLoggedInUserProfile(request);
+    UserProfile up = UserProfileUtil.getLoggedInUserProfile();
     if (up == null) return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
     try {
       if (up.getDropboxAccessToken() != null)
@@ -335,7 +326,7 @@ public class DropBoxController {
     File destFile = new File("/data/" + filename);
 
     // get dropbox credentials
-    String accessToken = this.getLoggedInAccessToken(request);
+    String accessToken = UserProfileUtil.getLoggedInDropboxAccessToken();
     if (accessToken == null) {
       response.sendRedirect(getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId)));
       return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
@@ -355,7 +346,7 @@ public class DropBoxController {
     resultsFile.setFilesize(destFile.length());
     resultsFile.setFilePath(destFile.getAbsolutePath());
     resultsFile.setSha1Checksum(getSha1Checksum(destFile));
-    resultsFile.setImportUser(this.getLoggedInUserProfile(request));
+    resultsFile.setImportUser(UserProfileUtil.getLoggedInUserProfile());
     resultsFile.setDropboxPath(dropboxPath);
     resultsFile.persist();
     // create empty mapping for file in database

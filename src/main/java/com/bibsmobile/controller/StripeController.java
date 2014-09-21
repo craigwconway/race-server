@@ -5,6 +5,7 @@ import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.MailgunUtil;
+import com.bibsmobile.util.UserProfileUtil;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -45,16 +46,10 @@ import org.slf4j.LoggerFactory;
 @RequestMapping("/stripe")
 @Controller
 public class StripeController {
-  private static final Logger log = LoggerFactory.getLogger(DropBoxController.class);
+  private static final Logger log = LoggerFactory.getLogger(StripeController.class);
 
   @Value("${stripe.com.secret.key}")
   private String secretKey;
-
-  private UserProfile getLoggedInUserProfile(HttpServletRequest request) {
-    String loggedinUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-    if (loggedinUsername.equals("anonymousUser")) return null;
-    return UserProfile.findUserProfilesByUsernameEquals(loggedinUsername).getResultList().get(0);
-  }
 
   private Customer upsertCustomer(UserProfile loggedInUser) throws CardException, InvalidRequestException, AuthenticationException, APIConnectionException, APIException {
     if (loggedInUser == null) return null;
@@ -120,7 +115,7 @@ public class StripeController {
   @ResponseBody
   public ResponseEntity<String> customerCard(HttpServletRequest request) {
     // check login status
-    UserProfile loggedInUser = getLoggedInUserProfile(request);
+    UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
     if (loggedInUser == null)
       return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
 
@@ -145,7 +140,7 @@ public class StripeController {
   @ResponseBody
   public ResponseEntity<String> customerCardChange(@RequestParam("stripeToken") String stripeCardToken, HttpServletRequest request) {
     // check login status
-    UserProfile loggedInUser = getLoggedInUserProfile(request);
+    UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
     if (loggedInUser == null)
       return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
 
@@ -170,7 +165,7 @@ public class StripeController {
   @ResponseBody
   public ResponseEntity<String> customerCardChange(HttpServletRequest request) {
     // check login status
-    UserProfile loggedInUser = getLoggedInUserProfile(request);
+    UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
     if (loggedInUser == null)
       return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
 
@@ -198,13 +193,22 @@ public class StripeController {
 
   @RequestMapping(value = "/chargeCard", method = RequestMethod.POST, headers = "Accept=application/json")
   @ResponseBody
-  public ResponseEntity<String> chargeCardProcessing(@RequestBody String body, HttpServletRequest request) throws IOException {
+  public ResponseEntity<String> chargeCardProcessingJson(@RequestBody String body, HttpServletRequest request) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     ChargeCardBody parsedJson = mapper.readValue(body, ChargeCardBody.class);
     Long cartId = parsedJson.getCart();
     String stripeCardToken = parsedJson.getCard();
     boolean rememberCard = parsedJson.getRememberCard();
+    return this.chargeCardProcessing(cartId, stripeCardToken, rememberCard, request);
+  }
 
+  @RequestMapping(value = "/chargeCardForm", method = RequestMethod.POST)
+  @ResponseBody
+  public ResponseEntity<String> chargeCardProcessingForm(@RequestParam("cart") Long cartId, @RequestParam(value="stripeToken", required=false) String stripeCardToken, @RequestParam(value="rememberCard", required=false) boolean rememberCard, HttpServletRequest request) throws IOException {
+    return this.chargeCardProcessing(cartId, stripeCardToken, rememberCard, request);
+  }
+
+  public ResponseEntity<String> chargeCardProcessing(Long cartId, String stripeCardToken, boolean rememberCard, HttpServletRequest request) throws IOException {
     Cart c = Cart.findCart(cartId);
     if (c == null)
       return new ResponseEntity<String>("cart not found", HttpStatus.NOT_FOUND);
@@ -225,7 +229,7 @@ public class StripeController {
       // 1) no card token was submitted
       // 2) card should be remembered
       // failure if no card token provided and no customer saved
-      UserProfile loggedInUser = getLoggedInUserProfile(request);
+      UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
       if (stripeCardToken == null && loggedInUser == null)
         return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
       if (rememberCard && loggedInUser == null)
@@ -287,26 +291,30 @@ public class StripeController {
         c.setStripeChargeId(stripeCharge.getId());
         c.persist();
 
-        // this assumes that all cartitems belong to the same event, so only grabbing first one
-        Event cartEvent = c.getCartItems().get(0).getEventCartItem().getEvent();
+        // can only sent an email if we have a logged in users email
+        log.error("################################## loggedInUser: " + loggedInUser);
+        if (loggedInUser != null) {
+          // this assumes that all cartitems belong to the same event, so only grabbing first one
+          Event cartEvent = c.getCartItems().get(0).getEventCartItem().getEvent();
 
-        // built text for order confirmation mail
-        String resultString = new String();
-        resultString = "Hey " + loggedInUser.getFirstname() + ",\n";
-        resultString += "Thank you for registering for ";
-        resultString += cartEvent.getName(); //grab event with associated items here
-        resultString += " using bibs.";
-        resultString += "Your total comes to ";
-        //TODO: Handle different types of currency here in the future.
-        resultString += "$" + cartTotal + ":\n";
-        for (CartItem ci : c.getCartItems()) {
-          resultString += "- " + ci.getEventCartItem().getDescription() + "\n";
+          // built text for order confirmation mail
+          String resultString = new String();
+          resultString = "Hey " + loggedInUser.getFirstname() + ",\n";
+          resultString += "Thank you for registering for ";
+          resultString += cartEvent.getName(); //grab event with associated items here
+          resultString += " using bibs.";
+          resultString += "Your total comes to ";
+          //TODO: Handle different types of currency here in the future.
+          resultString += "$" + cartTotal + ":\n";
+          for (CartItem ci : c.getCartItems()) {
+            resultString += "- " + ci.getEventCartItem().getName() + ": " + ci.getEventCartItem().getDescription() + "\n";
+          }
+          resultString += "\n";
+          SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+          resultString += "See you on " + sdf.format(cartEvent.getTimeStart()) + "!\n";
+          resultString += "- the bibs team";
+          MailgunUtil.send(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
         }
-        resultString += "\n";
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        resultString += "See you on " + sdf.format(cartEvent.getTimeStart()) + "!\n";
-        resultString += "- the bibs team";
-        MailgunUtil.send(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
 
         return new ResponseEntity<String>("card charged", HttpStatus.OK);
       } else {
