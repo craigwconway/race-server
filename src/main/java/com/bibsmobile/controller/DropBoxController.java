@@ -6,6 +6,7 @@ import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.MailgunUtil;
+import com.bibsmobile.util.ResultsFileUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
 import com.dropbox.core.DbxAppInfo;
@@ -42,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,28 +166,59 @@ public class DropBoxController {
 
   // this method assumes a successful import already happened with the file
   // i.e. a previous mapping exists
-  private void doActualImport(ResultsFile file) throws IOException, InvalidFormatException {
+  private void doActualImport(ResultsFile file, List<String> prevHeaders) throws IOException, InvalidFormatException {
     ResultsImport newImport = new ResultsImport();
-    newImport.setResultsFile(file);
     // get latest file mapping
     ResultsImport latestImport = ResultsImport.findResultsImportsByResultsFile(file, "run_date", "DESC").getResultList().get(0);
-    newImport.setResultsFileMapping(latestImport.getResultsFileMapping());
-    importController.doImport(newImport);
+    ResultsFileMapping latestMapping = latestImport.getResultsFileMapping();
 
+    // check if headers changed
+    List<String> newHeaders = ResultsFileUtil.getFirstRow(file);
+    boolean headerOrderChanged = false;
+    boolean headerNumChanged = false;
+    if (latestMapping.isSkipFirstRow() && prevHeaders.size() != newHeaders.size()) {
+      headerNumChanged = true;
+      newImport.setErrors(1);
+      newImport.setErrorRows(new StringBuilder().append(StringUtils.join(newHeaders, ",")).append(newImport.getErrorRows()).toString());
+    } else if (latestMapping.isSkipFirstRow() && !prevHeaders.equals(newHeaders)) {
+      headerOrderChanged = true;
+      newImport.setErrors(1);
+      newImport.setErrorRows(new StringBuilder().append(StringUtils.join(newHeaders, ",")).append(newImport.getErrorRows()).toString());
+    }
+
+    newImport.setResultsFile(file);
+    newImport.setResultsFileMapping(latestMapping);
+    // do the actual import
+    if (newImport.getErrors() == 0) {
+      importController.doImport(newImport);
+    } else {
+      newImport.setRowsProcessed(1);
+      newImport.setRunDate(new Date());
+    }
+    newImport.persist();
+
+    // send import email if necessary
     String mailTo = newImport.getResultsFile().getImportUser().getEmail();
     String mailSubject = "Automatic results file import failed";
     String mailMessage = "The automatic import of your changes to " +
         newImport.getResultsFile().getName() + " failed with " + newImport.getErrors() + " errors";
+    if (headerNumChanged) {
+      mailMessage = "The automatic import of your changes to " +
+        newImport.getResultsFile().getName() + " failed because the number of columns changed.";
+    } else if (headerOrderChanged) {
+      mailMessage = "The automatic import of your changes to " +
+        newImport.getResultsFile().getName() + " failed because the headers changed.";
+    }
     if (newImport.getErrors() > 0) {
       if (mailTo != null) {
         boolean res = MailgunUtil.send(mailTo, mailSubject, mailMessage);
         if (res) {
-          log.info("Automatic Import notification sent");
+          log.info("Automatic import email notification sent");
         } else {
-          log.error("Automatic Import notification sending failed");
+          log.error("Automatic import email notification sending failed");
         }
       } else {
-        log.warn("Automatic Import notification skipped because user " + newImport.getResultsFile().getImportUser().getId() + " has no email");
+        log.warn("Automatic import notification skipped because user " + newImport.getResultsFile().getImportUser().getId() + " has no email");
       }
     }
   }
@@ -203,14 +236,16 @@ public class DropBoxController {
 
     if (!chksum.equals(file.getSha1Checksum())) {
       // the file changed => reimport
-      File destFile = new File(file.getFilePath());
+      // get the previous headers before we override them
+      List<String> prevHeaders = ResultsFileUtil.getFirstRow(file);
       // update file & checksum
+      File destFile = new File(file.getFilePath());
       FileUtils.copyFile(tmpFile, destFile);
       tmpFile.delete();
       file.setSha1Checksum(chksum);
       file.persist();
       // reimport
-      doActualImport(file);
+      doActualImport(file, prevHeaders);
       return 1;
     }
     return 0;
@@ -293,6 +328,18 @@ public class DropBoxController {
     if (UserProfileUtil.getLoggedInDropboxAccessToken() == null) {
       return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId));
     }
+    // check access token
+    try {
+      getDbxClient(UserProfileUtil.getLoggedInDropboxAccessToken()).getAccountInfo();
+    } catch(DbxException e) {
+      // access token invalid, reauthorize
+      UserProfile up = UserProfileUtil.getLoggedInUserProfile();
+      up.setDropboxId(null);
+      up.setDropboxAccessToken(null);
+      up.persist();
+      return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId));
+    }
+    // render view
     uiModel.addAttribute("eventId", eventId);
     uiModel.addAttribute("path", ((dropboxPath == null || dropboxPath.isEmpty()) ? "/" : dropboxPath));
     return "dropbox/filepicker";
@@ -306,7 +353,7 @@ public class DropBoxController {
       if (up.getDropboxAccessToken() != null)
         this.getDbxClient(up.getDropboxAccessToken()).disableAccessToken();
     } catch (DbxException ex) {
-      return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      // ignoring this, since we're deleting the token anyways
     }
     up.setDropboxId(null);
     up.setDropboxAccessToken(null);
@@ -382,14 +429,15 @@ public class DropBoxController {
     WebhookRoot parsedJson = null;
     parsedJson = mapper.readValue(plainJson, WebhookRoot.class);
     List<String> deltaUserIds = parsedJson.getDelta().getUsers();
+    int filesUpdated = 0;
     for (String userId : deltaUserIds) {
       UserProfile up = UserProfile.findUserProfilesByDropboxIdEquals(userId).getResultList().get(0);
       // TODO can be done more efficiently, by getting /delta for the user and only try to update changed files
       for (ResultsFile rf : up.getResultsFiles()) {
-        updateFile(rf);
+        filesUpdated += updateFile(rf);
       }
     }
-    return new ResponseEntity<String>("", HttpStatus.OK);
+    return new ResponseEntity<String>("" + filesUpdated, HttpStatus.OK);
   }
 
   /*
