@@ -26,7 +26,9 @@ public class UserProfileUtil {
       // checks whether user is unauthenticated
       // TODO needs to be done differently, very unperformant
       if (auth instanceof AnonymousAuthenticationToken) return null;
-      return (UserProfile)auth.getPrincipal();
+      // this is hibernate detached causing all kind of problems
+      UserProfile detachedProfile = (UserProfile)auth.getPrincipal();
+      return UserProfile.findUserProfile(detachedProfile.getId()); // this is attached now
     }
 
     public static String getLoggedInDropboxAccessToken() {

@@ -411,7 +411,8 @@ public class Event {
         if (this.resultsFiles == null) return null;
         for (ResultsFile rf : this.resultsFiles) {
             ResultsImport tmp = rf.getLatestImport();
-            if (latest == null || latest.getRunDate().compareTo(tmp.getRunDate()) > 0) {
+            if (tmp == null) continue;
+            if (latest == null || (latest.getRunDate() != null && tmp.getRunDate() != null && latest.getRunDate().compareTo(tmp.getRunDate()) > 0)) {
                 latest = tmp;
             }
         }
