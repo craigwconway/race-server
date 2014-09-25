@@ -32,13 +32,17 @@ public class CartExpiration extends QuartzJobBean {
 
     @Transactional
     private void expireCart(Cart c) {
+        // TODO should be a transaction
         for (CartItem ci : c.getCartItems()) {
             EventCartItem eci = ci.getEventCartItem();
             eci.setAvailable(eci.getAvailable() + ci.getQuantity());
             eci.persist();
         }
         EntityManager em = Cart.entityManager();
-        Query q = em.createQuery("DELETE FROM Cart c WHERE c.id = :id");
+        Query q = em.createQuery("DELETE FROM CartItem ci WHERE ci.cart = :cart");
+        q.setParameter("cart", c);
+        q.executeUpdate();
+        q = em.createQuery("DELETE FROM Cart c WHERE c.id = :id");
         q.setParameter("id", c.getId());
         q.executeUpdate();
     }
