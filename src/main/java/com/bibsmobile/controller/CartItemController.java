@@ -6,7 +6,6 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.UserProfile;
 import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,7 +26,6 @@ import java.util.List;
 
 @RequestMapping("/cartitems")
 @Controller
-@RooWebScaffold(path = "cartitems", formBackingObject = CartItem.class)
 public class CartItemController {
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")

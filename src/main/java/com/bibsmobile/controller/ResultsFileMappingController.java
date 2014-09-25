@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -41,7 +40,6 @@ import org.springframework.web.util.WebUtils;
 
 @RequestMapping("/resultsfilemappings")
 @Controller
-@RooWebScaffold(path = "resultsfilemappings", formBackingObject = ResultsFileMapping.class)
 public class ResultsFileMappingController {
 
     @RequestMapping(value = "/updateForm.json")

@@ -1,20 +1,85 @@
 package com.bibsmobile.model.wrapper;
 
 import com.bibsmobile.model.UserProfile;
-import org.springframework.roo.addon.equals.RooEquals;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.json.RooJson;
-import org.springframework.roo.addon.tostring.RooToString;
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
+import java.util.Collection;
+import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * Created by Jevgeni on 18.06.2014.
  */
-@RooJavaBean
-@RooToString
-@RooEquals
-@RooJson
 public class UserProfileWrapper {
     private UserProfile userProfile;
     private String  userGroupName;
 
+
+	public boolean equals(Object obj) {
+        if (!(obj instanceof UserProfileWrapper)) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        UserProfileWrapper rhs = (UserProfileWrapper) obj;
+        return new EqualsBuilder().append(userGroupName, rhs.userGroupName).append(userProfile, rhs.userProfile).isEquals();
+    }
+
+	public int hashCode() {
+        return new HashCodeBuilder().append(userGroupName).append(userProfile).toHashCode();
+    }
+
+	public String toJson() {
+        return new JSONSerializer()
+        .exclude("*.class").serialize(this);
+    }
+
+	public String toJson(String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(this);
+    }
+
+	public static UserProfileWrapper fromJsonToUserProfileWrapper(String json) {
+        return new JSONDeserializer<UserProfileWrapper>()
+        .use(null, UserProfileWrapper.class).deserialize(json);
+    }
+
+	public static String toJsonArray(Collection<UserProfileWrapper> collection) {
+        return new JSONSerializer()
+        .exclude("*.class").serialize(collection);
+    }
+
+	public static String toJsonArray(Collection<UserProfileWrapper> collection, String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(collection);
+    }
+
+	public static Collection<UserProfileWrapper> fromJsonArrayToUserProfileWrappers(String json) {
+        return new JSONDeserializer<List<UserProfileWrapper>>()
+        .use("values", UserProfileWrapper.class).deserialize(json);
+    }
+
+	public UserProfile getUserProfile() {
+        return this.userProfile;
+    }
+
+	public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+	public String getUserGroupName() {
+        return this.userGroupName;
+    }
+
+	public void setUserGroupName(String userGroupName) {
+        this.userGroupName = userGroupName;
+    }
+
+	public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

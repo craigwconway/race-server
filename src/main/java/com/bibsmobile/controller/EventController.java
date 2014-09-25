@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,8 +33,6 @@ import java.util.*;
 
 @RequestMapping("/events")
 @Controller
-@RooWebScaffold(path = "events", formBackingObject = Event.class)
-@RooWebJson(jsonObject = Event.class)
 public class EventController {
 
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
