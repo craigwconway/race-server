@@ -11,7 +11,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.service.RaceResultService;
 
-public class ResultsImportControllerUT {
+public class ResultsImportControllerTest {
 	
 	ResultsImportController resultsImportController; 
 
