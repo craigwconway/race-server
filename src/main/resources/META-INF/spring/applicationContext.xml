@@ -116,26 +116,4 @@
         <property name="text" value="${email.forgotPassword.text}"/>
     </bean>
 
-
-    <!-- Run the cron expiration task every 10 minutes-->
-    <bean name="runMeJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="com.bibsmobile.job.CartExpiration" />
-    </bean>
-    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="runMeJob" />
-        <property name="cronExpression" value="0 0/10 * * * ? *" />
-    </bean>
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="jobDetails">
-            <list>
-                <ref bean="runMeJob" />
-            </list>
-        </property>
-        <property name="triggers">
-            <list>
-                <ref bean="cronTrigger" />
-            </list>
-        </property>
-    </bean>
-
 </beans>

@@ -5,9 +5,16 @@ import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.job.BaseJob;
+import com.bibsmobile.job.CartExpiration;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.quartz.SchedulerException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -18,10 +25,11 @@ import java.util.List;
  * Created by Jevgeni on 4.06.2014.
  */
 public class CartUtil {
-
+    private static final Logger log = LoggerFactory.getLogger(CartUtil.class);
     public static final String SESSION_ATTR_CART_ID = "cartId";
 
     public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, Integer quantity, UserProfile userProfile, String color, String size) {
+        boolean newCart = false;
         if (quantity < 0) {
             quantity = 0;
         }
@@ -57,6 +65,7 @@ public class CartUtil {
         Date now = new Date();
         //create cart if it doesn't exist yet.
         if (cart == null) {
+            newCart = true;
             cart = new Cart();
             cart.setStatus(Cart.NEW);
             cart.setCreated(now);
@@ -132,6 +141,18 @@ public class CartUtil {
         }
         cart.setTotal(total);
         cart.merge();
+
+        // schedule expiration of new cart
+        if (newCart) {
+            try {
+                // + 1, because the job tends can fire a little too early
+                BaseJob.scheduleOnceInSeconds(CartExpiration.class, cart.getTimeout() + 1);
+            } catch (SchedulerException e) {
+                log.error("Could not schedule cart expiration.", e);
+                return null;
+            }
+        }
+
         return cart;
     }
 

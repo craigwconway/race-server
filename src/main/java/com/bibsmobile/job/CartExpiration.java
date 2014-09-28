@@ -10,18 +10,17 @@ import javax.persistence.Query;
 
 import org.quartz.JobExecutionContext;
 
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class CartExpiration extends QuartzJobBean {
+public class CartExpiration extends BaseJob {
     private static final Logger log = LoggerFactory.getLogger(CartExpiration.class);
 
     @Transactional
-    protected void executeInternal(JobExecutionContext context) {
+    public void execute(JobExecutionContext context) {
         EntityManager em = Cart.entityManager();
         TypedQuery<Cart> q = em.createQuery("SELECT c FROM Cart c WHERE c.status = :statusNew AND c.timeout > 0 AND UNIX_TIMESTAMP(c.created) + c.timeout < UNIX_TIMESTAMP()", Cart.class);
         q.setParameter("statusNew", Cart.NEW);

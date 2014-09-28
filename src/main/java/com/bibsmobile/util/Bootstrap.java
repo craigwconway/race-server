@@ -7,6 +7,11 @@ import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.job.BaseJob;
+import com.bibsmobile.job.CartExpiration;
+
+import org.quartz.SchedulerException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -34,6 +39,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+
+        // expire leftover carts at startup
+        try {
+            BaseJob.scheduleNow(CartExpiration.class);
+        } catch (SchedulerException e) {
+            throw new RuntimeException(e);
+        }
 
         //store default readers
         if (TimerConfig.countTimerConfigs() < 1) {
