@@ -29,6 +29,9 @@ public class CartUtil {
     public static final String SESSION_ATTR_CART_ID = "cartId";
 
     public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, Integer quantity, UserProfile userProfile, String color, String size) {
+        // make sure our UserProfile is attached
+        userProfile = UserProfile.findUserProfile(userProfile.getId());
+
         boolean newCart = false;
         if (quantity < 0) {
             quantity = 0;

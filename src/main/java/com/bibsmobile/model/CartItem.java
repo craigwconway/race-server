@@ -27,7 +27,7 @@ public class CartItem {
     @ManyToOne
     private EventCartItem eventCartItem;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_profile_id")
     private UserProfile userProfile;
 
