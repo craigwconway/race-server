@@ -167,6 +167,7 @@ public class DropBoxController {
   // this method assumes a successful import already happened with the file
   // i.e. a previous mapping exists
   private void doActualImport(ResultsFile file, List<String> prevHeaders) throws IOException, InvalidFormatException {
+    log.info("DropBoxController.doActualImport with results file id " + file.getId());
     ResultsImport newImport = new ResultsImport();
     // get latest file mapping
     ResultsImport latestImport = ResultsImport.findResultsImportsByResultsFile(file, "run_date", "DESC").getResultList().get(0);
@@ -247,6 +248,8 @@ public class DropBoxController {
       // reimport
       doActualImport(file, prevHeaders);
       return 1;
+    } else {
+      log.info("Results file " + file.getId() + ": checksum " + chksum + " didn't change.");
     }
     return 0;
   }
@@ -431,10 +434,12 @@ public class DropBoxController {
     List<String> deltaUserIds = parsedJson.getDelta().getUsers();
     int filesUpdated = 0;
     for (String userId : deltaUserIds) {
-      UserProfile up = UserProfile.findUserProfilesByDropboxIdEquals(userId).getResultList().get(0);
-      // TODO can be done more efficiently, by getting /delta for the user and only try to update changed files
-      for (ResultsFile rf : up.getResultsFiles()) {
-        filesUpdated += updateFile(rf);
+      List<UserProfile> ups = UserProfile.findUserProfilesByDropboxIdEquals(userId).getResultList();
+      for (UserProfile up : ups) {
+        // TODO can be done more efficiently, by getting /delta for the user and only try to update changed files
+        for (ResultsFile rf : up.getResultsFiles()) {
+          filesUpdated += updateFile(rf);
+        }
       }
     }
     return new ResponseEntity<String>("" + filesUpdated, HttpStatus.OK);

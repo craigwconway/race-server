@@ -36,7 +36,7 @@ public class ResultsFileUtil {
       String fileExtension = FilenameUtils.getExtension(filePath);
       String contentType = resultsFile.getContentType();
       File file = new File(filePath);
-      boolean csvEnding = (fileExtension.equalsIgnoreCase(".csv") || fileExtension.equalsIgnoreCase(".txt"));
+      boolean csvEnding = (fileExtension.equalsIgnoreCase("csv") || fileExtension.equalsIgnoreCase("txt"));
 
       try {
         // TODO more file types
