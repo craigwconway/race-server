@@ -89,7 +89,7 @@ public class UserProfileRestController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<>(userProfile.toJson(), headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(new JSONSerializer().serialize(userProfile), headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/current", method = RequestMethod.POST, headers = "Accept=application/json")
