@@ -1,6 +1,7 @@
 package com.bibsmobile.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ public abstract class AbstractTimer implements Timer {
 
 					System.out.println(slog+" EVENT: "+event.getId() +" start:"+event.getTimeStart() +" gun:"+event.getGunTimeStart());
 					RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult();
+					result.setEvent(event);
 					System.out.println(slog+" RUNNER: "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
 
 					// starting line
@@ -53,27 +55,9 @@ public abstract class AbstractTimer implements Timer {
 						}
 						result.setTimestart( bibtime );
 					
-					// finish line	
+					// splits
 					}else{
-						long cTimeofficial = 0;
-						if(result.getTimeofficial() > 0){
-							cTimeofficial = result.getTimeofficial();
-							if(bibtime > cTimeofficial + (timerConfig.getReadTimeout() * 1000)) {
-								System.out.println(slog+" FINISH EXISTS ");
-								continue; // don't update	
-							}
-						}
-						// bib vs chip start
-						long starttime = 0l;
-						if(result.getTimestart()>0){
-							starttime = Long.valueOf(result.getTimestart()) ;
-						}else{
-							starttime = event.getGunTime().getTime(); 
-							result.setTimestart( starttime );
-						}
-						final String strTime = RaceResult.toHumanTime(starttime, bibtime);
-						result.setTimeofficial( bibtime );
-						result.setTimeofficialdisplay( strTime );
+						result = calculateSplitTime(result, bibtime, timerConfig.getPosition());
 					}
 					
 					System.out.println(slog+" UPDATE "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
@@ -87,6 +71,32 @@ public abstract class AbstractTimer implements Timer {
 		}else{
 			System.out.println(slog+" TIMEOUT bib " + bibnum + " @ reader "+timerConfig.getPosition());
 		}
+	}
+
+	/**
+	 * Calculates the split time using the reader position
+	 * @param result
+	 * @param bibtime
+	 * @param position
+	 * @return
+	 */
+	public RaceResult calculateSplitTime(RaceResult result, long bibtime, int position) {
+		String[] splits = (null==result.getTimesplit() || result.getTimesplit().isEmpty()) 
+				? new String[]{} : result.getTimesplit().split(",");
+		if(position > splits.length) splits = Arrays.copyOf(splits, position);
+		splits[position-1] = bibtime+"";
+		StringBuffer s = new StringBuffer();
+		for(int i=0;i<splits.length;i++){
+			if(i>0) s.append(",");
+			s.append(splits[i]);
+		}
+		result.setTimesplit(s.toString());
+		long starttime = (result.getTimestart()==0 && null!=result.getEvent().getGunTime()) 
+				? result.getEvent().getGunTime().getTime() : result.getTimestart(); 
+		result.setTimestart( starttime );
+		result.setTimeofficial( bibtime );
+		result.setTimeofficialdisplay( RaceResult.toHumanTime(starttime, bibtime) );
+		return result;
 	}
 
 	public synchronized void logUnregisteredBib(String bib, String reader){
