@@ -1,19 +1,22 @@
 package com.bibsmobile.model;
 
-import org.springframework.roo.addon.equals.RooEquals;
-import org.springframework.roo.addon.jpa.identifier.RooIdentifier;
-import org.springframework.roo.addon.json.RooJson;
-import org.springframework.roo.addon.tostring.RooToString;
-
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.beans.factory.annotation.Configurable;
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
+import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
-@RooToString
-@RooEquals
-@RooJson
-@RooIdentifier
+@Configurable
+@Embeddable
 public class EventUserGroupId implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,5 +38,68 @@ public class EventUserGroupId implements Serializable {
 
     public void setUserGroup(UserGroup userGroup) {
         this.userGroup = userGroup;
+    }
+
+	public String toString() {
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+	public EventUserGroupId(Event event, UserGroup userGroup) {
+        super();
+        this.event = event;
+        this.userGroup = userGroup;
+    }
+
+	public Event getEvent() {
+        return event;
+    }
+
+	public UserGroup getUserGroup() {
+        return userGroup;
+    }
+
+	public String toJson() {
+        return new JSONSerializer()
+        .exclude("*.class").serialize(this);
+    }
+
+	public String toJson(String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(this);
+    }
+
+	public static EventUserGroupId fromJsonToEventUserGroupId(String json) {
+        return new JSONDeserializer<EventUserGroupId>()
+        .use(null, EventUserGroupId.class).deserialize(json);
+    }
+
+	public static String toJsonArray(Collection<EventUserGroupId> collection) {
+        return new JSONSerializer()
+        .exclude("*.class").serialize(collection);
+    }
+
+	public static String toJsonArray(Collection<EventUserGroupId> collection, String[] fields) {
+        return new JSONSerializer()
+        .include(fields).exclude("*.class").serialize(collection);
+    }
+
+	public static Collection<EventUserGroupId> fromJsonArrayToEventUserGroupIds(String json) {
+        return new JSONDeserializer<List<EventUserGroupId>>()
+        .use("values", EventUserGroupId.class).deserialize(json);
+    }
+
+	public boolean equals(Object obj) {
+        if (!(obj instanceof EventUserGroupId)) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        EventUserGroupId rhs = (EventUserGroupId) obj;
+        return new EqualsBuilder().append(event, rhs.event).append(userGroup, rhs.userGroup).isEquals();
+    }
+
+	public int hashCode() {
+        return new HashCodeBuilder().append(event).append(userGroup).toHashCode();
     }
 }

@@ -8,7 +8,8 @@ import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +30,6 @@ import java.util.List;
 
 @RequestMapping("/usergroupuserauthorities")
 @Controller
-@RooWebScaffold(path = "usergroupuserauthorities", formBackingObject = UserGroupUserAuthority.class, update = false)
 public class UserGroupUserAuthorityController {
 
     @RequestMapping(params = "form", produces = "text/html")
@@ -168,5 +171,24 @@ public class UserGroupUserAuthorityController {
         uiModel.addAttribute("userGroupUserAuthority", userGroupUserAuthority);
         uiModel.addAttribute("userauthorities", userRoles);
         uiModel.addAttribute("usergroups", Arrays.asList(userGroupUserAuthority.getUserGroup()));
+    }
+
+	private ConversionService conversionService;
+
+	@Autowired
+    public UserGroupUserAuthorityController(ConversionService conversionService) {
+        super();
+        this.conversionService = conversionService;
+    }
+
+	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {}
+        return pathSegment;
     }
 }

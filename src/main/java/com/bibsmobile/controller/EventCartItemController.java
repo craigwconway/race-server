@@ -7,10 +7,9 @@ import com.bibsmobile.model.EventCartItemTypeEnum;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,16 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RequestMapping("/eventitems")
 @Controller
-@RooWebScaffold(path = "eventitems", formBackingObject = EventCartItem.class)
-@RooWebJson(jsonObject = EventCartItem.class)
 public class EventCartItemController {
 
     @RequestMapping(params = "form", produces = "text/html")
@@ -139,4 +140,105 @@ public class EventCartItemController {
         return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByType(type).getResultList()), headers, HttpStatus.OK);
     }
     
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
+        EventCartItem eventCartItem = EventCartItem.findEventCartItem(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (eventCartItem == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(eventCartItem.toJson(), headers, HttpStatus.OK);
+    }
+
+	@RequestMapping(headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> listJson() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        List<EventCartItem> result = EventCartItem.findAllEventCartItems();
+        return new ResponseEntity<String>(EventCartItem.toJsonArray(result), headers, HttpStatus.OK);
+    }
+
+	@RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
+        for (EventCartItem eventCartItem: EventCartItem.fromJsonArrayToEventCartItems(json)) {
+            eventCartItem.persist();
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    }
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        EventCartItem eventCartItem = EventCartItem.fromJsonToEventCartItem(json);
+        eventCartItem.setId(id);
+        if (eventCartItem.merge() == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
+        EventCartItem eventCartItem = EventCartItem.findEventCartItem(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (eventCartItem == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        eventCartItem.remove();
+        return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+
+	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    public String create(@Valid EventCartItem eventCartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            populateEditForm(uiModel, eventCartItem);
+            return "eventitems/create";
+        }
+        uiModel.asMap().clear();
+        eventCartItem.persist();
+        return "redirect:/eventitems/" + encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
+    }
+
+	@RequestMapping(value = "/{id}", produces = "text/html")
+    public String show(@PathVariable("id") Long id, Model uiModel) {
+        addDateTimeFormatPatterns(uiModel);
+        uiModel.addAttribute("eventcartitem", EventCartItem.findEventCartItem(id));
+        uiModel.addAttribute("itemId", id);
+        return "eventitems/show";
+    }
+
+	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    public String update(@Valid EventCartItem eventCartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            populateEditForm(uiModel, eventCartItem);
+            return "eventitems/update";
+        }
+        uiModel.asMap().clear();
+        eventCartItem.merge();
+        return "redirect:/eventitems/" + encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
+    }
+
+	void addDateTimeFormatPatterns(Model uiModel) {
+        uiModel.addAttribute("eventCartItem_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("eventCartItem_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
+    }
+
+	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {}
+        return pathSegment;
+    }
 }
