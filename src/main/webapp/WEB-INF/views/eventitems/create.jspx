@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
-        <field:select field="event" id="c_com_bibsmobile_model_EventCartItem_event" itemValue="id" items="${events}" path="/events" z="Mpt8K6YrAEB3O0PYBS7l4NwMCU8="/>
+        <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
         <field:input field="name" id="c_com_bibsmobile_model_EventCartItem_name" z="dSVCfVY0Ubmxz6e6aYw3W6ve1ic="/>
         <field:input field="description" id="c_com_bibsmobile_model_EventCartItem_description" z="PUHaF+kcXtSHZosW2pLOs4XAOYc="/>
         <field:input field="coupon" id="c_com_bibsmobile_model_EventCartItem_coupon" z="bmAFeWE+t1iQ7Qe9JqfSRKF+XU4="/>
@@ -19,15 +19,25 @@
         <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" required="true" z="g+W9OR2k/yrQ4Pj87bO3WG88/SU="/>
         <field:input field="donationAmount" id="c_com_bibsmobile_model_EventCartItem_donationAmount" z="VZFWFkpuJC9h6reOZuaam4TV3tA="/>
         <field:input field="charityName" id="c_com_bibsmobile_model_EventCartItem_charityName" z="tkvJAEiBX0M6TeamUAzmlX2kFrw="/>
-        <div id="tshortInfo">
-            <field:input field="tshortSizes" id="c_com_bibsmobile_model_EventCartItem_tshortSizes" z="azTo7d7+sWbNRr05aKH2woVYKzo="/>
-            <field:input field="tshortColors" id="c_com_bibsmobile_model_EventCartItem_tshortColors" z="SjKhaF5VXR25F+nA2F2k8JE+gXg="/>
-            <field:input field="tshortImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshortImageUrls" z="2Hw5nFO2gSOzyTna5gphjHf3jBU="/>
+        <div id="tshirtInfo">
+            <field:input field="tshirtSizes" id="c_com_bibsmobile_model_EventCartItem_tshirtSizes" z="n9MPSxEZOJb9R0u5w3gBYJirwS0="/>
+            <field:input field="tshirtColors" id="c_com_bibsmobile_model_EventCartItem_tshirtColors" z="aKV7pvNxff0M/QCV3pMsYdw7FcQ="/>
+            <field:input field="tshirtImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshirtImageUrls" z="t0koesrChFSIhqrDu/8zGjTcupQ="/>
         </div>
         <field:simple field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Cart Item Price Change" render="false" z="user-managed"/>
         <field:input field="minAge" id="c_com_bibsmobile_model_EventCartItem_minAge" z="gLMoH8RvkqgTOLu7e6f+ru8/Akg="/>
         <field:input field="maxAge" id="c_com_bibsmobile_model_EventCartItem_maxAge" z="gxKwAx4uoNx6quMhyMo4rXfd2jA="/>
         <field:select field="gender" id="c_com_bibsmobile_model_EventCartItem_gender" items="${eventcartitemgenderenums}" path="eventcartitemgenderenums" z="+Jg/WI19uo3scDKsAgDOwlnJVVA="/>
+        <field:datetime dateTimePattern="${eventCartItem_birthdate_date_format}" field="birthDate" id="c_com_bibsmobile_model_EventCartItem_birthDate" render="false" z="user-managed"/>
+        <field:input field="email" id="c_com_bibsmobile_model_EventCartItem_email" render="false" validationMessageCode="field_invalid_email" z="user-managed"/>
+        <field:input field="phone" id="c_com_bibsmobile_model_EventCartItem_phone" render="false" z="user-managed"/>
+        <field:input field="addressLine1" id="c_com_bibsmobile_model_EventCartItem_addressLine1" render="false" z="user-managed"/>
+        <field:input field="addressLine2" id="c_com_bibsmobile_model_EventCartItem_addressLine2" render="false" z="user-managed"/>
+        <field:input field="zipCode" id="c_com_bibsmobile_model_EventCartItem_zipCode" render="false" z="user-managed"/>
+        <field:input field="emergencyContactName" id="c_com_bibsmobile_model_EventCartItem_emergencyContactName" render="false" z="user-managed"/>
+        <field:input field="emergencyContactPhone" id="c_com_bibsmobile_model_EventCartItem_emergencyContactPhone" render="false" z="user-managed"/>
+        <field:input field="hearFrom" id="c_com_bibsmobile_model_EventCartItem_hearFrom" render="false" z="user-managed"/>
+        <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 </div>

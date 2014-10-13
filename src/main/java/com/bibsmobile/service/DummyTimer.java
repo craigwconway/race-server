@@ -8,7 +8,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 
-public class DummyTimer implements Timer, Runnable {
+public class DummyTimer extends AbstractTimer implements Timer, Runnable {
 
 	private TimerConfig timerConfig;
 	private int status;
@@ -83,88 +83,10 @@ public class DummyTimer implements Timer, Runnable {
 		while (status == 2) {
 			int bibnum = new Random().nextInt(30);
 			long bibtime = new Date().getTime();
-			for (Event event : Event.findEventsByRunning()) {
-				// if event started
-				if (null == event.getGunTime())
-					continue;
-
-				// put cache
-				if (!bibTimes.containsKey(bibnum))
-					bibTimes.put(bibnum, bibtime);
-
-				// check cache time
-				if (bibtime > (bibTimes.get(bibnum) + (timerConfig
-						.getReadTimeout() * 1000))) {
-					System.out.println(log + " timeout for " + bibnum);
-					continue;
-				}
-
-				// lookup result
-				RaceResult result = new RaceResult();
-				try {
-					result = RaceResult.findRaceResultsByEventAndBibEquals(
-							event, bibnum + "").getSingleResult();
-				} catch (org.springframework.dao.EmptyResultDataAccessException e) {
-					System.out.println(log + " unregistered bib " + bibnum
-							+ " " + event.getName());
-					continue;
-				}
-
-				// starting line
-				if (timerConfig.getPosition() == 0) {
-					// check existing starttime
-					long cTimestart = 0;
-					if (result.getTimestart()>0) {
-						cTimestart = result.getTimestart();
-						if (bibtime > cTimestart
-								+ (timerConfig.getReadTimeout() * 1000)) {
-							System.out.println(log + " existing starttime "
-									+ bibnum);
-							continue; // don't update
-						}
-					}
-					result.setTimestart(bibtime);
-					result.merge();
-					System.out.println(log + " update start for bib " + bibnum
-							+ " in " + event.getName());
-
-				}
-
-				// finish line
-				if (timerConfig.getPosition() > 0) {
-					// check existing timeofficial
-					long cTimeofficial = 0;
-					if (result.getTimeofficial()>0) {
-						cTimeofficial = result.getTimeofficial();
-						if (bibtime > cTimeofficial
-								+ (timerConfig.getReadTimeout() * 1000)) {
-							System.out.println(log + " existing timeout "
-									+ bibnum);
-							continue; // don't update
-						}
-					}
-					// bib vs chip start
-					long starttime = 0l;
-					if (result.getTimestart()>0) {
-						starttime = Long.valueOf(result.getTimestart());
-						System.out.println(log + " starttime runner "
-								+ starttime);
-					} else {
-						starttime = event.getGunTime().getTime();
-						result.setTimestart(starttime);
-						System.out.println(log + " starttime event "
-								+ starttime);
-					}
-					final String strTime = RaceResult.toHumanTime(starttime,
-							bibtime);
-					result.setTimeofficial(bibtime);
-					result.setTimeofficialdisplay(strTime);
-					result.merge();
-					System.out.println(log + " update bib " + bibnum + " "
-							+ strTime + " " + event.getName());
-				}
-
-			}
+			
+			// yay
+            logTime(bibnum, bibtime, timerConfig);
+			
 			// wait or conceed
 			try {
 				Thread.sleep(1000);

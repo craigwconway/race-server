@@ -1,12 +1,19 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.*;
+import com.bibsmobile.util.UserProfileUtil;
+
 import flexjson.JSONSerializer;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,10 +21,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -30,6 +40,13 @@ import java.util.*;
 public class EventController {
 
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
+
+    @Autowired
+    private JavaMailSenderImpl mailSender;
+
+    @Autowired
+    private SimpleMailMessage eventMessage;
+
 
     @RequestMapping(value = "/registrationComplete", method = RequestMethod.GET)
     public static String registrationComplete(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
@@ -54,7 +71,7 @@ public class EventController {
                 .getAuthentication().getName();
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
                 username).getSingleResult();
-        if (user.getUserGroup() != null) {
+       /* if (user.getUserGroup() != null) {
             addGroup = true;
             log.info("event group " + user.getUserGroup().getName());
             event.setUserGroup(user.getUserGroup());
@@ -67,7 +84,8 @@ public class EventController {
             groupEvents.add(event);
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
-        }
+        }*/
+        event.persist();
 
         return "redirect:/events/"
                 + encodeUrlPathSegment(event.getId().toString(),
@@ -300,6 +318,34 @@ public class EventController {
         return "false";
     }
 
+    @RequestMapping(value = "/manual", method = RequestMethod.GET)
+    @ResponseBody
+    public static String setTimeManual(
+            @RequestParam(value = "event", required = true) long event_id,
+            @RequestParam(value = "bib", required = true) String bib) {
+    	RaceResult result = new RaceResult();
+        try {
+        	long bibtime = System.currentTimeMillis();
+        	Event event = Event.findEvent(event_id);
+        	result = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
+			// bib vs chip start
+			long starttime = 0l;
+			if(result.getTimestart()>0){
+				starttime = Long.valueOf(result.getTimestart()) ;
+			}else{
+				starttime = event.getGunTime().getTime(); 
+				result.setTimestart( starttime );
+			}
+			final String strTime = RaceResult.toHumanTime(starttime, bibtime);
+			result.setTimeofficial( bibtime );
+			result.setTimeofficialdisplay( strTime );
+			result.merge();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result.toJson();
+    }
+
     @RequestMapping(value = "/featured", method = RequestMethod.GET)
     @ResponseBody
     public static String featured(
@@ -470,7 +516,7 @@ public class EventController {
         uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
     }
@@ -561,6 +607,181 @@ public class EventController {
     @ResponseBody
     public String findEventsCountries() {
         return new JSONSerializer().serialize(Event.findAllEventsCountries().getResultList());
+    }
+
+
+    @RequestMapping(value = "/search/byusergroup/{userGroupId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String findByUserGroup(@PathVariable Long userGroupId) {
+        UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
+        Map<Long, Event> events = new HashMap<>();
+        if (userGroup != null) {
+            for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
+                Event event = eventUserGroup.getEvent();
+                if (!events.containsKey(event.getId())) {
+                    events.put(event.getId(), event);
+                }
+            }
+        }
+        return Event.toJsonArray(events.values());
+    }
+
+    @RequestMapping(headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> listJson() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        List<Event> result = Event.findAllEvents();
+        return new ResponseEntity<String>(Event.toJsonArray(result), headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/notify")
+    public @ResponseBody String notifyParticipants(@RequestParam Long eventId) {
+        Event event = Event.findEvent(eventId);
+        if (event == null) {
+            return "[]";
+        }
+        List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        List<EventCartItem> validEventCartItems = new ArrayList<>();
+        for (EventCartItem eventCartItem : eventCartItems) {
+            if (eventCartItem.getType().equals(EventCartItemTypeEnum.TICKET)) {
+                validEventCartItems.add(eventCartItem);
+            }
+        }
+        if (validEventCartItems.isEmpty()) {
+            return "[]";
+        }
+        List<CartItem> cartItems = CartItem.findCartItemsByEventCartItems(validEventCartItems, null, null).getResultList();
+        List<UserProfile> users = new ArrayList<>();
+        List<String> sentTo = new ArrayList<>();
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getCart().getStatus() == Cart.COMPLETE) {
+                users.add(cartItem.getCart().getUser());
+            }
+        }
+        for (UserProfile user : users) {
+            if (StringUtils.isNotEmpty(user.getEmail())) {
+                if (!sentTo.contains(user.getEmail())) {
+                	try{
+                        eventMessage.setTo(user.getEmail());
+                        mailSender.send(eventMessage);
+                        sentTo.add(user.getEmail());
+                	}catch(Exception e){
+                		System.out.println("EXCEPTION: Email Send Fail - "+e.getMessage());
+                	}
+                }
+            }
+        }
+        return sentTo.toString();
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
+        Event event = Event.findEvent(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (event == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        event.remove();
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        Event event = Event.fromJsonToEvent(json);
+        event.setId(id);
+        if (event.merge() == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "form", produces = "text/html")
+    public String createForm(Model uiModel) {
+        populateEditForm(uiModel, new Event());
+        return "events/create";
+    }
+
+    @RequestMapping(value = "/{id}", produces = "text/html")
+    public String show(@PathVariable("id") Long id, Model uiModel, HttpServletRequest request) {
+        addDateTimeFormatPatterns(uiModel);
+        Event e = Event.findEvent(id);
+        ResultsFile latestImportFile = e.getLatestImportFile();
+        ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());
+        ResultsFileMapping latestMapping = ((latestImport == null) ? null : latestImport.getResultsFileMapping());
+        uiModel.addAttribute("event", e);
+        uiModel.addAttribute("dropboxUnlink", (UserProfileUtil.getLoggedInDropboxAccessToken() != null));
+        uiModel.addAttribute("lastImport", latestImport);
+        uiModel.addAttribute("lastMapping", latestMapping);
+        uiModel.addAttribute("itemId", id);
+        return "events/show";
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (event == null) {
+            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<String>(event.toJson(), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(produces = "text/html")
+    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("events", Event.findEventEntries(firstResult, sizeNo, sortFieldName, sortOrder));
+            float nrOfPages = (float) Event.countEvents() / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("events", Event.findAllEvents(sortFieldName, sortOrder));
+        }
+        addDateTimeFormatPatterns(uiModel);
+        return "events/list";
+    }
+    
+    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    public String updateForm(@PathVariable("id") Long id, Model uiModel) {
+        populateEditForm(uiModel, Event.findEvent(id));
+        return "events/update";
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+        Event event = Event.findEvent(id);
+        event.remove();
+        uiModel.asMap().clear();
+        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
+        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        return "redirect:/events";
+    }
+    
+    void addDateTimeFormatPatterns(Model uiModel) {
+        uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
+    }
+    
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {}
+        return pathSegment;
     }
 
 }

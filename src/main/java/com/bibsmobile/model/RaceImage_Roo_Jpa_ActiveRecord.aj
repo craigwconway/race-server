@@ -14,7 +14,7 @@ privileged aspect RaceImage_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager RaceImage.entityManager;
     
-    public static final List<String> RaceImage.fieldNames4OrderClauseFilter = java.util.Arrays.asList("filePath", "raceResult", "event", "userProfile", "nonPublic");
+    public static final List<String> RaceImage.fieldNames4OrderClauseFilter = java.util.Arrays.asList("filePath", "raceResult", "event", "userProfile", "nonPublic", "pictureTypes");
     
     public static final EntityManager RaceImage.entityManager() {
         EntityManager em = new RaceImage().entityManager;

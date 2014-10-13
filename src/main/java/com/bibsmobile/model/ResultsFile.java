@@ -12,7 +12,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -44,13 +43,39 @@ public class ResultsFile {
     @NotNull
     @Size(max = 128) 
     private String filePath; 
+
+    @Size(max = 42)
+    private String sha1Checksum;
+
+    @ManyToOne
+    private UserProfile importUser;
+
+    @Size(max = 128)
+    private String dropboxPath;
     
     @Transient
-    private byte[] content; 
+    private byte[] content;
     
     @Override
     public String toString(){
     	return name;
+    }
+
+    public ResultsImport getLatestImport() {
+        ResultsImport latest = null;
+        if (this.resultsImport == null) return null;
+        for (ResultsImport ri : this.resultsImport) {
+            if (latest == null || latest.getRunDate().compareTo(ri.getRunDate()) > 0) {
+                latest = ri;
+            }
+        }
+        return latest;
+    }
+
+    public ResultsFileMapping getLatestImportMapping() {
+        ResultsImport latestImport = this.getLatestImport();
+        if (latestImport == null) return null;
+        return latestImport.getResultsFileMapping();
     }
     
 }

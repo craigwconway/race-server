@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_UserAuthorities" object="${userauthorities}" path="/userauthorities" update="false" z="1PpQ/31u8lRu2HvAUPBlgVltIPE=">
+        <field:display field="userProfile" id="s_com_bibsmobile_model_UserAuthorities_userProfile" object="${userauthorities}" z="FO+J92mJGZPzGLFIa2MB10fUXw4="/>
+        <field:display field="userAuthority" id="s_com_bibsmobile_model_UserAuthorities_userAuthority" object="${userauthorities}" z="X8KYCfeCBjApVewMoq1lXw5tm4c="/>
+        <field:display field="userGroups" id="s_com_bibsmobile_model_UserAuthorities_userGroups" object="${userauthorities}" render="false" z="user-managed"/>
+        <field:display field="userGroupUserAuthorities" id="s_com_bibsmobile_model_UserAuthorities_userGroupUserAuthorities" object="${userauthorities}" render="false" z="user-managed"/>
+    </page:show>
+</div>

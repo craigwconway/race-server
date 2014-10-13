@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <h2>Manage Maps for ${event.name}</h2>
+        <button class="btn btn-default btn-top" onclick="addMap()" type="button">
+            Add a Map
+        </button>
+        <button class="btn btn-default btn-top" onclick="backToEvent()" type="button">
+            Back to Event
+        </button>
+        <script>
+            function addMap(){
+                window.location="/bibs-server/eventmaps?form&amp;event=${event.id}";
+            }
+            function backToEvent(){
+                window.location="/bibs-server/events/${event.id}";
+            }
+        </script>
+        <page:list id="pl_com_bibsmobile_model_EventMap" items="${eventmaps}" z="q5jMotPVod66qAsJi7qvdrWoevI=">
+            <table:table data="${eventmaps}" id="l_com_bibsmobile_model_EventMap" path="/eventmaps" z="ie+4oKyZuGh4D19JdcByhgfNBPo=">
+                <table:column id="c_com_bibsmobile_model_EventMap_url" property="url" z="Hak/N+wL5ZgD3WghMplCbP8DNOA="/>
+                <table:column id="c_com_bibsmobile_model_EventMap_event" property="event" z="+LlVv9AUipDoElwOcYuDWLPAQJ8="/>
+            </table:table>
+        </page:list>
+    </sec:authorize>
+</div>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_bibsmobile_model_CartItem" modelAttribute="cartItem" path="/cartitems" versionField="Version" z="cNXL3Yim7J38qOYajVvaua4E4WQ=">
+        <field:select field="cart" id="c_com_bibsmobile_model_CartItem_cart" itemValue="id" items="${carts}" path="/carts" z="IEMSdtZYPapvE0bwQpuvs7t7ymM="/>
+        <field:select field="eventCartItem" id="c_com_bibsmobile_model_CartItem_eventCartItem" itemValue="id" items="${eventcartitems}" path="/eventitems" z="5RI8BJ6hNq/LsMp2Qvdy6pFNQmg="/>
+        <field:input field="quantity" id="c_com_bibsmobile_model_CartItem_quantity" z="Aux8yISuHIb4vdC8iL2BJetEq30="/>
+        <field:datetime dateTimePattern="${cartItem_updated_date_format}" field="updated" id="c_com_bibsmobile_model_CartItem_updated" z="Im91inYjymDQKGdAW+5/Sl6ZuwU="/>
+        <field:input field="comment" id="c_com_bibsmobile_model_CartItem_comment" z="rLXRUC7FrPS+yD0S8V7urd4DyIE="/>
+        <field:input field="coupon" id="c_com_bibsmobile_model_CartItem_coupon" z="u68zmPLaFn8JdrwTZ4fHt9zUOXs="/>
+        <field:select field="userProfile" id="c_com_bibsmobile_model_CartItem_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" z="2xFQk8Ut/wvnQ9tAXg6/nj4h0JI="/>
+        <field:checkbox field="exported" id="c_com_bibsmobile_model_CartItem_exported" render="false" z="user-managed"/>
+        <field:input field="color" id="c_com_bibsmobile_model_CartItem_color" z="no+Q1ADARMFfpxkQSC0VTTSA8mI="/>
+        <field:input field="size" id="c_com_bibsmobile_model_CartItem_size" z="lzL4c6Uxk1h/LlG/RH6RG3v/TS4="/>
+        <field:input field="price" id="c_com_bibsmobile_model_CartItem_price" z="i+5+BwREMM8hbO2jI8x4R1brdbY="/>
+    </form:update>
+</div>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <h2>Manage Alerts for ${event.name}</h2>
+        <button class="btn btn-default btn-top" onclick="addPhoto()" type="button">
+            Add a Photo
+        </button>
+        <button class="btn btn-default btn-top" onclick="backToEvent()" type="button">
+            Back to Event
+        </button>
+        <script>
+            function addPhoto(){
+                window.location="/bibs-server/eventphotos?form&amp;event=${event.id}";
+            }
+            function backToEvent(){
+                window.location="/bibs-server/events/${event.id}";
+            }
+        </script>
+        <page:list id="pl_com_bibsmobile_model_EventPhoto" items="${eventphotos}" z="user-managed">
+            <table:table data="${eventphotos}" id="l_com_bibsmobile_model_EventPhoto" path="/eventphotos" z="user-managed">
+                <table:column id="c_com_bibsmobile_model_EventPhoto_url" property="url" z="IYAByzKj64tGCaZP+q5eFxZKYoI="/>
+                <table:column id="c_com_bibsmobile_model_EventPhoto_event" property="event" z="UNbZl53BYfXs6pji6pfzl2bQPiE="/>
+            </table:table>
+        </page:list>
+    </sec:authorize>
+</div>

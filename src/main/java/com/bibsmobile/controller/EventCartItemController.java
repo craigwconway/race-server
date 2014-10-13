@@ -1,23 +1,28 @@
 package com.bibsmobile.controller;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemTypeEnum;
-import flexjson.JSON;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.EventCartItem;
-import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
-import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @RequestMapping("/eventitems")
 @Controller
@@ -82,7 +87,7 @@ public class EventCartItemController {
         return eventCartItem.toJson();
     }
 
-    @RequestMapping(value="/search", params = "find=ByNameEquals", headers = "Accept=application/json")
+    @RequestMapping(value = "/search", params = "find=ByNameEquals", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindEventCartItemsByNameEquals(@RequestParam("name") String name) {
         HttpHeaders headers = new HttpHeaders();
@@ -90,9 +95,24 @@ public class EventCartItemController {
         return new ResponseEntity<>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByNameEquals(name).getResultList()), headers, HttpStatus.OK);
     }
 
-     /*
-     * Model attributes
-     * */
+    @RequestMapping(value = "/search", params = "find=ByEvent", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindEventCartItemsByEvent(@RequestParam("event") Long eventId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        Event event = Event.findEvent(eventId);
+        List<EventCartItem> resultList;
+        if (event == null) {
+            resultList = Collections.emptyList();
+        } else {
+            resultList = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        }
+        return new ResponseEntity<>(EventCartItem.toJsonArray(resultList), headers, HttpStatus.OK);
+    }
+
+    /*
+    * Model attributes
+    * */
     @ModelAttribute("eventcartitemtypeenums")
     public List<EventCartItemTypeEnum> getEventCartItemTypeEnums() {
         return Arrays.asList(EventCartItemTypeEnum.values());
@@ -102,4 +122,21 @@ public class EventCartItemController {
     public List<EventCartItemGenderEnum> getEventCartItemGenderEnums() {
         return Arrays.asList(EventCartItemGenderEnum.values());
     }
+    
+    @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindEventCartItemsByEvent(@RequestParam("event") Event event) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByEvent(event).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByType", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindEventCartItemsByType(@RequestParam("type") EventCartItemTypeEnum type) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByType(type).getResultList()), headers, HttpStatus.OK);
+    }
+    
 }

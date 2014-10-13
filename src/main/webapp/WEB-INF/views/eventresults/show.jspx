@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <button class="btn btn-default btn-top" onclick="backToEvent()" type="button">
+        Back to Event
+    </button>
+
+    <button class="btn btn-default btn-top" onclick="backToEventResults()" type="button">
+        Back to Event Results
+    </button>
+    <script>
+        function backToEvent(){
+            window.location="/bibs-server/events/${eventresult.event.id}";
+        }
+        function backToEventResults(){
+            window.location="/bibs-server/eventresults?event=${eventresult.event.id}";
+        }
+    </script>
+    <page:show id="ps_com_bibsmobile_model_EventResult" object="${eventresult}" path="/eventresults" z="Cd2C5YjoBPKBTL22YyeQLZidkto=">
+        <field:display field="text" id="s_com_bibsmobile_model_EventResult_text" object="${eventresult}" z="kY36LBZTlVf1r0q3jY/3lu/VYE4="/>
+        <field:display field="event" id="s_com_bibsmobile_model_EventResult_event" object="${eventresult}" z="jnZBJG9SpZMdcIFSYuB0tS7ik4E="/>
+    </page:show>
+</div>

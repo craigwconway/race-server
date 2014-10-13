@@ -4,8 +4,11 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_com_bibsmobile_model_UserGroup" modelAttribute="userGroup" path="/usergroups" versionField="Version" z="xpHyMxVf7h3xpll190YzkD5+Op8=">
         <field:input field="name" id="c_com_bibsmobile_model_UserGroup_name" z="cpwccjpO9MhYhYw0rMbr6+jWQjI="/>
-        <field:select field="events" id="c_com_bibsmobile_model_UserGroup_events" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" z="user-managed"/>
         <field:input field="bibWrites" id="c_com_bibsmobile_model_UserGroup_bibWrites" z="5NzzdMKh7ffLaoYW+cqe8a6P1fc="/>
-        <field:simple field="userProfiles" id="c_com_bibsmobile_model_UserGroup_userProfiles" messageCode="entity_reference_not_managed" messageCodeAttribute="User Profile" z="bMcUSFmmQWEsvqlXSicDz0++PIE="/>
+        <field:select field="groupType" id="c_com_bibsmobile_model_UserGroup_groupType" items="${usergrouptypes}" path="usergrouptypes" required="true" z="ozaLX6pBWiLiFB7r+z5pPWFXJQY="/>
+        <field:input field="events" id="c_com_bibsmobile_model_UserGroup_events" render="false" z="user-managed"/>
+        <field:input field="authorities" id="c_com_bibsmobile_model_UserGroup_authorities" render="false" z="user-managed"/>
+        <field:input field="userGroupUserAuthorities" id="c_com_bibsmobile_model_UserGroup_userGroupUserAuthorities" render="false" z="user-managed"/>
+        <field:input field="eventUserGroups" id="c_com_bibsmobile_model_UserGroup_eventUserGroups" z="user-managed" render="false"/>
     </form:update>
 </div>

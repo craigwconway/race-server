@@ -6,6 +6,7 @@ package com.bibsmobile.model;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.UserProfile;
 import java.util.Date;
 
 privileged aspect CartItem_Roo_JavaBean {
@@ -24,6 +25,14 @@ privileged aspect CartItem_Roo_JavaBean {
     
     public void CartItem.setEventCartItem(EventCartItem eventCartItem) {
         this.eventCartItem = eventCartItem;
+    }
+    
+    public UserProfile CartItem.getUserProfile() {
+        return this.userProfile;
+    }
+    
+    public void CartItem.setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
     
     public int CartItem.getQuantity() {
@@ -64,6 +73,38 @@ privileged aspect CartItem_Roo_JavaBean {
     
     public void CartItem.setCoupon(String coupon) {
         this.coupon = coupon;
+    }
+    
+    public Boolean CartItem.getExported() {
+        return this.exported;
+    }
+    
+    public void CartItem.setExported(Boolean exported) {
+        this.exported = exported;
+    }
+    
+    public String CartItem.getColor() {
+        return this.color;
+    }
+    
+    public void CartItem.setColor(String color) {
+        this.color = color;
+    }
+    
+    public String CartItem.getSize() {
+        return this.size;
+    }
+    
+    public void CartItem.setSize(String size) {
+        this.size = size;
+    }
+    
+    public double CartItem.getPrice() {
+        return this.price;
+    }
+    
+    public void CartItem.setPrice(double price) {
+        this.price = price;
     }
     
 }

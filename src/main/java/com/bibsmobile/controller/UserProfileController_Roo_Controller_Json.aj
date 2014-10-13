@@ -85,6 +85,30 @@ privileged aspect UserProfileController_Roo_Controller_Json {
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
     
+    @RequestMapping(params = "find=ByDropboxIdEquals", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> UserProfileController.jsonFindUserProfilesByDropboxIdEquals(@RequestParam("dropboxId") String dropboxId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(UserProfile.toJsonArray(UserProfile.findUserProfilesByDropboxIdEquals(dropboxId).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByEmailEquals", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> UserProfileController.jsonFindUserProfilesByEmailEquals(@RequestParam("email") String email) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(UserProfile.toJsonArray(UserProfile.findUserProfilesByEmailEquals(email).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByForgotPasswordCodeEquals", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> UserProfileController.jsonFindUserProfilesByForgotPasswordCodeEquals(@RequestParam("forgotPasswordCode") String forgotPasswordCode) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<String>(UserProfile.toJsonArray(UserProfile.findUserProfilesByForgotPasswordCodeEquals(forgotPasswordCode).getResultList()), headers, HttpStatus.OK);
+    }
+    
     @RequestMapping(params = "find=ByUsernameEquals", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> UserProfileController.jsonFindUserProfilesByUsernameEquals(@RequestParam("username") String username) {

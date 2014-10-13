@@ -19,4 +19,10 @@ public interface Timer {
 	void stopReader();
 
 	void write(long bib) throws Exception;
+
+	void logTime(int bibnum, long bibtime, TimerConfig timerConfig);
+
+	void clearReport();
+
+	String createReport();
 }

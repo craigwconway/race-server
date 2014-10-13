@@ -4,9 +4,10 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_com_bibsmobile_model_RaceImage" modelAttribute="raceImage" path="/raceimages" versionField="Version" z="2UesAcR6wPak3fqjyKTh2+aUP9Y=">
         <field:input field="filePath" id="c_com_bibsmobile_model_RaceImage_filePath" required="true" z="UuxovfG+86RKFB0os8sQVHwXwNc="/>
-        <field:select field="raceResult" id="c_com_bibsmobile_model_RaceImage_raceResult" itemValue="id" items="${raceresults}" path="/raceresults" z="rOxk4NTjPxcIXi59PtOpG7hHqIU="/>
-        <field:select field="event" id="c_com_bibsmobile_model_RaceImage_event" itemValue="id" items="${events}" path="/events" z="ToEXP/Tkgo5K3UhdAucIptbxLK8="/>
-        <field:select field="userProfile" id="c_com_bibsmobile_model_RaceImage_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" z="5QfhcdJQqyrbEIdJdCHJksClEUE="/>
+        <field:input field="raceResult" id="c_com_bibsmobile_model_RaceImage_raceResult" z="vRcMPOU74ZIYfbtfsGv2Mlezfzs="/>
+        <field:input field="event" id="c_com_bibsmobile_model_RaceImage_event" z="lCaRiowFWWB7IVLamoqGfSu3ddo="/>
+        <field:input field="userProfile" id="c_com_bibsmobile_model_RaceImage_userProfile" z="V0YRxOuFjy33mfSAyxQt0mrKwlw="/>
         <field:checkbox field="nonPublic" id="c_com_bibsmobile_model_RaceImage_nonPublic" z="pSjEQEPNnXhXahtnFf0heQkc0f0="/>
+        <field:input field="pictureTypes" id="c_com_bibsmobile_model_RaceImage_pictureTypes" z="ICovvQuOF2qx6qOumac1QBDaV48="/>
     </form:update>
 </div>

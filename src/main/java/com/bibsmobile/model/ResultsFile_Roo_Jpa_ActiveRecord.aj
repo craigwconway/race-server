@@ -14,7 +14,7 @@ privileged aspect ResultsFile_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager ResultsFile.entityManager;
     
-    public static final List<String> ResultsFile.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "resultsFileMapping", "resultsImport", "contentType", "event", "created", "filesize", "filePath", "content");
+    public static final List<String> ResultsFile.fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "resultsFileMapping", "resultsImport", "contentType", "event", "created", "filesize", "filePath", "sha1Checksum", "importUser", "dropboxPath", "content");
     
     public static final EntityManager ResultsFile.entityManager() {
         EntityManager em = new ResultsFile().entityManager;

@@ -3,15 +3,15 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:update id="fu_com_bibsmobile_model_Event" modelAttribute="event" path="/events" versionField="Version" z="HRUEbbTPOtP6NCVvkP7sA85e324=">
-        <field:input field="name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/>
-        <field:input field="city" id="c_com_bibsmobile_model_Event_city" z="iYWjL3ti+38Wz9q1TzkesCh+8mw="/>
-        <field:input field="state" id="c_com_bibsmobile_model_Event_state" z="317hwhiMIVVt+Bq3TzgDkWOKaGA="/>
+        <field:input field="name" id="c_com_bibsmobile_model_Event_name" required="true" z="user-managed"/>
+        <field:input field="city" id="c_com_bibsmobile_model_Event_city" z="user-managed"/>
+        <field:input field="state" id="c_com_bibsmobile_model_Event_state" z="user-managed"/>
         <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
         <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
             <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="user-managed"/>
-            <field:datetime dateTimePattern="${event_guntime_date_format}" field="gunTime" id="c_com_bibsmobile_model_Event_gunTime" z="1n6wNaY8F7Pt9/jsM4i0RLl8wDs="/>
+            <field:datetime dateTimePattern="${event_guntime_date_format}" field="gunTime" id="c_com_bibsmobile_model_Event_gunTime" z="user-managed"/>
         </sec:authorize>
-        <div style="display:none;">
+        <div style="display:none">
             <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
             <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
             <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="user-managed"/>
@@ -32,7 +32,7 @@
             <field:input field="map" id="c_com_bibsmobile_model_Event_map" z="user-managed"/>
             <field:input field="map2" id="c_com_bibsmobile_model_Event_map2" z="user-managed"/>
             <field:input field="map3" id="c_com_bibsmobile_model_Event_map3" z="user-managed"/>
-            <field:input field="results" id="c_com_bibsmobile_model_Event_results" z="user-managed"/>
+            <field:input field="results1" id="c_com_bibsmobile_model_Event_results1" z="user-managed"/>
             <field:input field="results2" id="c_com_bibsmobile_model_Event_results2" z="user-managed"/>
             <field:input field="results3" id="c_com_bibsmobile_model_Event_results3" z="user-managed"/>
             <field:input field="alert1" id="c_com_bibsmobile_model_Event_alert1" z="user-managed"/>
@@ -51,22 +51,29 @@
             <field:simple field="raceResults" id="c_com_bibsmobile_model_Event_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" z="user-managed"/>
             <field:simple field="resultsFile" id="c_com_bibsmobile_model_Event_resultsFile" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" z="user-managed"/>
             <field:simple field="raceImage" id="c_com_bibsmobile_model_Event_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
-            <field:simple field="eventAwardCategorys" id="c_com_bibsmobile_model_Event_eventAwardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
+            <field:simple render="false" field="eventAwardCategorys" id="c_com_bibsmobile_model_Event_eventAwardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
             <field:simple field="resultsFiles" id="c_com_bibsmobile_model_Event_resultsFiles" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" z="user-managed"/>
             <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
-            <field:simple field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
+            <field:simple  render="false" field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
             <field:input field="running" id="c_com_bibsmobile_model_Event_running" render="true" z="user-managed"/>
             <field:input field="gunTimeStart" id="c_com_bibsmobile_model_Event_gunTimeStart" z="user-managed"/>
             <field:checkbox field="sync" id="c_com_bibsmobile_model_Event_sync" z="user-managed"/>
             <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
-            <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
-            <field:simple field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Award Category" z="W/mlzVpnmu4H0G8oKjVQKgrW5bs="/>
-            <field:select field="userGroup" id="c_com_bibsmobile_model_Event_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" z="oo4ip/WoDNsEB0aJzYG0szVc5x8="/>
-        </div>
-        <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="/3fyPZerngMWWMJqq9ZJvrhAH7g="/>
-        <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="b4czpbEbm6rfsWzq6SaBkBAW8zw="/>
-        <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="3AphWsDVTCwywX+AWXuOhqyC8XY="/>
-    </form:update>
+            <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="user-managed"/>
+            <field:input render="false" field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" z="user-managed"/>
+            <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="user-managed"/>
+            <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="user-managed"/>
+            <field:simple field="photos" id="c_com_bibsmobile_model_Event_photos" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Photo" z="user-managed"/>
+            <field:simple field="results" id="c_com_bibsmobile_model_Event_results" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Result" z="user-managed"/>
+            <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="user-managed"/>
+	        <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="user-managed"/>
+	        <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="user-managed"/>
+	        <field:input field="eventUserGroup" id="c_com_bibsmobile_model_Event_eventUserGroup" z="user-managed" render="false"/>
+	        <field:input field="eventUserGroups" id="c_com_bibsmobile_model_Event_eventUserGroups" z="user-managed" render="false"/>
+	        <field:select field="eventTypes" id="c_com_bibsmobile_model_Event_eventTypes" itemValue="id" items="${eventtypes}" multiple="true" path="/eventtypes" z="user-managed"/>
+	        <field:input field="waiver" id="c_com_bibsmobile_model_Event_waiver" z="user-managed"/>
+    	</div>
+	</form:update>
     <script>
     window.onload = function(){
     	jQuery("#_name_id").focus();

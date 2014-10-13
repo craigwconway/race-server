@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <script>
+        defaultUserProfile = '${userGroupUserAuthority.userAuthorities.userProfile.id}';
+        checkUserProfileChange();
+    </script>
+    <form:create id="fc_com_bibsmobile_model_UserGroupUserAuthority" modelAttribute="userGroupUserAuthority" path="/usergroupuserauthorities"
+                 render="${empty dependencies}" z="Yz5JoaHLR/RywBMjODWNOka8+Wo=">
+        <field:select field="userGroup" id="c_com_bibsmobile_model_UserGroupUserAuthority_userGroup" itemValue="id"
+                      items="${usergroups}" path="/usergroups" z="user-mamanged"/>
+        <field:select field="userAuthorities.userProfile" id="c_com_bibsmobile_model_UserGroupUserAuthority_userProfile"
+                      itemValue="id" items="${userprofiles}" path="/userprofiles" z="user-managed"/>
+        <field:select field="userAuthorities.userAuthority" id="c_com_bibsmobile_model_UserGroupUserAuthority_userAuthority"
+                      itemValue="id" items="${userauthorities}" path="/userauthorities?userprofile=${userGroupUserAuthority.userAuthorities.userProfile.id}" z="user-managed"/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserGroupUserAuthority" render="${not empty dependencies}"
+                     z="Q0ftCawUkN6NXn/NKLFRI8v2u2Q="/>
+</div>

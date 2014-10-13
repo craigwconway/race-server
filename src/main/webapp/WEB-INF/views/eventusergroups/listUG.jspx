@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/eventusergroups?form&amp;event=${event.id}';"
+            type="button">
+        Assign User Group
+    </button>
+    <page:list id="pl_com_bibsmobile_model_EventUserGroup" items="${eventusergroups}" z="0tmhEhhgOVVZil3gXQz4AdQjrgQ=">
+        <table class="table">
+            <thead>
+            <tr>
+                <th class="table-btn"></th>
+                <th></th>
+                <th>User Group Name</th>
+                <th>User Group Type</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${eventusergroups}" var="eventusergroup">
+                <tr>
+                    <td class="utilbox">
+                        <a title="Show User Group" alt="Show User Group"
+                           href="/bibs-server/eventusergroups/${eventusergroup.event.id}/${eventusergroup.userGroup.id}">
+                            <img title="Show User Group" src="/bibs-server/resources/images/show.png" class="image" alt="Show User Group"/>
+                        </a>
+                    </td>
+                    <td class="utilbox">
+                        <sec:authorize ifAnyGranted="ROLE_EVENT_ADMIN, ROLE_SYS_ADMIN">
+                            <form id="command" action="/bibs-server/eventusergroups/${eventusergroup.event.id}/${eventusergroup.userGroup.id}"
+                                  method="post">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <input onclick="return confirm('Are you sure want to delete this item?');" value="Delete User Group" type="image"
+                                       title="Delete User Group" src="/bibs-server/resources/images/delete.png" class="image"
+                                       alt="Delete UUser Groups"/>
+                            </form>
+                        </sec:authorize>
+                    </td>
+                    <td>${eventusergroup.userGroup.name}</td>
+                    <td>${eventusergroup.userGroup.groupType}</td>
+                </tr>
+            </c:forEach>
+            <tr class="footer">
+                <td colspan="4">
+                    <span class="new"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </page:list>
+</div>

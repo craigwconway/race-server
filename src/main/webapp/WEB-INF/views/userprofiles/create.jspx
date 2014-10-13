@@ -9,13 +9,12 @@
         <field:checkbox field="accountNonLocked" id="c_com_bibsmobile_model_UserProfile_accountNonLocked" render="false" z="user-managed"/>
         <field:checkbox field="credentialsNonExpired" id="c_com_bibsmobile_model_UserProfile_credentialsNonExpired" render="false" z="user-managed"/>
         <field:checkbox field="enabled" id="c_com_bibsmobile_model_UserProfile_enabled" render="false" z="user-managed"/>
-        <field:select field="userAuthorities" id="c_com_bibsmobile_model_UserProfile_userAuthorities" itemValue="id" items="${userauthoritys}" multiple="true" path="/userauthoritys" z="5fQESFCW0s+536APzVmY2ttYsyw="/>
         <field:input field="facebookId" id="c_com_bibsmobile_model_UserProfile_facebookId" render="false" z="user-managed"/>
         <field:input field="twitterId" id="c_com_bibsmobile_model_UserProfile_twitterId" render="false" z="user-managed"/>
         <field:input field="googleId" id="c_com_bibsmobile_model_UserProfile_googleId" render="false" z="user-managed"/>
         <field:input field="age" id="c_com_bibsmobile_model_UserProfile_age" render="false" z="user-managed"/>
         <field:input field="gender" id="c_com_bibsmobile_model_UserProfile_gender" render="false" z="user-managed"/>
-        <field:input field="email" id="c_com_bibsmobile_model_UserProfile_email" render="false" validationMessageCode="field_invalid_email" z="user-managed"/>
+        <field:input field="email" id="c_com_bibsmobile_model_UserProfile_email" validationMessageCode="field_invalid_email" z="user-managed"/>
         <field:select field="friends" id="c_com_bibsmobile_model_UserProfile_friends" itemLabel="username" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" render="false" z="user-managed"/>
         <field:select field="rivals" id="c_com_bibsmobile_model_UserProfile_rivals" itemLabel="username" itemValue="id" items="${userprofiles}" multiple="true" path="/userprofiles" render="false" z="user-managed"/>
         <field:select field="eventsSaved" id="c_com_bibsmobile_model_UserProfile_eventsSaved" itemLabel="name" itemValue="id" items="${events}" multiple="true" path="/events" render="false" z="user-managed"/>
@@ -28,8 +27,21 @@
         <field:input field="city" id="c_com_bibsmobile_model_UserProfile_city" render="false" z="user-managed"/>
         <field:input field="state" id="c_com_bibsmobile_model_UserProfile_state" render="false" z="user-managed"/>
         <field:input field="image" id="c_com_bibsmobile_model_UserProfile_image" render="false" z="user-managed"/>
-        <field:select field="userGroup" id="c_com_bibsmobile_model_UserProfile_userGroup" itemValue="id" items="${usergroups}" path="/usergroups" render="false" z="user-managed"/>
+        <field:input field="userAuthorities" id="c_com_bibsmobile_model_UserProfile_userAuthorities" render="false" z="user-managed"/>
         <field:datetime dateTimePattern="${userProfile_birthdate_date_format}" field="birthdate" id="c_com_bibsmobile_model_UserProfile_birthdate" z="MiMz4DGf1VWzCQv72upHcq7xsWo="/>
+        <field:input field="phone" id="c_com_bibsmobile_model_UserProfile_phone" render="false" z="user-managed"/>
+        <field:input field="addressLine1" id="c_com_bibsmobile_model_UserProfile_addressLine1" render="false" z="user-managed"/>
+        <field:input field="addressLine2" id="c_com_bibsmobile_model_UserProfile_addressLine2" render="false" z="user-managed"/>
+        <field:input field="zipCode" id="c_com_bibsmobile_model_UserProfile_zipCode" render="false" z="user-managed"/>
+        <field:input field="emergencyContactName" id="c_com_bibsmobile_model_UserProfile_emergencyContactName" render="false" z="user-managed"/>
+        <field:input field="emergencyContactPhone" id="c_com_bibsmobile_model_UserProfile_emergencyContactPhone" render="false" z="user-managed"/>
+        <field:input field="hearFrom" id="c_com_bibsmobile_model_UserProfile_hearFrom" render="false" z="user-managed"/>
+        <field:select field="cartItem" id="c_com_bibsmobile_model_UserProfile_cartItem" itemValue="id" items="${cartitems}" path="/cartitems" render="false" z="user-managed"/>
+        <field:input field="forgotPasswordCode" id="c_com_bibsmobile_model_UserProfile_forgotPasswordCode" render="false" z="user-managed"/>
+        <field:input field="dropboxAccessToken" id="c_com_bibsmobile_model_UserProfile_dropboxAccessToken" render="false" z="user-managed"/>
+        <field:input field="dropboxId" id="c_com_bibsmobile_model_UserProfile_dropboxId" render="false" z="user-managed"/>
+        <field:input field="resultsFiles" id="c_com_bibsmobile_model_UserProfile_resultsFiles" render="false" z="user-managed"/>
+        <field:input field="stripeCustomerId" id="c_com_bibsmobile_model_UserProfile_stripeCustomerId" render="false" z="user-managed"/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_UserProfile" render="${not empty dependencies}" z="bjmbow3uaKPnQKxTUw7asq9aKLc="/>
 </div>

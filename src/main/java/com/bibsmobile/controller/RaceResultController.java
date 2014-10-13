@@ -2,9 +2,13 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.UserProfile;
 
 import java.util.Date;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,12 +17,14 @@ import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @RequestMapping("/raceresults")
 @Controller
@@ -30,6 +36,18 @@ public class RaceResultController {
     @ResponseBody
     public String createFromJson(@RequestBody String json) {
         RaceResult raceResult = RaceResult.fromJsonToRaceResult(json);
+        raceResult.persist();
+        return raceResult.toJson();
+    }
+    
+    @RequestMapping(value = "/addProfile/{id}", method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public String addProfile(@PathVariable("id") Long id) {
+        RaceResult raceResult = RaceResult.findRaceResult(id);
+        String loggedinUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+	if (loggedinUsername.equals("anonymousUser")) return "";
+        UserProfile loggedinUserProfile = UserProfile.findUserProfilesByUsernameEquals(loggedinUsername).getResultList().get(0);
+        raceResult.setUserProfile(loggedinUserProfile);
         raceResult.persist();
         return raceResult.toJson();
     }
@@ -132,6 +150,24 @@ public class RaceResultController {
 		// license TODO
     	
     	return "raceresults/bibs";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    public String create(@Valid RaceResult raceResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            populateEditForm(uiModel, raceResult);
+            return "raceresults/create";
+        }
+        uiModel.asMap().clear();
+        raceResult.persist();
+        long eventId = 0;
+        if(null!=raceResult.getEvent()){
+        	eventId = raceResult.getEvent().getId();
+        }
+        return "redirect:/raceresults/?form&event="+eventId+"&added=" 
+        		 + encodeUrlPathSegment(raceResult.getBib()
+        		 +" "+ raceResult.getFirstname()
+        		 +" "+ raceResult.getLastname(), httpServletRequest);
     }
     
 }

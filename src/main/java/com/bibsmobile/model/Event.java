@@ -4,31 +4,22 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Query;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Cascade;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.HashSet;
+import javax.persistence.CascadeType;
+import javax.persistence.ManyToMany;
 
 @RooJavaBean
-@RooJson
 @RooEquals
-@RooJpaActiveRecord(finders = { "findEventsByTypeEquals", "findEventsByStateEquals", "findEventsByStateEqualsAndCityEquals" })
+@RooJson
+@RooJpaActiveRecord(finders = { "findEventsByTypeEquals", "findEventsByStateEquals", "findEventsByStateEqualsAndCityEquals", "findEventsByEventUserGroup" })
 public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
@@ -43,9 +34,6 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
     private List<AwardCategory> awardCategorys;
 
-    @ManyToOne
-    private UserGroup userGroup;
-
     @NotNull
     private String name;
 
@@ -59,9 +47,15 @@ public class Event {
 
     private int featured;
 
+    private String address1;
+    
+    private String address2;
+    
     private String city;
 
     private String state;
+    
+    private String zip;
 
     private String country;
 
@@ -69,13 +63,19 @@ public class Event {
 
     private String longitude;
 
+    @Deprecated
     private String type;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<EventType> eventTypes = new HashSet<>();
 
     private String website;
 
     private String phone;
 
     private String email;
+    
+    private String contactPerson;
 
     private String registration;
 
@@ -99,7 +99,8 @@ public class Event {
 
     private String map3;
 
-    private String results;
+    @Column(name = "results")
+    private String results1;
 
     private String results2;
 
@@ -160,6 +161,33 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date updated;
+
+    /**
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    private List<EventPhoto> photos = new ArrayList<EventPhoto>();
+
+    /**
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    private List<EventAlert> alerts = new ArrayList<EventAlert>();
+
+    /**
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    private List<EventMap> maps = new ArrayList<EventMap>();
+
+    /**
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    private List<EventResult> results = new ArrayList<EventResult>();
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    private List<EventUserGroup> eventUserGroups = new ArrayList<EventUserGroup>();
+
+    /**
+     */
+    private String waiver;
 
     @PrePersist
     protected void onCreate() {
@@ -337,7 +365,6 @@ public class Event {
         return q;
     }
 
-
     public static TypedQuery<String> findAllEventsCountries() {
         EntityManager em = Event.entityManager();
         TypedQuery<String> q = em.createQuery("SELECT distinct event.country FROM Event AS event", String.class);
@@ -377,5 +404,19 @@ public class Event {
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
         return q;
+    }
+
+    public ResultsFile getLatestImportFile() {
+        ResultsImport latest = null;
+        if (this.resultsFiles == null) return null;
+        for (ResultsFile rf : this.resultsFiles) {
+            ResultsImport tmp = rf.getLatestImport();
+            if (tmp == null) continue;
+            if (latest == null || (latest.getRunDate() != null && tmp.getRunDate() != null && latest.getRunDate().compareTo(tmp.getRunDate()) > 0)) {
+                latest = tmp;
+            }
+        }
+        if (latest == null) return null;
+        return latest.getResultsFile();
     }
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_bibsmobile_model_CartItem" object="${cartitem}" path="/cartitems" z="3u8wDDbrfbW85dxZwD9h2YiO3XU=">
+        <field:display field="cart" id="s_com_bibsmobile_model_CartItem_cart" object="${cartitem}" z="3yccAXidXjaaXirQegB4bn9adss="/>
+        <field:display field="eventCartItem" id="s_com_bibsmobile_model_CartItem_eventCartItem" object="${cartitem}" z="K2wqgFOXqlqiAw0g/35eXu5skQc="/>
+        <field:display field="quantity" id="s_com_bibsmobile_model_CartItem_quantity" object="${cartitem}" z="LjhEXY2hzVCwpBDAARGbqWRYPr8="/>
+        <field:display date="true" dateTimePattern="${cartItem_updated_date_format}" field="updated" id="s_com_bibsmobile_model_CartItem_updated" object="${cartitem}" z="5Vl2bvMX1ORtC1xE+O/b45ryO00="/>
+        <field:display field="comment" id="s_com_bibsmobile_model_CartItem_comment" object="${cartitem}" z="ALk3QzL8PyJMqri4T+5wJR1Tajo="/>
+        <field:display field="coupon" id="s_com_bibsmobile_model_CartItem_coupon" object="${cartitem}" z="FmYeSHXTc0K+ZwSLpN7or5HbN7M="/>
+        <field:display field="userProfile" id="s_com_bibsmobile_model_CartItem_userProfile" object="${cartitem}" z="nHwoZhXgLgu5auMY1NT097DQ5wE="/>
+        <field:display field="exported" id="s_com_bibsmobile_model_CartItem_exported" object="${cartitem}" render="false" z="user-managed"/>
+        <field:display field="color" id="s_com_bibsmobile_model_CartItem_color" object="${cartitem}" z="AE8SCL2UPIneZ85TjbSuP/i7eMg="/>
+        <field:display field="size" id="s_com_bibsmobile_model_CartItem_size" object="${cartitem}" z="ebNpqQuox2IC2LMP71zTHRt7dA4="/>
+        <field:display field="price" id="s_com_bibsmobile_model_CartItem_price" object="${cartitem}" z="ZzAktEDmCjOPp8OHi7DATikrfU0="/>
+    </page:show>
+</div>

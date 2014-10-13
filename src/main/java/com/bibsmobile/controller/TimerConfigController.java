@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.service.BibsLLRPTimer;
 import com.bibsmobile.service.DummyTimer;
-import com.bibsmobile.service.ThingMagicTimer;
 import com.bibsmobile.service.Timer;
 
 @RequestMapping("/timers")
@@ -33,16 +33,29 @@ public class TimerConfigController {
     		System.out.println("Found cached timer!");
     		timer = timers.get(timerConfig);
     	}else{
-    		if(timerConfig.getType() == 0)
+    		if(timerConfig.getType() == 0){
     			timer = new DummyTimer();
-    		else if(timerConfig.getType() == 1)
-    			timer = new ThingMagicTimer();
+    		}else if(timerConfig.getType() == 1){
+    			timer = new BibsLLRPTimer(timerConfig);
+    		}
     		timers.put(timerConfig, timer);
     		System.out.println("Put cached timer!");
     	}
 		timer.setTimerConfig(timerConfig);
     	return timer;
 	}
+	
+
+    @RequestMapping(value = "/bib-report/{id}", method = RequestMethod.GET)
+	@ResponseBody
+    public String bibReport(@PathVariable(value = "id") long id) {
+        return getTimer(id).createReport();
+    }
+
+    @RequestMapping(value = "/clear-bib-report/{id}", method = RequestMethod.GET)
+    public void clearBibReport(@PathVariable(value = "id") long id) {
+        getTimer(id).clearReport();
+    }
 	
 	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET)
 	@ResponseBody
@@ -120,7 +133,7 @@ public class TimerConfigController {
     	 // mod writes for current usergroup 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
-        System.out.println("writes group "+user.getUserGroup().getName());
+     /*   System.out.println("writes group "+user.getUserGroup().getName());
         
         // TODO license check
         
@@ -140,7 +153,7 @@ public class TimerConfigController {
     	}
         user.getUserGroup().setBibWrites(writes-1);
         user.getUserGroup().merge();
-        
+        */
         return "true";
     } 
 

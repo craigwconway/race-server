@@ -52,6 +52,7 @@ privileged aspect UserProfileController_Roo_Controller {
         } else {
             uiModel.addAttribute("userprofiles", UserProfile.findAllUserProfiles(sortFieldName, sortOrder));
         }
+        addDateTimeFormatPatterns(uiModel);
         return "userprofiles/list";
     }
     
@@ -80,6 +81,10 @@ privileged aspect UserProfileController_Roo_Controller {
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/userprofiles";
+    }
+    
+    void UserProfileController.addDateTimeFormatPatterns(Model uiModel) {
+        uiModel.addAttribute("userProfile_birthdate_date_format", "MM-dd-yyyy");
     }
     
     String UserProfileController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

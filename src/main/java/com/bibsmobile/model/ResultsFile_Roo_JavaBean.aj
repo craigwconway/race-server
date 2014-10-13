@@ -7,6 +7,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.UserProfile;
 import java.util.Date;
 import java.util.Set;
 
@@ -74,6 +75,30 @@ privileged aspect ResultsFile_Roo_JavaBean {
     
     public void ResultsFile.setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+    
+    public String ResultsFile.getSha1Checksum() {
+        return this.sha1Checksum;
+    }
+    
+    public void ResultsFile.setSha1Checksum(String sha1Checksum) {
+        this.sha1Checksum = sha1Checksum;
+    }
+    
+    public UserProfile ResultsFile.getImportUser() {
+        return this.importUser;
+    }
+    
+    public void ResultsFile.setImportUser(UserProfile importUser) {
+        this.importUser = importUser;
+    }
+    
+    public String ResultsFile.getDropboxPath() {
+        return this.dropboxPath;
+    }
+    
+    public void ResultsFile.setDropboxPath(String dropboxPath) {
+        this.dropboxPath = dropboxPath;
     }
     
     public byte[] ResultsFile.getContent() {

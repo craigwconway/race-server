@@ -3,9 +3,11 @@
 
 package com.bibsmobile.model;
 
-import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.UserGroup;
-import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.UserGroupType;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import java.util.List;
 import java.util.Set;
 
 privileged aspect UserGroup_Roo_JavaBean {
@@ -26,20 +28,28 @@ privileged aspect UserGroup_Roo_JavaBean {
         this.bibWrites = bibWrites;
     }
     
-    public Set<UserProfile> UserGroup.getUserProfiles() {
-        return this.userProfiles;
+    public UserGroupType UserGroup.getGroupType() {
+        return this.groupType;
     }
     
-    public void UserGroup.setUserProfiles(Set<UserProfile> userProfiles) {
-        this.userProfiles = userProfiles;
+    public void UserGroup.setGroupType(UserGroupType groupType) {
+        this.groupType = groupType;
     }
     
-    public Set<Event> UserGroup.getEvents() {
-        return this.events;
+    public Set<UserGroupUserAuthority> UserGroup.getUserGroupUserAuthorities() {
+        return this.userGroupUserAuthorities;
     }
     
-    public void UserGroup.setEvents(Set<Event> events) {
-        this.events = events;
+    public void UserGroup.setUserGroupUserAuthorities(Set<UserGroupUserAuthority> userGroupUserAuthorities) {
+        this.userGroupUserAuthorities = userGroupUserAuthorities;
+    }
+    
+    public List<EventUserGroup> UserGroup.getEventUserGroups() {
+        return this.eventUserGroups;
+    }
+    
+    public void UserGroup.setEventUserGroups(List<EventUserGroup> eventUserGroups) {
+        this.eventUserGroups = eventUserGroups;
     }
     
 }

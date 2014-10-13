@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
@@ -16,25 +16,35 @@
     </style>
     <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
 		Awards
-	</button> 
-    <button class="btn btn-default btn-top" onclick="products()" type="button">
-		Products and Registration
 	</button>
+    
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <button class="btn btn-default btn-top" onclick="redirectImport()" type="button">
 		Import
 		</button>
+        <button class="btn btn-default btn-top" onclick="redirectDropboxImport()" type="button">
+        Import from Dropbox
+        </button>
+        <c:if test="${dropboxUnlink == true}">
+            <button class="btn btn-default btn-top" onclick="redirectDropboxDeauth()" type="button">
+            Unlink Dropbox Account
+            </button>
+        </c:if>
         <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
 		Export
 		</button>
         <button class="btn btn-default btn-top" onclick="cloud()" type="button">
 		Cloud
 		</button>
+        <c:if test="${lastImport != null}">
+            <button class="btn btn-default btn-top" onclick="redirectChangeFileMapping()" type="button">
+            Change file mapping
+            </button>
+        </c:if>
         <span id="progress" style="margin:0;margin-left:6px;display:none;">
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
         </span>
     </sec:authorize>
-       
     <script>
 	function cloud(){
 		jQuery("#progress").show();
@@ -57,24 +67,44 @@
 			jQuery("#progress").hide();
 		});
 	}
-	function products(){
-		window.location="/bibs-server/eventitems?event=${event.id}";
-	}
+    
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
 	}
+    function redirectDropboxImport(){
+        window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
+    }
+    function redirectDropboxDeauth(){
+        jQuery.ajax({
+            url: "/bibs-server/dropbox/deauth",
+            type: "POST",
+            dataType: "json",
+            complete: function() {
+                window.location.reload();
+            }
+        });
+    }
 	function redirectExport(){
 		window.location="/bibs-server/events/export?event=${event.id}";
 	}
-	function redirectAwards(){
-		window.location="/bibs-server/events/awards?event=${event.id}";
-	}
+    function redirectAwards(){
+        window.location="/bibs-server/events/awards?event=${event.id}";
+    }
+    function redirectChangeFileMapping(){
+        window.location="/bibs-server/resultsfilemappings/${lastMapping.id}?form";
+    }
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
         <h3>${event.name}  <small>${event.city} ${event.state}</small>
         </h3>
         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
         <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
+        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+            <c:if test="${lastImport != null}">
+                <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+            </c:if>
+        </sec:authorize>
         <div style="display:none;">
             <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
             <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="user-managed"/>
@@ -99,7 +129,7 @@
             <field:display field="map" id="s_com_bibsmobile_model_Event_map" object="${event}" z="user-managed"/>
             <field:display field="map2" id="s_com_bibsmobile_model_Event_map2" object="${event}" z="user-managed"/>
             <field:display field="map3" id="s_com_bibsmobile_model_Event_map3" object="${event}" z="user-managed"/>
-            <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" z="user-managed"/>
+            <field:display field="results1" id="s_com_bibsmobile_model_Event_results1" object="${event}" z="user-managed"/>
             <field:display field="results2" id="s_com_bibsmobile_model_Event_results2" object="${event}" z="user-managed"/>
             <field:display field="results3" id="s_com_bibsmobile_model_Event_results3" object="${event}" z="user-managed"/>
             <field:display field="alert1" id="s_com_bibsmobile_model_Event_alert1" object="${event}" z="user-managed"/>
@@ -120,11 +150,22 @@
             <field:display field="gunTimeStart" id="s_com_bibsmobile_model_Event_gunTimeStart" object="${event}" z="user-managed"/>
             <field:display field="sync" id="s_com_bibsmobile_model_Event_sync" object="${event}" z="user-managed"/>
             <field:display field="syncId" id="s_com_bibsmobile_model_Event_syncId" object="${event}" z="user-managed"/>
-            <field:display field="userGroup" id="s_com_bibsmobile_model_Event_userGroup" object="${event}" z="user-managed"/>
             <field:display field="country" id="s_com_bibsmobile_model_Event_country" object="${event}" z="Qv0Plvijr5HbvB1q+ZGx2JyZ01E="/>
-        </div>
-        <field:display field="regEnabled" id="s_com_bibsmobile_model_Event_regEnabled" object="${event}" z="5ZHzTNt6g8XNaCI9F07G/pCqVY8="/>
-        <field:display date="true" dateTimePattern="${event_regstart_date_format}" field="regStart" id="s_com_bibsmobile_model_Event_regStart" object="${event}" z="bBscU1kAsStFikpX5tLH0AVKNkk="/>
-        <field:display date="true" dateTimePattern="${event_regend_date_format}" field="regEnd" id="s_com_bibsmobile_model_Event_regEnd" object="${event}" z="0OBWojydktrp1m6c6oQ+jq6jmKM="/>
-    </page:show>
+            <field:display field="regEnabled" id="s_com_bibsmobile_model_Event_regEnabled" object="${event}" z="5ZHzTNt6g8XNaCI9F07G/pCqVY8="/>
+	        <field:display date="true" dateTimePattern="${event_regstart_date_format}" field="regStart" id="s_com_bibsmobile_model_Event_regStart" object="${event}" z="bBscU1kAsStFikpX5tLH0AVKNkk="/>
+	        <field:display date="true" dateTimePattern="${event_regend_date_format}" field="regEnd" id="s_com_bibsmobile_model_Event_regEnd" object="${event}" z="0OBWojydktrp1m6c6oQ+jq6jmKM="/>
+	        <field:display field="raceImages" id="s_com_bibsmobile_model_Event_raceImages" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="raceResults" id="s_com_bibsmobile_model_Event_raceResults" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="resultsFiles" id="s_com_bibsmobile_model_Event_resultsFiles" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="awardCategorys" id="s_com_bibsmobile_model_Event_awardCategorys" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="photos" id="s_com_bibsmobile_model_Event_photos" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="alerts" id="s_com_bibsmobile_model_Event_alerts" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="maps" id="s_com_bibsmobile_model_Event_maps" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" render="false" z="user-managed"/>
+	        <field:display field="eventUserGroup" id="s_com_bibsmobile_model_Event_eventUserGroup" object="${event}" z="user-managed" render="false"/>
+	        <field:display field="eventUserGroups" id="s_com_bibsmobile_model_Event_eventUserGroups" object="${event}" z="user-managed" render="false"/>
+	        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
+	        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
+	    </div>
+	    </page:show>
 </div>

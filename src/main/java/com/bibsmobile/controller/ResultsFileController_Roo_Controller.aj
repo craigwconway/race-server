@@ -8,10 +8,12 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.service.UserProfileService;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.joda.time.format.DateTimeFormat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +25,9 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 privileged aspect ResultsFileController_Roo_Controller {
+    
+    @Autowired
+    UserProfileService ResultsFileController.userProfileService;
     
     @RequestMapping(params = "form", produces = "text/html")
     public String ResultsFileController.createForm(Model uiModel) {
@@ -90,6 +95,7 @@ privileged aspect ResultsFileController_Roo_Controller {
         uiModel.addAttribute("events", Event.findAllEvents());
         uiModel.addAttribute("resultsfilemappings", ResultsFileMapping.findAllResultsFileMappings());
         uiModel.addAttribute("resultsimports", ResultsImport.findAllResultsImports());
+        uiModel.addAttribute("userprofiles", userProfileService.findAllUserProfiles());
     }
     
     String ResultsFileController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

@@ -5,10 +5,15 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventAlert;
+import com.bibsmobile.model.EventMap;
+import com.bibsmobile.model.EventPhoto;
+import com.bibsmobile.model.EventResult;
+import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.UserGroup;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -47,14 +52,6 @@ privileged aspect Event_Roo_JavaBean {
         this.awardCategorys = awardCategorys;
     }
     
-    public UserGroup Event.getUserGroup() {
-        return this.userGroup;
-    }
-    
-    public void Event.setUserGroup(UserGroup userGroup) {
-        this.userGroup = userGroup;
-    }
-    
     public String Event.getName() {
         return this.name;
     }
@@ -87,6 +84,22 @@ privileged aspect Event_Roo_JavaBean {
         this.featured = featured;
     }
     
+    public String Event.getAddress1() {
+        return this.address1;
+    }
+    
+    public void Event.setAddress1(String address1) {
+        this.address1 = address1;
+    }
+    
+    public String Event.getAddress2() {
+        return this.address2;
+    }
+    
+    public void Event.setAddress2(String address2) {
+        this.address2 = address2;
+    }
+    
     public String Event.getCity() {
         return this.city;
     }
@@ -101,6 +114,14 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setState(String state) {
         this.state = state;
+    }
+    
+    public String Event.getZip() {
+        return this.zip;
+    }
+    
+    public void Event.setZip(String zip) {
+        this.zip = zip;
     }
     
     public String Event.getCountry() {
@@ -135,6 +156,14 @@ privileged aspect Event_Roo_JavaBean {
         this.type = type;
     }
     
+    public Set<EventType> Event.getEventTypes() {
+        return this.eventTypes;
+    }
+    
+    public void Event.setEventTypes(Set<EventType> eventTypes) {
+        this.eventTypes = eventTypes;
+    }
+    
     public String Event.getWebsite() {
         return this.website;
     }
@@ -157,6 +186,14 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setEmail(String email) {
         this.email = email;
+    }
+    
+    public String Event.getContactPerson() {
+        return this.contactPerson;
+    }
+    
+    public void Event.setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
     }
     
     public String Event.getRegistration() {
@@ -247,12 +284,12 @@ privileged aspect Event_Roo_JavaBean {
         this.map3 = map3;
     }
     
-    public String Event.getResults() {
-        return this.results;
+    public String Event.getResults1() {
+        return this.results1;
     }
     
-    public void Event.setResults(String results) {
-        this.results = results;
+    public void Event.setResults1(String results1) {
+        this.results1 = results1;
     }
     
     public String Event.getResults2() {
@@ -453,6 +490,54 @@ privileged aspect Event_Roo_JavaBean {
     
     public void Event.setUpdated(Date updated) {
         this.updated = updated;
+    }
+    
+    public List<EventPhoto> Event.getPhotos() {
+        return this.photos;
+    }
+    
+    public void Event.setPhotos(List<EventPhoto> photos) {
+        this.photos = photos;
+    }
+    
+    public List<EventAlert> Event.getAlerts() {
+        return this.alerts;
+    }
+    
+    public void Event.setAlerts(List<EventAlert> alerts) {
+        this.alerts = alerts;
+    }
+    
+    public List<EventMap> Event.getMaps() {
+        return this.maps;
+    }
+    
+    public void Event.setMaps(List<EventMap> maps) {
+        this.maps = maps;
+    }
+    
+    public List<EventResult> Event.getResults() {
+        return this.results;
+    }
+    
+    public void Event.setResults(List<EventResult> results) {
+        this.results = results;
+    }
+    
+    public List<EventUserGroup> Event.getEventUserGroups() {
+        return this.eventUserGroups;
+    }
+    
+    public void Event.setEventUserGroups(List<EventUserGroup> eventUserGroups) {
+        this.eventUserGroups = eventUserGroups;
+    }
+    
+    public String Event.getWaiver() {
+        return this.waiver;
+    }
+    
+    public void Event.setWaiver(String waiver) {
+        this.waiver = waiver;
     }
     
 }

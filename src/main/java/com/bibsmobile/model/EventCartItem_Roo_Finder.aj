@@ -5,6 +5,7 @@ package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -23,6 +24,14 @@ privileged aspect EventCartItem_Roo_Finder {
         EntityManager em = EventCartItem.entityManager();
         TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.name = :name", Long.class);
         q.setParameter("name", name);
+        return ((Long) q.getSingleResult());
+    }
+    
+    public static Long EventCartItem.countFindEventCartItemsByType(EventCartItemTypeEnum type) {
+        if (type == null) throw new IllegalArgumentException("The type argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.type = :type", Long.class);
+        q.setParameter("type", type);
         return ((Long) q.getSingleResult());
     }
     
@@ -69,6 +78,29 @@ privileged aspect EventCartItem_Roo_Finder {
         }
         TypedQuery<EventCartItem> q = em.createQuery(jpaQuery, EventCartItem.class);
         q.setParameter("name", name);
+        return q;
+    }
+    
+    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByType(EventCartItemTypeEnum type) {
+        if (type == null) throw new IllegalArgumentException("The type argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.type = :type", EventCartItem.class);
+        q.setParameter("type", type);
+        return q;
+    }
+    
+    public static TypedQuery<EventCartItem> EventCartItem.findEventCartItemsByType(EventCartItemTypeEnum type, String sortFieldName, String sortOrder) {
+        if (type == null) throw new IllegalArgumentException("The type argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.type = :type";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        TypedQuery<EventCartItem> q = em.createQuery(jpaQuery, EventCartItem.class);
+        q.setParameter("type", type);
         return q;
     }
     

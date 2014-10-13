@@ -8,5 +8,6 @@
         <field:display field="event" id="s_com_bibsmobile_model_RaceImage_event" object="${raceimage}" z="doIJBqji+cw4yz5FxunEJYd4OrE="/>
         <field:display field="userProfile" id="s_com_bibsmobile_model_RaceImage_userProfile" object="${raceimage}" z="GpDWuepyS1e1Wf9UVO13o9jm7YA="/>
         <field:display field="nonPublic" id="s_com_bibsmobile_model_RaceImage_nonPublic" object="${raceimage}" z="kfINDbkDa30o9d6Jn26s23NAafs="/>
+        <field:display field="pictureTypes" id="s_com_bibsmobile_model_RaceImage_pictureTypes" object="${raceimage}" z="pdjwtKI4qf7FfZoV9a3/kdE6KFk="/>
     </page:show>
 </div>

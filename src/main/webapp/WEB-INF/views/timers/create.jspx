@@ -20,6 +20,8 @@
         <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" render="false" z="user-managed"/>
         <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
         <field:input field="ports" id="c_com_bibsmobile_model_TimerConfig_ports" z="rf0jhsCCYnzTYenBS4pjvKpBnEg="/>
+        <field:input field="connectionTimeout" id="c_com_bibsmobile_model_TimerConfig_connectionTimeout" z="y+l45Se+jgHmr0AJawxJc7Ou7/E="/>
+        <field:input field="filename" id="c_com_bibsmobile_model_TimerConfig_filename" z="DpYTidu0C9wlXeI3kL0MkybazoI="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_TimerConfig" render="${not empty dependencies}" z="wKZtWYD4VUhFJUi1mFDoCmL7dQY="/>
     <script>

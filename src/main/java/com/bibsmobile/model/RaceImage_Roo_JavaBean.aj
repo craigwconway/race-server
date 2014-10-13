@@ -4,9 +4,11 @@
 package com.bibsmobile.model;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.PictureType;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
+import java.util.Set;
 
 privileged aspect RaceImage_Roo_JavaBean {
     
@@ -48,6 +50,14 @@ privileged aspect RaceImage_Roo_JavaBean {
     
     public void RaceImage.setNonPublic(boolean nonPublic) {
         this.nonPublic = nonPublic;
+    }
+    
+    public Set<PictureType> RaceImage.getPictureTypes() {
+        return this.pictureTypes;
+    }
+    
+    public void RaceImage.setPictureTypes(Set<PictureType> pictureTypes) {
+        this.pictureTypes = pictureTypes;
     }
     
 }

@@ -157,6 +157,21 @@ function getHoursMinutesSeconds(e,l) {
 	e.html(rtn);
 }
 
+function updateQueryStringParameter(uri, key, value) {
+    var re = new RegExp("([?|&])" + key + "=.*?(&|#|$)", "i");
+    if (uri.match(re)) {
+        return uri.replace(re, '$1' + key + "=" + value + '$2');
+    } else {
+        var hash = '';
+        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.indexOf('#') !== -1) {
+            hash = uri.replace(/.*#/, '#');
+            uri = uri.replace(/#.*/, '');
+        }
+        return uri + separator + key + "=" + value + hash;
+    }
+}
+
 
 function GetURLParameter(sParam)
 {
@@ -170,6 +185,16 @@ function GetURLParameter(sParam)
             return sParameterName[1];
         }
     }
+}
+
+var defaultUserProfile;
+
+function checkUserProfileChange() {
+    var userProfileHidden = jQuery("input[name='userAuthorities.userProfile']").val();
+    if (userProfileHidden != null && userProfileHidden != defaultUserProfile) {
+        window.location = updateQueryStringParameter(window.location.href, "userprofile", userProfileHidden);
+    }
+    window.setTimeout(checkUserProfileChange, 1000);
 }
 
 function beautifyAuthorities(){

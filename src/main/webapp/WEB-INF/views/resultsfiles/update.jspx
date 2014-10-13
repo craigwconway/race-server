@@ -9,7 +9,10 @@
         <field:input field="contentType" id="c_com_bibsmobile_model_ResultsFile_contentType" required="true" z="navnkDz2DqT/289eqB/h/8jonFY="/>
         <field:input field="content" id="c_com_bibsmobile_model_ResultsFile_content" z="roqT30HBQdXklcfGJXtLQBda2CE="/>
         <field:input field="name" id="c_com_bibsmobile_model_ResultsFile_name" z="wSw0FCMLP0H+qqO53tE+VjPpjog="/>
-        <field:simple render="false" field="resultsFileMapping" id="c_com_bibsmobile_model_ResultsFile_resultsFileMapping" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File Mapping" z="user-managed"/>
-        <field:simple render="false" field="resultsImport" id="c_com_bibsmobile_model_ResultsFile_resultsImport" messageCode="entity_reference_not_managed" messageCodeAttribute="Results Import" z="user-managed"/>
+        <field:simple field="resultsFileMapping" id="c_com_bibsmobile_model_ResultsFile_resultsFileMapping" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File Mapping" render="false" z="user-managed"/>
+        <field:simple field="resultsImport" id="c_com_bibsmobile_model_ResultsFile_resultsImport" messageCode="entity_reference_not_managed" messageCodeAttribute="Results Import" render="false" z="user-managed"/>
+        <field:select field="importUser" id="c_com_bibsmobile_model_ResultsFile_importUser" itemValue="id" items="${userprofiles}" path="/userprofiles" render="false" z="user-managed"/>
+        <field:textarea field="dropboxPath" id="c_com_bibsmobile_model_ResultsFile_dropboxPath" render="false" z="user-managed"/>
+        <field:textarea field="sha1Checksum" id="c_com_bibsmobile_model_ResultsFile_sha1Checksum" render="false" z="user-managed"/>
     </form:update>
 </div>
