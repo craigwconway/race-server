@@ -4,8 +4,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Date;
+import java.util.Random;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
@@ -40,9 +43,10 @@ public class AbstractTimerTest {
 		Event event = new Event();
 		RaceResult result = new RaceResult();
 		result.setEvent(event);
-		int position = 1;
+		TimerConfig timerConfig = new TimerConfig();
+		timerConfig.setPosition(1);
 		// when
-		result = timer.calculateSplitTime(result, bibtime, position);
+		result = timer.calculateOfficialTime(result, bibtime, timerConfig);
 		// then
 		assertTrue(result.getTimestart() == 0);
 		assertTrue(result.getTimesplit().equals(bibtime+""));
@@ -57,13 +61,14 @@ public class AbstractTimerTest {
 		Event event = new Event();
 		RaceResult result = new RaceResult();
 		result.setEvent(event);
-		int position = 2;
+		TimerConfig timerConfig = new TimerConfig();
+		timerConfig.setPosition(2);
 		// when
-		result = timer.calculateSplitTime(result, bibtime, position);
+		result = timer.calculateOfficialTime(result, bibtime, timerConfig);
 		// then
 		assertTrue(result.getTimestart() == 0);
-		assertTrue(result.getTimesplit().split(",")[position-1].equals(bibtime+""));
-		assertTrue(result.getTimesplit().split(",").length == position);
+		assertTrue(result.getTimesplit().split(",")[timerConfig.getPosition()-1].equals(bibtime+""));
+		assertTrue(result.getTimesplit().split(",").length == timerConfig.getPosition());
 		assertTrue(result.getTimeofficial() == bibtime);
 	}
 
@@ -78,8 +83,10 @@ public class AbstractTimerTest {
 		int position = 2;
 		String splits = "123,456";
 		result.setTimesplit(splits);
+		TimerConfig timerConfig = new TimerConfig();
+		timerConfig.setPosition(position);
 		// when
-		result = timer.calculateSplitTime(result, bibtime, position);
+		result = timer.calculateOfficialTime(result, bibtime, timerConfig);
 		// then
 		assertTrue(result.getTimestart() == 0);
 		assertFalse(result.getTimesplit().equals(splits));
@@ -88,4 +95,25 @@ public class AbstractTimerTest {
 		assertTrue(result.getTimeofficial() == bibtime);
 	}
 
+
+
+	@Test
+	public void testTimerRead() {
+		// given
+		AbstractTimer timer = new TestTimer();
+		Random random = new Random();
+		TimerConfig config = new TimerConfig();
+		for(int i=0;i<100;i++){
+			int bib = random.nextInt(5000);
+			int position = random.nextInt(3)+1;
+			config.setPosition(position);
+			timer.logTimerRead(String.valueOf(bib),String.valueOf(position));
+		}
+		// when
+		String report = timer.createReport();
+		// then
+		assertTrue(report.contains("Unique bibs:"));
+		assertTrue(report.contains("Total reads:"));
+		
+	}
 }

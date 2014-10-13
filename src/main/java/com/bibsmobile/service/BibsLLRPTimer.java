@@ -298,6 +298,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
     }
 
     private void lineReadHandler(TagReportData tr) {
+    	long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong()-this.usReaderOffset+this.usCurrentOffset;
         LLRPParameter epcp = (LLRPParameter) tr.getEPCParameter();
 
         System.out.println(" lineReadHandler "+tr.toString());
@@ -308,13 +309,12 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
                 EPC_96 epc96 = (EPC_96) epcp;
                 epcString += epc96.getEPC().toString();
                 System.out.println("ERROR Non-Bibs chip read " + epcString);
-                logUnregisteredBib(epcString, timerConfig.getUrl());
+                logUnassignedBib(epcString, bibtime, timerConfig);
             } else if ( epcp.getName().equals("EPCData")) {
                 EPCData epcData = (EPCData) epcp;
                 epcString += epcData.getEPC().toString();
                 BitArray_HEX bibdata = epcData.getEPC();
             	// long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong();
-            	long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong()-this.usReaderOffset+this.usCurrentOffset;
                 int bib = Integer.decode("0x"+bibdata.toString());
                 System.out.println(" ANTENNE FOUND "+bib+" "+bibtime);
                 logTime(bib, bibtime, timerConfig);
