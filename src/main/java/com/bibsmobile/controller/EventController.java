@@ -443,8 +443,23 @@ public class EventController {
     }
 
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
-    public static String awards(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
-        uiModel.addAttribute("event", Event.findEvent(event));
+    public static String awards(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "gender", required = false, defaultValue = " ") String gender,
+    		Model uiModel) {
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = event.getAwardCategorys();
+    	for(AwardCategory c:list){
+    		String g = (null!=c.getGender()) ? c.getGender() : "";
+    		if(gender.trim().equals(g.trim())){
+    			results.add(new AwardCategoryResults(c,event.getAwards(g, c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    		}
+    	}
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
         return "events/awards";
     }
 
@@ -757,6 +772,46 @@ public class EventController {
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/events";
+    }
+    
+    @RequestMapping(value = "/createAwardCategories", produces = "text/html")
+    public String createAwardCategories(
+    		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "ageMin") int ageMin,
+    		@RequestParam(value = "ageMax") int ageMax,
+    		@RequestParam(value = "ageRange") int ageRange,
+    		@RequestParam(value = "listSize") int listSize,
+    		Model uiModel){
+    	Event event = Event.findEvent(eventId);
+    	// delete old categories
+    	int deleted = new AwardCategory().removeByEvent(event);
+    	System.out.println("DELETED CATS "+deleted);
+    	// make new categories
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = AwardCategory.makeDefaults(event, ageMin, ageMax, ageRange, listSize);
+    	for(AwardCategory c:list){
+    		if(c.getGender().trim().isEmpty()){
+    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    		}
+    	}
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
+        return "events/awards";
+    }
+    
+    @RequestMapping(value = "/overall", produces = "text/html")
+    public String overallResults(
+    		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "gender", required = true, defaultValue = " ") String gender,
+    		Model uiModel){
+    	Event event = Event.findEvent(eventId);
+    	List<RaceResult> results = event.getAwards(gender, 0, 120, 99999);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("results", results);
+        return "events/overall";
     }
     
     void addDateTimeFormatPatterns(Model uiModel) {

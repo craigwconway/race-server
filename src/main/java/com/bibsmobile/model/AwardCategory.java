@@ -1,7 +1,9 @@
 package com.bibsmobile.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -10,15 +12,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import javax.persistence.Version;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
+
 @Configurable
 @Entity
-public class AwardCategory {
+public class AwardCategory implements Comparable{
 
     @ManyToOne
     private Event event;
@@ -29,16 +37,6 @@ public class AwardCategory {
 	private int ageMin;
 	private int ageMax;
 	private int listSize;
-
-	public static List<AwardCategory> eventDefaults() {
-		List<AwardCategory> awardCategories = new ArrayList<AwardCategory>();
-		AwardCategory awardCategory = new AwardCategory();
-		awardCategory.setName("Overall Winners");
-		awardCategory.setListSize(5);
-		awardCategories.add(awardCategory);
-		return awardCategories;
-	}
-
 
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -211,4 +209,77 @@ public class AwardCategory {
 	public void setListSize(int listSize) {
         this.listSize = listSize;
     }
+	public String toJson() {
+        return new JSONSerializer().exclude("*.class","event").serialize(this);
+    }
+
+	public String toJson(boolean full) {
+        return new JSONSerializer().serialize(this);
+    }
+
+	public static AwardCategory fromJson(String json) {
+        return new JSONDeserializer<AwardCategory>().use(null, AwardCategory.class).deserialize(json);
+    }
+
+	public static String toJsonArray(Collection<AwardCategory> collection) {
+        return new JSONSerializer().exclude("*.class", "event").serialize(collection);
+    }
+
+	public static Collection<AwardCategory> fromJsonArray(String json) {
+        return new JSONDeserializer<List<AwardCategory>>().use(null, ArrayList.class).use("values", AwardCategory.class).deserialize(json);
+    }
+	
+	public static List<AwardCategory> makeDefaults(final Event event, int ageMin, int ageMax, int ageSpan, int listSize){
+		List<AwardCategory> list = new ArrayList<AwardCategory>();
+		String[] genders = {"","M","F"};
+		int i = 0;
+		while(ageMin <= ageMax){
+			int _ageMax = ageMin + ageSpan;
+			for(String gender:genders){
+				AwardCategory c = new AwardCategory();
+				c.setEvent(event);
+				c.setAgeMin(ageMin);
+				c.setAgeMax(_ageMax);
+				c.setGender(gender);
+				c.setListSize(listSize);
+				c.setSortOrder(++i);
+				String title = "Overall ";
+				if(gender=="M") title = "Male ";
+				if(gender=="F") title = "Female ";
+				title += "Ages " + ageMin +" to "+_ageMax;
+				c.setName(title);
+				c.persist();
+				list.add(c);
+			}
+			ageMin = _ageMax+1;
+		}
+		return list;
+	}
+
+	public static List<AwardCategory> findByEvent(Event event) {
+        EntityManager em = AwardCategory.entityManager();
+        String jpaQuery = "SELECT o FROM AwardCategory AS o WHERE o.event = :event";
+        jpaQuery = jpaQuery + " ORDER BY o.sortOrder ASC";
+        TypedQuery<AwardCategory> q = em.createQuery(jpaQuery, AwardCategory.class);
+        q.setParameter("event", event);
+        return q.getResultList();
+    }
+
+	@Transactional
+	public int removeByEvent(Event event) {
+        EntityManager em = AwardCategory.entityManager();
+        String jpaQuery = "DELETE FROM AwardCategory AS o WHERE o.event = :event";
+        Query q = em.createQuery(jpaQuery);
+        q.setParameter("event", event);
+        return q.executeUpdate();
+    }
+
+	@Override
+	public int compareTo(Object o) {
+		if(o instanceof AwardCategory){
+			return getSortOrder() - ((AwardCategory)o).getSortOrder();
+		}
+		return 0;
+	}
+	
 }

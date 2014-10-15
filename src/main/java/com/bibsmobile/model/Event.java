@@ -278,7 +278,7 @@ public class Event {
                 age = Integer.valueOf(result.getAge());
             } catch (Exception ex) {
             }
-            if (results.size() < size && result.getTimeofficial() > 0 && (gender.isEmpty() || gender == null || gender.equals(result.getGender())) && (min == 0 || (min <= age && age != 0)) && (max == 0 || (max >= age && age != 0))) {
+            if (results.size() < size && result.getTimeofficial() > 0 && (gender.trim().isEmpty() || gender == null || gender.equals(result.getGender())) && (min == 0 || (min <= age && age != 0)) && (max == 0 || (max >= age && age != 0))) {
                 results.add(result);
             }
             if (results.size() == size && size != 0) break;
