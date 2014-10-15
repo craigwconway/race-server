@@ -47,16 +47,25 @@ public class AwardCategory implements Comparable{
 	private int ageMax;
 	private int listSize;
 	
-	private boolean medal; 
 	
 	// hack for medals verses age/gender ranking
 	public final static String MEDAL_PREFIX = "Medal: ";
+	private boolean medal; 
 	public boolean isMedal(){
 		return name.startsWith(MEDAL_PREFIX);
 	}
-	
 	public void setMedal(boolean bool){
-		this.name = bool ? MEDAL_PREFIX + name : name.replaceAll(MEDAL_PREFIX, "");
+		setName(bool ? MEDAL_PREFIX + name : name.replaceAll(MEDAL_PREFIX, ""));
+	}
+	
+	// hack for masters vs other medals
+	public static final String MASTERS_TOKEN = "Master";
+	private boolean master;
+	public boolean isMaster(){
+		return name.toLowerCase().contains(MASTERS_TOKEN.toLowerCase());
+	}
+	public void setMaster(boolean bool){
+		setName(MASTERS_TOKEN + " " + getName());
 	}
 
 	public String toString() {

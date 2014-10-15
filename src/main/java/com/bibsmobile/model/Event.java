@@ -114,6 +114,18 @@ public class Event {
     private String results2;
 
     private String results3;
+    
+    // hack for awards - JI-42
+    @Transient
+    private EventAwardsConfig awardsConfig;
+    // use results 3 for json EventAwardsConfig
+    public EventAwardsConfig getAwardsConfig(){
+    	return (null == getResults3() || getResults3().isEmpty()) ? new EventAwardsConfig() : EventAwardsConfig.fromJson(getResults3());
+    }
+    public void setAwardsConfig(EventAwardsConfig awardsConfig){
+    	this.awardsConfig = awardsConfig;
+    	setResults3(awardsConfig.toJson());
+    }
 
     private String alert1;
 
@@ -148,7 +160,7 @@ public class Event {
     private String syncId;
 
     private boolean regEnabled;
-
+    
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date regStart;
@@ -268,8 +280,12 @@ public class Event {
     }
 
     public List<RaceResult> getAwards(String gender, int min, int max, int size) {
+    	return getAwards( gender,  min,  max,  size, new ArrayList<String>(0));
+    }
+
+    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<String> excludeBibs) {
         if (min > max) min = max;
-        List<RaceResult> allResults = new ArrayList<RaceResult>(raceResults);
+        List<RaceResult> allResults = new ArrayList<RaceResult>(getRaceResults());
         Collections.sort(allResults);
         List<RaceResult> results = new ArrayList<RaceResult>();
         for (RaceResult result : allResults) {
@@ -278,7 +294,10 @@ public class Event {
                 age = Integer.valueOf(result.getAge());
             } catch (Exception ex) {
             }
-            if (results.size() < size && result.getTimeofficial() > 0 && (gender.trim().isEmpty() || gender == null || gender.equals(result.getGender())) && (min == 0 || (min <= age && age != 0)) && (max == 0 || (max >= age && age != 0))) {
+            if (results.size() < size && result.getTimeofficial() > 0 
+            		&& (gender.trim().isEmpty() || gender == null || gender.equals(result.getGender())) 
+            		&& (min == 0 || (min <= age && age != 0)) && (max == 0 || (max >= age && age != 0))
+            		&& !excludeBibs.contains(result.getBib()) ){
                 results.add(result);
             }
             if (results.size() == size && size != 0) break;

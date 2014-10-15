@@ -446,20 +446,35 @@ public class EventController {
         return Event.toJsonArray(Event.findEventsByRunning());
     }
 
+    // medals
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
     public static String awards(
     		@RequestParam(value = "event", required = true) Long eventId,
     		Model uiModel) {
     	Event event = Event.findEvent(eventId);
-    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
     	List<AwardCategory> list = event.getAwardCategorys();
+    	List<String> mastersBibs = new ArrayList<String>();
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	
+    	// if not allow masters in overall, collect masters bibs, pass into non-masters
+    	if(!event.getAwardsConfig().isAllowMastersInNonMasters()){
+        	for(AwardCategory c:list){
+        		if(c.isMedal() && c.isMaster()){
+        			List<RaceResult> masters = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
+        			for(RaceResult m:masters){
+        				mastersBibs.add(m.getBib());
+        			}
+        		}
+        	}
+    	}
+    	
+		// filter medals
     	for(AwardCategory c:list){
     		if(c.isMedal()){
-    			// hack for medals
-    			c.setName(c.getName().replaceAll(AwardCategory.MEDAL_PREFIX, ""));
-    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs)));
     		}
     	}
+    	
     	Collections.sort(results);
         uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
@@ -475,12 +490,27 @@ public class EventController {
     	Event event = Event.findEvent(eventId);
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
     	List<AwardCategory> list = event.getAwardCategorys();
+    	List<String> medalsBibs = new ArrayList<String>();
+
+    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
+    	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
+        	for(AwardCategory c:list){
+        		if(c.isMedal()){
+        			List<RaceResult> medals = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
+        			for(RaceResult m:medals){
+        				medalsBibs.add(m.getBib());
+        			}
+        		}
+        	}
+    	}
+    	
+		// filter age/gender
     	for(AwardCategory c:list){
-    		String g = (null!=c.getGender()) ? c.getGender() : "";
-    		if(gender.trim().equals(g.trim()) && !c.isMedal()){
-    			results.add(new AwardCategoryResults(c,event.getAwards(g, c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    		if(!c.isMedal()){
+    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
     		}
     	}
+    	
     	Collections.sort(results);
         uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
@@ -488,6 +518,32 @@ public class EventController {
         return "events/ageGenderRankings";
     }
 
+    @RequestMapping(value = "/ageGenderRankings/update", method = RequestMethod.GET)
+    public static String updateAgeGenderRankings(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "gender", required = false, defaultValue = " ") String gender,
+    		HttpServletRequest httpServletRequest) {
+    	Event event = Event.findEvent(eventId);
+    	EventAwardsConfig awardsConfig = event.getAwardsConfig();
+    	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
+    	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
+    	event.setAwardsConfig(awardsConfig);
+    	event.merge();
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender="+gender;
+    }
+
+    @RequestMapping(value = "/awards/update", method = RequestMethod.GET)
+    public static String updateAwards(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		HttpServletRequest httpServletRequest) {
+    	Event event = Event.findEvent(eventId);
+    	EventAwardsConfig awardsConfig = event.getAwardsConfig();
+    	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
+    	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
+    	event.setAwardsConfig(awardsConfig);
+    	event.merge();
+        return "redirect:/events/awards?event="+eventId;
+    }
 
     @RequestMapping(value = "/timeofficial", method = RequestMethod.GET)
     @ResponseBody

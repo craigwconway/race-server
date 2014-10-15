@@ -32,7 +32,12 @@
     </form:update>
     <script>
     window.onload=function(){
-		jQuery("#_gender_id").val("");
+    	if("M" == "${awardCategory.gender}"){
+    		jQuery('#gender-0').prop('selected', true);
+    	}
+    	if("F" == "${awardCategory.gender}"){
+    		jQuery('#gender-1').prop('selected', true);
+    	}
 		jQuery("#_c_com_bibsmobile_model_AwardCategory_gender_id").hide();
 		// medal hack
 		var name = jQuery("#_name_id").val();
