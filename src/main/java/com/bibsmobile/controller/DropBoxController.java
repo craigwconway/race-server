@@ -5,13 +5,13 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.DropboxUtil;
 import com.bibsmobile.util.MailgunUtil;
 import com.bibsmobile.util.ResultsFileUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
-import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
@@ -22,14 +22,9 @@ import com.dropbox.core.DbxWebAuth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.LinkedList;
@@ -41,7 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -51,7 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -59,7 +52,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping("/dropbox")
 @Controller
@@ -79,10 +71,14 @@ public class DropBoxController {
   @Value("${dropbox.com.sessionkey}")
   private String sessionKey;
 
-  private DbxRequestConfig appConfig = new DbxRequestConfig("Bibs", Locale.getDefault().toString());
+  private static DbxRequestConfig appConfig = new DbxRequestConfig("Bibs", Locale.getDefault().toString());
 
   @Autowired 
   private ResultsFileMappingController importController;
+
+  public static DbxRequestConfig getAppConfig() {
+	  return DropBoxController.appConfig;
+  }
 
   private String getRootUrl(HttpServletRequest request, String scheme) {
     String serverName = request.getServerName();
@@ -91,10 +87,6 @@ public class DropBoxController {
     if (request.getHeader("X-Forwarded-Host") != null) serverName = request.getHeader("X-Forwarded-Host");
     if (request.getHeader("X-Forwarded-Port") != null) serverPort = request.getHeader("X-Forwarded-Port");
     return scheme + "://" + serverName + ":" + serverPort + request.getContextPath() + "/";
-  }
-
-  private String getRootUrl(HttpServletRequest request) {
-    return getRootUrl(request, request.getScheme());
   }
 
   private String getUrl(HttpServletRequest request, String path, String scheme) {
@@ -109,59 +101,14 @@ public class DropBoxController {
     return getUrl(request, "dropbox/" + path, (request.getServerName().equals("localhost") ? "http" : "https"));
   }
 
-  private DbxWebAuth getDbxWebAuth(HttpServletRequest request) {
+  /**
+   * returns the DbxWebAuth to be used for dropbox authentication
+   */
+  public DbxWebAuth getDbxWebAuth(HttpServletRequest request) {
     javax.servlet.http.HttpSession session = request.getSession(true);
-    DbxSessionStore csrfTokenStore = new DbxStandardSessionStore(session, sessionKey);
+    DbxSessionStore csrfTokenStore = new DbxStandardSessionStore(session, this.sessionKey);
     String redirectUrl = getDropboxUrl(request, REDIRECT_URL);
-    return new DbxWebAuth(this.appConfig, new DbxAppInfo(appKey, appSecret), redirectUrl, csrfTokenStore);
-  }
-
-  private DbxClient getDbxClient(String token) {
-    return new DbxClient(this.appConfig, token);
-  }
-
-  private String guessMimeType(File file) throws IOException {
-    if (FilenameUtils.getExtension(file.getAbsolutePath()).equals("csv")) return "text/csv";
-    // TODO more guessing
-    return "text/plain";
-  }
-
-  private File getDropboxFile(String token, String path) throws IOException {
-    File tmpFile = File.createTempFile("dropboximport", FilenameUtils.getExtension(path));
-    tmpFile.deleteOnExit(); // this file will be destroyed if vm exits
-    OutputStream out = new FileOutputStream(tmpFile);
-    DbxEntry.File md;
-    try {
-      md = this.getDbxClient(token).getFile(path, null, out);
-    } catch (DbxException ex) {
-      return null; // not found
-    } finally {
-      out.close();
-    }
-    if (md == null) return null;
-    return tmpFile;
-  }
-
-  private static String getSha1Checksum(File file) throws IOException {
-    // calculate checksum
-    InputStream in = null;
-    try {
-      in = new FileInputStream(file);
-      MessageDigest digest = MessageDigest.getInstance("SHA-1");
-      int n = 0;
-      byte[] buffer = new byte[8192];
-      while (n != -1) {
-          n = in.read(buffer);
-          if (n > 0) {
-              digest.update(buffer, 0, n);
-          }
-      }
-      return Hex.encodeHexString(digest.digest());
-    } catch (NoSuchAlgorithmException e) {
-      return null; // this hsould not open with some snaity checks for the constant
-    } finally {
-      if (in != null) in.close();
-    }
+    return new DbxWebAuth(DropBoxController.appConfig, new DbxAppInfo(this.appKey, this.appSecret), redirectUrl, csrfTokenStore);
   }
 
   // this method assumes a successful import already happened with the file
@@ -191,7 +138,7 @@ public class DropBoxController {
     newImport.setResultsFileMapping(latestMapping);
     // do the actual import
     if (newImport.getErrors() == 0) {
-      importController.doImport(newImport);
+      this.importController.doImport(newImport);
     } else {
       newImport.setRowsProcessed(1);
       newImport.setRunDate(new Date());
@@ -232,8 +179,8 @@ public class DropBoxController {
     if (userAccessToken == null) return -1; // user has no access token to use
 
     // get file from dropbox
-    File tmpFile = this.getDropboxFile(userAccessToken, dropboxPath);
-    String chksum = getSha1Checksum(tmpFile);
+    File tmpFile = DropboxUtil.getDropboxFile(userAccessToken, dropboxPath);
+    String chksum = ResultsFileUtil.getSha1Checksum(tmpFile);
 
     if (!chksum.equals(file.getSha1Checksum())) {
       // the file changed => reimport
@@ -248,9 +195,8 @@ public class DropBoxController {
       // reimport
       doActualImport(file, prevHeaders);
       return 1;
-    } else {
-      log.info("Results file " + file.getId() + ": checksum " + chksum + " didn't change.");
     }
+    log.info("Results file " + file.getId() + ": checksum " + chksum + " didn't change.");
     return 0;
   }
 
@@ -314,7 +260,7 @@ public class DropBoxController {
     String dbToken = UserProfileUtil.getLoggedInDropboxAccessToken();
     if (dbToken == null) return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
     if (dropboxPath == null || dropboxPath.isEmpty()) dropboxPath = "/";
-    DbxEntry.WithChildren listing = getDbxClient(dbToken).getMetadataWithChildren(dropboxPath);
+    DbxEntry.WithChildren listing = DropboxUtil.getDbxClient(dbToken).getMetadataWithChildren(dropboxPath);
     List<DirectoryListEntry> dirEntries = new LinkedList<DirectoryListEntry>();
     for (DbxEntry child : listing.children) {
       dirEntries.add(new DirectoryListEntry(child.name, child.isFolder(), child.path));
@@ -327,13 +273,13 @@ public class DropBoxController {
   }
 
   @RequestMapping(value = "/" + PICKER_URL, method = RequestMethod.GET)
-  public String filepicker(@RequestParam("eventId") Long eventId, @RequestParam(value="dropboxPath", required=false) String dropboxPath, Model uiModel, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public String filepicker(@RequestParam("eventId") Long eventId, @RequestParam(value="dropboxPath", required=false) String dropboxPath, Model uiModel, HttpServletRequest request, HttpServletResponse response) {
     if (UserProfileUtil.getLoggedInDropboxAccessToken() == null) {
       return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId));
     }
     // check access token
     try {
-      getDbxClient(UserProfileUtil.getLoggedInDropboxAccessToken()).getAccountInfo();
+      DropboxUtil.getDbxClient(UserProfileUtil.getLoggedInDropboxAccessToken()).getAccountInfo();
     } catch(DbxException e) {
       // access token invalid, reauthorize
       UserProfile up = UserProfileUtil.getLoggedInUserProfile();
@@ -349,12 +295,12 @@ public class DropBoxController {
   }
 
   @RequestMapping(value = "/" + DEAUTH_URL, method = RequestMethod.POST)
-  public @ResponseBody ResponseEntity<String> deauth(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public @ResponseBody ResponseEntity<String> deauth(HttpServletRequest request, HttpServletResponse response) {
     UserProfile up = UserProfileUtil.getLoggedInUserProfile();
     if (up == null) return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
     try {
       if (up.getDropboxAccessToken() != null)
-        this.getDbxClient(up.getDropboxAccessToken()).disableAccessToken();
+        DropboxUtil.getDbxClient(up.getDropboxAccessToken()).disableAccessToken();
     } catch (DbxException ex) {
       // ignoring this, since we're deleting the token anyways
     }
@@ -383,19 +329,19 @@ public class DropBoxController {
     }
     
     // get file from dropbox and move it to destination
-    File tmpFile = this.getDropboxFile(accessToken, dropboxPath);
+    File tmpFile = DropboxUtil.getDropboxFile(accessToken, dropboxPath);
     FileUtils.copyFile(tmpFile, destFile);
     tmpFile.delete();
 
     // save to database
     ResultsFile resultsFile = new ResultsFile();
     resultsFile.setName(destFile.getName());
-    resultsFile.setContentType(this.guessMimeType(destFile));
+    resultsFile.setContentType(ResultsFileUtil.guessMimeType(destFile));
     resultsFile.setEvent(event);
     resultsFile.setCreated(new Date());
     resultsFile.setFilesize(destFile.length());
     resultsFile.setFilePath(destFile.getAbsolutePath());
-    resultsFile.setSha1Checksum(getSha1Checksum(destFile));
+    resultsFile.setSha1Checksum(ResultsFileUtil.getSha1Checksum(destFile));
     resultsFile.setImportUser(UserProfileUtil.getLoggedInUserProfile());
     resultsFile.setDropboxPath(dropboxPath);
     resultsFile.persist();
@@ -410,7 +356,7 @@ public class DropBoxController {
   }
 
   @RequestMapping(value = "/webhook", method = RequestMethod.GET)
-  public @ResponseBody ResponseEntity<String> webhookVerify(@RequestParam("challenge") String challenge, HttpServletRequest request, HttpServletResponse response) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidFormatException {
+  public @ResponseBody ResponseEntity<String> webhookVerify(@RequestParam("challenge") String challenge, HttpServletRequest request, HttpServletResponse response) {
     return new ResponseEntity<String>(challenge, HttpStatus.OK);
   } 
 

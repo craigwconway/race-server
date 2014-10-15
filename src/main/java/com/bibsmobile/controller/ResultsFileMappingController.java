@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -29,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -206,7 +204,7 @@ public class ResultsFileMappingController {
 	// ##############################################
 
 
-    public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
+    public static void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
         System.out.println("Starting import (mapping)...");
         resultsImport.setRunDate(new Date());
         ResultsFileMapping resultsFileMapping = resultsImport.getResultsFileMapping();
@@ -237,7 +235,7 @@ public class ResultsFileMappingController {
         System.out.println("Done");
     }
 
-    public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
+    public static void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
         if (nextLine.length != map.length || nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
