@@ -59,8 +59,6 @@ public class EventController {
         }
         uiModel.asMap().clear();
 
-        // awards
-
         // add to current usergroup
         boolean addGroup = false;
         String username = SecurityContextHolder.getContext()
@@ -82,6 +80,12 @@ public class EventController {
             user.getUserGroup().merge();
         }*/
         event.persist();
+        
+        // default awards categories
+        AwardCategory.createDefaultMedals(event);
+        AwardCategory.createAgeGenderRankings(event, 
+        		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+        		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
 
         return "redirect:/events/"
                 + encodeUrlPathSegment(event.getId().toString(),
@@ -445,15 +449,15 @@ public class EventController {
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
     public static String awards(
     		@RequestParam(value = "event", required = true) Long eventId,
-    		@RequestParam(value = "gender", required = false, defaultValue = " ") String gender,
     		Model uiModel) {
     	Event event = Event.findEvent(eventId);
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
     	List<AwardCategory> list = event.getAwardCategorys();
     	for(AwardCategory c:list){
-    		String g = (null!=c.getGender()) ? c.getGender() : "";
-    		if(gender.trim().equals(g.trim())){
-    			results.add(new AwardCategoryResults(c,event.getAwards(g, c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    		if(c.isMedal()){
+    			// hack for medals
+    			c.setName(c.getName().replaceAll(AwardCategory.MEDAL_PREFIX, ""));
+    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())));
     		}
     	}
     	Collections.sort(results);
@@ -461,6 +465,27 @@ public class EventController {
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("awardCategoryResults", results);
         return "events/awards";
+    }
+
+    @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
+    public static String ageGenderRankings(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "gender", required = false, defaultValue = " ") String gender,
+    		Model uiModel) {
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = event.getAwardCategorys();
+    	for(AwardCategory c:list){
+    		String g = (null!=c.getGender()) ? c.getGender() : "";
+    		if(gender.trim().equals(g.trim()) && !c.isMedal()){
+    			results.add(new AwardCategoryResults(c,event.getAwards(g, c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    		}
+    	}
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
+        return "events/ageGenderRankings";
     }
 
 
@@ -775,7 +800,7 @@ public class EventController {
     }
     
     @RequestMapping(value = "/createAwardCategories", produces = "text/html")
-    public String createAwardCategories(
+    public String createAgeGenderRankings(
     		@RequestParam(value = "event") long eventId,
     		@RequestParam(value = "ageMin") int ageMin,
     		@RequestParam(value = "ageMax") int ageMax,
@@ -784,11 +809,11 @@ public class EventController {
     		Model uiModel){
     	Event event = Event.findEvent(eventId);
     	// delete old categories
-    	int deleted = new AwardCategory().removeByEvent(event);
+    	int deleted = new AwardCategory().removeAgeGenderRankingsByEvent(event);
     	System.out.println("DELETED CATS "+deleted);
     	// make new categories
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	List<AwardCategory> list = AwardCategory.makeDefaults(event, ageMin, ageMax, ageRange, listSize);
+    	List<AwardCategory> list = AwardCategory.createAgeGenderRankings(event, ageMin, ageMax, ageRange, listSize);
     	for(AwardCategory c:list){
     		if(c.getGender().trim().isEmpty()){
     			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())));
@@ -798,7 +823,7 @@ public class EventController {
         uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("awardCategoryResults", results);
-        return "events/awards";
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
     }
     
     @RequestMapping(value = "/overall", produces = "text/html")

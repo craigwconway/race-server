@@ -31,4 +31,7 @@
 <definition extends="default" name="events/registrationComplete">
         <put-attribute name="body" value="/WEB-INF/views/events/registrationComplete.jspx"/>
     </definition>
+<definition extends="default" name="events/ageGenderRankings">
+        <put-attribute name="body" value="/WEB-INF/views/events/ageGenderRankings.jspx"/>
+    </definition>
 </tiles-definitions>

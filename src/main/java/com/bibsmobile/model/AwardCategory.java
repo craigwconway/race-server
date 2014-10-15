@@ -28,6 +28,15 @@ import flexjson.JSONSerializer;
 @Entity
 public class AwardCategory implements Comparable{
 
+	public static final int MIN_AGE = 0;
+	public static final int MAX_AGE = 109;
+	public static final int DEFAULT_LIST_SIZE = 3;
+	public static final int DEFAULT_AGE_SPAN = 9;
+	public static final int MASTERS_MIN = 40;
+	public static final int MASTERS_MAX = 49;
+	public static final int GRANDMASTERS_MIN = 50;
+	public static final int GRANDMASTERS_MAX = MAX_AGE;
+
     @ManyToOne
     private Event event;
     
@@ -37,6 +46,18 @@ public class AwardCategory implements Comparable{
 	private int ageMin;
 	private int ageMax;
 	private int listSize;
+	
+	private boolean medal; 
+	
+	// hack for medals verses age/gender ranking
+	public final static String MEDAL_PREFIX = "Medal: ";
+	public boolean isMedal(){
+		return name.startsWith(MEDAL_PREFIX);
+	}
+	
+	public void setMedal(boolean bool){
+		this.name = bool ? MEDAL_PREFIX + name : name.replaceAll(MEDAL_PREFIX, "");
+	}
 
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -229,9 +250,9 @@ public class AwardCategory implements Comparable{
         return new JSONDeserializer<List<AwardCategory>>().use(null, ArrayList.class).use("values", AwardCategory.class).deserialize(json);
     }
 	
-	public static List<AwardCategory> makeDefaults(final Event event, int ageMin, int ageMax, int ageSpan, int listSize){
+	public static List<AwardCategory> createAgeGenderRankings(final Event event, int ageMin, int ageMax, int ageSpan, int listSize){
 		List<AwardCategory> list = new ArrayList<AwardCategory>();
-		String[] genders = {"","M","F"};
+		String[] genders = {"M","F"};
 		int i = 0;
 		while(ageMin <= ageMax){
 			int _ageMax = ageMin + ageSpan;
@@ -255,6 +276,84 @@ public class AwardCategory implements Comparable{
 		}
 		return list;
 	}
+	
+	public static List<AwardCategory> createDefaultMedals(final Event event){
+		List<AwardCategory> list = new ArrayList<AwardCategory>();
+		int i = 0;
+		AwardCategory c = new AwardCategory();
+		c.setName("Top Males Overall");
+		c.setEvent(event);
+		c.setAgeMin(MIN_AGE);
+		c.setAgeMax(MAX_AGE);
+		c.setGender("M");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Females Overall");
+		c.setEvent(event);
+		c.setAgeMin(MIN_AGE);
+		c.setAgeMax(MAX_AGE);
+		c.setGender("F");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Male Masters");
+		c.setEvent(event);
+		c.setAgeMin(MASTERS_MIN);
+		c.setAgeMax(MASTERS_MAX);
+		c.setGender("M");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Female Masters");
+		c.setEvent(event);
+		c.setAgeMin(MASTERS_MIN);
+		c.setAgeMax(MASTERS_MAX);
+		c.setGender("F");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Male Grand Masters");
+		c.setEvent(event);
+		c.setAgeMin(GRANDMASTERS_MIN);
+		c.setAgeMax(GRANDMASTERS_MAX);
+		c.setGender("M");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Female Grand Masters");
+		c.setEvent(event);
+		c.setAgeMin(GRANDMASTERS_MIN);
+		c.setAgeMax(GRANDMASTERS_MAX);
+		c.setGender("F");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		return list;
+	}
 
 	public static List<AwardCategory> findByEvent(Event event) {
         EntityManager em = AwardCategory.entityManager();
@@ -266,9 +365,9 @@ public class AwardCategory implements Comparable{
     }
 
 	@Transactional
-	public int removeByEvent(Event event) {
+	public int removeAgeGenderRankingsByEvent(Event event) {
         EntityManager em = AwardCategory.entityManager();
-        String jpaQuery = "DELETE FROM AwardCategory AS o WHERE o.event = :event";
+        String jpaQuery = "DELETE FROM AwardCategory AS o WHERE o.event = :event AND o.name NOT LIKE '"+AwardCategory.MEDAL_PREFIX+"%'";
         Query q = em.createQuery(jpaQuery);
         q.setParameter("event", event);
         return q.executeUpdate();

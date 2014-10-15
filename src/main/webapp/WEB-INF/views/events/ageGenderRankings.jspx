@@ -32,7 +32,7 @@ label {
 </style>
 
 	<div id="awards-nav"> 
-		
+			
 		<button class="btn btn-info btn-top"
 			onclick="byGender('M')" 
 			type="button">Age M</button>
@@ -49,6 +49,10 @@ label {
 			onclick="overall()"
 			type="button">Overall</button>
 			
+		<button class="btn btn-default btn-top"
+			onclick="jQuery('#search-box').toggle()" 
+			type="button">Configure</button>
+			
 		<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 		<button class="btn btn-primary btn-top"
 			onclick="create()" 
@@ -59,12 +63,39 @@ label {
 			onclick="printAwards()"
 			type="button">Print</button>
 
+		<form id="search-box" class="form-inline" role="form"
+			style="display: none; border: 1px solid #ddd;padding: 10px;margin: 10px;">
+			<div>
+			<h3>Create Award Categories</h3>
+			</div>
+			<div class="form-group">
+				<label for="ageMin">Start Age</label> <input id="ageMin" name="ageMin"
+					class="form-control" style="width: 50px;" value="0" />
+			</div>
+			<div class="form-group">
+				<label for="ageMax">End Age</label> <input id="ageMax" name="ageMax"
+					class="form-control" style="width: 50px;" value="109" />
+			</div>
+			<div class="form-group">
+				<label for="ageRange">Age Span</label> <input id="ageRange"
+					name="ageRange" class="form-control" style="width: 50px;"
+					value="9" />
+			</div>
+			<div class="form-group">
+				<label for="listSize">Group Size</label> <input id="listSize"
+					name="listSize" class="form-control" style="width: 50px;"
+					value="3" />
+			</div>
+			<button class="btn btn-primary btn-top" onclick="createAwardCategories()"
+				type="button">Create</button>
+		</form>
+
 	</div>
 	<!-- awards-nav -->
 
 	<div style="clear: both;" />
 
-	<h3 id="title">${event.name}
+	<h3 id="title" style="padding-top: 0; margin-top: 0;">${event.name}
 		<small id="award-title">Official Results</small>
 	</h3>
 	<div id="awards-table">
@@ -107,9 +138,18 @@ label {
 				
 	</div>
 	
+	<c:set value="${fn:length(awardCategoryResults) }" var="size"/>
 	<script>
 
 	var event = Math.max(0,GetURLParameter("event"));
+	var gender = Math.max(0,GetURLParameter("gender"));
+	
+	window.onload=function(){
+		if(0 == ${size}){
+			jQuery('#search-box').show();
+			jQuery('#title').hide();
+		}
+	};
 	
 	function printAwards(){
 		jQuery('table').css('max-width','500px');
@@ -133,6 +173,15 @@ label {
 	
 	function overall(){
 		window.location = "/bibs-server/events/overall?event="+event;
+	}
+	
+	function createAwardCategories(){
+		var event = Math.max(0,GetURLParameter("event"));
+		var ageMin = Math.max(jQuery('#ageMin').val(),0);
+		var ageMax = Math.max(jQuery('#ageMax').val(),0);
+		var ageRange = Math.max(jQuery('#ageRange').val(),0);
+		var listSize = Math.max(jQuery('#listSize').val(),0);
+		window.location="/bibs-server/events/createAwardCategories?event="+event+"&amp;ageMin="+ageMin+"&amp;ageMax="+ageMax+"&amp;ageRange="+ageRange+"&amp;listSize="+listSize;
 	}
 	
 	function deleteAwardCategory(id){

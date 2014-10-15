@@ -28,6 +28,16 @@
 	<div id="awards-nav">
 	
 	<button class="btn btn-info btn-top" 
+		onclick="byGender('M')" type="button">
+		Age M
+	</button>
+	
+	<button class="btn btn-info btn-top" 
+		onclick="byGender('F')" type="button">
+		Age F
+	</button>
+	
+	<button class="btn btn-info btn-top" 
 		onclick="awards()" type="button">
 		Medals
 	</button>
@@ -35,16 +45,6 @@
 	<button class="btn btn-info btn-top" 
 		onclick="byGender(' ')" type="button">
 		Overall
-	</button>
-	
-	<button class="btn btn-default btn-top" 
-		onclick="byGender('M')" type="button">
-		Men
-	</button>
-	
-	<button class="btn btn-default btn-top" 
-		onclick="byGender('F')" type="button">
-		Women
 	</button>
 	
 	<button class="btn btn-default btn-top" onclick="jQuery('#search-box').toggle()" type="button">

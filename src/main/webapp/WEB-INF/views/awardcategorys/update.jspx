@@ -8,7 +8,43 @@
         <field:input field="name" id="c_com_bibsmobile_model_AwardCategory_name" z="user-managed"/>
         <field:input field="ageMin" id="c_com_bibsmobile_model_AwardCategory_ageMin" z="user-managed"/>
         <field:input field="ageMax" id="c_com_bibsmobile_model_AwardCategory_ageMax" z="user-managed"/>
+        <field:input field="gender" id="c_com_bibsmobile_model_AwardCategory_gender" z="user-managed"/>
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        <label for="custom-gender">Gender:</label>
+                    </td>
+                    <td>
+                        <select id="custom-gender" name="custom-gender" onchange="change('gender')" style="width:100px">
+                            <option id="gender-x" value="">Any</option>
+                            <option id="gender-0" value="M">Male</option>
+                            <option id="gender-1" value="F">Female</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <br/>
+        </div>
         <field:input field="listSize" id="c_com_bibsmobile_model_AwardCategory_listSize" z="user-managed"/>
-        <field:input field="sortOrder" id="c_com_bibsmobile_model_AwardCategory_sortOrder" z="user-managed"/>
+        <field:input field="sortOrder" id="c_com_bibsmobile_model_AwardCategory_sortOrder" z="user-managed"/> 
+        <label>This is a Medal Category</label><input type="checkbox" id="medal" name="medal" value="true"/>
     </form:update>
+    <script>
+    window.onload=function(){
+		jQuery("#_gender_id").val("");
+		jQuery("#_c_com_bibsmobile_model_AwardCategory_gender_id").hide();
+		// medal hack
+		var name = jQuery("#_name_id").val();
+		var index = Math.round(name.indexOf('Medal: '));
+		if(index > -1){
+			jQuery("#_name_id").val( name.substring( 7, name.length) );
+			jQuery('#medal').prop('checked', true);
+		}
+    };
+    
+    function change(field){
+   		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
+    }
+    </script>
 </div>
