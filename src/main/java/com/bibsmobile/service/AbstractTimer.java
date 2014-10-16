@@ -25,10 +25,19 @@ public abstract class AbstractTimer implements Timer {
 	// auto-add an unregistered runner to an event
 	public void logTime(final String bib, long time, final TimerConfig timerConfig, final Event event) {
 		RaceResult r = new RaceResult();
+		try {
+		r = RaceResult.findRaceResultsByEventAndBibEquals(event,bib+"").getSingleResult();
 		r.setEvent(event);
 		r.setBib(bib);
 		r = calculateOfficialTime(r, time, timerConfig);
-		r.persist();
+		r.merge();
+		} catch (Exception e) {
+		r.setEvent(event);
+		r.setBib(bib);
+		r = calculateOfficialTime(r, time, timerConfig);
+		r.persist();			
+		}
+
 	}
 	
 	public void logTime(final int bibnum, long bibtime, final TimerConfig timerConfig) {
