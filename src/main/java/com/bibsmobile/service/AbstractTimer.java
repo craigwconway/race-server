@@ -140,8 +140,10 @@ public abstract class AbstractTimer implements Timer {
 		// find unassigned bibs event
 		Event event = null;
 		try{
-			event = Event.findEventByNameEquals(UNASSIGNED_BIB_EVENT_NAME);
+			event = Event.findEventsByNameLike(UNASSIGNED_BIB_EVENT_NAME,1,1).getSingleResult();
 		}catch(Exception e){
+			System.out.println("Caught exception finding matching event");
+			System.out.println(e);
 			event = new Event();
 			event.setName(UNASSIGNED_BIB_EVENT_NAME);
 			event.persist();
