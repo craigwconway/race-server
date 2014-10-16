@@ -63,10 +63,11 @@ label {
 			onclick="printAwards()"
 			type="button">Print</button>
 
-        <label style="width:150px;">Allow Duplicates</label><input type="checkbox" id="duplicate" name="duplicate" value="true" onclick="update()"/>
-        
-        <label style="width:150px;">Masters in Overall</label><input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
-
+		<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        	<label style="width:150px;">Allow Duplicates</label><input type="checkbox" id="duplicate" name="duplicate" value="true" onclick="update()"/>
+        	<label style="width:150px;">Masters in Overall</label><input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
+		</sec:authorize>
+		
 		<form id="search-box" class="form-inline" role="form"
 			style="display: none; border: 1px solid #ddd;padding: 10px;margin: 10px;">
 			<div>
@@ -145,8 +146,8 @@ label {
 	<c:set value="${fn:length(awardCategoryResults) }" var="size"/>
 	<script>
 
-	var event = Math.max(0,GetURLParameter("event"));
-	var gender = Math.max(0,GetURLParameter("gender"));
+	var event = GetURLParameter("event");
+	var gender = GetURLParameter("gender");
 	
 	window.onload=function(){
 		if(${event.awardsConfig.allowMedalsInAgeGenderRankings}){

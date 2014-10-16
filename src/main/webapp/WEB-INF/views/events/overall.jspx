@@ -43,7 +43,7 @@
 	</button>
 	
 	<button class="btn btn-info btn-top" 
-		onclick="byGender(' ')" type="button">
+		onclick="overall()" type="button">
 		Overall
 	</button>
 	
@@ -129,8 +129,12 @@
 		window.location = "/bibs-server/events/awards?event="+event;
 	}
 	
+	function overall(){
+		window.location = "/bibs-server/events/overall?event="+event;
+	}
+	
 	function byGender(g){
-		window.location = "/bibs-server/events/overall?event="+event+"&amp;gender="+g;
+		window.location = "/bibs-server/events/ageGenderRankings?event="+event+"&amp;gender="+g;
 	}
 
 	function getCustom(){

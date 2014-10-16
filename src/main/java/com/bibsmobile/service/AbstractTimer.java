@@ -72,7 +72,7 @@ public abstract class AbstractTimer implements Timer {
 			if(!foundEventForBib){
 				// there's only 1 running event, put the runner in
 				if(events.size() == 1){
-					logTime(String.valueOf(bibnum), bibtime, timerConfig, events.get(0));
+					//logTime(String.valueOf(bibnum), bibtime, timerConfig, events.get(0));
 				// otherwise save it to special event
 				}else{
 					logUnassignedBib(String.valueOf(bibnum), bibtime, timerConfig);
@@ -136,17 +136,6 @@ public abstract class AbstractTimer implements Timer {
 	}
 	
 	public void logUnassignedBib(String bib, long time, final TimerConfig timerConfig){
-		System.out.println("UNASSIGNED '" + bib + "' @ "+ new Date(time));
-		// find unassigned bibs event
-		Event event = null;
-		try{
-			event = Event.findEventByNameEquals(UNASSIGNED_BIB_EVENT_NAME);
-		}catch(Exception e){
-			event = new Event();
-			event.setName(UNASSIGNED_BIB_EVENT_NAME);
-			event.persist();
-		}
-		this.logTime(bib, time, timerConfig, event);
 		System.out.println("UNASSIGNED '" + bib + "logged");
 	}
 

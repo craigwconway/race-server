@@ -280,44 +280,37 @@ public class Event {
     }
 
     public List<RaceResult> getAwards(String gender, int min, int max, int size) {
-    	return getAwards( gender,  min,  max,  size, new ArrayList<String>(0));
+    	return getAwards( gender,  min,  max,  size, new ArrayList<String>());
     }
 
-    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<String> excludeBibs) {
-        if (min > max) min = max;
-        List<RaceResult> allResults = new ArrayList<RaceResult>(getRaceResults());
-        Collections.sort(allResults);
-        List<RaceResult> results = new ArrayList<RaceResult>();
-        for (RaceResult result : allResults) {
-            int age = 0;
-            try {
-                age = Integer.valueOf(result.getAge());
-            } catch (Exception ex) {
-            }
-            if (results.size() < size && result.getTimeofficial() > 0 
-            		&& (gender.trim().isEmpty() || gender == null || gender.equals(result.getGender())) 
-            		&& (min == 0 || (min <= age && age != 0)) && (max == 0 || (max >= age && age != 0))
-            		&& !excludeBibs.contains(result.getBib()) ){
-                results.add(result);
-            }
-            if (results.size() == size && size != 0) break;
-        }
-        return results;
+    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<String> excludeBibs) { 
+    	List<RaceResult> results = Event.findRaceResultsByAwardCategory(id,gender,min,max,1,30);
+    	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
+    	for(RaceResult r : results){
+    		if(!excludeBibs.contains(r.getBib())){
+    			resultsFiltered.add(r);
+    		}
+    		if(resultsFiltered.size() == size){
+    			break;
+    		}
+    	}
+    	Collections.sort(resultsFiltered);
+    	return resultsFiltered;
     }
 
     public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page, int size) {
         if (min > max) min = max;
         String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
         if (!gender.isEmpty()) HQL += " AND o.gender = :gender ";
-        if (min > 0 && max > 0) HQL += "AND (o.age >= :min AND o.age <= :max ) ";
-        HQL += " order by (o.timeofficial-o.timestart) asc";
+        if (min >= 0 && max > 0) HQL += "AND (cast(o.age, int) >= :min AND cast(o.age, int) <= :max ) ";
+        HQL += " order by o.timeofficialdisplay asc";
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
         q.setParameter("event", Event.findEvent(event));
         if (!gender.isEmpty()) q.setParameter("gender", gender);
-        if (min > 0 && max > 0) {
-            q.setParameter("min", String.valueOf(min));
-            q.setParameter("max", String.valueOf(max));
+        if (min >= 0 && max > 0) {
+            q.setParameter("min", min);
+            q.setParameter("max", max);
         }
         q.setFirstResult((page - 1) * size);
         q.setMaxResults(size);

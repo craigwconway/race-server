@@ -30,10 +30,12 @@ public class AwardCategoryController {
             return "awardcategorys/create";
         }
         uiModel.asMap().clear();
-        // hack
-        if(!httpServletRequest.getParameter("medal").isEmpty()){
+
+        // hack for medals
+        if(httpServletRequest.getParameterMap().containsKey("medal")){
         	awardCategory.setName(AwardCategory.MEDAL_PREFIX + awardCategory.getName());
         }
+        
         awardCategory.persist();
         return "redirect:/events/awards?event=" + awardCategory.getEvent().getId();
     }
@@ -57,10 +59,12 @@ public class AwardCategoryController {
             return "awardcategory/update";
         }
         uiModel.asMap().clear();
-        // hack
-        if(!httpServletRequest.getParameter("medal").isEmpty()){
+        
+        // hack for medals
+        if(httpServletRequest.getParameterMap().containsKey("medal")){
         	awardCategory.setName(AwardCategory.MEDAL_PREFIX + awardCategory.getName());
         }
+        
         awardCategory.merge();
         return "redirect:/events/awards?event=" + awardCategory.getEvent().getId();
     }
