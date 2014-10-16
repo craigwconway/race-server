@@ -194,6 +194,14 @@ public class RaceResultController {
             return "raceresults/update";
         }
         uiModel.asMap().clear();
+        // New race result stuff here //
+        if(null == raceResult.getTimechip()) {
+        	// We have a result without a chip time, we can compute the timeofficialdisplay
+        	if(0 < raceResult.getEvent().getGunTimeStart() && 0 < raceResult.getTimeofficial()) {
+        		// There is a gun time in the event and a timeofficial set
+        		raceResult.setTimeofficialdisplay(RaceResult.toHumanTime(raceResult.getEvent().getGunTimeStart(), raceResult.getTimeofficial()));
+        	}
+        }
         raceResult.merge();
         return "redirect:/raceresults/" + encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
     }
