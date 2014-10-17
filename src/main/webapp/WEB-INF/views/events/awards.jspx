@@ -112,7 +112,7 @@ label {
 	</div>
 	
 	<script>
-	var event = GetURLParameter("event");
+	var eventid = GetURLParameter("event");
 	
 	window.onload=function(){
 		if(${event.awardsConfig.allowMedalsInAgeGenderRankings}){
@@ -124,7 +124,7 @@ label {
 	}
 	
 	function update(){
-		var loc = "/bibs-server/events/awards/update?event="+event;
+		var loc = "/bibs-server/events/awards/update?event="+eventid;
 		if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
 		if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
 		window.location=loc;
@@ -142,16 +142,16 @@ label {
 		jQuery('#awards-nav').show();
 	}
 	
-	function byGender(g){
-		window.location = "/bibs-server/events/ageGenderRankings?event="+event+"&amp;gender="+g;
+	function byGender(gender){
+		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+gender;
 	}
 	
 	function awards(){
-		window.location = "/bibs-server/events/awards?event="+event;
+		window.location = "/bibs-server/events/awards?event="+eventid;
 	}
 	
 	function overall(){
-		window.location = "/bibs-server/events/overall?event="+event;
+		window.location = "/bibs-server/events/overall?event="+eventid;
 	}
 	
 	function deleteAwardCategory(id){
@@ -168,7 +168,7 @@ label {
 	}
 	
 	function create(){
-		window.location="/bibs-server/awardcategorys/?form&amp;event="+event;
+		window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
 	}
 	
 	</script>

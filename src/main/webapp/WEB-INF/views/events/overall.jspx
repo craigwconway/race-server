@@ -122,32 +122,31 @@
 
 	<script>
 
-	var event = Math.max(0,GetURLParameter("event"));
+	var eventid = Math.max(0,GetURLParameter("event"));
 	var gender = Math.max(0,GetURLParameter("gender"));
 
 	function awards(){
-		window.location = "/bibs-server/events/awards?event="+event;
+		window.location = "/bibs-server/events/awards?event="+eventid;
 	}
 	
 	function overall(){
-		window.location = "/bibs-server/events/overall?event="+event;
+		window.location = "/bibs-server/events/overall?event="+eventid;
 	}
 	
 	function byGender(g){
-		window.location = "/bibs-server/events/ageGenderRankings?event="+event+"&amp;gender="+g;
+		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+g;
 	}
 
 	function getCustom(){
-		var event = Math.max(0,GetURLParameter("event"));
 		var listSize = Math.round(jQuery('#listSize').val());
 		jQuery('#listSize').val(listSize);
 		var gender = jQuery('#gender').val();
 		var ageMin = Math.max(jQuery('#ageMin').val(),0);
 		var ageMax = Math.max(jQuery('#ageMax').val(),0);
-		fetchAwards(event,ageMin,ageMax,gender,listSize,"");
+		fetchAwards(ageMin,ageMax,gender,listSize,"");
 	}
 	
-	function fetchAwards(event,ageMin,ageMax,gender,listSize,title){	
+	function fetchAwards(ageMin,ageMax,gender,listSize,title){	
 		if(title==""){
 			if(gender=="M") title = "Male ";
 			if(gender=="F") title = "Female ";
@@ -157,7 +156,7 @@
 				}
 			}
 		}
-		var params = "?event="+event+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize;
+		var params = "?event="+eventid+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize;
 		var request = jQuery.ajax({
 			url: "/bibs-server/events/timeofficial"+params,
 			type: "GET",

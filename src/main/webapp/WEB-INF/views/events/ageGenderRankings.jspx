@@ -146,7 +146,7 @@ label {
 	<c:set value="${fn:length(awardCategoryResults) }" var="size"/>
 	<script>
 
-	var event = GetURLParameter("event");
+	var eventid = GetURLParameter("event");
 	var gender = GetURLParameter("gender");
 	
 	window.onload=function(){
@@ -159,7 +159,7 @@ label {
 	}
 	
 	function update(){
-		var loc = "/bibs-server/events/ageGenderRankings/update?event="+event+"&amp;gender="+gender;
+		var loc = "/bibs-server/events/ageGenderRankings/update?event="+eventid+"&amp;gender="+gender;
 		if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
 		if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
 		window.location=loc;
@@ -178,15 +178,15 @@ label {
 	}
 	
 	function byGender(g){
-		window.location = "/bibs-server/events/ageGenderRankings?event="+event+"&amp;gender="+g;
+		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+g;
 	}
 	
 	function awards(){
-		window.location = "/bibs-server/events/awards?event="+event;
+		window.location = "/bibs-server/events/awards?event="+eventid;
 	}
 	
 	function overall(){
-		window.location = "/bibs-server/events/overall?event="+event;
+		window.location = "/bibs-server/events/overall?event="+eventid;
 	}
 	
 	function createAwardCategories(){
@@ -195,7 +195,7 @@ label {
 		var ageMax = Math.max(jQuery('#ageMax').val(),0);
 		var ageRange = Math.max(jQuery('#ageRange').val(),0);
 		var listSize = Math.max(jQuery('#listSize').val(),0);
-		window.location="/bibs-server/events/createAwardCategories?event="+event+"&amp;ageMin="+ageMin+"&amp;ageMax="+ageMax+"&amp;ageRange="+ageRange+"&amp;listSize="+listSize;
+		window.location="/bibs-server/events/createAwardCategories?event="+eventid+"&amp;ageMin="+ageMin+"&amp;ageMax="+ageMax+"&amp;ageRange="+ageRange+"&amp;listSize="+listSize;
 	}
 	
 	function deleteAwardCategory(id){
@@ -212,7 +212,7 @@ label {
 	}
 	
 	function create(){
-		window.location="/bibs-server/awardcategorys/?form&amp;event="+event;
+		window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
 	}
 	
 	</script>
