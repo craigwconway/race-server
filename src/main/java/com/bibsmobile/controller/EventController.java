@@ -452,41 +452,9 @@ public class EventController {
     		@RequestParam(value = "event", required = true) Long eventId,
     		Model uiModel) {
     	Event event = Event.findEvent(eventId);
-    	List<String> mastersBibs = new ArrayList<String>();
-    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	
-    	// if not allow masters in overall, collect masters bibs, pass into non-masters
-    	if(!event.getAwardsConfig().isAllowMastersInNonMasters()){
-        	for(AwardCategory c:event.getAwardCategorys()){
-        		if(c.isMedal() && c.isMaster()){
-        			List<RaceResult> masters = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
-        			for(RaceResult m:masters){
-        				mastersBibs.add(m.getBib());
-        			}
-        		}
-        	}
-    	}
-    	
-		// filter medals
-		List<String> awarded = new ArrayList<String>();
-    	for(AwardCategory c:event.getAwardCategorys()){
-    		if(c.isMedal()){
-    			c.setName(c.getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
-    			List<RaceResult> rr = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)
-    					: event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs);
-    			results.add(new AwardCategoryResults(c,rr));
-    			// track mdals, only 1 medal ppn
-    			for(RaceResult r:rr){
-        			awarded.add(r.getBib());
-        			mastersBibs.add(r.getBib());
-    			}
-    		}
-    	}
-    	
-    	Collections.sort(results);
-        uiModel.asMap().clear();
+    	uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
-        uiModel.addAttribute("awardCategoryResults", results);
+        uiModel.addAttribute("awardCategoryResults", event.calculateMedals(event));
         return "events/awards";
     }
 
@@ -502,20 +470,18 @@ public class EventController {
 
     	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
     	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
-        	for(AwardCategory c:list){
-        		if(c.isMedal()){
-        			List<RaceResult> medals = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
-        			for(RaceResult m:medals){
-        				medalsBibs.add(m.getBib());
-        			}
+        	for(AwardCategoryResults c:event.calculateMedals(event)){
+        		for(RaceResult r:c.getResults()){
+        			medalsBibs.add(r.getBib());
         		}
         	}
     	}
     	
 		// filter age/gender
-    	for(AwardCategory c:list){
+    	for(AwardCategory c:event.getAwardCategorys()){
     		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
-    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
+    			results.add(new AwardCategoryResults(c,
+    					event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
     		}
     	}
     	

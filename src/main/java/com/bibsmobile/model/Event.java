@@ -1,20 +1,26 @@
 package com.bibsmobile.model;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashSet;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -296,6 +302,42 @@ public class Event {
     	}
     	Collections.sort(resultsFiltered);
     	return resultsFiltered;
+    }
+    
+    public List<AwardCategoryResults> calculateMedals(Event event){
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<String> mastersBibs = new ArrayList<String>();
+    	
+    	// if not allow masters in overall, collect masters bibs, pass into non-masters
+    	if(!event.getAwardsConfig().isAllowMastersInNonMasters()){
+        	for(AwardCategory c:event.getAwardCategorys()){
+        		if(c.isMedal() && c.isMaster()){
+        			List<RaceResult> masters = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
+        			for(RaceResult m:masters){
+        				mastersBibs.add(m.getBib());
+        			}
+        		}
+        	}
+    	}
+    	
+		// filter medals
+		List<String> awarded = new ArrayList<String>();
+    	for(AwardCategory c:event.getAwardCategorys()){
+    		if(c.isMedal()){
+    			c.setName(c.getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
+    			List<RaceResult> rr = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)
+    					: event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs);
+    			results.add(new AwardCategoryResults(c,rr));
+    			// track mdals, only 1 medal ppn
+    			for(RaceResult r:rr){
+        			awarded.add(r.getBib());
+        			mastersBibs.add(r.getBib());
+    			}
+    		}
+    	}
+    	
+    	Collections.sort(results);
+    	return results;
     }
 
     public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page, int size) {
