@@ -3,26 +3,26 @@ package com.bibsmobile.service;
 import com.bibsmobile.model.TimerConfig;
 
 public interface Timer {
-	
-	void setTimerConfig(TimerConfig timerConfig);
-	
-	int getStatus();
-	
-	long getDateTime();
 
-	void connect() throws Exception;
+    void setTimerConfig(TimerConfig timerConfig);
 
-	void disconnect();
+    int getStatus();
 
-	void startReader();
+    long getDateTime();
 
-	void stopReader();
+    void connect() throws Exception;
 
-	void write(long bib) throws Exception;
+    void disconnect();
 
-	void logTime(int bibnum, long bibtime, TimerConfig timerConfig);
+    void startReader();
 
-	void clearReport();
+    void stopReader();
 
-	String createReport();
+    void write(long bib) throws Exception;
+
+    void logTime(int bibnum, long bibtime, TimerConfig timerConfig);
+
+    void clearReport();
+
+    String createReport();
 }

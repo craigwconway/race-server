@@ -1,21 +1,18 @@
 package com.bibsmobile.util;
 
-import com.bibsmobile.model.AwardCategory;
-import com.bibsmobile.model.TimerConfig;
-import com.bibsmobile.model.UserAuthorities;
-import com.bibsmobile.model.UserAuthoritiesID;
-import com.bibsmobile.model.UserAuthority;
-import com.bibsmobile.model.UserGroup;
-import com.bibsmobile.model.UserProfile;
-import com.bibsmobile.job.BaseJob;
-import com.bibsmobile.job.CartExpiration;
-
 import org.quartz.SchedulerException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+
+import com.bibsmobile.job.BaseJob;
+import com.bibsmobile.job.CartExpiration;
+import com.bibsmobile.model.TimerConfig;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserAuthoritiesID;
+import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserProfile;
 
 @Component
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
@@ -28,15 +25,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     private static UserProfile userProfile;
 
-    @Autowired
-    private static AwardCategory awardCategory;
-
-    @Autowired
-    private static TimerConfig timerConfig;
-
-    @Autowired
-    private static UserGroup userGroup;
-
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
@@ -47,7 +35,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             throw new RuntimeException(e);
         }
 
-        //store default readers
+        // store default readers
         if (TimerConfig.countTimerConfigs() < 1) {
             TimerConfig timerConfig = new TimerConfig();
             timerConfig.setUrl("tmr://bibs001.bibsmobile.com");
@@ -58,7 +46,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             timerConfig.persist(); // reader 2
         }
 
-        //  store default users
+        // store default users
         if (UserProfile.countUserProfiles() < 1) {
 
             userProfile = new UserProfile();
@@ -90,9 +78,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             userProfile.persist();
         }
 
-        //store default roles
+        // store default roles
         if (UserAuthority.countUserAuthoritys() < 1) {
-            for (String authorityName : new String[]{"ROLE_SYS_ADMIN", "ROLE_EVENT_ADMIN", "ROLE_USER_ADMIN", "ROLE_USER"}) {
+            for (String authorityName : new String[] { "ROLE_SYS_ADMIN", "ROLE_EVENT_ADMIN", "ROLE_USER_ADMIN", "ROLE_USER" }) {
                 userAuthority = new UserAuthority();
                 userAuthority.setAuthority(authorityName);
                 userAuthority.persist();
@@ -101,12 +89,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         if (UserAuthorities.countUserAuthoritieses() < 1) {
 
-            UserProfile userProfile = UserProfile.findUserProfilesByUsernameEquals("admin").getSingleResult();
+            UserProfile tmpUserProfile = UserProfile.findUserProfilesByUsernameEquals("admin").getSingleResult();
             UserAuthority userAuthority1 = UserAuthority.findUserAuthoritysByAuthorityEquals("ROLE_SYS_ADMIN").getSingleResult();
             UserAuthoritiesID id = new UserAuthoritiesID();
-            if (userProfile != null && userAuthority1 != null) {
+            if (tmpUserProfile != null && userAuthority1 != null) {
                 id.setUserAuthority(userAuthority1);
-                id.setUserProfile(userProfile);
+                id.setUserProfile(tmpUserProfile);
                 if (UserAuthorities.findUserAuthorities(id) == null) {
                     userAuthorities = new UserAuthorities();
                     userAuthorities.setId(id);
@@ -114,11 +102,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                 }
             }
 
-            userProfile = UserProfile.findUserProfilesByUsernameEquals("eventadmin").getSingleResult();
+            tmpUserProfile = UserProfile.findUserProfilesByUsernameEquals("eventadmin").getSingleResult();
             userAuthority1 = UserAuthority.findUserAuthoritysByAuthorityEquals("ROLE_EVENT_ADMIN").getSingleResult();
-            if (userProfile != null && userAuthority1 != null) {
+            if (tmpUserProfile != null && userAuthority1 != null) {
                 id.setUserAuthority(userAuthority1);
-                id.setUserProfile(userProfile);
+                id.setUserProfile(tmpUserProfile);
                 if (UserAuthorities.findUserAuthorities(id) == null) {
                     userAuthorities = new UserAuthorities();
                     userAuthorities.setId(id);
@@ -126,11 +114,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                 }
             }
 
-            userProfile = UserProfile.findUserProfilesByUsernameEquals("useradmin").getSingleResult();
+            tmpUserProfile = UserProfile.findUserProfilesByUsernameEquals("useradmin").getSingleResult();
             userAuthority1 = UserAuthority.findUserAuthoritysByAuthorityEquals("ROLE_EVENT_ADMIN").getSingleResult();
-            if (userProfile != null && userAuthority1 != null) {
+            if (tmpUserProfile != null && userAuthority1 != null) {
                 id.setUserAuthority(userAuthority1);
-                id.setUserProfile(userProfile);
+                id.setUserProfile(tmpUserProfile);
                 if (UserAuthorities.findUserAuthorities(id) == null) {
                     userAuthorities = new UserAuthorities();
                     userAuthorities.setId(id);
@@ -138,11 +126,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                 }
             }
 
-            userProfile = UserProfile.findUserProfilesByUsernameEquals("user").getSingleResult();
+            tmpUserProfile = UserProfile.findUserProfilesByUsernameEquals("user").getSingleResult();
             userAuthority1 = UserAuthority.findUserAuthoritysByAuthorityEquals("ROLE_USER").getSingleResult();
-            if (userProfile != null && userAuthority != null) {
+            if (tmpUserProfile != null && userAuthority != null) {
                 id.setUserAuthority(userAuthority1);
-                id.setUserProfile(userProfile);
+                id.setUserProfile(tmpUserProfile);
                 if (UserAuthorities.findUserAuthorities(id) == null) {
                     userAuthorities = new UserAuthorities();
                     userAuthorities.setId(id);

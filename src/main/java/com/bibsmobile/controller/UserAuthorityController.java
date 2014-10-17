@@ -1,8 +1,14 @@
 package com.bibsmobile.controller;
+
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,17 +21,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 @RequestMapping("/userauthoritys")
 @Controller
 public class UserAuthorityController {
 
-	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid UserAuthority userAuthority, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, userAuthority);
@@ -36,21 +40,22 @@ public class UserAuthorityController {
         return "redirect:/userauthoritys/" + encodeUrlPathSegment(userAuthority.getId().toString(), httpServletRequest);
     }
 
-	@RequestMapping(params = "form", produces = "text/html")
+    @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         populateEditForm(uiModel, new UserAuthority());
         return "userauthoritys/create";
     }
 
-	@RequestMapping(value = "/{id}", produces = "text/html")
+    @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("userauthority", UserAuthority.findUserAuthority(id));
         uiModel.addAttribute("itemId", id);
         return "userauthoritys/show";
     }
 
-	@RequestMapping(produces = "text/html")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+    @RequestMapping(produces = "text/html")
+    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
@@ -63,7 +68,7 @@ public class UserAuthorityController {
         return "userauthoritys/list";
     }
 
-	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid UserAuthority userAuthority, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, userAuthority);
@@ -74,14 +79,15 @@ public class UserAuthorityController {
         return "redirect:/userauthoritys/" + encodeUrlPathSegment(userAuthority.getId().toString(), httpServletRequest);
     }
 
-	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, UserAuthority.findUserAuthority(id));
         return "userauthoritys/update";
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
         UserAuthority userAuthority = UserAuthority.findUserAuthority(id);
         userAuthority.remove();
         uiModel.asMap().clear();
@@ -90,23 +96,24 @@ public class UserAuthorityController {
         return "redirect:/userauthoritys";
     }
 
-	void populateEditForm(Model uiModel, UserAuthority userAuthority) {
+    void populateEditForm(Model uiModel, UserAuthority userAuthority) {
         uiModel.addAttribute("userAuthority", userAuthority);
         uiModel.addAttribute("userauthoritieses", UserAuthorities.findAllUserAuthoritieses());
     }
 
-	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
             enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (UnsupportedEncodingException uee) {
+        }
         return pathSegment;
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
         UserAuthority userAuthority = UserAuthority.findUserAuthority(id);
@@ -118,7 +125,7 @@ public class UserAuthorityController {
         return new ResponseEntity<String>(userAuthority.toJson(), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(headers = "Accept=application/json")
+    @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
         HttpHeaders headers = new HttpHeaders();
@@ -127,20 +134,20 @@ public class UserAuthorityController {
         return new ResponseEntity<String>(UserAuthority.toJsonArray(result), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJson(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         UserAuthority userAuthority = UserAuthority.fromJsonToUserAuthority(json);
         userAuthority.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location",uriBuilder.path(a.value()[0]+"/"+userAuthority.getId().toString()).build().toUriString());
+        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + userAuthority.getId().toString()).build().toUriString());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-	@RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
-        for (UserAuthority userAuthority: UserAuthority.fromJsonArrayToUserAuthoritys(json)) {
+        for (UserAuthority userAuthority : UserAuthority.fromJsonArrayToUserAuthoritys(json)) {
             userAuthority.persist();
         }
         HttpHeaders headers = new HttpHeaders();
@@ -148,7 +155,7 @@ public class UserAuthorityController {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -160,7 +167,7 @@ public class UserAuthorityController {
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
         UserAuthority userAuthority = UserAuthority.findUserAuthority(id);
         HttpHeaders headers = new HttpHeaders();
@@ -172,7 +179,7 @@ public class UserAuthorityController {
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByAuthorityEquals", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByAuthorityEquals", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindUserAuthoritysByAuthorityEquals(@RequestParam("authority") String authority) {
         HttpHeaders headers = new HttpHeaders();

@@ -24,11 +24,8 @@ import java.util.List;
 public class CartItemRestController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<String> search(
-            @RequestParam(required = false) Long userGroupId,
-            @RequestParam(required = false) Long eventId,
-            @RequestParam(required = false) EventCartItemTypeEnum eventCartItemType,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "ddMMyyyy") Date fromDate,
+    public ResponseEntity<String> search(@RequestParam(required = false) Long userGroupId, @RequestParam(required = false) Long eventId,
+            @RequestParam(required = false) EventCartItemTypeEnum eventCartItemType, @RequestParam(required = false) @DateTimeFormat(pattern = "ddMMyyyy") Date fromDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "ddMMyyyy") Date toDate) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");

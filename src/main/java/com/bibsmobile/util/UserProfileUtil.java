@@ -22,19 +22,23 @@ public class UserProfileUtil {
     }
 
     public static UserProfile getLoggedInUserProfile() {
-      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      // checks whether user is unauthenticated
-      // TODO needs to be done differently, very unperformant
-      if (auth instanceof AnonymousAuthenticationToken) return null;
-      // this is hibernate detached causing all kind of problems
-      UserProfile detachedProfile = (UserProfile)auth.getPrincipal();
-      return UserProfile.findUserProfile(detachedProfile.getId()); // this is attached now
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        // checks whether user is unauthenticated
+        // TODO needs to be done differently, very unperformant
+        if (auth instanceof AnonymousAuthenticationToken)
+            return null;
+        // this is hibernate detached causing all kind of problems
+        UserProfile detachedProfile = (UserProfile) auth.getPrincipal();
+        return UserProfile.findUserProfile(detachedProfile.getId()); // this is
+                                                                     // attached
+                                                                     // now
     }
 
     public static String getLoggedInDropboxAccessToken() {
-      UserProfile up = UserProfileUtil.getLoggedInUserProfile();
-      if (up == null) return null;
-      return up.getDropboxAccessToken();
+        UserProfile up = UserProfileUtil.getLoggedInUserProfile();
+        if (up == null)
+            return null;
+        return up.getDropboxAccessToken();
     }
 
 }

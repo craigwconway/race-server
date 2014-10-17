@@ -1,13 +1,38 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.*;
-import com.bibsmobile.service.UserProfileService;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
+
+import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventAlert;
+import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
+import com.bibsmobile.model.EventMap;
+import com.bibsmobile.model.EventPhoto;
+import com.bibsmobile.model.EventResult;
+import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.EventUserGroupId;
+import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.TimerConfig;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserAuthoritiesID;
+import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.UserGroupUserAuthorityID;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.service.UserProfileService;
 
 @Configurable
 /**
@@ -30,6 +55,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     public Converter<Event, String> getEventToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.Event, java.lang.String>() {
+            @Override
             public String convert(Event event) {
                 return event.getName();
             }
@@ -38,6 +64,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     public Converter<UserProfile, String> getUserProfileToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserProfile, java.lang.String>() {
+            @Override
             public String convert(UserProfile userProfile) {
                 return userProfile.getUsername();
             }
@@ -46,6 +73,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     public Converter<UserAuthority, String> getUserAuthorityToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthority, java.lang.String>() {
+            @Override
             public String convert(UserAuthority userAuthority) {
                 String name = "";
                 if (userAuthority.getAuthority().equals("ROLE_SYS_ADMIN")) {
@@ -62,9 +90,9 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         };
     }
 
-
     public Converter<String, UserAuthoritiesID> getJsonToUserAuthoritiesIDConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserAuthoritiesID>() {
+            @Override
             public UserAuthoritiesID convert(String encodedJson) {
                 return UserAuthoritiesID.fromJsonToUserAuthoritiesID(new String(Base64.decodeBase64(encodedJson)));
             }
@@ -73,6 +101,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     public Converter<UserAuthoritiesID, String> getUserAuthoritiesIDToJsonConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthoritiesID, java.lang.String>() {
+            @Override
             public String convert(UserAuthoritiesID userAuthoritiesID) {
                 return Base64.encodeBase64URLSafeString(userAuthoritiesID.toJson().getBytes());
             }
@@ -81,6 +110,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     public Converter<UserAuthorities, String> getUserAuthoritiesToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthorities, java.lang.String>() {
+            @Override
             public String convert(UserAuthorities userAuthorities) {
                 return "(no displayable fields)";
             }
@@ -89,6 +119,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     public Converter<UserAuthoritiesID, UserAuthorities> getIdToUserAuthoritiesConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserAuthoritiesID, com.bibsmobile.model.UserAuthorities>() {
+            @Override
             public com.bibsmobile.model.UserAuthorities convert(com.bibsmobile.model.UserAuthoritiesID id) {
                 return UserAuthorities.findUserAuthorities(id);
             }
@@ -97,513 +128,583 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
 
     public Converter<String, UserAuthorities> getStringToUserAuthoritiesConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserAuthorities>() {
+            @Override
             public com.bibsmobile.model.UserAuthorities convert(String id) {
                 return getObject().convert(getObject().convert(id, UserAuthoritiesID.class), UserAuthorities.class);
             }
         };
     }
+
     public Converter<UserGroup, String> getUserGroupToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroup, java.lang.String>() {
+            @Override
             public String convert(UserGroup userGroup) {
                 return new StringBuilder().append(userGroup.getName()).append(' ').append(userGroup.getBibWrites()).toString();
             }
         };
     }
-    
+
     public Converter<Long, UserGroup> getIdToUserGroupConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserGroup>() {
+            @Override
             public com.bibsmobile.model.UserGroup convert(java.lang.Long id) {
                 return UserGroup.findUserGroup(id);
             }
         };
     }
-    
+
     public Converter<String, UserGroup> getStringToUserGroupConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserGroup>() {
+            @Override
             public com.bibsmobile.model.UserGroup convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), UserGroup.class);
             }
         };
     }
-    
 
-
-	@Autowired
+    @Autowired
     UserProfileService userProfileService;
 
-	public Converter<Cart, String> getCartToStringConverter() {
+    public Converter<Cart, String> getCartToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.Cart, java.lang.String>() {
+            @Override
             public String convert(Cart cart) {
-                return new StringBuilder().append(cart.getShipping()).append(' ').append(cart.getTotal()).append(' ').append(cart.getCreated()).append(' ').append(cart.getUpdated()).toString();
+                return new StringBuilder().append(cart.getShipping()).append(' ').append(cart.getTotal()).append(' ').append(cart.getCreated()).append(' ')
+                        .append(cart.getUpdated()).toString();
             }
         };
     }
 
-	public Converter<Long, Cart> getIdToCartConverter() {
+    public Converter<Long, Cart> getIdToCartConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.Cart>() {
+            @Override
             public com.bibsmobile.model.Cart convert(java.lang.Long id) {
                 return Cart.findCart(id);
             }
         };
     }
 
-	public Converter<String, Cart> getStringToCartConverter() {
+    public Converter<String, Cart> getStringToCartConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.Cart>() {
+            @Override
             public com.bibsmobile.model.Cart convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), Cart.class);
             }
         };
     }
 
-	public Converter<CartItem, String> getCartItemToStringConverter() {
+    public Converter<CartItem, String> getCartItemToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.CartItem, java.lang.String>() {
+            @Override
             public String convert(CartItem cartItem) {
-                return new StringBuilder().append(cartItem.getQuantity()).append(' ').append(cartItem.getCreated()).append(' ').append(cartItem.getUpdated()).append(' ').append(cartItem.getComment()).toString();
+                return new StringBuilder().append(cartItem.getQuantity()).append(' ').append(cartItem.getCreated()).append(' ').append(cartItem.getUpdated()).append(' ')
+                        .append(cartItem.getComment()).toString();
             }
         };
     }
 
-	public Converter<Long, CartItem> getIdToCartItemConverter() {
+    public Converter<Long, CartItem> getIdToCartItemConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.CartItem>() {
+            @Override
             public com.bibsmobile.model.CartItem convert(java.lang.Long id) {
                 return CartItem.findCartItem(id);
             }
         };
     }
 
-	public Converter<String, CartItem> getStringToCartItemConverter() {
+    public Converter<String, CartItem> getStringToCartItemConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.CartItem>() {
+            @Override
             public com.bibsmobile.model.CartItem convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), CartItem.class);
             }
         };
     }
 
-	public Converter<EventAlert, String> getEventAlertToStringConverter() {
+    public Converter<EventAlert, String> getEventAlertToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventAlert, java.lang.String>() {
+            @Override
             public String convert(EventAlert eventAlert) {
                 return new StringBuilder().append(eventAlert.getText()).toString();
             }
         };
     }
 
-	public Converter<Long, EventAlert> getIdToEventAlertConverter() {
+    public Converter<Long, EventAlert> getIdToEventAlertConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventAlert>() {
+            @Override
             public com.bibsmobile.model.EventAlert convert(java.lang.Long id) {
                 return EventAlert.findEventAlert(id);
             }
         };
     }
 
-	public Converter<String, EventAlert> getStringToEventAlertConverter() {
+    public Converter<String, EventAlert> getStringToEventAlertConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventAlert>() {
+            @Override
             public com.bibsmobile.model.EventAlert convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventAlert.class);
             }
         };
     }
 
-	public Converter<EventCartItem, String> getEventCartItemToStringConverter() {
+    public Converter<EventCartItem, String> getEventCartItemToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventCartItem, java.lang.String>() {
+            @Override
             public String convert(EventCartItem eventCartItem) {
-                return new StringBuilder().append(eventCartItem.getName()).append(' ').append(eventCartItem.getDescription()).append(' ').append(eventCartItem.getPrice()).append(' ').append(eventCartItem.getAvailable()).toString();
+                return new StringBuilder().append(eventCartItem.getName()).append(' ').append(eventCartItem.getDescription()).append(' ').append(eventCartItem.getPrice())
+                        .append(' ').append(eventCartItem.getAvailable()).toString();
             }
         };
     }
 
-	public Converter<Long, EventCartItem> getIdToEventCartItemConverter() {
+    public Converter<Long, EventCartItem> getIdToEventCartItemConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventCartItem>() {
+            @Override
             public com.bibsmobile.model.EventCartItem convert(java.lang.Long id) {
                 return EventCartItem.findEventCartItem(id);
             }
         };
     }
 
-	public Converter<String, EventCartItem> getStringToEventCartItemConverter() {
+    public Converter<String, EventCartItem> getStringToEventCartItemConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventCartItem>() {
+            @Override
             public com.bibsmobile.model.EventCartItem convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventCartItem.class);
             }
         };
     }
 
-	public Converter<EventCartItemPriceChange, String> getEventCartItemPriceChangeToStringConverter() {
+    public Converter<EventCartItemPriceChange, String> getEventCartItemPriceChangeToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventCartItemPriceChange, java.lang.String>() {
+            @Override
             public String convert(EventCartItemPriceChange eventCartItemPriceChange) {
-                return new StringBuilder().append(eventCartItemPriceChange.getStartDate()).append(' ').append(eventCartItemPriceChange.getEndDate()).append(' ').append(eventCartItemPriceChange.getPrice()).toString();
+                return new StringBuilder().append(eventCartItemPriceChange.getStartDate()).append(' ').append(eventCartItemPriceChange.getEndDate()).append(' ')
+                        .append(eventCartItemPriceChange.getPrice()).toString();
             }
         };
     }
 
-	public Converter<Long, EventCartItemPriceChange> getIdToEventCartItemPriceChangeConverter() {
+    public Converter<Long, EventCartItemPriceChange> getIdToEventCartItemPriceChangeConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventCartItemPriceChange>() {
+            @Override
             public com.bibsmobile.model.EventCartItemPriceChange convert(java.lang.Long id) {
                 return EventCartItemPriceChange.findEventCartItemPriceChange(id);
             }
         };
     }
 
-	public Converter<String, EventCartItemPriceChange> getStringToEventCartItemPriceChangeConverter() {
+    public Converter<String, EventCartItemPriceChange> getStringToEventCartItemPriceChangeConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventCartItemPriceChange>() {
+            @Override
             public com.bibsmobile.model.EventCartItemPriceChange convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventCartItemPriceChange.class);
             }
         };
     }
 
-	public Converter<EventMap, String> getEventMapToStringConverter() {
+    public Converter<EventMap, String> getEventMapToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventMap, java.lang.String>() {
+            @Override
             public String convert(EventMap eventMap) {
                 return new StringBuilder().append(eventMap.getUrl()).toString();
             }
         };
     }
 
-	public Converter<Long, EventMap> getIdToEventMapConverter() {
+    public Converter<Long, EventMap> getIdToEventMapConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventMap>() {
+            @Override
             public com.bibsmobile.model.EventMap convert(java.lang.Long id) {
                 return EventMap.findEventMap(id);
             }
         };
     }
 
-	public Converter<String, EventMap> getStringToEventMapConverter() {
+    public Converter<String, EventMap> getStringToEventMapConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventMap>() {
+            @Override
             public com.bibsmobile.model.EventMap convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventMap.class);
             }
         };
     }
 
-	public Converter<EventPhoto, String> getEventPhotoToStringConverter() {
+    public Converter<EventPhoto, String> getEventPhotoToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventPhoto, java.lang.String>() {
+            @Override
             public String convert(EventPhoto eventPhoto) {
                 return new StringBuilder().append(eventPhoto.getUrl()).toString();
             }
         };
     }
 
-	public Converter<Long, EventPhoto> getIdToEventPhotoConverter() {
+    public Converter<Long, EventPhoto> getIdToEventPhotoConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventPhoto>() {
+            @Override
             public com.bibsmobile.model.EventPhoto convert(java.lang.Long id) {
                 return EventPhoto.findEventPhoto(id);
             }
         };
     }
 
-	public Converter<String, EventPhoto> getStringToEventPhotoConverter() {
+    public Converter<String, EventPhoto> getStringToEventPhotoConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventPhoto>() {
+            @Override
             public com.bibsmobile.model.EventPhoto convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventPhoto.class);
             }
         };
     }
 
-	public Converter<EventResult, String> getEventResultToStringConverter() {
+    public Converter<EventResult, String> getEventResultToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventResult, java.lang.String>() {
+            @Override
             public String convert(EventResult eventResult) {
                 return new StringBuilder().append(eventResult.getText()).toString();
             }
         };
     }
 
-	public Converter<Long, EventResult> getIdToEventResultConverter() {
+    public Converter<Long, EventResult> getIdToEventResultConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventResult>() {
+            @Override
             public com.bibsmobile.model.EventResult convert(java.lang.Long id) {
                 return EventResult.findEventResult(id);
             }
         };
     }
 
-	public Converter<String, EventResult> getStringToEventResultConverter() {
+    public Converter<String, EventResult> getStringToEventResultConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventResult>() {
+            @Override
             public com.bibsmobile.model.EventResult convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventResult.class);
             }
         };
     }
 
-	public Converter<EventType, String> getEventTypeToStringConverter() {
+    public Converter<EventType, String> getEventTypeToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventType, java.lang.String>() {
+            @Override
             public String convert(EventType eventType) {
                 return new StringBuilder().append(eventType.getTypeName()).append(' ').append(eventType.getStartTime()).toString();
             }
         };
     }
 
-	public Converter<Long, EventType> getIdToEventTypeConverter() {
+    public Converter<Long, EventType> getIdToEventTypeConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.EventType>() {
+            @Override
             public com.bibsmobile.model.EventType convert(java.lang.Long id) {
                 return EventType.findEventType(id);
             }
         };
     }
 
-	public Converter<String, EventType> getStringToEventTypeConverter() {
+    public Converter<String, EventType> getStringToEventTypeConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventType>() {
+            @Override
             public com.bibsmobile.model.EventType convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), EventType.class);
             }
         };
     }
 
-	public Converter<EventUserGroup, String> getEventUserGroupToStringConverter() {
+    public Converter<EventUserGroup, String> getEventUserGroupToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventUserGroup, java.lang.String>() {
+            @Override
             public String convert(EventUserGroup eventUserGroup) {
                 return "(no displayable fields)";
             }
         };
     }
 
-	public Converter<EventUserGroupId, EventUserGroup> getIdToEventUserGroupConverter() {
+    public Converter<EventUserGroupId, EventUserGroup> getIdToEventUserGroupConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventUserGroupId, com.bibsmobile.model.EventUserGroup>() {
+            @Override
             public com.bibsmobile.model.EventUserGroup convert(com.bibsmobile.model.EventUserGroupId id) {
                 return EventUserGroup.findEventUserGroup(id);
             }
         };
     }
 
-	public Converter<String, EventUserGroup> getStringToEventUserGroupConverter() {
+    public Converter<String, EventUserGroup> getStringToEventUserGroupConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventUserGroup>() {
+            @Override
             public com.bibsmobile.model.EventUserGroup convert(String id) {
                 return getObject().convert(getObject().convert(id, EventUserGroupId.class), EventUserGroup.class);
             }
         };
     }
 
-	public Converter<RaceImage, String> getRaceImageToStringConverter() {
+    public Converter<RaceImage, String> getRaceImageToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.RaceImage, java.lang.String>() {
+            @Override
             public String convert(RaceImage raceImage) {
                 return new StringBuilder().append(raceImage.getFilePath()).toString();
             }
         };
     }
 
-	public Converter<Long, RaceImage> getIdToRaceImageConverter() {
+    public Converter<Long, RaceImage> getIdToRaceImageConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.RaceImage>() {
+            @Override
             public com.bibsmobile.model.RaceImage convert(java.lang.Long id) {
                 return RaceImage.findRaceImage(id);
             }
         };
     }
 
-	public Converter<String, RaceImage> getStringToRaceImageConverter() {
+    public Converter<String, RaceImage> getStringToRaceImageConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.RaceImage>() {
+            @Override
             public com.bibsmobile.model.RaceImage convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), RaceImage.class);
             }
         };
     }
 
-	public Converter<RaceResult, String> getRaceResultToStringConverter() {
+    public Converter<RaceResult, String> getRaceResultToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.RaceResult, java.lang.String>() {
+            @Override
             public String convert(RaceResult raceResult) {
-                return new StringBuilder().append(raceResult.getTimeofficialdisplay()).append(' ').append(raceResult.getBib()).append(' ').append(raceResult.getFirstname()).append(' ').append(raceResult.getLastname()).toString();
+                return new StringBuilder().append(raceResult.getTimeofficialdisplay()).append(' ').append(raceResult.getBib()).append(' ').append(raceResult.getFirstname())
+                        .append(' ').append(raceResult.getLastname()).toString();
             }
         };
     }
 
-	public Converter<Long, RaceResult> getIdToRaceResultConverter() {
+    public Converter<Long, RaceResult> getIdToRaceResultConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.RaceResult>() {
+            @Override
             public com.bibsmobile.model.RaceResult convert(java.lang.Long id) {
                 return RaceResult.findRaceResult(id);
             }
         };
     }
 
-	public Converter<String, RaceResult> getStringToRaceResultConverter() {
+    public Converter<String, RaceResult> getStringToRaceResultConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.RaceResult>() {
+            @Override
             public com.bibsmobile.model.RaceResult convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), RaceResult.class);
             }
         };
     }
 
-	public Converter<ResultsFile, String> getResultsFileToStringConverter() {
+    public Converter<ResultsFile, String> getResultsFileToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.ResultsFile, java.lang.String>() {
+            @Override
             public String convert(ResultsFile resultsFile) {
-                return new StringBuilder().append(resultsFile.getName()).append(' ').append(resultsFile.getContentType()).append(' ').append(resultsFile.getCreated()).append(' ').append(resultsFile.getFilesize()).toString();
+                return new StringBuilder().append(resultsFile.getName()).append(' ').append(resultsFile.getContentType()).append(' ').append(resultsFile.getCreated()).append(' ')
+                        .append(resultsFile.getFilesize()).toString();
             }
         };
     }
 
-	public Converter<Long, ResultsFile> getIdToResultsFileConverter() {
+    public Converter<Long, ResultsFile> getIdToResultsFileConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.ResultsFile>() {
+            @Override
             public com.bibsmobile.model.ResultsFile convert(java.lang.Long id) {
                 return ResultsFile.findResultsFile(id);
             }
         };
     }
 
-	public Converter<String, ResultsFile> getStringToResultsFileConverter() {
+    public Converter<String, ResultsFile> getStringToResultsFileConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.ResultsFile>() {
+            @Override
             public com.bibsmobile.model.ResultsFile convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), ResultsFile.class);
             }
         };
     }
 
-	public Converter<ResultsFileMapping, String> getResultsFileMappingToStringConverter() {
+    public Converter<ResultsFileMapping, String> getResultsFileMappingToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.ResultsFileMapping, java.lang.String>() {
+            @Override
             public String convert(ResultsFileMapping resultsFileMapping) {
                 return new StringBuilder().append(resultsFileMapping.getName()).append(' ').append(resultsFileMapping.getMap()).toString();
             }
         };
     }
 
-	public Converter<Long, ResultsFileMapping> getIdToResultsFileMappingConverter() {
+    public Converter<Long, ResultsFileMapping> getIdToResultsFileMappingConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.ResultsFileMapping>() {
+            @Override
             public com.bibsmobile.model.ResultsFileMapping convert(java.lang.Long id) {
                 return ResultsFileMapping.findResultsFileMapping(id);
             }
         };
     }
 
-	public Converter<String, ResultsFileMapping> getStringToResultsFileMappingConverter() {
+    public Converter<String, ResultsFileMapping> getStringToResultsFileMappingConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.ResultsFileMapping>() {
+            @Override
             public com.bibsmobile.model.ResultsFileMapping convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), ResultsFileMapping.class);
             }
         };
     }
 
-	public Converter<ResultsImport, String> getResultsImportToStringConverter() {
+    public Converter<ResultsImport, String> getResultsImportToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.ResultsImport, java.lang.String>() {
+            @Override
             public String convert(ResultsImport resultsImport) {
-                return new StringBuilder().append(resultsImport.getRunDate()).append(' ').append(resultsImport.getRowsProcessed()).append(' ').append(resultsImport.getErrors()).append(' ').append(resultsImport.getErrorRows()).toString();
+                return new StringBuilder().append(resultsImport.getRunDate()).append(' ').append(resultsImport.getRowsProcessed()).append(' ').append(resultsImport.getErrors())
+                        .append(' ').append(resultsImport.getErrorRows()).toString();
             }
         };
     }
 
-	public Converter<Long, ResultsImport> getIdToResultsImportConverter() {
+    public Converter<Long, ResultsImport> getIdToResultsImportConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.ResultsImport>() {
+            @Override
             public com.bibsmobile.model.ResultsImport convert(java.lang.Long id) {
                 return ResultsImport.findResultsImport(id);
             }
         };
     }
 
-	public Converter<String, ResultsImport> getStringToResultsImportConverter() {
+    public Converter<String, ResultsImport> getStringToResultsImportConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.ResultsImport>() {
+            @Override
             public com.bibsmobile.model.ResultsImport convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), ResultsImport.class);
             }
         };
     }
 
-	public Converter<TimerConfig, String> getTimerConfigToStringConverter() {
+    public Converter<TimerConfig, String> getTimerConfigToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.TimerConfig, java.lang.String>() {
+            @Override
             public String convert(TimerConfig timerConfig) {
-                return new StringBuilder().append(timerConfig.getConnectionTimeout()).append(' ').append(timerConfig.getFilename()).append(' ').append(timerConfig.getPosition()).append(' ').append(timerConfig.getUrl()).toString();
+                return new StringBuilder().append(timerConfig.getConnectionTimeout()).append(' ').append(timerConfig.getFilename()).append(' ').append(timerConfig.getPosition())
+                        .append(' ').append(timerConfig.getUrl()).toString();
             }
         };
     }
 
-	public Converter<Long, TimerConfig> getIdToTimerConfigConverter() {
+    public Converter<Long, TimerConfig> getIdToTimerConfigConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.TimerConfig>() {
+            @Override
             public com.bibsmobile.model.TimerConfig convert(java.lang.Long id) {
                 return TimerConfig.findTimerConfig(id);
             }
         };
     }
 
-	public Converter<String, TimerConfig> getStringToTimerConfigConverter() {
+    public Converter<String, TimerConfig> getStringToTimerConfigConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.TimerConfig>() {
+            @Override
             public com.bibsmobile.model.TimerConfig convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), TimerConfig.class);
             }
         };
     }
 
-	public Converter<Long, UserAuthority> getIdToUserAuthorityConverter() {
+    public Converter<Long, UserAuthority> getIdToUserAuthorityConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserAuthority>() {
+            @Override
             public com.bibsmobile.model.UserAuthority convert(java.lang.Long id) {
                 return UserAuthority.findUserAuthority(id);
             }
         };
     }
 
-	public Converter<String, UserAuthority> getStringToUserAuthorityConverter() {
+    public Converter<String, UserAuthority> getStringToUserAuthorityConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserAuthority>() {
+            @Override
             public com.bibsmobile.model.UserAuthority convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), UserAuthority.class);
             }
         };
     }
 
-	public Converter<UserGroupUserAuthority, String> getUserGroupUserAuthorityToStringConverter() {
+    public Converter<UserGroupUserAuthority, String> getUserGroupUserAuthorityToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroupUserAuthority, java.lang.String>() {
+            @Override
             public String convert(UserGroupUserAuthority userGroupUserAuthority) {
                 return "(no displayable fields)";
             }
         };
     }
 
-	public Converter<UserGroupUserAuthorityID, UserGroupUserAuthority> getIdToUserGroupUserAuthorityConverter() {
+    public Converter<UserGroupUserAuthorityID, UserGroupUserAuthority> getIdToUserGroupUserAuthorityConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroupUserAuthorityID, com.bibsmobile.model.UserGroupUserAuthority>() {
+            @Override
             public com.bibsmobile.model.UserGroupUserAuthority convert(com.bibsmobile.model.UserGroupUserAuthorityID id) {
                 return UserGroupUserAuthority.findUserGroupUserAuthority(id);
             }
         };
     }
 
-	public Converter<String, UserGroupUserAuthority> getStringToUserGroupUserAuthorityConverter() {
+    public Converter<String, UserGroupUserAuthority> getStringToUserGroupUserAuthorityConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserGroupUserAuthority>() {
+            @Override
             public com.bibsmobile.model.UserGroupUserAuthority convert(String id) {
                 return getObject().convert(getObject().convert(id, UserGroupUserAuthorityID.class), UserGroupUserAuthority.class);
             }
         };
     }
 
-	public Converter<Long, UserProfile> getIdToUserProfileConverter() {
+    public Converter<Long, UserProfile> getIdToUserProfileConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.bibsmobile.model.UserProfile>() {
+            @Override
             public com.bibsmobile.model.UserProfile convert(java.lang.Long id) {
-                return userProfileService.findUserProfile(id);
+                return ApplicationConversionServiceFactoryBean.this.userProfileService.findUserProfile(id);
             }
         };
     }
 
-	public Converter<String, UserProfile> getStringToUserProfileConverter() {
+    public Converter<String, UserProfile> getStringToUserProfileConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserProfile>() {
+            @Override
             public com.bibsmobile.model.UserProfile convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), UserProfile.class);
             }
         };
     }
 
-	public Converter<String, UserGroupUserAuthorityID> getJsonToUserGroupUserAuthorityIDConverter() {
+    public Converter<String, UserGroupUserAuthorityID> getJsonToUserGroupUserAuthorityIDConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.UserGroupUserAuthorityID>() {
+            @Override
             public UserGroupUserAuthorityID convert(String encodedJson) {
                 return UserGroupUserAuthorityID.fromJsonToUserGroupUserAuthorityID(new String(Base64.decodeBase64(encodedJson)));
             }
         };
     }
 
-	public Converter<UserGroupUserAuthorityID, String> getUserGroupUserAuthorityIDToJsonConverter() {
+    public Converter<UserGroupUserAuthorityID, String> getUserGroupUserAuthorityIDToJsonConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.UserGroupUserAuthorityID, java.lang.String>() {
+            @Override
             public String convert(UserGroupUserAuthorityID userGroupUserAuthorityID) {
                 return Base64.encodeBase64URLSafeString(userGroupUserAuthorityID.toJson().getBytes());
             }
         };
     }
 
-	public Converter<String, EventUserGroupId> getJsonToEventUserGroupIdConverter() {
+    public Converter<String, EventUserGroupId> getJsonToEventUserGroupIdConverter() {
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.bibsmobile.model.EventUserGroupId>() {
+            @Override
             public EventUserGroupId convert(String encodedJson) {
                 return EventUserGroupId.fromJsonToEventUserGroupId(new String(Base64.decodeBase64(encodedJson)));
             }
         };
     }
 
-	public Converter<EventUserGroupId, String> getEventUserGroupIdToJsonConverter() {
+    public Converter<EventUserGroupId, String> getEventUserGroupIdToJsonConverter() {
         return new org.springframework.core.convert.converter.Converter<com.bibsmobile.model.EventUserGroupId, java.lang.String>() {
+            @Override
             public String convert(EventUserGroupId eventUserGroupId) {
                 return Base64.encodeBase64URLSafeString(eventUserGroupId.toJson().getBytes());
             }
         };
     }
 
-	public void installLabelConverters(FormatterRegistry registry) {
+    public void installLabelConverters(FormatterRegistry registry) {
         registry.addConverter(getCartToStringConverter());
         registry.addConverter(getIdToCartConverter());
         registry.addConverter(getStringToCartConverter());
@@ -673,7 +774,8 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         registry.addConverter(getEventUserGroupIdToJsonConverter());
     }
 
-	public void afterPropertiesSet() {
+    @Override
+    public void afterPropertiesSet() {
         super.afterPropertiesSet();
         installLabelConverters(getObject());
     }

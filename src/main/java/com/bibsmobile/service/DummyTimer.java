@@ -4,96 +4,92 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 
 public class DummyTimer extends AbstractTimer implements Timer, Runnable {
 
-	private TimerConfig timerConfig;
-	private int status;
-	private Thread thread;
-	private final String log = getClass().getName() + " "
-			+ Thread.currentThread().getName();
-	private HashMap<Integer, Long> bibTimes = new HashMap<Integer, Long>();
+    private TimerConfig timerConfig;
+    private int status;
+    private Thread thread;
+    private final String log = getClass().getName() + " " + Thread.currentThread().getName();
+    private final HashMap<Integer, Long> bibTimes = new HashMap<Integer, Long>();
 
-	@Override
-	public long getDateTime() {
-		return new Date().getTime();
-	}
+    @Override
+    public long getDateTime() {
+        return new Date().getTime();
+    }
 
-	@Override
-	public void startReader() {
-		System.out.println(log + " Start Reading...");
-		thread = new Thread(this);
-		thread.start();
-		status = 2;
-		System.out.println(log + " Started.");
-	}
+    @Override
+    public void startReader() {
+        System.out.println(this.log + " Start Reading...");
+        this.thread = new Thread(this);
+        this.thread.start();
+        this.status = 2;
+        System.out.println(this.log + " Started.");
+    }
 
-	@Override
-	public void stopReader() {
-		System.out.println(log + " Stop Reading...");
-		status = 1;
-		notify();
-		System.out.println(log + " Stopped.");
-	}
+    @Override
+    public void stopReader() {
+        System.out.println(this.log + " Stop Reading...");
+        this.status = 1;
+        notify();
+        System.out.println(this.log + " Stopped.");
+    }
 
-	@Override
-	public void write(long bib) throws Exception {
-		status = 3;
-		System.out.println(log + " Started Writing...");
-	}
+    @Override
+    public void write(long bib) throws Exception {
+        this.status = 3;
+        System.out.println(this.log + " Started Writing...");
+    }
 
-	@Override
-	public void connect() {
-		System.out.println(log + " Connecting...");
-		status = 1;
-		System.out.println(log + " Connected.");
-	}
+    @Override
+    public void connect() {
+        System.out.println(this.log + " Connecting...");
+        this.status = 1;
+        System.out.println(this.log + " Connected.");
+    }
 
-	@Override
-	public void disconnect() {
-		System.out.println(log + " Disconnecting...");
-		status = 0;
-		try {
-			notify();
-			thread = null;
-		} catch (Exception e) {
-			System.out.println(log + " Error Discconnecting.");
-		}
-		System.out.println(log + " Discconnected.");
+    @Override
+    public void disconnect() {
+        System.out.println(this.log + " Disconnecting...");
+        this.status = 0;
+        try {
+            notify();
+            this.thread = null;
+        } catch (Exception e) {
+            System.out.println(this.log + " Error Discconnecting.");
+        }
+        System.out.println(this.log + " Discconnected.");
 
-	}
+    }
 
-	@Override
-	public int getStatus() {
-		return status;
-	}
+    @Override
+    public int getStatus() {
+        return this.status;
+    }
 
-	@Override
-	public void setTimerConfig(TimerConfig timerConfig) {
-		this.timerConfig = timerConfig;
-	}
+    @Override
+    public void setTimerConfig(TimerConfig timerConfig) {
+        this.timerConfig = timerConfig;
+    }
 
-	@Override
-	public void run() {
-		System.out.println(log + " run...");
-		bibTimes.clear();
-		while (status == 2) {
-			int bibnum = new Random().nextInt(30);
-			long bibtime = new Date().getTime();
-			
-			// yay
-            logTime(bibnum, bibtime, timerConfig);
-			
-			// wait or conceed
-			try {
-				Thread.sleep(1000);
-				System.out.println(log + " Again thread "
-						+ Thread.currentThread().getName());
-			} catch (InterruptedException e) {
-			}
-		}
-	}
+    @Override
+    public void run() {
+        System.out.println(this.log + " run...");
+        this.bibTimes.clear();
+        while (this.status == 2) {
+            int bibnum = new Random().nextInt(30);
+            long bibtime = new Date().getTime();
+
+            // yay
+            logTime(bibnum, bibtime, this.timerConfig);
+
+            // wait or conceed
+            try {
+                Thread.sleep(1000);
+                System.out.println(this.log + " Again thread " + Thread.currentThread().getName());
+            } catch (InterruptedException e) {
+            }
+        }
+    }
 }

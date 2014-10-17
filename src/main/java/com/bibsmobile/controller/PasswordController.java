@@ -1,6 +1,6 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.UserProfile;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.UUID;
+import com.bibsmobile.model.UserProfile;
 
 @Controller
 public class PasswordController {
@@ -42,14 +42,14 @@ public class PasswordController {
             String forgotPasswordCode = UUID.randomUUID().toString();
             userProfile.setForgotPasswordCode(forgotPasswordCode);
             userProfile.persist();
-            String body = resetPasswordText.replace("{link}", resetPasswordUrl + forgotPasswordCode);
-            forgotPasswordMessage.setText(body);
-            forgotPasswordMessage.setTo(userProfile.getEmail());
-            try{
-            	mailSender.send(forgotPasswordMessage);
-	    	}catch(Exception e){
-	    		System.out.println("EXCEPTION: Email Send Fail - "+e.getMessage());
-	    	}
+            String body = this.resetPasswordText.replace("{link}", this.resetPasswordUrl + forgotPasswordCode);
+            this.forgotPasswordMessage.setText(body);
+            this.forgotPasswordMessage.setTo(userProfile.getEmail());
+            try {
+                this.mailSender.send(this.forgotPasswordMessage);
+            } catch (Exception e) {
+                System.out.println("EXCEPTION: Email Send Fail - " + e.getMessage());
+            }
             modelAndView.addObject("success", true);
             return modelAndView;
         }

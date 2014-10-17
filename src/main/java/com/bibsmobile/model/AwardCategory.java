@@ -2,6 +2,7 @@ package com.bibsmobile.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Version;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -22,48 +24,49 @@ public class AwardCategory {
 
     @ManyToOne
     private Event event;
-    
+
     private int sortOrder;
-	private String name;
-	private String gender;
-	private int ageMin;
-	private int ageMax;
-	private int listSize;
+    private String name;
+    private String gender;
+    private int ageMin;
+    private int ageMax;
+    private int listSize;
 
-	public static List<AwardCategory> eventDefaults() {
-		List<AwardCategory> awardCategories = new ArrayList<AwardCategory>();
-		AwardCategory awardCategory = new AwardCategory();
-		awardCategory.setName("Overall Winners");
-		awardCategory.setListSize(5);
-		awardCategories.add(awardCategory);
-		return awardCategories;
-	}
+    public static List<AwardCategory> eventDefaults() {
+        List<AwardCategory> awardCategories = new ArrayList<AwardCategory>();
+        AwardCategory awardCategory = new AwardCategory();
+        awardCategory.setName("Overall Winners");
+        awardCategory.setListSize(5);
+        awardCategories.add(awardCategory);
+        return awardCategories;
+    }
 
-
-	public String toString() {
+    @Override
+    public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-	@PersistenceContext
+    @PersistenceContext
     transient EntityManager entityManager;
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "sortOrder", "name", "gender", "ageMin", "ageMax", "listSize");
+    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "sortOrder", "name", "gender", "ageMin", "ageMax", "listSize");
 
-	public static final EntityManager entityManager() {
+    public static final EntityManager entityManager() {
         EntityManager em = new AwardCategory().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+        if (em == null)
+            throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
 
-	public static long countAwardCategorys() {
+    public static long countAwardCategorys() {
         return entityManager().createQuery("SELECT COUNT(o) FROM AwardCategory o", Long.class).getSingleResult();
     }
 
-	public static List<AwardCategory> findAllAwardCategorys() {
+    public static List<AwardCategory> findAllAwardCategorys() {
         return entityManager().createQuery("SELECT o FROM AwardCategory o", AwardCategory.class).getResultList();
     }
 
-	public static List<AwardCategory> findAllAwardCategorys(String sortFieldName, String sortOrder) {
+    public static List<AwardCategory> findAllAwardCategorys(String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM AwardCategory o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
@@ -74,16 +77,17 @@ public class AwardCategory {
         return entityManager().createQuery(jpaQuery, AwardCategory.class).getResultList();
     }
 
-	public static AwardCategory findAwardCategory(Long id) {
-        if (id == null) return null;
+    public static AwardCategory findAwardCategory(Long id) {
+        if (id == null)
+            return null;
         return entityManager().find(AwardCategory.class, id);
     }
 
-	public static List<AwardCategory> findAwardCategoryEntries(int firstResult, int maxResults) {
+    public static List<AwardCategory> findAwardCategoryEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM AwardCategory o", AwardCategory.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-	public static List<AwardCategory> findAwardCategoryEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+    public static List<AwardCategory> findAwardCategoryEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM AwardCategory o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
@@ -94,15 +98,17 @@ public class AwardCategory {
         return entityManager().createQuery(jpaQuery, AwardCategory.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-	@Transactional
+    @Transactional
     public void persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.persist(this);
     }
 
-	@Transactional
+    @Transactional
     public void remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
@@ -111,104 +117,107 @@ public class AwardCategory {
         }
     }
 
-	@Transactional
+    @Transactional
     public void flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.flush();
     }
 
-	@Transactional
+    @Transactional
     public void clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.clear();
     }
 
-	@Transactional
+    @Transactional
     public AwardCategory merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         AwardCategory merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-	@Version
+    @Version
     @Column(name = "version")
     private Integer version;
 
-	public Long getId() {
+    public Long getId() {
         return this.id;
     }
 
-	public void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-	public Integer getVersion() {
+    public Integer getVersion() {
         return this.version;
     }
 
-	public void setVersion(Integer version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
-	public Event getEvent() {
+    public Event getEvent() {
         return this.event;
     }
 
-	public void setEvent(Event event) {
+    public void setEvent(Event event) {
         this.event = event;
     }
 
-	public int getSortOrder() {
+    public int getSortOrder() {
         return this.sortOrder;
     }
 
-	public void setSortOrder(int sortOrder) {
+    public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
     }
 
-	public String getName() {
+    public String getName() {
         return this.name;
     }
 
-	public void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-	public String getGender() {
+    public String getGender() {
         return this.gender;
     }
 
-	public void setGender(String gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
-	public int getAgeMin() {
+    public int getAgeMin() {
         return this.ageMin;
     }
 
-	public void setAgeMin(int ageMin) {
+    public void setAgeMin(int ageMin) {
         this.ageMin = ageMin;
     }
 
-	public int getAgeMax() {
+    public int getAgeMax() {
         return this.ageMax;
     }
 
-	public void setAgeMax(int ageMax) {
+    public void setAgeMax(int ageMax) {
         this.ageMax = ageMax;
     }
 
-	public int getListSize() {
+    public int getListSize() {
         return this.listSize;
     }
 
-	public void setListSize(int listSize) {
+    public void setListSize(int listSize) {
         this.listSize = listSize;
     }
 }

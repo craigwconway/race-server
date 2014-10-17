@@ -1,9 +1,28 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.*;
-import com.bibsmobile.util.UserProfileUtil;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import flexjson.JSONSerializer;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,22 +33,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemTypeEnum;
+import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.UserProfileUtil;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.*;
+import flexjson.JSONSerializer;
 
 @RequestMapping("/events")
 @Controller
@@ -43,7 +73,6 @@ public class EventController {
     @Autowired
     private SimpleMailMessage eventMessage;
 
-
     @RequestMapping(value = "/registrationComplete", method = RequestMethod.GET)
     public static String registrationComplete(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
 
@@ -51,8 +80,7 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
-    public String create(@Valid Event event, BindingResult bindingResult,
-                         Model uiModel, HttpServletRequest httpServletRequest) {
+    public String create(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, event);
             return "events/create";
@@ -62,30 +90,25 @@ public class EventController {
         // awards
 
         // add to current usergroup
-        boolean addGroup = false;
-        String username = SecurityContextHolder.getContext()
-                .getAuthentication().getName();
-        UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
-                username).getSingleResult();
-       /* if (user.getUserGroup() != null) {
-            addGroup = true;
-            log.info("event group " + user.getUserGroup().getName());
-            event.setUserGroup(user.getUserGroup());
-        }
-
+        /*
+         * boolean addGroup = false; String username =
+         * SecurityContextHolder.getContext() .getAuthentication().getName();
+         * UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
+         * username).getSingleResult(); if (user.getUserGroup() != null) {
+         * addGroup = true; log.info("event group " +
+         * user.getUserGroup().getName());
+         * event.setUserGroup(user.getUserGroup()); }
+         *
+         * event.persist();
+         *
+         * if (addGroup) { Set<Event> groupEvents =
+         * user.getUserGroup().getEvents(); groupEvents.add(event);
+         * user.getUserGroup().setEvents(groupEvents);
+         * user.getUserGroup().merge(); }
+         */
         event.persist();
 
-        if (addGroup) {
-            Set<Event> groupEvents = user.getUserGroup().getEvents();
-            groupEvents.add(event);
-            user.getUserGroup().setEvents(groupEvents);
-            user.getUserGroup().merge();
-        }*/
-        event.persist();
-
-        return "redirect:/events/"
-                + encodeUrlPathSegment(event.getId().toString(),
-                httpServletRequest);
+        return "redirect:/events/" + encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -107,17 +130,14 @@ public class EventController {
             connection.setRequestMethod("POST");
             if (json) {
                 connection.setRequestProperty("Accept", "application/json");
-                connection.setRequestProperty("Content-Type",
-                        "application/json; charset=UTF-8");
+                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             }
-            connection.setRequestProperty("Content-Length",
-                    "" + Integer.toString(data.getBytes().length));
+            connection.setRequestProperty("Content-Length", "" + Integer.toString(data.getBytes().length));
             connection.setUseCaches(false);
             connection.setDoInput(true);
             connection.setDoOutput(true);
             // Send request
-            DataOutputStream wr = new DataOutputStream(
-                    connection.getOutputStream());
+            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             wr.writeBytes(data);
             wr.flush();
             wr.close();
@@ -155,8 +175,7 @@ public class EventController {
             url = new URL(targetURL);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            rd = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             while ((line = rd.readLine()) != null) {
                 result += line;
             }
@@ -180,8 +199,7 @@ public class EventController {
             url = new URL(targetURL);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("DELETE");
-            rd = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             while ((line = rd.readLine()) != null) {
                 result += line;
             }
@@ -196,17 +214,15 @@ public class EventController {
 
     @RequestMapping(value = "/cloud", method = RequestMethod.GET)
     @ResponseBody
-    public static String cloud(
-            @RequestParam(value = "event", required = true) long eventId) {
+    public static String cloud(@RequestParam(value = "event", required = true) long eventId) {
         final String serverUrl = "http://54.225.209.173:8080/bibs-server";
         Event event = Event.findEvent(eventId);
         try {
             // client event id
-            long _eventId = event.getId();
+            // long _eventId = event.getId();
 
             // find matching event
-            String eventSync = doGet(serverUrl + "/events/byname/"
-                    + event.getName().replace(" ", "%20"));
+            String eventSync = doGet(serverUrl + "/events/byname/" + event.getName().replace(" ", "%20"));
             log.info("cloud " + eventSync);
             Collection<Event> events = Event.fromJsonArrayToEvents(eventSync);
             log.info("cloud matched " + events.size() + " events");
@@ -219,7 +235,8 @@ public class EventController {
             doPost(serverUrl + "/events/" + event1.getId(), "_method=DELETE&x=7&y=10", false);
             log.info("cloud delete " + event1.getId() + " " + event1.getName());
             // loop through and add runners
-            List<RaceResult> runners = Event.findRaceResults(_eventId, 1, 9999);
+            // List<RaceResult> runners = Event.findRaceResults(_eventId, 1,
+            // 9999);
             StringWriter json = new StringWriter();
             int i = 0;
             json.append("[");
@@ -237,8 +254,7 @@ public class EventController {
                 json.append("\",\"bib\":\"").append(runner.getBib());
                 json.append("\",\"age\":\"").append(runner.getAge());
                 json.append("\",\"gender\":\"").append(runner.getGender());
-                json.append("\",\"timeoverall\":\"").append(
-                        runner.getTimeofficialdisplay());
+                json.append("\",\"timeoverall\":\"").append(runner.getTimeofficialdisplay());
                 json.append("\"}");
             }
             json.append("]");
@@ -255,8 +271,7 @@ public class EventController {
 
     @RequestMapping(value = "/gun", method = RequestMethod.GET)
     @ResponseBody
-    public static String timerGun(
-            @RequestParam(value = "event", required = true) long event) {
+    public static String timerGun(@RequestParam(value = "event", required = true) long event) {
         try {
             Event e = Event.findEvent(event);
             e.setGunFired(true);
@@ -271,9 +286,7 @@ public class EventController {
 
     @RequestMapping(value = "/run", method = RequestMethod.GET)
     @ResponseBody
-    public static String run(
-            @RequestParam(value = "event", required = true) long event,
-            @RequestParam(value = "order", required = false, defaultValue = "1") int order) {
+    public static String run(@RequestParam(value = "event", required = true) long event, @RequestParam(value = "order", required = false, defaultValue = "1") int order) {
         try {
             Event e = Event.findEvent(event);
             e.setRunning(order);
@@ -287,8 +300,7 @@ public class EventController {
 
     @RequestMapping(value = "/done", method = RequestMethod.GET)
     @ResponseBody
-    public static String timerDone(
-            @RequestParam(value = "event", required = true) long event) {
+    public static String timerDone(@RequestParam(value = "event", required = true) long event) {
         log.info("event done " + event);
         try {
             Event e = Event.findEvent(event);
@@ -303,11 +315,9 @@ public class EventController {
 
     @RequestMapping(value = "/results", method = RequestMethod.GET)
     @ResponseBody
-    public static String resultsQuery(
-            @RequestParam(value = "event", required = true) long event_id) {
+    public static String resultsQuery(@RequestParam(value = "event", required = true) long event_id) {
         try {
-            return RaceResult.toJsonArray(Event.findRaceResultsForAnnouncer(
-                    event_id, 1, 15));
+            return RaceResult.toJsonArray(Event.findRaceResultsForAnnouncer(event_id, 1, 15));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -316,26 +326,24 @@ public class EventController {
 
     @RequestMapping(value = "/manual", method = RequestMethod.GET)
     @ResponseBody
-    public static String setTimeManual(
-            @RequestParam(value = "event", required = true) long event_id,
-            @RequestParam(value = "bib", required = true) String bib) {
-    	RaceResult result = new RaceResult();
+    public static String setTimeManual(@RequestParam(value = "event", required = true) long event_id, @RequestParam(value = "bib", required = true) String bib) {
+        RaceResult result = new RaceResult();
         try {
-        	long bibtime = System.currentTimeMillis();
-        	Event event = Event.findEvent(event_id);
-        	result = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
-			// bib vs chip start
-			long starttime = 0l;
-			if(result.getTimestart()>0){
-				starttime = Long.valueOf(result.getTimestart()) ;
-			}else{
-				starttime = event.getGunTime().getTime(); 
-				result.setTimestart( starttime );
-			}
-			final String strTime = RaceResult.toHumanTime(starttime, bibtime);
-			result.setTimeofficial( bibtime );
-			result.setTimeofficialdisplay( strTime );
-			result.merge();
+            long bibtime = System.currentTimeMillis();
+            Event event = Event.findEvent(event_id);
+            result = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
+            // bib vs chip start
+            long starttime = 0l;
+            if (result.getTimestart() > 0) {
+                starttime = Long.valueOf(result.getTimestart());
+            } else {
+                starttime = event.getGunTime().getTime();
+                result.setTimestart(starttime);
+            }
+            final String strTime = RaceResult.toHumanTime(starttime, bibtime);
+            result.setTimeofficial(bibtime);
+            result.setTimeofficialdisplay(strTime);
+            result.merge();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -344,13 +352,11 @@ public class EventController {
 
     @RequestMapping(value = "/featured", method = RequestMethod.GET)
     @ResponseBody
-    public static String featured(
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    public static String featured(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         try {
-            rtn.append(Event.toJsonArray(Event.findEventsByFeaturedGreaterThan(
-                    0, page, size).getResultList()));
+            rtn.append(Event.toJsonArray(Event.findEventsByFeaturedGreaterThan(0, page, size).getResultList()));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -359,14 +365,11 @@ public class EventController {
 
     @RequestMapping(value = "/byname/{eventName}", method = RequestMethod.GET)
     @ResponseBody
-    public static String byName(
-            @PathVariable String eventName,
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    public static String byName(@PathVariable String eventName, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         try {
-            rtn.append(Event.toJsonArray(Event.findEventsByNameLike(eventName,
-                    page, size).getResultList()));
+            rtn.append(Event.toJsonArray(Event.findEventsByNameLike(eventName, page, size).getResultList()));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -388,19 +391,15 @@ public class EventController {
 
     @RequestMapping(value = "/future", method = RequestMethod.GET)
     @ResponseBody
-    public static String future(
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
-            Integer featured) {
+    public static String future(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size, Integer featured) {
         StringBuffer rtn = new StringBuffer();
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
         try {
-            rtn.append(Event.toJsonArray(Event
-                    .findEventsByTimeStartGreaterThanAndFeaturedEquals(
-                            today.getTime(), 0, page, size).getResultList()));
+            rtn.append(Event.toJsonArray(Event.findEventsByTimeStartGreaterThanAndFeaturedEquals(today.getTime(), 0, page, size).getResultList()));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -409,8 +408,7 @@ public class EventController {
 
     @RequestMapping(value = "/past", method = RequestMethod.GET)
     @ResponseBody
-    public static String past(
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    public static String past(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         StringBuffer rtn = new StringBuffer();
         Calendar today = Calendar.getInstance();
@@ -418,8 +416,7 @@ public class EventController {
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
         try {
-            rtn.append(Event.toJsonArray(Event.findEventsByTimeStartLessThan(
-                    today.getTime(), page, size).getResultList()));
+            rtn.append(Event.toJsonArray(Event.findEventsByTimeStartLessThan(today.getTime(), page, size).getResultList()));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -448,15 +445,11 @@ public class EventController {
         return "events/awards";
     }
 
-
     @RequestMapping(value = "/timeofficial", method = RequestMethod.GET)
     @ResponseBody
-    public static String byTimeOfficial(
-            @RequestParam(value = "event", required = true) Long event,
-            @RequestParam(value = "gender", required = false, defaultValue = "") String gender,
-            @RequestParam(value = "min", required = false, defaultValue = "0") int min,
-            @RequestParam(value = "max", required = false, defaultValue = "0") int max,
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    public static String byTimeOfficial(@RequestParam(value = "event", required = true) Long event,
+            @RequestParam(value = "gender", required = false, defaultValue = "") String gender, @RequestParam(value = "min", required = false, defaultValue = "0") int min,
+            @RequestParam(value = "max", required = false, defaultValue = "0") int max, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
 
         Event e = Event.findEvent(event);
@@ -467,8 +460,7 @@ public class EventController {
 
     @RequestMapping(value = "/count", method = RequestMethod.GET)
     @ResponseBody
-    public static String countRaceResultsByEvent(
-            @RequestParam(value = "event", required = true) Long event) {
+    public static String countRaceResultsByEvent(@RequestParam(value = "event", required = true) Long event) {
         try {
             return String.valueOf(Event.countRaceResults(event));
         } catch (Exception e) {
@@ -479,8 +471,7 @@ public class EventController {
 
     @RequestMapping(value = "/countstarted", method = RequestMethod.GET)
     @ResponseBody
-    public static String countRaceResultsStartedByEvent(
-            @RequestParam(value = "event", required = true) Long event) {
+    public static String countRaceResultsStartedByEvent(@RequestParam(value = "event", required = true) Long event) {
         try {
             return String.valueOf(Event.countRaceResultsStarted(event));
         } catch (Exception e) {
@@ -491,8 +482,7 @@ public class EventController {
 
     @RequestMapping(value = "/countcomplete", method = RequestMethod.GET)
     @ResponseBody
-    public static String countRaceResultsCompleteByEvent(
-            @RequestParam(value = "event", required = true) Long event) {
+    public static String countRaceResultsCompleteByEvent(@RequestParam(value = "event", required = true) Long event) {
         try {
             return String.valueOf(Event.countRaceResultsComplete(event));
         } catch (Exception e) {
@@ -500,7 +490,6 @@ public class EventController {
         }
         return "0";
     }
-
 
     void populateEditForm(Model uiModel, Event event) {
         uiModel.addAttribute("event", event);
@@ -518,23 +507,18 @@ public class EventController {
     }
 
     @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public static void export(
-            @RequestParam(value = "event", required = true) Long event,
-            HttpServletResponse response) throws IOException {
+    public static void export(@RequestParam(value = "event", required = true) Long event, HttpServletResponse response) throws IOException {
         Event _event = Event.findEvent(event);
         response.setContentType("text/csv;charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename=\""
-                + _event.getName() + ".csv\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + _event.getName() + ".csv\"");
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
 
         List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
         for (RaceResult r : runners) {
-            outputwriter.write(r.getBib() + "," + r.getFirstname() + ","
-                    + r.getLastname() + "," + r.getCity() + "," + r.getState()
-                    + "," + r.getTimeofficialdisplay() + "," + r.getGender()
-                    + "," + r.getAge() + "\r\n");
+            outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
+                    + r.getGender() + "," + r.getAge() + "\r\n");
         }
         outputwriter.flush();
         outputwriter.close();
@@ -542,8 +526,7 @@ public class EventController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
-    public String update(@Valid Event event, BindingResult bindingResult,
-                         Model uiModel, HttpServletRequest httpServletRequest) {
+    public String update(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, event);
             return "events/update";
@@ -551,12 +534,10 @@ public class EventController {
 
         Date time0 = new Date(event.getGunTimeStart());
         Date time1 = event.getGunTime();
-        log.info("update2 " + (time0 == time1) + " " + time0 + " "
-                + time1);
+        log.info("update2 " + (time0 == time1) + " " + time0 + " " + time1);
 
         if (time0 != time1 && null != event.getGunTime()) {
-            for (RaceResult r : RaceResult.findRaceResultsByEvent(event)
-                    .getResultList()) {
+            for (RaceResult r : RaceResult.findRaceResultsByEvent(event).getResultList()) {
                 r.setTimestart(time1.getTime());
                 r.merge();
             }
@@ -565,17 +546,13 @@ public class EventController {
 
         uiModel.asMap().clear();
         event.merge();
-        return "redirect:/events/"
-                + encodeUrlPathSegment(event.getId().toString(),
-                httpServletRequest);
+        return "redirect:/events/" + encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/bystateandcity", method = RequestMethod.GET)
     @ResponseBody
-    public String findEventsByStateAndrCity(@RequestParam("state") String state,
-                                            @RequestParam(value = "city", required = false) String city,
-                                            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+    public String findEventsByStateAndrCity(@RequestParam("state") String state, @RequestParam(value = "city", required = false) String city,
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         if (!StringUtils.isEmpty(city)) {
             return Event.toJsonArray(Event.findEventsByStateEqualsAndCityEquals(state, city, (page - 1) * size, size).getResultList());
         }
@@ -584,9 +561,8 @@ public class EventController {
 
     @RequestMapping(value = "/bytype", method = RequestMethod.GET)
     @ResponseBody
-    public String findEventsByType(@RequestParam("type") String type,
-                                   @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                   @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+    public String findEventsByType(@RequestParam("type") String type, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return Event.toJsonArray(Event.findEventsByTypeEquals(type, (page - 1) * size, size).getResultList());
     }
 
@@ -604,7 +580,6 @@ public class EventController {
     public String findEventsCountries() {
         return new JSONSerializer().serialize(Event.findAllEventsCountries().getResultList());
     }
-
 
     @RequestMapping(value = "/search/byusergroup/{userGroupId}", method = RequestMethod.GET)
     @ResponseBody
@@ -632,7 +607,8 @@ public class EventController {
     }
 
     @RequestMapping(value = "/notify")
-    public @ResponseBody String notifyParticipants(@RequestParam Long eventId) {
+    public @ResponseBody
+    String notifyParticipants(@RequestParam Long eventId) {
         Event event = Event.findEvent(eventId);
         if (event == null) {
             return "[]";
@@ -658,13 +634,13 @@ public class EventController {
         for (UserProfile user : users) {
             if (StringUtils.isNotEmpty(user.getEmail())) {
                 if (!sentTo.contains(user.getEmail())) {
-                	try{
-                        eventMessage.setTo(user.getEmail());
-                        mailSender.send(eventMessage);
+                    try {
+                        this.eventMessage.setTo(user.getEmail());
+                        this.mailSender.send(this.eventMessage);
                         sentTo.add(user.getEmail());
-                	}catch(Exception e){
-                		System.out.println("EXCEPTION: Email Send Fail - "+e.getMessage());
-                	}
+                    } catch (Exception e) {
+                        System.out.println("EXCEPTION: Email Send Fail - " + e.getMessage());
+                    }
                 }
             }
         }
@@ -694,7 +670,7 @@ public class EventController {
         }
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
-    
+
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         populateEditForm(uiModel, new Event());
@@ -715,7 +691,7 @@ public class EventController {
         uiModel.addAttribute("itemId", id);
         return "events/show";
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id, Model uiModel) {
@@ -727,9 +703,10 @@ public class EventController {
         }
         return new ResponseEntity<String>(event.toJson(), headers, HttpStatus.OK);
     }
-    
+
     @RequestMapping(produces = "text/html")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
@@ -742,15 +719,16 @@ public class EventController {
         addDateTimeFormatPatterns(uiModel);
         return "events/list";
     }
-    
+
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, Event.findEvent(id));
         return "events/update";
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
         Event event = Event.findEvent(id);
         event.remove();
         uiModel.asMap().clear();
@@ -758,7 +736,7 @@ public class EventController {
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/events";
     }
-    
+
     void addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
@@ -768,7 +746,7 @@ public class EventController {
         uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
     }
-    
+
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
@@ -776,7 +754,8 @@ public class EventController {
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (UnsupportedEncodingException uee) {
+        }
         return pathSegment;
     }
 

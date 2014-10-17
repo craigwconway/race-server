@@ -1,25 +1,25 @@
 package com.bibsmobile.util;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.bibsmobile.job.BaseJob;
+import com.bibsmobile.job.CartExpiration;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserProfile;
-import com.bibsmobile.job.BaseJob;
-import com.bibsmobile.job.CartExpiration;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.quartz.SchedulerException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Jevgeni on 4.06.2014.
@@ -66,7 +66,7 @@ public class CartUtil {
         }
 
         Date now = new Date();
-        //create cart if it doesn't exist yet.
+        // create cart if it doesn't exist yet.
         if (cart == null) {
             newCart = true;
             cart = new Cart();
@@ -74,7 +74,7 @@ public class CartUtil {
             cart.setCreated(now);
             cart.setUpdated(now);
             cart.setCartItems(new ArrayList<CartItem>());
-            //user=null if anonymous
+            // user=null if anonymous
             cart.setUser(user);
             cart.setTimeout(Cart.DEFAULT_TIMEOUT);
             cart.persist();
@@ -83,7 +83,7 @@ public class CartUtil {
 
         EventCartItem eventCartItem = EventCartItem.findEventCartItem(eventCartItemId);
         CartItem cartItem;
-        //if doesn't have product in cart and not removing
+        // if doesn't have product in cart and not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
             cartItem = getCartItem(cart, now, eventCartItem, userProfile, quantity, color, size);
             cartItem.persist();
@@ -91,25 +91,25 @@ public class CartUtil {
         } else {
             boolean existedCartItem = false;
             for (CartItem ci : cart.getCartItems()) {
-                //if product already exists in cart
+                // if product already exists in cart
                 if (ci.getEventCartItem().getId().equals(eventCartItemId)) {
 
                     existedCartItem = true;
-                    //adding
+                    // adding
                     if (quantity > 0) {
 
                         if (quantity != ci.getQuantity()) {
                             if (quantity > ci.getQuantity()) {
-                                //only if increasing
+                                // only if increasing
                                 if (eventCartItem.getAvailable() < quantity) {
                                     quantity = eventCartItem.getAvailable();
                                 }
                                 eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
                             } else {
-                                //quantity < ci.getQuantity()
-                                //diff>0
+                                // quantity < ci.getQuantity()
+                                // diff>0
                                 int diff = ci.getQuantity() - quantity;
-                                //add removed quantity to available
+                                // add removed quantity to available
                                 eventCartItem.setAvailable(eventCartItem.getAvailable() + diff);
                             }
                             eventCartItem.merge();
@@ -119,9 +119,9 @@ public class CartUtil {
                         }
 
                     }
-                    //removing
+                    // removing
                     else {
-                        //add removed quantity to available
+                        // add removed quantity to available
                         eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
                         ci.remove();
                     }
@@ -168,7 +168,7 @@ public class CartUtil {
         cartItem.setPrice(eventCartItem.getActualPrice());
         cartItem.setCart(cart);
         cartItem.setEventCartItem(eventCartItem);
-        //add maximum available quantity
+        // add maximum available quantity
         if (eventCartItem.getAvailable() < quantity) {
             quantity = eventCartItem.getAvailable();
         }
@@ -177,7 +177,7 @@ public class CartUtil {
         cartItem.setUpdated(now);
         cartItem.setUserProfile(userProfile);
 
-        //updating available quantity in eventcartitem
+        // updating available quantity in eventcartitem
         eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
         eventCartItem.merge();
         return cartItem;

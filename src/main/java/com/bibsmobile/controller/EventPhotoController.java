@@ -1,17 +1,17 @@
 package com.bibsmobile.controller;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.EventPhoto;
-import com.bibsmobile.model.UploadFile;
-import flexjson.JSONSerializer;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -31,16 +31,20 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
-import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventPhoto;
+import com.bibsmobile.model.UploadFile;
+
+import flexjson.JSONSerializer;
 
 @RequestMapping("/eventphotos")
 @Controller
@@ -58,7 +62,7 @@ public class EventPhotoController {
 
     @PostConstruct
     public void init() {
-        awsS3Credentials = new BasicAWSCredentials(awsS3AccessKey, awsS3SecretKey);
+        awsS3Credentials = new BasicAWSCredentials(this.awsS3AccessKey, this.awsS3SecretKey);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
@@ -92,7 +96,8 @@ public class EventPhotoController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
         EventPhoto eventPhoto = EventPhoto.findEventPhoto(id);
         eventPhoto.remove();
         uiModel.asMap().clear();
@@ -131,7 +136,7 @@ public class EventPhotoController {
             fileInfo.put("fileType", file.getContentType());
             fileInfo.put("fileSize", file.getSize());
             fileInfo.put("s3FileName", fileNameStr);
-            fileInfo.put("s3Url", awsS3UrlPrefix.concat(fileNameStr));
+            fileInfo.put("s3Url", this.awsS3UrlPrefix.concat(fileNameStr));
         }
         return new JSONSerializer().serialize(fileInfo);
     }
@@ -145,17 +150,17 @@ public class EventPhotoController {
     private PutObjectResult uploadFileToS3(MultipartFile file, String fileName) throws IOException {
         AmazonS3 s3Client = new AmazonS3Client(awsS3Credentials);
         ByteArrayInputStream stream = new ByteArrayInputStream(file.getBytes());
-        PutObjectRequest putObjectRequest = new PutObjectRequest(awsS3Bucket, fileName, stream, new ObjectMetadata());
+        PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, stream, new ObjectMetadata());
         return s3Client.putObject(putObjectRequest);
     }
 
     private void deleteFileFromS3(String fileName) {
         AmazonS3 s3Client = new AmazonS3Client(awsS3Credentials);
-        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(awsS3Bucket, fileName);
+        DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.awsS3Bucket, fileName);
         s3Client.deleteObject(deleteObjectRequest);
     }
 
-	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventPhoto eventPhoto, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, eventPhoto);
@@ -166,14 +171,14 @@ public class EventPhotoController {
         return "redirect:/eventphotos/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
     }
 
-	@RequestMapping(value = "/{id}", produces = "text/html")
+    @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("eventphoto", EventPhoto.findEventPhoto(id));
         uiModel.addAttribute("itemId", id);
         return "eventphotos/show";
     }
 
-	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EventPhoto eventPhoto, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, eventPhoto);
@@ -184,18 +189,19 @@ public class EventPhotoController {
         return "redirect:/eventphotos/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
     }
 
-	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
             enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (UnsupportedEncodingException uee) {
+        }
         return pathSegment;
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
         EventPhoto eventPhoto = EventPhoto.findEventPhoto(id);
@@ -207,7 +213,7 @@ public class EventPhotoController {
         return new ResponseEntity<String>(eventPhoto.toJson(), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(headers = "Accept=application/json")
+    @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
         HttpHeaders headers = new HttpHeaders();
@@ -216,20 +222,20 @@ public class EventPhotoController {
         return new ResponseEntity<String>(EventPhoto.toJsonArray(result), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJson(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         EventPhoto eventPhoto = EventPhoto.fromJsonToEventPhoto(json);
         eventPhoto.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location",uriBuilder.path(a.value()[0]+"/"+eventPhoto.getId().toString()).build().toUriString());
+        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventPhoto.getId().toString()).build().toUriString());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-	@RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
-        for (EventPhoto eventPhoto: EventPhoto.fromJsonArrayToEventPhotoes(json)) {
+        for (EventPhoto eventPhoto : EventPhoto.fromJsonArrayToEventPhotoes(json)) {
             eventPhoto.persist();
         }
         HttpHeaders headers = new HttpHeaders();
@@ -237,7 +243,7 @@ public class EventPhotoController {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -249,7 +255,7 @@ public class EventPhotoController {
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
         EventPhoto eventPhoto = EventPhoto.findEventPhoto(id);
         HttpHeaders headers = new HttpHeaders();
@@ -261,7 +267,7 @@ public class EventPhotoController {
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindEventPhotoesByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();

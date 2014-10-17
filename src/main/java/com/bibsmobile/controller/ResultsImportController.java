@@ -1,13 +1,14 @@
 package com.bibsmobile.controller;
 
-import au.com.bytecode.opencsv.CSVReader; 
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.ResultsFileMapping;
-import com.bibsmobile.model.ResultsImport;
-import com.bibsmobile.service.RaceResultService;
-import com.bibsmobile.util.XlsToCsv;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -22,28 +23,33 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
+
+import au.com.bytecode.opencsv.CSVReader;
+
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.service.RaceResultService;
+import com.bibsmobile.util.XlsToCsv;
 
 @RequestMapping("/resultsimports")
 @Controller
 public class ResultsImportController {
-	
-	private RaceResultService raceResultService;
-	
-	public ResultsImportController(){}
-	
-	protected ResultsImportController(RaceResultService raceResultService){
-		this.raceResultService = raceResultService;
-	}
+
+    private RaceResultService raceResultService;
+
+    public ResultsImportController() {
+    }
+
+    protected ResultsImportController(RaceResultService raceResultService) {
+        this.raceResultService = raceResultService;
+    }
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
-    public String create(@Valid ResultsImport resultsImport, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) throws InvalidFormatException, IOException {
+    public String create(@Valid ResultsImport resultsImport, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) throws InvalidFormatException,
+            IOException {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, resultsImport);
             return "resultsimports/create";
@@ -54,7 +60,7 @@ public class ResultsImportController {
         return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }
 
-    public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {  
+    public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
         System.out.println("Starting import...");
         resultsImport.setRunDate(new Date());
         ResultsFileMapping resultsFileMapping = resultsImport.getResultsFileMapping();
@@ -65,14 +71,14 @@ public class ResultsImportController {
         String[] map = resultsFileMapping.getMap().split(",");
         if (StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".csv") || StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".txt")) {
             CSVReader reader = new CSVReader(new FileReader(file));
-            String[] nextLine; 
+            String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 saveRaceResult(resultsImport, event, nextLine, map);
             }
             reader.close();
         } else if (StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".xls") || StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".xlsx")) {
             XlsToCsv csv = new XlsToCsv();
-            Workbook wb = WorkbookFactory.create(file); 
+            Workbook wb = WorkbookFactory.create(file);
             Sheet sheet = wb.getSheetAt(0);
             for (int i = (resultsFileMapping.isSkipFirstRow() ? 1 : 0); i <= sheet.getLastRowNum(); i++) {
                 final String nextLine[] = csv.rowToCSV(sheet.getRow(i)).split(",");
@@ -91,47 +97,49 @@ public class ResultsImportController {
         }
         StringBuffer json = new StringBuffer("{");
         for (int j = 0; j < nextLine.length; j++) {
-            if (map[j].equals("-")) continue;
-            if (!json.toString().equals("{")) json.append(",");
+            if (map[j].equals("-"))
+                continue;
+            if (!json.toString().equals("{"))
+                json.append(",");
             json.append(map[j] + ":\"" + nextLine[j] + "\"");
         }
         json.append("}");
-        RaceResult result = raceResultService.fromJsonToRaceResult(json.toString());
+        RaceResult result = this.raceResultService.fromJsonToRaceResult(json.toString());
         result.setEvent(event);
         boolean same = false;
         RaceResult exists = null;
         try {
-            exists = raceResultService.findRaceResultsByEventAndBibEquals(event, result.getBib());
-            if(exists.equals(result)){
-            	same = true;
+            exists = this.raceResultService.findRaceResultsByEventAndBibEquals(event, result.getBib());
+            if (exists.equals(result)) {
+                same = true;
             }
         } catch (Exception e) {
         }
         if (null != exists && !same) {
-        	raceResultService.update(exists,result);
-        } else if(null == exists){
-        	raceResultService.persist(result);
+            this.raceResultService.update(exists, result);
+        } else if (null == exists) {
+            this.raceResultService.persist(result);
         }
         resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);
         resultsImport.merge();
     }
 
-
-	@RequestMapping(params = "form", produces = "text/html")
+    @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         populateEditForm(uiModel, new ResultsImport());
         return "resultsimports/create";
     }
 
-	@RequestMapping(value = "/{id}", produces = "text/html")
+    @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("resultsimport", ResultsImport.findResultsImport(id));
         uiModel.addAttribute("itemId", id);
         return "resultsimports/show";
     }
 
-	@RequestMapping(produces = "text/html")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+    @RequestMapping(produces = "text/html")
+    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
@@ -144,7 +152,7 @@ public class ResultsImportController {
         return "resultsimports/list";
     }
 
-	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid ResultsImport resultsImport, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, resultsImport);
@@ -155,14 +163,15 @@ public class ResultsImportController {
         return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }
 
-	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, ResultsImport.findResultsImport(id));
         return "resultsimports/update";
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
         ResultsImport resultsImport = ResultsImport.findResultsImport(id);
         resultsImport.remove();
         uiModel.asMap().clear();
@@ -171,20 +180,21 @@ public class ResultsImportController {
         return "redirect:/resultsimports";
     }
 
-	void populateEditForm(Model uiModel, ResultsImport resultsImport) {
+    void populateEditForm(Model uiModel, ResultsImport resultsImport) {
         uiModel.addAttribute("resultsImport", resultsImport);
         uiModel.addAttribute("resultsfiles", ResultsFile.findAllResultsFiles());
         uiModel.addAttribute("resultsfilemappings", ResultsFileMapping.findAllResultsFileMappings());
     }
 
-	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
             enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (UnsupportedEncodingException uee) {
+        }
         return pathSegment;
     }
 }

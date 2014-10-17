@@ -1,6 +1,9 @@
 package com.bibsmobile.model;
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,14 +17,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
+
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
@@ -33,66 +36,62 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
 
     @Override
     public String getAuthority() {
-        return authority;
+        return this.authority;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.userAuthority", cascade = CascadeType.ALL)
     private Set<UserAuthorities> userAuthorities;
 
-	public String toJson() {
-        return new JSONSerializer()
-        .exclude("*.class").serialize(this);
+    public String toJson() {
+        return new JSONSerializer().exclude("*.class").serialize(this);
     }
 
-	public String toJson(String[] fields) {
-        return new JSONSerializer()
-        .include(fields).exclude("*.class").serialize(this);
+    public String toJson(String[] fields) {
+        return new JSONSerializer().include(fields).exclude("*.class").serialize(this);
     }
 
-	public static UserAuthority fromJsonToUserAuthority(String json) {
-        return new JSONDeserializer<UserAuthority>()
-        .use(null, UserAuthority.class).deserialize(json);
+    public static UserAuthority fromJsonToUserAuthority(String json) {
+        return new JSONDeserializer<UserAuthority>().use(null, UserAuthority.class).deserialize(json);
     }
 
-	public static String toJsonArray(Collection<UserAuthority> collection) {
-        return new JSONSerializer()
-        .exclude("*.class").serialize(collection);
+    public static String toJsonArray(Collection<UserAuthority> collection) {
+        return new JSONSerializer().exclude("*.class").serialize(collection);
     }
 
-	public static String toJsonArray(Collection<UserAuthority> collection, String[] fields) {
-        return new JSONSerializer()
-        .include(fields).exclude("*.class").serialize(collection);
+    public static String toJsonArray(Collection<UserAuthority> collection, String[] fields) {
+        return new JSONSerializer().include(fields).exclude("*.class").serialize(collection);
     }
 
-	public static Collection<UserAuthority> fromJsonArrayToUserAuthoritys(String json) {
-        return new JSONDeserializer<List<UserAuthority>>()
-        .use("values", UserAuthority.class).deserialize(json);
+    public static Collection<UserAuthority> fromJsonArrayToUserAuthoritys(String json) {
+        return new JSONDeserializer<List<UserAuthority>>().use("values", UserAuthority.class).deserialize(json);
     }
 
-	public String toString() {
+    @Override
+    public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-	@PersistenceContext
+    @PersistenceContext
     transient EntityManager entityManager;
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("authority", "userAuthorities");
+    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("authority", "userAuthorities");
 
-	public static final EntityManager entityManager() {
+    public static final EntityManager entityManager() {
         EntityManager em = new UserAuthority().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+        if (em == null)
+            throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
 
-	public static long countUserAuthoritys() {
+    public static long countUserAuthoritys() {
         return entityManager().createQuery("SELECT COUNT(o) FROM UserAuthority o", Long.class).getSingleResult();
     }
 
-	public static List<UserAuthority> findAllUserAuthoritys() {
+    public static List<UserAuthority> findAllUserAuthoritys() {
         return entityManager().createQuery("SELECT o FROM UserAuthority o", UserAuthority.class).getResultList();
     }
 
-	public static List<UserAuthority> findAllUserAuthoritys(String sortFieldName, String sortOrder) {
+    public static List<UserAuthority> findAllUserAuthoritys(String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM UserAuthority o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
@@ -103,16 +102,17 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
         return entityManager().createQuery(jpaQuery, UserAuthority.class).getResultList();
     }
 
-	public static UserAuthority findUserAuthority(Long id) {
-        if (id == null) return null;
+    public static UserAuthority findUserAuthority(Long id) {
+        if (id == null)
+            return null;
         return entityManager().find(UserAuthority.class, id);
     }
 
-	public static List<UserAuthority> findUserAuthorityEntries(int firstResult, int maxResults) {
+    public static List<UserAuthority> findUserAuthorityEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM UserAuthority o", UserAuthority.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-	public static List<UserAuthority> findUserAuthorityEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+    public static List<UserAuthority> findUserAuthorityEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM UserAuthority o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
@@ -123,15 +123,17 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
         return entityManager().createQuery(jpaQuery, UserAuthority.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-	@Transactional
+    @Transactional
     public void persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.persist(this);
     }
 
-	@Transactional
+    @Transactional
     public void remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
@@ -140,44 +142,50 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
         }
     }
 
-	@Transactional
+    @Transactional
     public void flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.flush();
     }
 
-	@Transactional
+    @Transactional
     public void clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.clear();
     }
 
-	@Transactional
+    @Transactional
     public UserAuthority merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         UserAuthority merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }
 
-	public static Long countFindUserAuthoritysByAuthorityEquals(String authority) {
-        if (authority == null || authority.length() == 0) throw new IllegalArgumentException("The authority argument is required");
+    public static Long countFindUserAuthoritysByAuthorityEquals(String authority) {
+        if (authority == null || authority.length() == 0)
+            throw new IllegalArgumentException("The authority argument is required");
         EntityManager em = UserAuthority.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM UserAuthority AS o WHERE o.authority = :authority", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserAuthority AS o WHERE o.authority = :authority", Long.class);
         q.setParameter("authority", authority);
-        return ((Long) q.getSingleResult());
+        return q.getSingleResult();
     }
 
-	public static TypedQuery<UserAuthority> findUserAuthoritysByAuthorityEquals(String authority) {
-        if (authority == null || authority.length() == 0) throw new IllegalArgumentException("The authority argument is required");
+    public static TypedQuery<UserAuthority> findUserAuthoritysByAuthorityEquals(String authority) {
+        if (authority == null || authority.length() == 0)
+            throw new IllegalArgumentException("The authority argument is required");
         EntityManager em = UserAuthority.entityManager();
         TypedQuery<UserAuthority> q = em.createQuery("SELECT o FROM UserAuthority AS o WHERE o.authority = :authority", UserAuthority.class);
         q.setParameter("authority", authority);
         return q;
     }
 
-	public static TypedQuery<UserAuthority> findUserAuthoritysByAuthorityEquals(String authority, String sortFieldName, String sortOrder) {
-        if (authority == null || authority.length() == 0) throw new IllegalArgumentException("The authority argument is required");
+    public static TypedQuery<UserAuthority> findUserAuthoritysByAuthorityEquals(String authority, String sortFieldName, String sortOrder) {
+        if (authority == null || authority.length() == 0)
+            throw new IllegalArgumentException("The authority argument is required");
         EntityManager em = UserAuthority.entityManager();
         String jpaQuery = "SELECT o FROM UserAuthority AS o WHERE o.authority = :authority";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
@@ -191,40 +199,40 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
         return q;
     }
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-	@Version
+    @Version
     @Column(name = "version")
     private Integer version;
 
-	public Long getId() {
+    public Long getId() {
         return this.id;
     }
 
-	public void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-	public Integer getVersion() {
+    public Integer getVersion() {
         return this.version;
     }
 
-	public void setVersion(Integer version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
-	public void setAuthority(String authority) {
+    public void setAuthority(String authority) {
         this.authority = authority;
     }
 
-	public Set<UserAuthorities> getUserAuthorities() {
+    public Set<UserAuthorities> getUserAuthorities() {
         return this.userAuthorities;
     }
 
-	public void setUserAuthorities(Set<UserAuthorities> userAuthorities) {
+    public void setUserAuthorities(Set<UserAuthorities> userAuthorities) {
         this.userAuthorities = userAuthorities;
     }
 }
