@@ -195,11 +195,19 @@ public class RaceResultController {
         }
         uiModel.asMap().clear();
         // New race result stuff here //
-        if(null == raceResult.getTimechip()) {
+        System.out.println("[RESULTS] Updating Chip Time");
+        System.out.println("[RESULTS] Timechip: " + raceResult.getTimechip() + " Timestart:" + raceResult.getTimestart());
+        if(0 == raceResult.getTimestart()) {
+        	System.out.println("[RESULTS] Null get timechip, proceeding");
         	// We have a result without a chip time, we can compute the timeofficialdisplay
-        	if(0 < raceResult.getEvent().getGunTimeStart() && 0 < raceResult.getTimeofficial()) {
+        	if(null != raceResult.getEvent().getGunTime() && 0 < raceResult.getTimeofficial()) {
+        		System.out.println("[RESULTS] Event details:");
+        		System.out.println(raceResult.getEvent().toJson());
+        		System.out.println("[RESULTS] Calculating new timeofficialdisplay:");
+        		System.out.println("[RESULTS] Event Gun Time Start: " + raceResult.getEvent().getGunTime() + " Time Official: " + raceResult.getTimeofficial());
         		// There is a gun time in the event and a timeofficial set
-        		raceResult.setTimeofficialdisplay(RaceResult.toHumanTime(raceResult.getEvent().getGunTimeStart(), raceResult.getTimeofficial()));
+        		raceResult.setTimeofficialdisplay(RaceResult.toHumanTime(raceResult.getEvent().getGunTime().getTime(), raceResult.getTimeofficial()));
+        		System.out.println("[RESULTS] Computed gun time: " + raceResult.getTimeofficialdisplay());
         	}
         }
         raceResult.merge();
