@@ -1,19 +1,5 @@
 package com.bibsmobile.util;
 
-import com.bibsmobile.controller.ResultsFileMappingController;
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.ResultsFileMapping;
-import com.bibsmobile.model.ResultsImport;
-import com.bibsmobile.model.UserProfile;
-
-import au.com.bytecode.opencsv.CSVReader;
-
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +13,21 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
+import au.com.bytecode.opencsv.CSVReader;
+
+import com.bibsmobile.controller.ResultsFileMappingController;
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.UserProfile;
 
 
 public class ResultsFileUtil {
@@ -94,6 +95,14 @@ public class ResultsFileUtil {
     FileUtils.copyFile(tmpFile, destFile);
     tmpFile.delete();
 
+    // disable automatic updates on all other files associated with this event
+    for (ResultsFile rf : ResultsFile.findResultsFilesByEvent(event).getResultList()) {
+      if(rf.getAutomaticUpdates()) {
+        rf.setAutomaticUpdates(false);
+        rf.persist();
+      }
+    }
+
     // save to database
     ResultsFile file = new ResultsFile();
     file.setName(destFile.getName());
@@ -105,6 +114,7 @@ public class ResultsFileUtil {
     file.setSha1Checksum(ResultsFileUtil.getSha1Checksum(destFile));
     file.setImportUser(user);
     file.setDropboxPath(dropboxPath);
+    file.setAutomaticUpdates(true);
     file.persist();
     // create mapping for file in database
     ResultsFileMapping mapping = new ResultsFileMapping();
@@ -122,7 +132,9 @@ public class ResultsFileUtil {
     rimport.setRowsProcessed(0);
     rimport.setErrors(0);
     rimport.setErrorRows("");
-    ResultsFileMappingController.doImport(rimport);
+    if (!map.isEmpty()) {
+        ResultsFileMappingController.doImport(rimport);
+    }
     rimport.persist();
 
     return rimport;
@@ -169,7 +181,7 @@ public class ResultsFileUtil {
 
   // CSV implementation of a ResultsFile iterator
   public static class ResultsFileCSVIterator implements ResultsFileIterator {
-    private CSVReader reader;
+    private final CSVReader reader;
     // CSV reader can't tell us if there is more in the file
     // so we need to try and figure it out.
     // this member saves one pre-read line which wasn't used yet.

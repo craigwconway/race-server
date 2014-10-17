@@ -1,31 +1,40 @@
 package com.bibsmobile.model;
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.*;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Query;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.HashSet;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.Version;
+
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
@@ -57,13 +66,13 @@ public class Event {
     private int featured;
 
     private String address1;
-    
+
     private String address2;
-    
+
     private String city;
 
     private String state;
-    
+
     private String zip;
 
     private String country;
@@ -83,7 +92,7 @@ public class Event {
     private String phone;
 
     private String email;
-    
+
     private String contactPerson;
 
     private String registration;
@@ -200,17 +209,17 @@ public class Event {
 
     @PrePersist
     protected void onCreate() {
-        created = new Date();
+        this.created = new Date();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updated = new Date();
+        this.updated = new Date();
     }
 
     @Override
     public String toString() {
-        return name;
+        return this.name;
     }
 
     public static TypedQuery<Event> findEventsByFeaturedGreaterThan(int featured, int page, int size) {
@@ -269,21 +278,21 @@ public class Event {
 
     public List<RaceResult> getAwards(String gender, int min, int max, int size) {
         if (min > max) min = max;
-        List<RaceResult> allResults = new ArrayList<RaceResult>(raceResults);
+        List<RaceResult> allResults = new ArrayList<RaceResult>(this.raceResults);
         Collections.sort(allResults);
-        List<RaceResult> results = new ArrayList<RaceResult>();
+        List<RaceResult> tmpResults = new ArrayList<RaceResult>();
         for (RaceResult result : allResults) {
             int age = 0;
             try {
                 age = Integer.valueOf(result.getAge());
             } catch (Exception ex) {
             }
-            if (results.size() < size && result.getTimeofficial() > 0 && (gender.isEmpty() || gender == null || gender.equals(result.getGender())) && (min == 0 || (min <= age && age != 0)) && (max == 0 || (max >= age && age != 0))) {
-                results.add(result);
+            if (tmpResults.size() < size && result.getTimeofficial() > 0 && (gender == null || gender.isEmpty() || gender.equals(result.getGender())) && (min == 0 || (min <= age && age != 0)) && (max == 0 || (max >= age && age != 0))) {
+                tmpResults.add(result);
             }
-            if (results.size() == size && size != 0) break;
+            if (tmpResults.size() == size && size != 0) break;
         }
-        return results;
+        return tmpResults;
     }
 
     public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page, int size) {
@@ -421,7 +430,7 @@ public class Event {
         for (ResultsFile rf : this.resultsFiles) {
             ResultsImport tmp = rf.getLatestImport();
             if (tmp == null) continue;
-            if (latest == null || (latest.getRunDate() != null && tmp.getRunDate() != null && latest.getRunDate().compareTo(tmp.getRunDate()) > 0)) {
+            if (latest == null || (latest.getRunDate() != null && tmp.getRunDate() != null && latest.getRunDate().compareTo(tmp.getRunDate()) < 0)) {
                 latest = tmp;
             }
         }
@@ -459,6 +468,7 @@ public class Event {
         .use("values", Event.class).deserialize(json);
     }
 
+	@Override
 	public boolean equals(Object obj) {
         if (!(obj instanceof Event)) {
             return false;
@@ -467,37 +477,38 @@ public class Event {
             return true;
         }
         Event rhs = (Event) obj;
-        return new EqualsBuilder().append(address1, rhs.address1).append(address2, rhs.address2).append(alert1, rhs.alert1).append(alert2, rhs.alert2).append(alert3, rhs.alert3).append(beachEvents, rhs.beachEvents).append(city, rhs.city).append(contactPerson, rhs.contactPerson).append(country, rhs.country).append(courseRules, rhs.courseRules).append(coursemaps, rhs.coursemaps).append(created, rhs.created).append(description, rhs.description).append(donateUrl, rhs.donateUrl).append(email, rhs.email).append(facebookUrl1, rhs.facebookUrl1).append(facebookUrl2, rhs.facebookUrl2).append(featured, rhs.featured).append(general, rhs.general).append(gunFired, rhs.gunFired).append(gunTime, rhs.gunTime).append(gunTimeStart, rhs.gunTimeStart).append(id, rhs.id).append(lattitude, rhs.lattitude).append(longitude, rhs.longitude).append(map, rhs.map).append(map2, rhs.map2).append(map3, rhs.map3).append(merchandise, rhs.merchandise).append(name, rhs.name).append(organization, rhs.organization).append(parking, rhs.parking).append(phone, rhs.phone).append(photo, rhs.photo).append(photo2, rhs.photo2).append(photo3, rhs.photo3).append(photoUploadUrl, rhs.photoUploadUrl).append(regEnabled, rhs.regEnabled).append(regEnd, rhs.regEnd).append(regStart, rhs.regStart).append(registration, rhs.registration).append(results1, rhs.results1).append(results2, rhs.results2).append(results3, rhs.results3).append(running, rhs.running).append(shuttles, rhs.shuttles).append(state, rhs.state).append(sync, rhs.sync).append(syncId, rhs.syncId).append(timeEnd, rhs.timeEnd).append(timeStart, rhs.timeStart).append(type, rhs.type).append(updated, rhs.updated).append(waiver, rhs.waiver).append(website, rhs.website).append(zip, rhs.zip).isEquals();
+        return new EqualsBuilder().append(this.address1, rhs.address1).append(this.address2, rhs.address2).append(this.alert1, rhs.alert1).append(this.alert2, rhs.alert2).append(this.alert3, rhs.alert3).append(this.beachEvents, rhs.beachEvents).append(this.city, rhs.city).append(this.contactPerson, rhs.contactPerson).append(this.country, rhs.country).append(this.courseRules, rhs.courseRules).append(this.coursemaps, rhs.coursemaps).append(this.created, rhs.created).append(this.description, rhs.description).append(this.donateUrl, rhs.donateUrl).append(this.email, rhs.email).append(this.facebookUrl1, rhs.facebookUrl1).append(this.facebookUrl2, rhs.facebookUrl2).append(this.featured, rhs.featured).append(this.general, rhs.general).append(this.gunFired, rhs.gunFired).append(this.gunTime, rhs.gunTime).append(this.gunTimeStart, rhs.gunTimeStart).append(this.id, rhs.id).append(this.lattitude, rhs.lattitude).append(this.longitude, rhs.longitude).append(this.map, rhs.map).append(this.map2, rhs.map2).append(this.map3, rhs.map3).append(this.merchandise, rhs.merchandise).append(this.name, rhs.name).append(this.organization, rhs.organization).append(this.parking, rhs.parking).append(this.phone, rhs.phone).append(this.photo, rhs.photo).append(this.photo2, rhs.photo2).append(this.photo3, rhs.photo3).append(this.photoUploadUrl, rhs.photoUploadUrl).append(this.regEnabled, rhs.regEnabled).append(this.regEnd, rhs.regEnd).append(this.regStart, rhs.regStart).append(this.registration, rhs.registration).append(this.results1, rhs.results1).append(this.results2, rhs.results2).append(this.results3, rhs.results3).append(this.running, rhs.running).append(this.shuttles, rhs.shuttles).append(this.state, rhs.state).append(this.sync, rhs.sync).append(this.syncId, rhs.syncId).append(this.timeEnd, rhs.timeEnd).append(this.timeStart, rhs.timeStart).append(this.type, rhs.type).append(this.updated, rhs.updated).append(this.waiver, rhs.waiver).append(this.website, rhs.website).append(this.zip, rhs.zip).isEquals();
     }
 
+	@Override
 	public int hashCode() {
-        return new HashCodeBuilder().append(address1).append(address2).append(alert1).append(alert2).append(alert3).append(beachEvents).append(city).append(contactPerson).append(country).append(courseRules).append(coursemaps).append(created).append(description).append(donateUrl).append(email).append(facebookUrl1).append(facebookUrl2).append(featured).append(general).append(gunFired).append(gunTime).append(gunTimeStart).append(id).append(lattitude).append(longitude).append(map).append(map2).append(map3).append(merchandise).append(name).append(organization).append(parking).append(phone).append(photo).append(photo2).append(photo3).append(photoUploadUrl).append(regEnabled).append(regEnd).append(regStart).append(registration).append(results1).append(results2).append(results3).append(running).append(shuttles).append(state).append(sync).append(syncId).append(timeEnd).append(timeStart).append(type).append(updated).append(waiver).append(website).append(zip).toHashCode();
+        return new HashCodeBuilder().append(this.address1).append(this.address2).append(this.alert1).append(this.alert2).append(this.alert3).append(this.beachEvents).append(this.city).append(this.contactPerson).append(this.country).append(this.courseRules).append(this.coursemaps).append(this.created).append(this.description).append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.facebookUrl2).append(this.featured).append(this.general).append(this.gunFired).append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.lattitude).append(this.longitude).append(this.map).append(this.map2).append(this.map3).append(this.merchandise).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2).append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.results1).append(this.results2).append(this.results3).append(this.running).append(this.shuttles).append(this.state).append(this.sync).append(this.syncId).append(this.timeEnd).append(this.timeStart).append(this.type).append(this.updated).append(this.waiver).append(this.website).append(this.zip).toHashCode();
     }
 
 	public static Long countFindEventsByStateEquals(String state) {
         if (state == null || state.length() == 0) throw new IllegalArgumentException("The state argument is required");
         EntityManager em = Event.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.state = :state", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.state = :state", Long.class);
         q.setParameter("state", state);
-        return ((Long) q.getSingleResult());
+        return q.getSingleResult();
     }
 
 	public static Long countFindEventsByStateEqualsAndCityEquals(String state, String city) {
         if (state == null || state.length() == 0) throw new IllegalArgumentException("The state argument is required");
         if (city == null || city.length() == 0) throw new IllegalArgumentException("The city argument is required");
         EntityManager em = Event.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.state = :state  AND o.city = :city", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.state = :state  AND o.city = :city", Long.class);
         q.setParameter("state", state);
         q.setParameter("city", city);
-        return ((Long) q.getSingleResult());
+        return q.getSingleResult();
     }
 
 	public static Long countFindEventsByTypeEquals(String type) {
         if (type == null || type.length() == 0) throw new IllegalArgumentException("The type argument is required");
         EntityManager em = Event.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.type = :type", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.type = :type", Long.class);
         q.setParameter("type", type);
-        return ((Long) q.getSingleResult());
+        return (q.getSingleResult());
     }
 
 	public static TypedQuery<Event> findEventsByStateEquals(String state) {

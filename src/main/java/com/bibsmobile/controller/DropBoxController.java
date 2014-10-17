@@ -1,35 +1,16 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.ResultsFileMapping;
-import com.bibsmobile.model.ResultsImport;
-import com.bibsmobile.model.UserProfile;
-import com.bibsmobile.util.DropboxUtil;
-import com.bibsmobile.util.MailgunUtil;
-import com.bibsmobile.util.ResultsFileUtil;
-import com.bibsmobile.util.UserProfileUtil;
-
-import com.dropbox.core.DbxAppInfo;
-import com.dropbox.core.DbxAuthFinish;
-import com.dropbox.core.DbxEntry;
-import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.DbxSessionStore;
-import com.dropbox.core.DbxStandardSessionStore;
-import com.dropbox.core.DbxWebAuth;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
@@ -41,17 +22,35 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.DropboxUtil;
+import com.bibsmobile.util.MailgunUtil;
+import com.bibsmobile.util.ResultsFileUtil;
+import com.bibsmobile.util.UserProfileUtil;
+import com.dropbox.core.DbxAppInfo;
+import com.dropbox.core.DbxAuthFinish;
+import com.dropbox.core.DbxEntry;
+import com.dropbox.core.DbxException;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.DbxSessionStore;
+import com.dropbox.core.DbxStandardSessionStore;
+import com.dropbox.core.DbxWebAuth;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RequestMapping("/dropbox")
 @Controller
@@ -72,9 +71,6 @@ public class DropBoxController {
   private String sessionKey;
 
   private static DbxRequestConfig appConfig = new DbxRequestConfig("Bibs", Locale.getDefault().toString());
-
-  @Autowired 
-  private ResultsFileMappingController importController;
 
   public static DbxRequestConfig getAppConfig() {
 	  return DropBoxController.appConfig;
@@ -138,7 +134,7 @@ public class DropBoxController {
     newImport.setResultsFileMapping(latestMapping);
     // do the actual import
     if (newImport.getErrors() == 0) {
-      this.importController.doImport(newImport);
+      ResultsFileMappingController.doImport(newImport);
     } else {
       newImport.setRowsProcessed(1);
       newImport.setRunDate(new Date());
@@ -177,6 +173,7 @@ public class DropBoxController {
     if (file.getImportUser() == null) return -1; // no user associated with file
     String userAccessToken = file.getImportUser().getDropboxAccessToken();
     if (userAccessToken == null) return -1; // user has no access token to use
+    if (!file.getAutomaticUpdates()) return 0;
 
     // get file from dropbox
     File tmpFile = DropboxUtil.getDropboxFile(userAccessToken, dropboxPath);
@@ -316,10 +313,6 @@ public class DropBoxController {
     Event event = Event.findEvent(eventId);
     if (event == null) return new ResponseEntity<String>("unknown event", HttpStatus.BAD_REQUEST);
     if (dropboxPath.isEmpty()) return new ResponseEntity<String>("dropboxPath empty", HttpStatus.BAD_REQUEST);
-    
-    // calculate where file will be stored
-    String filename = new File(dropboxPath).getName();
-    File destFile = new File("/data/" + filename);
 
     // get dropbox credentials
     String accessToken = UserProfileUtil.getLoggedInDropboxAccessToken();
@@ -327,38 +320,23 @@ public class DropBoxController {
       response.sendRedirect(getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId)));
       return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
     }
-    
-    // get file from dropbox and move it to destination
-    File tmpFile = DropboxUtil.getDropboxFile(accessToken, dropboxPath);
-    FileUtils.copyFile(tmpFile, destFile);
-    tmpFile.delete();
 
-    // save to database
-    ResultsFile resultsFile = new ResultsFile();
-    resultsFile.setName(destFile.getName());
-    resultsFile.setContentType(ResultsFileUtil.guessMimeType(destFile));
-    resultsFile.setEvent(event);
-    resultsFile.setCreated(new Date());
-    resultsFile.setFilesize(destFile.length());
-    resultsFile.setFilePath(destFile.getAbsolutePath());
-    resultsFile.setSha1Checksum(ResultsFileUtil.getSha1Checksum(destFile));
-    resultsFile.setImportUser(UserProfileUtil.getLoggedInUserProfile());
-    resultsFile.setDropboxPath(dropboxPath);
-    resultsFile.persist();
-    // create empty mapping for file in database
-    ResultsFileMapping mapping = new ResultsFileMapping();
-    mapping.setName(resultsFile.getName());
-    mapping.setResultsFile(resultsFile);
-    mapping.persist();
-    
-    response.sendRedirect(getUrl(request, MAPPING_URL  + "/" + mapping.getId() + "?form"));
+    List<String> emptyMap = Collections.emptyList();
+    ResultsImport tmpImport;
+    try {
+      tmpImport = ResultsFileUtil.importDropbox(UserProfileUtil.getLoggedInUserProfile(), Event.findEvent(eventId), dropboxPath, emptyMap, false);
+    } catch (InvalidFormatException e) {
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    response.sendRedirect(getUrl(request, MAPPING_URL  + "/" + tmpImport.getResultsFileMapping().getId() + "?form"));
     return new ResponseEntity<String>("", HttpStatus.OK);
   }
 
   @RequestMapping(value = "/webhook", method = RequestMethod.GET)
   public @ResponseBody ResponseEntity<String> webhookVerify(@RequestParam("challenge") String challenge, HttpServletRequest request, HttpServletResponse response) {
     return new ResponseEntity<String>(challenge, HttpStatus.OK);
-  } 
+  }
 
   @RequestMapping(value = "/webhook", method = RequestMethod.POST)
   public @ResponseBody ResponseEntity<String> webhookReceive(@RequestBody String plainJson, HttpServletRequest request, HttpServletResponse response) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidFormatException {

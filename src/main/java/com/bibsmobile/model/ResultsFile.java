@@ -3,6 +3,7 @@ package com.bibsmobile.model;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Entity
 public class ResultsFile {
 
-    private String name; 	
+    private String name;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "resultsFile")
 	private Set<ResultsFileMapping> resultsFileMapping;
@@ -40,7 +42,7 @@ public class ResultsFile {
     private String contentType;
     @ManyToOne
     private Event event;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "SS")
     private Date created;
@@ -49,8 +51,8 @@ public class ResultsFile {
     private long filesize;
 
     @NotNull
-    @Size(max = 128) 
-    private String filePath; 
+    @Size(max = 128)
+    private String filePath;
 
     @Size(max = 42)
     private String sha1Checksum;
@@ -60,20 +62,23 @@ public class ResultsFile {
 
     @Size(max = 128)
     private String dropboxPath;
-    
+
+    @NotNull
+    private Boolean automaticUpdates;
+
     @Transient
     private byte[] content;
-    
+
     @Override
     public String toString(){
-    	return name;
+        return this.name;
     }
 
     public ResultsImport getLatestImport() {
         ResultsImport latest = null;
         if (this.resultsImport == null) return null;
         for (ResultsImport ri : this.resultsImport) {
-            if (latest == null || latest.getRunDate().compareTo(ri.getRunDate()) > 0) {
+            if (latest == null || latest.getRunDate().compareTo(ri.getRunDate()) < 0) {
                 latest = ri;
             }
         }
@@ -85,24 +90,24 @@ public class ResultsFile {
         if (latestImport == null) return null;
         return latestImport.getResultsFileMapping();
     }
-    
+
 
 	public static Long countFindResultsFilesByEvent(Event event) {
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = ResultsFile.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ResultsFile AS o WHERE o.event = :event", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM ResultsFile AS o WHERE o.event = :event", Long.class);
         q.setParameter("event", event);
-        return ((Long) q.getSingleResult());
+        return q.getSingleResult();
     }
 
 	public static Long countFindResultsFilesByNameEqualsAndEvent(String name, Event event) {
         if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
         if (event == null) throw new IllegalArgumentException("The event argument is required");
         EntityManager em = ResultsFile.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM ResultsFile AS o WHERE o.name = :name  AND o.event = :event", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM ResultsFile AS o WHERE o.name = :name  AND o.event = :event", Long.class);
         q.setParameter("name", name);
         q.setParameter("event", event);
-        return ((Long) q.getSingleResult());
+        return q.getSingleResult();
     }
 
 	public static TypedQuery<ResultsFile> findResultsFilesByEvent(Event event) {
@@ -241,6 +246,14 @@ public class ResultsFile {
 
 	public void setDropboxPath(String dropboxPath) {
         this.dropboxPath = dropboxPath;
+    }
+
+	public Boolean getAutomaticUpdates() {
+        return this.automaticUpdates;
+    }
+
+	public void setAutomaticUpdates(Boolean automaticUpdates) {
+        this.automaticUpdates = automaticUpdates;
     }
 
 	public byte[] getContent() {
