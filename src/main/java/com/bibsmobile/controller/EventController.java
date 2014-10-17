@@ -469,12 +469,17 @@ public class EventController {
     	
 		// filter medals
     	for(AwardCategory c:event.getAwardCategorys()){
+    		List<String> awarded = new ArrayList<String>();
     		if(c.isMedal()){
     			c.setName(c.getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
-    			List<RaceResult> r = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())
+    			List<RaceResult> rr = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)
     					: event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs);
-    			System.out.println(c.getName()+" "+r.size());
-    			results.add(new AwardCategoryResults(c,r));
+    			// only 1 medal ppn
+    			for(RaceResult r:rr){
+        			awarded.add(r.getBib());
+        			mastersBibs.add(r.getBib());
+    			}
+    			results.add(new AwardCategoryResults(c,rr));
     		}
     	}
     	
