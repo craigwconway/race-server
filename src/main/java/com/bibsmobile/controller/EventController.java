@@ -59,8 +59,6 @@ public class EventController {
         }
         uiModel.asMap().clear();
 
-        // awards
-
         // add to current usergroup
         boolean addGroup = false;
         String username = SecurityContextHolder.getContext()
@@ -82,6 +80,12 @@ public class EventController {
             user.getUserGroup().merge();
         }*/
         event.persist();
+        
+        // default awards categories
+        AwardCategory.createDefaultMedals(event);
+        AwardCategory.createAgeGenderRankings(event, 
+        		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+        		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
 
         return "redirect:/events/"
                 + encodeUrlPathSegment(event.getId().toString(),
@@ -442,12 +446,82 @@ public class EventController {
         return Event.toJsonArray(Event.findEventsByRunning());
     }
 
+    // medals
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
-    public static String awards(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
-        uiModel.addAttribute("event", Event.findEvent(event));
+    public static String awards(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		Model uiModel) {
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> list = event.calculateMedals(event);
+    	for(AwardCategoryResults c:list){
+    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
+    	}
+    	uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", list);
         return "events/awards";
     }
 
+    @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
+    public static String ageGenderRankings(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "gender", required = false, defaultValue = "M") String gender,
+    		Model uiModel) {
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = event.getAwardCategorys();
+    	List<String> medalsBibs = new ArrayList<String>();
+
+    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
+    	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
+        	for(AwardCategoryResults c:event.calculateMedals(event)){
+        		for(RaceResult r:c.getResults()){
+        			medalsBibs.add(r.getBib());
+        		}
+        	}
+    	}
+    	
+		// filter age/gender
+    	for(AwardCategory c:event.getAwardCategorys()){
+    		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
+    			results.add(new AwardCategoryResults(c,
+    					event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
+    		}
+    	}
+    	
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
+        return "events/ageGenderRankings";
+    }
+
+    @RequestMapping(value = "/ageGenderRankings/update", method = RequestMethod.GET)
+    public static String updateAgeGenderRankings(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "gender", required = false, defaultValue = "M") String gender,
+    		HttpServletRequest httpServletRequest) {
+    	Event event = Event.findEvent(eventId);
+    	EventAwardsConfig awardsConfig = event.getAwardsConfig();
+    	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
+    	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
+    	event.setAwardsConfig(awardsConfig);
+    	event.merge();
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
+    }
+
+    @RequestMapping(value = "/awards/update", method = RequestMethod.GET)
+    public static String updateAwards(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		HttpServletRequest httpServletRequest) {
+    	Event event = Event.findEvent(eventId);
+    	EventAwardsConfig awardsConfig = event.getAwardsConfig();
+    	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
+    	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
+    	event.setAwardsConfig(awardsConfig);
+    	event.merge();
+        return "redirect:/events/awards?event="+eventId;
+    }
 
     @RequestMapping(value = "/timeofficial", method = RequestMethod.GET)
     @ResponseBody
@@ -461,7 +535,7 @@ public class EventController {
 
         Event e = Event.findEvent(event);
         List<RaceResult> results = e.getAwards(gender, min, max, size);
-
+        Collections.sort(results);
         return RaceResult.toJsonArray(results);
     }
 
@@ -757,6 +831,53 @@ public class EventController {
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/events";
+    }
+    
+    @RequestMapping(value = "/createAwardCategories", produces = "text/html")
+    public String createAgeGenderRankings(
+    		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "ageMin") int ageMin,
+    		@RequestParam(value = "ageMax") int ageMax,
+    		@RequestParam(value = "ageRange") int ageRange,
+    		@RequestParam(value = "listSize") int listSize,
+    		Model uiModel){
+    	Event event = Event.findEvent(eventId);
+    	// delete old categories
+    	int deleted = new AwardCategory().removeAgeGenderRankingsByEvent(event);
+    	System.out.println("DELETED CATS "+deleted);
+    	// make new categories
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = AwardCategory.createAgeGenderRankings(event, ageMin, ageMax, ageRange, listSize);
+    	for(AwardCategory c:list){
+    		if(c.getGender().trim().isEmpty()){
+    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    		}
+    	}
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
+    }
+    
+    @RequestMapping(value = "/overall", produces = "text/html")
+    public String overallResults(
+    		@RequestParam(value = "event") long eventId,
+    		Model uiModel){
+    	Event event = Event.findEvent(eventId);
+    	List<RaceResult> results = event.getAwards(StringUtils.EMPTY, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
+    	uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("results", results);
+        return "events/overall";
+    }
+
+    
+    class OfficialtimeComparator implements Comparator<RaceResult> {
+        @Override
+        public int compare(RaceResult a, RaceResult b) {
+            return a.getTimeofficialdisplay().compareTo(b.getTimeofficialdisplay());
+        }
     }
     
     void addDateTimeFormatPatterns(Model uiModel) {

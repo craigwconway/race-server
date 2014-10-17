@@ -1,7 +1,9 @@
 package com.bibsmobile.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -10,15 +12,30 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import javax.persistence.Version;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
+
 @Configurable
 @Entity
-public class AwardCategory {
+public class AwardCategory implements Comparable{
+
+	public static final int MIN_AGE = 0;
+	public static final int MAX_AGE = 109;
+	public static final int DEFAULT_LIST_SIZE = 3;
+	public static final int DEFAULT_AGE_SPAN = 9;
+	public static final int MASTERS_MIN = 40;
+	public static final int MASTERS_MAX = 49;
+	public static final int GRANDMASTERS_MIN = 50;
+	public static final int GRANDMASTERS_MAX = MAX_AGE;
 
     @ManyToOne
     private Event event;
@@ -29,16 +46,27 @@ public class AwardCategory {
 	private int ageMin;
 	private int ageMax;
 	private int listSize;
-
-	public static List<AwardCategory> eventDefaults() {
-		List<AwardCategory> awardCategories = new ArrayList<AwardCategory>();
-		AwardCategory awardCategory = new AwardCategory();
-		awardCategory.setName("Overall Winners");
-		awardCategory.setListSize(5);
-		awardCategories.add(awardCategory);
-		return awardCategories;
+	
+	
+	// hack for medals verses age/gender ranking
+	public final static String MEDAL_PREFIX = "Medal: ";
+	private boolean medal; 
+	public boolean isMedal(){
+		return name.startsWith(MEDAL_PREFIX);
 	}
-
+	public void setMedal(boolean bool){
+		setName(bool ? MEDAL_PREFIX + name : name.replaceAll(MEDAL_PREFIX, ""));
+	}
+	
+	// hack for masters vs other medals
+	public static final String MASTERS_TOKEN = "Master";
+	private boolean master;
+	public boolean isMaster(){
+		return name.toLowerCase().contains(MASTERS_TOKEN.toLowerCase());
+	}
+	public void setMaster(boolean bool){
+		setName(MASTERS_TOKEN + " " + getName());
+	}
 
 	public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -211,4 +239,155 @@ public class AwardCategory {
 	public void setListSize(int listSize) {
         this.listSize = listSize;
     }
+	public String toJson() {
+        return new JSONSerializer().exclude("*.class","event").serialize(this);
+    }
+
+	public String toJson(boolean full) {
+        return new JSONSerializer().serialize(this);
+    }
+
+	public static AwardCategory fromJson(String json) {
+        return new JSONDeserializer<AwardCategory>().use(null, AwardCategory.class).deserialize(json);
+    }
+
+	public static String toJsonArray(Collection<AwardCategory> collection) {
+        return new JSONSerializer().exclude("*.class", "event").serialize(collection);
+    }
+
+	public static Collection<AwardCategory> fromJsonArray(String json) {
+        return new JSONDeserializer<List<AwardCategory>>().use(null, ArrayList.class).use("values", AwardCategory.class).deserialize(json);
+    }
+	
+	public static List<AwardCategory> createAgeGenderRankings(final Event event, int ageMin, int ageMax, int ageSpan, int listSize){
+		List<AwardCategory> list = new ArrayList<AwardCategory>();
+		String[] genders = {"M","F"};
+		int i = 0;
+		while(ageMin <= ageMax){
+			int _ageMax = ageMin + ageSpan;
+			for(String gender:genders){
+				AwardCategory c = new AwardCategory();
+				c.setEvent(event);
+				c.setAgeMin(ageMin);
+				c.setAgeMax(_ageMax);
+				c.setGender(gender);
+				c.setListSize(listSize);
+				c.setSortOrder(++i);
+				String title = "Overall ";
+				if(gender=="M") title = "Male ";
+				if(gender=="F") title = "Female ";
+				title += "Ages " + ageMin +" to "+_ageMax;
+				c.setName(title);
+				c.persist();
+				list.add(c);
+			}
+			ageMin = _ageMax+1;
+		}
+		return list;
+	}
+	
+	public static List<AwardCategory> createDefaultMedals(final Event event){
+		List<AwardCategory> list = new ArrayList<AwardCategory>();
+		int i = 0;
+		AwardCategory c = new AwardCategory();
+		c.setName("Top Males Overall");
+		c.setEvent(event);
+		c.setAgeMin(MIN_AGE);
+		c.setAgeMax(MAX_AGE);
+		c.setGender("M");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Females Overall");
+		c.setEvent(event);
+		c.setAgeMin(MIN_AGE);
+		c.setAgeMax(MAX_AGE);
+		c.setGender("F");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Male Masters");
+		c.setEvent(event);
+		c.setAgeMin(MASTERS_MIN);
+		c.setAgeMax(MASTERS_MAX);
+		c.setGender("M");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Female Masters");
+		c.setEvent(event);
+		c.setAgeMin(MASTERS_MIN);
+		c.setAgeMax(MASTERS_MAX);
+		c.setGender("F");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Male Grand Masters");
+		c.setEvent(event);
+		c.setAgeMin(GRANDMASTERS_MIN);
+		c.setAgeMax(GRANDMASTERS_MAX);
+		c.setGender("M");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		c = new AwardCategory();
+		c.setName("Top Female Grand Masters");
+		c.setEvent(event);
+		c.setAgeMin(GRANDMASTERS_MIN);
+		c.setAgeMax(GRANDMASTERS_MAX);
+		c.setGender("F");
+		c.setListSize(DEFAULT_LIST_SIZE);
+		c.setSortOrder(++i);
+		c.setMedal(true);
+		c.persist();
+		list.add(c);
+		
+		return list;
+	}
+
+	public static List<AwardCategory> findByEvent(Event event) {
+        EntityManager em = AwardCategory.entityManager();
+        String jpaQuery = "SELECT o FROM AwardCategory AS o WHERE o.event = :event";
+        jpaQuery = jpaQuery + " ORDER BY o.sortOrder ASC";
+        TypedQuery<AwardCategory> q = em.createQuery(jpaQuery, AwardCategory.class);
+        q.setParameter("event", event);
+        return q.getResultList();
+    }
+
+	@Transactional
+	public int removeAgeGenderRankingsByEvent(Event event) {
+        EntityManager em = AwardCategory.entityManager();
+        String jpaQuery = "DELETE FROM AwardCategory AS o WHERE o.event = :event AND o.name NOT LIKE '"+AwardCategory.MEDAL_PREFIX+"%'";
+        Query q = em.createQuery(jpaQuery);
+        q.setParameter("event", event);
+        return q.executeUpdate();
+    }
+
+	@Override
+	public int compareTo(Object o) {
+		if(o instanceof AwardCategory){
+			return getSortOrder() - ((AwardCategory)o).getSortOrder();
+		}
+		return 0;
+	}
+	
 }

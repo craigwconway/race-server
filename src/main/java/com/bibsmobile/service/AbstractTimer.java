@@ -39,7 +39,6 @@ public abstract class AbstractTimer implements Timer {
 		}
 
 	}
-	
 	public void logTime(final int bibnum, long bibtime, final TimerConfig timerConfig) {
 		bibtime = bibtime / 1000; //microseconds
 		final String slog = Thread.currentThread().getName() +" " + getClass().getName();
