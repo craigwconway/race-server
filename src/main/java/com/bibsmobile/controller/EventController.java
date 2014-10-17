@@ -452,9 +452,13 @@ public class EventController {
     		@RequestParam(value = "event", required = true) Long eventId,
     		Model uiModel) {
     	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> list = event.calculateMedals(event);
+    	for(AwardCategoryResults c:list){
+    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
+    	}
     	uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
-        uiModel.addAttribute("awardCategoryResults", event.calculateMedals(event));
+        uiModel.addAttribute("awardCategoryResults", list);
         return "events/awards";
     }
 

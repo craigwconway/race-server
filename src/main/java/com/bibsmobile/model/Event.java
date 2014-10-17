@@ -324,7 +324,6 @@ public class Event {
 		List<String> awarded = new ArrayList<String>();
     	for(AwardCategory c:event.getAwardCategorys()){
     		if(c.isMedal()){
-    			c.setName(c.getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
     			List<RaceResult> rr = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)
     					: event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs);
     			results.add(new AwardCategoryResults(c,rr));
