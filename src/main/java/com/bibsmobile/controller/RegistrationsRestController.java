@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.bibsmobile.model.*;
+import com.bibsmobile.util.UserProfileUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,11 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bibsmobile.model.Cart;
-import com.bibsmobile.model.CartItem;
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.EventCartItem;
-import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.JSONUtil;
 
 @RequestMapping("/rest/registrations")
@@ -31,7 +28,7 @@ public class RegistrationsRestController {
             @RequestParam(value = "lastName", required = false) String lastName, @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "count", required = false) Integer count, HttpServletRequest request) {
         try {
-
+            // sanity check given parameters
             Event event = Event.findEvent(eventId);
             if (event == null)
                 return new ResponseEntity<String>(JSONUtil.convertErrorMessage("event not found"), HttpStatus.NOT_FOUND);
@@ -40,6 +37,33 @@ public class RegistrationsRestController {
             if (!(firstNameGiven || lastNameGiven))
                 return new ResponseEntity<String>(JSONUtil.convertErrorMessage("firstName or lastName has to be included"), HttpStatus.BAD_REQUEST);
 
+            // check the rights the user has for event
+            UserAuthority authorityForEvent = null;
+            UserProfile user = UserProfileUtil.getLoggedInUserProfile();
+            if (user != null) {
+                for (UserAuthorities ua : user.getUserAuthorities()) {
+                    // sys admins have all permissions anyways
+                    if (ua.getUserAuthority().isAuthority(UserAuthority.SYS_ADMIN)) {
+                        authorityForEvent = ua.getUserAuthority();
+                        break;
+                    }
+                    // check permissions specific to event
+                    for (UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+                        for (EventUserGroup eug : ugua.getUserGroup().getEventUserGroups()) {
+                            if (eug.getEvent().equals(event)) {
+                                authorityForEvent = ua.getUserAuthority();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            // sys admins have access in general, event admins if they are associated with the event (see search above)
+            if (authorityForEvent == null || (!authorityForEvent.isAuthority(UserAuthority.SYS_ADMIN) && !authorityForEvent.isAuthority(UserAuthority.EVENT_ADMIN))) {
+                return new ResponseEntity<String>(JSONUtil.convertErrorMessage("no rights for this event"), HttpStatus.UNAUTHORIZED);
+            }
+
+            // get relevant carts for event
             Set<Cart> carts = new HashSet<Cart>();
             List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
             if (!eventCartItems.isEmpty()) {
@@ -49,6 +73,7 @@ public class RegistrationsRestController {
                 }
             }
 
+            // filter carts by first & last name
             List<ShortCart> registrations = new LinkedList<ShortCart>();
             for (Cart c : carts) {
                 ShortCart r = new ShortCart(c);

@@ -30,6 +30,10 @@ import flexjson.JSONSerializer;
 @Entity
 @SuppressWarnings({ "serial" })
 public class UserAuthority implements org.springframework.security.core.GrantedAuthority {
+    public static final String SYS_ADMIN = "ROLE_SYS_ADMIN";
+    public static final String EVENT_ADMIN = "ROLE_EVENT_ADMIN";
+    public static final String USER_ADMIN = "ROLE_USER_ADMIN";
+    public static final String USER = "ROLE_USER";
 
     @NotNull
     private String authority;
@@ -38,6 +42,8 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
     public String getAuthority() {
         return this.authority;
     }
+
+    public boolean isAuthority(String authority) { return this.authority.equals(authority); }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.userAuthority", cascade = CascadeType.ALL)
     private Set<UserAuthorities> userAuthorities;

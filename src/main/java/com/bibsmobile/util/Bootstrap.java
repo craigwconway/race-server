@@ -80,7 +80,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         // store default roles
         if (UserAuthority.countUserAuthoritys() < 1) {
-            for (String authorityName : new String[] { "ROLE_SYS_ADMIN", "ROLE_EVENT_ADMIN", "ROLE_USER_ADMIN", "ROLE_USER" }) {
+            for (String authorityName : new String[] { UserAuthority.SYS_ADMIN, UserAuthority.EVENT_ADMIN, UserAuthority.USER_ADMIN, UserAuthority.USER }) {
                 userAuthority = new UserAuthority();
                 userAuthority.setAuthority(authorityName);
                 userAuthority.persist();
