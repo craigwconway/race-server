@@ -24,6 +24,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Years;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,8 +47,6 @@ public class UserProfile implements UserDetails {
     private String city;
 
     private String state;
-
-    private int age;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "MM-dd-yyyy")
@@ -254,11 +254,7 @@ public class UserProfile implements UserDetails {
     }
 
     public int getAge() {
-        return this.age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
+        return Years.yearsBetween(new DateTime(this.birthdate), new DateTime()).getYears();
     }
 
     public Date getBirthdate() {
