@@ -38,7 +38,7 @@ public class EventAlertController {
         List<Event> events = new ArrayList<>();
         events.add(event);
         uiModel.addAttribute("events", events);
-        populateEditForm(uiModel, eventAlert);
+        this.populateEditForm(uiModel, eventAlert);
         return "eventalerts/create";
     }
 
@@ -48,7 +48,7 @@ public class EventAlertController {
         List<Event> events = new ArrayList<>();
         events.add(eventAlert.getEvent());
         uiModel.addAttribute("events", events);
-        populateEditForm(uiModel, eventAlert);
+        this.populateEditForm(uiModel, eventAlert);
         return "eventalerts/update";
     }
 
@@ -84,12 +84,12 @@ public class EventAlertController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventAlert eventAlert, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventAlert);
+            this.populateEditForm(uiModel, eventAlert);
             return "eventalerts/create";
         }
         uiModel.asMap().clear();
         eventAlert.persist();
-        return "redirect:/eventalerts/" + encodeUrlPathSegment(eventAlert.getId().toString(), httpServletRequest);
+        return "redirect:/eventalerts/" + this.encodeUrlPathSegment(eventAlert.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
@@ -102,12 +102,12 @@ public class EventAlertController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EventAlert eventAlert, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventAlert);
+            this.populateEditForm(uiModel, eventAlert);
             return "eventalerts/update";
         }
         uiModel.asMap().clear();
         eventAlert.merge();
-        return "redirect:/eventalerts/" + encodeUrlPathSegment(eventAlert.getId().toString(), httpServletRequest);
+        return "redirect:/eventalerts/" + this.encodeUrlPathSegment(eventAlert.getId().toString(), httpServletRequest);
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
@@ -129,9 +129,9 @@ public class EventAlertController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (eventAlert == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(eventAlert.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(eventAlert.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -140,7 +140,7 @@ public class EventAlertController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<EventAlert> result = EventAlert.findAllEventAlerts();
-        return new ResponseEntity<String>(EventAlert.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventAlert.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -149,9 +149,9 @@ public class EventAlertController {
         eventAlert.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventAlert.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventAlert.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -161,7 +161,7 @@ public class EventAlertController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -171,9 +171,9 @@ public class EventAlertController {
         EventAlert eventAlert = EventAlert.fromJsonToEventAlert(json);
         eventAlert.setId(id);
         if (eventAlert.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -182,10 +182,10 @@ public class EventAlertController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (eventAlert == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         eventAlert.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
@@ -193,6 +193,6 @@ public class EventAlertController {
     public ResponseEntity<String> jsonFindEventAlertsByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(EventAlert.toJsonArray(EventAlert.findEventAlertsByEvent(event).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventAlert.toJsonArray(EventAlert.findEventAlertsByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
 }

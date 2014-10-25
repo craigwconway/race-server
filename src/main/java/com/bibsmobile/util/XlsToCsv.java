@@ -25,6 +25,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -188,7 +189,7 @@ public class XlsToCsv {
      *             Thrown if the xml markup encountered whilst parsing a
      *             SpreadsheetML file (.xlsx) is invalid.
      */
-    public void convertExcelToCSV(String strSource, String strDestination) throws FileNotFoundException, IOException, IllegalArgumentException, InvalidFormatException {
+    public void convertExcelToCSV(String strSource, String strDestination) throws IOException, IllegalArgumentException, InvalidFormatException {
 
         // Simply chain the call to the overloaded convertExcelToCSV(String,
         // String, String, int) method, pass the default separator and ensure
@@ -376,7 +377,7 @@ public class XlsToCsv {
      *             Thrown if invalid xml is found whilst parsing an input
      *             SpreadsheetML file.
      */
-    private void openWorkbook(File file) throws FileNotFoundException, IOException, InvalidFormatException {
+    private void openWorkbook(File file) throws IOException, InvalidFormatException {
         FileInputStream fis = null;
         try {
             System.out.println("Opening workbook [" + file.getName() + "]");
@@ -448,10 +449,10 @@ public class XlsToCsv {
      *             Thrown to indicate and error occurred in the underylying file
      *             system.
      */
-    private void saveCSVFile(File file) throws FileNotFoundException, IOException {
+    private void saveCSVFile(File file) throws IOException {
         FileWriter fw = null;
         BufferedWriter bw = null;
-        ArrayList<String> line = null;
+        List<String> line = null;
         StringBuffer buffer = null;
         String csvLineElement = null;
         try {
@@ -529,7 +530,7 @@ public class XlsToCsv {
     public String rowToCSV(Row row) {
         Cell cell = null;
         int lastCellNum = 0;
-        ArrayList<String> csvLine = new ArrayList<String>();
+        ArrayList<String> csvLine = new ArrayList<>();
 
         // Check to ensure that a row was recovered from the sheet as it is
         // possible that one or more rows between other populated rows could be

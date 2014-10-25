@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -33,7 +34,7 @@ public class AwardCategory {
     private int listSize;
 
     public static List<AwardCategory> eventDefaults() {
-        List<AwardCategory> awardCategories = new ArrayList<AwardCategory>();
+        List<AwardCategory> awardCategories = new ArrayList<>();
         AwardCategory awardCategory = new AwardCategory();
         awardCategory.setName("Overall Winners");
         awardCategory.setListSize(5);
@@ -49,9 +50,9 @@ public class AwardCategory {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "sortOrder", "name", "gender", "ageMin", "ageMax", "listSize");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "sortOrder", "name", "gender", "ageMin", "ageMax", "listSize");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new AwardCategory().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

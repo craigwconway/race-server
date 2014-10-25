@@ -39,7 +39,7 @@ public class EventCartItemController {
         List<Event> l = new ArrayList<>();
         l.add(e);
         uiModel.addAttribute("events", l);
-        populateEditForm(uiModel, i);
+        this.populateEditForm(uiModel, i);
         return "eventitems/create";
     }
 
@@ -49,13 +49,13 @@ public class EventCartItemController {
         List<Event> l = new ArrayList<>();
         l.add(i.getEvent());
         uiModel.addAttribute("events", l);
-        populateEditForm(uiModel, i);
+        this.populateEditForm(uiModel, i);
         return "eventitems/update";
     }
 
     void populateEditForm(Model uiModel, EventCartItem eventCartItem) {
         uiModel.addAttribute("eventCartItem", eventCartItem);
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
     }
 
     @RequestMapping(produces = "text/html")
@@ -63,7 +63,7 @@ public class EventCartItemController {
         Event e = Event.findEvent(event);
         uiModel.addAttribute("event", e);
         uiModel.addAttribute("eventcartitems", EventCartItem.findEventCartItemsByEvent(e).getResultList());
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         return "eventitems/list";
     }
 
@@ -130,7 +130,7 @@ public class EventCartItemController {
     public ResponseEntity<String> jsonFindEventCartItemsByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByEvent(event).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByType", headers = "Accept=application/json")
@@ -138,7 +138,7 @@ public class EventCartItemController {
     public ResponseEntity<String> jsonFindEventCartItemsByType(@RequestParam("type") EventCartItemTypeEnum type) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByType(type).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventCartItem.toJsonArray(EventCartItem.findEventCartItemsByType(type).getResultList()), headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -148,9 +148,9 @@ public class EventCartItemController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (eventCartItem == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(eventCartItem.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(eventCartItem.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -159,7 +159,7 @@ public class EventCartItemController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<EventCartItem> result = EventCartItem.findAllEventCartItems();
-        return new ResponseEntity<String>(EventCartItem.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventCartItem.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -169,7 +169,7 @@ public class EventCartItemController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -179,9 +179,9 @@ public class EventCartItemController {
         EventCartItem eventCartItem = EventCartItem.fromJsonToEventCartItem(json);
         eventCartItem.setId(id);
         if (eventCartItem.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -190,26 +190,26 @@ public class EventCartItemController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (eventCartItem == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         eventCartItem.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventCartItem eventCartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventCartItem);
+            this.populateEditForm(uiModel, eventCartItem);
             return "eventitems/create";
         }
         uiModel.asMap().clear();
         eventCartItem.persist();
-        return "redirect:/eventitems/" + encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
+        return "redirect:/eventitems/" + this.encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("eventcartitem", EventCartItem.findEventCartItem(id));
         uiModel.addAttribute("itemId", id);
         return "eventitems/show";
@@ -218,12 +218,12 @@ public class EventCartItemController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EventCartItem eventCartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventCartItem);
+            this.populateEditForm(uiModel, eventCartItem);
             return "eventitems/update";
         }
         uiModel.asMap().clear();
         eventCartItem.merge();
-        return "redirect:/eventitems/" + encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
+        return "redirect:/eventitems/" + this.encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
     }
 
     void addDateTimeFormatPatterns(Model uiModel) {

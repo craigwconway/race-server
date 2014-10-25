@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.bibsmobile.model.*;
 import com.bibsmobile.util.UserProfileUtil;
 import org.springframework.http.HttpStatus;
@@ -26,16 +24,16 @@ public class RegistrationsRestController {
     @RequestMapping(value = "/search", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
     public ResponseEntity<String> search(@RequestParam("event") Long eventId, @RequestParam(value = "firstName", required = false) String firstName,
             @RequestParam(value = "lastName", required = false) String lastName, @RequestParam(value = "start", required = false) Integer start,
-            @RequestParam(value = "count", required = false) Integer count, HttpServletRequest request) {
+            @RequestParam(value = "count", required = false) Integer count) {
         try {
             // sanity check given parameters
             Event event = Event.findEvent(eventId);
             if (event == null)
-                return new ResponseEntity<String>(JSONUtil.convertErrorMessage("event not found"), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(JSONUtil.convertErrorMessage("event not found"), HttpStatus.NOT_FOUND);
             boolean firstNameGiven = (firstName != null && !firstName.isEmpty());
             boolean lastNameGiven = (lastName != null && !lastName.isEmpty());
             if (!(firstNameGiven || lastNameGiven))
-                return new ResponseEntity<String>(JSONUtil.convertErrorMessage("firstName or lastName has to be included"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(JSONUtil.convertErrorMessage("firstName or lastName has to be included"), HttpStatus.BAD_REQUEST);
 
             // check the rights the user has for event
             UserAuthority authorityForEvent = null;
@@ -60,11 +58,11 @@ public class RegistrationsRestController {
             }
             // sys admins have access in general, event admins if they are associated with the event (see search above)
             if (authorityForEvent == null || (!authorityForEvent.isAuthority(UserAuthority.SYS_ADMIN) && !authorityForEvent.isAuthority(UserAuthority.EVENT_ADMIN))) {
-                return new ResponseEntity<String>(JSONUtil.convertErrorMessage("no rights for this event"), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(JSONUtil.convertErrorMessage("no rights for this event"), HttpStatus.UNAUTHORIZED);
             }
 
             // get relevant carts for event
-            Set<Cart> carts = new HashSet<Cart>();
+            Set<Cart> carts = new HashSet<>();
             List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
             if (!eventCartItems.isEmpty()) {
                 List<CartItem> cartItems = CartItem.findCompletedCartItemsByEventCartItems(eventCartItems, true).getResultList();
@@ -74,7 +72,7 @@ public class RegistrationsRestController {
             }
 
             // filter carts by first & last name
-            List<ShortCart> registrations = new LinkedList<ShortCart>();
+            List<ShortCart> registrations = new LinkedList<>();
             for (Cart c : carts) {
                 ShortCart r = new ShortCart(c);
                 boolean foundUser = false;
@@ -91,10 +89,10 @@ public class RegistrationsRestController {
                     registrations.add(r);
             }
 
-            return new ResponseEntity<String>(JSONUtil.convertPaginated(start, count, registrations), HttpStatus.OK);
+            return new ResponseEntity<>(JSONUtil.convertPaginated(start, count, registrations), HttpStatus.OK);
 
         } catch (Exception e) {
-            return new ResponseEntity<String>(JSONUtil.convertException(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(JSONUtil.convertException(e), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -109,33 +107,30 @@ public class RegistrationsRestController {
         private final int status;
         private final List<ShortCartItem> cartItems;
 
-        public ShortCart(Cart c) {
+        private ShortCart(Cart c) {
+            super();
             this.id = c.getId();
             this.created = c.getCreated();
             this.total = c.getTotal();
             this.status = c.getStatus();
-            this.cartItems = new LinkedList<ShortCartItem>();
+            this.cartItems = new LinkedList<>();
             for (CartItem ci : c.getCartItems()) {
                 this.cartItems.add(new ShortCartItem(ci));
             }
         }
 
-        @SuppressWarnings("unused")
         public Long getId() {
             return this.id;
         }
 
-        @SuppressWarnings("unused")
         public Date getCreated() {
             return this.created;
         }
 
-        @SuppressWarnings("unused")
         public double getTotal() {
             return this.total;
         }
 
-        @SuppressWarnings("unused")
         public int getStatus() {
             return this.status;
         }
@@ -150,14 +145,14 @@ public class RegistrationsRestController {
             private final String lastName;
             private final Date birthDate;
 
-            public ShortUser(UserProfile u) {
+            private ShortUser(UserProfile u) {
+                super();
                 this.id = u.getId();
                 this.firstName = u.getFirstname();
                 this.lastName = u.getLastname();
                 this.birthDate = u.getBirthdate();
             }
 
-            @SuppressWarnings("unused")
             public Long getId() {
                 return this.id;
             }
@@ -170,7 +165,6 @@ public class RegistrationsRestController {
                 return this.lastName;
             }
 
-            @SuppressWarnings("unused")
             public Date getBirthdate() {
                 return this.birthDate;
             }
@@ -184,7 +178,8 @@ public class RegistrationsRestController {
             private final String size;
             private final double price;
 
-            public ShortCartItem(CartItem c) {
+            private ShortCartItem(CartItem c) {
+                super();
                 this.id = c.getId();
                 this.user = new ShortUser(c.getUserProfile());
                 this.quantity = c.getQuantity();
@@ -193,7 +188,6 @@ public class RegistrationsRestController {
                 this.price = c.getPrice();
             }
 
-            @SuppressWarnings("unused")
             public Long getId() {
                 return this.id;
             }
@@ -202,22 +196,18 @@ public class RegistrationsRestController {
                 return this.user;
             }
 
-            @SuppressWarnings("unused")
             public int getQuantity() {
                 return this.quantity;
             }
 
-            @SuppressWarnings("unused")
             public String getColor() {
                 return this.color;
             }
 
-            @SuppressWarnings("unused")
             public String getSize() {
                 return this.size;
             }
 
-            @SuppressWarnings("unused")
             public double getPrice() {
                 return this.price;
             }

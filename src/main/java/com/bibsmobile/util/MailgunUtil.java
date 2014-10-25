@@ -8,8 +8,12 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
-public class MailgunUtil {
+public final class MailgunUtil {
     public static final String CC_EMAIL = "hello@mybibs.co";
+
+    private MailgunUtil() {
+        super();
+    }
 
     public static boolean send(String to, String subject, String message) {
         Client client = Client.create();

@@ -11,7 +11,11 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 
-public class DropboxUtil {
+public final class DropboxUtil {
+
+    private DropboxUtil() {
+        super();
+    }
 
     /**
      * returns the DbxClient instance to be used for API requests

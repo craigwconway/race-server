@@ -29,8 +29,12 @@ import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.UserProfile;
 
-public class ResultsFileUtil {
+public final class ResultsFileUtil {
     private static final String RESULT_FILE_LOCATION = "/data/";
+
+    private ResultsFileUtil() {
+        super();
+    }
 
     /**
      * guesses the mime type of a given file currently supported: - text/csv
@@ -154,7 +158,11 @@ public class ResultsFileUtil {
         return ResultsFileUtil.getResultsFileIterator(resultsFile).next();
     }
 
-    public static class ResultsFileIteratorFactory {
+    private static final class ResultsFileIteratorFactory {
+        private ResultsFileIteratorFactory() {
+            super();
+        }
+
         public static ResultsFileIterator build(ResultsFile resultsFile) {
             try {
                 File file = new File(resultsFile.getFilePath());
@@ -186,6 +194,7 @@ public class ResultsFileUtil {
         private String[] nextLine;
 
         protected ResultsFileCSVIterator(File file) throws FileNotFoundException {
+            super();
             // not using the csvreader-iterator because it reads whole file at
             // once according to doc
             // TODO make compiler understand that this is okay

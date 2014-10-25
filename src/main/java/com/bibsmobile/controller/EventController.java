@@ -74,15 +74,14 @@ public class EventController {
     private SimpleMailMessage eventMessage;
 
     @RequestMapping(value = "/registrationComplete", method = RequestMethod.GET)
-    public static String registrationComplete(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
-
+    public static String registrationComplete(@RequestParam(value = "event", required = true) Long event) {
         return "events/registrationComplete";
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, event);
+            this.populateEditForm(uiModel, event);
             return "events/create";
         }
         uiModel.asMap().clear();
@@ -108,7 +107,7 @@ public class EventController {
          */
         event.persist();
 
-        return "redirect:/events/" + encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
+        return "redirect:/events/" + this.encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -145,7 +144,7 @@ public class EventController {
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
             String line;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((line = rd.readLine()) != null) {
                 response.append(line);
                 // response.append('\r');
@@ -180,15 +179,13 @@ public class EventController {
                 result += line;
             }
             rd.close();
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
         return result;
     }
 
-    public static String doDelete(String targetURL) {
+    /*public static String doDelete(String targetURL) {
         URL url;
         HttpURLConnection conn;
         BufferedReader rd;
@@ -204,13 +201,11 @@ public class EventController {
                 result += line;
             }
             rd.close();
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
         return result;
-    }
+    }*/
 
     @RequestMapping(value = "/cloud", method = RequestMethod.GET)
     @ResponseBody
@@ -232,7 +227,7 @@ public class EventController {
             log.info("cloud " + event1.getId() + " " + event1.getName());
             // login TODO
             // remove server runners
-            doPost(serverUrl + "/events/" + event1.getId(), "_method=DELETE&x=7&y=10", false);
+            EventController.doPost(serverUrl + "/events/" + event1.getId(), "_method=DELETE&x=7&y=10", false);
             log.info("cloud delete " + event1.getId() + " " + event1.getName());
             // loop through and add runners
             // List<RaceResult> runners = Event.findRaceResults(_eventId, 1,
@@ -259,7 +254,7 @@ public class EventController {
             }
             json.append("]");
             log.info("cloud sync: " + json);
-            doPost(serverUrl + "/raceresults/jsonArray", json.toString(), true);
+            EventController.doPost(serverUrl + "/raceresults/jsonArray", json.toString(), true);
 
             log.info("cloud synced ");
             return "true";
@@ -335,7 +330,7 @@ public class EventController {
             // bib vs chip start
             long starttime = 0l;
             if (result.getTimestart() > 0) {
-                starttime = Long.valueOf(result.getTimestart());
+                starttime = result.getTimestart();
             } else {
                 starttime = event.getGunTime().getTime();
                 result.setTimestart(starttime);
@@ -354,7 +349,7 @@ public class EventController {
     @ResponseBody
     public static String featured(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
-        StringBuffer rtn = new StringBuffer();
+        StringBuilder rtn = new StringBuilder();
         try {
             rtn.append(Event.toJsonArray(Event.findEventsByFeaturedGreaterThan(0, page, size).getResultList()));
         } catch (Exception e) {
@@ -367,7 +362,7 @@ public class EventController {
     @ResponseBody
     public static String byName(@PathVariable String eventName, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
-        StringBuffer rtn = new StringBuffer();
+        StringBuilder rtn = new StringBuilder();
         try {
             rtn.append(Event.toJsonArray(Event.findEventsByNameLike(eventName, page, size).getResultList()));
         } catch (Exception e) {
@@ -392,8 +387,8 @@ public class EventController {
     @RequestMapping(value = "/future", method = RequestMethod.GET)
     @ResponseBody
     public static String future(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size, Integer featured) {
-        StringBuffer rtn = new StringBuffer();
+            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+        StringBuilder rtn = new StringBuilder();
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
@@ -410,7 +405,7 @@ public class EventController {
     @ResponseBody
     public static String past(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
-        StringBuffer rtn = new StringBuffer();
+        StringBuilder rtn = new StringBuilder();
         Calendar today = Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY, 0);
         today.set(Calendar.MINUTE, 0);
@@ -493,7 +488,7 @@ public class EventController {
 
     void populateEditForm(Model uiModel, Event event) {
         uiModel.addAttribute("event", event);
-        addDateTimeFormatPatterns1(uiModel);
+        this.addDateTimeFormatPatterns1(uiModel);
     }
 
     void addDateTimeFormatPatterns1(Model uiModel) {
@@ -528,7 +523,7 @@ public class EventController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, event);
+            this.populateEditForm(uiModel, event);
             return "events/update";
         }
 
@@ -546,7 +541,7 @@ public class EventController {
 
         uiModel.asMap().clear();
         event.merge();
-        return "redirect:/events/" + encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
+        return "redirect:/events/" + this.encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/bystateandcity", method = RequestMethod.GET)
@@ -603,12 +598,12 @@ public class EventController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<Event> result = Event.findAllEvents();
-        return new ResponseEntity<String>(Event.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(Event.toJsonArray(result), headers, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/notify")
-    public @ResponseBody
-    String notifyParticipants(@RequestParam Long eventId) {
+    @ResponseBody
+    @RequestMapping("/notify")
+    public String notifyParticipants(@RequestParam Long eventId) {
         Event event = Event.findEvent(eventId);
         if (event == null) {
             return "[]";
@@ -616,7 +611,7 @@ public class EventController {
         List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
         List<EventCartItem> validEventCartItems = new ArrayList<>();
         for (EventCartItem eventCartItem : eventCartItems) {
-            if (eventCartItem.getType().equals(EventCartItemTypeEnum.TICKET)) {
+            if (eventCartItem.getType() == EventCartItemTypeEnum.TICKET) {
                 validEventCartItems.add(eventCartItem);
             }
         }
@@ -673,13 +668,13 @@ public class EventController {
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new Event());
+        this.populateEditForm(uiModel, new Event());
         return "events/create";
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
-    public String show(@PathVariable("id") Long id, Model uiModel, HttpServletRequest request) {
-        addDateTimeFormatPatterns(uiModel);
+    public String show(@PathVariable("id") Long id, Model uiModel) {
+        this.addDateTimeFormatPatterns(uiModel);
         Event e = Event.findEvent(id);
         ResultsFile latestImportFile = e.getLatestImportFile();
         ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());
@@ -694,14 +689,14 @@ public class EventController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> showJson(@PathVariable("id") Long id, Model uiModel) {
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
         Event event = Event.findEvent(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (event == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(event.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(produces = "text/html")
@@ -716,13 +711,13 @@ public class EventController {
         } else {
             uiModel.addAttribute("events", Event.findAllEvents(sortFieldName, sortOrder));
         }
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         return "events/list";
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, Event.findEvent(id));
+        this.populateEditForm(uiModel, Event.findEvent(id));
         return "events/update";
     }
 

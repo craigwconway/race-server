@@ -8,9 +8,13 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JSONUtil {
+public final class JSONUtil {
     private static final Logger log = LoggerFactory.getLogger(JSONUtil.class);
     private static final ObjectMapper objMapper = new ObjectMapper();
+
+    private JSONUtil() {
+        super();
+    }
 
     /**
      * converts an object to a json object
@@ -49,7 +53,7 @@ public class JSONUtil {
      */
     public static <T> String convertPaginated(Integer start, Integer count, List<T> results) {
         try {
-            Pagination<T> p = new Pagination<T>(start, count, results);
+            Pagination<T> p = new Pagination<>(start, count, results);
             return JSONUtil.convertObject(p);
         } catch (Exception e) {
             return JSONUtil.convertException(e);
@@ -59,22 +63,23 @@ public class JSONUtil {
     private static class ErrorMessage {
         private final String error;
 
-        public ErrorMessage(String error) {
+        private ErrorMessage(String error) {
+            super();
             this.error = error;
         }
 
-        @SuppressWarnings("unused")
         public String getError() {
             return this.error;
         }
     }
 
     private static class Pagination<T> {
-        private int start; // how many results skipped from start
-        private int count; // how many results to return
+        private final int start; // how many results skipped from start
+        private final int count; // how many results to return
         private final List<T> results; // results
 
-        public Pagination(Integer start, Integer count, List<T> results) {
+        private Pagination(Integer start, Integer count, List<T> results) {
+            super();
             if (start == null)
                 this.start = 0;
             else
@@ -86,7 +91,6 @@ public class JSONUtil {
             this.results = results;
         }
 
-        @SuppressWarnings("unused")
         public int getTotal() {
             return this.results.size();
         }
@@ -99,7 +103,6 @@ public class JSONUtil {
             return this.count;
         }
 
-        @SuppressWarnings("unused")
         public List<T> getResults() {
             return this.results.subList(this.getStart(), this.getStart() + this.getCount());
         }

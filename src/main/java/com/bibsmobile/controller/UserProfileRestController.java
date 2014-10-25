@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +36,6 @@ import com.bibsmobile.util.UserProfileUtil;
 
 import flexjson.JSONSerializer;
 
-/**
- * Created by Jevgeni on 11.06.2014.
- */
 @RequestMapping("/rest/userpofiles")
 @Controller
 public class UserProfileRestController {
@@ -51,8 +46,8 @@ public class UserProfileRestController {
     private static final Map<String, String> userNameExistsResponse = Collections.unmodifiableMap(new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
         {
-            put("status", "error");
-            put("msg", "Username already exist");
+            this.put("status", "error");
+            this.put("msg", "Username already exist");
         }
     });
 
@@ -88,7 +83,7 @@ public class UserProfileRestController {
         }
 
         // automatically authenticate user
-        authenticateRegisteredUser(userProfile);
+        this.authenticateRegisteredUser(userProfile);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -96,20 +91,20 @@ public class UserProfileRestController {
     }
 
     @RequestMapping(value = "/current", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> updateCurrentUser(@RequestBody String json, HttpServletRequest request) {
+    public ResponseEntity<String> updateCurrentUser(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
 
         UserProfile currentUser = UserProfileUtil.getLoggedInUserProfile();
         if (currentUser == null)
-            return new ResponseEntity<String>("{\"status\": \"error\", \"msg\": \"not logged in\"}", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("{\"status\": \"error\", \"msg\": \"not logged in\"}", HttpStatus.UNAUTHORIZED);
 
         UserProfile updatedUser = UserProfile.fromJsonToUserProfile(json);
 
         // check that username and id are equal
         boolean sameId = currentUser.getId().equals(updatedUser.getId());
         if (!sameId)
-            return new ResponseEntity<String>("{\"status\": \"error\", \"msg\": \"your user is " + currentUser.getId() + "\"}", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("{\"status\": \"error\", \"msg\": \"your user is " + currentUser.getId() + "\"}", HttpStatus.UNAUTHORIZED);
         boolean usernameChanged = !currentUser.getUsername().equals(updatedUser.getUsername());
         if (usernameChanged && CollectionUtils.isNotEmpty(UserProfile.findUserProfilesByUsernameEquals(updatedUser.getUsername()).getResultList())) {
             return new ResponseEntity<>(new JSONSerializer().serialize(userNameExistsResponse), headers, HttpStatus.BAD_REQUEST);
@@ -159,11 +154,11 @@ public class UserProfileRestController {
 
         currentUser.persist();
 
-        return new ResponseEntity<String>(updatedUser.toJson(), HttpStatus.OK);
+        return new ResponseEntity<>(updatedUser.toJson(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/checkusername", headers = "Accept=application/json")
-    public ResponseEntity<String> checkUsername(@RequestParam(value = "username") String userName) {
+    public ResponseEntity<String> checkUsername(@RequestParam("username") String userName) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
 
@@ -200,7 +195,7 @@ public class UserProfileRestController {
         userProfile.getUserAuthorities().add(userAuthorities);
         this.userProfileService.saveUserProfile(userProfile);
         userAuthorities.persist();
-        authenticateRegisteredUser(userProfile);
+        this.authenticateRegisteredUser(userProfile);
         return new ResponseEntity<>(new JSONSerializer().exclude("*.class").serialize(userProfile), headers, HttpStatus.CREATED);
     }
 
@@ -255,7 +250,7 @@ public class UserProfileRestController {
             // Cascade.ALL to userGroupUserAuthorities
             userGroup.persist();
         }
-        authenticateRegisteredUser(userProfile);
+        this.authenticateRegisteredUser(userProfile);
         return new ResponseEntity<>(new JSONSerializer().exclude("*.class").serialize(userProfile), headers, HttpStatus.CREATED);
     }
 

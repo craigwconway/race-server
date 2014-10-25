@@ -15,6 +15,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
@@ -70,7 +71,7 @@ public class DropBoxController {
     @Value("${dropbox.com.sessionkey}")
     private String sessionKey;
 
-    private static DbxRequestConfig appConfig = new DbxRequestConfig("Bibs", Locale.getDefault().toString());
+    private static final DbxRequestConfig appConfig = new DbxRequestConfig("Bibs", Locale.getDefault().toString());
 
     public static DbxRequestConfig getAppConfig() {
         return DropBoxController.appConfig;
@@ -89,24 +90,24 @@ public class DropBoxController {
     }
 
     private String getUrl(HttpServletRequest request, String path, String scheme) {
-        return getRootUrl(request, scheme) + path;
+        return this.getRootUrl(request, scheme) + path;
     }
 
     private String getUrl(HttpServletRequest request, String path) {
-        return getUrl(request, path, request.getScheme());
+        return this.getUrl(request, path, request.getScheme());
     }
 
     private String getDropboxUrl(HttpServletRequest request, String path) {
-        return getUrl(request, "dropbox/" + path, (request.getServerName().equals("localhost") ? "http" : "https"));
+        return this.getUrl(request, "dropbox/" + path, (request.getServerName().equals("localhost") ? "http" : "https"));
     }
 
     /**
      * returns the DbxWebAuth to be used for dropbox authentication
      */
     public DbxWebAuth getDbxWebAuth(HttpServletRequest request) {
-        javax.servlet.http.HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession(true);
         DbxSessionStore csrfTokenStore = new DbxStandardSessionStore(session, this.sessionKey);
-        String redirectUrl = getDropboxUrl(request, REDIRECT_URL);
+        String redirectUrl = this.getDropboxUrl(request, REDIRECT_URL);
         return new DbxWebAuth(DropBoxController.appConfig, new DbxAppInfo(this.appKey, this.appSecret), redirectUrl, csrfTokenStore);
     }
 
@@ -194,7 +195,7 @@ public class DropBoxController {
             file.setSha1Checksum(chksum);
             file.persist();
             // reimport
-            doActualImport(file, prevHeaders);
+            this.doActualImport(file, prevHeaders);
             return 1;
         }
         log.info("Results file " + file.getId() + ": checksum " + chksum + " didn't change.");
@@ -210,7 +211,7 @@ public class DropBoxController {
         }
         request.getSession().setAttribute("dropboxEventId", eventId);
         if (up.getDropboxAccessToken() != null) {
-            response.sendRedirect(getDropboxUrl(request, REDIRECT_URL));
+            response.sendRedirect(this.getDropboxUrl(request, DropBoxController.REDIRECT_URL));
             return;
         }
         response.sendRedirect(this.getDbxWebAuth(request).start()); // redirect
@@ -219,9 +220,9 @@ public class DropBoxController {
         return;
     }
 
+    @ResponseBody
     @RequestMapping(value = "/" + REDIRECT_URL, method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<String> authorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<String> authorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserProfile up = UserProfileUtil.getLoggedInUserProfile();
         if (up == null) {
             return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
@@ -255,16 +256,16 @@ public class DropBoxController {
         Long eventId = (Long) request.getSession().getAttribute("dropboxEventId");
         String redirectUrl = null;
         if (eventId != null)
-            redirectUrl = getDropboxUrl(request, PICKER_URL + "?eventId=" + String.valueOf(eventId));
+            redirectUrl = this.getDropboxUrl(request, PICKER_URL + "?eventId=" + eventId);
         else
-            redirectUrl = getUrl(request, "");
+            redirectUrl = this.getUrl(request, "");
         response.sendRedirect(redirectUrl);
         return new ResponseEntity<String>(redirectUrl, HttpStatus.OK);
     }
 
+    @ResponseBody
     @RequestMapping(value = "/" + PICKER_CONTENT_URL, method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<String> filepickerContent(@RequestParam(value = "dropboxPath", required = false) String dropboxPath, HttpServletRequest request, HttpServletResponse response)
+    public ResponseEntity<String> filepickerContent(@RequestParam(value = "dropboxPath", required = false) String dropboxPath, HttpServletRequest request, HttpServletResponse response)
             throws DbxException, IOException {
         String dbToken = UserProfileUtil.getLoggedInDropboxAccessToken();
         if (dbToken == null)
@@ -287,7 +288,7 @@ public class DropBoxController {
     public String filepicker(@RequestParam("eventId") Long eventId, @RequestParam(value = "dropboxPath", required = false) String dropboxPath, Model uiModel,
             HttpServletRequest request, HttpServletResponse response) {
         if (UserProfileUtil.getLoggedInDropboxAccessToken() == null) {
-            return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId));
+            return "redirect:" + this.getDropboxUrl(request, START_URL + "?eventId=" + eventId);
         }
         // check access token
         try {
@@ -298,7 +299,7 @@ public class DropBoxController {
             up.setDropboxId(null);
             up.setDropboxAccessToken(null);
             up.persist();
-            return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId));
+            return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + eventId);
         }
         // render view
         uiModel.addAttribute("eventId", eventId);
@@ -306,9 +307,9 @@ public class DropBoxController {
         return "dropbox/filepicker";
     }
 
+    @ResponseBody
     @RequestMapping(value = "/" + DEAUTH_URL, method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<String> deauth(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> deauth(HttpServletRequest request, HttpServletResponse response) {
         UserProfile up = UserProfileUtil.getLoggedInUserProfile();
         if (up == null)
             return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
@@ -324,9 +325,9 @@ public class DropBoxController {
         return new ResponseEntity<String>("", HttpStatus.OK);
     }
 
+    @ResponseBody
     @RequestMapping(value = "/" + IMPORT_URL, method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<String> importFile(@RequestParam("eventId") Long eventId, @RequestParam("dropboxPath") String dropboxPath, HttpServletRequest request,
+    public ResponseEntity<String> importFile(@RequestParam("eventId") Long eventId, @RequestParam("dropboxPath") String dropboxPath, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         // sanity check arguments
         Event event = Event.findEvent(eventId);
@@ -338,7 +339,7 @@ public class DropBoxController {
         // get dropbox credentials
         String accessToken = UserProfileUtil.getLoggedInDropboxAccessToken();
         if (accessToken == null) {
-            response.sendRedirect(getDropboxUrl(request, START_URL + "?eventId=" + String.valueOf(eventId)));
+            response.sendRedirect(getDropboxUrl(request, START_URL + "?eventId=" + eventId));
             return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
         }
 
@@ -350,19 +351,19 @@ public class DropBoxController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        response.sendRedirect(getUrl(request, MAPPING_URL + "/" + tmpImport.getResultsFileMapping().getId() + "?form"));
+        response.sendRedirect(this.getUrl(request, MAPPING_URL + "/" + tmpImport.getResultsFileMapping().getId() + "?form"));
         return new ResponseEntity<String>("", HttpStatus.OK);
     }
 
+    @ResponseBody
     @RequestMapping(value = "/webhook", method = RequestMethod.GET)
-    public @ResponseBody
-    ResponseEntity<String> webhookVerify(@RequestParam("challenge") String challenge, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> webhookVerify(@RequestParam("challenge") String challenge, HttpServletRequest request, HttpServletResponse response) {
         return new ResponseEntity<String>(challenge, HttpStatus.OK);
     }
 
+    @ResponseBody
     @RequestMapping(value = "/webhook", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<String> webhookReceive(@RequestBody String plainJson, HttpServletRequest request, HttpServletResponse response) throws IOException, NoSuchAlgorithmException,
+    public ResponseEntity<String> webhookReceive(@RequestBody String plainJson, HttpServletRequest request, HttpServletResponse response) throws IOException, NoSuchAlgorithmException,
             InvalidKeyException, InvalidFormatException {
         // check validity of request
         SecretKeySpec keySpec = new SecretKeySpec(this.appSecret.getBytes(), "HmacSHA256");
@@ -387,7 +388,7 @@ public class DropBoxController {
                 // TODO can be done more efficiently, by getting /delta for the
                 // user and only try to update changed files
                 for (ResultsFile rf : up.getResultsFiles()) {
-                    filesUpdated += updateFile(rf);
+                    filesUpdated += this.updateFile(rf);
                 }
             }
         }
@@ -402,6 +403,7 @@ public class DropBoxController {
         private List<DirectoryListEntry> entries;
 
         public DirectoryListRoot(String fullPath, List<DirectoryListEntry> entries) {
+            super();
             this.fullPath = ((fullPath == null || fullPath.isEmpty()) ? "/" : fullPath);
             this.entries = entries;
         }
@@ -429,6 +431,7 @@ public class DropBoxController {
         private String fullPath;
 
         public DirectoryListEntry(String name, boolean directory, String fullPath) {
+            super();
             this.name = name;
             this.directory = directory;
             this.fullPath = fullPath;

@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,9 +45,9 @@ public class StripeController {
         if (loggedInUser == null)
             return null;
 
-        Map<String, Object> customerParams = new HashMap<String, Object>();
+        Map<String, Object> customerParams = new HashMap<>();
         customerParams.put("email", loggedInUser.getEmail());
-        Map<String, Object> customerMetadata = new HashMap<String, Object>();
+        Map<String, Object> customerMetadata = new HashMap<>();
         customerMetadata.put("bibsID", loggedInUser.getId());
         customerParams.put("metadata", customerMetadata);
 
@@ -79,7 +77,7 @@ public class StripeController {
             stripeCustomer.getCards().retrieve(stripeCustomer.getDefaultCard()).delete();
 
         if (cardToken != null) {
-            Map<String, Object> params = new HashMap<String, Object>();
+            Map<String, Object> params = new HashMap<>();
             params.put("card", cardToken);
             return stripeCustomer.createCard(params);
         }
@@ -112,108 +110,108 @@ public class StripeController {
 
     @RequestMapping(value = "/card", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<String> customerCard(HttpServletRequest request) {
+    public ResponseEntity<String> customerCard() {
         // check login status
         UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
         if (loggedInUser == null)
-            return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("not logged in", HttpStatus.UNAUTHORIZED);
 
         // retrieve card
         Stripe.apiKey = this.secretKey;
         try {
-            return new ResponseEntity<String>(this.cardJson(loggedInUser), HttpStatus.OK);
+            return new ResponseEntity<>(this.cardJson(loggedInUser), HttpStatus.OK);
         } catch (CardException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (InvalidRequestException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (APIConnectionException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (APIException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(value = "/card", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> customerCardChange(@RequestParam("stripeToken") String stripeCardToken, HttpServletRequest request) {
+    public ResponseEntity<String> customerCardChange(@RequestParam("stripeToken") String stripeCardToken) {
         // check login status
         UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
         if (loggedInUser == null)
-            return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("not logged in", HttpStatus.UNAUTHORIZED);
 
         Stripe.apiKey = this.secretKey;
         try {
             this.upsertCard(loggedInUser, stripeCardToken);
-            return new ResponseEntity<String>(this.cardJson(loggedInUser), HttpStatus.OK);
+            return new ResponseEntity<>(this.cardJson(loggedInUser), HttpStatus.OK);
         } catch (CardException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (InvalidRequestException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (APIConnectionException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (APIException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(value = "/card", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity<String> customerCardChange(HttpServletRequest request) {
+    public ResponseEntity<String> customerCardChange() {
         // check login status
         UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
         if (loggedInUser == null)
-            return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("not logged in", HttpStatus.UNAUTHORIZED);
 
         Stripe.apiKey = this.secretKey;
         try {
             this.upsertCard(loggedInUser, null);
-            return new ResponseEntity<String>(this.cardJson(loggedInUser), HttpStatus.OK);
+            return new ResponseEntity<>(this.cardJson(loggedInUser), HttpStatus.OK);
         } catch (CardException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         } catch (InvalidRequestException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (AuthenticationException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (APIConnectionException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (APIException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(value = "/chargeCard", method = RequestMethod.GET)
-    public String chargeCardForm(HttpServletRequest request) {
+    public String chargeCardForm() {
         return "stripe/form";
     }
 
     @RequestMapping(value = "/chargeCard", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> chargeCardProcessingJson(@RequestBody String body, HttpServletRequest request) throws IOException {
+    public ResponseEntity<String> chargeCardProcessingJson(@RequestBody String body) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ChargeCardBody parsedJson = mapper.readValue(body, ChargeCardBody.class);
         Long cartId = parsedJson.getCart();
         String stripeCardToken = parsedJson.getCard();
         boolean rememberCard = parsedJson.getRememberCard();
-        return this.chargeCardProcessing(cartId, stripeCardToken, rememberCard, request);
+        return this.chargeCardProcessing(cartId, stripeCardToken, rememberCard);
     }
 
     @RequestMapping(value = "/chargeCardForm", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> chargeCardProcessingForm(@RequestParam("cart") Long cartId, @RequestParam(value = "stripeToken", required = false) String stripeCardToken,
-            @RequestParam(value = "rememberCard", required = false) boolean rememberCard, HttpServletRequest request) {
-        return this.chargeCardProcessing(cartId, stripeCardToken, rememberCard, request);
+            @RequestParam(value = "rememberCard", required = false) boolean rememberCard) {
+        return this.chargeCardProcessing(cartId, stripeCardToken, rememberCard);
     }
 
-    public ResponseEntity<String> chargeCardProcessing(Long cartId, String stripeCardToken, boolean rememberCard, HttpServletRequest request) {
+    public ResponseEntity<String> chargeCardProcessing(Long cartId, String stripeCardToken, boolean rememberCard) {
         Cart c = Cart.findCart(cartId);
         if (c == null)
-            return new ResponseEntity<String>("cart not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("cart not found", HttpStatus.NOT_FOUND);
         if (c.getStatus() != Cart.NEW && c.getStatus() != Cart.SAVED)
-            return new ResponseEntity<String>("cart already processed", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("cart already processed", HttpStatus.BAD_REQUEST);
 
         // in try block, so we can reset cart on failure
         try {
@@ -232,11 +230,11 @@ public class StripeController {
             // failure if no card token provided and no customer saved
             UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
             if (stripeCardToken == null && loggedInUser == null)
-                return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("not logged in", HttpStatus.UNAUTHORIZED);
             if (rememberCard && loggedInUser == null)
-                return new ResponseEntity<String>("not logged in", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("not logged in", HttpStatus.UNAUTHORIZED);
             if (stripeCardToken == null && loggedInUser.getStripeCustomerId() == null)
-                return new ResponseEntity<String>("no credit card saved", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("no credit card saved", HttpStatus.BAD_REQUEST);
 
             // stripe stuff
             Stripe.apiKey = this.secretKey;
@@ -246,19 +244,19 @@ public class StripeController {
                 try {
                     this.upsertCard(loggedInUser, stripeCardToken);
                 } catch (CardException e) {
-                    return new ResponseEntity<String>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+                    return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
                 } catch (InvalidRequestException e) {
-                    return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
                 } catch (AuthenticationException e) {
-                    return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
                 } catch (APIConnectionException e) {
-                    return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
                 } catch (APIException e) {
-                    return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
 
-            Map<String, Object> chargeParams = new HashMap<String, Object>();
+            Map<String, Object> chargeParams = new HashMap<>();
             chargeParams.put("amount", cartTotalCents);
             chargeParams.put("currency", "usd"); // TODO hardcoded for now
             // use customer or card token
@@ -268,7 +266,7 @@ public class StripeController {
                 chargeParams.put("card", stripeCardToken);
             }
             chargeParams.put("description", "Charge for Cart " + c.getId());
-            Map<String, String> initialMetadata = new HashMap<String, String>();
+            Map<String, String> initialMetadata = new HashMap<>();
             initialMetadata.put("order_id", c.getId().toString());
             chargeParams.put("metadata", initialMetadata);
 
@@ -276,15 +274,15 @@ public class StripeController {
             try {
                 stripeCharge = Charge.create(chargeParams);
             } catch (CardException e) {
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
             } catch (InvalidRequestException e) {
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (AuthenticationException e) {
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (APIConnectionException e) {
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (StripeException e) {
-                return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             if (stripeCharge != null) {
@@ -320,9 +318,9 @@ public class StripeController {
                     MailgunUtil.send(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
                 }
 
-                return new ResponseEntity<String>("card charged", HttpStatus.OK);
+                return new ResponseEntity<>("card charged", HttpStatus.OK);
             }
-            return new ResponseEntity<String>("card charge failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("card charge failed", HttpStatus.INTERNAL_SERVER_ERROR);
         } finally {
             // reset card to initial state in case payment failed
             if (c.getStatus() == Cart.PROCESSING) {

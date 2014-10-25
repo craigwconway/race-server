@@ -173,7 +173,7 @@ public class Cart {
     public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("NEW", "SAVED", "PROCESSING", "COMPLETE", "REFUND_REQUEST", "REFUNDED",
             "DEFAULT_TIMEOUT", "user", "cartItems", "shipping", "total", "created", "updated", "status", "coupons", "timeout", "stripeChargeId");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new Cart().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

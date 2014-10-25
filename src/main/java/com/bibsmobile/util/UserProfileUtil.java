@@ -6,10 +6,11 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-/**
- * Created by Jevgeni on 11.06.2014.
- */
-public class UserProfileUtil {
+public final class UserProfileUtil {
+
+    private UserProfileUtil() {
+        super();
+    }
 
     public static void disableUserProfile(UserProfile userProfile) {
         userProfile.setUserAuthorities(null);

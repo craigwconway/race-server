@@ -21,12 +21,13 @@ import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserProfile;
 
-/**
- * Created by Jevgeni on 4.06.2014.
- */
-public class CartUtil {
+public final class CartUtil {
     private static final Logger log = LoggerFactory.getLogger(CartUtil.class);
     public static final String SESSION_ATTR_CART_ID = "cartId";
+
+    private CartUtil() {
+        super();
+    }
 
     public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, Integer quantity, UserProfile userProfile, String color, String size) {
         // make sure our UserProfile is attached

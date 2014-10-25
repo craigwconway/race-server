@@ -31,17 +31,17 @@ public class CartItemController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid CartItem cartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, cartItem);
+            this.populateEditForm(uiModel, cartItem);
             return "cartitems/create";
         }
         uiModel.asMap().clear();
         cartItem.persist();
-        return "redirect:/cartitems/" + encodeUrlPathSegment(cartItem.getId().toString(), httpServletRequest);
+        return "redirect:/cartitems/" + this.encodeUrlPathSegment(cartItem.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new CartItem());
+        this.populateEditForm(uiModel, new CartItem());
         return "cartitems/create";
     }
 
@@ -75,12 +75,12 @@ public class CartItemController {
         }
         uiModel.asMap().clear();
         cartItem.merge();
-        return "redirect:/cartitems/" + encodeUrlPathSegment(cartItem.getId().toString(), httpServletRequest);
+        return "redirect:/cartitems/" + this.encodeUrlPathSegment(cartItem.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, CartItem.findCartItem(id));
+        this.populateEditForm(uiModel, CartItem.findCartItem(id));
         return "cartitems/update";
     }
 

@@ -2,9 +2,6 @@ package com.bibsmobile.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,31 +21,39 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/rest/dropbox")
 @Controller
 public class DropboxRestController {
+    @ResponseBody
     @RequestMapping(value = "/import", method = RequestMethod.POST, headers = "Accept=application/json", produces = "application/json")
-    public @ResponseBody
-    ResponseEntity<String> importFile(@RequestBody String body, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> importFile(@RequestBody String body) {
         ObjectMapper mapper = new ObjectMapper();
         ResultsImport rimport = null;
         try {
             UserProfile user = UserProfileUtil.getLoggedInUserProfile();
             if (user == null)
-                return new ResponseEntity<String>("{\"error\": \"not logged in\"}", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("{\"error\": \"not logged in\"}", HttpStatus.UNAUTHORIZED);
             DropboxImportJSON parsedJson = mapper.readValue(body, DropboxImportJSON.class);
             rimport = ResultsFileUtil.importDropbox(user, Event.findEvent(parsedJson.getEvent()), parsedJson.getDropboxPath(), parsedJson.getMap(), parsedJson.isSkipHeaders());
             if (rimport.getErrors() > 0)
-                return new ResponseEntity<String>("{\"error\": \"" + rimport.getErrors() + " errors while importing\", \"errorRows\": \"" + rimport.getErrorRows() + "\"}",
+                return new ResponseEntity<>("{\"error\": \"" + rimport.getErrors() + " errors while importing\", \"errorRows\": \"" + rimport.getErrorRows() + "\"}",
                         HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<String>(JSONUtil.convertException(e), HttpStatus.OK);
+            return new ResponseEntity<>(JSONUtil.convertException(e), HttpStatus.OK);
         }
-        return new ResponseEntity<String>("", HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     private static class DropboxImportJSON {
-        private Long event;
-        private String dropboxPath;
-        private boolean skipHeaders;
-        private List<String> map;
+        private final Long event;
+        private final String dropboxPath;
+        private final boolean skipHeaders;
+        private final List<String> map;
+
+        private DropboxImportJSON(Long event, String dropboxPath, boolean skipHeaders, List<String> map) {
+            super();
+            this.event = event;
+            this.dropboxPath = dropboxPath;
+            this.skipHeaders = skipHeaders;
+            this.map = map;
+        }
 
         public Long getEvent() {
             return this.event;

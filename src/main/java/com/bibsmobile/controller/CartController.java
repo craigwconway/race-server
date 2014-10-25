@@ -60,9 +60,9 @@ public class CartController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (cart == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(cart.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(cart.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -71,7 +71,7 @@ public class CartController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<Cart> result = Cart.findAllCarts();
-        return new ResponseEntity<String>(Cart.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(Cart.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -80,9 +80,9 @@ public class CartController {
         cart.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + cart.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + cart.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -92,7 +92,7 @@ public class CartController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -102,9 +102,9 @@ public class CartController {
         Cart cart = Cart.fromJsonToCart(json);
         cart.setId(id);
         if (cart.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -113,10 +113,10 @@ public class CartController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (cart == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         cart.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByUser", headers = "Accept=application/json")
@@ -124,7 +124,7 @@ public class CartController {
     public ResponseEntity<String> jsonFindCartsByUser(@RequestParam("user") UserProfile user) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(Cart.toJsonArray(Cart.findCartsByUser(user).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(Cart.toJsonArray(Cart.findCartsByUser(user).getResultList()), headers, HttpStatus.OK);
     }
 
     @Autowired
@@ -133,17 +133,17 @@ public class CartController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid Cart cart, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, cart);
+            this.populateEditForm(uiModel, cart);
             return "carts/create";
         }
         uiModel.asMap().clear();
         cart.persist();
-        return "redirect:/carts/" + encodeUrlPathSegment(cart.getId().toString(), httpServletRequest);
+        return "redirect:/carts/" + this.encodeUrlPathSegment(cart.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new Cart());
+        this.populateEditForm(uiModel, new Cart());
         return "carts/create";
     }
 
@@ -172,17 +172,17 @@ public class CartController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid Cart cart, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, cart);
+            this.populateEditForm(uiModel, cart);
             return "carts/update";
         }
         uiModel.asMap().clear();
         cart.merge();
-        return "redirect:/carts/" + encodeUrlPathSegment(cart.getId().toString(), httpServletRequest);
+        return "redirect:/carts/" + this.encodeUrlPathSegment(cart.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, Cart.findCart(id));
+        this.populateEditForm(uiModel, Cart.findCart(id));
         return "carts/update";
     }
 
