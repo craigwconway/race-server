@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class UserGroupUserAuthority {
 
     @MapsId("id")
     @ManyToOne
-    @JoinColumns({ @javax.persistence.JoinColumn(name = "user_profile", insertable = false, updatable = false),
-            @javax.persistence.JoinColumn(name = "user_authorities", insertable = false, updatable = false) })
+    @JoinColumns({ @JoinColumn(name = "user_profile", insertable = false, updatable = false),
+            @JoinColumn(name = "user_authorities", insertable = false, updatable = false) })
     private UserAuthorities userAuthorities;
 
     @EmbeddedId
@@ -111,9 +112,9 @@ public class UserGroupUserAuthority {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("userGroup", "userAuthorities");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("userGroup", "userAuthorities");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new UserGroupUserAuthority().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -205,12 +206,9 @@ public class UserGroupUserAuthority {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof UserGroupUserAuthority)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         UserGroupUserAuthority rhs = (UserGroupUserAuthority) obj;
         return new EqualsBuilder().append(this.id, rhs.id).append(this.userAuthorities, rhs.userAuthorities).append(this.userGroup, rhs.userGroup).isEquals();
     }

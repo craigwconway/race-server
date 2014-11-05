@@ -31,9 +31,11 @@ public final class UserGroupUserAuthorityID implements Serializable {
     private UserAuthorities userAuthorities;
 
     public UserGroupUserAuthorityID() {
+        super();
     }
 
     public UserGroupUserAuthorityID(UserGroup userGroup, UserAuthorities userAuthorities) {
+        super();
         this.userGroup = userGroup;
         this.userAuthorities = userAuthorities;
     }
@@ -85,12 +87,9 @@ public final class UserGroupUserAuthorityID implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof UserGroupUserAuthorityID)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         UserGroupUserAuthorityID rhs = (UserGroupUserAuthorityID) obj;
         return new EqualsBuilder().append(this.userAuthorities, rhs.userAuthorities).append(this.userGroup, rhs.userGroup).isEquals();
     }

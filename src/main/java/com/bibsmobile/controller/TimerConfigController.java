@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -33,7 +34,7 @@ import com.bibsmobile.service.Timer;
 @Controller
 public class TimerConfigController {
 
-    private final HashMap<TimerConfig, Timer> timers = new HashMap<TimerConfig, Timer>();
+    private final Map<TimerConfig, Timer> timers = new HashMap<>();
 
     private synchronized Timer getTimer(long id) {
         TimerConfig timerConfig = TimerConfig.findTimerConfig(id);
@@ -56,25 +57,25 @@ public class TimerConfigController {
 
     @RequestMapping(value = "/bib-report/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String bibReport(@PathVariable(value = "id") long id) {
-        return getTimer(id).createReport();
+    public String bibReport(@PathVariable("id") long id) {
+        return this.getTimer(id).createReport();
     }
 
     @RequestMapping(value = "/clear-bib-report/{id}", method = RequestMethod.GET)
-    public void clearBibReport(@PathVariable(value = "id") long id) {
-        getTimer(id).clearReport();
+    public void clearBibReport(@PathVariable("id") long id) {
+        this.getTimer(id).clearReport();
     }
 
     @RequestMapping(value = "/status/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String status(@PathVariable(value = "id") long id) {
-        return getTimer(id).getStatus() + "";
+    public String status(@PathVariable("id") long id) {
+        return this.getTimer(id).getStatus() + "";
     }
 
     @RequestMapping(value = "/connect/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String connect(@PathVariable(value = "id") long id) {
-        Timer timer = getTimer(id);
+    public String connect(@PathVariable("id") long id) {
+        Timer timer = this.getTimer(id);
         try {
             if (timer.getStatus() == 0)
                 timer.connect();
@@ -90,16 +91,16 @@ public class TimerConfigController {
 
     @RequestMapping(value = "/disconnect/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String disconnect(@PathVariable(value = "id") long id) {
-        if (getTimer(id).getStatus() > 0)
-            getTimer(id).disconnect();
+    public String disconnect(@PathVariable("id") long id) {
+        if (this.getTimer(id).getStatus() > 0)
+            this.getTimer(id).disconnect();
         return "true";
     }
 
     @RequestMapping(value = "/start/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String start(@PathVariable(value = "id") long id) {
-        Timer timer = getTimer(id);
+    public String start(@PathVariable("id") long id) {
+        Timer timer = this.getTimer(id);
         try {
             if (timer.getStatus() == 0) {
                 timer.connect();
@@ -115,8 +116,8 @@ public class TimerConfigController {
 
     @RequestMapping(value = "/stop/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String stop(@PathVariable(value = "id") long id) {
-        Timer timer = getTimer(id);
+    public String stop(@PathVariable("id") long id) {
+        Timer timer = this.getTimer(id);
         if (timer.getStatus() > 0) {
             timer.stopReader();
             timer.disconnect();
@@ -126,9 +127,9 @@ public class TimerConfigController {
 
     @RequestMapping(value = "/write/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String write(@PathVariable(value = "id") long id) {
+    public String write(@PathVariable("id") long id) {
         // get first timer
-        Timer timer = getTimer(TimerConfig.findTimerConfigEntries(0, 1).get(0).getId()); // use
+        Timer timer = this.getTimer(TimerConfig.findTimerConfigEntries(0, 1).get(0).getId()); // use
                                                                                          // timer
                                                                                          // 1
                                                                                          // TODO
@@ -167,17 +168,17 @@ public class TimerConfigController {
 
     @RequestMapping(value = "/time/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String time(@PathVariable(value = "id") long id) {
+    public String time(@PathVariable("id") long id) {
         long server = new Date().getTime();
         long timer = 0;
         try {
-            if (getTimer(id).getStatus() == 0) {
-                getTimer(id).connect();
+            if (this.getTimer(id).getStatus() == 0) {
+                this.getTimer(id).connect();
             }
         } catch (Exception e) {
             return "true"; // reader not connected
         }
-        timer = getTimer(id).getDateTime();
+        timer = this.getTimer(id).getDateTime();
         if (server - timer > 1000) { // 1 second
             System.out.println("Timer/Server " + timer + "/" + server);
             return "false";
@@ -192,9 +193,9 @@ public class TimerConfigController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (timerConfig == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(timerConfig.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(timerConfig.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -203,7 +204,7 @@ public class TimerConfigController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<TimerConfig> result = TimerConfig.findAllTimerConfigs();
-        return new ResponseEntity<String>(TimerConfig.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(TimerConfig.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -212,9 +213,9 @@ public class TimerConfigController {
         timerConfig.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + timerConfig.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + timerConfig.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -224,7 +225,7 @@ public class TimerConfigController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -234,9 +235,9 @@ public class TimerConfigController {
         TimerConfig timerConfig = TimerConfig.fromJsonToTimerConfig(json);
         timerConfig.setId(id);
         if (timerConfig.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -245,26 +246,26 @@ public class TimerConfigController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (timerConfig == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         timerConfig.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid TimerConfig timerConfig, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, timerConfig);
+            this.populateEditForm(uiModel, timerConfig);
             return "timers/create";
         }
         uiModel.asMap().clear();
         timerConfig.persist();
-        return "redirect:/timers/" + encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);
+        return "redirect:/timers/" + this.encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new TimerConfig());
+        this.populateEditForm(uiModel, new TimerConfig());
         return "timers/create";
     }
 
@@ -293,17 +294,17 @@ public class TimerConfigController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid TimerConfig timerConfig, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, timerConfig);
+            this.populateEditForm(uiModel, timerConfig);
             return "timers/update";
         }
         uiModel.asMap().clear();
         timerConfig.merge();
-        return "redirect:/timers/" + encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);
+        return "redirect:/timers/" + this.encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, TimerConfig.findTimerConfig(id));
+        this.populateEditForm(uiModel, TimerConfig.findTimerConfig(id));
         return "timers/update";
     }
 

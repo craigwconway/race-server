@@ -127,11 +127,11 @@ public class DropBoxController {
         if (latestMapping.isSkipFirstRow() && prevHeaders.size() != newHeaders.size()) {
             headerNumChanged = true;
             newImport.setErrors(1);
-            newImport.setErrorRows(new StringBuilder().append(StringUtils.join(newHeaders, ",")).append(newImport.getErrorRows()).toString());
+            newImport.setErrorRows(StringUtils.join(newHeaders, ",") + newImport.getErrorRows());
         } else if (latestMapping.isSkipFirstRow() && !prevHeaders.equals(newHeaders)) {
             headerOrderChanged = true;
             newImport.setErrors(1);
-            newImport.setErrorRows(new StringBuilder().append(StringUtils.join(newHeaders, ",")).append(newImport.getErrorRows()).toString());
+            newImport.setErrorRows(StringUtils.join(newHeaders, ",") + newImport.getErrorRows());
         }
 
         newImport.setResultsFile(file);
@@ -217,7 +217,6 @@ public class DropBoxController {
         response.sendRedirect(this.getDbxWebAuth(request).start()); // redirect
                                                                     // user to
                                                                     // authorization
-        return;
     }
 
     @ResponseBody
@@ -225,7 +224,7 @@ public class DropBoxController {
     public ResponseEntity<String> authorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserProfile up = UserProfileUtil.getLoggedInUserProfile();
         if (up == null) {
-            return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("", HttpStatus.UNAUTHORIZED);
         }
 
         if (up.getDropboxAccessToken() == null) {
@@ -233,20 +232,20 @@ public class DropBoxController {
             try {
                 authFinish = this.getDbxWebAuth(request).finish(request.getParameterMap());
             } catch (DbxWebAuth.BadRequestException ex) {
-                return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
             } catch (DbxWebAuth.BadStateException ex) {
-                return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
             } catch (DbxWebAuth.CsrfException ex) {
-                return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
             } catch (DbxWebAuth.NotApprovedException ex) {
                 // When Dropbox asked "Do you want to allow this app to access
                 // your
                 // Dropbox account?", the user clicked "No".
-                return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
             } catch (DbxWebAuth.ProviderException ex) {
-                return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (DbxException ex) {
-                return new ResponseEntity<String>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
             up.setDropboxId(authFinish.userId);
             up.setDropboxAccessToken(authFinish.accessToken);
@@ -260,7 +259,7 @@ public class DropBoxController {
         else
             redirectUrl = this.getUrl(request, "");
         response.sendRedirect(redirectUrl);
-        return new ResponseEntity<String>(redirectUrl, HttpStatus.OK);
+        return new ResponseEntity<>(redirectUrl, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -269,11 +268,11 @@ public class DropBoxController {
             throws DbxException, IOException {
         String dbToken = UserProfileUtil.getLoggedInDropboxAccessToken();
         if (dbToken == null)
-            return new ResponseEntity<String>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
         if (dropboxPath == null || dropboxPath.isEmpty())
             dropboxPath = "/";
         DbxEntry.WithChildren listing = DropboxUtil.getDbxClient(dbToken).getMetadataWithChildren(dropboxPath);
-        List<DirectoryListEntry> dirEntries = new LinkedList<DirectoryListEntry>();
+        List<DirectoryListEntry> dirEntries = new LinkedList<>();
         for (DbxEntry child : listing.children) {
             dirEntries.add(new DirectoryListEntry(child.name, child.isFolder(), child.path));
         }
@@ -281,7 +280,7 @@ public class DropBoxController {
         ObjectMapper mapper = new ObjectMapper();
         StringWriter strW = new StringWriter();
         mapper.writeValue(strW, dirRoot);
-        return new ResponseEntity<String>(strW.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(strW.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/" + PICKER_URL, method = RequestMethod.GET)
@@ -299,7 +298,7 @@ public class DropBoxController {
             up.setDropboxId(null);
             up.setDropboxAccessToken(null);
             up.persist();
-            return "redirect:" + getDropboxUrl(request, START_URL + "?eventId=" + eventId);
+            return "redirect:" + this.getDropboxUrl(request, START_URL + "?eventId=" + eventId);
         }
         // render view
         uiModel.addAttribute("eventId", eventId);
@@ -312,7 +311,7 @@ public class DropBoxController {
     public ResponseEntity<String> deauth(HttpServletRequest request, HttpServletResponse response) {
         UserProfile up = UserProfileUtil.getLoggedInUserProfile();
         if (up == null)
-            return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("", HttpStatus.UNAUTHORIZED);
         try {
             if (up.getDropboxAccessToken() != null)
                 DropboxUtil.getDbxClient(up.getDropboxAccessToken()).disableAccessToken();
@@ -322,7 +321,7 @@ public class DropBoxController {
         up.setDropboxId(null);
         up.setDropboxAccessToken(null);
         up.persist();
-        return new ResponseEntity<String>("", HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     @ResponseBody
@@ -332,15 +331,15 @@ public class DropBoxController {
         // sanity check arguments
         Event event = Event.findEvent(eventId);
         if (event == null)
-            return new ResponseEntity<String>("unknown event", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("unknown event", HttpStatus.BAD_REQUEST);
         if (dropboxPath.isEmpty())
-            return new ResponseEntity<String>("dropboxPath empty", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("dropboxPath empty", HttpStatus.BAD_REQUEST);
 
         // get dropbox credentials
         String accessToken = UserProfileUtil.getLoggedInDropboxAccessToken();
         if (accessToken == null) {
-            response.sendRedirect(getDropboxUrl(request, START_URL + "?eventId=" + eventId));
-            return new ResponseEntity<String>("", HttpStatus.UNAUTHORIZED);
+            response.sendRedirect(this.getDropboxUrl(request, START_URL + "?eventId=" + eventId));
+            return new ResponseEntity<>("", HttpStatus.UNAUTHORIZED);
         }
 
         List<String> emptyMap = Collections.emptyList();
@@ -348,17 +347,17 @@ public class DropBoxController {
         try {
             tmpImport = ResultsFileUtil.importDropbox(UserProfileUtil.getLoggedInUserProfile(), Event.findEvent(eventId), dropboxPath, emptyMap, false);
         } catch (InvalidFormatException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
         response.sendRedirect(this.getUrl(request, MAPPING_URL + "/" + tmpImport.getResultsFileMapping().getId() + "?form"));
-        return new ResponseEntity<String>("", HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     @ResponseBody
     @RequestMapping(value = "/webhook", method = RequestMethod.GET)
     public ResponseEntity<String> webhookVerify(@RequestParam("challenge") String challenge, HttpServletRequest request, HttpServletResponse response) {
-        return new ResponseEntity<String>(challenge, HttpStatus.OK);
+        return new ResponseEntity<>(challenge, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -373,7 +372,7 @@ public class DropBoxController {
         String strHmac = Hex.encodeHexString(rawHmac);
         String dbxHmac = request.getHeader("X-Dropbox-Signature");
         if (!strHmac.equalsIgnoreCase(dbxHmac)) {
-            return new ResponseEntity<String>("", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("", HttpStatus.FORBIDDEN);
         }
 
         // parse json and update files
@@ -392,17 +391,17 @@ public class DropBoxController {
                 }
             }
         }
-        return new ResponseEntity<String>("" + filesUpdated, HttpStatus.OK);
+        return new ResponseEntity<>("" + filesUpdated, HttpStatus.OK);
     }
 
     /*
      * classes representing the json for the filepicker
      */
-    protected static class DirectoryListRoot {
-        private String fullPath;
-        private List<DirectoryListEntry> entries;
+    private static class DirectoryListRoot {
+        private final String fullPath;
+        private final List<DirectoryListEntry> entries;
 
-        public DirectoryListRoot(String fullPath, List<DirectoryListEntry> entries) {
+        protected DirectoryListRoot(String fullPath, List<DirectoryListEntry> entries) {
             super();
             this.fullPath = ((fullPath == null || fullPath.isEmpty()) ? "/" : fullPath);
             this.entries = entries;
@@ -412,23 +411,15 @@ public class DropBoxController {
             return this.fullPath;
         }
 
-        public void setFullPath(String fullPath) {
-            this.fullPath = fullPath;
-        }
-
         public List<DirectoryListEntry> getEntries() {
             return this.entries;
-        }
-
-        public void setEntries(List<DirectoryListEntry> entries) {
-            this.entries = entries;
         }
     }
 
     protected static class DirectoryListEntry {
-        private String name;
-        private boolean directory;
-        private String fullPath;
+        private final String name;
+        private final boolean directory;
+        private final String fullPath;
 
         public DirectoryListEntry(String name, boolean directory, String fullPath) {
             super();
@@ -441,24 +432,12 @@ public class DropBoxController {
             return this.name;
         }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
         public String getFullPath() {
             return this.fullPath;
         }
 
-        public void setFullPath(String fullPath) {
-            this.fullPath = fullPath;
-        }
-
         public boolean isDirectory() {
             return this.directory;
-        }
-
-        public void setDirectory(boolean directory) {
-            this.directory = directory;
         }
     }
 

@@ -1,10 +1,12 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -102,7 +104,7 @@ public class EventCartItem {
      */
     private int minAge;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "eventCartItem")
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "eventCartItem")
     private Set<EventCartItemPriceChange> priceChanges;
 
     /**
@@ -183,12 +185,9 @@ public class EventCartItem {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof EventCartItem)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         EventCartItem rhs = (EventCartItem) obj;
         return new EqualsBuilder().append(this.addressLine1, rhs.addressLine1).append(this.addressLine2, rhs.addressLine2).append(this.available, rhs.available)
                 .append(this.birthDate, rhs.birthDate).append(this.charityName, rhs.charityName).append(this.coupon, rhs.coupon).append(this.couponPrice, rhs.couponPrice)
@@ -509,12 +508,12 @@ public class EventCartItem {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon",
             "eventType", "couponPrice", "couponsAvailable", "couponsUsed", "timeLimit", "timeStart", "timeEnd", "type", "donationAmount", "charityName", "tshirtSizes",
             "tshirtColors", "tshirtImageUrls", "minAge", "priceChanges", "maxAge", "gender", "birthDate", "email", "phone", "addressLine1", "addressLine2", "zipCode",
             "emergencyContactName", "emergencyContactPhone", "hearFrom");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new EventCartItem().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -613,7 +612,7 @@ public class EventCartItem {
     }
 
     public static Long countFindEventCartItemsByNameEquals(String name) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.name = :name", Long.class);
@@ -656,7 +655,7 @@ public class EventCartItem {
     }
 
     public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.name = :name", EventCartItem.class);
@@ -665,7 +664,7 @@ public class EventCartItem {
     }
 
     public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name, String sortFieldName, String sortOrder) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
         String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.name = :name";

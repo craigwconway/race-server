@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -49,20 +50,24 @@ public class RaceImage {
     Set<PictureType> pictureTypes = new HashSet<>();
 
     public RaceImage() {
+        super();
     }
 
     public RaceImage(String filePath, long eventId) {
+        super();
         this.filePath = filePath;
         this.event = Event.findEvent(eventId);
     }
 
     public RaceImage(String filePath, RaceResult raceResult, Event event) {
+        super();
         this.filePath = filePath;
         this.raceResult = raceResult;
         this.event = event;
     }
 
     public RaceImage(String filePath, long eventId, String bib) {
+        super();
         this.filePath = filePath;
         this.event = Event.findEvent(eventId);
         this.raceResult = RaceResult.findRaceResultsByEventAndBibEquals(this.event, bib).getSingleResult();
@@ -138,9 +143,9 @@ public class RaceImage {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("filePath", "raceResult", "event", "userProfile", "nonPublic", "pictureTypes");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("filePath", "raceResult", "event", "userProfile", "nonPublic", "pictureTypes");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new RaceImage().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

@@ -24,23 +24,23 @@ public class EventTypeController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventType eventType, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventType);
+            this.populateEditForm(uiModel, eventType);
             return "eventtypes/create";
         }
         uiModel.asMap().clear();
         eventType.persist();
-        return "redirect:/eventtypes/" + encodeUrlPathSegment(eventType.getId().toString(), httpServletRequest);
+        return "redirect:/eventtypes/" + this.encodeUrlPathSegment(eventType.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new EventType());
+        this.populateEditForm(uiModel, new EventType());
         return "eventtypes/create";
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("eventtype", EventType.findEventType(id));
         uiModel.addAttribute("itemId", id);
         return "eventtypes/show";
@@ -58,24 +58,24 @@ public class EventTypeController {
         } else {
             uiModel.addAttribute("eventtypes", EventType.findAllEventTypes(sortFieldName, sortOrder));
         }
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         return "eventtypes/list";
     }
 
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EventType eventType, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventType);
+            this.populateEditForm(uiModel, eventType);
             return "eventtypes/update";
         }
         uiModel.asMap().clear();
         eventType.merge();
-        return "redirect:/eventtypes/" + encodeUrlPathSegment(eventType.getId().toString(), httpServletRequest);
+        return "redirect:/eventtypes/" + this.encodeUrlPathSegment(eventType.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, EventType.findEventType(id));
+        this.populateEditForm(uiModel, EventType.findEventType(id));
         return "eventtypes/update";
     }
 
@@ -96,7 +96,7 @@ public class EventTypeController {
 
     void populateEditForm(Model uiModel, EventType eventType) {
         uiModel.addAttribute("eventType", eventType);
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("events", Event.findAllEvents());
     }
 

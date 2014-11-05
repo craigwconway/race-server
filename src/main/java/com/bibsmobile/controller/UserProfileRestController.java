@@ -40,9 +40,6 @@ import flexjson.JSONSerializer;
 @Controller
 public class UserProfileRestController {
 
-    private static final String ROLE_USER = "ROLE_USER";
-    private static final String ROLE_EVENT_ADMIN = "ROLE_EVENT_ADMIN";
-
     private static final Map<String, String> userNameExistsResponse = Collections.unmodifiableMap(new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
         {
@@ -58,11 +55,11 @@ public class UserProfileRestController {
     public ResponseEntity<String> createFromJson(@RequestBody String json) {
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
         // set standard user permissions
-        List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_USER).getResultList();
+        List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(UserAuthority.USER).getResultList();
         UserAuthority roleUserAuthority;
         if (CollectionUtils.isEmpty(roleUserAuthorities)) {
             roleUserAuthority = new UserAuthority();
-            roleUserAuthority.setAuthority(ROLE_USER);
+            roleUserAuthority.setAuthority(UserAuthority.USER);
             roleUserAuthority.persist();
         } else {
             roleUserAuthority = roleUserAuthorities.get(0);
@@ -178,11 +175,11 @@ public class UserProfileRestController {
         if (CollectionUtils.isNotEmpty(UserProfile.findUserProfilesByUsernameEquals(userProfile.getUsername()).getResultList())) {
             return new ResponseEntity<>(new JSONSerializer().serialize(userNameExistsResponse), headers, HttpStatus.OK);
         }
-        List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_USER).getResultList();
+        List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(UserAuthority.USER).getResultList();
         UserAuthority roleUserAuthority;
         if (CollectionUtils.isEmpty(roleUserAuthorities)) {
             roleUserAuthority = new UserAuthority();
-            roleUserAuthority.setAuthority(ROLE_USER);
+            roleUserAuthority.setAuthority(UserAuthority.USER);
             roleUserAuthority.persist();
         } else {
             roleUserAuthority = roleUserAuthorities.get(0);
@@ -212,11 +209,11 @@ public class UserProfileRestController {
         }
 
         String userGroupName = userProfileWrapper.getUserGroupName();
-        List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(ROLE_EVENT_ADMIN).getResultList();
+        List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(UserAuthority.EVENT_ADMIN).getResultList();
         UserAuthority roleUserAuthority;
         if (CollectionUtils.isEmpty(roleUserAuthorities)) {
             roleUserAuthority = new UserAuthority();
-            roleUserAuthority.setAuthority(ROLE_EVENT_ADMIN);
+            roleUserAuthority.setAuthority(UserAuthority.EVENT_ADMIN);
             roleUserAuthority.persist();
         } else {
             roleUserAuthority = roleUserAuthorities.get(0);

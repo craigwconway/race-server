@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class TimerConfig {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (this.getClass() != obj.getClass())
             return false;
         TimerConfig other = (TimerConfig) obj;
         if (this.ports == null) {
@@ -82,9 +83,7 @@ public class TimerConfig {
                 return false;
         } else if (!this.url.equals(other.url))
             return false;
-        if (this.writePower != other.writePower)
-            return false;
-        return true;
+        return (this.writePower == other.writePower);
     }
 
     public String toJson() {
@@ -204,10 +203,10 @@ public class TimerConfig {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("position", "url", "readTimeout", "readPower", "writePower", "type", "ports",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("position", "url", "readTimeout", "readPower", "writePower", "type", "ports",
             "connectionTimeout", "filename");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new TimerConfig().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

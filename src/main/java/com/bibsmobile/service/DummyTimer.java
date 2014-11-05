@@ -2,6 +2,7 @@ package com.bibsmobile.service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import com.bibsmobile.model.TimerConfig;
@@ -11,8 +12,8 @@ public class DummyTimer extends AbstractTimer implements Timer, Runnable {
     private TimerConfig timerConfig;
     private int status;
     private Thread thread;
-    private final String log = getClass().getName() + " " + Thread.currentThread().getName();
-    private final HashMap<Integer, Long> bibTimes = new HashMap<Integer, Long>();
+    private final String log = this.getClass().getName() + " " + Thread.currentThread().getName();
+    private final Map<Integer, Long> bibTimes = new HashMap<>();
 
     @Override
     public long getDateTime() {
@@ -32,7 +33,7 @@ public class DummyTimer extends AbstractTimer implements Timer, Runnable {
     public void stopReader() {
         System.out.println(this.log + " Stop Reading...");
         this.status = 1;
-        notify();
+        this.notify();
         System.out.println(this.log + " Stopped.");
     }
 
@@ -54,7 +55,7 @@ public class DummyTimer extends AbstractTimer implements Timer, Runnable {
         System.out.println(this.log + " Disconnecting...");
         this.status = 0;
         try {
-            notify();
+            this.notify();
             this.thread = null;
         } catch (Exception e) {
             System.out.println(this.log + " Error Discconnecting.");
@@ -82,7 +83,7 @@ public class DummyTimer extends AbstractTimer implements Timer, Runnable {
             long bibtime = new Date().getTime();
 
             // yay
-            logTime(bibnum, bibtime, this.timerConfig);
+            this.logTime(bibnum, bibtime, this.timerConfig);
 
             // wait or conceed
             try {

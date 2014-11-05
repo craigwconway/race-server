@@ -35,20 +35,20 @@ public class EventResultController {
         EventResult eventResult = new EventResult();
         Event event = Event.findEvent(eventId);
         eventResult.setEvent(event);
-        List<Event> events = new ArrayList<Event>();
+        List<Event> events = new ArrayList<>();
         events.add(event);
         uiModel.addAttribute("events", events);
-        populateEditForm(uiModel, eventResult);
+        this.populateEditForm(uiModel, eventResult);
         return "eventresults/create";
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         EventResult eventResult = EventResult.findEventResult(id);
-        List<Event> events = new ArrayList<Event>();
+        List<Event> events = new ArrayList<>();
         events.add(eventResult.getEvent());
         uiModel.addAttribute("events", events);
-        populateEditForm(uiModel, eventResult);
+        this.populateEditForm(uiModel, eventResult);
         return "eventresults/update";
     }
 
@@ -77,7 +77,7 @@ public class EventResultController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public String findEventsResults(@RequestParam(value = "event") Long eventId) {
+    public String findEventsResults(@RequestParam("event") Long eventId) {
         return EventResult.toJsonArray(EventResult.findEventResultsByEventId(eventId).getResultList());
     }
 
@@ -88,9 +88,9 @@ public class EventResultController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (eventResult == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(eventResult.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(eventResult.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -99,7 +99,7 @@ public class EventResultController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<EventResult> result = EventResult.findAllEventResults();
-        return new ResponseEntity<String>(EventResult.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventResult.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -108,9 +108,9 @@ public class EventResultController {
         eventResult.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventResult.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventResult.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -120,7 +120,7 @@ public class EventResultController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -130,9 +130,9 @@ public class EventResultController {
         EventResult eventResult = EventResult.fromJsonToEventResult(json);
         eventResult.setId(id);
         if (eventResult.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -141,10 +141,10 @@ public class EventResultController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (eventResult == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         eventResult.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
@@ -152,18 +152,18 @@ public class EventResultController {
     public ResponseEntity<String> jsonFindEventResultsByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(EventResult.toJsonArray(EventResult.findEventResultsByEvent(event).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventResult.toJsonArray(EventResult.findEventResultsByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventResult eventResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventResult);
+            this.populateEditForm(uiModel, eventResult);
             return "eventresults/create";
         }
         uiModel.asMap().clear();
         eventResult.persist();
-        return "redirect:/eventresults/" + encodeUrlPathSegment(eventResult.getId().toString(), httpServletRequest);
+        return "redirect:/eventresults/" + this.encodeUrlPathSegment(eventResult.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
@@ -176,12 +176,12 @@ public class EventResultController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EventResult eventResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventResult);
+            this.populateEditForm(uiModel, eventResult);
             return "eventresults/update";
         }
         uiModel.asMap().clear();
         eventResult.merge();
-        return "redirect:/eventresults/" + encodeUrlPathSegment(eventResult.getId().toString(), httpServletRequest);
+        return "redirect:/eventresults/" + this.encodeUrlPathSegment(eventResult.getId().toString(), httpServletRequest);
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

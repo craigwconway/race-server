@@ -35,7 +35,7 @@ import com.bibsmobile.service.UserProfileService;
 public class RaceImageController {
 
     @RequestMapping(value = "/api", method = RequestMethod.GET)
-    public ResponseEntity<String> api(@RequestParam(value = "filePath") String filePath, @RequestParam(value = "raceId") long raceId,
+    public ResponseEntity<String> api(@RequestParam("filePath") String filePath, @RequestParam("raceId") long raceId,
             @RequestParam(value = "bib", required = false) List<String> bib, @RequestParam(value = "type", required = false) List<String> types) {
         RaceImage raceImage = new RaceImage(filePath, raceId, bib, types);
         if (CollectionUtils.isEmpty(bib)) {
@@ -75,17 +75,17 @@ public class RaceImageController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid RaceImage raceImage, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, raceImage);
+            this.populateEditForm(uiModel, raceImage);
             return "raceimages/create";
         }
         uiModel.asMap().clear();
         raceImage.persist();
-        return "redirect:/raceimages/" + encodeUrlPathSegment(raceImage.getId().toString(), httpServletRequest);
+        return "redirect:/raceimages/" + this.encodeUrlPathSegment(raceImage.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new RaceImage());
+        this.populateEditForm(uiModel, new RaceImage());
         return "raceimages/create";
     }
 
@@ -114,17 +114,17 @@ public class RaceImageController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid RaceImage raceImage, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, raceImage);
+            this.populateEditForm(uiModel, raceImage);
             return "raceimages/update";
         }
         uiModel.asMap().clear();
         raceImage.merge();
-        return "redirect:/raceimages/" + encodeUrlPathSegment(raceImage.getId().toString(), httpServletRequest);
+        return "redirect:/raceimages/" + this.encodeUrlPathSegment(raceImage.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, RaceImage.findRaceImage(id));
+        this.populateEditForm(uiModel, RaceImage.findRaceImage(id));
         return "raceimages/update";
     }
 
@@ -166,9 +166,9 @@ public class RaceImageController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (raceImage == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(raceImage.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(raceImage.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -177,7 +177,7 @@ public class RaceImageController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<RaceImage> result = RaceImage.findAllRaceImages();
-        return new ResponseEntity<String>(RaceImage.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceImage.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -186,9 +186,9 @@ public class RaceImageController {
         raceImage.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + raceImage.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + raceImage.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -198,7 +198,7 @@ public class RaceImageController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -208,9 +208,9 @@ public class RaceImageController {
         RaceImage raceImage = RaceImage.fromJsonToRaceImage(json);
         raceImage.setId(id);
         if (raceImage.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -219,10 +219,10 @@ public class RaceImageController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (raceImage == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         raceImage.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
@@ -230,6 +230,6 @@ public class RaceImageController {
     public ResponseEntity<String> jsonFindRaceImagesByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(RaceImage.toJsonArray(RaceImage.findRaceImagesByEvent(event).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceImage.toJsonArray(RaceImage.findRaceImagesByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
 }

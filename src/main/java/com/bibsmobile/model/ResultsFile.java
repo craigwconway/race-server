@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -103,7 +104,7 @@ public class ResultsFile {
     }
 
     public static Long countFindResultsFilesByNameEqualsAndEvent(String name, Event event) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
@@ -140,7 +141,7 @@ public class ResultsFile {
     }
 
     public static TypedQuery<ResultsFile> findResultsFilesByNameEqualsAndEvent(String name, Event event) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
@@ -152,7 +153,7 @@ public class ResultsFile {
     }
 
     public static TypedQuery<ResultsFile> findResultsFilesByNameEqualsAndEvent(String name, Event event, String sortFieldName, String sortOrder) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
@@ -302,10 +303,10 @@ public class ResultsFile {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "resultsFileMapping", "resultsImport", "contentType", "event", "created",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("name", "resultsFileMapping", "resultsImport", "contentType", "event", "created",
             "filesize", "filePath", "sha1Checksum", "importUser", "dropboxPath", "content");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new ResultsFile().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

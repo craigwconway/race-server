@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -175,9 +176,9 @@ public class EventCartItemPriceChange {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("startDate", "endDate", "eventCartItem", "price");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("startDate", "endDate", "eventCartItem", "price");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new EventCartItemPriceChange().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

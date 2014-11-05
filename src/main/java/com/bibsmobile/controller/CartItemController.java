@@ -70,7 +70,7 @@ public class CartItemController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid CartItem cartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, cartItem);
+            this.populateEditForm(uiModel, cartItem);
             return "cartitems/update";
         }
         uiModel.asMap().clear();

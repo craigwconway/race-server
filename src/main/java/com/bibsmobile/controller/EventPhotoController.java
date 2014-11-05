@@ -50,7 +50,7 @@ import flexjson.JSONSerializer;
 @Controller
 public class EventPhotoController {
 
-    private static AWSCredentials awsS3Credentials;
+    private AWSCredentials awsS3Credentials;
     @Value("${amazon.aws.s3.access-key}")
     private String awsS3AccessKey;
     @Value("${amazon.aws.s3.secret-key}")
@@ -62,7 +62,7 @@ public class EventPhotoController {
 
     @PostConstruct
     public void init() {
-        awsS3Credentials = new BasicAWSCredentials(this.awsS3AccessKey, this.awsS3SecretKey);
+        this.awsS3Credentials = new BasicAWSCredentials(this.awsS3AccessKey, this.awsS3SecretKey);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
@@ -73,7 +73,7 @@ public class EventPhotoController {
         List<Event> events = new ArrayList<>();
         events.add(event);
         uiModel.addAttribute("events", events);
-        populateEditForm(uiModel, eventPhoto);
+        this.populateEditForm(uiModel, eventPhoto);
         return "eventphotos/create";
     }
 
@@ -83,7 +83,7 @@ public class EventPhotoController {
         List<Event> events = new ArrayList<>();
         events.add(eventPhoto.getEvent());
         uiModel.addAttribute("events", events);
-        populateEditForm(uiModel, eventPhoto);
+        this.populateEditForm(uiModel, eventPhoto);
         return "eventphotos/update";
     }
 
@@ -112,7 +112,7 @@ public class EventPhotoController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public String findEventsPhotos(@RequestParam(value = "event") Long eventId) {
+    public String findEventsPhotos(@RequestParam("event") Long eventId) {
         return EventPhoto.toJsonArray(EventPhoto.findEventPhotosByEventId(eventId).getResultList());
     }
 
@@ -128,34 +128,34 @@ public class EventPhotoController {
         MultipartFile file = uploadFile.getFile();
         Map<String, Object> fileInfo = new HashMap<>();
         StringBuilder fileName = new StringBuilder();
-        fileName.append(((Long) System.currentTimeMillis()).toString()).append(".").append(FilenameUtils.getExtension(file.getOriginalFilename()));
+        fileName.append(((Long) System.currentTimeMillis())).append(".").append(FilenameUtils.getExtension(file.getOriginalFilename()));
         String fileNameStr = fileName.toString();
         if (file != null && file.getSize() > 0) {
-            uploadFileToS3(file, fileNameStr);
+            this.uploadFileToS3(file, fileNameStr);
             fileInfo.put("fileOriginalName", file.getOriginalFilename());
             fileInfo.put("fileType", file.getContentType());
             fileInfo.put("fileSize", file.getSize());
             fileInfo.put("s3FileName", fileNameStr);
-            fileInfo.put("s3Url", this.awsS3UrlPrefix.concat(fileNameStr));
+            fileInfo.put("s3Url", this.awsS3UrlPrefix + fileNameStr);
         }
         return new JSONSerializer().serialize(fileInfo);
     }
 
     @RequestMapping(value = "/filedelete", method = RequestMethod.DELETE)
     public ResponseEntity<String> fileDelete(@RequestParam(value = "key", required = true) String fileName) {
-        deleteFileFromS3(fileName);
+        this.deleteFileFromS3(fileName);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private PutObjectResult uploadFileToS3(MultipartFile file, String fileName) throws IOException {
-        AmazonS3 s3Client = new AmazonS3Client(awsS3Credentials);
+        AmazonS3 s3Client = new AmazonS3Client(this.awsS3Credentials);
         ByteArrayInputStream stream = new ByteArrayInputStream(file.getBytes());
         PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, stream, new ObjectMetadata());
         return s3Client.putObject(putObjectRequest);
     }
 
     private void deleteFileFromS3(String fileName) {
-        AmazonS3 s3Client = new AmazonS3Client(awsS3Credentials);
+        AmazonS3 s3Client = new AmazonS3Client(this.awsS3Credentials);
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.awsS3Bucket, fileName);
         s3Client.deleteObject(deleteObjectRequest);
     }
@@ -163,12 +163,12 @@ public class EventPhotoController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventPhoto eventPhoto, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventPhoto);
+            this.populateEditForm(uiModel, eventPhoto);
             return "eventphotos/create";
         }
         uiModel.asMap().clear();
         eventPhoto.persist();
-        return "redirect:/eventphotos/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
+        return "redirect:/eventphotos/" + this.encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
@@ -181,12 +181,12 @@ public class EventPhotoController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EventPhoto eventPhoto, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventPhoto);
+            this.populateEditForm(uiModel, eventPhoto);
             return "eventphotos/update";
         }
         uiModel.asMap().clear();
         eventPhoto.merge();
-        return "redirect:/eventphotos/" + encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
+        return "redirect:/eventphotos/" + this.encodeUrlPathSegment(eventPhoto.getId().toString(), httpServletRequest);
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
@@ -208,9 +208,9 @@ public class EventPhotoController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (eventPhoto == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(eventPhoto.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(eventPhoto.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -219,7 +219,7 @@ public class EventPhotoController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<EventPhoto> result = EventPhoto.findAllEventPhotoes();
-        return new ResponseEntity<String>(EventPhoto.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventPhoto.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -228,9 +228,9 @@ public class EventPhotoController {
         eventPhoto.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventPhoto.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventPhoto.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -240,7 +240,7 @@ public class EventPhotoController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -250,9 +250,9 @@ public class EventPhotoController {
         EventPhoto eventPhoto = EventPhoto.fromJsonToEventPhoto(json);
         eventPhoto.setId(id);
         if (eventPhoto.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -261,10 +261,10 @@ public class EventPhotoController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (eventPhoto == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         eventPhoto.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
@@ -272,6 +272,6 @@ public class EventPhotoController {
     public ResponseEntity<String> jsonFindEventPhotoesByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(EventPhoto.toJsonArray(EventPhoto.findEventPhotoesByEvent(event).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventPhoto.toJsonArray(EventPhoto.findEventPhotoesByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
 }

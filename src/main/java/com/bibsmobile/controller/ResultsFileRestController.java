@@ -1,15 +1,16 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.ResultsImport;
-import com.bibsmobile.util.JSONUtil;
+import java.util.Date;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Date;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.util.JSONUtil;
 
 @RequestMapping("/rest/resultsfiles")
 @Controller
@@ -31,7 +32,7 @@ public class ResultsFileRestController {
         private final Boolean automaticUpdates;
         private final ResultsFileImportDetails lastImport;
 
-        private ResultsFileDetails(ResultsFile rf) {
+        protected ResultsFileDetails(ResultsFile rf) {
             super();
             this.id = rf.getId();
             this.name = rf.getName();
@@ -57,7 +58,7 @@ public class ResultsFileRestController {
         private final int rowsProcessed;
         private final int numErrors;
 
-        private ResultsFileImportDetails(ResultsFile rf) {
+        protected ResultsFileImportDetails(ResultsFile rf) {
             super();
             ResultsImport ri = rf.getLatestImport();
             this.id = ri.getId();

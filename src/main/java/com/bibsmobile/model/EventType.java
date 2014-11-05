@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -38,14 +39,14 @@ public class EventType {
     private Date startTime;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Event> events = new HashSet<Event>();
+    private Set<Event> events = new HashSet<>();
 
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("typeName", "startTime", "events");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("typeName", "startTime", "events");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new EventType().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

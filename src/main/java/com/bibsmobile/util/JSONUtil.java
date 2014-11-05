@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public final class JSONUtil {
@@ -22,8 +21,21 @@ public final class JSONUtil {
     public static String convertObject(Object o) {
         try {
             return objMapper.writeValueAsString(o);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             return JSONUtil.convertException(e);
+        }
+    }
+
+    /**
+     * converts a string to a json status message
+     */
+    public static String convertStatusMessage(String s) {
+        StatusMessage m = new StatusMessage(s);
+        try {
+            return objMapper.writeValueAsString(m);
+        } catch (Exception e1) {
+            log.error("error converting exception to error message object", e1);
+            return "{\"error\": \"error converting exception to error message object\"}";
         }
     }
 
@@ -34,7 +46,7 @@ public final class JSONUtil {
         ErrorMessage m = new ErrorMessage(e);
         try {
             return objMapper.writeValueAsString(m);
-        } catch (JsonProcessingException e1) {
+        } catch (Exception e1) {
             log.error("error converting exception to error message object", e1);
             return "{\"error\": \"error converting exception to error message object\"}";
         }
@@ -60,10 +72,23 @@ public final class JSONUtil {
         }
     }
 
+    private static class StatusMessage {
+        private final String status;
+
+        protected StatusMessage(String status) {
+            super();
+            this.status = status;
+        }
+
+        public String getStatus() {
+            return this.status;
+        }
+    }
+
     private static class ErrorMessage {
         private final String error;
 
-        private ErrorMessage(String error) {
+        protected ErrorMessage(String error) {
             super();
             this.error = error;
         }
@@ -78,7 +103,7 @@ public final class JSONUtil {
         private final int count; // how many results to return
         private final List<T> results; // results
 
-        private Pagination(Integer start, Integer count, List<T> results) {
+        protected Pagination(Integer start, Integer count, List<T> results) {
             super();
             if (start == null)
                 this.start = 0;

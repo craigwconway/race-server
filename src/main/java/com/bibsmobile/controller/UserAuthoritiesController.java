@@ -40,7 +40,7 @@ public class UserAuthoritiesController {
         UserAuthoritiesID id = new UserAuthoritiesID(userProfile, userProfile.getNotAddedAuthorities().get(0));
         userAuthorities.setId(id);
 
-        populateEditForm(uiModel, userAuthorities);
+        this.populateEditForm(uiModel, userAuthorities);
         return "userauthorities/createUA";
     }
 
@@ -51,7 +51,7 @@ public class UserAuthoritiesController {
         id.setUserProfile(userAuthorities.getUserProfile());
         userAuthorities.setId(id);
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, userAuthorities);
+            this.populateEditForm(uiModel, userAuthorities);
             return "userauthorities/createUA";
         }
         uiModel.asMap().clear();
@@ -123,9 +123,9 @@ public class UserAuthoritiesController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (userAuthorities == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(userAuthorities.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(userAuthorities.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -134,7 +134,7 @@ public class UserAuthoritiesController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<UserAuthorities> result = UserAuthorities.findAllUserAuthoritieses();
-        return new ResponseEntity<String>(UserAuthorities.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(UserAuthorities.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -143,9 +143,9 @@ public class UserAuthoritiesController {
         userAuthorities.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + userAuthorities.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + userAuthorities.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -155,7 +155,7 @@ public class UserAuthoritiesController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -165,9 +165,9 @@ public class UserAuthoritiesController {
         UserAuthorities userAuthorities = UserAuthorities.fromJsonToUserAuthorities(json);
         userAuthorities.setId(id);
         if (userAuthorities.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -176,10 +176,10 @@ public class UserAuthoritiesController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (userAuthorities == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         userAuthorities.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByUserAuthority", headers = "Accept=application/json")
@@ -187,7 +187,7 @@ public class UserAuthoritiesController {
     public ResponseEntity<String> jsonFindUserAuthoritiesesByUserAuthority(@RequestParam("userAuthority") UserAuthority userAuthority) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(UserAuthorities.toJsonArray(UserAuthorities.findUserAuthoritiesesByUserAuthority(userAuthority).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(UserAuthorities.toJsonArray(UserAuthorities.findUserAuthoritiesesByUserAuthority(userAuthority).getResultList()), headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByUserProfile", headers = "Accept=application/json")
@@ -195,7 +195,7 @@ public class UserAuthoritiesController {
     public ResponseEntity<String> jsonFindUserAuthoritiesesByUserProfile(@RequestParam("userProfile") UserProfile userProfile) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(UserAuthorities.toJsonArray(UserAuthorities.findUserAuthoritiesesByUserProfile(userProfile).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(UserAuthorities.toJsonArray(UserAuthorities.findUserAuthoritiesesByUserProfile(userProfile).getResultList()), headers, HttpStatus.OK);
     }
 
 }

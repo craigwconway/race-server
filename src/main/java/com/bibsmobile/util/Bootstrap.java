@@ -1,7 +1,6 @@
 package com.bibsmobile.util;
 
 import org.quartz.SchedulerException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -17,16 +16,11 @@ import com.bibsmobile.model.UserProfile;
 @Component
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
-    private static UserAuthority userAuthority;
-    @Autowired
-    private static UserAuthorities userAuthorities;
-
-    @Autowired
-    private static UserProfile userProfile;
-
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        UserAuthority userAuthority = null;
+        UserAuthorities userAuthorities = null;
+        UserProfile userProfile = null;
 
         // expire leftover carts at startup
         try {

@@ -4,6 +4,7 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -168,7 +169,7 @@ public class RaceResult implements Comparable<RaceResult> {
 
     @Override
     public String toString() {
-        return this.event.toString() + " " + this.bib + " " + this.firstname + " " + this.lastname;
+        return this.event + " " + this.bib + " " + this.firstname + " " + this.lastname;
     }
 
     public String getTimeofficialdisplay() {
@@ -186,7 +187,7 @@ public class RaceResult implements Comparable<RaceResult> {
         BeanInfo info = null;
         try {
             info = Introspector.getBeanInfo(RaceResult.class);
-            PropertyDescriptor pDescArr[] = info.getPropertyDescriptors();
+            PropertyDescriptor[] pDescArr = info.getPropertyDescriptors();
             for (PropertyDescriptor pDesc : pDescArr) {
                 System.out.println(pDesc.getName());
                 Object getterReturn = pDesc.getReadMethod().invoke(raceResult, (Object) null);
@@ -203,7 +204,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static TypedQuery<RaceResult> findRaceResultsByEventAndFirstnameLike(Event event, String firstname) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (firstname == null || firstname.length() == 0)
+        if (firstname == null || firstname.isEmpty())
             throw new IllegalArgumentException("The firstname argument is required");
         firstname = firstname.replace('*', '%');
         if (firstname.charAt(0) != '%') {
@@ -222,7 +223,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static TypedQuery<RaceResult> findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event event, String firstname, String lastname) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (firstname == null || firstname.length() == 0)
+        if (firstname == null || firstname.isEmpty())
             throw new IllegalArgumentException("The firstname argument is required");
         firstname = firstname.replace('*', '%');
         if (firstname.charAt(0) != '%') {
@@ -231,7 +232,7 @@ public class RaceResult implements Comparable<RaceResult> {
         if (firstname.charAt(firstname.length() - 1) != '%') {
             firstname = firstname + "%";
         }
-        if (lastname == null || lastname.length() == 0)
+        if (lastname == null || lastname.isEmpty())
             throw new IllegalArgumentException("The lastname argument is required");
         lastname = lastname.replace('*', '%');
         if (lastname.charAt(0) != '%') {
@@ -253,7 +254,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static TypedQuery<RaceResult> findRaceResultsByEventAndLastnameLike(Event event, String lastname) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (lastname == null || lastname.length() == 0)
+        if (lastname == null || lastname.isEmpty())
             throw new IllegalArgumentException("The lastname argument is required");
         lastname = lastname.replace('*', '%');
         if (lastname.charAt(0) != '%') {
@@ -393,7 +394,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static Long countFindRaceResultsByEventAndBibEquals(Event event, String bib) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (bib == null || bib.length() == 0)
+        if (bib == null || bib.isEmpty())
             throw new IllegalArgumentException("The bib argument is required");
         EntityManager em = RaceResult.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib", Long.class);
@@ -405,7 +406,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static Long countFindRaceResultsByEventAndFirstnameLike(Event event, String firstname) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (firstname == null || firstname.length() == 0)
+        if (firstname == null || firstname.isEmpty())
             throw new IllegalArgumentException("The firstname argument is required");
         firstname = firstname.replace('*', '%');
         if (firstname.charAt(0) != '%') {
@@ -424,7 +425,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static Long countFindRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event event, String firstname, String lastname) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (firstname == null || firstname.length() == 0)
+        if (firstname == null || firstname.isEmpty())
             throw new IllegalArgumentException("The firstname argument is required");
         firstname = firstname.replace('*', '%');
         if (firstname.charAt(0) != '%') {
@@ -433,7 +434,7 @@ public class RaceResult implements Comparable<RaceResult> {
         if (firstname.charAt(firstname.length() - 1) != '%') {
             firstname = firstname + "%";
         }
-        if (lastname == null || lastname.length() == 0)
+        if (lastname == null || lastname.isEmpty())
             throw new IllegalArgumentException("The lastname argument is required");
         lastname = lastname.replace('*', '%');
         if (lastname.charAt(0) != '%') {
@@ -455,7 +456,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static Long countFindRaceResultsByEventAndLastnameLike(Event event, String lastname) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (lastname == null || lastname.length() == 0)
+        if (lastname == null || lastname.isEmpty())
             throw new IllegalArgumentException("The lastname argument is required");
         lastname = lastname.replace('*', '%');
         if (lastname.charAt(0) != '%') {
@@ -499,7 +500,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static TypedQuery<RaceResult> findRaceResultsByEventAndBibEquals(Event event, String bib) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (bib == null || bib.length() == 0)
+        if (bib == null || bib.isEmpty())
             throw new IllegalArgumentException("The bib argument is required");
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib", RaceResult.class);
@@ -511,7 +512,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static TypedQuery<RaceResult> findRaceResultsByEventAndBibEquals(Event event, String bib, String sortFieldName, String sortOrder) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (bib == null || bib.length() == 0)
+        if (bib == null || bib.isEmpty())
             throw new IllegalArgumentException("The bib argument is required");
         EntityManager em = RaceResult.entityManager();
         String jpaQuery = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib";
@@ -530,7 +531,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static TypedQuery<RaceResult> findRaceResultsByEventAndFirstnameLike(Event event, String firstname, String sortFieldName, String sortOrder) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (firstname == null || firstname.length() == 0)
+        if (firstname == null || firstname.isEmpty())
             throw new IllegalArgumentException("The firstname argument is required");
         firstname = firstname.replace('*', '%');
         if (firstname.charAt(0) != '%') {
@@ -557,7 +558,7 @@ public class RaceResult implements Comparable<RaceResult> {
             String sortOrder) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (firstname == null || firstname.length() == 0)
+        if (firstname == null || firstname.isEmpty())
             throw new IllegalArgumentException("The firstname argument is required");
         firstname = firstname.replace('*', '%');
         if (firstname.charAt(0) != '%') {
@@ -566,7 +567,7 @@ public class RaceResult implements Comparable<RaceResult> {
         if (firstname.charAt(firstname.length() - 1) != '%') {
             firstname = firstname + "%";
         }
-        if (lastname == null || lastname.length() == 0)
+        if (lastname == null || lastname.isEmpty())
             throw new IllegalArgumentException("The lastname argument is required");
         lastname = lastname.replace('*', '%');
         if (lastname.charAt(0) != '%') {
@@ -593,7 +594,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public static TypedQuery<RaceResult> findRaceResultsByEventAndLastnameLike(Event event, String lastname, String sortFieldName, String sortOrder) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (lastname == null || lastname.length() == 0)
+        if (lastname == null || lastname.isEmpty())
             throw new IllegalArgumentException("The lastname argument is required");
         lastname = lastname.replace('*', '%');
         if (lastname.charAt(0) != '%') {
@@ -618,12 +619,9 @@ public class RaceResult implements Comparable<RaceResult> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof RaceResult)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         RaceResult rhs = (RaceResult) obj;
         return new EqualsBuilder().append(this.age, rhs.age).append(this.award, rhs.award).append(this.bib, rhs.bib).append(this.city, rhs.city).append(this.country, rhs.country)
                 .append(this.created, rhs.created).append(this.event, rhs.event).append(this.firstname, rhs.firstname).append(this.fullname, rhs.fullname)
@@ -655,13 +653,13 @@ public class RaceResult implements Comparable<RaceResult> {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "userProfile", "raceImage", "bib", "firstname", "lastname", "middlename",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "userProfile", "raceImage", "bib", "firstname", "lastname", "middlename",
             "middlename2", "age", "gender", "type", "time5k", "time10k", "time15k", "timeoverall", "timegun", "timechip", "timesplit", "timestart", "timerun", "timeswim",
             "timetrans1", "timetrans2", "timebike", "timepace", "timeofficial", "timeofficialdisplay", "rankoverall", "rankage", "rankgender", "rankclass", "medal1", "medal2",
             "medal3", "city", "state", "country", "fullname", "lisencenumber", "laps", "award", "timer", "timesplit1", "timesplit2", "timesplit3", "timesplit4", "timemile1",
             "timemile2", "timemile3", "timemile4", "created", "updated");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new RaceResult().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

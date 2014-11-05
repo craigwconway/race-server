@@ -37,6 +37,7 @@ public final class UserAuthoritiesID implements Serializable {
     private UserAuthority userAuthority;
 
     public UserAuthoritiesID() {
+        super();
     }
 
     public void setUserAuthority(UserAuthority userAuthority) {
@@ -73,12 +74,9 @@ public final class UserAuthoritiesID implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof UserAuthoritiesID)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         UserAuthoritiesID rhs = (UserAuthoritiesID) obj;
         return new EqualsBuilder().append(this.userAuthority, rhs.userAuthority).append(this.userProfile, rhs.userProfile).isEquals();
     }

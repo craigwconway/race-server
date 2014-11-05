@@ -92,7 +92,7 @@ public class UserProfileController {
     void populateEditForm(Model uiModel, UserProfile userProfile) {
         uiModel.addAttribute("userProfile", userProfile);
         uiModel.addAttribute("userauthoritys", UserAuthority.findAllUserAuthoritys());
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -102,9 +102,9 @@ public class UserProfileController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (userProfile == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(userProfile.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(userProfile.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -113,7 +113,7 @@ public class UserProfileController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<UserProfile> result = this.userProfileService.findAllUserProfiles();
-        return new ResponseEntity<String>(UserProfile.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(UserProfile.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -122,9 +122,9 @@ public class UserProfileController {
         this.userProfileService.saveUserProfile(userProfile);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + userProfile.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + userProfile.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -134,7 +134,7 @@ public class UserProfileController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -144,9 +144,9 @@ public class UserProfileController {
         UserProfile userProfile = UserProfile.fromJsonToUserProfile(json);
         userProfile.setId(id);
         if (this.userProfileService.updateUserProfile(userProfile) == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -155,10 +155,10 @@ public class UserProfileController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (userProfile == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         this.userProfileService.deleteUserProfile(userProfile);
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByDropboxIdEquals", headers = "Accept=application/json")
@@ -166,7 +166,7 @@ public class UserProfileController {
     public ResponseEntity<String> jsonFindUserProfilesByDropboxIdEquals(@RequestParam("dropboxId") String dropboxId) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(UserProfile.toJsonArray(UserProfile.findUserProfilesByDropboxIdEquals(dropboxId).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(UserProfile.toJsonArray(UserProfile.findUserProfilesByDropboxIdEquals(dropboxId).getResultList()), headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByEmailEquals", headers = "Accept=application/json")
@@ -174,7 +174,7 @@ public class UserProfileController {
     public ResponseEntity<String> jsonFindUserProfilesByEmailEquals(@RequestParam("email") String email) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(UserProfile.toJsonArray(UserProfile.findUserProfilesByEmailEquals(email).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(UserProfile.toJsonArray(UserProfile.findUserProfilesByEmailEquals(email).getResultList()), headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByForgotPasswordCodeEquals", headers = "Accept=application/json")
@@ -182,7 +182,7 @@ public class UserProfileController {
     public ResponseEntity<String> jsonFindUserProfilesByForgotPasswordCodeEquals(@RequestParam("forgotPasswordCode") String forgotPasswordCode) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(UserProfile.toJsonArray(UserProfile.findUserProfilesByForgotPasswordCodeEquals(forgotPasswordCode).getResultList()), headers,
+        return new ResponseEntity<>(UserProfile.toJsonArray(UserProfile.findUserProfilesByForgotPasswordCodeEquals(forgotPasswordCode).getResultList()), headers,
                 HttpStatus.OK);
     }
 
@@ -191,7 +191,7 @@ public class UserProfileController {
     public ResponseEntity<String> jsonFindUserProfilesByUsernameEquals(@RequestParam("username") String username) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(UserProfile.toJsonArray(UserProfile.findUserProfilesByUsernameEquals(username).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(UserProfile.toJsonArray(UserProfile.findUserProfilesByUsernameEquals(username).getResultList()), headers, HttpStatus.OK);
     }
 
     @Autowired
@@ -200,17 +200,17 @@ public class UserProfileController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid UserProfile userProfile, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, userProfile);
+            this.populateEditForm(uiModel, userProfile);
             return "userprofiles/create";
         }
         uiModel.asMap().clear();
         this.userProfileService.saveUserProfile(userProfile);
-        return "redirect:/userprofiles/" + encodeUrlPathSegment(userProfile.getId().toString(), httpServletRequest);
+        return "redirect:/userprofiles/" + this.encodeUrlPathSegment(userProfile.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new UserProfile());
+        this.populateEditForm(uiModel, new UserProfile());
         return "userprofiles/create";
     }
 
@@ -226,24 +226,24 @@ public class UserProfileController {
         } else {
             uiModel.addAttribute("userprofiles", UserProfile.findAllUserProfiles(sortFieldName, sortOrder));
         }
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         return "userprofiles/list";
     }
 
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid UserProfile userProfile, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, userProfile);
+            this.populateEditForm(uiModel, userProfile);
             return "userprofiles/update";
         }
         uiModel.asMap().clear();
         this.userProfileService.updateUserProfile(userProfile);
-        return "redirect:/userprofiles/" + encodeUrlPathSegment(userProfile.getId().toString(), httpServletRequest);
+        return "redirect:/userprofiles/" + this.encodeUrlPathSegment(userProfile.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, this.userProfileService.findUserProfile(id));
+        this.populateEditForm(uiModel, this.userProfileService.findUserProfile(id));
         return "userprofiles/update";
     }
 

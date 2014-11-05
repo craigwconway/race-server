@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -144,12 +145,9 @@ public class Cart {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Cart)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         Cart rhs = (Cart) obj;
         return new EqualsBuilder().append(this.coupons, rhs.coupons).append(this.created, rhs.created).append(this.id, rhs.id).append(this.shipping, rhs.shipping)
                 .append(this.status, rhs.status).append(this.stripeChargeId, rhs.stripeChargeId).append(this.timeout, rhs.timeout).append(this.total, rhs.total)
@@ -170,7 +168,7 @@ public class Cart {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("NEW", "SAVED", "PROCESSING", "COMPLETE", "REFUND_REQUEST", "REFUNDED",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("NEW", "SAVED", "PROCESSING", "COMPLETE", "REFUND_REQUEST", "REFUNDED",
             "DEFAULT_TIMEOUT", "user", "cartItems", "shipping", "total", "created", "updated", "status", "coupons", "timeout", "stripeChargeId");
 
     public static EntityManager entityManager() {

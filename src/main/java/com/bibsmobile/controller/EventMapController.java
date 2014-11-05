@@ -38,7 +38,7 @@ public class EventMapController {
         List<Event> events = new ArrayList<>();
         events.add(event);
         uiModel.addAttribute("events", events);
-        populateEditForm(uiModel, eventMap);
+        this.populateEditForm(uiModel, eventMap);
         return "eventmaps/create";
     }
 
@@ -48,7 +48,7 @@ public class EventMapController {
         List<Event> events = new ArrayList<>();
         events.add(eventMap.getEvent());
         uiModel.addAttribute("events", events);
-        populateEditForm(uiModel, eventMap);
+        this.populateEditForm(uiModel, eventMap);
         return "eventmaps/update";
     }
 
@@ -77,19 +77,19 @@ public class EventMapController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public String findEventsMaps(@RequestParam(value = "event") Long eventId) {
+    public String findEventsMaps(@RequestParam("event") Long eventId) {
         return EventMap.toJsonArray(EventMap.findEventMapsByEventId(eventId).getResultList());
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventMap eventMap, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventMap);
+            this.populateEditForm(uiModel, eventMap);
             return "eventmaps/create";
         }
         uiModel.asMap().clear();
         eventMap.persist();
-        return "redirect:/eventmaps/" + encodeUrlPathSegment(eventMap.getId().toString(), httpServletRequest);
+        return "redirect:/eventmaps/" + this.encodeUrlPathSegment(eventMap.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
@@ -102,12 +102,12 @@ public class EventMapController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EventMap eventMap, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventMap);
+            this.populateEditForm(uiModel, eventMap);
             return "eventmaps/update";
         }
         uiModel.asMap().clear();
         eventMap.merge();
-        return "redirect:/eventmaps/" + encodeUrlPathSegment(eventMap.getId().toString(), httpServletRequest);
+        return "redirect:/eventmaps/" + this.encodeUrlPathSegment(eventMap.getId().toString(), httpServletRequest);
     }
 
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
@@ -129,9 +129,9 @@ public class EventMapController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (eventMap == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(eventMap.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(eventMap.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
@@ -140,7 +140,7 @@ public class EventMapController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<EventMap> result = EventMap.findAllEventMaps();
-        return new ResponseEntity<String>(EventMap.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventMap.toJsonArray(result), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -149,9 +149,9 @@ public class EventMapController {
         eventMap.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventMap.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventMap.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -161,7 +161,7 @@ public class EventMapController {
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -171,9 +171,9 @@ public class EventMapController {
         EventMap eventMap = EventMap.fromJsonToEventMap(json);
         eventMap.setId(id);
         if (eventMap.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
@@ -182,10 +182,10 @@ public class EventMapController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (eventMap == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         eventMap.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
@@ -193,6 +193,6 @@ public class EventMapController {
     public ResponseEntity<String> jsonFindEventMapsByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(EventMap.toJsonArray(EventMap.findEventMapsByEvent(event).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventMap.toJsonArray(EventMap.findEventMapsByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
 }

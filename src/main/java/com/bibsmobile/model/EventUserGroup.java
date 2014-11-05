@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -80,12 +81,9 @@ public class EventUserGroup {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof EventUserGroup)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         EventUserGroup rhs = (EventUserGroup) obj;
         return new EqualsBuilder().append(this.event, rhs.event).append(this.id, rhs.id).append(this.userGroup, rhs.userGroup).isEquals();
     }
@@ -98,9 +96,9 @@ public class EventUserGroup {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "userGroup");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "userGroup");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new EventUserGroup().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

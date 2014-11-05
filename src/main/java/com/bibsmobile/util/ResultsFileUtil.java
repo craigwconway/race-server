@@ -74,7 +74,7 @@ public final class ResultsFileUtil {
 
     /**
      * imports a file from dropbox for the given user
-     * 
+     *
      * @throws IOException
      * @throws InvalidFormatException
      */
@@ -159,10 +159,6 @@ public final class ResultsFileUtil {
     }
 
     private static final class ResultsFileIteratorFactory {
-        private ResultsFileIteratorFactory() {
-            super();
-        }
-
         public static ResultsFileIterator build(ResultsFile resultsFile) {
             try {
                 File file = new File(resultsFile.getFilePath());
@@ -197,7 +193,6 @@ public final class ResultsFileUtil {
             super();
             // not using the csvreader-iterator because it reads whole file at
             // once according to doc
-            // TODO make compiler understand that this is okay
             this.reader = new CSVReader(new FileReader(file));
         }
 
@@ -210,7 +205,7 @@ public final class ResultsFileUtil {
         public boolean hasNext() {
             if (this.nextLine != null)
                 return true;
-            String tmp[];
+            String[] tmp;
             try {
                 tmp = this.reader.readNext();
             } catch (IOException e) {
@@ -224,7 +219,7 @@ public final class ResultsFileUtil {
 
         @Override
         public List<String> next() {
-            String line[];
+            String[] line;
             if (this.nextLine != null) {
                 line = this.nextLine;
                 this.nextLine = null;

@@ -29,7 +29,7 @@ public class UserProfileServiceImpl implements UserProfileService, UserDetailsSe
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("login " + username);
-        UserDetails user = findUserProfilesByUsernameEquals(username);
+        UserDetails user = this.findUserProfilesByUsernameEquals(username);
         System.out.println(user);
         return user;
     }

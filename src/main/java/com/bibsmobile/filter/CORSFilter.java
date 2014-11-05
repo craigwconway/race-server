@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * Created by Jevgeni on 9.05.2014.
- */
 @Component
 public class CORSFilter extends OncePerRequestFilter {
 

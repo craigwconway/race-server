@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -41,9 +42,9 @@ public class ResultsImport {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("runDate", "resultsFile", "resultsFileMapping", "rowsProcessed", "errors", "errorRows");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("runDate", "resultsFile", "resultsFileMapping", "rowsProcessed", "errors", "errorRows");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new ResultsImport().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

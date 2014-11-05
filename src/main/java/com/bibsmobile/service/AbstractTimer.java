@@ -13,19 +13,19 @@ import com.bibsmobile.model.TimerConfig;
 
 public abstract class AbstractTimer implements Timer {
 
-    private final Map<String, Integer> bibsByReader = new HashMap<String, Integer>(); // position,
+    private final Map<String, Integer> bibsByReader = new HashMap<>(); // position,
                                                                                       // count
-    private final List<String> bibCache = new ArrayList<String>();
-    private final Set<String> uniqueBibs = new TreeSet<String>();
-    private final Map<String, Long> bibTimes = new HashMap<String, Long>();
+    private final List<String> bibCache = new ArrayList<>();
+    private final Set<String> uniqueBibs = new TreeSet<>();
+    private final Map<String, Long> bibTimes = new HashMap<>();
 
     @Override
     public void logTime(final int bibnum, long bibtime, final TimerConfig timerConfig) {
         bibtime = bibtime / 1000; // microseconds
-        final String slog = Thread.currentThread().getName() + " " + getClass().getName();
+        final String slog = Thread.currentThread().getName() + " " + this.getClass().getName();
         final String cacheKey = bibnum + "-" + timerConfig.getPosition();
         System.out.println(slog + " logging '" + bibnum + "' @ " + bibtime + ", position " + timerConfig.getPosition());
-        logUnregisteredBib(String.valueOf(bibnum), timerConfig.getUrl());// test
+        this.logUnregisteredBib(String.valueOf(bibnum), timerConfig.getUrl());// test
                                                                          // logging
         if (!this.bibTimes.containsKey(cacheKey))
             this.bibTimes.put(cacheKey, bibtime);
@@ -68,7 +68,7 @@ public abstract class AbstractTimer implements Timer {
                         // bib vs chip start
                         long starttime = 0l;
                         if (result.getTimestart() > 0) {
-                            starttime = Long.valueOf(result.getTimestart());
+                            starttime = result.getTimestart();
                         } else {
                             starttime = event.getGunTime().getTime();
                             result.setTimestart(starttime);

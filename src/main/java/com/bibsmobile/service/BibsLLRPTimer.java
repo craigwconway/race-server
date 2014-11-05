@@ -68,6 +68,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
     private long usCurrentOffset;
 
     public BibsLLRPTimer(TimerConfig timerConfig) {
+        super();
         this.timerConfig = timerConfig;
     }
 
@@ -90,8 +91,8 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             for (SpecParameter param : ((ADD_ROSPEC) addRospec).getROSpec().getSpecParameterList()) {
                 if (param instanceof AISpec) {
                     UnsignedShortArray array = new UnsignedShortArray();
-                    for (int i = 0; i < ports.length; i++) {
-                        array.add(new UnsignedShort(ports[i]));
+                    for (String port : ports) {
+                        array.add(new UnsignedShort(port));
                     }
                     ((AISpec) param).setAntennaIDs(array);
                 }
@@ -118,7 +119,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
     private ADD_ROSPEC buildROSpecFromObjects() {
         System.out.println("Building ADD_ROSPEC message from scratch ...");
         ADD_ROSPEC addRoSpec = new ADD_ROSPEC();
-        addRoSpec.setMessageID(getUniqueMessageID());
+        addRoSpec.setMessageID(this.getUniqueMessageID());
 
         this.rospec = new ROSpec();
 
@@ -150,8 +151,8 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
         } else {
             String[] ports = this.timerConfig.getPorts().split(",");
             System.out.println("ports " + ports);
-            for (int i = 0; i < ports.length; i++) {
-                ants.add(new UnsignedShort(ports[i]));
+            for (String port : ports) {
+                ants.add(new UnsignedShort(port));
             }
         }
         aispec.setAntennaIDs(ants);
@@ -167,11 +168,11 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
         ispec.setAntennaConfigurationList(null);
         ispec.setInventoryParameterSpecID(new UnsignedShort(23));
         ispec.setProtocolID(new AirProtocols(AirProtocols.EPCGlobalClass1Gen2));
-        List<InventoryParameterSpec> ilist = new ArrayList<InventoryParameterSpec>();
+        List<InventoryParameterSpec> ilist = new ArrayList<>();
         ilist.add(ispec);
 
         aispec.setInventoryParameterSpecList(ilist);
-        List<SpecParameter> slist = new ArrayList<SpecParameter>();
+        List<SpecParameter> slist = new ArrayList<>();
         slist.add(aispec);
         this.rospec.setSpecParameterList(slist);
 
@@ -186,11 +187,11 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
         ADD_ROSPEC addRospec = null;
 
         if (null != this.timerConfig.getFilename() && !this.timerConfig.getFilename().isEmpty()) {
-            addRospec = buildROSpecFromFile(this.timerConfig.getFilename());
+            addRospec = this.buildROSpecFromFile(this.timerConfig.getFilename());
         } else {
-            addRospec = buildROSpecFromObjects();
+            addRospec = this.buildROSpecFromObjects();
         }
-        addRospec.setMessageID(getUniqueMessageID());
+        addRospec.setMessageID(this.getUniqueMessageID());
         this.rospec = addRospec.getROSpec();
 
         System.out.println("Sending ADD_ROSPEC message  ...");
@@ -238,7 +239,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             // factory default the reader
             System.out.println("DELETE_ROSPEC ...");
             DELETE_ROSPEC delete = new DELETE_ROSPEC();
-            delete.setMessageID(getUniqueMessageID());
+            delete.setMessageID(this.getUniqueMessageID());
             // get.setROSpecID(rospec.getROSpecID());
             delete.setROSpecID(new UnsignedInteger(1));
             response = this.reader.transact(delete, this.timerConfig.getConnectionTimeout() * 1000);
@@ -264,7 +265,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             // factory default the reader
             System.out.println("ENABLE_ROSPEC ...");
             ENABLE_ROSPEC ena = new ENABLE_ROSPEC();
-            ena.setMessageID(getUniqueMessageID());
+            ena.setMessageID(this.getUniqueMessageID());
             ena.setROSpecID(this.rospec.getROSpecID());
 
             response = this.reader.transact(ena, this.timerConfig.getConnectionTimeout() * 1000);
@@ -287,7 +288,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
     private void lineReadHandler(TagReportData tr) {
         LLRPParameter epcp = (LLRPParameter) tr.getEPCParameter();
 
-        System.out.println(" lineReadHandler " + tr.toString());
+        System.out.println(" lineReadHandler " + tr);
         // epc is not optional, so we should fail if we can't find it
         String epcString = "EPC: ";
         if (epcp != null) {
@@ -295,7 +296,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
                 EPC_96 epc96 = (EPC_96) epcp;
                 epcString += epc96.getEPC().toString();
                 System.out.println("ERROR Non-Bibs chip read " + epcString);
-                logUnregisteredBib(epcString, this.timerConfig.getUrl());
+                this.logUnregisteredBib(epcString, this.timerConfig.getUrl());
             } else if (epcp.getName().equals("EPCData")) {
                 EPCData epcData = (EPCData) epcp;
                 epcString += epcData.getEPC().toString();
@@ -303,9 +304,9 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
                 // long bibtime =
                 // tr.getFirstSeenTimestampUTC().getMicroseconds().toLong();
                 long bibtime = tr.getFirstSeenTimestampUTC().getMicroseconds().toLong() - this.usReaderOffset + this.usCurrentOffset;
-                int bib = Integer.decode("0x" + bibdata.toString());
+                int bib = Integer.decode("0x" + bibdata);
                 System.out.println(" ANTENNE FOUND " + bib + " " + bibtime);
-                logTime(bib, bibtime, this.timerConfig);
+                this.logTime(bib, bibtime, this.timerConfig);
             }
         } else {
             System.out.println("Could not find EPC in Tag Report");
@@ -313,35 +314,35 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 
         // all of these values are optional, so check their non-nullness first
         if (tr.getAntennaID() != null) {
-            epcString += " Antenna: " + tr.getAntennaID().getAntennaID().toString();
+            epcString += " Antenna: " + tr.getAntennaID().getAntennaID();
         }
 
         if (tr.getChannelIndex() != null) {
-            epcString += " ChanIndex: " + tr.getChannelIndex().getChannelIndex().toString();
+            epcString += " ChanIndex: " + tr.getChannelIndex().getChannelIndex();
         }
 
         if (tr.getFirstSeenTimestampUTC() != null) {
-            epcString += " FirstSeen: " + tr.getFirstSeenTimestampUTC().getMicroseconds().toString();
+            epcString += " FirstSeen: " + tr.getFirstSeenTimestampUTC().getMicroseconds();
         }
 
         if (tr.getInventoryParameterSpecID() != null) {
-            epcString += " ParamSpecID: " + tr.getInventoryParameterSpecID().getInventoryParameterSpecID().toString();
+            epcString += " ParamSpecID: " + tr.getInventoryParameterSpecID().getInventoryParameterSpecID();
         }
 
         if (tr.getLastSeenTimestampUTC() != null) {
-            epcString += " LastTime: " + tr.getLastSeenTimestampUTC().getMicroseconds().toString();
+            epcString += " LastTime: " + tr.getLastSeenTimestampUTC().getMicroseconds();
         }
 
         if (tr.getPeakRSSI() != null) {
-            epcString += " RSSI: " + tr.getPeakRSSI().getPeakRSSI().toString();
+            epcString += " RSSI: " + tr.getPeakRSSI().getPeakRSSI();
         }
 
         if (tr.getROSpecID() != null) {
-            epcString += " ROSpecID: " + tr.getROSpecID().getROSpecID().toString();
+            epcString += " ROSpecID: " + tr.getROSpecID().getROSpecID();
         }
 
         if (tr.getTagSeenCount() != null) {
-            epcString += " SeenCount: " + tr.getTagSeenCount().getTagCount().toString();
+            epcString += " SeenCount: " + tr.getTagSeenCount().getTagCount();
         }
 
         System.out.println(epcString);
@@ -354,7 +355,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             RO_ACCESS_REPORT report = (RO_ACCESS_REPORT) bibRead;
             List<TagReportData> list = report.getTagReportDataList();
             for (TagReportData data : list) {
-                lineReadHandler(data);
+                this.lineReadHandler(data);
             }
         } else if (bibRead.getTypeNum() == READER_EVENT_NOTIFICATION.TYPENUM) {
             READER_EVENT_NOTIFICATION eventNotification = (READER_EVENT_NOTIFICATION) bibRead;
@@ -411,11 +412,11 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 
     @Override
     public void connect() throws Exception {
-        LLRPConnect();
-        LLRPDeleteROSPEC();
+        this.LLRPConnect();
+        this.LLRPDeleteROSPEC();
         // LLRPFactoryDefault();
-        LLRPAddROSPEC();
-        LLRPEnable();
+        this.LLRPAddROSPEC();
+        this.LLRPEnable();
     }
 
     @Override
@@ -424,7 +425,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             return;
         LLRPMessage response;
         CLOSE_CONNECTION close = new CLOSE_CONNECTION();
-        close.setMessageID(getUniqueMessageID());
+        close.setMessageID(this.getUniqueMessageID());
         try {
             // don't wait around too long for close
             response = this.reader.transact(close, 4000);
@@ -449,7 +450,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
         try {
             System.out.println("START_ROSPEC ...");
             START_ROSPEC start = new START_ROSPEC();
-            start.setMessageID(getUniqueMessageID());
+            start.setMessageID(this.getUniqueMessageID());
             start.setROSpecID(this.rospec.getROSpecID());
 
             response = this.reader.transact(start, this.timerConfig.getConnectionTimeout() * 1000);
@@ -475,7 +476,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
         try {
             System.out.println("STOP_ROSPEC ...");
             STOP_ROSPEC stop = new STOP_ROSPEC();
-            stop.setMessageID(getUniqueMessageID());
+            stop.setMessageID(this.getUniqueMessageID());
             stop.setROSpecID(this.rospec.getROSpecID());
 
             response = this.reader.transact(stop, this.timerConfig.getConnectionTimeout() * 1000);

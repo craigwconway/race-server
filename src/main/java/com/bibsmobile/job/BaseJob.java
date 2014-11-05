@@ -14,7 +14,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 public abstract class BaseJob implements Job {
-    private static Scheduler scheduler;
+    private static final Scheduler scheduler;
 
     static {
         try {

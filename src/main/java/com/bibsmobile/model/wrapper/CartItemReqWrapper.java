@@ -13,9 +13,6 @@ import com.bibsmobile.model.UserProfile;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
-/**
- * Created by Jevgeni on 18.06.2014.
- */
 public class CartItemReqWrapper {
     private UserProfile userProfile;
     private String size;
@@ -52,12 +49,9 @@ public class CartItemReqWrapper {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof CartItemReqWrapper)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         CartItemReqWrapper rhs = (CartItemReqWrapper) obj;
         return new EqualsBuilder().append(this.color, rhs.color).append(this.size, rhs.size).append(this.userProfile, rhs.userProfile).isEquals();
     }

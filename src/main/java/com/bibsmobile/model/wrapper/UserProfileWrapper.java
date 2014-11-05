@@ -13,21 +13,15 @@ import com.bibsmobile.model.UserProfile;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
-/**
- * Created by Jevgeni on 18.06.2014.
- */
 public class UserProfileWrapper {
     private UserProfile userProfile;
     private String userGroupName;
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof UserProfileWrapper)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         UserProfileWrapper rhs = (UserProfileWrapper) obj;
         return new EqualsBuilder().append(this.userGroupName, rhs.userGroupName).append(this.userProfile, rhs.userProfile).isEquals();
     }

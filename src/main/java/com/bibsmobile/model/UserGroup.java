@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -50,8 +51,8 @@ public class UserGroup {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.userGroup", cascade = CascadeType.ALL)
     private Set<UserGroupUserAuthority> userGroupUserAuthorities;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "userGroup")
-    private List<EventUserGroup> eventUserGroups = new ArrayList<EventUserGroup>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "userGroup")
+    private List<EventUserGroup> eventUserGroups = new ArrayList<>();
 
     public static Long countFindUserGroupsByGroupType(UserGroupType groupType) {
         if (groupType == null)
@@ -65,9 +66,9 @@ public class UserGroup {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("name", "bibWrites", "groupType", "userGroupUserAuthorities", "eventUserGroups");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("name", "bibWrites", "groupType", "userGroupUserAuthorities", "eventUserGroups");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new UserGroup().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -158,12 +159,9 @@ public class UserGroup {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof UserGroup)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         UserGroup rhs = (UserGroup) obj;
         return new EqualsBuilder().append(this.bibWrites, rhs.bibWrites).append(this.groupType, rhs.groupType).append(this.id, rhs.id).append(this.name, rhs.name).isEquals();
     }
@@ -238,7 +236,7 @@ public class UserGroup {
     }
 
     public static Long countFindUserGroupsByNameEquals(String name) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = UserGroup.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserGroup AS o WHERE o.name = :name", Long.class);
@@ -272,7 +270,7 @@ public class UserGroup {
     }
 
     public static TypedQuery<UserGroup> findUserGroupsByNameEquals(String name) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = UserGroup.entityManager();
         TypedQuery<UserGroup> q = em.createQuery("SELECT o FROM UserGroup AS o WHERE o.name = :name", UserGroup.class);
@@ -281,7 +279,7 @@ public class UserGroup {
     }
 
     public static TypedQuery<UserGroup> findUserGroupsByNameEquals(String name, String sortFieldName, String sortOrder) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = UserGroup.entityManager();
         String jpaQuery = "SELECT o FROM UserGroup AS o WHERE o.name = :name";

@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.transaction.annotation.Transactional;
 
 import flexjson.JSONDeserializer;
@@ -28,8 +30,7 @@ import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
-@SuppressWarnings({ "serial" })
-public class UserAuthority implements org.springframework.security.core.GrantedAuthority {
+public class UserAuthority implements GrantedAuthority {
     public static final String SYS_ADMIN = "ROLE_SYS_ADMIN";
     public static final String EVENT_ADMIN = "ROLE_EVENT_ADMIN";
     public static final String USER_ADMIN = "ROLE_USER_ADMIN";
@@ -80,9 +81,9 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("authority", "userAuthorities");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("authority", "userAuthorities");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new UserAuthority().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -172,7 +173,7 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
     }
 
     public static Long countFindUserAuthoritysByAuthorityEquals(String authority) {
-        if (authority == null || authority.length() == 0)
+        if (authority == null || authority.isEmpty())
             throw new IllegalArgumentException("The authority argument is required");
         EntityManager em = UserAuthority.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserAuthority AS o WHERE o.authority = :authority", Long.class);
@@ -181,7 +182,7 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
     }
 
     public static TypedQuery<UserAuthority> findUserAuthoritysByAuthorityEquals(String authority) {
-        if (authority == null || authority.length() == 0)
+        if (authority == null || authority.isEmpty())
             throw new IllegalArgumentException("The authority argument is required");
         EntityManager em = UserAuthority.entityManager();
         TypedQuery<UserAuthority> q = em.createQuery("SELECT o FROM UserAuthority AS o WHERE o.authority = :authority", UserAuthority.class);
@@ -190,7 +191,7 @@ public class UserAuthority implements org.springframework.security.core.GrantedA
     }
 
     public static TypedQuery<UserAuthority> findUserAuthoritysByAuthorityEquals(String authority, String sortFieldName, String sortOrder) {
-        if (authority == null || authority.length() == 0)
+        if (authority == null || authority.isEmpty())
             throw new IllegalArgumentException("The authority argument is required");
         EntityManager em = UserAuthority.entityManager();
         String jpaQuery = "SELECT o FROM UserAuthority AS o WHERE o.authority = :authority";

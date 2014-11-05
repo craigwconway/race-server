@@ -33,6 +33,7 @@ public class EventUserGroupId implements Serializable {
     private UserGroup userGroup;
 
     public EventUserGroupId() {
+        super();
     }
 
     public void setEvent(Event event) {
@@ -88,12 +89,9 @@ public class EventUserGroupId implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof EventUserGroupId)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         EventUserGroupId rhs = (EventUserGroupId) obj;
         return new EqualsBuilder().append(this.event, rhs.event).append(this.userGroup, rhs.userGroup).isEquals();
     }

@@ -20,7 +20,6 @@ package com.bibsmobile.util;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -234,7 +233,7 @@ public class XlsToCsv {
      *             Thrown if the xml markup encounetered whilst parsing a
      *             SpreadsheetML file (.xlsx) is invalid.
      */
-    public void convertExcelToCSV(String strSource, String strDestination, String mySeparator) throws FileNotFoundException, IOException, IllegalArgumentException,
+    public void convertExcelToCSV(String strSource, String strDestination, String mySeparator) throws IOException, IllegalArgumentException,
             InvalidFormatException {
 
         // Simply chain the call to the overloaded convertExcelToCSV(String,
@@ -287,7 +286,7 @@ public class XlsToCsv {
      *             Thrown if the xml markup encounetered whilst parsing a
      *             SpreadsheetML file (.xlsx) is invalid.
      */
-    public void convertExcelToCSV(String strSource, String strDestination, String mySeparator, int myFormattingConvention) throws FileNotFoundException, IOException,
+    public void convertExcelToCSV(String strSource, String strDestination, String mySeparator, int myFormattingConvention) throws IOException,
             IllegalArgumentException, InvalidFormatException {
         File source = new File(strSource);
         File destination = new File(strDestination);
@@ -406,7 +405,7 @@ public class XlsToCsv {
         Sheet sheet = null;
         Row row = null;
         int lastRowNum = 0;
-        this.csvData = new ArrayList<ArrayList<String>>();
+        this.csvData = new ArrayList<>();
 
         System.out.println("Converting files contents to CSV format.");
 
@@ -564,7 +563,7 @@ public class XlsToCsv {
             }
         }
         // this.csvData.add(csvLine);
-        System.out.println(csvLine.toString());
+        System.out.println(csvLine);
         return csvLine.toString().replace('[', ' ').replace(']', ' ').trim();
     }
 

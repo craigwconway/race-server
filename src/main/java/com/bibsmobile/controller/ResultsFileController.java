@@ -45,11 +45,11 @@ public class ResultsFileController {
         binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
     }
 
+    @ResponseBody
     @RequestMapping(value = "create.json", method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseEntity<String> createJson(@Valid ResultsFile resultsFile, BindingResult bindingResult, Model uiModel, @RequestParam("content") CommonsMultipartFile content,
+    public ResponseEntity<String> createJson(@Valid ResultsFile resultsFile, BindingResult bindingResult, Model uiModel, @RequestParam("content") CommonsMultipartFile content,
             HttpServletRequest httpServletRequest) {
-        String result = create(resultsFile, bindingResult, uiModel, content, httpServletRequest);
+        String result = this.create(resultsFile, bindingResult, uiModel, content, httpServletRequest);
         if (result.startsWith("redirect")) {
             String idValue = result.replace("redirect:/resultsfilemappings/", "");
             idValue = idValue.replace("?form", "");
@@ -101,13 +101,13 @@ public class ResultsFileController {
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new ResultsFile());
+        this.populateEditForm(uiModel, new ResultsFile());
         return "resultsfiles/create";
     }
 
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("resultsfile", ResultsFile.findResultsFile(id));
         uiModel.addAttribute("itemId", id);
         return "resultsfiles/show";
@@ -125,24 +125,24 @@ public class ResultsFileController {
         } else {
             uiModel.addAttribute("resultsfiles", ResultsFile.findAllResultsFiles(sortFieldName, sortOrder));
         }
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         return "resultsfiles/list";
     }
 
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid ResultsFile resultsFile, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, resultsFile);
+            this.populateEditForm(uiModel, resultsFile);
             return "resultsfiles/update";
         }
         uiModel.asMap().clear();
         resultsFile.merge();
-        return "redirect:/resultsfiles/" + encodeUrlPathSegment(resultsFile.getId().toString(), httpServletRequest);
+        return "redirect:/resultsfiles/" + this.encodeUrlPathSegment(resultsFile.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, ResultsFile.findResultsFile(id));
+        this.populateEditForm(uiModel, ResultsFile.findResultsFile(id));
         return "resultsfiles/update";
     }
 
@@ -163,7 +163,7 @@ public class ResultsFileController {
 
     void populateEditForm(Model uiModel, ResultsFile resultsFile) {
         uiModel.addAttribute("resultsFile", resultsFile);
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("events", Event.findAllEvents());
         uiModel.addAttribute("resultsfilemappings", ResultsFileMapping.findAllResultsFileMappings());
         uiModel.addAttribute("resultsimports", ResultsImport.findAllResultsImports());

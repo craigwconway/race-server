@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.bibsmobile.model.*;
-import com.bibsmobile.util.UserProfileUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,13 +13,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bibsmobile.util.JSONUtil;
+import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.SpringJSONUtil;
+import com.bibsmobile.util.UserProfileUtil;
 
 @RequestMapping("/rest/registrations")
 @Controller
 public class RegistrationsRestController {
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET, headers = "Accept=application/json", produces = "application/json")
+    @RequestMapping(value = "/register", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> register() {
+        return SpringJSONUtil.returnStatusMessage("yeah", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<String> search(@RequestParam("event") Long eventId, @RequestParam(value = "firstName", required = false) String firstName,
             @RequestParam(value = "lastName", required = false) String lastName, @RequestParam(value = "start", required = false) Integer start,
             @RequestParam(value = "count", required = false) Integer count) {
@@ -29,11 +42,11 @@ public class RegistrationsRestController {
             // sanity check given parameters
             Event event = Event.findEvent(eventId);
             if (event == null)
-                return new ResponseEntity<>(JSONUtil.convertErrorMessage("event not found"), HttpStatus.NOT_FOUND);
+                return SpringJSONUtil.returnErrorMessage("event not found", HttpStatus.NOT_FOUND);
             boolean firstNameGiven = (firstName != null && !firstName.isEmpty());
             boolean lastNameGiven = (lastName != null && !lastName.isEmpty());
             if (!(firstNameGiven || lastNameGiven))
-                return new ResponseEntity<>(JSONUtil.convertErrorMessage("firstName or lastName has to be included"), HttpStatus.BAD_REQUEST);
+                return SpringJSONUtil.returnErrorMessage("firstName or lastName has to be included", HttpStatus.BAD_REQUEST);
 
             // check the rights the user has for event
             UserAuthority authorityForEvent = null;
@@ -58,7 +71,7 @@ public class RegistrationsRestController {
             }
             // sys admins have access in general, event admins if they are associated with the event (see search above)
             if (authorityForEvent == null || (!authorityForEvent.isAuthority(UserAuthority.SYS_ADMIN) && !authorityForEvent.isAuthority(UserAuthority.EVENT_ADMIN))) {
-                return new ResponseEntity<>(JSONUtil.convertErrorMessage("no rights for this event"), HttpStatus.UNAUTHORIZED);
+                return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
             }
 
             // get relevant carts for event
@@ -89,10 +102,9 @@ public class RegistrationsRestController {
                     registrations.add(r);
             }
 
-            return new ResponseEntity<>(JSONUtil.convertPaginated(start, count, registrations), HttpStatus.OK);
-
+            return SpringJSONUtil.returnPaginated(start, count, registrations, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(JSONUtil.convertException(e), HttpStatus.INTERNAL_SERVER_ERROR);
+            return SpringJSONUtil.returnException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -107,7 +119,7 @@ public class RegistrationsRestController {
         private final int status;
         private final List<ShortCartItem> cartItems;
 
-        private ShortCart(Cart c) {
+        protected ShortCart(Cart c) {
             super();
             this.id = c.getId();
             this.created = c.getCreated();
@@ -145,7 +157,7 @@ public class RegistrationsRestController {
             private final String lastName;
             private final Date birthDate;
 
-            private ShortUser(UserProfile u) {
+            protected ShortUser(UserProfile u) {
                 super();
                 this.id = u.getId();
                 this.firstName = u.getFirstname();
@@ -178,7 +190,7 @@ public class RegistrationsRestController {
             private final String size;
             private final double price;
 
-            private ShortCartItem(CartItem c) {
+            protected ShortCartItem(CartItem c) {
                 super();
                 this.id = c.getId();
                 this.user = new ShortUser(c.getUserProfile());

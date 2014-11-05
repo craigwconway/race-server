@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -110,7 +111,7 @@ public class UserProfile implements UserDetails {
 
     @Override
     @JSON(include = false)
-    public Set<com.bibsmobile.model.UserAuthority> getAuthorities() {
+    public Set<UserAuthority> getAuthorities() {
         Set<UserAuthority> authorities = new HashSet<>();
         for (UserAuthorities uas : this.userAuthorities) {
             authorities.add(uas.getId().getUserAuthority());
@@ -122,13 +123,13 @@ public class UserProfile implements UserDetails {
     public List<UserAuthority> getNotAddedAuthorities() {
         List<UserAuthority> notAddedAuthorities = new ArrayList<>();
         List<UserAuthority> allAuthorities = UserAuthority.findAllUserAuthoritys();
-        List<UserAuthority> assignedAuthorities = new ArrayList<>(getAuthorities());
+        List<UserAuthority> assignedAuthorities = new ArrayList<>(this.getAuthorities());
         for (UserAuthority availableAuthority : allAuthorities) {
             boolean exists = false;
-            existedLoop: for (UserAuthority assignedAuthority : assignedAuthorities) {
+            for (UserAuthority assignedAuthority : assignedAuthorities) {
                 if (availableAuthority.getId().equals(assignedAuthority.getId())) {
                     exists = true;
-                    break existedLoop;
+                    break;
                 }
             }
             if (!exists) {
@@ -188,7 +189,7 @@ public class UserProfile implements UserDetails {
     private String forgotPasswordCode;
 
     public static Long countFindUserProfilesByEmailEquals(String email) {
-        if (email == null || email.length() == 0)
+        if (email == null || email.isEmpty())
             throw new IllegalArgumentException("The email argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.email = :email AND o.username IS NOT NULL", Long.class);
@@ -197,7 +198,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByEmailEquals(String email) {
-        if (email == null || email.length() == 0)
+        if (email == null || email.isEmpty())
             throw new IllegalArgumentException("The email argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.email = :email AND o.username IS NOT NULL", UserProfile.class);
@@ -458,7 +459,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static Long countFindUserProfilesByDropboxIdEquals(String dropboxId) {
-        if (dropboxId == null || dropboxId.length() == 0)
+        if (dropboxId == null || dropboxId.isEmpty())
             throw new IllegalArgumentException("The dropboxId argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.dropboxId = :dropboxId", Long.class);
@@ -467,7 +468,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static Long countFindUserProfilesByForgotPasswordCodeEquals(String forgotPasswordCode) {
-        if (forgotPasswordCode == null || forgotPasswordCode.length() == 0)
+        if (forgotPasswordCode == null || forgotPasswordCode.isEmpty())
             throw new IllegalArgumentException("The forgotPasswordCode argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.forgotPasswordCode = :forgotPasswordCode", Long.class);
@@ -476,7 +477,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static Long countFindUserProfilesByUsernameEquals(String username) {
-        if (username == null || username.length() == 0)
+        if (username == null || username.isEmpty())
             throw new IllegalArgumentException("The username argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.username = :username", Long.class);
@@ -485,7 +486,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByDropboxIdEquals(String dropboxId) {
-        if (dropboxId == null || dropboxId.length() == 0)
+        if (dropboxId == null || dropboxId.isEmpty())
             throw new IllegalArgumentException("The dropboxId argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.dropboxId = :dropboxId", UserProfile.class);
@@ -494,7 +495,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByDropboxIdEquals(String dropboxId, String sortFieldName, String sortOrder) {
-        if (dropboxId == null || dropboxId.length() == 0)
+        if (dropboxId == null || dropboxId.isEmpty())
             throw new IllegalArgumentException("The dropboxId argument is required");
         EntityManager em = UserProfile.entityManager();
         String jpaQuery = "SELECT o FROM UserProfile AS o WHERE o.dropboxId = :dropboxId";
@@ -510,7 +511,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByEmailEquals(String email, String sortFieldName, String sortOrder) {
-        if (email == null || email.length() == 0)
+        if (email == null || email.isEmpty())
             throw new IllegalArgumentException("The email argument is required");
         EntityManager em = UserProfile.entityManager();
         String jpaQuery = "SELECT o FROM UserProfile AS o WHERE o.email = :email";
@@ -526,7 +527,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByForgotPasswordCodeEquals(String forgotPasswordCode) {
-        if (forgotPasswordCode == null || forgotPasswordCode.length() == 0)
+        if (forgotPasswordCode == null || forgotPasswordCode.isEmpty())
             throw new IllegalArgumentException("The forgotPasswordCode argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.forgotPasswordCode = :forgotPasswordCode", UserProfile.class);
@@ -535,7 +536,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByForgotPasswordCodeEquals(String forgotPasswordCode, String sortFieldName, String sortOrder) {
-        if (forgotPasswordCode == null || forgotPasswordCode.length() == 0)
+        if (forgotPasswordCode == null || forgotPasswordCode.isEmpty())
             throw new IllegalArgumentException("The forgotPasswordCode argument is required");
         EntityManager em = UserProfile.entityManager();
         String jpaQuery = "SELECT o FROM UserProfile AS o WHERE o.forgotPasswordCode = :forgotPasswordCode";
@@ -551,7 +552,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByUsernameEquals(String username) {
-        if (username == null || username.length() == 0)
+        if (username == null || username.isEmpty())
             throw new IllegalArgumentException("The username argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.username = :username", UserProfile.class);
@@ -560,7 +561,7 @@ public class UserProfile implements UserDetails {
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByUsernameEquals(String username, String sortFieldName, String sortOrder) {
-        if (username == null || username.length() == 0)
+        if (username == null || username.isEmpty())
             throw new IllegalArgumentException("The username argument is required");
         EntityManager em = UserProfile.entityManager();
         String jpaQuery = "SELECT o FROM UserProfile AS o WHERE o.username = :username";
@@ -578,12 +579,12 @@ public class UserProfile implements UserDetails {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("firstname", "lastname", "city", "state", "age", "birthdate", "gender", "email",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("firstname", "lastname", "city", "state", "age", "birthdate", "gender", "email",
             "image", "userAuthorities", "username", "password", "accountNonExpired", "accountNonLocked", "credentialsNonExpired", "enabled", "facebookId", "twitterId", "googleId",
             "raceResults", "phone", "addressLine1", "addressLine2", "zipCode", "emergencyContactName", "emergencyContactPhone", "hearFrom", "dropboxId", "dropboxAccessToken",
             "stripeCustomerId", "resultsFiles", "cartItem", "forgotPasswordCode");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new UserProfile().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

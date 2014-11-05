@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -214,10 +215,10 @@ public class CartItem {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("cart", "eventCartItem", "userProfile", "quantity", "created", "updated", "comment",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("cart", "eventCartItem", "userProfile", "quantity", "created", "updated", "comment",
             "coupon", "exported", "color", "size", "price");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new CartItem().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -308,12 +309,9 @@ public class CartItem {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof CartItem)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         CartItem rhs = (CartItem) obj;
         return new EqualsBuilder().append(this.cart, rhs.cart).append(this.color, rhs.color).append(this.comment, rhs.comment).append(this.coupon, rhs.coupon)
                 .append(this.created, rhs.created).append(this.eventCartItem, rhs.eventCartItem).append(this.exported, rhs.exported).append(this.id, rhs.id)

@@ -16,7 +16,7 @@ import com.bibsmobile.model.UserProfile;
 
 import flexjson.JSONSerializer;
 
-@Component(value = "restAuthenticationSuccessHandler")
+@Component("restAuthenticationSuccessHandler")
 public class RestLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Override
@@ -27,12 +27,12 @@ public class RestLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         response.getWriter().write(new JSONSerializer().exclude("*.class").include("userprofile.userAuthorities.userGroupUserAuthorities").serialize(new HashMap<String, Object>() {
             private static final long serialVersionUID = 1L;
             {
-                put("jsessionid", sessionId);
-                put("userprofile", user);
+                this.put("jsessionid", sessionId);
+                this.put("userprofile", user);
             }
         }));
 
-        clearAuthenticationAttributes(request);
+        this.clearAuthenticationAttributes(request);
     }
 
 }

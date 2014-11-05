@@ -20,7 +20,7 @@ public class CartExpiration extends BaseJob {
                 Cart.class);
         q.setParameter("statusNew", Cart.NEW);
         for (Cart c : q.getResultList()) {
-            expireCart(c);
+            this.expireCart(c);
         }
     }
 

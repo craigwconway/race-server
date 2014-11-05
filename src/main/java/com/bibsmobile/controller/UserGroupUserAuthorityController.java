@@ -34,7 +34,7 @@ import com.bibsmobile.model.UserProfile;
 public class UserGroupUserAuthorityController {
 
     @RequestMapping(params = "form", produces = "text/html")
-    public String createForm(@RequestParam(value = "usergroup") Long userGroupId, @RequestParam(value = "userprofile", required = false) Long userProfileId, Model uiModel) {
+    public String createForm(@RequestParam("usergroup") Long userGroupId, @RequestParam(value = "userprofile", required = false) Long userProfileId, Model uiModel) {
         UserGroupUserAuthority userGroupUserAuthority = new UserGroupUserAuthority();
 
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
@@ -59,7 +59,7 @@ public class UserGroupUserAuthorityController {
 
         userGroupUserAuthority.setId(id);
         userGroupUserAuthority.setUserGroup(userGroup);
-        populateEditForm(uiModel, userGroupUserAuthority);
+        this.populateEditForm(uiModel, userGroupUserAuthority);
         uiModel.addAttribute("userprofiles", allUserProfiles);
         return "usergroupuserauthorities/createUGUA";
     }
@@ -80,7 +80,7 @@ public class UserGroupUserAuthorityController {
         userGroupUserAuthorityToSave.setId(id);
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("userprofiles", UserProfile.findAllUserProfiles());
-            populateEditForm(uiModel, userGroupUserAuthority);
+            this.populateEditForm(uiModel, userGroupUserAuthority);
             return "usergroupuserauthorities/createUGUA";
         }
         uiModel.asMap().clear();

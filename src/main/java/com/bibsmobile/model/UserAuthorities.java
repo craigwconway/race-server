@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -98,9 +99,9 @@ public class UserAuthorities implements Serializable {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("userProfile", "userAuthority", "userGroupUserAuthorities");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("userProfile", "userAuthority", "userGroupUserAuthorities");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new UserAuthorities().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -191,12 +192,9 @@ public class UserAuthorities implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof UserAuthorities)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         UserAuthorities rhs = (UserAuthorities) obj;
         return new EqualsBuilder().append(this.id, rhs.id).append(this.userAuthority, rhs.userAuthority).append(this.userProfile, rhs.userProfile).isEquals();
     }

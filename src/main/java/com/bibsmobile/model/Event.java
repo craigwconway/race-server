@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -41,16 +42,16 @@ import flexjson.JSONSerializer;
 @Entity
 public class Event {
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private Set<RaceImage> raceImages;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private Set<RaceResult> raceResults;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private Set<ResultsFile> resultsFiles;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private List<AwardCategory> awardCategorys;
 
     @NotNull
@@ -183,26 +184,26 @@ public class Event {
 
     /**
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
-    private List<EventPhoto> photos = new ArrayList<EventPhoto>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
+    private List<EventPhoto> photos = new ArrayList<>();
 
     /**
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
-    private List<EventAlert> alerts = new ArrayList<EventAlert>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
+    private List<EventAlert> alerts = new ArrayList<>();
 
     /**
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
-    private List<EventMap> maps = new ArrayList<EventMap>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
+    private List<EventMap> maps = new ArrayList<>();
 
     /**
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
-    private List<EventResult> results = new ArrayList<EventResult>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
+    private List<EventResult> results = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "event")
-    private List<EventUserGroup> eventUserGroups = new ArrayList<EventUserGroup>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
+    private List<EventUserGroup> eventUserGroups = new ArrayList<>();
 
     /**
      */
@@ -233,7 +234,7 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByNameLike(String name, int page, int size) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         name = name.replace('*', '%');
         if (name.charAt(0) != '%') {
@@ -283,9 +284,9 @@ public class Event {
     public List<RaceResult> getAwards(String gender, int min, int max, int size) {
         if (min > max)
             min = max;
-        List<RaceResult> allResults = new ArrayList<RaceResult>(this.raceResults);
+        List<RaceResult> allResults = new ArrayList<>(this.raceResults);
         Collections.sort(allResults);
-        List<RaceResult> tmpResults = new ArrayList<RaceResult>();
+        List<RaceResult> tmpResults = new ArrayList<>();
         for (RaceResult result : allResults) {
             int age = 0;
             try {
@@ -386,7 +387,7 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByTypeEquals(String type, int firstResult, int maxResults) {
-        if (type == null || type.length() == 0)
+        if (type == null || type.isEmpty())
             throw new IllegalArgumentException("The type argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.type = :type", Event.class);
@@ -398,14 +399,12 @@ public class Event {
 
     public static TypedQuery<String> findAllEventsCountries() {
         EntityManager em = Event.entityManager();
-        TypedQuery<String> q = em.createQuery("SELECT distinct event.country FROM Event AS event", String.class);
-        return q;
+        return em.createQuery("SELECT distinct event.country FROM Event AS event", String.class);
     }
 
     public static TypedQuery<String> findAllEventsCities() {
         EntityManager em = Event.entityManager();
-        TypedQuery<String> q = em.createQuery("SELECT distinct event.city FROM Event AS event", String.class);
-        return q;
+        return em.createQuery("SELECT distinct event.city FROM Event AS event", String.class);
     }
 
     public static TypedQuery<String> findAllEventsCitiesByCountry(String country) {
@@ -416,9 +415,9 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByStateEqualsAndCityEquals(String state, String city, int firstResult, int maxResults) {
-        if (state == null || state.length() == 0)
+        if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
-        if (city == null || city.length() == 0)
+        if (city == null || city.isEmpty())
             throw new IllegalArgumentException("The city argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.state = :state  AND o.city = :city", Event.class);
@@ -430,7 +429,7 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByStateEquals(String state, int firstResult, int maxResults) {
-        if (state == null || state.length() == 0)
+        if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.state = :state", Event.class);
@@ -483,12 +482,9 @@ public class Event {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Event)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         Event rhs = (Event) obj;
         return new EqualsBuilder().append(this.address1, rhs.address1).append(this.address2, rhs.address2).append(this.alert1, rhs.alert1).append(this.alert2, rhs.alert2)
                 .append(this.alert3, rhs.alert3).append(this.beachEvents, rhs.beachEvents).append(this.city, rhs.city).append(this.contactPerson, rhs.contactPerson)
@@ -519,7 +515,7 @@ public class Event {
     }
 
     public static Long countFindEventsByStateEquals(String state) {
-        if (state == null || state.length() == 0)
+        if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.state = :state", Long.class);
@@ -528,9 +524,9 @@ public class Event {
     }
 
     public static Long countFindEventsByStateEqualsAndCityEquals(String state, String city) {
-        if (state == null || state.length() == 0)
+        if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
-        if (city == null || city.length() == 0)
+        if (city == null || city.isEmpty())
             throw new IllegalArgumentException("The city argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.state = :state  AND o.city = :city", Long.class);
@@ -540,7 +536,7 @@ public class Event {
     }
 
     public static Long countFindEventsByTypeEquals(String type) {
-        if (type == null || type.length() == 0)
+        if (type == null || type.isEmpty())
             throw new IllegalArgumentException("The type argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.type = :type", Long.class);
@@ -549,7 +545,7 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByStateEquals(String state) {
-        if (state == null || state.length() == 0)
+        if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.state = :state", Event.class);
@@ -558,7 +554,7 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByStateEquals(String state, String sortFieldName, String sortOrder) {
-        if (state == null || state.length() == 0)
+        if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
         EntityManager em = Event.entityManager();
         String jpaQuery = "SELECT o FROM Event AS o WHERE o.state = :state";
@@ -574,9 +570,9 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByStateEqualsAndCityEquals(String state, String city) {
-        if (state == null || state.length() == 0)
+        if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
-        if (city == null || city.length() == 0)
+        if (city == null || city.isEmpty())
             throw new IllegalArgumentException("The city argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.state = :state  AND o.city = :city", Event.class);
@@ -586,9 +582,9 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByStateEqualsAndCityEquals(String state, String city, String sortFieldName, String sortOrder) {
-        if (state == null || state.length() == 0)
+        if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
-        if (city == null || city.length() == 0)
+        if (city == null || city.isEmpty())
             throw new IllegalArgumentException("The city argument is required");
         EntityManager em = Event.entityManager();
         String jpaQuery = "SELECT o FROM Event AS o WHERE o.state = :state  AND o.city = :city";
@@ -605,7 +601,7 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByTypeEquals(String type) {
-        if (type == null || type.length() == 0)
+        if (type == null || type.isEmpty())
             throw new IllegalArgumentException("The type argument is required");
         EntityManager em = Event.entityManager();
         TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.type = :type", Event.class);
@@ -614,7 +610,7 @@ public class Event {
     }
 
     public static TypedQuery<Event> findEventsByTypeEquals(String type, String sortFieldName, String sortOrder) {
-        if (type == null || type.length() == 0)
+        if (type == null || type.isEmpty())
             throw new IllegalArgumentException("The type argument is required");
         EntityManager em = Event.entityManager();
         String jpaQuery = "SELECT o FROM Event AS o WHERE o.type = :type";
@@ -632,14 +628,14 @@ public class Event {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("raceImages", "raceResults", "resultsFiles", "awardCategorys", "name", "timeStart",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("raceImages", "raceResults", "resultsFiles", "awardCategorys", "name", "timeStart",
             "timeEnd", "featured", "address1", "address2", "city", "state", "zip", "country", "lattitude", "longitude", "type", "eventTypes", "website", "phone", "email",
             "contactPerson", "registration", "parking", "general", "description", "organization", "photo", "photo2", "photo3", "map", "map2", "map3", "results1", "results2",
             "results3", "alert1", "alert2", "alert3", "donateUrl", "facebookUrl1", "facebookUrl2", "photoUploadUrl", "coursemaps", "merchandise", "beachEvents", "shuttles",
             "courseRules", "running", "gunFired", "sync", "syncId", "regEnabled", "regStart", "regEnd", "gunTime", "gunTimeStart", "created", "updated", "photos", "alerts",
             "maps", "results", "eventUserGroups", "waiver");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new Event().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

@@ -41,9 +41,11 @@ public class ResultsImportController {
     private RaceResultService raceResultService;
 
     public ResultsImportController() {
+        super();
     }
 
     protected ResultsImportController(RaceResultService raceResultService) {
+        super();
         this.raceResultService = raceResultService;
     }
 
@@ -51,13 +53,13 @@ public class ResultsImportController {
     public String create(@Valid ResultsImport resultsImport, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) throws InvalidFormatException,
             IOException {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, resultsImport);
+            this.populateEditForm(uiModel, resultsImport);
             return "resultsimports/create";
         }
         uiModel.asMap().clear();
-        doImport(resultsImport);
+        this.doImport(resultsImport);
         resultsImport.persist();
-        return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
+        return "redirect:/resultsimports/" + this.encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }
 
     public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
@@ -73,7 +75,7 @@ public class ResultsImportController {
             CSVReader reader = new CSVReader(new FileReader(file));
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                saveRaceResult(resultsImport, event, nextLine, map);
+                this.saveRaceResult(resultsImport, event, nextLine, map);
             }
             reader.close();
         } else if (StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".xls") || StringUtils.endsWithIgnoreCase(resultsFile.getFilePath(), ".xlsx")) {
@@ -81,8 +83,8 @@ public class ResultsImportController {
             Workbook wb = WorkbookFactory.create(file);
             Sheet sheet = wb.getSheetAt(0);
             for (int i = (resultsFileMapping.isSkipFirstRow() ? 1 : 0); i <= sheet.getLastRowNum(); i++) {
-                final String nextLine[] = csv.rowToCSV(sheet.getRow(i)).split(",");
-                saveRaceResult(resultsImport, event, nextLine, map);
+                final String[] nextLine = csv.rowToCSV(sheet.getRow(i)).split(",");
+                this.saveRaceResult(resultsImport, event, nextLine, map);
             }
         }
         System.out.println("Done");
@@ -91,11 +93,11 @@ public class ResultsImportController {
     public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
         if (nextLine.length != map.length || nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
-            resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
+            resultsImport.setErrorRows(resultsImport.getErrorRows() + nextLine[0]);
             resultsImport.merge();
             return;
         }
-        StringBuffer json = new StringBuffer("{");
+        StringBuilder json = new StringBuilder("{");
         for (int j = 0; j < nextLine.length; j++) {
             if (map[j].equals("-"))
                 continue;
@@ -126,7 +128,7 @@ public class ResultsImportController {
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new ResultsImport());
+        this.populateEditForm(uiModel, new ResultsImport());
         return "resultsimports/create";
     }
 
@@ -155,17 +157,17 @@ public class ResultsImportController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid ResultsImport resultsImport, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, resultsImport);
+            this.populateEditForm(uiModel, resultsImport);
             return "resultsimports/update";
         }
         uiModel.asMap().clear();
         resultsImport.merge();
-        return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
+        return "redirect:/resultsimports/" + this.encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, ResultsImport.findResultsImport(id));
+        this.populateEditForm(uiModel, ResultsImport.findResultsImport(id));
         return "resultsimports/update";
     }
 

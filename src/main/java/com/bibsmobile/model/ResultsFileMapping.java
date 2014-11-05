@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -41,11 +42,11 @@ public class ResultsFileMapping {
     private String map;
 
     @Transient
-    private List<String> row1 = new ArrayList<String>();
+    private List<String> row1 = new ArrayList<>();
     @Transient
-    private List<String> row2 = new ArrayList<String>();
+    private List<String> row2 = new ArrayList<>();
     @Transient
-    private TreeMap<String, String> options = new TreeMap<String, String>();
+    private NavigableMap<String, String> options = new TreeMap<>();
 
     @Override
     public String toString() {
@@ -61,17 +62,17 @@ public class ResultsFileMapping {
         // exists
         if (this.map == null)
             return null;
-        String mapSplits[] = this.map.split(",");
+        String[] mapSplits = this.map.split(",");
         return Arrays.asList(mapSplits);
     }
 
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("resultsImport", "name", "resultsFile", "skipFirstRow", "map", "row1", "row2",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("resultsImport", "name", "resultsFile", "skipFirstRow", "map", "row1", "row2",
             "options");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new ResultsFileMapping().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
@@ -216,11 +217,11 @@ public class ResultsFileMapping {
         this.row2 = row2;
     }
 
-    public TreeMap<String, String> getOptions() {
+    public NavigableMap<String, String> getOptions() {
         return this.options;
     }
 
-    public void setOptions(TreeMap<String, String> options) {
+    public void setOptions(NavigableMap<String, String> options) {
         this.options = options;
     }
 

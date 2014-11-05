@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class PictureType {
     }
 
     public static Long countFindPictureTypesByPictureTypeEquals(String pictureType) {
-        if (pictureType == null || pictureType.length() == 0)
+        if (pictureType == null || pictureType.isEmpty())
             throw new IllegalArgumentException("The pictureType argument is required");
         EntityManager em = PictureType.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM PictureType AS o WHERE o.pictureType = :pictureType", Long.class);
@@ -72,7 +73,7 @@ public class PictureType {
     }
 
     public static TypedQuery<PictureType> findPictureTypesByPictureTypeEquals(String pictureType) {
-        if (pictureType == null || pictureType.length() == 0)
+        if (pictureType == null || pictureType.isEmpty())
             throw new IllegalArgumentException("The pictureType argument is required");
         EntityManager em = PictureType.entityManager();
         TypedQuery<PictureType> q = em.createQuery("SELECT o FROM PictureType AS o WHERE o.pictureType = :pictureType", PictureType.class);
@@ -81,7 +82,7 @@ public class PictureType {
     }
 
     public static TypedQuery<PictureType> findPictureTypesByPictureTypeEquals(String pictureType, String sortFieldName, String sortOrder) {
-        if (pictureType == null || pictureType.length() == 0)
+        if (pictureType == null || pictureType.isEmpty())
             throw new IllegalArgumentException("The pictureType argument is required");
         EntityManager em = PictureType.entityManager();
         String jpaQuery = "SELECT o FROM PictureType AS o WHERE o.pictureType = :pictureType";
@@ -140,9 +141,9 @@ public class PictureType {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("pictureType", "raceImages");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("pictureType", "raceImages");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new PictureType().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
