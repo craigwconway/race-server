@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +59,7 @@ public class CartItem {
 
     private String size;
 
-    private double price;
+    private long price;
 
     public static TypedQuery<CartItem> findCartItemsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
         if (eventCartItems == null)
@@ -203,21 +204,21 @@ public class CartItem {
         this.size = size;
     }
 
-    public double getPrice() {
+    public long getPrice() {
         return this.price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("cart", "eventCartItem", "userProfile", "quantity", "created", "updated", "comment",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("cart", "eventCartItem", "userProfile", "quantity", "created", "updated", "comment",
             "coupon", "exported", "color", "size", "price");
 
-    public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new CartItem().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");

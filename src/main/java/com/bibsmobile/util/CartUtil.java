@@ -139,7 +139,7 @@ public final class CartUtil {
 
         }
 
-        double total = 0;
+        long total = 0;
         for (CartItem ci : cart.getCartItems()) {
             total += (ci.getQuantity() * ci.getPrice());
         }

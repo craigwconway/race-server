@@ -1,10 +1,12 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -46,7 +48,7 @@ public class EventCartItem {
 
     private String description;
 
-    private double price;
+    private long price;
 
     private int available;
 
@@ -56,7 +58,7 @@ public class EventCartItem {
 
     private String eventType;
 
-    private double couponPrice;
+    private long couponPrice;
 
     private int couponsAvailable;
 
@@ -80,7 +82,7 @@ public class EventCartItem {
 
     /**
      */
-    private double donationAmount;
+    private long donationAmount;
 
     /**
      */
@@ -102,7 +104,7 @@ public class EventCartItem {
      */
     private int minAge;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "eventCartItem")
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "eventCartItem")
     private Set<EventCartItemPriceChange> priceChanges;
 
     /**
@@ -133,7 +135,7 @@ public class EventCartItem {
     @Transient
     private String hearFrom;
 
-    public double getActualPrice() {
+    public long getActualPrice() {
         if (CollectionUtils.isEmpty(this.priceChanges)) {
             return this.price;
         }
@@ -266,11 +268,11 @@ public class EventCartItem {
         this.description = description;
     }
 
-    public double getPrice() {
+    public long getPrice() {
         return this.price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 
@@ -306,11 +308,11 @@ public class EventCartItem {
         this.eventType = eventType;
     }
 
-    public double getCouponPrice() {
+    public long getCouponPrice() {
         return this.couponPrice;
     }
 
-    public void setCouponPrice(double couponPrice) {
+    public void setCouponPrice(long couponPrice) {
         this.couponPrice = couponPrice;
     }
 
@@ -362,11 +364,11 @@ public class EventCartItem {
         this.type = type;
     }
 
-    public double getDonationAmount() {
+    public long getDonationAmount() {
         return this.donationAmount;
     }
 
-    public void setDonationAmount(double donationAmount) {
+    public void setDonationAmount(long donationAmount) {
         this.donationAmount = donationAmount;
     }
 
@@ -509,7 +511,7 @@ public class EventCartItem {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon",
             "eventType", "couponPrice", "couponsAvailable", "couponsUsed", "timeLimit", "timeStart", "timeEnd", "type", "donationAmount", "charityName", "tshirtSizes",
             "tshirtColors", "tshirtImageUrls", "minAge", "priceChanges", "maxAge", "gender", "birthDate", "email", "phone", "addressLine1", "addressLine2", "zipCode",
             "emergencyContactName", "emergencyContactPhone", "hearFrom");
@@ -613,7 +615,7 @@ public class EventCartItem {
     }
 
     public static Long countFindEventCartItemsByNameEquals(String name) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.name = :name", Long.class);
@@ -656,7 +658,7 @@ public class EventCartItem {
     }
 
     public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.name = :name", EventCartItem.class);
@@ -665,7 +667,7 @@ public class EventCartItem {
     }
 
     public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name, String sortFieldName, String sortOrder) {
-        if (name == null || name.length() == 0)
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
         String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.name = :name";

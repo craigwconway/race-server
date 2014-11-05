@@ -103,7 +103,7 @@ public class RegistrationsRestController {
     private static class ShortCart {
         private final Long id;
         private final Date created;
-        private final double total;
+        private final long total;
         private final int status;
         private final List<ShortCartItem> cartItems;
 
@@ -127,7 +127,7 @@ public class RegistrationsRestController {
             return this.created;
         }
 
-        public double getTotal() {
+        public long getTotal() {
             return this.total;
         }
 
@@ -176,7 +176,7 @@ public class RegistrationsRestController {
             private final int quantity;
             private final String color;
             private final String size;
-            private final double price;
+            private final long price;
 
             private ShortCartItem(CartItem c) {
                 super();
@@ -208,7 +208,7 @@ public class RegistrationsRestController {
                 return this.size;
             }
 
-            public double getPrice() {
+            public long getPrice() {
                 return this.price;
             }
         }
