@@ -2,6 +2,7 @@ package com.bibsmobile.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -172,12 +173,21 @@ public abstract class AbstractTimer implements Timer {
 		return sb.toString();
 	}
 	
-	public void clearReport(){
-		// clear out cache
-		bibTimes.clear();
-		bibCache.clear();
-		bibsByReader.clear();
-		uniqueBibs.clear();
+	public void clearTimesByEvent(long eventId){
+		Event event = Event.findEvent(eventId);
+		for(RaceResult runner:event.getRaceResults()){
+			runner.setTimeofficial(0);
+			runner.setTimeofficialdisplay("");
+			runner.persist();
+			// delete by [bib]-[timer.position]
+			for(int i=0;i<3;i++){
+				String o = runner.getBib() + "-" + i;
+				bibTimes.remove(o);
+				bibCache.remove(o);
+				bibsByReader.remove(o);
+			}
+			uniqueBibs.remove(runner.getBib());
+		}
 	}
 
 }

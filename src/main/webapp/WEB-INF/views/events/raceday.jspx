@@ -18,6 +18,8 @@
 		border-radius: 5px;
 		padding: 10px;
 		margin: 10px;
+		width:650px;
+		float: left;
 	}
 	.event-name{
 		font-size: 28px;
@@ -50,16 +52,13 @@
 				style="margin:0;margin-left: 3px;"
 				onclick="printReport()">Print Report</button>
 				
-			<button id="btn-update---id--" type="button" class="btn btn-info" 
-				style="margin:0;margin-left: 3px;"
-				onclick="clearReport()">Clear Report</button>
-				
 			<script>
 			function printReport(){
 				window.open("/bibs-server/timers/bib-report/1","_blank");
 			}
-			function clearReport(){
-				var url = "/bibs-server/timers/clear-bib-report/1";
+			function clearReport(eventId){
+				jQuery("#results"+eventId).html("<tr><td></td></tr>");
+				var url = "/bibs-server/timers/clear-bib-report/1?eventId="+eventId;
 				var request = jQuery.ajax({
 					url: url,
 					type: "GET",
@@ -130,6 +129,9 @@
 				onclick="manual(--event_id--);"> Manual Time Set </button>
 			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
 				onclick="gun(--event_id--);"> Fire Gun! </button> 
+			<button id="btn-update---id--" type="button" class="btn btn-info" 
+				style="margin:0;margin-left: 3px;"
+				onclick="clearReport(--event_id--)">Clear Times</button>
 			<table id="results--event_id--" class="table" 
 				style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
 		</div>
@@ -161,6 +163,7 @@
 var readerOn=false;
 var runningEventCount = 0;
 var readerStatus = 0;
+var runnersRefreshRateInMills = 800;
 
 window.onload = racedayInit;
 // window.onunload = racedayEnd;
@@ -171,7 +174,7 @@ function racedayInit(){
 	// pool announcer
 	setInterval(function(){
 		if(readerOn) getReaderResults();
-	},4000);
+	},runnersRefreshRateInMills);
 }
 
 function timerUpdate(id){

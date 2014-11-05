@@ -33,6 +33,8 @@ public class AbstractTimerTest {
 		public void stopReader() { }
 		@Override
 		public void write(long bib) throws Exception { }
+		@Override
+		public void clearTimesByEvent(long eventId) { } 
 	}
 
 	@Test

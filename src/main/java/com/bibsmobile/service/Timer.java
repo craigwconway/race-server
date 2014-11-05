@@ -22,7 +22,7 @@ public interface Timer {
 
 	void logTime(int bibnum, long bibtime, TimerConfig timerConfig);
 
-	void clearReport();
+	void clearTimesByEvent(long eventId);
 
 	String createReport();
 }

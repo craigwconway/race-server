@@ -61,8 +61,10 @@ public class TimerConfigController {
     }
 
     @RequestMapping(value = "/clear-bib-report/{id}", method = RequestMethod.GET)
-    public void clearBibReport(@PathVariable(value = "id") long id) {
-        getTimer(id).clearReport();
+    public void clearBibReport(
+    		@PathVariable(value = "id") long id, 
+    		@RequestParam(value = "eventId", required = true) Long eventId ) {
+        getTimer(id).clearTimesByEvent(eventId);
     }
 	
 	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET)
