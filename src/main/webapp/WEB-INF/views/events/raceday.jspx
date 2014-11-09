@@ -56,7 +56,19 @@
 			function printReport(){
 				window.open("/bibs-server/timers/bib-report/1","_blank");
 			}
+			
 			function clearReport(eventId){
+
+				// dirty double confirm
+				var proceed = false;
+				if (confirm("Clear ALL runner times for this Event?")) {
+					if (confirm("Caution: Are your sure? This cannot be undone.")) {
+						proceed = true;
+					}
+				}
+				
+				if(!proceed) return;
+				
 				jQuery("#results"+eventId).html("<tr><td></td></tr>");
 				var url = "/bibs-server/timers/clear-bib-report/1?eventId="+eventId;
 				var request = jQuery.ajax({

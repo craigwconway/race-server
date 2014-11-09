@@ -79,13 +79,7 @@ public abstract class AbstractTimer implements Timer {
 			}
 			// log unassigned bibs to a special Event
 			if(!foundEventForBib){
-				// there's only 1 running event, put the runner in
-				if(events.size() == 1){
-					logTime(String.valueOf(bibnum), bibtime, timerConfig, events.get(0));
-				// otherwise save it to special event
-				}else{
-					logUnassignedBib(String.valueOf(bibnum), bibtime, timerConfig);
-				}
+				logUnassignedBib(String.valueOf(bibnum), bibtime, timerConfig);
 			}
 		}else{
 			System.out.println(slog+" TIMEOUT bib " + bibnum + " @ reader "+timerConfig.getPosition());
