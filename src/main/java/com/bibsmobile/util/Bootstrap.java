@@ -1,6 +1,10 @@
 package com.bibsmobile.util;
 
+import java.util.Random;
+
 import com.bibsmobile.model.AwardCategory;
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
@@ -10,8 +14,8 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.job.BaseJob;
 import com.bibsmobile.job.CartExpiration;
 
+import org.joda.time.DateTime;
 import org.quartz.SchedulerException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -150,7 +154,37 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                 }
             }
         }
-
-    }
+      
+            // SAMLE EVENT AND RUNNERS
+            if(Event.findAllEvents().isEmpty()){
+            
+	            Event foo = new Event();
+	            foo.setName("Kings Canyon Cross Country Run");
+	            foo.setCity("Kings Canyon");
+	            foo.setState("Colordo");
+	            foo.setTimeStart(new DateTime().plusHours(48).toDate());
+	            foo.setTimeEnd(new DateTime().plusHours(51).toDate());
+	            foo.persist();
+	            
+	            for(int i = 1; i < 300; i++){
+	            	RaceResult user = new RaceResult();
+	            	user.setBib(String.valueOf(i));
+	            	user.setEvent(foo);
+	            	user.setFirstname(generateRandomName());
+	            	user.setLastname(generateRandomName());
+	            	user.persist();
+	            }
+	        }
+        }
+            
+        public String generateRandomName(){
+        	Random r = new Random();
+        	int i = new Random().nextInt(11);
+        	StringBuilder sb = new StringBuilder();
+        	for(int n=0;n<i;i++){
+        		sb.append((i%2>0?"bcdfghjklmnpqrstvwxz":"aeiouy").charAt(r.nextInt(6+(i%2)*14)));
+        	}
+        	return sb.toString();
+        }
 
 }
