@@ -727,7 +727,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getFirstname() {
-        return this.firstname;
+        return WordUtils.capatolizeFully(firstname);
     }
 
 	public void setFirstname(String firstname) {
@@ -735,7 +735,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getLastname() {
-        return this.lastname;
+        return WordUtils.capatolizeFully(this.lastname);
     }
 
 	public void setLastname(String lastname) {
@@ -743,7 +743,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getMiddlename() {
-        return this.middlename;
+        return WordUtils.capatolizeFully(this.middlename);
     }
 
 	public void setMiddlename(String middlename) {
@@ -767,7 +767,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getGender() {
-        return this.gender;
+        return WordUtils.capatolizeFully(this.gender);
     }
 
 	public void setGender(String gender) {
@@ -963,7 +963,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getCity() {
-        return this.city;
+        return WordUtils.capatolizeFully(this.city);
     }
 
 	public void setCity(String city) {
@@ -971,7 +971,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getState() {
-        return this.state;
+        return WordUtils.capatolizeFully(this.state);
     }
 
 	public void setState(String state) {
@@ -979,7 +979,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getCountry() {
-        return this.country;
+        return WordUtils.capatolizeFully(this.country);
     }
 
 	public void setCountry(String country) {
@@ -987,7 +987,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getFullname() {
-        return this.fullname;
+        return WordUtils.capatolizeFully(this.fullname);
     }
 
 	public void setFullname(String fullname) {
