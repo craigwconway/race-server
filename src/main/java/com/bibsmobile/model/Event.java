@@ -160,6 +160,8 @@ public class Event {
 
     private boolean regEnabled;
 
+    private boolean ticketTransferEnabled;
+
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date regStart;
@@ -1242,6 +1244,14 @@ public class Event {
 
     public void setWaiver(String waiver) {
         this.waiver = waiver;
+    }
+
+    public boolean isTicketTransferEnabled() {
+        return this.ticketTransferEnabled;
+    }
+
+    public void setTicketTransferEnabled(boolean ticketTransferEnabled) {
+        this.ticketTransferEnabled = ticketTransferEnabled;
     }
 
     @Id
