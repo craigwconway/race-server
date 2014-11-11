@@ -794,7 +794,7 @@ public class Event {
     }
 
 	public String getCity() {
-        return WordUtils.capitolize(this.city);
+        return WordUtils.capatolizeFully(this.city);
     }
 
 	public void setCity(String city) {
@@ -802,7 +802,7 @@ public class Event {
     }
 
 	public String getState() {
-        return WordUtils.capitolize(this.state);
+        return WordUtils.capatolizeFully(this.state);
     }
 
 	public void setState(String state) {
