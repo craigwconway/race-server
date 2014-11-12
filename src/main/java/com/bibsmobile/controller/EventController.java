@@ -872,7 +872,6 @@ public class EventController {
         return "events/overall";
     }
 
-    
     class OfficialtimeComparator implements Comparator<RaceResult> {
         @Override
         public int compare(RaceResult a, RaceResult b) {

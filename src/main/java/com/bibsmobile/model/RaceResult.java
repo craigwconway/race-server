@@ -33,6 +33,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
@@ -727,7 +728,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getFirstname() {
-        return WordUtils.capatolizeFully(firstname);
+        return WordUtils.capitalizeFully(firstname);
     }
 
 	public void setFirstname(String firstname) {
@@ -735,7 +736,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getLastname() {
-        return WordUtils.capatolizeFully(this.lastname);
+        return WordUtils.capitalizeFully(this.lastname);
     }
 
 	public void setLastname(String lastname) {
@@ -743,7 +744,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getMiddlename() {
-        return WordUtils.capatolizeFully(this.middlename);
+        return WordUtils.capitalizeFully(this.middlename);
     }
 
 	public void setMiddlename(String middlename) {
@@ -767,7 +768,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getGender() {
-        return WordUtils.capatolizeFully(this.gender);
+        return WordUtils.capitalizeFully(this.gender);
     }
 
 	public void setGender(String gender) {
@@ -963,7 +964,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getCity() {
-        return WordUtils.capatolizeFully(this.city);
+        return WordUtils.capitalizeFully(this.city);
     }
 
 	public void setCity(String city) {
@@ -971,7 +972,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getState() {
-        return WordUtils.capatolizeFully(this.state);
+        return WordUtils.capitalizeFully(this.state);
     }
 
 	public void setState(String state) {
@@ -979,7 +980,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getCountry() {
-        return WordUtils.capatolizeFully(this.country);
+        return WordUtils.capitalizeFully(this.country);
     }
 
 	public void setCountry(String country) {
@@ -987,7 +988,7 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getFullname() {
-        return WordUtils.capatolizeFully(this.fullname);
+        return WordUtils.capitalizeFully(this.fullname);
     }
 
 	public void setFullname(String fullname) {

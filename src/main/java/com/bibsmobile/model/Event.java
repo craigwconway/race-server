@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -794,7 +795,7 @@ public class Event {
     }
 
 	public String getCity() {
-        return WordUtils.capatolizeFully(this.city);
+        return WordUtils.capitalizeFully(this.city);
     }
 
 	public void setCity(String city) {
@@ -802,7 +803,7 @@ public class Event {
     }
 
 	public String getState() {
-        return WordUtils.capatolizeFully(this.state);
+        return WordUtils.capitalizeFully(this.state);
     }
 
 	public void setState(String state) {
