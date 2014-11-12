@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +30,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cascade;
@@ -37,6 +39,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
+
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
@@ -768,7 +771,11 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public String getGender() {
-        return WordUtils.capitalizeFully(this.gender);
+		if(null==gender || gender.equalsIgnoreCase("M")){
+			return "M";
+		}else{
+			return "F";
+		}
     }
 
 	public void setGender(String gender) {

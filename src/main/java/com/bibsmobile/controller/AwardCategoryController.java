@@ -37,7 +37,9 @@ public class AwardCategoryController {
         }
         
         awardCategory.persist();
-        return "redirect:/events/awards?event=" + awardCategory.getEvent().getId();
+        return (!awardCategory.isMedal()) 
+        		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEvent().getId()+"&gender="+awardCategory.getGender()
+        		: "redirect:/events/awards?event=" + awardCategory.getEvent().getId()+"&gender="+awardCategory.getGender();
     }
 
 	@RequestMapping(params = "form", produces = "text/html")
@@ -66,8 +68,10 @@ public class AwardCategoryController {
         }
         
         awardCategory.merge();
-        return "redirect:/events/awards?event=" + awardCategory.getEvent().getId();
-    }
+        return (!awardCategory.isMedal()) 
+        		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEvent().getId()+"&gender="+awardCategory.getGender()
+        		: "redirect:/events/awards?event=" + awardCategory.getEvent().getId()+"&gender="+awardCategory.getGender();
+     }
 	
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
@@ -84,8 +88,10 @@ public class AwardCategoryController {
 		AwardCategory a = AwardCategory.findAwardCategory(id);
 		long eventId = a.getEvent().getId();
         a.remove();
-        return "redirect:/events/awards?event="+eventId;
-   }
+        return (!a.isMedal()) 
+        		? "redirect:/events/ageGenderRankings?event=" + a.getEvent().getId()+"&gender="+a.getGender()
+        		: "redirect:/events/awards?event=" + a.getEvent().getId()+"&gender="+a.getGender();
+    }
 
 	void populateEditForm(Model uiModel, AwardCategory awardCategory) {
         uiModel.addAttribute("awardCategory", awardCategory);

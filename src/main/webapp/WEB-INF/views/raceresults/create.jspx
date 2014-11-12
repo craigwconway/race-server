@@ -17,7 +17,7 @@
                     </td>
                     <td>
                         <select id="custom-gender" name="custom-gender" onchange="change('gender')" style="width:100px">
-                            <option id="gender-0" value="M">Male</option>
+                            <option id="gender-0" value="M" selected >Male</option>
                             <option id="gender-1" value="F">Female</option>
                         </select>
                     </td>
