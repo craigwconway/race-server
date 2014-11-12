@@ -41,8 +41,68 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     private static UserGroup userGroup;
 
+
+	private static Random r = new Random();
+	
+	protected static String generateRandomName(){
+		int wordSize = Math.abs(r.nextInt(9));
+		StringBuilder sb = new StringBuilder(wordSize);
+		if(wordSize < 4) wordSize = 4;
+		String cons = "bcdfghjklmnpqrstvwxz";
+		String vows = "aeiou";
+		for(int n=0;n<wordSize;n++){
+			int i = Math.abs(r.nextInt(cons.length()));
+			int j = Math.abs(r.nextInt(vows.length()));
+			sb.append( (n%2==0)?cons.charAt(i):vows.charAt(j));
+		}
+		return sb.toString();
+	}
+	
+	protected static int generateRandomAge(){
+		int age = Math.abs(r.nextInt(89));
+		if(age < 14) age = 14;
+		return age;
+	}
+    
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+    	
+    	if(Event.findAllEvents().isEmpty()){
+    	    
+            Event foo = new Event();
+            foo.setName("Kings Canyon Critical Mass");
+            foo.setCity("Kings Canyon");
+            foo.setState("Colordo");
+            foo.setGunTime(new DateTime().toDate());
+            foo.setTimeStart(new DateTime().toDate());
+            foo.setTimeEnd(new DateTime().plusHours(1).toDate());
+            foo.persist();
+            
+            for(int i = 1; i < 300; i++){
+            	RaceResult user = new RaceResult();
+            	user.setBib(String.valueOf(i));
+            	user.setEvent(foo);
+            	user.setAge(String.valueOf(generateRandomAge()));
+            	user.setGender( (i%2==0) ? "M" : "F");
+            	user.setTimeofficial(Math.abs(
+            			(int) new DateTime().plusMinutes(r.nextInt(60)).toDate().getTime()));
+            	user.setTimeofficialdisplay(
+            			RaceResult.toHumanTime(foo.getGunTime().getTime(), user.getTimeofficial()));
+            	user.setFirstname(generateRandomName());
+            	user.setLastname(generateRandomName());
+            	user.setCity("San Francisco");
+            	user.setState("CA");
+            	user.persist();
+            }
+            
+
+            // default awards categories
+            AwardCategory.createDefaultMedals(foo);
+            AwardCategory.createAgeGenderRankings(foo, 
+            		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+            		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
+            
+        }
 
         // expire leftover carts at startup
         try {
@@ -154,37 +214,5 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                 }
             }
         }
-      
-            // SAMLE EVENT AND RUNNERS
-            if(Event.findAllEvents().isEmpty()){
-            
-	            Event foo = new Event();
-	            foo.setName("Kings Canyon Cross Country Run");
-	            foo.setCity("Kings Canyon");
-	            foo.setState("Colordo");
-	            foo.setTimeStart(new DateTime().plusHours(48).toDate());
-	            foo.setTimeEnd(new DateTime().plusHours(51).toDate());
-	            foo.persist();
-	            
-	            for(int i = 1; i < 300; i++){
-	            	RaceResult user = new RaceResult();
-	            	user.setBib(String.valueOf(i));
-	            	user.setEvent(foo);
-	            	user.setFirstname(generateRandomName());
-	            	user.setLastname(generateRandomName());
-	            	user.persist();
-	            }
-	        }
-        }
-            
-        public String generateRandomName(){
-        	Random r = new Random();
-        	int i = new Random().nextInt(11);
-        	StringBuilder sb = new StringBuilder();
-        	for(int n=0;n<i;i++){
-        		sb.append((i%2>0?"bcdfghjklmnpqrstvwxz":"aeiouy").charAt(r.nextInt(6+(i%2)*14)));
-        	}
-        	return sb.toString();
-        }
-
+    }
 }

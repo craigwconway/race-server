@@ -85,7 +85,7 @@
 				placeholder="List Size"/>
 		</div>
 	    <button class="btn btn-primary btn-top" onclick="getCustom()" type="button">
-			Go
+			Lookup Custom Award
 		</button>
 	</form>
 	

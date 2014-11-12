@@ -31,7 +31,7 @@ public class AwardCategory implements Comparable{
 	public static final int MIN_AGE = 0;
 	public static final int MAX_AGE = 109;
 	public static final int DEFAULT_LIST_SIZE = 3;
-	public static final int DEFAULT_AGE_SPAN = 9;
+	public static final int DEFAULT_AGE_SPAN = 4;
 	public static final int MASTERS_MIN = 40;
 	public static final int MASTERS_MAX = 49;
 	public static final int GRANDMASTERS_MIN = 50;

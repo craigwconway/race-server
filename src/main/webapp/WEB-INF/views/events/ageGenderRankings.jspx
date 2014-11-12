@@ -71,7 +71,7 @@ label {
 		<form id="search-box" class="form-inline" role="form"
 			style="display: none; border: 1px solid #ddd;padding: 10px;margin: 10px;">
 			<div>
-			<h3>Customize Age/Gender Rankings</h3>
+			<h3>Customize Age/Gender Categories</h3>
 			</div>
 			<div class="form-group">
 				<label for="ageMin">Start Age</label> <input id="ageMin" name="ageMin"
@@ -93,6 +93,17 @@ label {
 			</div>
 			<button class="btn btn-primary btn-top" onclick="createAwardCategories()"
 				type="button">Create</button>
+<hr/>		
+		<h3>Update Group Size</h3>
+	  	<div class="form-group">
+		    <label for="listSize2">List Size</label>
+			<input id="listSize2" name="listSize2"
+				class="form-control" style="width:80px;"
+				placeholder="List Size"/>
+		</div>
+	    <button class="btn btn-primary btn-top" onclick="updateListSize()" type="button">
+			Update Size
+		</button>
 		</form>
 
 	</div>
@@ -196,6 +207,12 @@ label {
 		var ageRange = Math.max(jQuery('#ageRange').val(),0);
 		var listSize = Math.max(jQuery('#listSize').val(),0);
 		window.location="/bibs-server/events/createAwardCategories?event="+eventid+"&amp;ageMin="+ageMin+"&amp;ageMax="+ageMax+"&amp;ageRange="+ageRange+"&amp;listSize="+listSize;
+	}
+	
+	function updateListSize(){
+		var event = Math.max(0,GetURLParameter("event"));
+		var listSize = Math.max(jQuery('#listSize2').val(),0);
+		window.location="/bibs-server/events/updateListSize?event="+eventid+"&amp;listSize="+listSize+"&amp;gender="+gender;
 	}
 	
 	function deleteAwardCategory(id){

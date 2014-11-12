@@ -860,6 +860,30 @@ public class EventController {
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
     }
     
+    @RequestMapping(value = "/updateListSize", produces = "text/html")
+    public String createAgeGenderRankings(
+    		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "listSize") int listSize,
+    		@RequestParam(value = "gender") String gender,
+    		Model uiModel){
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = event.getAwardCategorys();
+    	for(AwardCategory c:list){
+    		if(!c.isMedal()){
+    			AwardCategory cat = AwardCategory.findAwardCategory(c.getId());
+    			cat.setListSize(listSize);
+    			cat.merge();
+    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), cat.getListSize())));
+    		}
+    	}
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender="+gender;
+    }
+    
     @RequestMapping(value = "/overall", produces = "text/html")
     public String overallResults(
     		@RequestParam(value = "event") long eventId,
