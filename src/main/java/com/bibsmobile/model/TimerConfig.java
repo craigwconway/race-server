@@ -30,6 +30,22 @@ public class TimerConfig {
 	private String ports; // comma seperated list of ints 
 	private int connectionTimeout;
 	private String filename;
+	static private int heartbeatTimeout = 5000;
+	static private int heartbeats = 3;
+	
+	private enum Manufacturer {
+		DEFAULT, THINGMAGIC
+	}
+	
+	Manufacturer readerModel;
+	
+	public int getHeartbeats() {
+		return heartbeats;
+	}
+	
+	public int getHeartbeatTimeout() {
+		return heartbeatTimeout;
+	}
 	
 	public int getConnectionTimeout(){
 		return connectionTimeout;
