@@ -313,6 +313,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
                                                 Thread.sleep(timerConfig.getHeartbeatTimeout());
                                                 System.out.println("[LLRP][WATCHDOG][TIMER "+timerConfig.getId()+"] wakeup: Alive = " + alive);
                                                 if (alive > 0) {
+                                                	LLRPGetTagReports();
                                                 	alive--;
                                                 }
                                                 System.out.println("[LLRP][WATCHDOG][TIMER "+timerConfig.getId()+"] wakeup: Alive now = " + alive);                                                
@@ -627,6 +628,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 	
 	public void connect() throws Exception {
 		LLRPConnect();
+		LLRPGetTagReports();
 		LLRPDeleteROSPEC();
 		//LLRPFactoryDefault();
 		//LLRPSetReaderConfiguration();
@@ -637,6 +639,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 
 	public void reconnect() throws Exception {
 		LLRPConnect();
+		LLRPGetTagReports();
 		LLRPDeleteROSPEC();
 		//LLRPFactoryDefault();
 		//LLRPSetReaderConfiguration();
