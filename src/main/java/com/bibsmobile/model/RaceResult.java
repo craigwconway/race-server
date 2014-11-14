@@ -4,6 +4,9 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +38,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
+import org.joda.time.DateTime;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -178,6 +182,9 @@ public class RaceResult implements Comparable<RaceResult>{
     	return RaceResult.toHumanTime(timestart, timeofficial);
     }
 
+    public String valueOfTimeofficialdisplay() {
+    	return this.timeofficialdisplay;
+    }
     /**
      * Over-write current fields with non-null values from new object
      * @param raceResult
@@ -911,7 +918,47 @@ public class RaceResult implements Comparable<RaceResult>{
     }
 
 	public void setTimeofficialdisplay(String timeofficialdisplay) {
-        this.timeofficialdisplay = timeofficialdisplay;
+		//Set a new timeofficialdisplay by updating timeofficial
+		/*
+		System.out.println("Calling setTimeofficialdisplay");
+
+		DateFormat timeparser = new SimpleDateFormat("HH:mm:ss");
+		long newtime;
+		if(timeofficialdisplay == "") {
+			this.timeofficialdisplay = "";
+			System.out.println("setting official time to emptystring");
+			return;
+		}
+		try {
+			newtime = timeparser.parse(timeofficialdisplay).getTime();
+			System.out.println("newtime: " + newtime);
+			long oldtime;
+			System.out.println("oldtimestart: " + getTimestart());
+			System.out.println("oldtimeofficial: " + getTimeofficial());
+			System.out.println("oldtimeofficialdisplay: " + getTimeofficialdisplay());
+			//oldtime = ("" == getTimeofficialdisplay()) ? 0 : timeparser.parse(this.timeofficialdisplay).getTime();
+			if("" == getTimeofficialdisplay()) {
+				oldtime = 0;
+			} else {
+				oldtime = timeparser.parse(getTimeofficialdisplay()).getTime();
+			}
+			System.out.println("oldtime: " + oldtime);
+			long timediff = newtime - oldtime;
+			long oldtimeofficial = getTimeofficial();
+			System.out.println("old timeofficial: " +  oldtimeofficial);
+			setTimeofficial(oldtimeofficial + timediff);
+			System.out.println("new timeofficial:"  + getTimeofficial());
+			this.timeofficialdisplay = timeofficialdisplay;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			System.out.println("[Model] Caught error setting timeofficialdisplay");
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		*/
+		this.timeofficialdisplay=timeofficialdisplay;
+		System.out.println("setting official time");
+		//DateTime a = new DateTime().plusMillis(millis).toTime();
     }
 
 	public String getRankoverall() {
