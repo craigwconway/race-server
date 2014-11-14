@@ -5,17 +5,11 @@ import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
-
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -214,33 +208,8 @@ public class RaceResultController {
     		raceResult.setTimestart(raceResult.getEvent().getGunTime().getTime());
     		System.out.println("[RESULTS] Computed gun time: " + raceResult.getTimeofficialdisplay());
     	}
-    	// Add logic to handle timeofficialdisplay updates if we have a nontrivial timeofficialdisplay value:
-    	if("" != raceResult.valueOfTimeofficialdisplay()) {
-    		DateFormat timeparser = new SimpleDateFormat("kk:mm:ss");
-    		// Define new time difference as timeofficialdisplay
-    		long newtimediff;
-			try {
-				
-				Date newdatetimediff = timeparser.parse(raceResult.valueOfTimeofficialdisplay());
-				newtimediff = newdatetimediff.getTime() - (long) (newdatetimediff.getTimezoneOffset()*60000);
-	    		System.out.println("newtimediff: " + newtimediff);
-	    		System.out.println("timezone offset: " + (long) (newdatetimediff.getTimezoneOffset()*60));
-
-	    		// Define an old time difference quantity, compare to timeofficialdisplay
-	    		long oldtimediff = raceResult.getTimeofficial()-raceResult.getTimestart();
-	    		System.out.println("oldtimediff: " + oldtimediff);
-	    		long difference = newtimediff - oldtimediff;
-	    		System.out.println("adding: " + difference);
-	    		// adjust timeofficial by the difference between timeofficialdisplay and timeofficial
-	    		raceResult.setTimeofficial(raceResult.getTimeofficial() + newtimediff - oldtimediff);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
-		raceResult.merge();
-    	return "redirect:/raceresults/" + encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
-
+        raceResult.merge();
+        return "redirect:/raceresults/" + encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
     }
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")

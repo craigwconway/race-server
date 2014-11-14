@@ -79,7 +79,7 @@
         		document.getElementById(field+"-1").selected=true;
             jQuery("#_c_com_bibsmobile_model_RaceResult_"+field+"_id").hide();
             // make official time readonly
-            //jQuery("#_timeofficialdisplay_id").attr('readonly','false');
+            jQuery("#_timeofficialdisplay_id").attr('readonly','true');
             jQuery("#_bib_id").focus();
         };
        	function change(field){
