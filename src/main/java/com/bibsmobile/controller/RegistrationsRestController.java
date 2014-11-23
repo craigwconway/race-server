@@ -9,6 +9,7 @@ import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.RegistrationsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -106,46 +107,13 @@ public class RegistrationsRestController {
         }
     }
 
-    private CartItem findCartItemForTransfer(String invoiceId, String firstName, String email) {
-        // invoiceID schema: "B" + eventID + "T" + stripeToken
-        int splitter = invoiceId.indexOf('T');
-        if (splitter == -1) return null;
-        Long eventId = Long.valueOf(invoiceId.substring(1, splitter));
-        String stripeToken = invoiceId.substring(splitter + 1);
-        Event event = Event.findEvent(eventId);
-        if (event == null) return null;
-        if (!event.isTicketTransferEnabled()) return null;
-
-        // get carts by event and filter by stripe token, first name and email
-        Cart tmpCart;
-        CartItem cartItem = null;
-        List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
-        if (!eventCartItems.isEmpty()) {
-            List<CartItem> cartItems = CartItem.findCompletedCartItemsByEventCartItems(eventCartItems, true).getResultList();
-            for (CartItem tmpCartItem : cartItems) {
-                tmpCart = tmpCartItem.getCart();
-                if (tmpCart.getStripeChargeId() != null &&
-                        stripeToken.equals(tmpCart.getStripeChargeId()) &&
-                        tmpCartItem.getUserProfile() != null &&
-                        tmpCartItem.getUserProfile().getFirstname() != null &&
-                        firstName.equals(tmpCartItem.getUserProfile().getFirstname()) &&
-                        tmpCartItem.getUserProfile().getEmail() != null &&
-                        email.equals(tmpCartItem.getUserProfile().getEmail())) {
-                    cartItem = tmpCartItem;
-                    break;
-                }
-            }
-        }
-        return cartItem;
-    }
-
     // TODO remove
     @RequestMapping(value = "/transfer", method = RequestMethod.GET)
     public String transferForm(@RequestParam("invoice") String invoiceId,
                                            @RequestParam("firstName") String firstName,
                                            @RequestParam("email") String email,
                                            Model uiModel) {
-        CartItem cartItem = this.findCartItemForTransfer(invoiceId, firstName, email);
+        CartItem cartItem = RegistrationsUtil.findCartItemFromInvoice(invoiceId, firstName, email);
         if (cartItem == null) throw new IllegalArgumentException("CartItem not found");
         uiModel.addAttribute("firstname", cartItem.getUserProfile().getFirstname());
         uiModel.addAttribute("lastname", cartItem.getUserProfile().getLastname());
@@ -162,8 +130,10 @@ public class RegistrationsRestController {
                                            @RequestParam("firstName") String firstName,
                                            @RequestParam("email") String email,
                                            @RequestBody String newUserStr) {
-        CartItem cartItem = this.findCartItemForTransfer(invoiceId, firstName, email);
+        CartItem cartItem = RegistrationsUtil.findCartItemFromInvoice(invoiceId, firstName, email);
         if (cartItem == null) return SpringJSONUtil.returnErrorMessage("unknown cart", HttpStatus.BAD_REQUEST);
+        if (!cartItem.getEventCartItem().getEvent().isTicketTransferEnabled())
+            return SpringJSONUtil.returnErrorMessage("ticket transfer disabled", HttpStatus.FORBIDDEN);
 
            // create or get user profile
         ShortUser newUser = null;

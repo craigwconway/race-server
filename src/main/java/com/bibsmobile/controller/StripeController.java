@@ -1,25 +1,12 @@
 package com.bibsmobile.controller;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.MailgunUtil;
+import com.bibsmobile.util.RegistrationsUtil;
+import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +20,21 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Card;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
+import com.stripe.model.Refund;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequestMapping("/stripe")
 @Controller
@@ -328,6 +330,36 @@ public class StripeController {
                 c.persist();
             }
         }
+    }
+
+    @RequestMapping(value = "/refund", method = RequestMethod.POST)
+    public ResponseEntity<String> refund(@RequestParam("invoice") String invoiceId,
+                                         @RequestParam("firstName") String firstName,
+                                         @RequestParam("email") String email) {
+        // stripe stuff
+        Stripe.apiKey = this.secretKey;
+
+        // mark cart that refund was started
+        Cart cart = RegistrationsUtil.findCartFromInvoice(invoiceId, firstName, email);
+        if (cart == null) return SpringJSONUtil.returnErrorMessage("unknown cart", HttpStatus.BAD_REQUEST);
+        cart.setStatus(Cart.REFUND_REQUEST);
+        cart.persist();
+
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("reason", "requested_by_customer");
+            Charge stripeCharge = Charge.retrieve(cart.getStripeChargeId());
+            Refund stripeRefund = stripeCharge.getRefunds().create(params);
+            cart.setStripeRefundId(stripeRefund.getId());
+            cart.persist();
+        } catch (APIConnectionException | AuthenticationException | APIException | CardException | InvalidRequestException e) {
+            return SpringJSONUtil.returnException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            // refund successful
+            cart.setStatus(Cart.REFUNDED);
+            cart.persist();
+        }
+        return SpringJSONUtil.returnStatusMessage("refund successful", HttpStatus.OK);
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

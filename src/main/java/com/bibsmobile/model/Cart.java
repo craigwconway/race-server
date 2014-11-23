@@ -58,6 +58,7 @@ public class Cart {
     private int timeout;
 
     private String stripeChargeId;
+    private String stripeRefundId;
 
     public static Cart fromJsonToCartWithUser(String json) {
         return new JSONDeserializer<Cart>().use(null, Cart.class).use("user", UserProfile.class).deserialize(json);
@@ -141,6 +142,14 @@ public class Cart {
 
     public void setStripeChargeId(String stripeChargeId) {
         this.stripeChargeId = stripeChargeId;
+    }
+
+    public String getStripeRefundId() {
+        return this.stripeRefundId;
+    }
+
+    public void setStripeRefundId(String stripeRefundId) {
+        this.stripeRefundId = stripeRefundId;
     }
 
     @Override
