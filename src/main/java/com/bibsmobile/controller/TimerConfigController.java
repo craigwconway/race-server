@@ -60,11 +60,30 @@ public class TimerConfigController {
         return getTimer(id).createReport();
     }
 
+    @RequestMapping(value = "/fuck-you-patrick", method = RequestMethod.GET)
+    public void clearAllReports(
+    		@RequestParam(value = "eventId", required = true) Long eventId ) {
+    	for(Timer timer : timers.values()) {
+    		timer.clearTimesByEvent(eventId);
+    	}
+    }
+	    
+    
     @RequestMapping(value = "/clear-bib-report/{id}", method = RequestMethod.GET)
     public void clearBibReport(
     		@PathVariable(value = "id") long id, 
     		@RequestParam(value = "eventId", required = true) Long eventId ) {
-        getTimer(id).clearTimesByEvent(eventId);
+    	System.out.println("How many timers do we have?");
+    	System.out.println(timers.size());
+    	System.out.println("Which timer are we using?");
+    	System.out.println(id);
+    	System.out.println("What does this timer do?");
+    	System.out.println(getTimer(id).createReport());
+        //getTimer(id).clearTimesByEvent(eventId);
+    	//This function does not do what you think it does
+    	for(Timer timer : timers.values()) {
+    		timer.clearTimesByEvent(eventId);
+    	}
     }
 	
 	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET)

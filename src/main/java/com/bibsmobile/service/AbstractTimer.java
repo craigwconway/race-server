@@ -173,6 +173,8 @@ public abstract class AbstractTimer implements Timer {
 			runner.setTimeofficial(0);
 			runner.setTimeofficialdisplay("");
 			runner.persist();
+			System.out.println("Contents of bibTimes:");
+			System.out.println(bibTimes);
 			// delete by [bib]-[timer.position]
 			for(int i=0;i<3;i++){
 				String o = runner.getBib() + "-" + i;
