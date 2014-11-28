@@ -591,6 +591,32 @@ public class EventController {
         uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
     }
 
+    @RequestMapping(value = "/megaexport", method = RequestMethod.GET)
+    public static void megaexport(
+            HttpServletResponse response) throws IOException {
+    	List<Event> allEvents = Event.findAllEvents();
+        response.setContentType("text/csv;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\""
+                + "fuckyoupatrick" + ".csv\"");
+        OutputStream resOs = response.getOutputStream();
+        OutputStream buffOs = new BufferedOutputStream(resOs);
+        OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
+    	for (Event event: allEvents) {
+
+	        List<RaceResult> runners = Event.findRaceResults(event.getId(), 0, 99999);
+	        for (RaceResult r : runners) {
+	            outputwriter.write(r.getBib() + "," + r.getFirstname() + ","
+	                    + r.getLastname() + "," + r.getCity() + "," + r.getState()
+	                    + "," + r.getTimeofficialdisplay() + "," + r.getGender()
+	                    + "," + r.getAge() + "\r\n");
+	        }
+
+    	}
+        outputwriter.flush();
+        outputwriter.close();
+    }
+
+    
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public static void export(
             @RequestParam(value = "event", required = true) Long event,
