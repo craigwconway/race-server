@@ -597,7 +597,7 @@ public class EventController {
     	List<Event> allEvents = Event.findAllEvents();
         response.setContentType("text/csv;charset=utf-8");
         response.setHeader("Content-Disposition", "attachment; filename=\""
-                + "fuckyoupatrick" + ".csv\"");
+                + "megaexport" + ".csv\"");
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
