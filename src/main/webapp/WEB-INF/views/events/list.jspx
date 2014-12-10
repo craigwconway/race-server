@@ -11,7 +11,7 @@
 		</button>
     </sec:authorize>
     <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
-        <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
+        <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/myevents" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
             <table:column id="c_com_bibsmobile_model_Event_name" property="name" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_Event_city" property="city" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_Event_state" property="state" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
