@@ -1,7 +1,9 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.*;
+import com.bibsmobile.service.AbstractTimer;
 import com.bibsmobile.util.UserProfileUtil;
+import com.google.gson.JsonObject;
 
 import flexjson.JSONSerializer;
 
@@ -43,6 +45,22 @@ public class EventController {
     @Autowired
     private SimpleMailMessage eventMessage;
 
+
+    @RequestMapping(value = "/uncat", method = RequestMethod.GET)
+    @ResponseBody
+    public static String findUncategorized() {
+    	JsonObject json = new JsonObject();
+    	try{
+    		json.addProperty("name",  AbstractTimer.UNASSIGNED_BIB_EVENT_NAME);
+    		json.addProperty("id", Event.findEventsByNameLike(
+					AbstractTimer.UNASSIGNED_BIB_EVENT_NAME, 1, 1)
+					.getSingleResult().getId()+"");
+    	}catch(Exception e){
+    		System.out.println("No Uncat "+e.getMessage());
+    		json.addProperty("id", "0");
+    	}
+        return json.toString();
+    }
 
     @RequestMapping(value = "/registrationComplete", method = RequestMethod.GET)
     public static String registrationComplete(@RequestParam(value = "event", required = true) Long event, Model uiModel) {

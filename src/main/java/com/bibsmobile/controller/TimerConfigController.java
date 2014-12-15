@@ -4,8 +4,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.BibsLLRPTimer;
@@ -70,20 +74,12 @@ public class TimerConfigController {
 	    
     
     @RequestMapping(value = "/clear-bib-report/{id}", method = RequestMethod.GET)
-    public void clearBibReport(
+    @ResponseBody
+    public String clearBibReport(
     		@PathVariable(value = "id") long id, 
     		@RequestParam(value = "eventId", required = true) Long eventId ) {
-    	System.out.println("How many timers do we have?");
-    	System.out.println(timers.size());
-    	System.out.println("Which timer are we using?");
-    	System.out.println(id);
-    	System.out.println("What does this timer do?");
-    	System.out.println(getTimer(id).createReport());
-        //getTimer(id).clearTimesByEvent(eventId);
-    	//This function does not do what you think it does
-    	for(Timer timer : timers.values()) {
-    		timer.clearTimesByEvent(eventId);
-    	}
+        getTimer(id).clearTimesByEvent(eventId);
+        return StringUtils.EMPTY;
     }
 	
 	@RequestMapping(value = "/status/{id}", method = RequestMethod.GET)

@@ -146,9 +146,13 @@ public abstract class AbstractTimer implements Timer {
 			event = Event.findEventsByNameLike(UNASSIGNED_BIB_EVENT_NAME,1,1).getSingleResult();
 		}catch(Exception e){
 			System.out.println("Caught exception finding matching event");
-			System.out.println(e);
+			e.printStackTrace();
 			event = new Event();
 			event.setName(UNASSIGNED_BIB_EVENT_NAME);
+			event.setRunning(1);
+			event.setGunFired(true);
+			event.setGunTime(new Date());
+			event.setTimeStart(new Date());
 			event.persist();
 		}
 		this.logTime(bib, time, timerConfig, event);

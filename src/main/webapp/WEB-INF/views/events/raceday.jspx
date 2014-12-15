@@ -58,23 +58,18 @@
 			}
 			
 			function clearReport(eventId){
-
 				// dirty double confirm
 				var proceed = false;
 				if (confirm("Clear ALL runner times for this Event?")) {
-					if (confirm("Caution: Are your sure? This cannot be undone.")) {
-						proceed = true;
+					if (!confirm("Caution: Are your sure? This cannot be undone.")) {
+						return false;
 					}
 				}
-				
-				if(!proceed) return;
-				
+				// empty table
 				jQuery("#results"+eventId).html("<tr><td></td></tr>");
-				var url = "/bibs-server/timers/clear-bib-report/1?eventId="+eventId;
+				// api call
 				var request = jQuery.ajax({
-					url: url,
-					type: "GET",
-					dataType: "html"
+					url: "/bibs-server/timers/clear-bib-report/1?eventId="+eventId
 					});
 			}
 			</script>
@@ -175,18 +170,60 @@
 var readerOn=false;
 var runningEventCount = 0;
 var readerStatus = 0;
-var runnersRefreshRateInMills = 800;
+var REFRESH_RESULTS = 800;		// 0.8 sec
+var REFRESH_TIMER = 1000 * 5;	// 5 sec
+var REFRESH_UNCAT = 1000 * 5; 	// 5 sec
+var isReloading = false;
+var isUncat = false;
 
 window.onload = racedayInit;
 // window.onunload = racedayEnd;
 
 function racedayInit(){
+	console.log("racedayInit");
+	// get events in progress
 	getRunning();
+	// get readers attached
 	getReaders();
-	// pool announcer
+	// refresh results on interval
 	setInterval(function(){
-		if(readerOn) getReaderResults();
-	},runnersRefreshRateInMills);
+		if(readerOn){
+			getReaderResults();
+		}
+	}, REFRESH_RESULTS );
+	// refresh timer on interval
+	setInterval(function(){
+		if(isReloading){ // not on first load
+			timerUpdate(0);
+			timerUpdate(1);
+		}
+	}, REFRESH_TIMER );
+	// refresh uncat on interval
+	setInterval(function(){
+		if(!isUncat){ // not on first load
+			findUncategorized();
+		}
+	}, REFRESH_UNCAT );
+}
+
+function findUncategorized(){
+	console.log("findUncategorized");
+	var r = jQuery.ajax({
+		url: "/bibs-server/events/uncat",
+		dataType: "json"
+		});
+	r.done(function( data ) {
+		var id = Number(data.id);
+		var name = data.name;
+		if(id > 0){
+			console.log("FOUND UNCAT "+id);
+			addUncat(id,name);
+			isUncat = true; // dont call this again
+		}
+	});
+	r.fail(function( jqXHR, textStatus ) {
+		console.log(textStatus);
+	});
 }
 
 function timerUpdate(id){
@@ -293,6 +330,14 @@ function addEvent(){
 	readerQuery(eventId);
 }
 
+function addUncat(eventId, eventName){
+	if(null==eventId || !(eventId>0)) return false;
+	runningEventCount++;
+	makeEventRow(eventId,eventName);
+	setRunning(eventId,runningEventCount);
+	readerQuery(eventId);
+}
+
 function makeReaderRow(n,readerObj){
 	var position = "Starting Line";
 	if(readerObj.position) position = "Finish Line";
@@ -338,6 +383,7 @@ function startReader(id){
 	});
 }
 
+var clocks = new Array();
 function initTimer(eventId){
 	var now = new Date().getTime();
 	var req = jQuery.ajax({
@@ -353,9 +399,12 @@ function initTimer(eventId){
 		jQuery("#event-timer-"+eventId).html(now-data.gunTime);
 		timer(eventId);
 		jQuery("#event-timer-str-"+eventId).show();
-		setInterval(function(){
-			timer(eventId);
-		},1000);
+		if(jQuery.inArray(eventId, clocks)){
+			setInterval(function(){
+				timer(eventId);
+			},1000);
+			clocks.push(eventId);
+		}	
 	});
 	
 }
