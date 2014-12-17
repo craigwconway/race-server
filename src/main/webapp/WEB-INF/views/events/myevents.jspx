@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/events?form';" type="button">
+		Add Event
+		</button>
+		<button class="btn btn-default btn-top" onclick="redirectMegaexport()" type="button">
+		Megaexport
+		</button>
+    </sec:authorize>
+    <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
+        <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
+            <table:column id="c_com_bibsmobile_model_Event_name" property="name" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_Event_city" property="city" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_Event_state" property="state" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
+            <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeEnd" z="user-managed"/>
+            <!--
+            <table:column id="c_com_bibsmobile_model_Event_userGroup" property="userGroup" render="false" z="user-managed"/>
+-->
+            <table:column id="c_com_bibsmobile_model_Event_raceImages" property="raceImages" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_Event_raceResults" property="raceResults" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_Event_resultsFiles" property="resultsFiles" render="false" z="user-managed"/>
+            <table:column id="c_com_bibsmobile_model_Event_awardCategorys" property="awardCategorys" render="false" z="user-managed"/>
+        </table:table>
+    </page:list>
+    <script>
+		function redirectMegaexport(){
+			window.location="/bibs-server/events/megaexport";
+		}
+    </script>
+</div>

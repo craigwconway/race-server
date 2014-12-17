@@ -706,7 +706,7 @@ public class EventController {
     }
 
 
-    
+    /*
     @RequestMapping(value = "/myevents", method = RequestMethod.GET)
     @ResponseBody
     public String findMyEvents() {
@@ -736,7 +736,7 @@ public class EventController {
 
         //return Event.toJsonArray(events.values());
     }    
-    
+    */
     @RequestMapping(value = "/search/byusergroup/{userGroupId}", method = RequestMethod.GET)
     @ResponseBody
     public String findByUserGroup(@PathVariable Long userGroupId) {
@@ -872,6 +872,36 @@ public class EventController {
         }
         addDateTimeFormatPatterns(uiModel);
         return "events/list";
+    }
+
+    @RequestMapping(value = "/myevents", produces = "text/html")
+    public String myevents(Model uiModel) {
+        Map<Long, Event> events = new HashMap<>();
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				UserGroup ug = ugua.getUserGroup();
+	    		        if (ug != null) {
+	    		            for (EventUserGroup eventUserGroup : ug.getEventUserGroups()) {
+	    		                Event event = eventUserGroup.getEvent();
+	    		                if (!events.containsKey(event.getId())) {
+	    		                    events.put(event.getId(), event);
+	    		                }
+	    		            }
+	    		        }    				
+    			}
+    		}
+    		//List<Event> eventList = events.values();
+        	uiModel.addAttribute("events", events.values());
+            addDateTimeFormatPatterns(uiModel);
+            return "events/myevents";
+    	} else {
+    		// We probably aren't logged in
+    		// let's just return all events so an anonymous user can get results
+    		// List <Event> allEvents = Event.findAllEvents();
+    		return "redirect:/events";
+    	}
     }
     
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")

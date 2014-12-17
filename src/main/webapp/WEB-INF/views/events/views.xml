@@ -4,6 +4,9 @@
     <definition extends="default" name="events/list">
         <put-attribute name="body" value="/WEB-INF/views/events/list.jspx"/>
     </definition>
+    <definition extends="default" name="events/myevents">
+        <put-attribute name="body" value="/WEB-INF/views/events/myevents.jspx"/>
+    </definition>    
 <definition extends="default" name="events/show">
         <put-attribute name="body" value="/WEB-INF/views/events/show.jspx"/>
     </definition>
