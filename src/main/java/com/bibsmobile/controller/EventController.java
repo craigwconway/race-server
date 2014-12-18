@@ -65,6 +65,7 @@ public class EventController {
                 .getAuthentication().getName();
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
                 username).getSingleResult();
+
        /* if (user.getUserGroup() != null) {
             addGroup = true;
             log.info("event group " + user.getUserGroup().getName());
@@ -80,7 +81,29 @@ public class EventController {
             user.getUserGroup().merge();
         }*/
         event.persist();
-        
+        System.out.println("persisting event");
+        // Add to usergroup:
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			System.out.println("got authorities");
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				System.out.println("got ugua");
+    				UserGroup ug = ugua.getUserGroup();
+    				System.out.println("found usergroup");
+	    		        if (ug != null) {
+	    		        	System.out.println("adding eventusergroup id");
+	    		            EventUserGroup eventUserGroup = new EventUserGroup();
+	    		            eventUserGroup.setId(new EventUserGroupId(event, ug));
+	    		            eventUserGroup.persist();	    		        
+	    		        	}    	
+	    		        break;
+    			}
+    			break;
+    		} 
+    	} else {
+    		System.out.println("no logged in user");
+    	}
         // default awards categories
         AwardCategory.createDefaultMedals(event);
         AwardCategory.createAgeGenderRankings(event, 
