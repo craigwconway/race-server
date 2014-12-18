@@ -5,6 +5,12 @@ import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
+import com.bibsmobile.util.UserProfileUtil;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.EventUserGroup;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
@@ -12,6 +18,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -126,6 +134,48 @@ public class RaceResultController {
         }
         return rtn;
     }
+
+    
+    @RequestMapping(value = "/myresults", produces = "text/html")
+    public static String listmyevents(
+			@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+			@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
+			@RequestParam(value = "event", required = false, defaultValue = "0") Long event, 
+			Model uiModel) {
+    	Map<Long, Event> events = new HashMap<>();
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				UserGroup ug = ugua.getUserGroup();
+	    		        if (ug != null) {
+	    		            for (EventUserGroup eventUserGroup : ug.getEventUserGroups()) {
+	    		                Event e = eventUserGroup.getEvent();
+	    		                if (!events.containsKey(e.getId())) {
+	    		                    events.put(e.getId(), e);
+	    		                }
+	    		            }
+	    		        }    				
+    			}
+    		}
+    	} else {
+    		return "redirect:/raceresults";
+    	}
+        uiModel.addAttribute("events", events.values());
+        int sizeNo = size == null ? 10 : size.intValue();
+        final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+        float nrOfPages = 0;
+        if(event > 0){
+        	uiModel.addAttribute("raceresults", Event.findRaceResults(event,firstResult, sizeNo));
+            nrOfPages = (float) Event.countRaceResults(event) / sizeNo;
+        }else{
+        	uiModel.addAttribute("raceresults", RaceResult.findRaceResultEntries(firstResult, sizeNo));
+            nrOfPages = (float) RaceResult.countRaceResults() / sizeNo;
+        }
+        uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        //addDateTimeFormatPatterns(uiModel);
+        return "raceresults/myresults";
+    }    
     
     @RequestMapping(produces = "text/html")
     public static String list(

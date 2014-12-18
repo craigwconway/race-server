@@ -4,6 +4,9 @@
     <definition extends="default" name="raceresults/list">
         <put-attribute name="body" value="/WEB-INF/views/raceresults/list.jspx"/>
     </definition>
+    <definition extends="default" name="raceresults/myresults">
+        <put-attribute name="body" value="/WEB-INF/views/raceresults/myresults.jspx"/>
+    </definition>
 <definition extends="default" name="raceresults/show">
         <put-attribute name="body" value="/WEB-INF/views/raceresults/show.jspx"/>
     </definition>

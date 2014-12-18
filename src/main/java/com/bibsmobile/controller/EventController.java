@@ -123,6 +123,22 @@ public class EventController {
         return event.toJson();
     }
 
+    @RequestMapping(value = "/webappid", method = RequestMethod.GET)
+    @ResponseBody
+    public String findUserGroupID() {
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+				UserGroup ug = ugua.getUserGroup();
+				String success = ug.getId().toString();
+				return success;
+			}
+		}
+
+        String err = new String("We done fucked up.");
+        return err;
+    }    
+    
     public static String doPost(String targetURL, String data, boolean json) {
         URL url;
         HttpURLConnection connection = null;
