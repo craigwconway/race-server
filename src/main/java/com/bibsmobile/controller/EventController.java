@@ -130,7 +130,7 @@ public class EventController {
 		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
 			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
 				UserGroup ug = ugua.getUserGroup();
-				String success = ug.getId().toString();
+				String success = "https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/" + ug.getId().toString() + "/t/all/events";
 				return success;
 			}
 		}
