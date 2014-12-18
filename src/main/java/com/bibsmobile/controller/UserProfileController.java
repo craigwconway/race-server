@@ -8,6 +8,8 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
+import com.bibsmobile.util.UserProfileUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,10 +26,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -50,7 +54,8 @@ public class UserProfileController {
         uiModel.addAttribute("itemId", u.getId());
         return "userprofiles/show";
     }
-
+    
+    
     @RequestMapping(value = "/search/byusergroup/{userGroupId}", method = RequestMethod.GET)
     @ResponseBody
     public String findByUserGroup(@PathVariable Long userGroupId) {
