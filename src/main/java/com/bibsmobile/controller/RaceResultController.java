@@ -169,7 +169,7 @@ public class RaceResultController {
         	uiModel.addAttribute("raceresults", Event.findRaceResults(event,firstResult, sizeNo));
             nrOfPages = (float) Event.countRaceResults(event) / sizeNo;
         }else{
-        	uiModel.addAttribute("raceresults", RaceResult.findRaceResultEntries(firstResult, sizeNo));
+        	uiModel.addAttribute("raceresults", Event.findRaceResults(events.keySet().iterator().next(), firstResult, sizeNo));
             nrOfPages = (float) RaceResult.countRaceResults() / sizeNo;
         }
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));

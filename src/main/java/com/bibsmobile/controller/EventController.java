@@ -135,7 +135,7 @@ public class EventController {
 			}
 		}
 
-        String err = new String("We done fucked up.");
+        String err = new String("Error with results delivery: Please contact brandon@mybibs.co for automatic result inquiries.");
         return err;
     }    
     

@@ -73,7 +73,7 @@
     
     function addRunner(){
    		var request = jQuery.ajax({
-   			url: "/bibs-server/events/",
+   			url: "/bibs-server/myevents/",
    			type: "GET",
    			dataType: "json"
    			});
