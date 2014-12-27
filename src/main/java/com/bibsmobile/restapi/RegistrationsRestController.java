@@ -1,4 +1,4 @@
-package com.bibsmobile.restapinew;
+package com.bibsmobile.restapi;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;

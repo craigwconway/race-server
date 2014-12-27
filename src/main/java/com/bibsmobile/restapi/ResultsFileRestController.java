@@ -1,4 +1,4 @@
-package com.bibsmobile.restapinew;
+package com.bibsmobile.restapi;
 
 import java.util.Date;
 

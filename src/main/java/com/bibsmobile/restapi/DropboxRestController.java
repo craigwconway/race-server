@@ -1,4 +1,4 @@
-package com.bibsmobile.restapinew;
+package com.bibsmobile.restapi;
 
 import java.util.List;
 
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.UserProfile;
-import com.bibsmobile.util.JSONUtil;
 import com.bibsmobile.util.ResultsFileUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
