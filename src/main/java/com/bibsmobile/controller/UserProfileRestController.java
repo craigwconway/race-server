@@ -87,6 +87,14 @@ public class UserProfileRestController {
         return new ResponseEntity<>(new JSONSerializer().serialize(userProfile), headers, HttpStatus.CREATED);
     }
 
+    /* for debugging, shouldn't be available in production builds, so nobody can snoop usernames etc
+    @RequestMapping(value = "/current", method = RequestMethod.GET, headers = "Accept=application/json")
+    public ResponseEntity<String> getCurrentUser() {
+        UserProfile u = UserProfileUtil.getLoggedInUserProfile();
+        if (u == null) return new ResponseEntity<>("not logged in", HttpStatus.OK);
+        else return new ResponseEntity<>(u.toJson(), HttpStatus.OK);
+    }*/
+
     @RequestMapping(value = "/current", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> updateCurrentUser(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
@@ -108,47 +116,7 @@ public class UserProfileRestController {
         }
 
         // only overwrite whitelisted attributes
-        if (updatedUser.getBirthdate() != null)
-            currentUser.setBirthdate(updatedUser.getBirthdate());
-        if (updatedUser.getPhone() != null)
-            currentUser.setPhone(updatedUser.getPhone());
-        if (updatedUser.getFirstname() != null)
-            currentUser.setFirstname(updatedUser.getFirstname());
-        if (updatedUser.getLastname() != null)
-            currentUser.setLastname(updatedUser.getLastname());
-        if (updatedUser.getCity() != null)
-            currentUser.setCity(updatedUser.getCity());
-        if (updatedUser.getState() != null)
-            currentUser.setState(updatedUser.getState());
-        if (updatedUser.getBirthdate() != null)
-            currentUser.setBirthdate(updatedUser.getBirthdate());
-        if (updatedUser.getGender() != null)
-            currentUser.setGender(updatedUser.getGender());
-        if (updatedUser.getEmail() != null)
-            currentUser.setEmail(updatedUser.getEmail());
-        if (updatedUser.getUsername() != null)
-            currentUser.setUsername(updatedUser.getUsername());
-        if (updatedUser.getPassword() != null)
-            currentUser.setPassword(updatedUser.getPassword());
-        if (updatedUser.getFacebookId() != null)
-            currentUser.setFacebookId(updatedUser.getFacebookId());
-        if (updatedUser.getTwitterId() != null)
-            currentUser.setTwitterId(updatedUser.getTwitterId());
-        if (updatedUser.getGoogleId() != null)
-            currentUser.setGoogleId(updatedUser.getGoogleId());
-        if (updatedUser.getAddressLine1() != null)
-            currentUser.setAddressLine1(updatedUser.getAddressLine1());
-        if (updatedUser.getAddressLine2() != null)
-            currentUser.setAddressLine2(updatedUser.getAddressLine2());
-        if (updatedUser.getZipCode() != null)
-            currentUser.setZipCode(updatedUser.getZipCode());
-        if (updatedUser.getEmergencyContactName() != null)
-            currentUser.setEmergencyContactName(updatedUser.getEmergencyContactName());
-        if (updatedUser.getEmergencyContactPhone() != null)
-            currentUser.setEmergencyContactPhone(updatedUser.getEmergencyContactPhone());
-        if (updatedUser.getHearFrom() != null)
-            currentUser.setHearFrom(updatedUser.getHearFrom());
-
+        currentUser = UserProfileUtil.createSafeUserFromUnsafe(updatedUser, currentUser);
         currentUser.persist();
 
         return new ResponseEntity<>(updatedUser.toJson(), HttpStatus.OK);
