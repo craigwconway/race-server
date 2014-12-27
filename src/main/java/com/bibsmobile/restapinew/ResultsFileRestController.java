@@ -1,7 +1,8 @@
-package com.bibsmobile.controller;
+package com.bibsmobile.restapinew;
 
 import java.util.Date;
 
+import com.bibsmobile.util.SpringJSONUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,8 +19,8 @@ public class ResultsFileRestController {
     @RequestMapping(value = "/{id}", headers = "Accept=application/json", produces = "application/json")
     public ResponseEntity<String> details(@PathVariable("id") Long id) {
         ResultsFile rf = ResultsFile.findResultsFile(id);
-        if (rf == null) return new ResponseEntity<>(JSONUtil.convertErrorMessage("not found"), HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(JSONUtil.convertObject(new ResultsFileDetails(rf)), HttpStatus.OK);
+        if (rf == null) return SpringJSONUtil.returnErrorMessage("not found", HttpStatus.NOT_FOUND);
+        return SpringJSONUtil.returnObject(JSONUtil.convertObject(new ResultsFileDetails(rf)), HttpStatus.OK);
     }
 
     private static class ResultsFileDetails {

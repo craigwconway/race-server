@@ -1,7 +1,8 @@
-package com.bibsmobile.controller;
+package com.bibsmobile.restapinew;
 
 import java.util.List;
 
+import com.bibsmobile.util.SpringJSONUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,16 +30,15 @@ public class DropboxRestController {
         try {
             UserProfile user = UserProfileUtil.getLoggedInUserProfile();
             if (user == null)
-                return new ResponseEntity<>("{\"error\": \"not logged in\"}", HttpStatus.UNAUTHORIZED);
+                return SpringJSONUtil.returnErrorMessage("not logged in", HttpStatus.UNAUTHORIZED);
             DropboxImportJSON parsedJson = mapper.readValue(body, DropboxImportJSON.class);
             rimport = ResultsFileUtil.importDropbox(user, Event.findEvent(parsedJson.getEvent()), parsedJson.getDropboxPath(), parsedJson.getMap(), parsedJson.isSkipHeaders());
             if (rimport.getErrors() > 0)
-                return new ResponseEntity<>("{\"error\": \"" + rimport.getErrors() + " errors while importing\", \"errorRows\": \"" + rimport.getErrorRows() + "\"}",
-                        HttpStatus.BAD_REQUEST);
+                return SpringJSONUtil.returnErrorMessage(rimport.getErrors() + " errors while importing", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<>(JSONUtil.convertException(e), HttpStatus.OK);
+            return SpringJSONUtil.returnException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>("", HttpStatus.OK);
+        return SpringJSONUtil.returnStatusMessage("success", HttpStatus.OK);
     }
 
     private static class DropboxImportJSON {

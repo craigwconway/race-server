@@ -1,14 +1,11 @@
-package com.bibsmobile.controller;
+package com.bibsmobile.restapinew;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
-import com.bibsmobile.model.EventUserGroup;
-import com.bibsmobile.model.UserAuthorities;
-import com.bibsmobile.model.UserAuthority;
-import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.RegistrationsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
@@ -34,8 +31,10 @@ import java.util.Set;
 public class RegistrationsRestController {
 
     @RequestMapping(value = "/search", method = RequestMethod.GET, headers = "Accept=application/json")
-    public ResponseEntity<String> search(@RequestParam("event") Long eventId, @RequestParam(value = "firstName", required = false) String firstName,
-                                         @RequestParam(value = "lastName", required = false) String lastName, @RequestParam(value = "start", required = false) Integer start,
+    public ResponseEntity<String> search(@RequestParam("event") Long eventId,
+                                         @RequestParam(value = "firstName", required = false) String firstName,
+                                         @RequestParam(value = "lastName", required = false) String lastName,
+                                         @RequestParam(value = "start", required = false) Integer start,
                                          @RequestParam(value = "count", required = false) Integer count) {
         try {
             // sanity check given parameters
@@ -48,28 +47,7 @@ public class RegistrationsRestController {
                 return SpringJSONUtil.returnErrorMessage("firstName or lastName has to be included", HttpStatus.BAD_REQUEST);
 
             // check the rights the user has for event
-            UserAuthority authorityForEvent = null;
-            UserProfile user = UserProfileUtil.getLoggedInUserProfile();
-            if (user != null) {
-                for (UserAuthorities ua : user.getUserAuthorities()) {
-                    // sys admins have all permissions anyways
-                    if (ua.getUserAuthority().isAuthority(UserAuthority.SYS_ADMIN)) {
-                        authorityForEvent = ua.getUserAuthority();
-                        break;
-                    }
-                    // check permissions specific to event
-                    for (UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
-                        for (EventUserGroup eug : ugua.getUserGroup().getEventUserGroups()) {
-                            if (eug.getEvent().equals(event)) {
-                                authorityForEvent = ua.getUserAuthority();
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            // sys admins have access in general, event admins if they are associated with the event (see search above)
-            if (authorityForEvent == null || (!authorityForEvent.isAuthority(UserAuthority.SYS_ADMIN) && !authorityForEvent.isAuthority(UserAuthority.EVENT_ADMIN))) {
+            if (PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
                 return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
             }
 
@@ -134,6 +112,11 @@ public class RegistrationsRestController {
         if (cartItem == null) return SpringJSONUtil.returnErrorMessage("unknown cart", HttpStatus.BAD_REQUEST);
         if (!cartItem.getEventCartItem().getEvent().isTicketTransferEnabled())
             return SpringJSONUtil.returnErrorMessage("ticket transfer disabled", HttpStatus.FORBIDDEN);
+
+        // check the rights the user has for event
+        if (PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), cartItem.getEventCartItem().getEvent())) {
+            return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
+        }
 
            // create or get user profile
         ShortUser newUser = null;
