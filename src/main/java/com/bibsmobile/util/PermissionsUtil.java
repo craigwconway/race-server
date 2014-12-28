@@ -34,11 +34,26 @@ public final class PermissionsUtil {
                 // check if assigned to this event
                 for (UserGroupUserAuthority ugua : uas.getUserGroupUserAuthorities()) {
                     for (EventUserGroup eug : ugua.getUserGroup().getEventUserGroups()) {
-                        if (eug.getEvent().equals(event)) {
+                        // checking only the id, since equals on the events leads false although they are the same event
+                        if (eug.getEvent().getId().equals(event.getId())) {
                             return true;
                         }
                     }
                 }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * checks whether the given user is a sys admin
+     * @param user
+     * @return
+     */
+    public static boolean isSysAdmin(UserProfile user) {
+        for (UserAuthorities uas : user.getUserAuthorities()) {
+            if (uas.getUserAuthority().isAuthority(UserAuthority.SYS_ADMIN)) {
+                return true;
             }
         }
         return false;

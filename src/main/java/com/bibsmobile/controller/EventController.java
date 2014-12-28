@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.SpringJSONUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -522,6 +525,11 @@ public class EventController {
 
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            bindingResult.addError(new ObjectError("name", "you don't have the rights"));
+        }
+
         if (bindingResult.hasErrors()) {
             this.populateEditForm(uiModel, event);
             return "events/update";
@@ -647,6 +655,12 @@ public class EventController {
         Event event = Event.findEvent(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+
         if (event == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
@@ -659,6 +673,12 @@ public class EventController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         Event event = Event.fromJsonToEvent(json);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+
         event.setId(id);
         if (event.merge() == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
@@ -676,6 +696,12 @@ public class EventController {
     public String show(@PathVariable("id") Long id, Model uiModel) {
         this.addDateTimeFormatPatterns(uiModel);
         Event e = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e)) {
+            return null;
+        }
+
         ResultsFile latestImportFile = e.getLatestImportFile();
         ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());
         ResultsFileMapping latestMapping = ((latestImport == null) ? null : latestImport.getResultsFileMapping());
@@ -696,20 +722,25 @@ public class EventController {
         if (event == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
         return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
     }
 
     @RequestMapping(produces = "text/html")
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
             @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        UserProfile user = UserProfileUtil.getLoggedInUserProfile();
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("events", Event.findEventEntries(firstResult, sizeNo, sortFieldName, sortOrder));
+            uiModel.addAttribute("events", Event.findEventsForUser(user, firstResult, sizeNo, sortFieldName, sortOrder));
             float nrOfPages = (float) Event.countEvents() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("events", Event.findAllEvents(sortFieldName, sortOrder));
+            uiModel.addAttribute("events", Event.findEventsForUser(user, -1, -1, sortFieldName, sortOrder));
         }
         this.addDateTimeFormatPatterns(uiModel);
         return "events/list";
@@ -717,7 +748,12 @@ public class EventController {
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        this.populateEditForm(uiModel, Event.findEvent(id));
+        Event event = Event.findEvent(id);
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+        this.populateEditForm(uiModel, event);
         return "events/update";
     }
 
@@ -725,6 +761,12 @@ public class EventController {
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
             Model uiModel) {
         Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
         event.remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());

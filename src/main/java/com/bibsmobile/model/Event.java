@@ -29,6 +29,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.UserProfileUtil;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -671,6 +673,30 @@ public class Event {
 
     public static List<Event> findEventEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM Event o", Event.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+
+    public static List<Event> findEventsForUser(UserProfile user, int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        // return all events for the sysadmin
+        if (PermissionsUtil.isSysAdmin(user))
+            return findEventEntries(firstResult, maxResults, sortFieldName, sortOrder);
+        // get only accessible events for everyone else
+        String jpaQuery = "select e from Event e join e.eventUserGroups eug join eug.userGroup ug join ug.userGroupUserAuthorities ugua join ugua.userAuthorities uasid join uasid.userProfile up where up.id = :user_id";
+        // ordering if requested
+        if (sortFieldName != null && sortOrder != null && fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+
+        TypedQuery<Event> q = entityManager().createQuery(jpaQuery, Event.class);
+        q.setParameter("user_id", user.getId());
+        // paging if requested
+        if (firstResult > 0 && maxResults > 0) {
+            q.setFirstResult(firstResult).setMaxResults(maxResults);
+        }
+
+        return q.getResultList();
     }
 
     public static List<Event> findEventEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
