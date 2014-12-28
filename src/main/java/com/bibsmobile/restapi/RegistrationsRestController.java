@@ -47,7 +47,7 @@ public class RegistrationsRestController {
                 return SpringJSONUtil.returnErrorMessage("firstName or lastName has to be included", HttpStatus.BAD_REQUEST);
 
             // check the rights the user has for event
-            if (PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
                 return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
             }
 
@@ -114,7 +114,7 @@ public class RegistrationsRestController {
             return SpringJSONUtil.returnErrorMessage("ticket transfer disabled", HttpStatus.FORBIDDEN);
 
         // check the rights the user has for event
-        if (PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), cartItem.getEventCartItem().getEvent())) {
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), cartItem.getEventCartItem().getEvent())) {
             return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
         }
 
