@@ -36,6 +36,9 @@
         <button class="btn btn-default btn-top" onclick="cloud()" type="button">
 		Cloud
 		</button>
+        <button class="btn btn-default btn-top" onclick="redirectProducts()" type="button">
+            Products
+        </button>
         <c:if test="${lastImport != null}">
             <button class="btn btn-default btn-top" onclick="redirectChangeFileMapping()" type="button">
             Change file mapping
@@ -92,6 +95,9 @@
     }
     function redirectChangeFileMapping(){
         window.location="/bibs-server/resultsfilemappings/${lastMapping.id}?form";
+    }
+    function redirectProducts(){
+        window.location="/bibs-server/eventitems?event=${event.id}";
     }
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">

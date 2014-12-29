@@ -1,6 +1,7 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemPriceChange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -190,5 +192,10 @@ public class EventCartItemPriceChangeController {
         } catch (UnsupportedEncodingException uee) {
         }
         return pathSegment;
+    }
+
+    @ModelAttribute("eventcartitempricechangegenderenums")
+    public List<EventCartItemGenderEnum> getEventCartItemGenderEnums() {
+        return Arrays.asList(EventCartItemGenderEnum.values());
     }
 }
