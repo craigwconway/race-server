@@ -310,6 +310,12 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.9</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- open csv -->
 		<dependency>
@@ -400,7 +406,17 @@
 					<artifactId>commons-logging</artifactId>
 					<groupId>commons-logging</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>xerces</artifactId>
+					<groupId>xercesImpl</groupId>
+				</exclusion>
 			</exclusions>
+		</dependency>
+		<!-- forcing newer version of xerces because of bug on first request -->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.11.0</version>
 		</dependency>
 
 		<dependency>
@@ -469,6 +485,7 @@
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
 			<version>${jetty.version}</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
