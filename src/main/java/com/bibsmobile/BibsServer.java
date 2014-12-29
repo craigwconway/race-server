@@ -12,7 +12,7 @@ import java.io.IOException;
  * do NOT use for production, just for testing and debugging
  */
 public class BibsServer {
-    private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PORT = 8088;
     private static final String CONTEXT_PATH = "/";
 
     public static void main(String[] args) throws Exception {
