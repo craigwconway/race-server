@@ -83,6 +83,7 @@ public class EventController {
                 .getAuthentication().getName();
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
                 username).getSingleResult();
+
        /* if (user.getUserGroup() != null) {
             addGroup = true;
             log.info("event group " + user.getUserGroup().getName());
@@ -98,7 +99,29 @@ public class EventController {
             user.getUserGroup().merge();
         }*/
         event.persist();
-        
+        System.out.println("persisting event");
+        // Add to usergroup:
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			System.out.println("got authorities");
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				System.out.println("got ugua");
+    				UserGroup ug = ugua.getUserGroup();
+    				System.out.println("found usergroup");
+	    		        if (ug != null) {
+	    		        	System.out.println("adding eventusergroup id");
+	    		            EventUserGroup eventUserGroup = new EventUserGroup();
+	    		            eventUserGroup.setId(new EventUserGroupId(event, ug));
+	    		            eventUserGroup.persist();	    		        
+	    		        	}    	
+	    		        break;
+    			}
+    			break;
+    		} 
+    	} else {
+    		System.out.println("no logged in user");
+    	}
         // default awards categories
         AwardCategory.createDefaultMedals(event);
         AwardCategory.createAgeGenderRankings(event, 
@@ -118,6 +141,22 @@ public class EventController {
         return event.toJson();
     }
 
+    @RequestMapping(value = "/webappid", method = RequestMethod.GET)
+    @ResponseBody
+    public String findUserGroupID() {
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+				UserGroup ug = ugua.getUserGroup();
+				String success = "https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/" + ug.getId().toString() + "/t/all/events";
+				return success;
+			}
+		}
+
+        String err = new String("Error with results delivery: Please contact brandon@mybibs.co for automatic result inquiries.");
+        return err;
+    }    
+    
     public static String doPost(String targetURL, String data, boolean json) {
         URL url;
         HttpURLConnection connection = null;
@@ -724,6 +763,37 @@ public class EventController {
     }
 
 
+    /*
+    @RequestMapping(value = "/myevents", method = RequestMethod.GET)
+    @ResponseBody
+    public String findMyEvents() {
+        Map<Long, Event> events = new HashMap<>();
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				UserGroup ug = ugua.getUserGroup();
+	    		        if (ug != null) {
+	    		            for (EventUserGroup eventUserGroup : ug.getEventUserGroups()) {
+	    		                Event event = eventUserGroup.getEvent();
+	    		                if (!events.containsKey(event.getId())) {
+	    		                    events.put(event.getId(), event);
+	    		                }
+	    		            }
+	    		        }    				
+    			}
+    		}
+    		return Event.toJsonArray(events.values());
+    	} else {
+    		// We probably aren't logged in
+    		// let's just return all events so an anonymous user can get results
+    		List <Event> allEvents = Event.findAllEvents();
+    		return Event.toJsonArray(allEvents);
+    	}
+
+        //return Event.toJsonArray(events.values());
+    }    
+    */
     @RequestMapping(value = "/search/byusergroup/{userGroupId}", method = RequestMethod.GET)
     @ResponseBody
     public String findByUserGroup(@PathVariable Long userGroupId) {
@@ -859,6 +929,36 @@ public class EventController {
         }
         addDateTimeFormatPatterns(uiModel);
         return "events/list";
+    }
+
+    @RequestMapping(value = "/myevents", produces = "text/html")
+    public String myevents(Model uiModel) {
+        Map<Long, Event> events = new HashMap<>();
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				UserGroup ug = ugua.getUserGroup();
+	    		        if (ug != null) {
+	    		            for (EventUserGroup eventUserGroup : ug.getEventUserGroups()) {
+	    		                Event event = eventUserGroup.getEvent();
+	    		                if (!events.containsKey(event.getId())) {
+	    		                    events.put(event.getId(), event);
+	    		                }
+	    		            }
+	    		        }    				
+    			}
+    		}
+    		//List<Event> eventList = events.values();
+        	uiModel.addAttribute("events", events.values());
+            addDateTimeFormatPatterns(uiModel);
+            return "events/myevents";
+    	} else {
+    		// We probably aren't logged in
+    		// let's just return all events so an anonymous user can get results
+    		// List <Event> allEvents = Event.findAllEvents();
+    		return "redirect:/events";
+    	}
     }
     
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
