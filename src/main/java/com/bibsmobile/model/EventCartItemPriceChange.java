@@ -43,6 +43,11 @@ public class EventCartItemPriceChange {
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date endDate;
 
+    private int lowAgeThreshold;
+    private int highAgeThreshold;
+    private String gender;
+    private boolean team;
+
     /**
      */
     @ManyToOne
@@ -82,6 +87,38 @@ public class EventCartItemPriceChange {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public int getLowAgeThreshold() {
+        return lowAgeThreshold;
+    }
+
+    public void setLowAgeThreshold(int lowAgeThreshold) {
+        this.lowAgeThreshold = lowAgeThreshold;
+    }
+
+    public int getHighAgeThreshold() {
+        return highAgeThreshold;
+    }
+
+    public void setHighAgeThreshold(int highAgeThreshold) {
+        this.highAgeThreshold = highAgeThreshold;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public boolean isTeam() {
+        return team;
+    }
+
+    public void setTeam(boolean team) {
+        this.team = team;
     }
 
     public String toJson() {

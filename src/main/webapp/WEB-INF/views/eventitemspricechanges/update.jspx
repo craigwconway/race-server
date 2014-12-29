@@ -7,5 +7,9 @@
         <field:datetime dateTimePattern="${eventCartItemPriceChange_startdate_date_format}" field="startDate" id="c_com_bibsmobile_model_EventCartItemPriceChange_startDate" z="QqSP7wTQfSDlKK6eoew9/rdoBTE="/>
         <field:datetime dateTimePattern="${eventCartItemPriceChange_enddate_date_format}" field="endDate" id="c_com_bibsmobile_model_EventCartItemPriceChange_endDate" z="7S9Uj+2fEFqxOQpQjiSQBlxRsLc="/>
         <field:input field="price" id="c_com_bibsmobile_model_EventCartItemPriceChange_price" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
+        <field:input field="lowAgeThreshold" id="c_com_bibsmobile_model_EventCartItemPriceChange_lowAgeThreshold" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
+        <field:input field="highAgeThreshold" id="c_com_bibsmobile_model_EventCartItemPriceChange_highAgeThreshold" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
+        <field:input field="gender" id="c_com_bibsmobile_model_EventCartItemPriceChange_gender" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
+        <field:input field="team" id="c_com_bibsmobile_model_EventCartItemPriceChange_team" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
     </form:update>
 </div>
