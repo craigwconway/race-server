@@ -36,12 +36,19 @@
         <button class="btn btn-default btn-top" onclick="cloud()" type="button">
 		Cloud
 		</button>
-        <button class="btn btn-default btn-top" onclick="redirectProducts()" type="button">
-            Products
-        </button>
         <c:if test="${lastImport != null}">
             <button class="btn btn-default btn-top" onclick="redirectChangeFileMapping()" type="button">
             Change file mapping
+            </button>
+        </c:if>
+        <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
+            <button class="btn btn-default btn-top" onclick="redirectEnableReg()" type="button">
+                Enable Registration
+            </button>
+        </c:if>
+        <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
+            <button class="btn btn-default btn-top" onclick="redirectManageReg()" type="button">
+                Manage Registration
             </button>
         </c:if>
         <span id="progress" style="margin:0;margin-left:6px;display:none;">
@@ -96,7 +103,10 @@
     function redirectChangeFileMapping(){
         window.location="/bibs-server/resultsfilemappings/${lastMapping.id}?form";
     }
-    function redirectProducts(){
+    function redirectEnableReg(){
+        window.location="/bibs-server/events/${event.id}/enablereg";
+    }
+    function redirectManageReg(){
         window.location="/bibs-server/eventitems?event=${event.id}";
     }
 	</script>

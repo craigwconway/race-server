@@ -22,6 +22,8 @@ public final class PermissionsUtil {
      * @return
      */
     public static boolean isEventAdmin(UserProfile user, Event event) {
+        if (user == null || event == null)
+            return false;
         // go through all assigned user authorities
         for (UserAuthorities uas : user.getUserAuthorities()) {
             UserAuthority ua = uas.getUserAuthority();

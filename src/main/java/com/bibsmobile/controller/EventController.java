@@ -697,11 +697,6 @@ public class EventController {
         this.addDateTimeFormatPatterns(uiModel);
         Event e = Event.findEvent(id);
 
-        // check the rights the user has for event
-        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e)) {
-            return null;
-        }
-
         ResultsFile latestImportFile = e.getLatestImportFile();
         ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());
         ResultsFileMapping latestMapping = ((latestImport == null) ? null : latestImport.getResultsFileMapping());
@@ -709,6 +704,7 @@ public class EventController {
         uiModel.addAttribute("dropboxUnlink", (UserProfileUtil.getLoggedInDropboxAccessToken() != null));
         uiModel.addAttribute("lastImport", latestImport);
         uiModel.addAttribute("lastMapping", latestMapping);
+        uiModel.addAttribute("eventadmin", PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e));
         uiModel.addAttribute("itemId", id);
         return "events/show";
     }
@@ -772,6 +768,21 @@ public class EventController {
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/events";
+    }
+
+    @RequestMapping(value = "/{id}/enablereg", produces = "text/html")
+    public String enableReg(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        event.setRegEnabled(true);
+        event.persist();
+
+        return "redirect:/events/" + event.getId();
     }
 
     void addDateTimeFormatPatterns(Model uiModel) {
