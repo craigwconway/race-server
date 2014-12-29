@@ -22,6 +22,7 @@
                 <table:column id="c_com_bibsmobile_model_EventCartItemPriceChange_highAgeThreshold" property="highAgeThreshold" z="POzSQCF5duZhplUrt+x/Yzomo04="/>
                 <table:column id="c_com_bibsmobile_model_EventCartItemPriceChange_gender" property="gender" z="POzSQCF5duZhplUrt+x/Yzomo04="/>
                 <table:column id="c_com_bibsmobile_model_EventCartItemPriceChange_team" property="team" z="POzSQCF5duZhplUrt+x/Yzomo04="/>
+                <table:column id="c_com_bibsmobile_model_EventCartItemPriceChange_price" property="price" z="POzSQCF5duZhplUrt+x/Yzomo04="/>
             </table:table>
         </page:list>
     </sec:authorize>

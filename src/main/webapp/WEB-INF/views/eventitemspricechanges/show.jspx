@@ -11,5 +11,6 @@
         <field:display field="highAgeThreshold" id="s_com_bibsmobile_model_EventCartItemPriceChange_highAgeThreshold" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
         <field:display field="gender" id="s_com_bibsmobile_model_EventCartItemPriceChange_gender" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
         <field:display field="team" id="s_com_bibsmobile_model_EventCartItemPriceChange_team" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
+        <field:display field="price" id="s_com_bibsmobile_model_EventCartItemPriceChange_price" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
     </page:show>
 </div>

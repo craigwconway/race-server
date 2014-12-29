@@ -102,19 +102,19 @@ public class EventCartItem {
 
     /**
      */
-    private int minAge;
+    private int minAge = 1;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "eventCartItem")
     private Set<EventCartItemPriceChange> priceChanges;
 
     /**
      */
-    private int maxAge;
+    private int maxAge = 120;
 
     /**
      */
     @Enumerated
-    private EventCartItemGenderEnum gender;
+    private EventCartItemGenderEnum gender = EventCartItemGenderEnum.MALE_AND_FEMALE;
 
     @Transient
     private Date birthDate;

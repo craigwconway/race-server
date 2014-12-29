@@ -10,6 +10,7 @@
         <field:input field="highAgeThreshold" id="c_com_bibsmobile_model_EventCartItemPriceChange_highAgeThreshold" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
         <field:select field="gender" id="c_com_bibsmobile_model_EventCartItemPriceChange_gender" items="${eventcartitempricechangegenderenums}" path="eventcartitempricechangegenderenums" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
         <field:checkbox field="team" id="c_com_bibsmobile_model_EventCartItemPriceChange_team" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
+        <field:input field="price" id="c_com_bibsmobile_model_EventCartItemPriceChange_price" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItemPriceChange" render="${not empty dependencies}" z="OPR4AwIXH96J63tUV2BUksx/BoM="/>
 </div>
