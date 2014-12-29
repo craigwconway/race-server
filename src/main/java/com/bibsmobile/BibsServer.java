@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class BibsServer {
     private static final int DEFAULT_PORT = 8088;
-    private static final String CONTEXT_PATH = "/";
+    private static final String CONTEXT_PATH = "/bibs-server/";
 
     public static void main(String[] args) throws Exception {
         new BibsServer().startJetty(BibsServer.getPortFromArgs(args));
