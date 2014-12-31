@@ -7,11 +7,10 @@ public class UploadFile {
     private MultipartFile file;
 
     public MultipartFile getFile() {
-        return file;
+        return this.file;
     }
 
     public void setFile(MultipartFile file) {
         this.file = file;
     }
 }
-

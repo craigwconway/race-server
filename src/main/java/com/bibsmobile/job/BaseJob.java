@@ -14,7 +14,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 public abstract class BaseJob implements Job {
-    private static Scheduler scheduler;
+    private static final Scheduler scheduler;
 
     static {
         try {
@@ -30,10 +30,7 @@ public abstract class BaseJob implements Job {
         if (scheduler.checkExists(jobKey))
             return scheduler.getJobDetail(jobKey);
 
-        JobDetail job = JobBuilder.newJob(jobClass)
-            .withIdentity(jobKey)
-            .storeDurably()
-            .build();
+        JobDetail job = JobBuilder.newJob(jobClass).withIdentity(jobKey).storeDurably().build();
         scheduler.addJob(job, false);
         return job;
     }
@@ -44,11 +41,8 @@ public abstract class BaseJob implements Job {
 
     public static void scheduleOnceInSeconds(Class<? extends Job> jobClass, int seconds) throws SchedulerException {
         String triggerName = jobClass.getSimpleName() + "Trigger" + new Random().nextInt();
-        Trigger trigger = TriggerBuilder.newTrigger()
-            .withIdentity(triggerName)
-            .startAt(DateBuilder.futureDate(seconds, DateBuilder.IntervalUnit.SECOND))
-            .forJob(registerJob(jobClass))
-            .build();
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(triggerName).startAt(DateBuilder.futureDate(seconds, DateBuilder.IntervalUnit.SECOND))
+                .forJob(registerJob(jobClass)).build();
         scheduler.scheduleJob(trigger);
     }
 }

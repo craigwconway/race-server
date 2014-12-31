@@ -44,6 +44,16 @@
         <button class="btn btn-default btn-top" onclick="regUrl()" type="button">
 		Registration Button
 		</button>
+        <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
+            <button class="btn btn-default btn-top" onclick="redirectEnableReg()" type="button">
+                Enable Registration
+            </button>
+        </c:if>
+        <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
+            <button class="btn btn-default btn-top" onclick="redirectManageReg()" type="button">
+                Manage Registration
+            </button>
+        </c:if>
         <span id="progress" style="margin:0;margin-left:6px;display:none;">
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
         </span>
@@ -98,6 +108,12 @@
     }
     function redirectChangeFileMapping(){
         window.location="/bibs-server/resultsfilemappings/${lastMapping.id}?form";
+    }
+    function redirectEnableReg(){
+        window.location="/bibs-server/events/${event.id}/enablereg";
+    }
+    function redirectManageReg(){
+        window.location="/bibs-server/eventitems?event=${event.id}";
     }
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">

@@ -1,0 +1,100 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <div>
+        <form action="transfer" method="POST" id="transfer-form">
+            <span class="transfer-errors"><jsp:text/></span>
+
+            <div class="form-row">
+                <label>
+                    <span>First Name</span>
+                    <input type="test" size="20" name="firstname" value="${firstname}"/>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Last Name</span>
+                    <input type="text" size="20" name="lastname" value="${lastname}"/>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>E-Mail</span>
+                    <input type="text" size="20" name="email" value="${email}"/>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Phone</span>
+                    <input type="text" size="20" name="phone" value="${phone}"/>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Emergency Contact Name</span>
+                    <input type="text" size="20" name="emergencycontactname" value="${emergencycontactname}"/>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Emergency Contact Phone</span>
+                    <input type="text" size="20" name="emergencycontactphone" value="${emergencycontactphone}"/>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <label>
+                    <span>Birthdate</span>
+                    <input type="text" size="20" name="birthdate" value="${birthdate}"/>
+                </label>
+            </div>
+
+            <button type="submit">Transfer</button>
+        </form>
+
+        <script type="text/javascript">
+            jQuery(function($) {
+                $('#transfer-form').submit(function(event) {
+                    var $form = $(this);
+
+                    // Disable the submit button to prevent repeated clicks
+                    $form.find('button').prop('disabled', true);
+
+                    var f = $('#transfer-form').get(0);
+                    var total = jQuery.ajax({
+                        url: "/bibs-server/rest/registrations/transfer" + window.location.search,
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            firstName: f.elements['firstname'].value,
+                            lastName: f.elements['lastname'].value,
+                            email: f.elements['email'].value,
+                            phone: f.elements['phone'].value,
+                            emergencyContactName: f.elements['emergencycontactname'].value,
+                            emergencyContactPhone: f.elements['emergencycontactphone'].value,
+                            birthDate: f.elements['birthdate'].value
+                        })
+                    });
+                    total.done(function (data) {
+                        alert("Successfully transfered!");
+                    });
+                    total.fail(function (data) {
+                        alert("Could not transfer!");
+                    });
+
+                    // Prevent the form from submitting with the default action
+                    return false;
+                });
+            });
+        </script>
+
+    </div>
+
+</div>

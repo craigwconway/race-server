@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * Created by Jevgeni on 6.06.2014.
- */
 @Component("restLogoutSuccessHandler")
 public class RestLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 

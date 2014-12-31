@@ -1,12 +1,16 @@
 package com.bibsmobile.model;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,12 +20,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
-import flexjson.JSON;
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
-import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -30,8 +33,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
-import javax.validation.constraints.NotNull;
-import java.util.HashSet;
+
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 @Entity
 @Configurable
@@ -51,7 +55,7 @@ public class EventCartItem {
     private int purchased;
 
     private String coupon;
-    
+
     private String eventType;
 
     private double couponPrice;
@@ -98,19 +102,19 @@ public class EventCartItem {
 
     /**
      */
-    private int minAge;
+    private int minAge = 1;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "eventCartItem")
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "eventCartItem")
     private Set<EventCartItemPriceChange> priceChanges;
 
     /**
      */
-    private int maxAge;
+    private int maxAge = 120;
 
     /**
      */
     @Enumerated
-    private EventCartItemGenderEnum gender;
+    private EventCartItemGenderEnum gender = EventCartItemGenderEnum.MALE_AND_FEMALE;
 
     @Transient
     private Date birthDate;
@@ -131,389 +135,400 @@ public class EventCartItem {
     @Transient
     private String hearFrom;
 
-
     public double getActualPrice() {
-        if (CollectionUtils.isEmpty(priceChanges)) {
-            return price;
+        if (CollectionUtils.isEmpty(this.priceChanges)) {
+            return this.price;
         }
         Date now = new Date();
-        for (EventCartItemPriceChange priceChange : priceChanges) {
+        for (EventCartItemPriceChange priceChange : this.priceChanges) {
             if (priceChange.getStartDate() != null && priceChange.getEndDate() != null) {
                 if (now.after(priceChange.getStartDate()) && now.before(priceChange.getEndDate())) {
                     return priceChange.getPrice();
                 }
             }
         }
-        return price;
+        return this.price;
     }
+
     public static TypedQuery<EventCartItem> findEventCartItemsByEvents(List<Event> events) {
-        if (events == null) throw new IllegalArgumentException("The events argument is required");
+        if (events == null)
+            throw new IllegalArgumentException("The events argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event IN (:events)", EventCartItem.class);
         q.setParameter("events", events);
         return q;
     }
 
-    
     public String toJson() {
-        return new JSONSerializer()
-        .exclude("*.class").serialize(this);
+        return new JSONSerializer().exclude("*.class").serialize(this);
     }
-    
+
     public String toJson(String[] fields) {
-        return new JSONSerializer()
-        .include(fields).exclude("*.class").serialize(this);
+        return new JSONSerializer().include(fields).exclude("*.class").serialize(this);
     }
-    
+
     public static EventCartItem fromJsonToEventCartItem(String json) {
-        return new JSONDeserializer<EventCartItem>()
-        .use(null, EventCartItem.class).deserialize(json);
+        return new JSONDeserializer<EventCartItem>().use(null, EventCartItem.class).deserialize(json);
     }
-    
+
     public static Collection<EventCartItem> fromJsonArrayToEventCartItems(String json) {
-        return new JSONDeserializer<List<EventCartItem>>()
-        .use("values", EventCartItem.class).deserialize(json);
+        return new JSONDeserializer<List<EventCartItem>>().use("values", EventCartItem.class).deserialize(json);
     }
 
     public static String toJsonArray(Collection<EventCartItem> collection) {
-        return new JSONSerializer()
-        .exclude("*.class").serialize(collection);
+        return new JSONSerializer().exclude("*.class").serialize(collection);
     }
-    
+
     public static String toJsonArray(Collection<EventCartItem> collection, String[] fields) {
-        return new JSONSerializer()
-        .include(fields).exclude("*.class").serialize(collection);
+        return new JSONSerializer().include(fields).exclude("*.class").serialize(collection);
     }
-    
 
-	public boolean equals(Object obj) {
-        if (!(obj instanceof EventCartItem)) {
-            return false;
-        }
-        if (this == obj) {
-            return true;
-        }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (obj.getClass() != this.getClass()) return false;
         EventCartItem rhs = (EventCartItem) obj;
-        return new EqualsBuilder().append(addressLine1, rhs.addressLine1).append(addressLine2, rhs.addressLine2).append(available, rhs.available).append(birthDate, rhs.birthDate).append(charityName, rhs.charityName).append(coupon, rhs.coupon).append(couponPrice, rhs.couponPrice).append(couponsAvailable, rhs.couponsAvailable).append(couponsUsed, rhs.couponsUsed).append(description, rhs.description).append(donationAmount, rhs.donationAmount).append(email, rhs.email).append(emergencyContactName, rhs.emergencyContactName).append(emergencyContactPhone, rhs.emergencyContactPhone).append(event, rhs.event).append(eventType, rhs.eventType).append(gender, rhs.gender).append(hearFrom, rhs.hearFrom).append(id, rhs.id).append(maxAge, rhs.maxAge).append(minAge, rhs.minAge).append(name, rhs.name).append(phone, rhs.phone).append(price, rhs.price).append(purchased, rhs.purchased).append(timeEnd, rhs.timeEnd).append(timeLimit, rhs.timeLimit).append(timeStart, rhs.timeStart).append(tshirtColors, rhs.tshirtColors).append(tshirtImageUrls, rhs.tshirtImageUrls).append(tshirtSizes, rhs.tshirtSizes).append(type, rhs.type).append(zipCode, rhs.zipCode).isEquals();
+        return new EqualsBuilder().append(this.addressLine1, rhs.addressLine1).append(this.addressLine2, rhs.addressLine2).append(this.available, rhs.available)
+                .append(this.birthDate, rhs.birthDate).append(this.charityName, rhs.charityName).append(this.coupon, rhs.coupon).append(this.couponPrice, rhs.couponPrice)
+                .append(this.couponsAvailable, rhs.couponsAvailable).append(this.couponsUsed, rhs.couponsUsed).append(this.description, rhs.description)
+                .append(this.donationAmount, rhs.donationAmount).append(this.email, rhs.email).append(this.emergencyContactName, rhs.emergencyContactName)
+                .append(this.emergencyContactPhone, rhs.emergencyContactPhone).append(this.event, rhs.event).append(this.eventType, rhs.eventType).append(this.gender, rhs.gender)
+                .append(this.hearFrom, rhs.hearFrom).append(this.id, rhs.id).append(this.maxAge, rhs.maxAge).append(this.minAge, rhs.minAge).append(this.name, rhs.name)
+                .append(this.phone, rhs.phone).append(this.price, rhs.price).append(this.purchased, rhs.purchased).append(this.timeEnd, rhs.timeEnd)
+                .append(this.timeLimit, rhs.timeLimit).append(this.timeStart, rhs.timeStart).append(this.tshirtColors, rhs.tshirtColors)
+                .append(this.tshirtImageUrls, rhs.tshirtImageUrls).append(this.tshirtSizes, rhs.tshirtSizes).append(this.type, rhs.type).append(this.zipCode, rhs.zipCode)
+                .isEquals();
     }
 
-	public int hashCode() {
-        return new HashCodeBuilder().append(addressLine1).append(addressLine2).append(available).append(birthDate).append(charityName).append(coupon).append(couponPrice).append(couponsAvailable).append(couponsUsed).append(description).append(donationAmount).append(email).append(emergencyContactName).append(emergencyContactPhone).append(event).append(eventType).append(gender).append(hearFrom).append(id).append(maxAge).append(minAge).append(name).append(phone).append(price).append(purchased).append(timeEnd).append(timeLimit).append(timeStart).append(tshirtColors).append(tshirtImageUrls).append(tshirtSizes).append(type).append(zipCode).toHashCode();
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this.addressLine1).append(this.addressLine2).append(this.available).append(this.birthDate).append(this.charityName).append(this.coupon)
+                .append(this.couponPrice).append(this.couponsAvailable).append(this.couponsUsed).append(this.description).append(this.donationAmount).append(this.email)
+                .append(this.emergencyContactName).append(this.emergencyContactPhone).append(this.event).append(this.eventType).append(this.gender).append(this.hearFrom)
+                .append(this.id).append(this.maxAge).append(this.minAge).append(this.name).append(this.phone).append(this.price).append(this.purchased).append(this.timeEnd)
+                .append(this.timeLimit).append(this.timeStart).append(this.tshirtColors).append(this.tshirtImageUrls).append(this.tshirtSizes).append(this.type)
+                .append(this.zipCode).toHashCode();
     }
 
-	public String toString() {
+    @Override
+    public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
-	@Version
+    @Version
     @Column(name = "version")
     private Integer version;
 
-	public Long getId() {
+    public Long getId() {
         return this.id;
     }
 
-	public void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-	public Integer getVersion() {
+    public Integer getVersion() {
         return this.version;
     }
 
-	public void setVersion(Integer version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
-	public Event getEvent() {
+    public Event getEvent() {
         return this.event;
     }
 
-	public void setEvent(Event event) {
+    public void setEvent(Event event) {
         this.event = event;
     }
 
-	public String getName() {
+    public String getName() {
         return this.name;
     }
 
-	public void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-	public String getDescription() {
+    public String getDescription() {
         return this.description;
     }
 
-	public void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-	public double getPrice() {
+    public double getPrice() {
         return this.price;
     }
 
-	public void setPrice(double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-	public int getAvailable() {
+    public int getAvailable() {
         return this.available;
     }
 
-	public void setAvailable(int available) {
+    public void setAvailable(int available) {
         this.available = available;
     }
 
-	public int getPurchased() {
+    public int getPurchased() {
         return this.purchased;
     }
 
-	public void setPurchased(int purchased) {
+    public void setPurchased(int purchased) {
         this.purchased = purchased;
     }
 
-	public String getCoupon() {
+    public String getCoupon() {
         return this.coupon;
     }
 
-	public void setCoupon(String coupon) {
+    public void setCoupon(String coupon) {
         this.coupon = coupon;
     }
 
-	public String getEventType() {
+    public String getEventType() {
         return this.eventType;
     }
 
-	public void setEventType(String eventType) {
+    public void setEventType(String eventType) {
         this.eventType = eventType;
     }
 
-	public double getCouponPrice() {
+    public double getCouponPrice() {
         return this.couponPrice;
     }
 
-	public void setCouponPrice(double couponPrice) {
+    public void setCouponPrice(double couponPrice) {
         this.couponPrice = couponPrice;
     }
 
-	public int getCouponsAvailable() {
+    public int getCouponsAvailable() {
         return this.couponsAvailable;
     }
 
-	public void setCouponsAvailable(int couponsAvailable) {
+    public void setCouponsAvailable(int couponsAvailable) {
         this.couponsAvailable = couponsAvailable;
     }
 
-	public int getCouponsUsed() {
+    public int getCouponsUsed() {
         return this.couponsUsed;
     }
 
-	public void setCouponsUsed(int couponsUsed) {
+    public void setCouponsUsed(int couponsUsed) {
         this.couponsUsed = couponsUsed;
     }
 
-	public boolean isTimeLimit() {
+    public boolean isTimeLimit() {
         return this.timeLimit;
     }
 
-	public void setTimeLimit(boolean timeLimit) {
+    public void setTimeLimit(boolean timeLimit) {
         this.timeLimit = timeLimit;
     }
 
-	public Date getTimeStart() {
+    public Date getTimeStart() {
         return this.timeStart;
     }
 
-	public void setTimeStart(Date timeStart) {
+    public void setTimeStart(Date timeStart) {
         this.timeStart = timeStart;
     }
 
-	public Date getTimeEnd() {
+    public Date getTimeEnd() {
         return this.timeEnd;
     }
 
-	public void setTimeEnd(Date timeEnd) {
+    public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
     }
 
-	public EventCartItemTypeEnum getType() {
+    public EventCartItemTypeEnum getType() {
         return this.type;
     }
 
-	public void setType(EventCartItemTypeEnum type) {
+    public void setType(EventCartItemTypeEnum type) {
         this.type = type;
     }
 
-	public double getDonationAmount() {
+    public double getDonationAmount() {
         return this.donationAmount;
     }
 
-	public void setDonationAmount(double donationAmount) {
+    public void setDonationAmount(double donationAmount) {
         this.donationAmount = donationAmount;
     }
 
-	public String getCharityName() {
+    public String getCharityName() {
         return this.charityName;
     }
 
-	public void setCharityName(String charityName) {
+    public void setCharityName(String charityName) {
         this.charityName = charityName;
     }
 
-	public String getTshirtSizes() {
+    public String getTshirtSizes() {
         return this.tshirtSizes;
     }
 
-	public void setTshirtSizes(String tshirtSizes) {
+    public void setTshirtSizes(String tshirtSizes) {
         this.tshirtSizes = tshirtSizes;
     }
 
-	public String getTshirtColors() {
+    public String getTshirtColors() {
         return this.tshirtColors;
     }
 
-	public void setTshirtColors(String tshirtColors) {
+    public void setTshirtColors(String tshirtColors) {
         this.tshirtColors = tshirtColors;
     }
 
-	public String getTshirtImageUrls() {
+    public String getTshirtImageUrls() {
         return this.tshirtImageUrls;
     }
 
-	public void setTshirtImageUrls(String tshirtImageUrls) {
+    public void setTshirtImageUrls(String tshirtImageUrls) {
         this.tshirtImageUrls = tshirtImageUrls;
     }
 
-	public int getMinAge() {
+    public int getMinAge() {
         return this.minAge;
     }
 
-	public void setMinAge(int minAge) {
+    public void setMinAge(int minAge) {
         this.minAge = minAge;
     }
 
-	public Set<EventCartItemPriceChange> getPriceChanges() {
+    public Set<EventCartItemPriceChange> getPriceChanges() {
         return this.priceChanges;
     }
 
-	public void setPriceChanges(Set<EventCartItemPriceChange> priceChanges) {
+    public void setPriceChanges(Set<EventCartItemPriceChange> priceChanges) {
         this.priceChanges = priceChanges;
     }
 
-	public int getMaxAge() {
+    public int getMaxAge() {
         return this.maxAge;
     }
 
-	public void setMaxAge(int maxAge) {
+    public void setMaxAge(int maxAge) {
         this.maxAge = maxAge;
     }
 
-	public EventCartItemGenderEnum getGender() {
+    public EventCartItemGenderEnum getGender() {
         return this.gender;
     }
 
-	public void setGender(EventCartItemGenderEnum gender) {
+    public void setGender(EventCartItemGenderEnum gender) {
         this.gender = gender;
     }
 
-	public Date getBirthDate() {
+    public Date getBirthDate() {
         return this.birthDate;
     }
 
-	public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
-	public String getEmail() {
+    public String getEmail() {
         return this.email;
     }
 
-	public void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-	public String getPhone() {
+    public String getPhone() {
         return this.phone;
     }
 
-	public void setPhone(String phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-	public String getAddressLine1() {
+    public String getAddressLine1() {
         return this.addressLine1;
     }
 
-	public void setAddressLine1(String addressLine1) {
+    public void setAddressLine1(String addressLine1) {
         this.addressLine1 = addressLine1;
     }
 
-	public String getAddressLine2() {
+    public String getAddressLine2() {
         return this.addressLine2;
     }
 
-	public void setAddressLine2(String addressLine2) {
+    public void setAddressLine2(String addressLine2) {
         this.addressLine2 = addressLine2;
     }
 
-	public String getZipCode() {
+    public String getZipCode() {
         return this.zipCode;
     }
 
-	public void setZipCode(String zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
-	public String getEmergencyContactName() {
+    public String getEmergencyContactName() {
         return this.emergencyContactName;
     }
 
-	public void setEmergencyContactName(String emergencyContactName) {
+    public void setEmergencyContactName(String emergencyContactName) {
         this.emergencyContactName = emergencyContactName;
     }
 
-	public String getEmergencyContactPhone() {
+    public String getEmergencyContactPhone() {
         return this.emergencyContactPhone;
     }
 
-	public void setEmergencyContactPhone(String emergencyContactPhone) {
+    public void setEmergencyContactPhone(String emergencyContactPhone) {
         this.emergencyContactPhone = emergencyContactPhone;
     }
 
-	public String getHearFrom() {
+    public String getHearFrom() {
         return this.hearFrom;
     }
 
-	public void setHearFrom(String hearFrom) {
+    public void setHearFrom(String hearFrom) {
         this.hearFrom = hearFrom;
     }
 
-	@PersistenceContext
+    @PersistenceContext
     transient EntityManager entityManager;
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon", "eventType", "couponPrice", "couponsAvailable", "couponsUsed", "timeLimit", "timeStart", "timeEnd", "type", "donationAmount", "charityName", "tshirtSizes", "tshirtColors", "tshirtImageUrls", "minAge", "priceChanges", "maxAge", "gender", "birthDate", "email", "phone", "addressLine1", "addressLine2", "zipCode", "emergencyContactName", "emergencyContactPhone", "hearFrom");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon",
+            "eventType", "couponPrice", "couponsAvailable", "couponsUsed", "timeLimit", "timeStart", "timeEnd", "type", "donationAmount", "charityName", "tshirtSizes",
+            "tshirtColors", "tshirtImageUrls", "minAge", "priceChanges", "maxAge", "gender", "birthDate", "email", "phone", "addressLine1", "addressLine2", "zipCode",
+            "emergencyContactName", "emergencyContactPhone", "hearFrom");
 
-	public static final EntityManager entityManager() {
+    public static EntityManager entityManager() {
         EntityManager em = new EventCartItem().entityManager;
-        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+        if (em == null)
+            throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
 
-	public static long countEventCartItems() {
+    public static long countEventCartItems() {
         return entityManager().createQuery("SELECT COUNT(o) FROM EventCartItem o", Long.class).getSingleResult();
     }
 
-	public static List<EventCartItem> findAllEventCartItems() {
+    public static List<EventCartItem> findAllEventCartItems() {
         return entityManager().createQuery("SELECT o FROM EventCartItem o", EventCartItem.class).getResultList();
     }
 
-	public static List<EventCartItem> findAllEventCartItems(String sortFieldName, String sortOrder) {
+    public static List<EventCartItem> findAllEventCartItems(String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM EventCartItem o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
@@ -524,16 +539,17 @@ public class EventCartItem {
         return entityManager().createQuery(jpaQuery, EventCartItem.class).getResultList();
     }
 
-	public static EventCartItem findEventCartItem(Long id) {
-        if (id == null) return null;
+    public static EventCartItem findEventCartItem(Long id) {
+        if (id == null)
+            return null;
         return entityManager().find(EventCartItem.class, id);
     }
 
-	public static List<EventCartItem> findEventCartItemEntries(int firstResult, int maxResults) {
+    public static List<EventCartItem> findEventCartItemEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM EventCartItem o", EventCartItem.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-	public static List<EventCartItem> findEventCartItemEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+    public static List<EventCartItem> findEventCartItemEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM EventCartItem o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
@@ -544,15 +560,17 @@ public class EventCartItem {
         return entityManager().createQuery(jpaQuery, EventCartItem.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-	@Transactional
+    @Transactional
     public void persist() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.persist(this);
     }
 
-	@Transactional
+    @Transactional
     public void remove() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
@@ -561,60 +579,68 @@ public class EventCartItem {
         }
     }
 
-	@Transactional
+    @Transactional
     public void flush() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.flush();
     }
 
-	@Transactional
+    @Transactional
     public void clear() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         this.entityManager.clear();
     }
 
-	@Transactional
+    @Transactional
     public EventCartItem merge() {
-        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
         EventCartItem merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }
 
-	public static Long countFindEventCartItemsByEvent(Event event) {
-        if (event == null) throw new IllegalArgumentException("The event argument is required");
+    public static Long countFindEventCartItemsByEvent(Event event) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
         EntityManager em = EventCartItem.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.event = :event", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.event = :event", Long.class);
         q.setParameter("event", event);
-        return ((Long) q.getSingleResult());
+        return q.getSingleResult();
     }
 
-	public static Long countFindEventCartItemsByNameEquals(String name) {
-        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+    public static Long countFindEventCartItemsByNameEquals(String name) {
+        if (name == null || name.isEmpty())
+            throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.name = :name", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.name = :name", Long.class);
         q.setParameter("name", name);
-        return ((Long) q.getSingleResult());
+        return q.getSingleResult();
     }
 
-	public static Long countFindEventCartItemsByType(EventCartItemTypeEnum type) {
-        if (type == null) throw new IllegalArgumentException("The type argument is required");
+    public static Long countFindEventCartItemsByType(EventCartItemTypeEnum type) {
+        if (type == null)
+            throw new IllegalArgumentException("The type argument is required");
         EntityManager em = EventCartItem.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.type = :type", Long.class);
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM EventCartItem AS o WHERE o.type = :type", Long.class);
         q.setParameter("type", type);
-        return ((Long) q.getSingleResult());
+        return q.getSingleResult();
     }
 
-	public static TypedQuery<EventCartItem> findEventCartItemsByEvent(Event event) {
-        if (event == null) throw new IllegalArgumentException("The event argument is required");
+    public static TypedQuery<EventCartItem> findEventCartItemsByEvent(Event event) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event", EventCartItem.class);
         q.setParameter("event", event);
         return q;
     }
 
-	public static TypedQuery<EventCartItem> findEventCartItemsByEvent(Event event, String sortFieldName, String sortOrder) {
-        if (event == null) throw new IllegalArgumentException("The event argument is required");
+    public static TypedQuery<EventCartItem> findEventCartItemsByEvent(Event event, String sortFieldName, String sortOrder) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
         EntityManager em = EventCartItem.entityManager();
         String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.event = :event";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
@@ -628,16 +654,18 @@ public class EventCartItem {
         return q;
     }
 
-	public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name) {
-        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+    public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name) {
+        if (name == null || name.isEmpty())
+            throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.name = :name", EventCartItem.class);
         q.setParameter("name", name);
         return q;
     }
 
-	public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name, String sortFieldName, String sortOrder) {
-        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+    public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name, String sortFieldName, String sortOrder) {
+        if (name == null || name.isEmpty())
+            throw new IllegalArgumentException("The name argument is required");
         EntityManager em = EventCartItem.entityManager();
         String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.name = :name";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
@@ -651,16 +679,18 @@ public class EventCartItem {
         return q;
     }
 
-	public static TypedQuery<EventCartItem> findEventCartItemsByType(EventCartItemTypeEnum type) {
-        if (type == null) throw new IllegalArgumentException("The type argument is required");
+    public static TypedQuery<EventCartItem> findEventCartItemsByType(EventCartItemTypeEnum type) {
+        if (type == null)
+            throw new IllegalArgumentException("The type argument is required");
         EntityManager em = EventCartItem.entityManager();
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.type = :type", EventCartItem.class);
         q.setParameter("type", type);
         return q;
     }
 
-	public static TypedQuery<EventCartItem> findEventCartItemsByType(EventCartItemTypeEnum type, String sortFieldName, String sortOrder) {
-        if (type == null) throw new IllegalArgumentException("The type argument is required");
+    public static TypedQuery<EventCartItem> findEventCartItemsByType(EventCartItemTypeEnum type, String sortFieldName, String sortOrder) {
+        if (type == null)
+            throw new IllegalArgumentException("The type argument is required");
         EntityManager em = EventCartItem.entityManager();
         String jpaQuery = "SELECT o FROM EventCartItem AS o WHERE o.type = :type";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {

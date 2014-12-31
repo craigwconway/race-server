@@ -7,5 +7,10 @@
         <field:display date="true" dateTimePattern="${eventCartItemPriceChange_startdate_date_format}" field="startDate" id="s_com_bibsmobile_model_EventCartItemPriceChange_startDate" object="${eventcartitempricechange}" z="/mV7UmU/iv2co6FLVnYnuKGseWY="/>
         <field:display date="true" dateTimePattern="${eventCartItemPriceChange_enddate_date_format}" field="endDate" id="s_com_bibsmobile_model_EventCartItemPriceChange_endDate" object="${eventcartitempricechange}" z="nfM9iw5lxzDPEKu41ySgiJ6p0XE="/>
         <field:display field="price" id="s_com_bibsmobile_model_EventCartItemPriceChange_price" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
+        <field:display field="lowAgeThreshold" id="s_com_bibsmobile_model_EventCartItemPriceChange_lowAgeThreshold" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
+        <field:display field="highAgeThreshold" id="s_com_bibsmobile_model_EventCartItemPriceChange_highAgeThreshold" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
+        <field:display field="gender" id="s_com_bibsmobile_model_EventCartItemPriceChange_gender" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
+        <field:display field="team" id="s_com_bibsmobile_model_EventCartItemPriceChange_team" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
+        <field:display field="price" id="s_com_bibsmobile_model_EventCartItemPriceChange_price" object="${eventcartitempricechange}" z="Ty1VdRqNlLMjEvJ1oNetXiq8m5E="/>
     </page:show>
 </div>

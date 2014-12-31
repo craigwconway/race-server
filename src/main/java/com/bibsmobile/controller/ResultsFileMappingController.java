@@ -1,13 +1,5 @@
 package com.bibsmobile.controller;
 
-import au.com.bytecode.opencsv.CSVReader;
-
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.ResultsFile;
-import com.bibsmobile.model.ResultsFileMapping;
-import com.bibsmobile.model.ResultsImport;
-import com.bibsmobile.util.XlsToCsv;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,11 +7,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -36,13 +32,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import au.com.bytecode.opencsv.CSVReader;
+
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.ResultsFile;
+import com.bibsmobile.model.ResultsFileMapping;
+import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.util.XlsToCsv;
+
 @RequestMapping("/resultsfilemappings")
 @Controller
 public class ResultsFileMappingController {
 
-    @RequestMapping(value = "/updateForm.json")
+    @RequestMapping("/updateForm.json")
     public ResponseEntity<String> updateFormJson(Long id, Model uiModel) {
-        updateForm(id, uiModel);
+        this.updateForm(id, uiModel);
         ResultsFileMapping resultsFileMapping = (ResultsFileMapping) uiModel.asMap().get("resultsFileMapping");
         return new ResponseEntity<>(resultsFileMapping.toJson(), HttpStatus.OK);
     }
@@ -51,66 +56,61 @@ public class ResultsFileMappingController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         ResultsFileMapping resultsFileMapping = ResultsFileMapping.findResultsFileMapping(id);
         try {
-            initMap(resultsFileMapping);
-        } catch (InvalidFormatException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            this.initMap(resultsFileMapping);
+        } catch (InvalidFormatException | IOException e) {
             e.printStackTrace();
         }
-        populateEditForm(uiModel, resultsFileMapping);
+        this.populateEditForm(uiModel, resultsFileMapping);
         return "resultsfilemappings/update";
     }
 
     public void initMap(ResultsFileMapping resultsFileMapping) throws IOException, InvalidFormatException {
-        setOptions(resultsFileMapping);
-        setRows(resultsFileMapping);
+        this.setOptions(resultsFileMapping);
+        this.setRows(resultsFileMapping);
     }
 
     public void setRows(ResultsFileMapping resultsFileMapping) throws IOException, InvalidFormatException {
         ResultsFile resultsFile = resultsFileMapping.getResultsFile();
         File file = new File(resultsFile.getFilePath());
-        if (resultsFile.getFilePath().endsWith(".csv") || resultsFile.getFilePath().endsWith(".txt")
-        		|| resultsFile.getFilePath().endsWith(".CSV") || resultsFile.getFilePath().endsWith(".TXT")) {
+        if (resultsFile.getFilePath().endsWith(".csv") || resultsFile.getFilePath().endsWith(".txt") || resultsFile.getFilePath().endsWith(".CSV")
+                || resultsFile.getFilePath().endsWith(".TXT")) {
             CSVReader reader = new CSVReader(new FileReader(file));
             String[] nextLine;
             int line = 0;
             while ((nextLine = reader.readNext()) != null && line < 2) {
-                List<String> row = new ArrayList<String>();
-                for (String cell : nextLine) {
-                    row.add(cell);
-                }
-                if (line == 0) resultsFileMapping.setRow1(row);
-                if (line == 1) resultsFileMapping.setRow2(row);
+                List<String> row = new ArrayList<>();
+                Collections.addAll(row, nextLine);
+                if (line == 0)
+                    resultsFileMapping.setRow1(row);
+                if (line == 1)
+                    resultsFileMapping.setRow2(row);
                 line++;
             }
             reader.close();
-        } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls")
-        		|| resultsFile.getFilePath().endsWith(".XLSX") || resultsFile.getFilePath().endsWith(".XLS")) {
+        } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls") || resultsFile.getFilePath().endsWith(".XLSX")
+                || resultsFile.getFilePath().endsWith(".XLS")) {
             XlsToCsv csv = new XlsToCsv();
             Workbook wb = WorkbookFactory.create(file);
             Sheet sheet = wb.getSheetAt(0);
             String rowCsv = csv.rowToCSV(sheet.getRow(0));
-            List<String> row = new ArrayList<String>();
-            for (String val : rowCsv.split(",")) {
-                row.add(val);
-            }
+            List<String> row = new ArrayList<>();
+            Collections.addAll(row, rowCsv.split(","));
             resultsFileMapping.setRow1(row);
             rowCsv = csv.rowToCSV(sheet.getRow(1));
-            row = new ArrayList<String>();
-            for (String val : rowCsv.split(",")) {
-                row.add(val);
-            }
+            row = new ArrayList<>();
+            Collections.addAll(row, rowCsv.split(","));
             resultsFileMapping.setRow2(row);
         }
     }
 
     public void setOptions(ResultsFileMapping resultsFileMapping) throws IOException {
-        Properties p = getPropertiesFromClasspath("application.properties");
+        Properties p = this.getPropertiesFromClasspath("application.properties");
         final String prefix = "label_com_bibsmobile_model_raceresult_";
         for (Object key : p.keySet()) {
-            if (!key.toString().startsWith(prefix)) continue;
+            if (!key.toString().startsWith(prefix))
+                continue;
             String _key = key.toString().replaceAll(prefix, "");
-            String _val = p.get(key).toString();
+            String _val = p.getProperty(_key);
             resultsFileMapping.getOptions().put(_key, _val);
         }
     }
@@ -125,31 +125,31 @@ public class ResultsFileMappingController {
         return props;
     }
 
-	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid ResultsFileMapping resultsFileMapping, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, resultsFileMapping);
+            this.populateEditForm(uiModel, resultsFileMapping);
             return "resultsfilemappings/create";
         }
         uiModel.asMap().clear();
         resultsFileMapping.persist();
-        return "redirect:/resultsfilemappings/" + encodeUrlPathSegment(resultsFileMapping.getId().toString(), httpServletRequest)+"?form";
+        return "redirect:/resultsfilemappings/" + this.encodeUrlPathSegment(resultsFileMapping.getId().toString(), httpServletRequest) + "?form";
     }
 
-	@RequestMapping(params = "form", produces = "text/html")
+    @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new ResultsFileMapping());
+        this.populateEditForm(uiModel, new ResultsFileMapping());
         return "resultsfilemappings/create";
     }
 
-	@RequestMapping(value = "/{id}", produces = "text/html")
+    @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("resultsfilemapping", ResultsFileMapping.findResultsFileMapping(id));
         uiModel.addAttribute("itemId", id);
         return "resultsfilemappings/show";
     }
 
-	@RequestMapping(produces = "text/html")
+    @RequestMapping(produces = "text/html")
     public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
@@ -165,23 +165,24 @@ public class ResultsFileMappingController {
 
     @RequestMapping(value = "/update.json", method = RequestMethod.PUT)
     public ResponseEntity<String> updateJson(@Valid ResultsFileMapping resultsFileMapping, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
-        String result = update(resultsFileMapping, bindingResult, uiModel, httpServletRequest);
+        String result = this.update(resultsFileMapping, bindingResult, uiModel, httpServletRequest);
         if (result.startsWith("redirect")) {
             return new ResponseEntity<>("OK", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("FAIL", HttpStatus.OK);
         }
+        return new ResponseEntity<>("FAIL", HttpStatus.OK);
     }
 
-	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid ResultsFileMapping resultsFileMapping, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, resultsFileMapping);
+            this.populateEditForm(uiModel, resultsFileMapping);
             return "resultsfilemappings/update";
         }
         uiModel.asMap().clear();
         resultsFileMapping.merge();
-        //  cwc      return "redirect:/resultsfilemappings/" + encodeUrlPathSegment(resultsFileMapping.getId().toString(), httpServletRequest);
+        // cwc return "redirect:/resultsfilemappings/" +
+        // encodeUrlPathSegment(resultsFileMapping.getId().toString(),
+        // httpServletRequest);
         // do import
         ResultsFileMapping mapping = ResultsFileMapping.findResultsFileMapping(resultsFileMapping.getId());
         ResultsImport resultsImport = new ResultsImport();
@@ -189,20 +190,18 @@ public class ResultsFileMappingController {
         resultsImport.setResultsFileMapping(mapping);
         resultsImport.persist();
         try {
-			doImport(resultsImport);
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+            doImport(resultsImport);
+        } catch (InvalidFormatException | IOException e) {
+            e.printStackTrace();
+        }
         return "redirect:/raceresults/";
-        
-        //return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
-    }
-	
-	
-	// ##############################################
 
+        // return "redirect:/resultsimports/" +
+        // encodeUrlPathSegment(resultsImport.getId().toString(),
+        // httpServletRequest);
+    }
+
+    // ##############################################
 
     public static void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
         System.out.println("Starting import (mapping)...");
@@ -213,22 +212,23 @@ public class ResultsFileMappingController {
         resultsImport.setRunDate(new Date());
         File file = new File(resultsFile.getFilePath());
         String[] map = resultsFileMapping.getMap().split(",");
-        if (resultsFile.getFilePath().endsWith(".csv") || resultsFile.getFilePath().endsWith(".txt")
-        		|| resultsFile.getFilePath().endsWith(".CSV") || resultsFile.getFilePath().endsWith(".TXT")) {
+        if (resultsFile.getFilePath().endsWith(".csv") || resultsFile.getFilePath().endsWith(".txt") || resultsFile.getFilePath().endsWith(".CSV")
+                || resultsFile.getFilePath().endsWith(".TXT")) {
             CSVReader reader = new CSVReader(new FileReader(file));
             String[] nextLine;
-            if(resultsFileMapping.isSkipFirstRow() ) reader.readNext();
+            if (resultsFileMapping.isSkipFirstRow())
+                reader.readNext();
             while ((nextLine = reader.readNext()) != null) {
                 saveRaceResult(resultsImport, event, nextLine, map);
             }
             reader.close();
-        } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls")
-        		|| resultsFile.getFilePath().endsWith(".XLSX") || resultsFile.getFilePath().endsWith(".XLS")) {
+        } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls") || resultsFile.getFilePath().endsWith(".XLSX")
+                || resultsFile.getFilePath().endsWith(".XLS")) {
             XlsToCsv csv = new XlsToCsv();
             Workbook wb = WorkbookFactory.create(file);
             Sheet sheet = wb.getSheetAt(0);
             for (int i = (resultsFileMapping.isSkipFirstRow() ? 1 : 0); i <= sheet.getLastRowNum(); i++) {
-                final String nextLine[] = csv.rowToCSV(sheet.getRow(i)).split(",");
+                final String[] nextLine = csv.rowToCSV(sheet.getRow(i)).split(",");
                 saveRaceResult(resultsImport, event, nextLine, map);
             }
         }
@@ -238,13 +238,15 @@ public class ResultsFileMappingController {
     public static void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
         if (nextLine.length != map.length || nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
-            resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
+            resultsImport.setErrorRows(resultsImport.getErrorRows() + nextLine[0]);
             return;
         }
-        StringBuffer json = new StringBuffer("{");
+        StringBuilder json = new StringBuilder("{");
         for (int j = 0; j < nextLine.length; j++) {
-            if (map[j].equals("-")) continue;
-            if (!json.toString().equals("{")) json.append(",");
+            if (map[j].equals("-"))
+                continue;
+            if (!json.toString().equals("{"))
+                json.append(",");
             json.append(map[j] + ":\"" + nextLine[j] + "\"");
         }
         json.append("}");
@@ -263,10 +265,12 @@ public class ResultsFileMappingController {
         }
         resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);
     }
+
     // #################################
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
         ResultsFileMapping resultsFileMapping = ResultsFileMapping.findResultsFileMapping(id);
         resultsFileMapping.remove();
         uiModel.asMap().clear();
@@ -275,19 +279,20 @@ public class ResultsFileMappingController {
         return "redirect:/resultsfilemappings";
     }
 
-	void populateEditForm(Model uiModel, ResultsFileMapping resultsFileMapping) {
+    void populateEditForm(Model uiModel, ResultsFileMapping resultsFileMapping) {
         uiModel.addAttribute("resultsFileMapping", resultsFileMapping);
         uiModel.addAttribute("resultsfiles", ResultsFile.findAllResultsFiles());
     }
 
-	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
             enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (UnsupportedEncodingException uee) {
+        }
         return pathSegment;
     }
 }

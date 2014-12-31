@@ -11,28 +11,34 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 
-public class DropboxUtil {
+public final class DropboxUtil {
 
-  /**
-   * returns the DbxClient instance to be used for API requests
-   */
-  public static DbxClient getDbxClient(String token) {
-    return new DbxClient(DropBoxController.getAppConfig(), token);
-  }
-
-  /**
-   * gets a file from a user's dropbox
-   */
-  public static File getDropboxFile(String token, String path) throws IOException {
-    File tmpFile = File.createTempFile("dropboximport", FilenameUtils.getExtension(path));
-    tmpFile.deleteOnExit(); // this file will be destroyed if vm exits at latest
-    DbxEntry.File md;
-    try (OutputStream out = new FileOutputStream(tmpFile)) {
-      md = DropboxUtil.getDbxClient(token).getFile(path, null, out);
-    } catch (DbxException ex) {
-      return null; // not found
+    private DropboxUtil() {
+        super();
     }
-    if (md == null) return null;
-    return tmpFile;
-  }
+
+    /**
+     * returns the DbxClient instance to be used for API requests
+     */
+    public static DbxClient getDbxClient(String token) {
+        return new DbxClient(DropBoxController.getAppConfig(), token);
+    }
+
+    /**
+     * gets a file from a user's dropbox
+     */
+    public static File getDropboxFile(String token, String path) throws IOException {
+        File tmpFile = File.createTempFile("dropboximport", FilenameUtils.getExtension(path));
+        tmpFile.deleteOnExit(); // this file will be destroyed if vm exits at
+                                // latest
+        DbxEntry.File md;
+        try (OutputStream out = new FileOutputStream(tmpFile)) {
+            md = DropboxUtil.getDbxClient(token).getFile(path, null, out);
+        } catch (DbxException ex) {
+            return null; // not found
+        }
+        if (md == null)
+            return null;
+        return tmpFile;
+    }
 }

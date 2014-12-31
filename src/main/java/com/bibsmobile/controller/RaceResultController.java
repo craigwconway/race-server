@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @RequestMapping("/raceresults")
 @Controller
@@ -52,27 +52,27 @@ public class RaceResultController {
         raceResult.persist();
         return raceResult.toJson();
     }
-    
+
     @RequestMapping(value = "/addProfile/{id}", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
     public String addProfile(@PathVariable("id") Long id) {
         RaceResult raceResult = RaceResult.findRaceResult(id);
         String loggedinUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-	if (loggedinUsername.equals("anonymousUser")) return "";
+        if (loggedinUsername.equals("anonymousUser"))
+            return "";
         UserProfile loggedinUserProfile = UserProfile.findUserProfilesByUsernameEquals(loggedinUsername).getResultList().get(0);
         raceResult.setUserProfile(loggedinUserProfile);
         raceResult.persist();
         return raceResult.toJson();
     }
-	
+
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
-    public String search(@RequestParam(value = "event", required = false, defaultValue = "0") Long event, 
-						 @RequestParam(value = "name", required = false, defaultValue = "") String name, 
-						 @RequestParam(value = "bib", required = false, defaultValue = "") String bib) {
+    public String search(@RequestParam(value = "event", required = false, defaultValue = "0") Long event,
+            @RequestParam(value = "name", required = false, defaultValue = "") String name, @RequestParam(value = "bib", required = false, defaultValue = "") String bib) {
         String rtn = "[]";
         try {
-            List<RaceResult> raceResults = RaceResult.search(event,name,bib);
+            List<RaceResult> raceResults = RaceResult.search(event, name, bib);
             rtn = RaceResult.toJsonArray(raceResults);
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,14 +82,15 @@ public class RaceResultController {
 
     @RequestMapping(value = "/byevent/{eventName}", method = RequestMethod.GET)
     @ResponseBody
-    public String byEvent(@PathVariable String eventName, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+    public String byEvent(@PathVariable String eventName, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         String rtn = "";
         try {
             Event event = Event.findEventsByNameLike(eventName, page, size).getSingleResult();
-            List<RaceResult> raceResults = Event.findRaceResults(event.getId(),page,size);
+            List<RaceResult> raceResults = Event.findRaceResults(event.getId(), page, size);
             rtn = RaceResult.toJsonArray(raceResults);
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
         }
         return rtn;
     }
@@ -102,7 +103,7 @@ public class RaceResultController {
             RaceResult raceResult = RaceResult.findRaceResultsByEventAndBibEquals(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), bib).getSingleResult();
             rtn = raceResult.toJson();
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
         }
         return rtn;
     }
@@ -112,11 +113,17 @@ public class RaceResultController {
     public String byName(@PathVariable String eventName, @PathVariable String firstName, @PathVariable String lastName) {
         String rtn = "";
         try {
-            if (firstName.equals("ANY")) rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndLastnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), lastName).getResultList()); 
-            else if (lastName.equals("ANY")) rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), firstName).getResultList()); 
-            else rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), firstName, lastName).getResultList());
+            if (firstName.equals("ANY"))
+                rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndLastnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), lastName)
+                        .getResultList());
+            else if (lastName.equals("ANY"))
+                rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), firstName)
+                        .getResultList());
+            else
+                rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(),
+                        firstName, lastName).getResultList());
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
         }
         return rtn;
     }
@@ -126,11 +133,10 @@ public class RaceResultController {
     public String byNameFeelingLucky(@PathVariable String eventName, @PathVariable String firstName, @PathVariable String lastName) {
         String rtn = "";
         try {
-            rtn = RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(
-            		Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), 
-            			firstName, lastName).getSingleResult().toJson(); 
+            rtn = RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), firstName, lastName)
+                    .getSingleResult().toJson();
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
         }
         return rtn;
     }
@@ -187,66 +193,63 @@ public class RaceResultController {
         int sizeNo = size == null ? 10 : size.intValue();
         final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
         float nrOfPages = 0;
-        if(event > 0){
-        	uiModel.addAttribute("raceresults", Event.findRaceResults(event,firstResult, sizeNo));
+        if (event > 0) {
+            uiModel.addAttribute("raceresults", Event.findRaceResults(event, firstResult, sizeNo));
             nrOfPages = (float) Event.countRaceResults(event) / sizeNo;
-        }else{
-        	uiModel.addAttribute("raceresults", RaceResult.findRaceResultEntries(firstResult, sizeNo));
+        } else {
+            uiModel.addAttribute("raceresults", RaceResult.findRaceResultEntries(firstResult, sizeNo));
             nrOfPages = (float) RaceResult.countRaceResults() / sizeNo;
         }
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        //addDateTimeFormatPatterns(uiModel);
+        // addDateTimeFormatPatterns(uiModel);
         return "raceresults/list";
     }
 
     @RequestMapping(value = "/bibs", method = RequestMethod.GET, produces = "text/html")
-    public static String bibs(){
+    public static String bibs() {
 
-		// license TODO
-    	
-    	return "raceresults/bibs";
+        // license TODO
+
+        return "raceresults/bibs";
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid RaceResult raceResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, raceResult);
+            this.populateEditForm(uiModel, raceResult);
             return "raceresults/create";
         }
         uiModel.asMap().clear();
         raceResult.persist();
         long eventId = 0;
-        if(null!=raceResult.getEvent()){
-        	eventId = raceResult.getEvent().getId();
+        if (null != raceResult.getEvent()) {
+            eventId = raceResult.getEvent().getId();
         }
-        return "redirect:/raceresults/?form&event="+eventId+"&added=" 
-        		 + encodeUrlPathSegment(raceResult.getBib()
-        		 +" "+ raceResult.getFirstname()
-        		 +" "+ raceResult.getLastname(), httpServletRequest);
+        return "redirect:/raceresults/?form&event=" + eventId + "&added="
+                + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname(), httpServletRequest);
     }
-    
 
-	@Autowired
+    @Autowired
     UserProfileService userProfileService;
 
-	@RequestMapping(params = "form", produces = "text/html")
+    @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new RaceResult());
+        this.populateEditForm(uiModel, new RaceResult());
         return "raceresults/create";
     }
 
-	@RequestMapping(value = "/{id}", produces = "text/html")
+    @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("raceresult", RaceResult.findRaceResult(id));
         uiModel.addAttribute("itemId", id);
         return "raceresults/show";
     }
 
-	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid RaceResult raceResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, raceResult);
+            this.populateEditForm(uiModel, raceResult);
             return "raceresults/update";
         }
         uiModel.asMap().clear();
@@ -293,14 +296,15 @@ public class RaceResultController {
 
     }
 
-	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, RaceResult.findRaceResult(id));
+        this.populateEditForm(uiModel, RaceResult.findRaceResult(id));
         return "raceresults/update";
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
         RaceResult raceResult = RaceResult.findRaceResult(id);
         raceResult.remove();
         uiModel.asMap().clear();
@@ -309,122 +313,125 @@ public class RaceResultController {
         return "redirect:/raceresults";
     }
 
-	void addDateTimeFormatPatterns(Model uiModel) {
+    void addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("raceResult_created_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("raceResult_updated_date_format", "MM/dd/yyyy h:mm:ss a");
     }
 
-	void populateEditForm(Model uiModel, RaceResult raceResult) {
+    void populateEditForm(Model uiModel, RaceResult raceResult) {
         uiModel.addAttribute("raceResult", raceResult);
-        addDateTimeFormatPatterns(uiModel);
+        this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("events", Event.findAllEvents());
         uiModel.addAttribute("raceimages", RaceImage.findAllRaceImages());
-        uiModel.addAttribute("userprofiles", userProfileService.findAllUserProfiles());
+        uiModel.addAttribute("userprofiles", this.userProfileService.findAllUserProfiles());
     }
 
-	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
             enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (UnsupportedEncodingException uee) {
+        }
         return pathSegment;
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
         RaceResult raceResult = RaceResult.findRaceResult(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (raceResult == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(raceResult.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(raceResult.toJson(), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(headers = "Accept=application/json")
+    @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<RaceResult> result = RaceResult.findAllRaceResults();
-        return new ResponseEntity<String>(RaceResult.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceResult.toJsonArray(result), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
-        for (RaceResult raceResult: RaceResult.fromJsonArrayToRaceResults(json)) {
+        for (RaceResult raceResult : RaceResult.fromJsonArrayToRaceResults(json)) {
             raceResult.persist();
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         RaceResult raceResult = RaceResult.fromJsonToRaceResult(json);
         raceResult.setId(id);
         if (raceResult.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
         RaceResult raceResult = RaceResult.findRaceResult(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (raceResult == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         raceResult.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindRaceResultsByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEvent(event).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByEventAndBibEquals", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByEventAndBibEquals", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindRaceResultsByEventAndBibEquals(@RequestParam("event") Event event, @RequestParam("bib") String bib) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getResultList()), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByEventAndFirstnameLike", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByEventAndFirstnameLike", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindRaceResultsByEventAndFirstnameLike(@RequestParam("event") Event event, @RequestParam("firstname") String firstname) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLike(event, firstname).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLike(event, firstname).getResultList()), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByEventAndFirstnameLikeAndLastnameLike", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByEventAndFirstnameLikeAndLastnameLike", headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> jsonFindRaceResultsByEventAndFirstnameLikeAndLastnameLike(@RequestParam("event") Event event, @RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname) {
+    public ResponseEntity<String> jsonFindRaceResultsByEventAndFirstnameLikeAndLastnameLike(@RequestParam("event") Event event, @RequestParam("firstname") String firstname,
+            @RequestParam("lastname") String lastname) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(event, firstname, lastname).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(event, firstname, lastname).getResultList()),
+                headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByEventAndLastnameLike", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByEventAndLastnameLike", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindRaceResultsByEventAndLastnameLike(@RequestParam("event") Event event, @RequestParam("lastname") String lastname) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndLastnameLike(event, lastname).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndLastnameLike(event, lastname).getResultList()), headers, HttpStatus.OK);
     }
 }

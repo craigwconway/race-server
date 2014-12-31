@@ -31,17 +31,17 @@ public class CartItemController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid CartItem cartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, cartItem);
+            this.populateEditForm(uiModel, cartItem);
             return "cartitems/create";
         }
         uiModel.asMap().clear();
         cartItem.persist();
-        return "redirect:/cartitems/" + encodeUrlPathSegment(cartItem.getId().toString(), httpServletRequest);
+        return "redirect:/cartitems/" + this.encodeUrlPathSegment(cartItem.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
-        populateEditForm(uiModel, new CartItem());
+        this.populateEditForm(uiModel, new CartItem());
         return "cartitems/create";
     }
 
@@ -53,7 +53,8 @@ public class CartItemController {
     }
 
     @RequestMapping(produces = "text/html")
-    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
@@ -69,22 +70,23 @@ public class CartItemController {
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid CartItem cartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, cartItem);
+            this.populateEditForm(uiModel, cartItem);
             return "cartitems/update";
         }
         uiModel.asMap().clear();
         cartItem.merge();
-        return "redirect:/cartitems/" + encodeUrlPathSegment(cartItem.getId().toString(), httpServletRequest);
+        return "redirect:/cartitems/" + this.encodeUrlPathSegment(cartItem.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-        populateEditForm(uiModel, CartItem.findCartItem(id));
+        this.populateEditForm(uiModel, CartItem.findCartItem(id));
         return "cartitems/update";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
         CartItem cartItem = CartItem.findCartItem(id);
         cartItem.remove();
         uiModel.asMap().clear();
@@ -94,8 +96,7 @@ public class CartItemController {
     }
 
     @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public static void export(
-            @RequestParam Long eventId, @RequestParam boolean all, HttpServletResponse response) throws IOException {
+    public static void export(@RequestParam Long eventId, @RequestParam boolean all, HttpServletResponse response) throws IOException {
         List<CartItem> cartItems = new ArrayList<>();
         Event event = Event.findEvent(eventId);
         if (event != null) {
@@ -105,8 +106,7 @@ public class CartItemController {
             }
         }
         response.setContentType("text/csv;charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename=\""
-                + "registrations.csv\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + "registrations.csv\"");
         for (CartItem cartItem : cartItems) {
             if (BooleanUtils.isNotTrue(cartItem.getExported())) {
                 cartItem.setExported(Boolean.TRUE);
@@ -114,26 +114,13 @@ public class CartItemController {
             }
             EventCartItem eventCartItem = cartItem.getEventCartItem();
             UserProfile userProfile = cartItem.getUserProfile();
-            String str = cartItem.getCreated() + ", "
-                    + cartItem.getQuantity() + ", "
-                    + cartItem.getCoupon() + ", "
-                    + cartItem.getPrice() + ", "
-                    + cartItem.getSize() + ", "
-                    + cartItem.getColor() + ", "
-                    + eventCartItem.getType() + ", "
-                    + eventCartItem.getName() + ", "
-                    + eventCartItem.getPrice() + ", ";
+            String str = cartItem.getCreated() + ", " + cartItem.getQuantity() + ", " + cartItem.getCoupon() + ", " + cartItem.getPrice() + ", " + cartItem.getSize() + ", "
+                    + cartItem.getColor() + ", " + eventCartItem.getType() + ", " + eventCartItem.getName() + ", " + eventCartItem.getPrice() + ", ";
 
             if (userProfile != null) {
-                str += userProfile.getBirthdate() + ", "
-                        + userProfile.getEmail() + ", "
-                        + userProfile.getPhone() + ", "
-                        + userProfile.getAddressLine1() + ", "
-                        + userProfile.getAddressLine2() + ", "
-                        + userProfile.getZipCode() + ", "
-                        + userProfile.getEmergencyContactName() + ", "
-                        + userProfile.getEmergencyContactPhone() + ", "
-                        + userProfile.getHearFrom();
+                str += userProfile.getBirthdate() + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", " + userProfile.getAddressLine1() + ", "
+                        + userProfile.getAddressLine2() + ", " + userProfile.getZipCode() + ", " + userProfile.getEmergencyContactName() + ", "
+                        + userProfile.getEmergencyContactPhone() + ", " + userProfile.getHearFrom();
             }
             str += "\r\n";
             response.getWriter().write(str);

@@ -1,9 +1,13 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.EventUserGroup;
-import com.bibsmobile.model.EventUserGroupId;
-import com.bibsmobile.model.UserGroup;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpHeaders;
@@ -21,12 +25,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
-import javax.persistence.TypedQuery;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.List;
+
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.EventUserGroupId;
+import com.bibsmobile.model.UserGroup;
 
 @RequestMapping("/eventusergroups")
 @Controller
@@ -39,7 +42,7 @@ public class EventUserGroupController {
         EventUserGroupId id = new EventUserGroupId();
         id.setEvent(event);
         eventUserGroup.setEvent(event);
-        populateEditForm(uiModel, eventUserGroup);
+        this.populateEditForm(uiModel, eventUserGroup);
         return "eventusergroups/createUG";
     }
 
@@ -50,7 +53,7 @@ public class EventUserGroupController {
         id.setUserGroup(eventUserGroup.getUserGroup());
         eventUserGroup.setId(id);
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventUserGroup);
+            this.populateEditForm(uiModel, eventUserGroup);
             return "eventusergroups/createUG";
         }
         uiModel.asMap().clear();
@@ -78,7 +81,8 @@ public class EventUserGroupController {
     }
 
     @RequestMapping(value = "/{id}/{ugid}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String delete(@PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId, @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         Event event = Event.findEvent(eventId);
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
         if (userGroup != null && event != null) {
@@ -100,8 +104,8 @@ public class EventUserGroupController {
     }
 
     /*
-    * JSON
-    * */
+     * JSON
+     */
 
     @RequestMapping(params = "find=ByEventId", headers = "Accept=application/json")
     @ResponseBody
@@ -127,8 +131,6 @@ public class EventUserGroupController {
         return new ResponseEntity<>(EventUserGroup.toJsonArray(EventUserGroup.findEventUserGroupsByUserGroup(userGroup).getResultList()), headers, HttpStatus.OK);
     }
 
-
-
     @RequestMapping(value = "deleteByIds/{id}/{ugid}", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteByIds(@PathVariable("id") Long eventId, @PathVariable("ugid") Long userGroupId) {
         Event event = Event.findEvent(eventId);
@@ -138,11 +140,11 @@ public class EventUserGroupController {
         if (userGroup != null && event != null) {
             EventUserGroup eventUserGroup = EventUserGroup.findEventUserGroup(new EventUserGroupId(event, userGroup));
             if (eventUserGroup == null) {
-                return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
             }
             eventUserGroup.remove();
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "createByIds/{id}/{ugid}", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -156,7 +158,7 @@ public class EventUserGroupController {
             eventUserGroup.setId(new EventUserGroupId(event, userGroup));
             eventUserGroup.persist();
         }
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "updateByIds/{id}/{ugid}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -174,127 +176,127 @@ public class EventUserGroupController {
             EventUserGroup eventUserGroup = EventUserGroup.fromJsonToEventUserGroup(json);
             eventUserGroup.setId(eventUserGroupId);
             eventUserGroup.persist();
-            return new ResponseEntity<String>(headers, HttpStatus.OK);
+            return new ResponseEntity<>(headers, HttpStatus.OK);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
     }
 
+    private final ConversionService conversionService;
 
-	private ConversionService conversionService;
-
-	@Autowired
+    @Autowired
     public EventUserGroupController(ConversionService conversionService) {
         super();
         this.conversionService = conversionService;
     }
 
-	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid EventUserGroup eventUserGroup, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
-            populateEditForm(uiModel, eventUserGroup);
+            this.populateEditForm(uiModel, eventUserGroup);
             return "eventusergroups/update";
         }
         uiModel.asMap().clear();
         eventUserGroup.merge();
-        return "redirect:/eventusergroups/" + encodeUrlPathSegment(conversionService.convert(eventUserGroup.getId(), String.class), httpServletRequest);
+        return "redirect:/eventusergroups/" + this.encodeUrlPathSegment(this.conversionService.convert(eventUserGroup.getId(), String.class), httpServletRequest);
     }
 
-	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") EventUserGroupId id, Model uiModel) {
-        populateEditForm(uiModel, EventUserGroup.findEventUserGroup(id));
+        this.populateEditForm(uiModel, EventUserGroup.findEventUserGroup(id));
         return "eventusergroups/update";
     }
 
-	String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
             enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
         }
         try {
             pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
-        } catch (UnsupportedEncodingException uee) {}
+        } catch (UnsupportedEncodingException uee) {
+        }
         return pathSegment;
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") EventUserGroupId id) {
         EventUserGroup eventUserGroup = EventUserGroup.findEventUserGroup(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         if (eventUserGroup == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(eventUserGroup.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(eventUserGroup.toJson(), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(headers = "Accept=application/json")
+    @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<EventUserGroup> result = EventUserGroup.findAllEventUserGroups();
-        return new ResponseEntity<String>(EventUserGroup.toJsonArray(result), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventUserGroup.toJsonArray(result), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJson(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         EventUserGroup eventUserGroup = EventUserGroup.fromJsonToEventUserGroup(json);
         eventUserGroup.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        RequestMapping a = (RequestMapping) getClass().getAnnotation(RequestMapping.class);
-        headers.add("Location",uriBuilder.path(a.value()[0]+"/"+eventUserGroup.getId().toString()).build().toUriString());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + eventUserGroup.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-	@RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
-        for (EventUserGroup eventUserGroup: EventUserGroup.fromJsonArrayToEventUserGroups(json)) {
+        for (EventUserGroup eventUserGroup : EventUserGroup.fromJsonArrayToEventUserGroups(json)) {
             eventUserGroup.persist();
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") EventUserGroupId id) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         EventUserGroup eventUserGroup = EventUserGroup.fromJsonToEventUserGroup(json);
         eventUserGroup.setId(id);
         if (eventUserGroup.merge() == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteFromJson(@PathVariable("id") EventUserGroupId id) {
         EventUserGroup eventUserGroup = EventUserGroup.findEventUserGroup(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
         if (eventUserGroup == null) {
-            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         eventUserGroup.remove();
-        return new ResponseEntity<String>(headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindEventUserGroupsByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(EventUserGroup.toJsonArray(EventUserGroup.findEventUserGroupsByEvent(event).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventUserGroup.toJsonArray(EventUserGroup.findEventUserGroupsByEvent(event).getResultList()), headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=ByUserGroup", headers = "Accept=application/json")
+    @RequestMapping(params = "find=ByUserGroup", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindEventUserGroupsByUserGroup(@RequestParam("userGroup") UserGroup userGroup) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        return new ResponseEntity<String>(EventUserGroup.toJsonArray(EventUserGroup.findEventUserGroupsByUserGroup(userGroup).getResultList()), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventUserGroup.toJsonArray(EventUserGroup.findEventUserGroupsByUserGroup(userGroup).getResultList()), headers, HttpStatus.OK);
     }
 }
