@@ -156,6 +156,16 @@ public class EventController {
         String err = new String("Error with results delivery: Please contact brandon@mybibs.co for automatic result inquiries.");
         return err;
     }    
+
+    @RequestMapping(value = "/regbutton", method = RequestMethod.GET)
+    @ResponseBody
+    public String findUserGroupID(@RequestParam(value = "event", required = true) long eventId) {
+    	String pre = "<h2>Embed this snippet in your page to generate a bibs registration button:</h2><br><pre><code class=\"language-html\">";
+		String url = "&lt;form action=&quot;https://bibs-frontend.herokuapp.com/registration/#/"+ eventId + "&quot; method=&quot;get&quot;&gt;\r\n&lt;button style=&quot;padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;&quot;&gt;\r\nRegister\r\n&lt;/button&gt;\r\n&lt;/form&gt;";
+		String post = "</code></pre>";
+		return pre + url + post;
+    }      
+    
     
     public static String doPost(String targetURL, String data, boolean json) {
         URL url;

@@ -41,6 +41,9 @@
             Change file mapping
             </button>
         </c:if>
+        <button class="btn btn-default btn-top" onclick="regUrl()" type="button">
+		Registration Button
+		</button>
         <span id="progress" style="margin:0;margin-left:6px;display:none;">
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
         </span>
@@ -70,6 +73,9 @@
     
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
+	}
+	function regUrl(){
+		window.location="/bibs-server/events/regbutton?event=${event.id}";
 	}
     function redirectDropboxImport(){
         window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
