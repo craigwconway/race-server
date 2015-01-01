@@ -1,26 +1,108 @@
 package com.bibsmobile.util;
 
-import org.quartz.SchedulerException;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
+import java.util.Random;
 
-import com.bibsmobile.job.BaseJob;
-import com.bibsmobile.job.CartExpiration;
+import com.bibsmobile.model.AwardCategory;
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.job.BaseJob;
+import com.bibsmobile.job.CartExpiration;
+
+import org.joda.time.DateTime;
+import org.quartz.SchedulerException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
 @Component
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
+    @Autowired
+    private static UserAuthority userAuthority;
+    @Autowired
+    private static UserAuthorities userAuthorities;
+
+    @Autowired
+    private static UserProfile userProfile;
+
+    @Autowired
+    private static AwardCategory awardCategory;
+
+    @Autowired
+    private static TimerConfig timerConfig;
+
+    @Autowired
+    private static UserGroup userGroup;
+
+
+	private static Random r = new Random();
+	
+	protected static String generateRandomName(){
+		int wordSize = Math.abs(r.nextInt(9));
+		StringBuilder sb = new StringBuilder(wordSize);
+		if(wordSize < 4) wordSize = 4;
+		String cons = "bcdfghjklmnpqrstvwxz";
+		String vows = "aeiou";
+		for(int n=0;n<wordSize;n++){
+			int i = Math.abs(r.nextInt(cons.length()));
+			int j = Math.abs(r.nextInt(vows.length()));
+			sb.append( (n%2==0)?cons.charAt(i):vows.charAt(j));
+		}
+		return sb.toString();
+	}
+	
+	protected static int generateRandomAge(){
+		int age = Math.abs(r.nextInt(89));
+		if(age < 14) age = 14;
+		return age;
+	}
+    
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        UserAuthority userAuthority = null;
-        UserAuthorities userAuthorities = null;
-        UserProfile userProfile = null;
+    	
+    	if(Event.findAllEvents().isEmpty()){
+    	    
+            Event foo = new Event();
+            foo.setName("Kings Canyon Critical Mass");
+            foo.setCity("Kings Canyon");
+            foo.setState("Colordo");
+            foo.setGunTime(new DateTime().toDate());
+            foo.setTimeStart(new DateTime().toDate());
+            foo.setTimeEnd(new DateTime().plusHours(1).toDate());
+            foo.persist();
+            
+            for(int i = 1; i < 300; i++){
+            	RaceResult user = new RaceResult();
+            	user.setBib(String.valueOf(i));
+            	user.setEvent(foo);
+            	user.setAge(String.valueOf(generateRandomAge()));
+            	user.setGender( (i%2==0) ? "M" : "F");
+            	user.setTimeofficial(Math.abs(
+            			(int) new DateTime().plusMinutes(r.nextInt(60)).toDate().getTime()));
+            	user.setTimeofficialdisplay(
+            			RaceResult.toHumanTime(foo.getGunTime().getTime(), user.getTimeofficial()));
+            	user.setFirstname(generateRandomName());
+            	user.setLastname(generateRandomName());
+            	user.setCity("San Francisco");
+            	user.setState("CA");
+            	user.persist();
+            }
+            
+
+            // default awards categories
+            AwardCategory.createDefaultMedals(foo);
+            AwardCategory.createAgeGenderRankings(foo, 
+            		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+            		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
+            
+        }
 
         // expire leftover carts at startup
         try {
@@ -29,7 +111,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             throw new RuntimeException(e);
         }
 
-        // store default readers
+        //store default readers
         if (TimerConfig.countTimerConfigs() < 1) {
             TimerConfig timerConfig = new TimerConfig();
             timerConfig.setUrl("tmr://bibs001.bibsmobile.com");
@@ -40,7 +122,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             timerConfig.persist(); // reader 2
         }
 
-        // store default users
+        //  store default users
         if (UserProfile.countUserProfiles() < 1) {
 
             userProfile = new UserProfile();
@@ -72,7 +154,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             userProfile.persist();
         }
 
-        // store default roles
+        //store default roles
         if (UserAuthority.countUserAuthoritys() < 1) {
             for (String authorityName : new String[] { UserAuthority.SYS_ADMIN, UserAuthority.EVENT_ADMIN, UserAuthority.USER_ADMIN, UserAuthority.USER }) {
                 userAuthority = new UserAuthority();
@@ -132,7 +214,5 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                 }
             }
         }
-
     }
-
 }

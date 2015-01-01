@@ -1,7 +1,25 @@
 package com.bibsmobile.controller;
 
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.service.UserProfileService;
+import com.bibsmobile.util.UserProfileUtil;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.EventUserGroup;
+
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -22,12 +40,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
-
-import com.bibsmobile.model.Event;
-import com.bibsmobile.model.RaceImage;
-import com.bibsmobile.model.RaceResult;
-import com.bibsmobile.model.UserProfile;
-import com.bibsmobile.service.UserProfileService;
 
 @RequestMapping("/raceresults")
 @Controller
@@ -129,10 +141,54 @@ public class RaceResultController {
         return rtn;
     }
 
+    
+    @RequestMapping(value = "/myresults", produces = "text/html")
+    public static String listmyevents(
+			@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+			@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
+			@RequestParam(value = "event", required = false, defaultValue = "0") Long event, 
+			Model uiModel) {
+    	Map<Long, Event> events = new HashMap<>();
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				UserGroup ug = ugua.getUserGroup();
+	    		        if (ug != null) {
+	    		            for (EventUserGroup eventUserGroup : ug.getEventUserGroups()) {
+	    		                Event e = eventUserGroup.getEvent();
+	    		                if (!events.containsKey(e.getId())) {
+	    		                    events.put(e.getId(), e);
+	    		                }
+	    		            }
+	    		        }    				
+    			}
+    		}
+    	} else {
+    		return "redirect:/raceresults";
+    	}
+        uiModel.addAttribute("events", events.values());
+        int sizeNo = size == null ? 10 : size.intValue();
+        final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+        float nrOfPages = 0;
+        if(event > 0){
+        	uiModel.addAttribute("raceresults", Event.findRaceResults(event,firstResult, sizeNo));
+            nrOfPages = (float) Event.countRaceResults(event) / sizeNo;
+        }else{
+        	uiModel.addAttribute("raceresults", Event.findRaceResults(events.keySet().iterator().next(), firstResult, sizeNo));
+            nrOfPages = (float) RaceResult.countRaceResults() / sizeNo;
+        }
+        uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        //addDateTimeFormatPatterns(uiModel);
+        return "raceresults/myresults";
+    }    
+    
     @RequestMapping(produces = "text/html")
-    public static String list(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") Integer size, @RequestParam(value = "event", required = false, defaultValue = "0") Long event,
-            Model uiModel) {
+    public static String list(
+    						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
+    						@RequestParam(value = "event", required = false, defaultValue = "0") Long event, 
+    						Model uiModel) {
         uiModel.addAttribute("events", Event.findAllEvents());
         int sizeNo = size == null ? 10 : size.intValue();
         final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
@@ -197,8 +253,47 @@ public class RaceResultController {
             return "raceresults/update";
         }
         uiModel.asMap().clear();
-        raceResult.merge();
-        return "redirect:/raceresults/" + this.encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
+        // New race result stuff here //
+        System.out.println("[RESULTS] Updating Chip Time");
+        System.out.println("[RESULTS] Timechip: " + raceResult.getTimechip() + " Timestart:" + raceResult.getTimestart());
+    	System.out.println("[RESULTS] Null get timechip, proceeding");
+    	// We have a result without a chip time, we can compute the timeofficialdisplay
+    	if(null != raceResult.getEvent().getGunTime() && 0 < raceResult.getTimeofficial()) {
+    		System.out.println("[RESULTS] Event details:");
+    		System.out.println(raceResult.getEvent().toJson());
+    		System.out.println("[RESULTS] Calculating new timeofficialdisplay:");
+    		System.out.println("[RESULTS] Event Gun Time Start: " + raceResult.getEvent().getGunTime().getTime() + " Time Official: " + raceResult.getTimeofficial());
+    		// There is a gun time in the event and a timeofficial set
+    		raceResult.setTimestart(raceResult.getEvent().getGunTime().getTime());
+    		System.out.println("[RESULTS] Computed gun time: " + raceResult.getTimeofficialdisplay());
+    	}
+    	// Add logic to handle timeofficialdisplay updates if we have a nontrivial timeofficialdisplay value:
+    	if("" != raceResult.valueOfTimeofficialdisplay()) {
+    		DateFormat timeparser = new SimpleDateFormat("kk:mm:ss");
+    		// Define new time difference as timeofficialdisplay
+    		long newtimediff;
+			try {
+				
+				Date newdatetimediff = timeparser.parse(raceResult.valueOfTimeofficialdisplay());
+				newtimediff = newdatetimediff.getTime() - (long) (newdatetimediff.getTimezoneOffset()*60000);
+	    		System.out.println("newtimediff: " + newtimediff);
+	    		System.out.println("timezone offset: " + (long) (newdatetimediff.getTimezoneOffset()*60));
+
+	    		// Define an old time difference quantity, compare to timeofficialdisplay
+	    		long oldtimediff = raceResult.getTimeofficial()-raceResult.getTimestart();
+	    		System.out.println("oldtimediff: " + oldtimediff);
+	    		long difference = newtimediff - oldtimediff;
+	    		System.out.println("adding: " + difference);
+	    		// adjust timeofficial by the difference between timeofficialdisplay and timeofficial
+	    		raceResult.setTimeofficial(raceResult.getTimeofficial() + newtimediff - oldtimediff);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+		raceResult.merge();
+    	return "redirect:/raceresults/" + encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
+
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")

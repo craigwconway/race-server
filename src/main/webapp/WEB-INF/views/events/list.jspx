@@ -5,7 +5,10 @@
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/events?form';" type="button">
 		Add Event
-	</button>
+		</button>
+		<button class="btn btn-default btn-top" onclick="redirectMegaexport()" type="button">
+		Megaexport
+		</button>
     </sec:authorize>
     <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
         <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
@@ -22,4 +25,9 @@
             <table:column id="c_com_bibsmobile_model_Event_awardCategorys" property="awardCategorys" render="false" z="user-managed"/>
         </table:table>
     </page:list>
+    <script>
+		function redirectMegaexport(){
+			window.location="/bibs-server/events/megaexport";
+		}
+    </script>
 </div>

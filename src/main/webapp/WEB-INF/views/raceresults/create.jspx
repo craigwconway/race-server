@@ -17,7 +17,7 @@
                     </td>
                     <td>
                         <select id="custom-gender" name="custom-gender" onchange="change('gender')" style="width:100px">
-                            <option id="gender-0" value="M">Male</option>
+                            <option id="gender-0" value="M" selected="true">Male</option>
                             <option id="gender-1" value="F">Female</option>
                         </select>
                     </td>
@@ -79,6 +79,7 @@
     // select event based on param
 	jQuery('[name=event]').val( Math.max(0,GetURLParameter("event")) );
 	window.onload=function(){
+	    jQuery("#_bib_id").focus();
 		jQuery("#_gender_id").val("M");
 		jQuery("#_c_com_bibsmobile_model_RaceResult_gender_id").hide();
 		

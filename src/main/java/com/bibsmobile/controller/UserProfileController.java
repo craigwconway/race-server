@@ -53,7 +53,8 @@ public class UserProfileController {
         uiModel.addAttribute("itemId", u.getId());
         return "userprofiles/show";
     }
-
+    
+    
     @RequestMapping(value = "/search/byusergroup/{userGroupId}", method = RequestMethod.GET)
     @ResponseBody
     public String findByUserGroup(@PathVariable Long userGroupId) {

@@ -16,8 +16,8 @@
 	</div>
  
 	<spring:url value="/events/raceday" var="raceday_url" />
-	<spring:url value="/events?page=1&amp;size=10" var="events_url" />
-	<spring:url value="/raceresults?page=1&amp;size=10" var="runners_url" />
+	<spring:url value="/events/myevents" var="events_url" />
+	<spring:url value="/raceresults?/myresults" var="runners_url" />
 	<spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
 	<spring:url value="/timers?page=1&amp;size=10" var="timers_url" />
  
@@ -29,7 +29,7 @@
 <!-- 			<li id="nav_profile"><a href="/bibs-server/userprofiles/byusername/${principal.username }" > -->
 <!-- 				Profile</a></li> -->
 		</sec:authorize>
-		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN','ROLE_EVENT_ADMIN')">
+		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
 	  		<li id="nav_raceday"><a href="${raceday_url}">Race Day</a></li>
 	  	</sec:authorize>
 		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">

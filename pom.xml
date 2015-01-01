@@ -114,9 +114,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
+  			<artifactId>commons-lang3</artifactId>
+  			<version>3.3.2</version>
 		</dependency>
+
 		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>

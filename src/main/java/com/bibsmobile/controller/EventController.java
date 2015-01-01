@@ -15,6 +15,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +25,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import com.google.gson.JsonObject;
 
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
@@ -35,6 +39,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,19 +53,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.bibsmobile.model.AwardCategory;
+import com.bibsmobile.model.AwardCategoryResults;
+
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventAwardsConfig;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.EventUserGroupId;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.util.UserProfileUtil;
+
+import com.bibsmobile.service.AbstractTimer;
 
 import flexjson.JSONSerializer;
 
@@ -76,6 +90,23 @@ public class EventController {
     @Autowired
     private SimpleMailMessage eventMessage;
 
+
+    @RequestMapping(value = "/uncat", method = RequestMethod.GET)
+    @ResponseBody
+    public static String findUncategorized() {
+    	JsonObject json = new JsonObject();
+    	try{
+    		json.addProperty("name",  AbstractTimer.UNASSIGNED_BIB_EVENT_NAME);
+    		json.addProperty("id", Event.findEventsByNameLike(
+					AbstractTimer.UNASSIGNED_BIB_EVENT_NAME, 1, 1)
+					.getSingleResult().getId()+"");
+    	}catch(Exception e){
+    		System.out.println("No Uncat "+e.getMessage());
+    		json.addProperty("id", "0");
+    	}
+        return json.toString();
+    }
+
     @RequestMapping(value = "/registrationComplete", method = RequestMethod.GET)
     public static String registrationComplete(@RequestParam(value = "event", required = true) Long event) {
         return "events/registrationComplete";
@@ -89,28 +120,60 @@ public class EventController {
         }
         uiModel.asMap().clear();
 
-        // awards
-
         // add to current usergroup
-        /*
-         * boolean addGroup = false; String username =
-         * SecurityContextHolder.getContext() .getAuthentication().getName();
-         * UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
-         * username).getSingleResult(); if (user.getUserGroup() != null) {
-         * addGroup = true; log.info("event group " +
-         * user.getUserGroup().getName());
-         * event.setUserGroup(user.getUserGroup()); }
-         *
-         * event.persist();
-         *
-         * if (addGroup) { Set<Event> groupEvents =
-         * user.getUserGroup().getEvents(); groupEvents.add(event);
-         * user.getUserGroup().setEvents(groupEvents);
-         * user.getUserGroup().merge(); }
-         */
+        boolean addGroup = false;
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+        UserProfile user = UserProfile.findUserProfilesByUsernameEquals(
+                username).getSingleResult();
+
+       /* if (user.getUserGroup() != null) {
+            addGroup = true;
+            log.info("event group " + user.getUserGroup().getName());
+            event.setUserGroup(user.getUserGroup());
+        }
+
         event.persist();
 
-        return "redirect:/events/" + this.encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
+        if (addGroup) {
+            Set<Event> groupEvents = user.getUserGroup().getEvents();
+            groupEvents.add(event);
+            user.getUserGroup().setEvents(groupEvents);
+            user.getUserGroup().merge();
+        }*/
+        event.persist();
+        System.out.println("persisting event");
+        // Add to usergroup:
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			System.out.println("got authorities");
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				System.out.println("got ugua");
+    				UserGroup ug = ugua.getUserGroup();
+    				System.out.println("found usergroup");
+	    		        if (ug != null) {
+	    		        	System.out.println("adding eventusergroup id");
+	    		            EventUserGroup eventUserGroup = new EventUserGroup();
+	    		            eventUserGroup.setId(new EventUserGroupId(event, ug));
+	    		            eventUserGroup.persist();	    		        
+	    		        	}    	
+	    		        break;
+    			}
+    			break;
+    		} 
+    	} else {
+    		System.out.println("no logged in user");
+    	}
+        // default awards categories
+        AwardCategory.createDefaultMedals(event);
+        AwardCategory.createAgeGenderRankings(event, 
+        		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+        		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
+
+        return "redirect:/events/"
+                + encodeUrlPathSegment(event.getId().toString(),
+                httpServletRequest);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -121,6 +184,32 @@ public class EventController {
         return event.toJson();
     }
 
+    @RequestMapping(value = "/webappid", method = RequestMethod.GET)
+    @ResponseBody
+    public String findUserGroupID() {
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+				UserGroup ug = ugua.getUserGroup();
+				String success = "https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/" + ug.getId().toString() + "/t/all/events";
+				return success;
+			}
+		}
+
+        String err = new String("Error with results delivery: Please contact brandon@mybibs.co for automatic result inquiries.");
+        return err;
+    }    
+
+    @RequestMapping(value = "/regbutton", method = RequestMethod.GET)
+    @ResponseBody
+    public String findUserGroupID(@RequestParam(value = "event", required = true) long eventId) {
+    	String pre = "<h2>Embed this snippet in your page to generate a bibs registration button:</h2><br><pre><code class=\"language-html\">";
+		String url = "&lt;form action=&quot;https://bibs-frontend.herokuapp.com/registration/#/"+ eventId + "&quot; method=&quot;get&quot;&gt;\r\n&lt;button style=&quot;padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;&quot;&gt;\r\nRegister\r\n&lt;/button&gt;\r\n&lt;/form&gt;";
+		String post = "</code></pre>";
+		return pre + url + post;
+    }      
+    
+    
     public static String doPost(String targetURL, String data, boolean json) {
         URL url;
         HttpURLConnection connection = null;
@@ -437,22 +526,96 @@ public class EventController {
         return Event.toJsonArray(Event.findEventsByRunning());
     }
 
+    // medals
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
-    public static String awards(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
-        uiModel.addAttribute("event", Event.findEvent(event));
+    public static String awards(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		Model uiModel) {
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> list = event.calculateMedals(event);
+    	for(AwardCategoryResults c:list){
+    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
+    	}
+    	uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", list);
         return "events/awards";
+    }
+
+    @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
+    public static String ageGenderRankings(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "gender", required = false, defaultValue = "M") String gender,
+    		Model uiModel) {
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = event.getAwardCategorys();
+    	List<String> medalsBibs = new ArrayList<String>();
+
+    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
+    	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
+        	for(AwardCategoryResults c:event.calculateMedals(event)){
+        		for(RaceResult r:c.getResults()){
+        			medalsBibs.add(r.getBib());
+        		}
+        	}
+    	}
+    	
+		// filter age/gender
+    	for(AwardCategory c:event.getAwardCategorys()){
+    		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
+    			results.add(new AwardCategoryResults(c,
+    					event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
+    		}
+    	}
+    	
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
+        return "events/ageGenderRankings";
+    }
+
+    @RequestMapping(value = "/ageGenderRankings/update", method = RequestMethod.GET)
+    public static String updateAgeGenderRankings(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "gender", required = false, defaultValue = "M") String gender,
+    		HttpServletRequest httpServletRequest) {
+    	Event event = Event.findEvent(eventId);
+    	EventAwardsConfig awardsConfig = event.getAwardsConfig();
+    	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
+    	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
+    	event.setAwardsConfig(awardsConfig);
+    	event.merge();
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
+    }
+
+    @RequestMapping(value = "/awards/update", method = RequestMethod.GET)
+    public static String updateAwards(
+    		@RequestParam(value = "event", required = true) Long eventId,
+    		HttpServletRequest httpServletRequest) {
+    	Event event = Event.findEvent(eventId);
+    	EventAwardsConfig awardsConfig = event.getAwardsConfig();
+    	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
+    	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
+    	event.setAwardsConfig(awardsConfig);
+    	event.merge();
+        return "redirect:/events/awards?event="+eventId;
     }
 
     @RequestMapping(value = "/timeofficial", method = RequestMethod.GET)
     @ResponseBody
-    public static String byTimeOfficial(@RequestParam(value = "event", required = true) Long event,
-            @RequestParam(value = "gender", required = false, defaultValue = "") String gender, @RequestParam(value = "min", required = false, defaultValue = "0") int min,
-            @RequestParam(value = "max", required = false, defaultValue = "0") int max, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    public static String byTimeOfficial(
+            @RequestParam(value = "event", required = true) Long event,
+            @RequestParam(value = "gender", required = false, defaultValue = "") String gender,
+            @RequestParam(value = "min", required = false, defaultValue = "0") int min,
+            @RequestParam(value = "max", required = false, defaultValue = "0") int max,
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
 
         Event e = Event.findEvent(event);
         List<RaceResult> results = e.getAwards(gender, min, max, size);
-
+        Collections.sort(results);
         return RaceResult.toJsonArray(results);
     }
 
@@ -504,6 +667,32 @@ public class EventController {
         uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
     }
 
+    @RequestMapping(value = "/megaexport", method = RequestMethod.GET)
+    public static void megaexport(
+            HttpServletResponse response) throws IOException {
+    	List<Event> allEvents = Event.findAllEvents();
+        response.setContentType("text/csv;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\""
+                + "megaexport" + ".csv\"");
+        OutputStream resOs = response.getOutputStream();
+        OutputStream buffOs = new BufferedOutputStream(resOs);
+        OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
+    	for (Event event: allEvents) {
+
+	        List<RaceResult> runners = Event.findRaceResults(event.getId(), 0, 99999);
+	        for (RaceResult r : runners) {
+	            outputwriter.write(r.getBib() + "," + r.getFirstname() + ","
+	                    + r.getLastname() + "," + r.getCity() + "," + r.getState()
+	                    + "," + r.getTimeofficialdisplay() + "," + r.getGender()
+	                    + "," + r.getAge() + "\r\n");
+	        }
+
+    	}
+        outputwriter.flush();
+        outputwriter.close();
+    }
+
+    
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public static void export(@RequestParam(value = "event", required = true) Long event, HttpServletResponse response) throws IOException {
         Event _event = Event.findEvent(event);
@@ -742,6 +931,36 @@ public class EventController {
         return "events/list";
     }
 
+    @RequestMapping(value = "/myevents", produces = "text/html")
+    public String myevents(Model uiModel) {
+        Map<Long, Event> events = new HashMap<>();
+    	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+    	if (null != loggedInUser) {
+    		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
+    			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
+    				UserGroup ug = ugua.getUserGroup();
+	    		        if (ug != null) {
+	    		            for (EventUserGroup eventUserGroup : ug.getEventUserGroups()) {
+	    		                Event event = eventUserGroup.getEvent();
+	    		                if (!events.containsKey(event.getId())) {
+	    		                    events.put(event.getId(), event);
+	    		                }
+	    		            }
+	    		        }    				
+    			}
+    		}
+    		//List<Event> eventList = events.values();
+        	uiModel.addAttribute("events", events.values());
+            addDateTimeFormatPatterns(uiModel);
+            return "events/myevents";
+    	} else {
+    		// We probably aren't logged in
+    		// let's just return all events so an anonymous user can get results
+    		// List <Event> allEvents = Event.findAllEvents();
+    		return "redirect:/events";
+    	}
+    }
+    
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         Event event = Event.findEvent(id);
@@ -769,6 +988,77 @@ public class EventController {
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/events";
     }
+    
+    @RequestMapping(value = "/createAwardCategories", produces = "text/html")
+    public String createAgeGenderRankings(
+    		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "ageMin") int ageMin,
+    		@RequestParam(value = "ageMax") int ageMax,
+    		@RequestParam(value = "ageRange") int ageRange,
+    		@RequestParam(value = "listSize") int listSize,
+    		Model uiModel){
+    	Event event = Event.findEvent(eventId);
+    	// delete old categories
+    	int deleted = new AwardCategory().removeAgeGenderRankingsByEvent(event);
+    	System.out.println("DELETED CATS "+deleted);
+    	// make new categories
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = AwardCategory.createAgeGenderRankings(event, ageMin, ageMax, ageRange, listSize);
+    	for(AwardCategory c:list){
+    		if(c.getGender().trim().isEmpty()){
+    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    		}
+    	}
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
+    }
+    
+    @RequestMapping(value = "/updateListSize", produces = "text/html")
+    public String createAgeGenderRankings(
+    		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "listSize") int listSize,
+    		@RequestParam(value = "gender") String gender,
+    		Model uiModel){
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = event.getAwardCategorys();
+    	for(AwardCategory c:list){
+    		if(!c.isMedal()){
+    			AwardCategory cat = AwardCategory.findAwardCategory(c.getId());
+    			cat.setListSize(listSize);
+    			cat.merge();
+    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), cat.getListSize())));
+    		}
+    	}
+    	Collections.sort(results);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("awardCategoryResults", results);
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender="+gender;
+    }
+    
+    @RequestMapping(value = "/overall", produces = "text/html")
+    public String overallResults(
+    		@RequestParam(value = "event") long eventId,
+    		Model uiModel){
+    	Event event = Event.findEvent(eventId);
+    	List<RaceResult> results = event.getAwards(StringUtils.EMPTY, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
+    	uiModel.asMap().clear();
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("results", results);
+        return "events/overall";
+    }
+
+    class OfficialtimeComparator implements Comparator<RaceResult> {
+        @Override
+        public int compare(RaceResult a, RaceResult b) {
+            return a.getTimeofficialdisplay().compareTo(b.getTimeofficialdisplay());
+        }
+    }
+    
 
     @RequestMapping(value = "/{id}/enablereg", produces = "text/html")
     public String enableReg(@PathVariable("id") Long id, Model uiModel) {

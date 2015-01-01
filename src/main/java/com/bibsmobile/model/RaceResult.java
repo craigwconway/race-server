@@ -3,6 +3,10 @@ package com.bibsmobile.model;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,7 +25,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
@@ -30,7 +36,10 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
+import org.joda.time.DateTime;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,16 +61,13 @@ public class RaceResult implements Comparable<RaceResult> {
     private Set<RaceImage> raceImage;
 
     @NotNull
-    @Index(name = "bib_index")
-    // search field
+    @Index(name="bib_index") // search field
     private String bib;
 
-    @Index(name = "name_index")
-    // search field
+    @Index(name="name_index") // search field
     private String firstname;
 
-    @Index(name = "name_index")
-    // search field
+    @Index(name="name_index") // search field
     private String lastname;
 
     private String middlename;
@@ -178,6 +184,9 @@ public class RaceResult implements Comparable<RaceResult> {
         return RaceResult.toHumanTime(this.timestart, this.timeofficial);
     }
 
+    public String valueOfTimeofficialdisplay() {
+    	return this.timeofficialdisplay;
+    }
     /**
      * Over-write current fields with non-null values from new object
      * 
@@ -805,24 +814,24 @@ public class RaceResult implements Comparable<RaceResult> {
         this.bib = bib;
     }
 
-    public String getFirstname() {
-        return this.firstname;
+	public String getFirstname() {
+        return WordUtils.capitalizeFully(firstname);
     }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
 
-    public String getLastname() {
-        return this.lastname;
+	public String getLastname() {
+        return WordUtils.capitalizeFully(this.lastname);
     }
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
-    public String getMiddlename() {
-        return this.middlename;
+	public String getMiddlename() {
+        return WordUtils.capitalizeFully(this.middlename);
     }
 
     public void setMiddlename(String middlename) {
@@ -845,8 +854,12 @@ public class RaceResult implements Comparable<RaceResult> {
         this.age = age;
     }
 
-    public String getGender() {
-        return this.gender;
+	public String getGender() {
+		if(null==gender || gender.equalsIgnoreCase("M")){
+			return "M";
+		}else{
+			return "F";
+		}
     }
 
     public void setGender(String gender) {
@@ -1041,32 +1054,32 @@ public class RaceResult implements Comparable<RaceResult> {
         this.medal3 = medal3;
     }
 
-    public String getCity() {
-        return this.city;
+	public String getCity() {
+        return WordUtils.capitalizeFully(this.city);
     }
 
     public void setCity(String city) {
         this.city = city;
     }
 
-    public String getState() {
-        return this.state;
+	public String getState() {
+        return WordUtils.capitalizeFully(this.state);
     }
 
     public void setState(String state) {
         this.state = state;
     }
 
-    public String getCountry() {
-        return this.country;
+	public String getCountry() {
+        return WordUtils.capitalizeFully(this.country);
     }
 
     public void setCountry(String country) {
         this.country = country;
     }
 
-    public String getFullname() {
-        return this.fullname;
+	public String getFullname() {
+        return WordUtils.capitalizeFully(this.fullname);
     }
 
     public void setFullname(String fullname) {

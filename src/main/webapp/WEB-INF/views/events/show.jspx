@@ -41,6 +41,9 @@
             Change file mapping
             </button>
         </c:if>
+        <button class="btn btn-default btn-top" onclick="regUrl()" type="button">
+		Registration Button
+		</button>
         <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
             <button class="btn btn-default btn-top" onclick="redirectEnableReg()" type="button">
                 Enable Registration
@@ -83,6 +86,9 @@
     
 	function redirectImport(){
 		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
+	}
+	function regUrl(){
+		window.location="/bibs-server/events/regbutton?event=${event.id}";
 	}
     function redirectDropboxImport(){
         window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";

@@ -18,6 +18,8 @@
 		border-radius: 5px;
 		padding: 10px;
 		margin: 10px;
+		width:650px;
+		float: left;
 	}
 	.event-name{
 		font-size: 28px;
@@ -50,20 +52,24 @@
 				style="margin:0;margin-left: 3px;"
 				onclick="printReport()">Print Report</button>
 				
-			<button id="btn-update---id--" type="button" class="btn btn-info" 
-				style="margin:0;margin-left: 3px;"
-				onclick="clearReport()">Clear Report</button>
-				
 			<script>
 			function printReport(){
 				window.open("/bibs-server/timers/bib-report/1","_blank");
 			}
-			function clearReport(){
-				var url = "/bibs-server/timers/clear-bib-report/1";
+			
+			function clearReport(eventId){
+				// dirty double confirm
+				var proceed = false;
+				if (confirm("Clear ALL runner times for this Event?")) {
+					if (!confirm("Caution: Are your sure? This cannot be undone.")) {
+						return false;
+					}
+				}
+				// empty table
+				jQuery("#results"+eventId).html("<tr><td></td></tr>");
+				// api call
 				var request = jQuery.ajax({
-					url: url,
-					type: "GET",
-					dataType: "html"
+					url: "/bibs-server/timers/clear-bib-report/1?eventId="+eventId
 					});
 			}
 			</script>
@@ -130,6 +136,9 @@
 				onclick="manual(--event_id--);"> Manual Time Set </button>
 			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
 				onclick="gun(--event_id--);"> Fire Gun! </button> 
+			<button id="btn-update---id--" type="button" class="btn btn-info" 
+				style="margin:0;margin-left: 3px;"
+				onclick="clearReport(--event_id--)">Clear Times</button>
 			<table id="results--event_id--" class="table" 
 				style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
 		</div>
@@ -161,17 +170,60 @@
 var readerOn=false;
 var runningEventCount = 0;
 var readerStatus = 0;
+var REFRESH_RESULTS = 800;		// 0.8 sec
+var REFRESH_TIMER = 1000 * 5;	// 5 sec
+var REFRESH_UNCAT = 1000 * 5; 	// 5 sec
+var isReloading = false;
+var isUncat = false;
 
 window.onload = racedayInit;
 // window.onunload = racedayEnd;
 
 function racedayInit(){
+	console.log("racedayInit");
+	// get events in progress
 	getRunning();
+	// get readers attached
 	getReaders();
-	// pool announcer
+	// refresh results on interval
 	setInterval(function(){
-		if(readerOn) getReaderResults();
-	},4000);
+		if(readerOn){
+			getReaderResults();
+		}
+	}, REFRESH_RESULTS );
+	// refresh timer on interval
+	setInterval(function(){
+		if(isReloading){ // not on first load
+			timerUpdate(0);
+			timerUpdate(1);
+		}
+	}, REFRESH_TIMER );
+	// refresh uncat on interval
+	setInterval(function(){
+		if(!isUncat){ // not on first load
+			findUncategorized();
+		}
+	}, REFRESH_UNCAT );
+}
+
+function findUncategorized(){
+	console.log("findUncategorized");
+	var r = jQuery.ajax({
+		url: "/bibs-server/events/uncat",
+		dataType: "json"
+		});
+	r.done(function( data ) {
+		var id = Number(data.id);
+		var name = data.name;
+		if(id > 0){
+			console.log("FOUND UNCAT "+id);
+			addUncat(id,name);
+			isUncat = true; // dont call this again
+		}
+	});
+	r.fail(function( jqXHR, textStatus ) {
+		console.log(textStatus);
+	});
 }
 
 function timerUpdate(id){
@@ -278,6 +330,14 @@ function addEvent(){
 	readerQuery(eventId);
 }
 
+function addUncat(eventId, eventName){
+	if(null==eventId || !(eventId>0)) return false;
+	runningEventCount++;
+	makeEventRow(eventId,eventName);
+	setRunning(eventId,runningEventCount);
+	readerQuery(eventId);
+}
+
 function makeReaderRow(n,readerObj){
 	var position = "Starting Line";
 	if(readerObj.position) position = "Finish Line";
@@ -323,6 +383,7 @@ function startReader(id){
 	});
 }
 
+var clocks = new Array();
 function initTimer(eventId){
 	var now = new Date().getTime();
 	var req = jQuery.ajax({
@@ -338,9 +399,12 @@ function initTimer(eventId){
 		jQuery("#event-timer-"+eventId).html(now-data.gunTime);
 		timer(eventId);
 		jQuery("#event-timer-str-"+eventId).show();
-		setInterval(function(){
-			timer(eventId);
-		},1000);
+		if(jQuery.inArray(eventId, clocks)){
+			setInterval(function(){
+				timer(eventId);
+			},1000);
+			clocks.push(eventId);
+		}	
 	});
 	
 }

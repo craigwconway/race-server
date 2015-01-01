@@ -27,6 +27,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import com.bibsmobile.util.PermissionsUtil;
@@ -36,6 +37,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
@@ -127,6 +131,18 @@ public class Event {
     private String results2;
 
     private String results3;
+    
+    // hack for awards - JI-42
+    @Transient
+    private EventAwardsConfig awardsConfig;
+    // use results 3 for json EventAwardsConfig
+    public EventAwardsConfig getAwardsConfig(){
+    	return (null == getResults3() || getResults3().isEmpty()) ? new EventAwardsConfig() : EventAwardsConfig.fromJson(getResults3());
+    }
+    public void setAwardsConfig(EventAwardsConfig awardsConfig){
+    	this.awardsConfig = awardsConfig;
+    	setResults3(awardsConfig.toJson());
+    }
 
     private String alert1;
 
@@ -286,45 +302,73 @@ public class Event {
     }
 
     public List<RaceResult> getAwards(String gender, int min, int max, int size) {
-        if (min > max)
-            min = max;
-        List<RaceResult> allResults = new ArrayList<>(this.raceResults);
-        Collections.sort(allResults);
-        List<RaceResult> tmpResults = new ArrayList<>();
-        for (RaceResult result : allResults) {
-            int age = 0;
-            try {
-                age = Integer.valueOf(result.getAge());
-            } catch (NumberFormatException ex) {
-                // ignoring wrong formats and using 0 instead
-            }
-            if (tmpResults.size() < size && result.getTimeofficial() > 0 && (gender == null || gender.isEmpty() || gender.equals(result.getGender()))
-                    && (min == 0 || (min <= age && age != 0)) && (max == 0 || (max >= age && age != 0))) {
-                tmpResults.add(result);
-            }
-            if (tmpResults.size() == size && size != 0)
-                break;
-        }
-        return tmpResults;
+    	return getAwards( gender,  min,  max,  size, new ArrayList<String>());
+    }
+
+    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<String> excludeBibs) { 
+    	List<RaceResult> results = Event.findRaceResultsByAwardCategory(id,gender,min,max,1,999);
+    	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
+    	for(RaceResult r : results){
+    		if(!excludeBibs.contains(r.getBib())){
+    			resultsFiltered.add(r);
+    		}
+    		if(resultsFiltered.size() == size){
+    			break;
+    		}
+    	}
+    	Collections.sort(resultsFiltered);
+    	return resultsFiltered;
+    }
+    
+    public List<AwardCategoryResults> calculateMedals(Event event){
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<String> mastersBibs = new ArrayList<String>();
+    	
+    	// if not allow masters in overall, collect masters bibs, pass into non-masters
+    	if(!event.getAwardsConfig().isAllowMastersInNonMasters()){
+        	for(AwardCategory c:event.getAwardCategorys()){
+        		if(c.isMedal() && c.isMaster()){
+        			List<RaceResult> masters = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
+        			for(RaceResult m:masters){
+        				mastersBibs.add(m.getBib());
+        			}
+        		}
+        	}
+    	}
+    	
+		// filter medals
+		List<String> awarded = new ArrayList<String>();
+    	for(AwardCategory c:event.getAwardCategorys()){
+    		if(c.isMedal()){
+    			List<RaceResult> rr = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)
+    					: event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs);
+    			results.add(new AwardCategoryResults(c,rr));
+    			// track mdals, only 1 medal ppn
+    			for(RaceResult r:rr){
+        			awarded.add(r.getBib());
+        			mastersBibs.add(r.getBib());
+    			}
+    		}
+    	}
+    	
+    	Collections.sort(results);
+    	return results;
     }
 
     public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page, int size) {
         if (min > max)
             min = max;
         String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
-        if (!gender.isEmpty())
-            HQL += " AND o.gender = :gender ";
-        if (min > 0 && max > 0)
-            HQL += "AND (o.age >= :min AND o.age <= :max ) ";
-        HQL += " order by (o.timeofficial-o.timestart) asc";
+        if (!gender.isEmpty()) HQL += " AND o.gender = :gender ";
+        if (min >= 0 && max > 0) HQL += "AND (cast(o.age, int) >= :min AND cast(o.age, int) <= :max ) ";
+        HQL += " order by o.timeofficialdisplay asc";
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
         q.setParameter("event", Event.findEvent(event));
-        if (!gender.isEmpty())
-            q.setParameter("gender", gender);
-        if (min > 0 && max > 0) {
-            q.setParameter("min", String.valueOf(min));
-            q.setParameter("max", String.valueOf(max));
+        if (!gender.isEmpty()) q.setParameter("gender", gender);
+        if (min >= 0 && max > 0) {
+            q.setParameter("min", min);
+            q.setParameter("max", max);
         }
         q.setFirstResult((page - 1) * size);
         q.setMaxResults(size);
@@ -840,16 +884,16 @@ public class Event {
         this.address2 = address2;
     }
 
-    public String getCity() {
-        return this.city;
+	public String getCity() {
+        return WordUtils.capitalizeFully(this.city);
     }
 
     public void setCity(String city) {
         this.city = city;
     }
 
-    public String getState() {
-        return this.state;
+	public String getState() {
+        return WordUtils.capitalizeFully(this.state);
     }
 
     public void setState(String state) {

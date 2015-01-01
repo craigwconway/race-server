@@ -32,7 +32,7 @@ label {
 </style>
 
 	<div id="awards-nav"> 
-		
+			
 		<button class="btn btn-info btn-top"
 			onclick="byGender('M')" 
 			type="button">Age M</button>
@@ -49,6 +49,10 @@ label {
 			onclick="overall()"
 			type="button">Overall</button>
 			
+		<button class="btn btn-default btn-top"
+			onclick="jQuery('#search-box').toggle()" 
+			type="button">Configure</button>
+			
 		<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 		<button class="btn btn-primary btn-top"
 			onclick="create()" 
@@ -60,15 +64,54 @@ label {
 			type="button">Print</button>
 
 		<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-	        <label style="width:150px;">Allow Duplicates</label><input type="checkbox" id="duplicate" name="duplicate" value="true" onclick="update()"/>
-	        <label style="width:150px;">Masters in Overall</label><input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
-	    </sec:authorize>
+        	<label style="width:150px;">Allow Duplicates</label><input type="checkbox" id="duplicate" name="duplicate" value="true" onclick="update()"/>
+        	<label style="width:150px;">Masters in Overall</label><input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
+		</sec:authorize>
+		
+		<form id="search-box" class="form-inline" role="form"
+			style="display: none; border: 1px solid #ddd;padding: 10px;margin: 10px;">
+			<div>
+			<h3>Customize Age/Gender Categories</h3>
+			</div>
+			<div class="form-group">
+				<label for="ageMin">Start Age</label> <input id="ageMin" name="ageMin"
+					class="form-control" style="width: 50px;" value="0" />
+			</div>
+			<div class="form-group">
+				<label for="ageMax">End Age</label> <input id="ageMax" name="ageMax"
+					class="form-control" style="width: 50px;" value="109" />
+			</div>
+			<div class="form-group">
+				<label for="ageRange">Age Span</label> <input id="ageRange"
+					name="ageRange" class="form-control" style="width: 50px;"
+					value="9" />
+			</div>
+			<div class="form-group">
+				<label for="listSize">Group Size</label> <input id="listSize"
+					name="listSize" class="form-control" style="width: 50px;"
+					value="3" />
+			</div>
+			<button class="btn btn-primary btn-top" onclick="createAwardCategories()"
+				type="button">Create</button>
+<hr/>		
+		<h3>Update Group Size</h3>
+	  	<div class="form-group">
+		    <label for="listSize2">List Size</label>
+			<input id="listSize2" name="listSize2"
+				class="form-control" style="width:80px;"
+				placeholder="List Size"/>
+		</div>
+	    <button class="btn btn-primary btn-top" onclick="updateListSize()" type="button">
+			Update Size
+		</button>
+		</form>
+
 	</div>
 	<!-- awards-nav -->
 
 	<div style="clear: both;" />
 
-	<h3 id="title">${event.name}
+	<h3 id="title" style="padding-top: 0; margin-top: 0;">${event.name}
 		<small id="award-title">Official Results</small>
 	</h3>
 	<div id="awards-table">
@@ -111,8 +154,11 @@ label {
 				
 	</div>
 	
+	<c:set value="${fn:length(awardCategoryResults) }" var="size"/>
 	<script>
+
 	var eventid = GetURLParameter("event");
+	var gender = GetURLParameter("gender");
 	
 	window.onload=function(){
 		if(${event.awardsConfig.allowMedalsInAgeGenderRankings}){
@@ -124,7 +170,7 @@ label {
 	}
 	
 	function update(){
-		var loc = "/bibs-server/events/awards/update?event="+eventid;
+		var loc = "/bibs-server/events/ageGenderRankings/update?event="+eventid+"&amp;gender="+gender;
 		if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
 		if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
 		window.location=loc;
@@ -142,8 +188,8 @@ label {
 		jQuery('#awards-nav').show();
 	}
 	
-	function byGender(gender){
-		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+gender;
+	function byGender(g){
+		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+g;
 	}
 	
 	function awards(){
@@ -152,6 +198,21 @@ label {
 	
 	function overall(){
 		window.location = "/bibs-server/events/overall?event="+eventid;
+	}
+	
+	function createAwardCategories(){
+		var event = Math.max(0,GetURLParameter("event"));
+		var ageMin = Math.max(jQuery('#ageMin').val(),0);
+		var ageMax = Math.max(jQuery('#ageMax').val(),0);
+		var ageRange = Math.max(jQuery('#ageRange').val(),0);
+		var listSize = Math.max(jQuery('#listSize').val(),0);
+		window.location="/bibs-server/events/createAwardCategories?event="+eventid+"&amp;ageMin="+ageMin+"&amp;ageMax="+ageMax+"&amp;ageRange="+ageRange+"&amp;listSize="+listSize;
+	}
+	
+	function updateListSize(){
+		var event = Math.max(0,GetURLParameter("event"));
+		var listSize = Math.max(jQuery('#listSize2').val(),0);
+		window.location="/bibs-server/events/updateListSize?event="+eventid+"&amp;listSize="+listSize+"&amp;gender="+gender;
 	}
 	
 	function deleteAwardCategory(id){
