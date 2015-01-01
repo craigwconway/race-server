@@ -50,6 +50,9 @@
             <button class="btn btn-default btn-top" onclick="redirectManageReg()" type="button">
                 Manage Registration
             </button>
+            <button class="btn btn-default btn-top" onclick="redirectSearchReg()" type="button">
+                Search Registrations
+            </button>
         </c:if>
         <span id="progress" style="margin:0;margin-left:6px;display:none;">
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
@@ -108,6 +111,9 @@
     }
     function redirectManageReg(){
         window.location="/bibs-server/eventitems?event=${event.id}";
+    }
+    function redirectSearchReg(){
+        window.location="/bibs-server/registrations/search?event=${event.id}";
     }
 	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">

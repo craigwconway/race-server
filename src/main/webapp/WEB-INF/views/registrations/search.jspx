@@ -4,7 +4,20 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
+
     <form method="post">
+        <c:if test="${events != null}">
+            <select name="event">
+                <c:forEach var="event" items="${events}">
+                    <c:if test="${eventId == event.id}">
+                        <option value="${event.id}" selected="selected">${event.name}</option>
+                    </c:if>
+                    <c:if test="${eventId != event.id}">
+                        <option value="${event.id}">${event.name}</option>
+                    </c:if>
+                </c:forEach>
+            </select>
+        </c:if>
         <input type="text" name="firstName" placeholder="First name" value="${firstName}"/>
         <input type="text" name="lastName" placeholder="Last name" value="${lastName}"/>
         <input type="text" name="invoiceId" placeholder="Invoice ID" value="${invoiceId}"/>

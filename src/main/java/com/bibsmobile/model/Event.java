@@ -675,6 +675,10 @@ public class Event {
         return entityManager().createQuery("SELECT o FROM Event o", Event.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
+    public static List<Event> findEventsForUser(UserProfile user) {
+        return findEventsForUser(user, -1, -1, null, null);
+    }
+
     public static List<Event> findEventsForUser(UserProfile user, int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         // return all events for the sysadmin or unauthenticated users (can not edit anyways)
         if (user == null || PermissionsUtil.isSysAdmin(user))
@@ -692,7 +696,7 @@ public class Event {
         TypedQuery<Event> q = entityManager().createQuery(jpaQuery, Event.class);
         q.setParameter("user_id", user.getId());
         // paging if requested
-        if (firstResult > 0 && maxResults > 0) {
+        if (firstResult >= 0 && maxResults >= 0) {
             q.setFirstResult(firstResult).setMaxResults(maxResults);
         }
 
@@ -707,7 +711,11 @@ public class Event {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, Event.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        TypedQuery<Event> q = entityManager().createQuery(jpaQuery, Event.class);
+        if (firstResult >= 0 && maxResults >= 0) {
+            q.setFirstResult(firstResult).setMaxResults(maxResults);
+        }
+        return q.getResultList();
     }
 
     @Transactional

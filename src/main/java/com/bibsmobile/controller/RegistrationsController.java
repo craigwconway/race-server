@@ -2,7 +2,10 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.RegistrationsUtil;
+import com.bibsmobile.util.UserProfileUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +19,14 @@ import java.util.List;
 @Controller
 public class RegistrationsController {
     @RequestMapping(value = "search", method = RequestMethod.GET)
-    public String searchForm(@RequestParam("event") Long eventId, Model uiModel) {
+    public String searchForm(@RequestParam(value="event", required=false) Long eventId, Model uiModel) {
+        UserProfile user = UserProfileUtil.getLoggedInUserProfile();
+        if (eventId != null && !PermissionsUtil.isEventAdmin(user, Event.findEvent(eventId))) {
+            return "accessDeniedFailure";
+        }
+
+        uiModel.addAttribute("eventId", eventId);
+        uiModel.addAttribute("events", Event.findEventsForUser(user));
         uiModel.addAttribute("registrations", Collections.emptyList());
         uiModel.addAttribute("maxPages", 0);
 
@@ -32,15 +42,22 @@ public class RegistrationsController {
                                 @RequestParam(value = "start", required = false) Integer start,
                                 @RequestParam(value = "count", required = false) Integer count,
                                 Model uiModel) {
+        UserProfile user = UserProfileUtil.getLoggedInUserProfile();
         Event event = Event.findEvent(eventId);
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return "accessDeniedFailure";
+        }
+
         if (start == null) start = 0;
-        if (count == null) count = 2;
+        if (count == null) count = 25;
 
         List<Cart> registrations = RegistrationsUtil.search(event, firstName, lastName, email, invoiceId);
         if (registrations == null)
             return null;
         float nrOfPages = (float) registrations.size() / count;
 
+        uiModel.addAttribute("eventId", eventId);
+        uiModel.addAttribute("events", Event.findEventsForUser(user));
         uiModel.addAttribute("firstName", firstName);
         uiModel.addAttribute("lastName", lastName);
         uiModel.addAttribute("email", email);
