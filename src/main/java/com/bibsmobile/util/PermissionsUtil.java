@@ -53,6 +53,7 @@ public final class PermissionsUtil {
      * @return
      */
     public static boolean isSysAdmin(UserProfile user) {
+        if (user == null) return false;
         for (UserAuthorities uas : user.getUserAuthorities()) {
             if (uas.getUserAuthority().isAuthority(UserAuthority.SYS_ADMIN)) {
                 return true;

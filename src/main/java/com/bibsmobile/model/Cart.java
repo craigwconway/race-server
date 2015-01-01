@@ -64,6 +64,13 @@ public class Cart {
         return new JSONDeserializer<Cart>().use(null, Cart.class).use("user", UserProfile.class).deserialize(json);
     }
 
+    public String getEventType() {
+        for (CartItem ci : this.getCartItems()) {
+            return ci.getEventCartItem().getEventType();
+        }
+        return null;
+    }
+
     public UserProfile getUser() {
         return this.user;
     }

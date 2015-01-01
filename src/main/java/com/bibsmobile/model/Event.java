@@ -676,8 +676,8 @@ public class Event {
     }
 
     public static List<Event> findEventsForUser(UserProfile user, int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        // return all events for the sysadmin
-        if (PermissionsUtil.isSysAdmin(user))
+        // return all events for the sysadmin or unauthenticated users (can not edit anyways)
+        if (user == null || PermissionsUtil.isSysAdmin(user))
             return findEventEntries(firstResult, maxResults, sortFieldName, sortOrder);
         // get only accessible events for everyone else
         String jpaQuery = "select e from Event e join e.eventUserGroups eug join eug.userGroup ug join ug.userGroupUserAuthorities ugua join ugua.userAuthorities uasid join uasid.userProfile up where up.id = :user_id";

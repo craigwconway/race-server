@@ -4,4 +4,7 @@
     <definition extends="default" name="registrations/transfer">
         <put-attribute name="body" value="/WEB-INF/views/registrations/transfer.jspx"/>
     </definition>
+    <definition extends="default" name="registrations/search">
+        <put-attribute name="body" value="/WEB-INF/views/registrations/search.jspx"/>
+    </definition>
 </tiles-definitions>

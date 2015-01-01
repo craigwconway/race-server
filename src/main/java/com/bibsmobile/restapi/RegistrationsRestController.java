@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -41,43 +42,18 @@ public class RegistrationsRestController {
             Event event = Event.findEvent(eventId);
             if (event == null)
                 return SpringJSONUtil.returnErrorMessage("event not found", HttpStatus.NOT_FOUND);
-            boolean firstNameGiven = (firstName != null && !firstName.isEmpty());
-            boolean lastNameGiven = (lastName != null && !lastName.isEmpty());
-            if (!(firstNameGiven || lastNameGiven))
-                return SpringJSONUtil.returnErrorMessage("firstName or lastName has to be included", HttpStatus.BAD_REQUEST);
 
             // check the rights the user has for event
             if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
                 return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
             }
 
-            // get relevant carts for event
-            Set<Cart> carts = new HashSet<>();
-            List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
-            if (!eventCartItems.isEmpty()) {
-                List<CartItem> cartItems = CartItem.findCompletedCartItemsByEventCartItems(eventCartItems, true).getResultList();
-                for (CartItem cartItem : cartItems) {
-                    carts.add(cartItem.getCart());
-                }
-            }
-
-            // filter carts by first & last name
-            List<ShortCart> registrations = new LinkedList<>();
-            for (Cart c : carts) {
-                ShortCart r = new ShortCart(c);
-                boolean foundUser = false;
-                for (ShortCartItem ci : r.getCartItems()) {
-                    if (firstNameGiven && lastNameGiven)
-                        foundUser = ci.getUser().getFirstName() != null && ci.getUser().getFirstName().equalsIgnoreCase(firstName) && ci.getUser().getLastName() != null
-                                && ci.getUser().getLastName().equalsIgnoreCase(lastName);
-                    else if (firstNameGiven)
-                        foundUser = ci.getUser().getFirstName() != null && ci.getUser().getFirstName().equalsIgnoreCase(firstName);
-                    else if (lastNameGiven)
-                        foundUser = ci.getUser().getLastName() != null && ci.getUser().getLastName().equalsIgnoreCase(lastName);
-                }
-                if (foundUser)
-                    registrations.add(r);
-            }
+            List<Cart> registrationsFull = RegistrationsUtil.search(event, firstName, lastName, null, null);
+            if (registrationsFull == null)
+                return SpringJSONUtil.returnErrorMessage("firstName or lastName has to be included", HttpStatus.BAD_REQUEST);
+            List<ShortCart> registrations = new ArrayList<ShortCart>(registrationsFull.size());
+            for (Cart c : registrationsFull)
+                registrations.add(new ShortCart(c));
 
             return SpringJSONUtil.returnPaginated(start, count, registrations, HttpStatus.OK);
         } catch (Exception e) {
@@ -88,9 +64,9 @@ public class RegistrationsRestController {
     // TODO remove
     @RequestMapping(value = "/transfer", method = RequestMethod.GET)
     public String transferForm(@RequestParam("invoice") String invoiceId,
-                                           @RequestParam("firstName") String firstName,
-                                           @RequestParam("email") String email,
-                                           Model uiModel) {
+                               @RequestParam("firstName") String firstName,
+                               @RequestParam("email") String email,
+                               Model uiModel) {
         CartItem cartItem = RegistrationsUtil.findCartItemFromInvoice(invoiceId, firstName, email);
         if (cartItem == null) throw new IllegalArgumentException("CartItem not found");
         uiModel.addAttribute("firstname", cartItem.getUserProfile().getFirstname());
