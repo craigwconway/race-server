@@ -43,6 +43,7 @@ public class EventCartItemPriceChange {
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date endDate;
 
+    private String categoryName;
     private int lowAgeThreshold = 1;
     private int highAgeThreshold = 120;
     private EventCartItemGenderEnum gender = EventCartItemGenderEnum.MALE_AND_FEMALE;
@@ -87,6 +88,14 @@ public class EventCartItemPriceChange {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public int getLowAgeThreshold() {
