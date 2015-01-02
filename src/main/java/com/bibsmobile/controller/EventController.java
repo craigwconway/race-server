@@ -31,6 +31,7 @@ import com.google.gson.JsonObject;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -789,6 +790,48 @@ public class EventController {
         return Event.toJsonArray(events.values());
     }
 
+    @RequestMapping(value = "/search/webappsearch/{userGroupId}/{time}", method = RequestMethod.GET)
+    @ResponseBody
+    public String findByUserGroupandTime(@PathVariable Long userGroupId, @PathVariable Long time) {
+        UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
+        Map<Long, Event> events = new HashMap<>();
+        // Determine the timeout point. Events time out after five days.
+        Date presentCutoff = DateUtils.addDays(new Date(), -5);
+        // If the timestart is greater than the cutoff, show it in the webapp.
+        // TODO: Add futureCutoff to webapp, so races with start times greater than 5 days
+        // after the event do not show up in the search present races feature.
+        
+        if (userGroup != null) {
+        	if (1 == time) {
+        		// current events
+	            for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
+	                Event event = eventUserGroup.getEvent();
+	                if (!events.containsKey(event.getId()) && event.getTimeStart().after(presentCutoff)) {
+	                    events.put(event.getId(), event);
+	                }
+	            }
+        	} else if (2 == time) {
+        		// current events
+	            for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
+	                Event event = eventUserGroup.getEvent();
+	                if (!events.containsKey(event.getId()) && event.getTimeStart().before(presentCutoff)) {
+	                    events.put(event.getId(), event);
+	                }
+	            }
+        	} else {
+        		// current events
+	            for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
+	                Event event = eventUserGroup.getEvent();
+	                if (!events.containsKey(event.getId())) {
+	                    events.put(event.getId(), event);
+	                }
+	            }
+        	}
+        }
+        return Event.toJsonArray(events.values());
+    }    
+    
+    
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
