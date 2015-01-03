@@ -85,7 +85,8 @@
               <spring:url value="/resources/images/update.png" var="update_image_url" />
               <spring:message arguments="${typeName}" code="entity_update" var="update_label" htmlEscape="false" />
               <a href="${update_form_url}" alt="${fn:escapeXml(update_label)}" title="${fn:escapeXml(update_label)}">
-                <img alt="${fn:escapeXml(update_label)}" class="image" src="${update_image_url}" title="${fn:escapeXml(update_label)}" />
+                
+                <button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span></button>
               </a>
             </td>
           </c:if>
@@ -126,6 +127,14 @@
                   <spring:escapeBody>
                     <fmt:formatDate value="${item[column].time}" pattern="${fn:escapeXml(columnDatePattern)}" var="colTxt"/>
                   </spring:escapeBody>
+                </c:when>
+                <c:when test="${columnType eq 'boolean'}">
+                	<c:choose>
+                		<c:when test="${columnType eq true}">
+                		</c:when>
+                		<c:otherwise>
+                		</c:otherwise>
+                	</c:choose>
                 </c:when>
                 <c:otherwise>
                   <c:set var="colTxt">

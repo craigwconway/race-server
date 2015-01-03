@@ -17,6 +17,7 @@
  
 	<spring:url value="/events/raceday" var="raceday_url" />
 	<spring:url value="/events/myevents" var="events_url" />
+	<spring:url value="/events/reports" var="reports_url" />
 	<spring:url value="/raceresults?/myresults" var="runners_url" />
 	<spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
 	<spring:url value="/timers?page=1&amp;size=10" var="timers_url" />
@@ -34,6 +35,9 @@
 	  	</sec:authorize>
 		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
 	  		<li id="nav_timers"><a href="${timers_url}">Admin</a></li>
+	  	</sec:authorize>
+		<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+	  		<li id="nav_reports"><a href="${reports_url}">Reports</a></li>
 	  	</sec:authorize>
 		<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 			<spring:url var="login" value="/login" />
@@ -58,6 +62,8 @@
 		jQuery( "#nav_raceday" ).attr("class", "active" );
 	else if((window.location+"").indexOf('events') &gt; 1) 
 		jQuery( "#nav_events" ).attr("class", "active" );
+	else if((window.location+"").indexOf('reports') &gt; 1) 
+		jQuery( "#nav_reports" ).attr("class", "active" );
 	else if((window.location+"").indexOf('raceresults') &gt; 1) 
 		jQuery( "#nav_runners" ).attr("class", "active" );
 	else jQuery( "#nav_timers" ).attr("class", "active" );
