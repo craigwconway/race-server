@@ -57,6 +57,11 @@
                 Search Registrations
             </button>
         </c:if>
+        <c:if test='${(eventadmin)}'>
+            <button class="btn btn-default btn-top" type="button">
+                Reports
+            </button>
+        </c:if>
         <span id="progress" style="margin:0;margin-left:6px;display:none;">
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
         </span>

@@ -74,7 +74,7 @@
             <spring:url value="/resources/images/show.png" var="show_image_url" />
             <spring:message arguments="${typeName}" code="entity_show" var="show_label" htmlEscape="false" />
             <a href="${show_form_url}" alt="${fn:escapeXml(show_label)}" title="${fn:escapeXml(show_label)}">
-              <img alt="${fn:escapeXml(show_label)}" class="image" src="${show_image_url}" title="${fn:escapeXml(show_label)}" />
+              <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog text-info" aria-hidden="true" ></span></button>
             </a>
           </td>
           <c:if test="${update}">
@@ -82,18 +82,15 @@
               <spring:url value="${path}/${itemId}" var="update_form_url">
                 <spring:param name="form" />
               </spring:url>
-              <spring:url value="/resources/images/update.png" var="update_image_url" />
               <spring:message arguments="${typeName}" code="entity_update" var="update_label" htmlEscape="false" />
               <a href="${update_form_url}" alt="${fn:escapeXml(update_label)}" title="${fn:escapeXml(update_label)}">
-                
-                <button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span></button>
+                <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-edit text-warning" aria-hidden="true" ></span></button>
               </a>
             </td>
           </c:if>
           <c:if test="${delete}">
             <td class="utilbox">
               <spring:url value="${path}/${itemId}" var="delete_form_url" />
-              <spring:url value="/resources/images/delete.png" var="delete_image_url" />
               <form:form action="${delete_form_url}" method="DELETE">
                 <spring:message arguments="${typeName}" code="entity_delete" var="delete_label" htmlEscape="false" />
                 <c:set var="delete_confirm_msg">
@@ -101,7 +98,7 @@
                     <spring:message code="entity_delete_confirm" />
                   </spring:escapeBody>
                 </c:set>
-                <input alt="${fn:escapeXml(delete_label)}" class="image" src="${delete_image_url}" title="${fn:escapeXml(delete_label)}" type="image" value="${fn:escapeXml(delete_label)}" onclick="return confirm('${delete_confirm_msg}');" />
+                <button type="button" class="btn btn-default"><span alt="${fn:escapeXml(delete_label)}" class="glyphicon glyphicon-minus-sign text-danger" title="${fn:escapeXml(delete_label)}" value="${fn:escapeXml(delete_label)}" onclick="return confirm('${delete_confirm_msg}');" aria-hidden="true" ></span></button>
                 <c:if test="${not empty param.page}">
                   <input name="page" type="hidden" value="1" />
                 </c:if>
@@ -130,9 +127,11 @@
                 </c:when>
                 <c:when test="${columnType eq 'boolean'}">
                 	<c:choose>
-                		<c:when test="${columnType eq true}">
+                		<c:when test="${item[column] eq true}">
+                			<c:out value="${'&lt;button type=&quot;button&quot; class=&quot;btn btn-default&quot;&gt;&lt;span class=&quot;glyphicon glyphicon-ok text-success&quot; aria-hidden=&quot;true&quot; &gt;&lt;/span&gt;&lt;/button&gt;'}" escapeXml="false" />
                 		</c:when>
                 		<c:otherwise>
+                			<c:out value="${'&lt;button type=&quot;button&quot; class=&quot;btn btn-default&quot;&gt;&lt;span class=&quot;glyphicon glyphicon-remove text-danger&quot; aria-hidden=&quot;true&quot; &gt;&lt;/span&gt;&lt;/button&gt;'}" escapeXml="false" />
                 		</c:otherwise>
                 	</c:choose>
                 </c:when>
