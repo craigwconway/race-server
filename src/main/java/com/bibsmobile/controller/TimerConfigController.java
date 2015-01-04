@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -65,14 +66,29 @@ public class TimerConfigController {
         return getTimer(id).createReport();
     }
 
-    @RequestMapping(value = "/fuck-you-patrick", method = RequestMethod.GET)
-    public void clearAllReports(
+    @RequestMapping(value = "/clear-all-times", method = RequestMethod.GET)
+    public String clearAllReports(
     		@RequestParam(value = "eventId", required = true) Long eventId ) {
-    	for(Timer timer : timers.values()) {
-    		timer.clearTimesByEvent(eventId);
+    	for(Entry<TimerConfig, Timer> timerEntry : timers.entrySet()) {
+    		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
+    		// if timer is connected and a bibs timer, we need to poll it for all remaining tags:
+    		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
+    			timerEntry.getValue().emptyBuffer();
+    		}
     	}
+    	return StringUtils.EMPTY;
     }
-	    
+
+    @RequestMapping(value = "/clear-finish-times", method = RequestMethod.GET)
+    public String clearFinishReports(
+    		@RequestParam(value = "eventId", required = true) Long eventId ) {
+    	for(Entry<TimerConfig, Timer> timerEntry : timers.entrySet()) {
+    		if(timerEntry.getKey().getPosition() != 0)
+    		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
+    	}
+    	return StringUtils.EMPTY;
+    }    
+    
     
     @RequestMapping(value = "/clear-bib-report/{id}", method = RequestMethod.GET)
     @ResponseBody

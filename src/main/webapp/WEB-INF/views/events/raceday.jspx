@@ -57,7 +57,7 @@
 				window.open("/bibs-server/timers/bib-report/1","_blank");
 			}
 			
-			function clearReport(eventId){
+			function clearAllTimes(eventId){
 				// dirty double confirm
 				var proceed = false;
 				if (confirm("Clear ALL runner times for this Event?")) {
@@ -69,7 +69,22 @@
 				jQuery("#results"+eventId).html("<tr><td></td></tr>");
 				// api call
 				var request = jQuery.ajax({
-					url: "/bibs-server/timers/clear-bib-report/1?eventId="+eventId
+					url: "/bibs-server/timers/clear-all-times?eventId="+eventId
+					});
+			}
+			function clearFinishTimes(eventId){
+				// dirty double confirm
+				var proceed = false;
+				if (confirm("Clear ALL runner times for this Event?")) {
+					if (!confirm("Caution: Are your sure? This cannot be undone.")) {
+						return false;
+					}
+				}
+				// empty table
+				jQuery("#results"+eventId).html("<tr><td></td></tr>");
+				// api call
+				var request = jQuery.ajax({
+					url: "/bibs-server/timers/clear-finish-times?eventId="+eventId
 					});
 			}
 			</script>
@@ -138,7 +153,10 @@
 				onclick="gun(--event_id--);"> Fire Gun! </button> 
 			<button id="btn-update---id--" type="button" class="btn btn-info" 
 				style="margin:0;margin-left: 3px;"
-				onclick="clearReport(--event_id--)">Clear Times</button>
+				onclick="clearAllTimes(--event_id--)">Clear All</button>
+			<button id="btn-update---id--" type="button" class="btn btn-info" 
+				style="margin:0;margin-left: 3px;"
+				onclick="clearFinishTimes(--event_id--)">Clear Finish</button>				
 			<table id="results--event_id--" class="table" 
 				style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
 		</div>

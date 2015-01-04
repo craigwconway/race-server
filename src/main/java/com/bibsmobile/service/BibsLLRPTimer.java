@@ -591,6 +591,8 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 			throw new Exception("Error: Could Not connect");
 		}
 	}
+	
+	
 	private void LLRPGetTagReports()
 	   {
 			try {
@@ -606,6 +608,13 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 			}
 			
 	   }
+	
+	public void emptyBuffer() {
+		if(this.status == 2) {
+			LLRPGetTagReports();
+		}
+	}
+	
 	   public void LLRPResumeReports()
 	   {
 		  

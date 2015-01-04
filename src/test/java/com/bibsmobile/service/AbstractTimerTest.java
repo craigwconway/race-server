@@ -34,7 +34,12 @@ public class AbstractTimerTest {
 		@Override
 		public void write(long bib) throws Exception { }
 		@Override
-		public void clearTimesByEvent(long eventId) { } 
+		public void clearTimesByEvent(long eventId) { }
+		@Override
+		public void emptyBuffer() {
+			// TODO Auto-generated method stub
+			
+		} 
 	}
 
 	@Test

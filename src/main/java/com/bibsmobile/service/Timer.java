@@ -17,12 +17,16 @@ public interface Timer {
 	void startReader();
 
 	void stopReader();
+	
+	void emptyBuffer();
 
 	void write(long bib) throws Exception;
 
 	void logTime(int bibnum, long bibtime, TimerConfig timerConfig);
 
 	void clearTimesByEvent(long eventId);
-
+	
+	void clearAllTimesByEventAndTimerId(long eventId, int position);
+	
 	String createReport();
 }
