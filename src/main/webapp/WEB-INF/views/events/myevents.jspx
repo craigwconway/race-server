@@ -13,9 +13,9 @@
     <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
         <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
             <table:column id="c_com_bibsmobile_model_Event_name" property="name" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_Event_regEnabled" property="regEnabled" z="user-managed" />
             <table:column id="c_com_bibsmobile_model_Event_city" property="city" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_Event_state" property="state" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
+            <table:column id="c_com_bibsmobile_model_Event_regEnabled" property="regEnabled" z="user-managed" />
             <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeEnd" z="user-managed"/>
             <!--
             <table:column id="c_com_bibsmobile_model_Event_userGroup" property="userGroup" render="false" z="user-managed"/>
