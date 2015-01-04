@@ -471,7 +471,9 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
                 EPC_96 epc96 = (EPC_96) epcp;
                 epcString += epc96.getEPC().toString();
                 System.out.println("ERROR Non-Bibs chip read " + epcString);
-                logUnassignedBib(epcString, bibtime, timerConfig);
+                // Deprecated
+                //logUnassignedBib(epcString, bibtime, timerConfig);
+                logGarbage(epcString, bibtime, timerConfig);
             } else if ( epcp.getName().equals("EPCData")) {
                 EPCData epcData = (EPCData) epcp;
                 epcString += epcData.getEPC().toString();

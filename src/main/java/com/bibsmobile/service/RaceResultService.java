@@ -9,7 +9,7 @@ public class RaceResultService {
         return RaceResult.fromJsonToRaceResult(string);
     }
 
-    public RaceResult findRaceResultsByEventAndBibEquals(Event event, String bib) {
+    public RaceResult findRaceResultsByEventAndBibEquals(Event event, long bib) {
         return RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
     }
 

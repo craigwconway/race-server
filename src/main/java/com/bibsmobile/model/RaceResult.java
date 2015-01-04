@@ -62,7 +62,7 @@ public class RaceResult implements Comparable<RaceResult> {
 
     @NotNull
     @Index(name="bib_index") // search field
-    private String bib;
+    private long bib;
 
     @Index(name="name_index") // search field
     private String firstname;
@@ -400,11 +400,9 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getSingleResult();
     }
 
-    public static Long countFindRaceResultsByEventAndBibEquals(Event event, String bib) {
+    public static Long countFindRaceResultsByEventAndBibEquals(Event event, long bib) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (bib == null || bib.isEmpty())
-            throw new IllegalArgumentException("The bib argument is required");
         EntityManager em = RaceResult.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib", Long.class);
         q.setParameter("event", event);
@@ -506,11 +504,9 @@ public class RaceResult implements Comparable<RaceResult> {
         return q;
     }
 
-    public static TypedQuery<RaceResult> findRaceResultsByEventAndBibEquals(Event event, String bib) {
+    public static TypedQuery<RaceResult> findRaceResultsByEventAndBibEquals(Event event, long bib) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (bib == null || bib.isEmpty())
-            throw new IllegalArgumentException("The bib argument is required");
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib", RaceResult.class);
         q.setParameter("event", event);
@@ -518,11 +514,9 @@ public class RaceResult implements Comparable<RaceResult> {
         return q;
     }
 
-    public static TypedQuery<RaceResult> findRaceResultsByEventAndBibEquals(Event event, String bib, String sortFieldName, String sortOrder) {
+    public static TypedQuery<RaceResult> findRaceResultsByEventAndBibEquals(Event event, long bib, String sortFieldName, String sortOrder) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        if (bib == null || bib.isEmpty())
-            throw new IllegalArgumentException("The bib argument is required");
         EntityManager em = RaceResult.entityManager();
         String jpaQuery = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
@@ -806,11 +800,11 @@ public class RaceResult implements Comparable<RaceResult> {
         this.raceImage = raceImage;
     }
 
-    public String getBib() {
+    public long getBib() {
         return this.bib;
     }
 
-    public void setBib(String bib) {
+    public void setBib(long bib) {
         this.bib = bib;
     }
 

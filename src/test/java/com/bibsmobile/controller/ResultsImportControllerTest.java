@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
@@ -69,7 +70,7 @@ public class ResultsImportControllerTest {
         RaceResult raceResult = new RaceResult();
         RaceResultService raceResultService = mock(RaceResultService.class);
         when(raceResultService.fromJsonToRaceResult(anyString())).thenReturn(raceResult);
-        when(raceResultService.findRaceResultsByEventAndBibEquals(any(Event.class), anyString())).thenReturn(raceResult);
+        when(raceResultService.findRaceResultsByEventAndBibEquals(any(Event.class), Matchers.anyLong())).thenReturn(raceResult);
         this.resultsImportController = new ResultsImportController(raceResultService);
         this.resultsImportController.saveRaceResult(resultsImport, event, nextLine, map);
         // verify no db txn

@@ -97,7 +97,7 @@ public class RaceResultController {
 
     @RequestMapping(value = "/bybib/{eventName}/{bib}", method = RequestMethod.GET)
     @ResponseBody
-    public String byBib(@PathVariable String eventName, @PathVariable String bib) {
+    public String byBib(@PathVariable String eventName, @PathVariable long bib) {
         String rtn = "";
         try {
             RaceResult raceResult = RaceResult.findRaceResultsByEventAndBibEquals(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), bib).getSingleResult();
@@ -403,7 +403,7 @@ public class RaceResultController {
 
     @RequestMapping(params = "find=ByEventAndBibEquals", headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> jsonFindRaceResultsByEventAndBibEquals(@RequestParam("event") Event event, @RequestParam("bib") String bib) {
+    public ResponseEntity<String> jsonFindRaceResultsByEventAndBibEquals(@RequestParam("event") Event event, @RequestParam("bib") long bib) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<>(RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getResultList()), headers, HttpStatus.OK);

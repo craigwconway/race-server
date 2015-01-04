@@ -24,10 +24,10 @@ public abstract class AbstractTimer implements Timer {
 	private Map<String, Long> bibTimes = new HashMap<String, Long>();	// Timeout hashmap of (bibnumber -> time)
 	
 	// auto-add an unregistered runner to an event
-	public void logTime(final String bib, long time, final TimerConfig timerConfig, final Event event) {
+	public void logTime(final long bib, long time, final TimerConfig timerConfig, final Event event) {
 		RaceResult r = new RaceResult();
 		try {
-		r = RaceResult.findRaceResultsByEventAndBibEquals(event,bib+"").getSingleResult();
+		r = RaceResult.findRaceResultsByEventAndBibEquals(event,bib).getSingleResult();
 		r.setEvent(event);
 		r.setBib(bib);
 		r = calculateOfficialTime(r, time, timerConfig);
@@ -40,7 +40,7 @@ public abstract class AbstractTimer implements Timer {
 		}
 
 	}
-	public void logTime(final int bibnum, long bibtime, final TimerConfig timerConfig) {
+	public void logTime(final long bibnum, long bibtime, final TimerConfig timerConfig) {
 		bibtime = bibtime / 1000; //microseconds
 		final String slog = Thread.currentThread().getName() +" " + getClass().getName();
 		final String cacheKey = bibnum+"-"+timerConfig.getPosition();
@@ -62,7 +62,7 @@ public abstract class AbstractTimer implements Timer {
 						continue;
 
 					System.out.println(slog+" EVENT: "+event.getId() +" start:"+event.getTimeStart() +" gun:"+event.getGunTimeStart());
-					RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum+"").getSingleResult(); // throws exception
+					RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum).getSingleResult(); // throws exception
 					foundEventForBib = true;
 					result.setEvent(event);
 					System.out.println(slog+" RUNNER: "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
@@ -79,7 +79,7 @@ public abstract class AbstractTimer implements Timer {
 			}
 			// log unassigned bibs to a special Event
 			if(!foundEventForBib){
-				logUnassignedBib(String.valueOf(bibnum), bibtime, timerConfig);
+				logUnassignedBib(bibnum, bibtime, timerConfig);
 			}
 		}else{
 			System.out.println(slog+" TIMEOUT bib " + bibnum + " @ reader "+timerConfig.getPosition());
@@ -138,7 +138,11 @@ public abstract class AbstractTimer implements Timer {
 		}
 	}
 	
-	public void logUnassignedBib(String bib, long time, final TimerConfig timerConfig){
+	public void logGarbage(String bibString, long time, final TimerConfig timerConfig) {
+		//TODO: Add logging for non-bibs chips
+	}
+	
+	public void logUnassignedBib(long bib, long time, final TimerConfig timerConfig){
 		System.out.println("UNASSIGNED '" + bib + "' @ "+ new Date(time));
 		// find unassigned bibs event
 		Event event = null;

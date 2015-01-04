@@ -22,7 +22,7 @@ public interface Timer {
 
 	void write(long bib) throws Exception;
 
-	void logTime(int bibnum, long bibtime, TimerConfig timerConfig);
+	void logTime(long bibnum, long bibtime, TimerConfig timerConfig);
 
 	void clearTimesByEvent(long eventId);
 	

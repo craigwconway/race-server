@@ -78,9 +78,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             foo.setTimeEnd(new DateTime().plusHours(1).toDate());
             foo.persist();
             
-            for(int i = 1; i < 300; i++){
+            for(long i = 1; i < 300; i++){
             	RaceResult user = new RaceResult();
-            	user.setBib(String.valueOf(i));
+            	user.setBib(i);
             	user.setEvent(foo);
             	user.setAge(String.valueOf(generateRandomAge()));
             	user.setGender( (i%2==0) ? "M" : "F");

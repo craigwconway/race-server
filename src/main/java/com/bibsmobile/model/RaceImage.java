@@ -66,7 +66,7 @@ public class RaceImage {
         this.event = event;
     }
 
-    public RaceImage(String filePath, long eventId, String bib) {
+    public RaceImage(String filePath, long eventId, long bib) {
         super();
         this.filePath = filePath;
         this.event = Event.findEvent(eventId);

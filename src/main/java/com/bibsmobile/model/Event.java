@@ -302,10 +302,10 @@ public class Event {
     }
 
     public List<RaceResult> getAwards(String gender, int min, int max, int size) {
-    	return getAwards( gender,  min,  max,  size, new ArrayList<String>());
+    	return getAwards( gender,  min,  max,  size, new ArrayList<Long>());
     }
 
-    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<String> excludeBibs) { 
+    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<Long> excludeBibs) { 
     	List<RaceResult> results = Event.findRaceResultsByAwardCategory(id,gender,min,max,1,999);
     	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
     	for(RaceResult r : results){
@@ -322,7 +322,7 @@ public class Event {
     
     public List<AwardCategoryResults> calculateMedals(Event event){
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	List<String> mastersBibs = new ArrayList<String>();
+    	List<Long> mastersBibs = new ArrayList<Long>();
     	
     	// if not allow masters in overall, collect masters bibs, pass into non-masters
     	if(!event.getAwardsConfig().isAllowMastersInNonMasters()){
@@ -337,7 +337,7 @@ public class Event {
     	}
     	
 		// filter medals
-		List<String> awarded = new ArrayList<String>();
+		List<Long> awarded = new ArrayList<Long>();
     	for(AwardCategory c:event.getAwardCategorys()){
     		if(c.isMedal()){
     			List<RaceResult> rr = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)

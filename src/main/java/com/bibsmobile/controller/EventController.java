@@ -339,7 +339,7 @@ public class EventController {
                     json.append("\",\"city\":\"").append(runner.getCity());
                 if (null != runner.getState())
                     json.append("\",\"state\":\"").append(runner.getState());
-                json.append("\",\"bib\":\"").append(runner.getBib());
+                json.append("\",\"bib\":\"").append(String.valueOf(runner.getBib()));
                 json.append("\",\"age\":\"").append(runner.getAge());
                 json.append("\",\"gender\":\"").append(runner.getGender());
                 json.append("\",\"timeoverall\":\"").append(runner.getTimeofficialdisplay());
@@ -414,7 +414,7 @@ public class EventController {
 
     @RequestMapping(value = "/manual", method = RequestMethod.GET)
     @ResponseBody
-    public static String setTimeManual(@RequestParam(value = "event", required = true) long event_id, @RequestParam(value = "bib", required = true) String bib) {
+    public static String setTimeManual(@RequestParam(value = "event", required = true) long event_id, @RequestParam(value = "bib", required = true) long bib) {
         RaceResult result = new RaceResult();
         try {
             long bibtime = System.currentTimeMillis();
@@ -551,7 +551,7 @@ public class EventController {
     	Event event = Event.findEvent(eventId);
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
     	List<AwardCategory> list = event.getAwardCategorys();
-    	List<String> medalsBibs = new ArrayList<String>();
+    	List<Long> medalsBibs = new ArrayList<Long>();
 
     	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
     	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){

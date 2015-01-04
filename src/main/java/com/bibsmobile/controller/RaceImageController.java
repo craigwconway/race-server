@@ -47,7 +47,7 @@ public class RaceImageController {
 
     @RequestMapping(value = "/search", headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> jsonFindRaceImagesByEventId(@RequestParam Long eventId, @RequestParam(required = false) String bib, @RequestParam(defaultValue = "1") int page,
+    public ResponseEntity<String> jsonFindRaceImagesByEventId(@RequestParam Long eventId, @RequestParam(required = false) Long bib, @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int size) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
