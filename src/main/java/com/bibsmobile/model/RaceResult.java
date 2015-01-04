@@ -74,7 +74,7 @@ public class RaceResult implements Comparable<RaceResult> {
 
     private String middlename2;
 
-    private String age;
+    private Integer age;
 
     private String gender;
 
@@ -840,11 +840,11 @@ public class RaceResult implements Comparable<RaceResult> {
         this.middlename2 = middlename2;
     }
 
-    public String getAge() {
+    public Integer getAge() {
         return this.age;
     }
 
-    public void setAge(String age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

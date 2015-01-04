@@ -340,7 +340,7 @@ public class EventController {
                 if (null != runner.getState())
                     json.append("\",\"state\":\"").append(runner.getState());
                 json.append("\",\"bib\":\"").append(String.valueOf(runner.getBib()));
-                json.append("\",\"age\":\"").append(runner.getAge());
+                json.append("\",\"age\":\"").append(String.valueOf(runner.getAge()));
                 json.append("\",\"gender\":\"").append(runner.getGender());
                 json.append("\",\"timeoverall\":\"").append(runner.getTimeofficialdisplay());
                 json.append("\"}");

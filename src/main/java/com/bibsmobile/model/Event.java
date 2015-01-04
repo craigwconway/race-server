@@ -32,14 +32,16 @@ import javax.validation.constraints.NotNull;
 
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.UserProfileUtil;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
-
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.URL;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
@@ -95,10 +97,12 @@ public class Event {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<EventType> eventTypes = new HashSet<>();
 
+    @URL
     private String website;
 
     private String phone;
 
+    @Email
     private String email;
 
     private String contactPerson;
