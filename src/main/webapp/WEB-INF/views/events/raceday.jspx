@@ -185,7 +185,7 @@
 </td></tr></table>	
 	
 <script>
-var readerOn=false;
+var readerOn={}; // Create a hashmap to represent whether reader is running
 var runningEventCount = 0;
 var readerStatus = 0;
 var REFRESH_RESULTS = 800;		// 0.8 sec
@@ -205,7 +205,14 @@ function racedayInit(){
 	getReaders();
 	// refresh results on interval
 	setInterval(function(){
-		if(readerOn){
+		var needResults = false;
+		console.log(readerOn);
+		for (var key in readerOn) {
+			if(readerOn[key] == true) {
+				needResults = true;
+			}
+		}
+		if(needResults) {
 			getReaderResults();
 		}
 	}, REFRESH_RESULTS );
@@ -264,21 +271,21 @@ function timerStatus(id){
     		jQuery("#btn-stop-"+id).hide();
     		jQuery("#btn-update-"+id).show();
         	jQuery("#reader-progress-"+id).hide();
-        	readerOn=false;
+        	readerOn[id]=false;
     	}else if(readerStatus == 1){
     		rtn = "Connected";
     		jQuery("#btn-start-"+id).show();
     		jQuery("#btn-stop-"+id).hide();
     		jQuery("#btn-update-"+id).show();
         	jQuery("#reader-progress-"+id).hide();
-    		readerOn=false;
+    		readerOn[id]=false;
     	}else if(readerStatus == 2){
     		rtn = "Reading...";
     		jQuery("#btn-start-"+id).hide();
     		jQuery("#btn-stop-"+id).show();
     		jQuery("#btn-update-"+id).hide();
     		jQuery("#reader-progress-"+id).show();
-    		readerOn=true;
+    		readerOn[id]=true;
     	}else if(readerStatus == 3){
     		rtn = "Writing...";
     		stopReader(id);
@@ -393,7 +400,7 @@ function startReader(id){
 		if(msg!="true") 	
 			alert("Reader not available.")
 		else
-			readerOn=true;
+			readerOn[id]=true;
 		timerStatus(id);
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
@@ -463,7 +470,7 @@ function readerQuery(eventId){
 }
 
 function stopReader(id){
-	readerOn=false;
+	readerOn[id]=false;
 	var request = jQuery.ajax({
 		url: "/bibs-server/timers/stop/"+id,
 		type: "GET",
