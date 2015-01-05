@@ -222,9 +222,7 @@ public class StripeController {
             c.setStatus(Cart.PROCESSING);
             c.persist();
 
-            // TODO do not save price in double
-            double cartTotal = c.getTotal();
-            long cartTotalCents = Math.round(cartTotal * 100);
+            long cartTotalCents = c.getTotal();
 
             // needs to be logged in, if
             // 1) no card token was submitted
@@ -309,7 +307,7 @@ public class StripeController {
                     resultString += "Your total comes to ";
                     // TODO: Handle different types of currency here in the
                     // future.
-                    resultString += "$" + cartTotal + ":\n";
+                    resultString += "$" + (cartTotalCents / 100) + "." + (cartTotalCents % 100) + ":\n";
                     for (CartItem ci : c.getCartItems()) {
                         resultString += "- " + ci.getEventCartItem().getName() + ": " + ci.getEventCartItem().getDescription() + "\n";
                     }

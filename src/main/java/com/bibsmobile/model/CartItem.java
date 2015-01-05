@@ -59,7 +59,7 @@ public class CartItem {
 
     private String size;
 
-    private double price;
+    private long price;
 
     public static TypedQuery<CartItem> findCartItemsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
         if (eventCartItems == null)
@@ -204,11 +204,11 @@ public class CartItem {
         this.size = size;
     }
 
-    public double getPrice() {
+    public long getPrice() {
         return this.price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 

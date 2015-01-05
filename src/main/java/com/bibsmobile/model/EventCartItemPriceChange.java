@@ -56,7 +56,7 @@ public class EventCartItemPriceChange {
 
     /**
      */
-    private double price;
+    private long price;
 
     public Date getStartDate() {
         return this.startDate;
@@ -82,11 +82,11 @@ public class EventCartItemPriceChange {
         this.eventCartItem = eventCartItem;
     }
 
-    public double getPrice() {
+    public long getPrice() {
         return this.price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 

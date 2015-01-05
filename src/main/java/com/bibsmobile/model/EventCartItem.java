@@ -48,7 +48,7 @@ public class EventCartItem {
 
     private String description;
 
-    private double price;
+    private long price;
 
     private int available;
 
@@ -58,7 +58,7 @@ public class EventCartItem {
 
     private String eventType;
 
-    private double couponPrice;
+    private long couponPrice;
 
     private int couponsAvailable;
 
@@ -82,7 +82,7 @@ public class EventCartItem {
 
     /**
      */
-    private double donationAmount;
+    private long donationAmount;
 
     /**
      */
@@ -135,7 +135,7 @@ public class EventCartItem {
     @Transient
     private String hearFrom;
 
-    public double getActualPrice() {
+    public long getActualPrice() {
         if (CollectionUtils.isEmpty(this.priceChanges)) {
             return this.price;
         }
@@ -265,11 +265,11 @@ public class EventCartItem {
         this.description = description;
     }
 
-    public double getPrice() {
+    public long getPrice() {
         return this.price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 
@@ -305,11 +305,11 @@ public class EventCartItem {
         this.eventType = eventType;
     }
 
-    public double getCouponPrice() {
+    public long getCouponPrice() {
         return this.couponPrice;
     }
 
-    public void setCouponPrice(double couponPrice) {
+    public void setCouponPrice(long couponPrice) {
         this.couponPrice = couponPrice;
     }
 
@@ -361,11 +361,11 @@ public class EventCartItem {
         this.type = type;
     }
 
-    public double getDonationAmount() {
+    public long getDonationAmount() {
         return this.donationAmount;
     }
 
-    public void setDonationAmount(double donationAmount) {
+    public void setDonationAmount(long donationAmount) {
         this.donationAmount = donationAmount;
     }
 

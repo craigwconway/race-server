@@ -48,8 +48,8 @@ public class Cart {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "cart")
     private List<CartItem> cartItems;
 
-    private double shipping;
-    private double total;
+    private long shipping;
+    private long total;
     private Date created;
     private Date updated;
     private int status;
@@ -87,19 +87,19 @@ public class Cart {
         this.cartItems = cartItems;
     }
 
-    public double getShipping() {
+    public long getShipping() {
         return this.shipping;
     }
 
-    public void setShipping(double shipping) {
+    public void setShipping(long shipping) {
         this.shipping = shipping;
     }
 
-    public double getTotal() {
+    public long getTotal() {
         return this.total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(long total) {
         this.total = total;
     }
 
