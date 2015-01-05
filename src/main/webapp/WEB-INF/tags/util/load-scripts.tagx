@@ -3,19 +3,19 @@
 <!-- jquery code   -->
 <spring:url value="/resources/scripts/jquery-1.10.2.min.js" var="jquery_url" />
 <spring:url value="/resources/scripts/jquery.placeholder.min.js" var="placeholder_url" />
-<script src="${jquery_url}" type="text/javascript"/>
-<script src="${placeholder_url}" type="text/javascript"/>
+<script src="${jquery_url}" type="text/javascript">;//?</script>
+<script src="${placeholder_url}" type="text/javascript">;//?</script>
 <script type="text/javascript">;//?</script>
 
 <!-- results mapping code   -->
 
 <spring:url value="/resources/scripts/bibs-html-utils.js" var="utils_url" />
-<script src="${utils_url}" type="text/javascript"/>
+<script src="${utils_url}" type="text/javascript">;//?</script>
 
 <!-- goog analytics code   
 <script type="text/javascript">;//?</script>
 <spring:url value="/resources/scripts/googanalytics.js" var="goog_analytics" />
-<script src="${goog_analytics}" type="text/javascript"/>
+<script src="${goog_analytics}" type="text/javascript">;//?</script>
 -->
 
 <!-- end jquery -->
