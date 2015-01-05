@@ -19,9 +19,9 @@ public abstract class AbstractTimer implements Timer {
 	public static final String UNASSIGNED_BIB_EVENT_NAME = "Unassigned Results";
 
 	private Map<String, Integer> bibsByReader = new HashMap<String, Integer>(); // position, count
-	private List<String> bibCache = new ArrayList<String>();
-	private Set<String> uniqueBibs = new TreeSet<String>();
-	private Map<String, Long> bibTimes = new HashMap<String, Long>();
+	private List<String> bibCache = new ArrayList<String>();			// Used for testing purposes only
+	private Set<String> uniqueBibs = new TreeSet<String>();  			// Used for testing purposes only
+	private Map<String, Long> bibTimes = new HashMap<String, Long>();	// Timeout hashmap of (bibnumber -> time)
 	
 	// auto-add an unregistered runner to an event
 	public void logTime(final String bib, long time, final TimerConfig timerConfig, final Event event) {
@@ -36,7 +36,7 @@ public abstract class AbstractTimer implements Timer {
 		r.setEvent(event);
 		r.setBib(bib);
 		r = calculateOfficialTime(r, time, timerConfig);
-		r.persist();			
+		r.persist();
 		}
 
 	}
@@ -149,10 +149,10 @@ public abstract class AbstractTimer implements Timer {
 			e.printStackTrace();
 			event = new Event();
 			event.setName(UNASSIGNED_BIB_EVENT_NAME);
-			event.setRunning(1);
-			event.setGunFired(true);
-			event.setGunTime(new Date());
-			event.setTimeStart(new Date());
+			//event.setRunning(1);
+			//event.setGunFired(true);
+			//event.setGunTime(new Date());
+			//event.setTimeStart(new Date());
 			event.persist();
 		}
 		this.logTime(bib, time, timerConfig, event);
@@ -188,6 +188,23 @@ public abstract class AbstractTimer implements Timer {
 			}
 			uniqueBibs.remove(runner.getBib());
 		}
-	}
+	}		
+	
+	public void clearAllTimesByEventAndTimerId(long eventId, int position){
+		Event event = Event.findEvent(eventId);
+		for(RaceResult runner:event.getRaceResults()){
+			runner.setTimeofficial(0);
+			runner.setTimeofficialdisplay("");
+			runner.persist();
+			System.out.println("Contents of bibTimes:");
+			System.out.println(bibTimes);
+			// delete by [bib]-[timer.position]
+			String o = runner.getBib() + "-" + position;
+			bibTimes.remove(o);
+			bibCache.remove(o);
+			bibsByReader.remove(o);
+			uniqueBibs.remove(runner.getBib());
+		}
+	}	
 
 }

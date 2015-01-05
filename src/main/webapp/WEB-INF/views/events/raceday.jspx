@@ -57,7 +57,7 @@
 				window.open("/bibs-server/timers/bib-report/1","_blank");
 			}
 			
-			function clearReport(eventId){
+			function clearAllTimes(eventId){
 				// dirty double confirm
 				var proceed = false;
 				if (confirm("Clear ALL runner times for this Event?")) {
@@ -69,7 +69,22 @@
 				jQuery("#results"+eventId).html("<tr><td></td></tr>");
 				// api call
 				var request = jQuery.ajax({
-					url: "/bibs-server/timers/clear-bib-report/1?eventId="+eventId
+					url: "/bibs-server/timers/clear-all-times?eventId="+eventId
+					});
+			}
+			function clearFinishTimes(eventId){
+				// dirty double confirm
+				var proceed = false;
+				if (confirm("Clear ALL runner times for this Event?")) {
+					if (!confirm("Caution: Are your sure? This cannot be undone.")) {
+						return false;
+					}
+				}
+				// empty table
+				jQuery("#results"+eventId).html("<tr><td></td></tr>");
+				// api call
+				var request = jQuery.ajax({
+					url: "/bibs-server/timers/clear-finish-times?eventId="+eventId
 					});
 			}
 			</script>
@@ -138,7 +153,10 @@
 				onclick="gun(--event_id--);"> Fire Gun! </button> 
 			<button id="btn-update---id--" type="button" class="btn btn-info" 
 				style="margin:0;margin-left: 3px;"
-				onclick="clearReport(--event_id--)">Clear Times</button>
+				onclick="clearAllTimes(--event_id--)">Clear All</button>
+			<button id="btn-update---id--" type="button" class="btn btn-info" 
+				style="margin:0;margin-left: 3px;"
+				onclick="clearFinishTimes(--event_id--)">Clear Finish</button>				
 			<table id="results--event_id--" class="table" 
 				style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
 		</div>
@@ -167,7 +185,7 @@
 </td></tr></table>	
 	
 <script>
-var readerOn=false;
+var readerOn={}; // Create a hashmap to represent whether reader is running
 var runningEventCount = 0;
 var readerStatus = 0;
 var REFRESH_RESULTS = 800;		// 0.8 sec
@@ -187,7 +205,14 @@ function racedayInit(){
 	getReaders();
 	// refresh results on interval
 	setInterval(function(){
-		if(readerOn){
+		var needResults = false;
+		console.log(readerOn);
+		for (var key in readerOn) {
+			if(readerOn[key] == true) {
+				needResults = true;
+			}
+		}
+		if(needResults) {
 			getReaderResults();
 		}
 	}, REFRESH_RESULTS );
@@ -246,21 +271,21 @@ function timerStatus(id){
     		jQuery("#btn-stop-"+id).hide();
     		jQuery("#btn-update-"+id).show();
         	jQuery("#reader-progress-"+id).hide();
-        	readerOn=false;
+        	readerOn[id]=false;
     	}else if(readerStatus == 1){
     		rtn = "Connected";
     		jQuery("#btn-start-"+id).show();
     		jQuery("#btn-stop-"+id).hide();
     		jQuery("#btn-update-"+id).show();
         	jQuery("#reader-progress-"+id).hide();
-    		readerOn=false;
+    		readerOn[id]=false;
     	}else if(readerStatus == 2){
     		rtn = "Reading...";
     		jQuery("#btn-start-"+id).hide();
     		jQuery("#btn-stop-"+id).show();
     		jQuery("#btn-update-"+id).hide();
     		jQuery("#reader-progress-"+id).show();
-    		readerOn=true;
+    		readerOn[id]=true;
     	}else if(readerStatus == 3){
     		rtn = "Writing...";
     		stopReader(id);
@@ -375,7 +400,7 @@ function startReader(id){
 		if(msg!="true") 	
 			alert("Reader not available.")
 		else
-			readerOn=true;
+			readerOn[id]=true;
 		timerStatus(id);
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
@@ -445,7 +470,7 @@ function readerQuery(eventId){
 }
 
 function stopReader(id){
-	readerOn=false;
+	readerOn[id]=false;
 	var request = jQuery.ajax({
 		url: "/bibs-server/timers/stop/"+id,
 		type: "GET",

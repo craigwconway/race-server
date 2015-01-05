@@ -30,6 +30,11 @@ public class DummyTimer extends AbstractTimer implements Timer, Runnable {
 		status = 2;
 		System.out.println(log + " Started.");
 	}
+	
+	@Override
+	public void emptyBuffer() {
+		
+	}
 
 	@Override
 	public void stopReader() {
