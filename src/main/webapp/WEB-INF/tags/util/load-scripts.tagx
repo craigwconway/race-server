@@ -2,7 +2,9 @@
 
 <!-- jquery code   -->
 <spring:url value="/resources/scripts/jquery-1.10.2.min.js" var="jquery_url" />
+<spring:url value="/resources/scripts/jquery.placeholder.min.js" var="placeholder_url" />
 <script src="${jquery_url}" type="text/javascript"/>
+<script src="${placeholder_url}" type="text/javascript"/>
 <script type="text/javascript">;//?</script>
 
 <!-- results mapping code   -->
