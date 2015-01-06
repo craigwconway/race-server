@@ -2,12 +2,29 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <div style="padding:2%">
     <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
         <field:input field="name" placeholder="Name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/>
-        <div class="placeholder"><field:input field="city" id="c_com_bibsmobile_model_Event_city" z="iYWjL3ti+38Wz9q1TzkesCh+8mw="/></div>
-        <div class="placeholder"><field:input field="state" id="c_com_bibsmobile_model_Event_state" z="317hwhiMIVVt+Bq3TzgDkWOKaGA="/></div>
         <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
-        <div style="display:none;">
+        <field:input field="website" id="c_com_bibsmobile_model_Event_website" required="true" z="user-managed" />
+    	<field:input field="organization" id="c_com_bibsmobile_model_Event_organization" required="true" z="user-managed" />
+    	<field:input field="phone" id="c_com_bibsmobile_model_Event_phone" required="true" z="user-managed" />
+    	
+    	<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#demo">
+			Quick Add
+		</button>
+
+		<div id="demo" class="collapse in">
+			<field:input field="address1" id="c_com_bibsmobile_model_Event_address1" required="true" z="user-managed" />
+    		<field:input field="city" id="c_com_bibsmobile_model_Event_city" required="true" z="iYWjL3ti+38Wz9q1TzkesCh+8mw=" />
+    		<field:input field="state" id="c_com_bibsmobile_model_Event_state" required="true" z="317hwhiMIVVt+Bq3TzgDkWOKaGA=" />
+    		<field:input field="country" id="c_com_bibsmobile_model_Event_country" required="true" z="user-managed" />
+            <field:input field="lattitude" id="c_com_bibsmobile_model_Event_lattitude" z="user-managed" />
+            <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed" />
+            <!-- <field:input field="general" id="c_com_bibsmobile_model_Event_charity" z="user-managed" /> -->
+        </div>
+		
+    	<div style="display:none;">
             <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="user-managed"/>
             <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
             <field:input field="lattitude" id="c_com_bibsmobile_model_Event_lattitude" z="user-managed"/>
@@ -73,7 +90,9 @@
 	        <field:select field="eventTypes" id="c_com_bibsmobile_model_Event_eventTypes" itemValue="id" items="${eventtypes}" multiple="true" path="/eventtypes" z="IAV39d3gnOz6oaXPsSbO2ZBUxDs="/>
 	        <field:input field="waiver" id="c_com_bibsmobile_model_Event_waiver" z="6jFLnmgp5aXDMO+F/Z5txj7Xtco="/>
 	   	</div>
+    	
     </form:create>
+    </div>
     <script>
     window.onload = function(){
     	jQuery("#_name_id").focus();
