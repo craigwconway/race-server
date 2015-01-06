@@ -145,7 +145,7 @@
             <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
             <field:display date="true" dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_Event_timeEnd" object="${event}" z="user-managed"/>
             <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" z="user-managed"/>
-            <field:display field="lattitude" id="s_com_bibsmobile_model_Event_lattitude" object="${event}" z="user-managed"/>
+            <field:display field="latitude" id="s_com_bibsmobile_model_Event_latitude" object="${event}" z="user-managed"/>
             <field:display field="longitude" id="s_com_bibsmobile_model_Event_longitude" object="${event}" z="user-managed"/>
             <field:display field="type" id="s_com_bibsmobile_model_Event_type" object="${event}" z="user-managed"/>
             <field:display field="website" id="s_com_bibsmobile_model_Event_website" object="${event}" z="user-managed"/>

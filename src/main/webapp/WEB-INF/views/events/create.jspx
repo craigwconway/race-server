@@ -10,7 +10,7 @@
         <div style="display:none;">
             <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="user-managed"/>
             <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
-            <field:input field="lattitude" id="c_com_bibsmobile_model_Event_lattitude" z="user-managed"/>
+            <field:input field="latitude" id="c_com_bibsmobile_model_Event_latitude" z="user-managed"/>
             <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed"/>
             <field:input field="type" id="c_com_bibsmobile_model_Event_type" z="user-managed"/>
             <field:input field="website" id="c_com_bibsmobile_model_Event_website" z="user-managed"/>

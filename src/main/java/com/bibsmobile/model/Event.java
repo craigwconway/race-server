@@ -85,9 +85,9 @@ public class Event {
 
     private String country;
 
-    private String lattitude;
+    private Double latitude;
 
-    private String longitude;
+    private Double longitude;
 
     @Deprecated
     private String type;
@@ -541,7 +541,7 @@ public class Event {
                 .append(this.country, rhs.country).append(this.courseRules, rhs.courseRules).append(this.coursemaps, rhs.coursemaps).append(this.created, rhs.created)
                 .append(this.description, rhs.description).append(this.donateUrl, rhs.donateUrl).append(this.email, rhs.email).append(this.facebookUrl1, rhs.facebookUrl1)
                 .append(this.facebookUrl2, rhs.facebookUrl2).append(this.featured, rhs.featured).append(this.general, rhs.general).append(this.gunFired, rhs.gunFired)
-                .append(this.gunTime, rhs.gunTime).append(this.gunTimeStart, rhs.gunTimeStart).append(this.id, rhs.id).append(this.lattitude, rhs.lattitude)
+                .append(this.gunTime, rhs.gunTime).append(this.gunTimeStart, rhs.gunTimeStart).append(this.id, rhs.id).append(this.latitude, rhs.latitude)
                 .append(this.longitude, rhs.longitude).append(this.map, rhs.map).append(this.map2, rhs.map2).append(this.map3, rhs.map3).append(this.merchandise, rhs.merchandise)
                 .append(this.name, rhs.name).append(this.organization, rhs.organization).append(this.parking, rhs.parking).append(this.phone, rhs.phone)
                 .append(this.photo, rhs.photo).append(this.photo2, rhs.photo2).append(this.photo3, rhs.photo3).append(this.photoUploadUrl, rhs.photoUploadUrl)
@@ -557,7 +557,7 @@ public class Event {
         return new HashCodeBuilder().append(this.address).append(this.alert1).append(this.alert2).append(this.alert3).append(this.beachEvents)
                 .append(this.city).append(this.contactPerson).append(this.country).append(this.courseRules).append(this.coursemaps).append(this.created).append(this.description)
                 .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.facebookUrl2).append(this.featured).append(this.general).append(this.gunFired)
-                .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.lattitude).append(this.longitude).append(this.map).append(this.map2).append(this.map3)
+                .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.latitude).append(this.longitude).append(this.map).append(this.map2).append(this.map3)
                 .append(this.merchandise).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
                 .append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.results1)
                 .append(this.results2).append(this.results3).append(this.running).append(this.shuttles).append(this.state).append(this.sync).append(this.syncId)
@@ -679,7 +679,7 @@ public class Event {
     transient EntityManager entityManager;
 
     public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("raceImages", "raceResults", "resultsFiles", "awardCategorys", "name", "timeStart",
-            "timeEnd", "featured", "address", "city", "state", "zip", "country", "lattitude", "longitude", "type", "eventTypes", "website", "phone", "email",
+            "timeEnd", "featured", "address", "city", "state", "zip", "country", "latitude", "longitude", "type", "eventTypes", "website", "phone", "email",
             "contactPerson", "registration", "parking", "general", "description", "organization", "photo", "photo2", "photo3", "map", "map2", "map3", "results1", "results2",
             "results3", "alert1", "alert2", "alert3", "donateUrl", "facebookUrl1", "facebookUrl2", "photoUploadUrl", "coursemaps", "merchandise", "beachEvents", "shuttles",
             "courseRules", "running", "gunFired", "sync", "syncId", "regEnabled", "regStart", "regEnd", "gunTime", "gunTimeStart", "created", "updated", "photos", "alerts",
@@ -910,19 +910,19 @@ public class Event {
         this.country = country;
     }
 
-    public String getLattitude() {
-        return this.lattitude;
+    public Double getLatitude() {
+        return this.latitude;
     }
 
-    public void setLattitude(String lattitude) {
-        this.lattitude = lattitude;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public Double getLongitude() {
         return this.longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
