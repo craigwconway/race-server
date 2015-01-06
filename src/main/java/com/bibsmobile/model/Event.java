@@ -75,9 +75,7 @@ public class Event {
 
     private int featured;
 
-    private String address1;
-
-    private String address2;
+    private String address;
 
     private String city;
 
@@ -538,7 +536,7 @@ public class Event {
         if (this == obj) return true;
         if (obj.getClass() != this.getClass()) return false;
         Event rhs = (Event) obj;
-        return new EqualsBuilder().append(this.address1, rhs.address1).append(this.address2, rhs.address2).append(this.alert1, rhs.alert1).append(this.alert2, rhs.alert2)
+        return new EqualsBuilder().append(this.address, rhs.address).append(this.alert1, rhs.alert1).append(this.alert2, rhs.alert2)
                 .append(this.alert3, rhs.alert3).append(this.beachEvents, rhs.beachEvents).append(this.city, rhs.city).append(this.contactPerson, rhs.contactPerson)
                 .append(this.country, rhs.country).append(this.courseRules, rhs.courseRules).append(this.coursemaps, rhs.coursemaps).append(this.created, rhs.created)
                 .append(this.description, rhs.description).append(this.donateUrl, rhs.donateUrl).append(this.email, rhs.email).append(this.facebookUrl1, rhs.facebookUrl1)
@@ -556,7 +554,7 @@ public class Event {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.address1).append(this.address2).append(this.alert1).append(this.alert2).append(this.alert3).append(this.beachEvents)
+        return new HashCodeBuilder().append(this.address).append(this.alert1).append(this.alert2).append(this.alert3).append(this.beachEvents)
                 .append(this.city).append(this.contactPerson).append(this.country).append(this.courseRules).append(this.coursemaps).append(this.created).append(this.description)
                 .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.facebookUrl2).append(this.featured).append(this.general).append(this.gunFired)
                 .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.lattitude).append(this.longitude).append(this.map).append(this.map2).append(this.map3)
@@ -681,7 +679,7 @@ public class Event {
     transient EntityManager entityManager;
 
     public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("raceImages", "raceResults", "resultsFiles", "awardCategorys", "name", "timeStart",
-            "timeEnd", "featured", "address1", "address2", "city", "state", "zip", "country", "lattitude", "longitude", "type", "eventTypes", "website", "phone", "email",
+            "timeEnd", "featured", "address", "city", "state", "zip", "country", "lattitude", "longitude", "type", "eventTypes", "website", "phone", "email",
             "contactPerson", "registration", "parking", "general", "description", "organization", "photo", "photo2", "photo3", "map", "map2", "map3", "results1", "results2",
             "results3", "alert1", "alert2", "alert3", "donateUrl", "facebookUrl1", "facebookUrl2", "photoUploadUrl", "coursemaps", "merchandise", "beachEvents", "shuttles",
             "courseRules", "running", "gunFired", "sync", "syncId", "regEnabled", "regStart", "regEnd", "gunTime", "gunTimeStart", "created", "updated", "photos", "alerts",
@@ -873,19 +871,11 @@ public class Event {
     }
 
     public String getAddress1() {
-        return this.address1;
+        return this.address;
     }
 
     public void setAddress1(String address1) {
-        this.address1 = address1;
-    }
-
-    public String getAddress2() {
-        return this.address2;
-    }
-
-    public void setAddress2(String address2) {
-        this.address2 = address2;
+        this.address = address1;
     }
 
 	public String getCity() {
