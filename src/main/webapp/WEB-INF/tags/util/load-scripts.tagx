@@ -6,12 +6,11 @@
 <script type="text/javascript">;//?</script>
 
 <!-- other utils   -->
-<spring:url value="/resources/scripts/jquery.placeholder.min.js" var="placeholder_url" />
-<spring:url value="/resources/scripts/transition.js" var="transition_url" />
-<spring:url value="/resources/scripts/dropdown.js" var="dropdown_url" />
-<script src="${placeholder_url}" type="text/javascript">;//?</script>
-<script src="${transition_url}" type="text/javascript">;//?</script>
-<script src="${dropdown_url}" type="text/javascript">;//?</script>
+<spring:url value="/resources/scripts/bootstrap.min.js" var="bootjs_url" />
+<spring:url value="/resources/scripts/jquery.geocomplete.js" var="geocomplete_url" />
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places">;//?</script>
+<script src="${bootjs_url}" type="text/javascript">;//?</script>
+<script src="${geocomplete_url}" type="text/javascript">;//?</script>
 
 <!-- results mapping code   -->
 
@@ -39,8 +38,10 @@
   
   
   <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
+  <spring:url value="/resources/styles/so.css" var="so_url" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="${bootstrap_url }" rel="stylesheet"/>
+  <link href="${so_url }" rel="stylesheet"/>
   <style>
   	.box{ display:inline !important;}
   	label {
