@@ -665,6 +665,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 			return;
 		// Comment this out if you like spinning up a lot of threads
 		if (null != watchdog) {
+			emptyBuffer();
 			watchdog.interrupt();
 		}
 		
