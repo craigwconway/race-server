@@ -73,6 +73,7 @@ public class ResultsFileController {
             resultsFile.setFilesize(content.getSize());
             resultsFile.setFilePath(dest.getAbsolutePath());
             resultsFile.setContentType(content.getContentType());
+            resultsFile.setAutomaticUpdates(false);
         } catch (Exception e) {
             e.printStackTrace();
             return "resultsfiles/create";

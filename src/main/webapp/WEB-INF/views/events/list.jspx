@@ -9,6 +9,9 @@
 		<button class="btn btn-default btn-top" onclick="redirectMegaexport()" type="button">
 		Megaexport
 		</button>
+		<button class="btn btn-default btn-top" onclick="redirectWebappCode()" type="button">
+		My Webapp Code
+		</button>		
     </sec:authorize>
     <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
         <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
@@ -29,5 +32,8 @@
 		function redirectMegaexport(){
 			window.location="/bibs-server/events/megaexport";
 		}
+		function redirectWebappCode(){
+			window.location="/bibs-server/events/webappid";
+		}		
     </script>
 </div>
