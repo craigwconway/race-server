@@ -870,12 +870,12 @@ public class Event {
         this.featured = featured;
     }
 
-    public String getAddress1() {
+    public String getAddress() {
         return this.address;
     }
 
-    public void setAddress1(String address1) {
-        this.address = address1;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
 	public String getCity() {

@@ -7,12 +7,13 @@
 <div id="header-nav">
 
 	<div class="pull-left">
-	  <spring:url var="banner" value="/resources/images/bibsicon6-460x340.png" />
+	  <spring:url var="banner" value="/resources/images/bibsicon.png" />
 	  <spring:url var="home" value="/" />
 	  <spring:message code="button_home" var="home_label" htmlEscape="false" />
-	  <a href="${home}" name="${fn:escapeXml(home_label)}" title="${fn:escapeXml(home_label)}">
-	    <img src="${banner}" height="40" width="60"/> 
+	  <div class="icon" style="width=50px;height=50px;padding:10px"><a href="${home}" name="${fn:escapeXml(home_label)}" title="${fn:escapeXml(home_label)}">
+	    <img src="${banner}" width="30" height="30"/> 
 	  </a>
+	  </div>
 	</div>
  
 	<spring:url value="/events/raceday" var="raceday_url" />
