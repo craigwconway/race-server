@@ -6,16 +6,13 @@
     <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
         <div class="formGroup row">
             <h3 style="margin-left: 2%">Event Details:</h3>
+            <label for="eventDate" class="col-md-6 col-sm-6">
+            <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/></label>
             <label for="eventName" class="col-md-6 col-sm-6">
                 <input  type="text" name="name"
                     class="input-form"
                     placeholder="Event name"
                     value="${event.name}"></input></label>
-            <label for="eventDate" class="col-md-6 col-sm-6">
-            <input  type="text" name="timeStart"
-                    class="input-form"
-                    placeholder="Date"
-                    value="${event.timeStart}"></input></label>
             <label for="eventWebsite" class="col-md-6 col-sm-6">
             <input  type="text" name="website"
                     class="input-form"
@@ -168,10 +165,5 @@
     	});
 
     }
-    
-    $("#demo").geocomplete({
-        details: ".details",
-        detailsAttribute: "data-geo"
-    });
 	</script>
 </div>
