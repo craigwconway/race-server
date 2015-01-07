@@ -64,6 +64,8 @@
 					if (!confirm("Caution: Are your sure? This cannot be undone.")) {
 						return false;
 					}
+				} else {
+					return false;
 				}
 				// empty table
 				jQuery("#results"+eventId).html("<tr><td></td></tr>");
@@ -79,6 +81,8 @@
 					if (!confirm("Caution: Are your sure? This cannot be undone.")) {
 						return false;
 					}
+				} else {
+					return false;
 				}
 				// empty table
 				jQuery("#results"+eventId).html("<tr><td></td></tr>");
