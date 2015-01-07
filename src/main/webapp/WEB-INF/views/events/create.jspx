@@ -41,27 +41,32 @@
 		<div id="demo">
             <div class="formGroup row">
                 <label for="eventAddress" class="col-md-6 col-sm-6">
-                <input  id="geo"
-                        type="text" name="formatted_address"
-                        class="input-form"
-                        placeholder="Address"
-                        value="${event.address1}"></input></label>
+                    <input  id="geoaddress"
+                            type="text" name="formatted_address"
+                            class="input-form"
+                            placeholder="Address"
+                            value="${event.address1}"></input>
+                </label>
             </div>
             <div class="formGroup row">
                 <label for="eventCity" class="col-md-3 col-sm-3">
-                <input  id="geo"
+                <input  id="geocity"
                         type="text" name="sublocality"
                         class="input-form"
                         placeholder="City"
                         value="${event.city}"></input></label>
 
                 <label for="eventState" class="col-md-2 col-sm-2">
-                <input  id="geo"
+                <input  id="geostate"
                         type="text" name="locality"
                         class="input-form"
                         placeholder="State"
                         value="${event.country}"></input></label>
             </div>
+
+            <spring:url var="googs" value="/resources/images/google-power.png" />
+            <img src="${googs}" /> 
+
             <div class="details" style="display:none;">
                 Address: <span data-geo="formatted_address" />
                 City: <span data-geo="sublocality" />
@@ -150,19 +155,37 @@
     </form:create>
     </div>
     <script>
-    window.onload = function(){
-    	jQuery("#_name_id").focus();
-    	var myRegEnabled = jQuery("#_regEnabled_id");
-    	var myRegDates = jQuery("#regDates");
-    	if(myRegEnabled.attr("checked")){
-    		myRegDates.show();
-    	}else{
-    		myRegDates.hide();
-    	}
-    	// add toggle to myRegEnabled
-    	myRegEnabled.click(function(){
-    		myRegDates.toggle('slow');
-    	});
+    window.onload = init;
+
+    <!-- what does this function do? -->
+    function init(){
+        jQuery("#_name_id").focus();
+        var myRegEnabled = jQuery("#_regEnabled_id");
+        var myRegDates = jQuery("#regDates");
+        if(myRegEnabled.attr("checked")){
+            myRegDates.show();
+        }else{
+            myRegDates.hide();
+        }
+        // add toggle to myRegEnabled
+        myRegEnabled.click(function(){
+            myRegDates.toggle('slow');
+        });
+
+        setGeocomplete();
+    }
+
+    function setGeocomplete(){
+        jQuery("#demo input").geocomplete({
+            details: ".details",
+            detailsAttribute: "data-geo",
+            types: ["geocode"]
+        }).bind("geocode:result", function(event, result){
+            console.log(result);
+            jQuery("#geoaddress").val(result.name);
+            jQuery("#geocity").val(result.vicinity);
+            jQuery("#geostate").val(result.address_components[5].long_name);
+        });
     }
 	</script>
 </div>
