@@ -42,7 +42,7 @@
             <div class="formGroup row">
                 <label for="eventAddress" class="col-md-6 col-sm-6">
                     <input  id="geoaddress"
-                            type="text" name="formatted_address"
+                            type="text" name="event.address1"
                             class="input-form"
                             placeholder="Address"
                             value="${event.address1}"></input>
@@ -51,14 +51,14 @@
             <div class="formGroup row">
                 <label for="eventCity" class="col-md-3 col-sm-3">
                 <input  id="geocity"
-                        type="text" name="sublocality"
+                        type="text" name="event.city"
                         class="input-form"
                         placeholder="City"
                         value="${event.city}"></input></label>
 
                 <label for="eventState" class="col-md-2 col-sm-2">
                 <input  id="geostate"
-                        type="text" name="locality"
+                        type="text" name="event.country"
                         class="input-form"
                         placeholder="State"
                         value="${event.country}"></input></label>
@@ -183,8 +183,12 @@
         }).bind("geocode:result", function(event, result){
             console.log(result);
             jQuery("#geoaddress").val(result.name);
-            jQuery("#geocity").val(result.vicinity);
-            jQuery("#geostate").val(result.address_components[5].long_name);
+            if( result.address_components.length === 1 ){
+                console.log(result.address_components.length );
+            }else if( result.address_components.length > 5 ){
+                jQuery("#geocity").val(result.vicinity);
+                jQuery("#geostate").val(result.address_components[5].short_name);
+            }
         });
     }
 	</script>
