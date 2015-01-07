@@ -98,7 +98,7 @@
                     <spring:message code="entity_delete_confirm" />
                   </spring:escapeBody>
                 </c:set>
-                <button type="button" class="btn btn-default"><span alt="${fn:escapeXml(delete_label)}" class="glyphicon glyphicon-minus-sign text-danger" title="${fn:escapeXml(delete_label)}" value="${fn:escapeXml(delete_label)}" onclick="return confirm('${delete_confirm_msg}');" aria-hidden="true" ></span></button>
+                <button type="button" class="btn btn-default" onclick="return confirm('${delete_confirm_msg}');" value="${fn:escapeXml(delete_label)}" ><span alt="${fn:escapeXml(delete_label)}" class="glyphicon glyphicon-minus-sign text-danger" title="${fn:escapeXml(delete_label)}" aria-hidden="true" ></span></button>
                 <c:if test="${not empty param.page}">
                   <input name="page" type="hidden" value="1" />
                 </c:if>

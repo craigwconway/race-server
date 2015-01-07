@@ -38,7 +38,7 @@
         
         </div>
 
-		<div id="demo" class="collapse">
+		<div id="demo">
             <div class="formGroup row">
                 <label for="eventAddress" class="col-md-6 col-sm-6">
                 <input  id="geo"
@@ -144,9 +144,9 @@
 	        <field:input field="waiver" id="c_com_bibsmobile_model_Event_waiver" z="6jFLnmgp5aXDMO+F/Z5txj7Xtco="/>
 	   	</div>
     	
-        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#demo">
+        <!-- <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#demo">
             Quick Add
-        </button>
+        </button> -->
     </form:create>
     </div>
     <script>
@@ -163,7 +163,6 @@
     	myRegEnabled.click(function(){
     		myRegDates.toggle('slow');
     	});
-
     }
 	</script>
 </div>
