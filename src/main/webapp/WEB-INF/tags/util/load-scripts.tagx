@@ -8,9 +8,14 @@
 <!-- other utils   -->
 <spring:url value="/resources/scripts/bootstrap.min.js" var="bootjs_url" />
 <spring:url value="/resources/scripts/jquery.geocomplete.js" var="geocomplete_url" />
+<spring:url value="/resources/scripts/jquery-ui-1.10.4.custom.min.js" var="jquery_ui_url" />
+<spring:url value="/resources/scripts/jQDateRangeSlider.js" var="date_slider_url" />
+
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places">;//?</script>
 <script src="${bootjs_url}" type="text/javascript">;//?</script>
 <script src="${geocomplete_url}" type="text/javascript">;//?</script>
+<script src="${jquery_ui_url}" type="text/javascript">;//?</script>
+<script src="${date_slider_url}" type="text/javascript">;//?</script>
 
 <!-- results mapping code   -->
 
@@ -39,9 +44,11 @@
   
   <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
   <spring:url value="/resources/styles/so.css" var="so_url" />
+  <spring:url value="/resources/styles/iThing.css" var="slider_css_url" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="${bootstrap_url }" rel="stylesheet"/>
   <link href="${so_url }" rel="stylesheet"/>
+  <link href="${slider_css_url }" rel="stylesheet"/>
   <style>
   	.box{ display:inline !important;}
   	label {

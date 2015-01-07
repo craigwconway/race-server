@@ -23,13 +23,18 @@
                     class="input-form"
                     placeholder="Organization"
                     value="${event.organization}"></input></label>
+            <!-- <label for="eventCharity" class="col-md-6 col-sm-6">
+            <input  type="text" name="charity"
+                    class="input-form"
+                    placeholder="Charity Name"
+                    value="${event.charity}"></input></label> -->
             <label for="eventPhone" class="col-md-6 col-sm-6">
             <input  type="text" name="phone"
                     class="input-form"
                     placeholder="Phone Number"
                     minlength="10" max-length="15"
                     value="${event.phone}"></input></label>
-        
+
         <!-- <field:input field="name" placeholder="Name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/> 
         <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
         <field:input field="website" id="c_com_bibsmobile_model_Event_website" required="true" z="user-managed" />
