@@ -47,7 +47,7 @@
             <div class="formGroup row">
                 <label for="eventAddress" class="col-md-6 col-sm-6">
                     <input  id="geoaddress"
-                            type="text" name="event.address1"
+                            type="text" name="address1"
                             class="input-form"
                             placeholder="Address"
                             value="${event.address1}"></input>
@@ -56,28 +56,39 @@
             <div class="formGroup row">
                 <label for="eventCity" class="col-md-3 col-sm-3">
                 <input  id="geocity"
-                        type="text" name="event.city"
+                        type="text" name="city"
                         class="input-form"
                         placeholder="City"
                         value="${event.city}"></input></label>
 
                 <label for="eventState" class="col-md-2 col-sm-2">
                 <input  id="geostate"
-                        type="text" name="event.country"
+                        type="text" name="state"
                         class="input-form"
                         placeholder="State"
-                        value="${event.country}"></input></label>
+                        value="${event.state}"></input></label>
+            </div>
+            <div style="display:none">
+                <label for="eventCountry">
+                <input  id="geocountry" type="text" name="country"
+                        value="${event.country}"></input>
+                </label>
+                <label for="eventZip">
+                <input  id="geozip" type="text" name="zip"
+                        value="${event.zip}"></input>
+                </label>
+                <label for="eventLat">
+                <input  id="geolat" type="text" name="lattitude"
+                        value="${event.lattitude}"></input>
+                </label>
+                <label for="eventLong">
+                <input  id="geolong" type="text" name="longitude"
+                        value="${event.longitude}"></input>
+                </label>
             </div>
 
             <spring:url var="googs" value="/resources/images/google-power.png" />
             <img src="${googs}" /> 
-
-            <div class="details" style="display:none;">
-                Address: <span data-geo="formatted_address" />
-                City: <span data-geo="sublocality" />
-                State: <span data-geo="locality" />
-                Country: <span data-geo="country_short" /> - <span data-geo="country" />
-            </div>
             <!-- <field:input field="address1" id="c_com_bibsmobile_model_Event_address1" required="true" z="user-managed" />
     		<field:input field="city" id="c_com_bibsmobile_model_Event_city" required="true" z="iYWjL3ti+38Wz9q1TzkesCh+8mw=" />
     		<field:input field="state" id="c_com_bibsmobile_model_Event_state" required="true" z="317hwhiMIVVt+Bq3TzgDkWOKaGA=" />
@@ -186,15 +197,55 @@
             detailsAttribute: "data-geo",
             types: ["geocode"]
         }).bind("geocode:result", function(event, result){
-            console.log(result);
-            jQuery("#geoaddress").val(result.name);
-            if( result.address_components.length === 1 ){
-                console.log(result.address_components.length );
-            }else if( result.address_components.length > 5 ){
-                jQuery("#geocity").val(result.vicinity);
-                jQuery("#geostate").val(result.address_components[5].short_name);
+            var components = result.address_components;
+            var addr = "";
+            clearForm();
+            jQuery.each(components, function(i, d){
+                switch(d.types[0]){
+                    case 'street_number':
+                        addr += d.long_name + " ";
+                        break;
+                    case 'route':
+                        addr += d.long_name;
+                        break;
+                    case 'locality':
+                        jQuery("#geocity").val(d.long_name);
+                        break;
+                    case 'administrative_area_level_1':
+                        jQuery("#geostate").val(d.short_name);
+                        break;
+                    case 'country':
+                        jQuery("#geocountry").val(d.long_name);
+                        break;
+                    case 'postal_code':
+                        jQuery("#geozip").val(d.long_name);
+                        break;
+                }    
+            })
+
+            if( addr.length > 0 ){
+                jQuery("#geoaddress").val(addr);
             }
+
+            var long = result.geometry.location.D;
+            var lat =  result.geometry.location.k;
+            if( !long ){
+                jQuery("#geolong").val(long);
+            }
+            if( !lat ){
+                jQuery("#geolat").val(lat);
+            }         
         });
+    }
+
+    function clearForm(){
+        jQuery("#geoaddress").val("");
+        jQuery("#geocity").val("");
+        jQuery("#geostate").val("");
+        jQuery("#geocountry").val("");
+        jQuery("#geozip").val("");
+        jQuery("#geolong").val("");
+        jQuery("#geolat").val("");
     }
 	</script>
 </div>
