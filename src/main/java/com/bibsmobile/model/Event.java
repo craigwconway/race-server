@@ -183,6 +183,8 @@ public class Event {
     private boolean regEnabled;
 
     private boolean ticketTransferEnabled;
+    
+    private boolean live;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
@@ -1357,5 +1359,11 @@ public class Event {
 	}
 	public void setCharity(String charity) {
 		this.charity = charity;
+	}
+	public boolean isLive() {
+		return live;
+	}
+	public void setLive(boolean live) {
+		this.live = live;
 	}
 }
