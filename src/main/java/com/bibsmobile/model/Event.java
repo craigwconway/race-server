@@ -177,6 +177,8 @@ public class Event {
     private boolean sync;
 
     private String syncId;
+    
+    private String charity;
 
     private boolean regEnabled;
 
@@ -1350,4 +1352,10 @@ public class Event {
     public void setVersion(Integer version) {
         this.version = version;
     }
+	public String getCharity() {
+		return charity;
+	}
+	public void setCharity(String charity) {
+		this.charity = charity;
+	}
 }
