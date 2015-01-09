@@ -16,6 +16,7 @@
             <table:column id="c_com_bibsmobile_model_Event_city" property="city" z="user-managed"/>
             <table:column id="c_com_bibsmobile_model_Event_state" property="state" z="t/+R4Y6cNeGhXvFRYi9o79itV/U="/>
             <table:column id="c_com_bibsmobile_model_Event_regEnabled" property="regEnabled" z="user-managed" />
+            <table:column id="c_com_bibsmobile_model_Event_live" property="live" z="user-managed" />
             <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeEnd" z="user-managed"/>
             <!--
             <table:column id="c_com_bibsmobile_model_Event_userGroup" property="userGroup" render="false" z="user-managed"/>
@@ -26,24 +27,4 @@
             <table:column id="c_com_bibsmobile_model_Event_awardCategorys" property="awardCategorys" render="false" z="user-managed"/>
         </table:table>
     </page:list>
-    <script>
-		function redirectWebappCode(){
-			window.location="/bibs-server/events/webappid";
-		}
-
-        <!-- begin so's code -->
-        window.onload = init;
-
-        function init(){
-            jQuery("td:nth-child(7)").each(function(){
-                var outer_html = jQuery(this).html();
-                if(outer_html === "true"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
-                }
-                else if(outer_html === "false"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
-                }
-            })
-        }
-    </script>
 </div>
