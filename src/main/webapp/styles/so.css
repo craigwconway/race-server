@@ -27,3 +27,26 @@
 .input-group{
 	width: 80%;
 }
+
+/* elessar */
+#elessar-header{
+	
+}
+#elessar-container{
+	padding: 3% 0;
+	text-align: center;
+	color: #423f3f;
+	width: 80%;
+}
+
+.elessar-handle {
+	opacity: 0.1;
+}
+
+.elessar-range {
+	background: #00dffc;
+}
+
+.elessar-rangebar {
+	background: #3A3A3A;
+}

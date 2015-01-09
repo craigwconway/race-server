@@ -7,29 +7,28 @@
 
 <!-- other utils   -->
 <spring:url value="/resources/scripts/bootstrap.min.js" var="bootjs_url" />
+<spring:url value="/resources/scripts/bootstrap-datetimepicker.min.js" var="datepicker_url" />
 <spring:url value="/resources/scripts/jquery.geocomplete.js" var="geocomplete_url" />
 <spring:url value="/resources/scripts/jquery-ui.js" var="jquery_ui_url" />
-<spring:url value="/resources/scripts/jQRangeSliderMouseTouch.js" var="jqr_slider_mouse_url" />
-<spring:url value="/resources/scripts/jQRangeSliderDraggable.js" var="jqr_slider_drag_url" />
-<spring:url value="/resources/scripts/jQRangeSliderBar.js" var="jqr_slider_bar_url" />
-<spring:url value="/resources/scripts/jQRangeSliderHandle.js" var="jqr_slider_handle_url" />
-<spring:url value="/resources/scripts/jQRangeSliderLabel.js" var="jqr_slider_label_url" />
-<spring:url value="/resources/scripts/jQRangeSlider.js" var="jqr_slider_url" />
-<spring:url value="/resources/scripts/jQRuler.js" var="jqr_ruler_url" />
-<spring:url value="/resources/scripts/jQDateRangeSlider.js" var="date_slider_url" />
+<spring:url value="/resources/scripts/elessar.js" var="elessar_url" />
+<spring:url value="/resources/scripts/moment.min.js" var="moment_url" />
 
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places">;//?</script>
+<script src="${moment_url}" type="text/javascript">;//?</script>
 <script src="${bootjs_url}" type="text/javascript">;//?</script>
+<script src="${elessar_url}" type="text/javascript">;//?</script>
 <script src="${geocomplete_url}" type="text/javascript">;//?</script>
-<script src="${jquery_ui_url}" type="text/javascript">;//?</script>
+<script src="${datepicker_url}" type="text/javascript">;//?</script>
+<!-- <script src="${jquery_ui_url}" type="text/javascript">;//?</script>
 <script src="${jqr_ruler_url}" type="text/javascript">;//?</script>
 <script src="${jqr_slider_url}" type="text/javascript">;//?</script>
-<script src="${date_slider_url}" type="text/javascript">;//?</script>
 <script src="${jqr_slider_mouse_url}" type="text/javascript">;//?</script>
 <script src="${jqr_slider_drag_url}" type="text/javascript">;//?</script>
 <script src="${jqr_slider_bar_url}" type="text/javascript">;//?</script>
 <script src="${jqr_slider_handle_url}" type="text/javascript">;//?</script>
 <script src="${jqr_slider_label_url}" type="text/javascript">;//?</script>
+<script src="${date_slider_url}" type="text/javascript">;//?</script>
+<script src="${date_slider_handle_url}" type="text/javascript">;//?</script> -->
 
 <!-- results mapping code   -->
 
@@ -57,14 +56,18 @@
   
   
   <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
+  <spring:url value="/resources/styles/bootstrap-datetimepicker.css" var="datepicker_css_url" />
   <spring:url value="/resources/styles/jquery-ui.css" var="jquery_ui_css_url" />
+  <spring:url value="/resources/styles/elessar.css" var="elessar_css_url" />
   <spring:url value="/resources/styles/so.css" var="so_url" />
-  <spring:url value="/resources/styles/iThing.css" var="slider_css_url" />
+  <!-- <spring:url value="/resources/styles/iThing.css" var="slider_css_url" /> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="${bootstrap_url }" rel="stylesheet"/>
-  <link href="${jquery_ui_css_url }" rel="stylesheet"/>
+  <link href="${datepicker_css_url }" rel="stylesheet"/>
+  <link href="${elessar_css_url }" rel="stylesheet"/>
   <link href="${so_url }" rel="stylesheet"/>
-  <link href="${slider_css_url }" rel="stylesheet"/>
+  <!--   <link href="${jquery_ui_css_url }" rel="stylesheet"/>
+  <link href="${slider_css_url }" rel="stylesheet"/> -->
   <style>
   	.box{ display:inline !important;}
   	label {

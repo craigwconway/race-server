@@ -7,7 +7,13 @@
         <div class="formGroup row">
             <h3 style="margin-left: 2%">Event Details:</h3>
             <label for="eventDate" class="col-md-6 col-sm-6">
-            <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/></label>
+                <span id="event_timestart_date_format" style="display:none">${event_timestart_date_format}</span>
+                <input  type="text" name="timeStart"
+                    class="form-control"
+                    id="eventDatepicker"
+                    placeholder="Event date"
+                    data-provide="datepicker"
+                    value="${event.timeStart}"></input></label>
             <label for="eventName" class="col-md-6 col-sm-6">
                 <input  type="text" name="name"
                     class="input-form"
@@ -40,7 +46,6 @@
         <field:input field="website" id="c_com_bibsmobile_model_Event_website" required="true" z="user-managed" />
         <field:input field="organization" id="c_com_bibsmobile_model_Event_organization" required="true" z="user-managed" />
         <field:input field="phone" id="c_com_bibsmobile_model_Event_phone" required="true" z="user-managed" />-->
-        
         </div>
 
 		<div id="demo">
@@ -173,7 +178,6 @@
     <script>
     window.onload = init;
 
-    <!-- what does this function do? -->
     function init(){
         jQuery("#_name_id").focus();
         var myRegEnabled = jQuery("#_regEnabled_id");
@@ -188,6 +192,14 @@
             myRegDates.toggle('slow');
         });
 
+        jQuery("input[name='timeStart']")
+            .datetimepicker()
+            .focusout(function(){
+                var res = moment(jQuery("#eventDatepicker").val());
+                var pattern = jQuery("#event_timestart_date_format").html();
+                var parse = moment(res, pattern);
+                jQuery("#eventDatepicker").val(parse);
+            })
         setGeocomplete();
     }
 
