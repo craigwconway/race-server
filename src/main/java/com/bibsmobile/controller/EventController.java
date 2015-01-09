@@ -751,14 +751,14 @@ public class EventController {
         }
         return Event.toJsonArray(Event.findEventsByStateEquals(state, (page - 1) * size, size).getResultList());
     }
-
+/*
     @RequestMapping(value = "/bytype", method = RequestMethod.GET)
     @ResponseBody
     public String findEventsByType(@RequestParam("type") String type, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return Event.toJsonArray(Event.findEventsByTypeEquals(type, (page - 1) * size, size).getResultList());
     }
-
+*/
     @RequestMapping(value = "/cities", method = RequestMethod.GET)
     @ResponseBody
     public String findEventsCities(@RequestParam(value = "country", required = false) String country) {
