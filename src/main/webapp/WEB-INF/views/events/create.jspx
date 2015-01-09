@@ -7,12 +7,12 @@
         <div class="formGroup row">
             <h3 style="margin-left: 2%">Event Details:</h3>
             <label for="eventDate" class="col-md-6 col-sm-6">
-                <span id="event_timestart_date_format" style="display:none">${event_timestart_date_format}</span>
                 <input  type="text" name="timeStart"
                     class="form-control"
                     id="eventDatepicker"
                     placeholder="Event date"
                     data-provide="datepicker"
+                    data-date-format="MM/DD/YYYY h:mm:ss a"
                     value="${event.timeStart}"></input></label>
             <label for="eventName" class="col-md-6 col-sm-6">
                 <input  type="text" name="name"
@@ -193,13 +193,14 @@
         });
 
         jQuery("input[name='timeStart']")
-            .datetimepicker()
-            .focusout(function(){
-                var res = moment(jQuery("#eventDatepicker").val());
-                var pattern = jQuery("#event_timestart_date_format").html();
-                var parse = moment(res, pattern);
-                jQuery("#eventDatepicker").val(parse);
+            .datetimepicker({
+                useSeconds: true
             })
+            <!-- .focusout(function(){ -->
+                <!-- var res = moment(jQuery("#eventDatepicker").val()); -->
+                <!-- var parse = moment(res, pattern); -->
+                <!-- jQuery("#eventDatepicker").val(parse); -->
+            <!-- }) -->
         setGeocomplete();
     }
 
