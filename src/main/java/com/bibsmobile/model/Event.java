@@ -103,8 +103,6 @@ public class Event {
     @Email
     private String email;
 
-    private String contactPerson;
-
     private String registration;
 
     private String parking;
@@ -161,12 +159,6 @@ public class Event {
     private String photoUploadUrl;
 
     private String coursemaps;
-
-    private String merchandise;
-
-    private String beachEvents;
-
-    private String shuttles;
 
     private String courseRules;
 
@@ -541,30 +533,30 @@ public class Event {
         if (obj.getClass() != this.getClass()) return false;
         Event rhs = (Event) obj;
         return new EqualsBuilder().append(this.address, rhs.address).append(this.alert1, rhs.alert1).append(this.alert2, rhs.alert2)
-                .append(this.alert3, rhs.alert3).append(this.beachEvents, rhs.beachEvents).append(this.city, rhs.city).append(this.contactPerson, rhs.contactPerson)
+                .append(this.alert3, rhs.alert3).append(this.city, rhs.city)
                 .append(this.country, rhs.country).append(this.courseRules, rhs.courseRules).append(this.coursemaps, rhs.coursemaps).append(this.created, rhs.created)
                 .append(this.description, rhs.description).append(this.donateUrl, rhs.donateUrl).append(this.email, rhs.email).append(this.facebookUrl1, rhs.facebookUrl1)
                 .append(this.facebookUrl2, rhs.facebookUrl2).append(this.featured, rhs.featured).append(this.general, rhs.general).append(this.gunFired, rhs.gunFired)
                 .append(this.gunTime, rhs.gunTime).append(this.gunTimeStart, rhs.gunTimeStart).append(this.id, rhs.id).append(this.latitude, rhs.latitude)
-                .append(this.longitude, rhs.longitude).append(this.map, rhs.map).append(this.map2, rhs.map2).append(this.map3, rhs.map3).append(this.merchandise, rhs.merchandise)
+                .append(this.longitude, rhs.longitude).append(this.map, rhs.map).append(this.map2, rhs.map2).append(this.map3, rhs.map3)
                 .append(this.name, rhs.name).append(this.organization, rhs.organization).append(this.parking, rhs.parking).append(this.phone, rhs.phone)
                 .append(this.photo, rhs.photo).append(this.photo2, rhs.photo2).append(this.photo3, rhs.photo3).append(this.photoUploadUrl, rhs.photoUploadUrl)
                 .append(this.regEnabled, rhs.regEnabled).append(this.regEnd, rhs.regEnd).append(this.regStart, rhs.regStart).append(this.registration, rhs.registration)
                 .append(this.results1, rhs.results1).append(this.results2, rhs.results2).append(this.results3, rhs.results3).append(this.running, rhs.running)
-                .append(this.shuttles, rhs.shuttles).append(this.state, rhs.state).append(this.sync, rhs.sync).append(this.syncId, rhs.syncId).append(this.timeEnd, rhs.timeEnd)
+                .append(this.state, rhs.state).append(this.sync, rhs.sync).append(this.syncId, rhs.syncId).append(this.timeEnd, rhs.timeEnd)
                 .append(this.timeStart, rhs.timeStart).append(this.type, rhs.type).append(this.updated, rhs.updated).append(this.waiver, rhs.waiver)
                 .append(this.website, rhs.website).append(this.zip, rhs.zip).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.address).append(this.alert1).append(this.alert2).append(this.alert3).append(this.beachEvents)
-                .append(this.city).append(this.contactPerson).append(this.country).append(this.courseRules).append(this.coursemaps).append(this.created).append(this.description)
+        return new HashCodeBuilder().append(this.address).append(this.alert1).append(this.alert2).append(this.alert3)
+                .append(this.city).append(this.country).append(this.courseRules).append(this.coursemaps).append(this.created).append(this.description)
                 .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.facebookUrl2).append(this.featured).append(this.general).append(this.gunFired)
                 .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.latitude).append(this.longitude).append(this.map).append(this.map2).append(this.map3)
-                .append(this.merchandise).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
+                .append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
                 .append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.results1)
-                .append(this.results2).append(this.results3).append(this.running).append(this.shuttles).append(this.state).append(this.sync).append(this.syncId)
+                .append(this.results2).append(this.results3).append(this.running).append(this.state).append(this.sync).append(this.syncId)
                 .append(this.timeEnd).append(this.timeStart).append(this.type).append(this.updated).append(this.waiver).append(this.website).append(this.zip).toHashCode();
     }
 
@@ -684,8 +676,8 @@ public class Event {
 
     public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("raceImages", "raceResults", "resultsFiles", "awardCategorys", "name", "timeStart",
             "timeEnd", "featured", "address", "city", "state", "zip", "country", "latitude", "longitude", "type", "eventTypes", "website", "phone", "email",
-            "contactPerson", "registration", "parking", "general", "description", "organization", "photo", "photo2", "photo3", "map", "map2", "map3", "results1", "results2",
-            "results3", "alert1", "alert2", "alert3", "donateUrl", "facebookUrl1", "facebookUrl2", "photoUploadUrl", "coursemaps", "merchandise", "beachEvents", "shuttles",
+            "registration", "parking", "general", "description", "organization", "photo", "photo2", "photo3", "map", "map2", "map3", "results1", "results2",
+            "results3", "alert1", "alert2", "alert3", "donateUrl", "facebookUrl1", "facebookUrl2", "photoUploadUrl", "coursemaps",
             "courseRules", "running", "gunFired", "sync", "syncId", "regEnabled", "regStart", "regEnd", "gunTime", "gunTimeStart", "created", "updated", "photos", "alerts",
             "maps", "results", "eventUserGroups", "waiver");
 
@@ -970,14 +962,6 @@ public class Event {
         this.email = email;
     }
 
-    public String getContactPerson() {
-        return this.contactPerson;
-    }
-
-    public void setContactPerson(String contactPerson) {
-        this.contactPerson = contactPerson;
-    }
-
     public String getRegistration() {
         return this.registration;
     }
@@ -1152,30 +1136,6 @@ public class Event {
 
     public void setCoursemaps(String coursemaps) {
         this.coursemaps = coursemaps;
-    }
-
-    public String getMerchandise() {
-        return this.merchandise;
-    }
-
-    public void setMerchandise(String merchandise) {
-        this.merchandise = merchandise;
-    }
-
-    public String getBeachEvents() {
-        return this.beachEvents;
-    }
-
-    public void setBeachEvents(String beachEvents) {
-        this.beachEvents = beachEvents;
-    }
-
-    public String getShuttles() {
-        return this.shuttles;
-    }
-
-    public void setShuttles(String shuttles) {
-        this.shuttles = shuttles;
     }
 
     public String getCourseRules() {

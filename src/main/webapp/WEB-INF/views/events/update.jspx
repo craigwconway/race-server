@@ -43,9 +43,6 @@
             <field:input field="facebookUrl2" id="c_com_bibsmobile_model_Event_facebookUrl2" z="user-managed"/>
             <field:input field="photoUploadUrl" id="c_com_bibsmobile_model_Event_photoUploadUrl" z="user-managed"/>
             <field:input field="coursemaps" id="c_com_bibsmobile_model_Event_coursemaps" z="user-managed"/>
-            <field:input field="merchandise" id="c_com_bibsmobile_model_Event_merchandise" z="user-managed"/>
-            <field:input field="beachEvents" id="c_com_bibsmobile_model_Event_beachEvents" z="user-managed"/>
-            <field:input field="shuttles" id="c_com_bibsmobile_model_Event_shuttles" z="user-managed"/>
             <field:input field="courseRules" id="c_com_bibsmobile_model_Event_courseRules" z="user-managed"/>
             <field:datetime dateTimePattern="${event_updated_date_format}" field="updated" id="c_com_bibsmobile_model_Event_updated" z="user-managed"/>
             <field:simple field="raceResults" id="c_com_bibsmobile_model_Event_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" z="user-managed"/>

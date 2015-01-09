@@ -173,9 +173,6 @@
             <field:display field="facebookUrl2" id="s_com_bibsmobile_model_Event_facebookUrl2" object="${event}" z="user-managed"/>
             <field:display field="photoUploadUrl" id="s_com_bibsmobile_model_Event_photoUploadUrl" object="${event}" z="user-managed"/>
             <field:display field="coursemaps" id="s_com_bibsmobile_model_Event_coursemaps" object="${event}" z="user-managed"/>
-            <field:display field="merchandise" id="s_com_bibsmobile_model_Event_merchandise" object="${event}" z="user-managed"/>
-            <field:display field="beachEvents" id="s_com_bibsmobile_model_Event_beachEvents" object="${event}" z="user-managed"/>
-            <field:display field="shuttles" id="s_com_bibsmobile_model_Event_shuttles" object="${event}" z="user-managed"/>
             <field:display field="courseRules" id="s_com_bibsmobile_model_Event_courseRules" object="${event}" z="user-managed"/>
             <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" z="user-managed"/>
             <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" z="user-managed"/>
