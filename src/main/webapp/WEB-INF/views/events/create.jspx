@@ -2,26 +2,98 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <div style="padding:2%">
+    <div style="padding:0 2%">
     <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
-        <field:input field="name" placeholder="Name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/>
+        <div class="formGroup row">
+            <h3 style="margin-left: 2%">Event Details:</h3>
+            <label for="eventDate" class="col-md-6 col-sm-6">
+                <input  type="text" name="timeStart"
+                    class="form-control"
+                    id="eventDatepicker"
+                    placeholder="Event date"
+                    data-provide="datepicker"
+                    data-date-format="MM/DD/YYYY h:mm:ss a"
+                    value="${event.timeStart}"></input></label>
+            <label for="eventName" class="col-md-6 col-sm-6">
+                <input  type="text" name="name"
+                    class="input-form"
+                    placeholder="Event name"
+                    value="${event.name}"></input></label>
+            <label for="eventWebsite" class="col-md-6 col-sm-6">
+            <input  type="text" name="website"
+                    class="input-form"
+                    placeholder="Website"
+                    value="${event.website}"></input></label>
+            <label for="eventOrg" class="col-md-6 col-sm-6">
+            <input  type="text" name="organization"
+                    class="input-form"
+                    placeholder="Organization"
+                    value="${event.organization}"></input></label>
+            <!-- <label for="eventCharity" class="col-md-6 col-sm-6">
+            <input  type="text" name="charity"
+                    class="input-form"
+                    placeholder="Charity Name"
+                    value="${event.charity}"></input></label> -->
+            <label for="eventPhone" class="col-md-6 col-sm-6">
+            <input  type="text" name="phone"
+                    class="input-form"
+                    placeholder="Phone Number"
+                    minlength="10" max-length="15"
+                    value="${event.phone}"></input></label>
+
+        <!-- <field:input field="name" placeholder="Name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/> 
         <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
         <field:input field="website" id="c_com_bibsmobile_model_Event_website" required="true" z="user-managed" />
-    	<field:input field="organization" id="c_com_bibsmobile_model_Event_organization" required="true" z="user-managed" />
-    	<field:input field="phone" id="c_com_bibsmobile_model_Event_phone" required="true" z="user-managed" />
-    	
-    	<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#demo">
-			Quick Add
-		</button>
+        <field:input field="organization" id="c_com_bibsmobile_model_Event_organization" required="true" z="user-managed" />
+        <field:input field="phone" id="c_com_bibsmobile_model_Event_phone" required="true" z="user-managed" />-->
+        </div>
 
-		<div id="demo" class="collapse in">
-			<field:input field="address" id="c_com_bibsmobile_model_Event_address" required="true" z="user-managed" />
-    		<field:input field="city" id="c_com_bibsmobile_model_Event_city" required="true" z="iYWjL3ti+38Wz9q1TzkesCh+8mw=" />
-    		<field:input field="state" id="c_com_bibsmobile_model_Event_state" required="true" z="317hwhiMIVVt+Bq3TzgDkWOKaGA=" />
-    		<field:input field="country" id="c_com_bibsmobile_model_Event_country" required="true" z="user-managed" />
-            <!-- <field:input field="latitude" id="c_com_bibsmobile_model_Event_latitude" z="user-managed" /> -->
-            <!-- <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed" /> -->
-            <!-- <field:input field="general" id="c_com_bibsmobile_model_Event_charity" z="user-managed" /> -->
+		<div id="demo">
+            <div class="formGroup row">
+                <label for="eventAddress" class="col-md-6 col-sm-6">
+                    <input  id="geoaddress"
+                            type="text" name="address"
+                            class="input-form"
+                            placeholder="Address"
+                            value="${event.address}"></input>
+                </label>
+            </div>
+            <div class="formGroup row">
+                <label for="eventCity" class="col-md-3 col-sm-3">
+                <input  id="geocity"
+                        type="text" name="city"
+                        class="input-form"
+                        placeholder="City"
+                        value="${event.city}"></input></label>
+
+                <label for="eventState" class="col-md-2 col-sm-2">
+                <input  id="geostate"
+                        type="text" name="state"
+                        class="input-form"
+                        placeholder="State"
+                        value="${event.state}"></input></label>
+            </div>
+            <div style="display:none">
+                <label for="eventCountry">
+                <input  id="geocountry" type="text" name="country"
+                        value="${event.country}"></input>
+                </label>
+                <label for="eventZip">
+                <input  id="geozip" type="text" name="zip"
+                        value="${event.zip}"></input>
+                </label>
+                <label for="eventLat">
+                <input  id="geolat" type="text" name="latitude"
+                        value="${event.latitude}"></input>
+                </label>
+                <label for="eventLong">
+                <input  id="geolong" type="text" name="longitude"
+                        value="${event.longitude}"></input>
+                </label>
+            </div>
+
+            <spring:url var="googs" value="/resources/images/google-power.png" />
+            <img src="${googs}" /> 
         </div>
 		
     	<div style="display:none;">
@@ -88,24 +160,95 @@
 	        <field:input field="waiver" id="c_com_bibsmobile_model_Event_waiver" z="6jFLnmgp5aXDMO+F/Z5txj7Xtco="/>
 	   	</div>
     	
+        <!-- <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#demo">
+            Quick Add
+        </button> -->
     </form:create>
     </div>
     <script>
-    window.onload = function(){
-    	jQuery("#_name_id").focus();
-    	var myRegEnabled = jQuery("#_regEnabled_id");
-    	var myRegDates = jQuery("#regDates");
-    	if(myRegEnabled.attr("checked")){
-    		myRegDates.show();
-    	}else{
-    		myRegDates.hide();
-    	}
-    	// add toggle to myRegEnabled
-    	myRegEnabled.click(function(){
-    		myRegDates.toggle('slow');
-    	});
-    	
-    	$('input').placeholder();
+    window.onload = init;
+
+    function init(){
+        jQuery("#_name_id").focus();
+        var myRegEnabled = jQuery("#_regEnabled_id");
+        var myRegDates = jQuery("#regDates");
+        if(myRegEnabled.attr("checked")){
+            myRegDates.show();
+        }else{
+            myRegDates.hide();
+        }
+        // add toggle to myRegEnabled
+        myRegEnabled.click(function(){
+            myRegDates.toggle('slow');
+        });
+
+        jQuery("input[name='timeStart']")
+            .datetimepicker({
+                useSeconds: true
+            })
+            <!-- .focusout(function(){ -->
+                <!-- var res = moment(jQuery("#eventDatepicker").val()); -->
+                <!-- var parse = moment(res, pattern); -->
+                <!-- jQuery("#eventDatepicker").val(parse); -->
+            <!-- }) -->
+        setGeocomplete();
+    }
+
+    function setGeocomplete(){
+        jQuery("#demo input").geocomplete({
+            details: ".details",
+            detailsAttribute: "data-geo",
+            types: ["geocode"]
+        }).bind("geocode:result", function(event, result){
+            var components = result.address_components;
+            var addr = "";
+            clearForm();
+            jQuery.each(components, function(i, d){
+                switch(d.types[0]){
+                    case 'street_number':
+                        addr += d.long_name + " ";
+                        break;
+                    case 'route':
+                        addr += d.long_name;
+                        break;
+                    case 'locality':
+                        jQuery("#geocity").val(d.long_name);
+                        break;
+                    case 'administrative_area_level_1':
+                        jQuery("#geostate").val(d.short_name);
+                        break;
+                    case 'country':
+                        jQuery("#geocountry").val(d.long_name);
+                        break;
+                    case 'postal_code':
+                        jQuery("#geozip").val(d.long_name);
+                        break;
+                }    
+            })
+
+            if( addr.length > 0 ){
+                jQuery("#geoaddress").val(addr);
+            }
+
+            var long = result.geometry.location.D;
+            var lat =  result.geometry.location.k;
+            if( !long ){
+                jQuery("#geolong").val(long);
+            }
+            if( !lat ){
+                jQuery("#geolat").val(lat);
+            }         
+        });
+    }
+
+    function clearForm(){
+        jQuery("#geoaddress").val("");
+        jQuery("#geocity").val("");
+        jQuery("#geostate").val("");
+        jQuery("#geocountry").val("");
+        jQuery("#geozip").val("");
+        jQuery("#geolong").val("");
+        jQuery("#geolat").val("");
     }
 	</script>
 </div>

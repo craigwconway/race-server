@@ -30,13 +30,20 @@
 		function redirectWebappCode(){
 			window.location="/bibs-server/events/webappid";
 		}
-		
-/* 		$(document).ready(function() {
-		    $('.reg-column').each(function() {
-		        var lastColumn = $(this).html(); 
-		        var replaceValue = lastColumn.Append("Changed Content");
-		        $(this).html(replaceContent);
-		    }); 
-		});*/
+
+        <!-- begin so's code -->
+        window.onload = init;
+
+        function init(){
+            jQuery("td:nth-child(7)").each(function(){
+                var outer_html = jQuery(this).html();
+                if(outer_html === "true"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+                }
+                else if(outer_html === "false"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
+                }
+            })
+        }
     </script>
 </div>

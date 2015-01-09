@@ -74,7 +74,7 @@
             <spring:url value="/resources/images/show.png" var="show_image_url" />
             <spring:message arguments="${typeName}" code="entity_show" var="show_label" htmlEscape="false" />
             <a href="${show_form_url}" alt="${fn:escapeXml(show_label)}" title="${fn:escapeXml(show_label)}">
-              <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-cog text-info" aria-hidden="true" ></span></button>
+              <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-eye-open" style="color:#FC913A" aria-hidden="true" ></span></button>
             </a>
           </td>
           <c:if test="${update}">
@@ -98,7 +98,7 @@
                     <spring:message code="entity_delete_confirm" />
                   </spring:escapeBody>
                 </c:set>
-                <button type="button" class="btn btn-default"><span alt="${fn:escapeXml(delete_label)}" class="glyphicon glyphicon-minus-sign text-danger" title="${fn:escapeXml(delete_label)}" value="${fn:escapeXml(delete_label)}" onclick="return confirm('${delete_confirm_msg}');" aria-hidden="true" ></span></button>
+                <button type="button" class="btn btn-default" onclick="return confirm('${delete_confirm_msg}');" value="${fn:escapeXml(delete_label)}" ><span alt="${fn:escapeXml(delete_label)}" class="glyphicon glyphicon-minus-sign" style="color:#FF4E50" title="${fn:escapeXml(delete_label)}" aria-hidden="true" ></span></button>
                 <c:if test="${not empty param.page}">
                   <input name="page" type="hidden" value="1" />
                 </c:if>
@@ -124,16 +124,6 @@
                   <spring:escapeBody>
                     <fmt:formatDate value="${item[column].time}" pattern="${fn:escapeXml(columnDatePattern)}" var="colTxt"/>
                   </spring:escapeBody>
-                </c:when>
-                <c:when test="${columnType eq 'boolean'}">
-                	<c:choose>
-                		<c:when test="${item[column] eq true}">
-                			<c:out value="${'&lt;button type=&quot;button&quot; class=&quot;btn btn-default&quot;&gt;&lt;span class=&quot;glyphicon glyphicon-ok text-success&quot; aria-hidden=&quot;true&quot; &gt;&lt;/span&gt;&lt;/button&gt;'}" escapeXml="false" />
-                		</c:when>
-                		<c:otherwise>
-                			<c:out value="${'&lt;button type=&quot;button&quot; class=&quot;btn btn-default&quot;&gt;&lt;span class=&quot;glyphicon glyphicon-remove text-danger&quot; aria-hidden=&quot;true&quot; &gt;&lt;/span&gt;&lt;/button&gt;'}" escapeXml="false" />
-                		</c:otherwise>
-                	</c:choose>
                 </c:when>
                 <c:otherwise>
                   <c:set var="colTxt">
