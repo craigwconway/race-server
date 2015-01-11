@@ -9,4 +9,8 @@ deployment:
     branch: master
     commands:
       - deployment/deploy_bibslabs.sh
+  dev:
+    branch: develop
+    commands:
+      - deployment/deploy_wizard.sh
 
