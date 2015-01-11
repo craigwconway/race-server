@@ -790,9 +790,11 @@ public class EventController {
         return Event.toJsonArray(events.values());
     }
 
-    @RequestMapping(value = "/search/webappsearch/{userGroupId}/{time}", method = RequestMethod.GET)
+    @RequestMapping(value = "/search/webappsearch/", method = RequestMethod.GET)
     @ResponseBody
-    public String findByUserGroupandTime(@PathVariable Long userGroupId, @PathVariable Long time) {
+    public String findByUserGroupandTime(
+    		@RequestParam(value = "userGroupId", required = false) Long userGroupId,
+    		@RequestParam(value = "time", required = false) Long time) {
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
         Map<Long, Event> events = new HashMap<>();
         // Determine the timeout point. Events time out after five days.
@@ -826,6 +828,22 @@ public class EventController {
 	                    events.put(event.getId(), event);
 	                }
 	            }
+        	}
+        } else {
+        	if (1 == time) {
+        		for (Event event : Event.findAllEvents()) {
+        			if(event.getTimeStart().after(presentCutoff)) {
+        				events.put(event.getId(),event);
+        			}
+        		}
+        	} else if (2 == time) {
+            		for (Event event : Event.findAllEvents()) {
+            			if(event.getTimeStart().after(presentCutoff)) {
+            				events.put(event.getId(),event);
+            			}
+            		}        		
+        	} else {
+        		return Event.toJsonArray(Event.findAllEvents());
         	}
         }
         return Event.toJsonArray(events.values());

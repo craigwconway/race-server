@@ -102,6 +102,7 @@ public class Event {
     @Email
     private String email;
 
+    @URL
     private String registration;
 
     private String general;
