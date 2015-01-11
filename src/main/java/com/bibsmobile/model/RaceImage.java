@@ -76,8 +76,10 @@ public class RaceImage {
     public RaceImage(String filePath, long eventId, List<Long> bibs) {
         this(filePath, eventId);
         if (CollectionUtils.isNotEmpty(bibs)) {
+        	System.out.println("non empty bibs found in request");
             List<RaceResult> raceResults = RaceResult.findRaceResultsByEventAndMultipleBibs(this.event, bibs);
             for (RaceResult tmpRaceResult : raceResults) {
+            	System.out.println("persisting for race result: " + tmpRaceResult.getBib());
                 new RaceImage(filePath, tmpRaceResult, this.event).persist();
             }
         }
