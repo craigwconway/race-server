@@ -69,7 +69,7 @@ public class RaceResultController {
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public String search(@RequestParam(value = "event", required = false, defaultValue = "0") Long event,
-            @RequestParam(value = "name", required = false, defaultValue = "") String name, @RequestParam(value = "bib", required = false, defaultValue = "") String bib) {
+            @RequestParam(value = "name", required = false, defaultValue = "") String name, @RequestParam(value = "bib", required = false, defaultValue = "") Long bib) {
         String rtn = "[]";
         try {
             List<RaceResult> raceResults = RaceResult.search(event, name, bib);

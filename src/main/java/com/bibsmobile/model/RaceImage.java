@@ -73,7 +73,7 @@ public class RaceImage {
         this.raceResult = RaceResult.findRaceResultsByEventAndBibEquals(this.event, bib).getSingleResult();
     }
 
-    public RaceImage(String filePath, long eventId, List<String> bibs) {
+    public RaceImage(String filePath, long eventId, List<Long> bibs) {
         this(filePath, eventId);
         if (CollectionUtils.isNotEmpty(bibs)) {
             List<RaceResult> raceResults = RaceResult.findRaceResultsByEventAndMultipleBibs(this.event, bibs);
@@ -83,7 +83,7 @@ public class RaceImage {
         }
     }
 
-    public RaceImage(String filePath, long eventId, List<String> bibs, List<String> types) {
+    public RaceImage(String filePath, long eventId, List<Long> bibs, List<String> types) {
         this(filePath, eventId, bibs);
         if (CollectionUtils.isNotEmpty(types)) {
             for (String type : types) {

@@ -279,7 +279,7 @@ public class RaceResult implements Comparable<RaceResult> {
         return q;
     }
 
-    public static List<RaceResult> findRaceResultsByEventAndMultipleBibs(Event event, List<String> bibs) {
+    public static List<RaceResult> findRaceResultsByEventAndMultipleBibs(Event event, List<Long> bibs) {
         if (bibs == null) {
             throw new IllegalArgumentException("The bibs argument is required");
         }
@@ -291,7 +291,7 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getResultList();
     }
 
-    public static List<RaceResult> search(Long eventId, String name, String bib) {
+    public static List<RaceResult> search(Long eventId, String name, Long bib) {
         EntityManager em = RaceResult.entityManager();
 
         Event event = new Event();
@@ -310,7 +310,7 @@ public class RaceResult implements Comparable<RaceResult> {
         if (null != eventId && eventId > 0)
             HQL += " o.event = :event AND ";
 
-        if (!bib.isEmpty())
+        if (bib != null)
             HQL += " o.bib = :bib AND ";
 
         if (!firstname.isEmpty() && !lastname.isEmpty()) {
@@ -326,7 +326,7 @@ public class RaceResult implements Comparable<RaceResult> {
 
         if (null != eventId && eventId > 0)
             q.setParameter("event", event);
-        if (!bib.isEmpty())
+        if (bib != null)
             q.setParameter("bib", bib);
         if (!firstname.isEmpty() && !lastname.isEmpty()) {
             q.setParameter("firstname", firstname);
