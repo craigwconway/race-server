@@ -9,6 +9,7 @@
 <spring:url value="/resources/scripts/bootstrap.min.js" var="bootjs_url" />
 <spring:url value="/resources/scripts/bootstrap-datetimepicker.min.js" var="datepicker_url" />
 <spring:url value="/resources/scripts/jquery.geocomplete.js" var="geocomplete_url" />
+<spring:url value="/resources/scripts/jquery.mask.min.js" var="mask_url" />
 <spring:url value="/resources/scripts/jquery-ui.js" var="jquery_ui_url" />
 <spring:url value="/resources/scripts/elessar.js" var="elessar_url" />
 <spring:url value="/resources/scripts/moment.min.js" var="moment_url" />
@@ -16,6 +17,7 @@
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places">;//?</script>
 <script src="${moment_url}" type="text/javascript">;//?</script>
 <script src="${bootjs_url}" type="text/javascript">;//?</script>
+<script src="${mask_url}" type="text/javascript">;//?</script>
 <script src="${elessar_url}" type="text/javascript">;//?</script>
 <script src="${geocomplete_url}" type="text/javascript">;//?</script>
 <script src="${datepicker_url}" type="text/javascript">;//?</script>

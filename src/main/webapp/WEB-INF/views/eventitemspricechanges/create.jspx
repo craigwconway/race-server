@@ -3,29 +3,138 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_EventCartItemPriceChange" modelAttribute="eventCartItemPriceChange" path="/eventitemspricechanges" render="${empty dependencies}" z="qOGRzwTeDj/+/ie5dRn7lrTZBG4=">
-        <field:select field="eventCartItem" id="c_com_bibsmobile_model_EventCartItemPriceChange_eventCartItem" itemValue="id" items="${eventcartitems}" itemLabel="name" path="/eventitems" z="user-managed"/>
-        <field:datetime dateTimePattern="${eventCartItemPriceChange_startdate_date_format}" field="startDate" id="c_com_bibsmobile_model_EventCartItemPriceChange_startDate" z="QqSP7wTQfSDlKK6eoew9/rdoBTE="/>
-        <field:datetime dateTimePattern="${eventCartItemPriceChange_enddate_date_format}" field="endDate" id="c_com_bibsmobile_model_EventCartItemPriceChange_endDate" z="7S9Uj+2fEFqxOQpQjiSQBlxRsLc="/>
-        <field:input field="categoryName" id="c_com_bibsmobile_model_EventCartItemPriceChange_categoryName" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
-        <field:input field="lowAgeThreshold" id="c_com_bibsmobile_model_EventCartItemPriceChange_lowAgeThreshold" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
-        <field:input field="highAgeThreshold" id="c_com_bibsmobile_model_EventCartItemPriceChange_highAgeThreshold" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
-        <field:select field="gender" id="c_com_bibsmobile_model_EventCartItemPriceChange_gender" items="${eventcartitempricechangegenderenums}" path="eventcartitempricechangegenderenums" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
-        <field:checkbox field="team" id="c_com_bibsmobile_model_EventCartItemPriceChange_team" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
-        <field:input field="price" id="c_com_bibsmobile_model_EventCartItemPriceChange_price" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
+        <div class="formGroup row">
+            <h3 style="margin-left: 2%">Price Change</h3>
+            <div class="panel-container">
+                <div class="panel-container-left" style="display:none">
+                    <div id="elessar-header">
+                        <div id="elessar-container">
+                            <span><h4>Please specify a timespan for your price changes.</h4>
+                                <p>(Click below to add an event, drag to change times, and double-middle-click to delete)</p></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-container-right">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">Category Details</div>
+                        <div class="panel-body">
+                            <div class="formGroup row" style="text-align: left">
+                                <label for="startDate" style="margin-left: 41px; margin-right: 60px;">
+                                    <input  type="text" name="startDate"
+                                        class="form-control" style="width:117%;"
+                                        id="priceStartDate"
+                                        placeholder="Price start date"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY h:mm:ss a"
+                                        value="${eventCartItemPriceChange.startDate}"></input></label>
+                                <label for="endDate">
+                                    <input  type="text" name="endDate"
+                                        class="form-control" style="width:117%;"
+                                        id="priceEndDate"
+                                        placeholder="Price end date"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY h:mm:ss a"
+                                        value="${eventCartItemPriceChange.endDate}"></input></label>
+                            </div>
+                            <div class="formGroup row">
+                                <label for="lowAgeThreshold" >
+                                <input  type="text" name="lowAgeThreshold"
+                                        class="input-form"
+                                        placeholder="Min Age"
+                                        value=""></input></label>
+                                <label for="highAgeThreshold">
+                                <input  type="text" name="highAgeThreshold"
+                                        class="input-form"
+                                        placeholder="Max Age"
+                                        value=""></input></label>
+                            </div>
+                            <div class="formGroup row" style="margin-left: -25px">
+                                <div class="btn-group" role="group" data-toggle="button">
+                                    <div class="btn btn-primary">
+                                        <input style="display:none" type="checkbox" value="0" aria-pressed="false" autocomplete="off"></input>Male
+                                    </div>
+                                    <div class="btn btn-primary">
+                                        <input style="display:none" type="checkbox" value="1" aria-pressed="false" autocomplete="off"></input>Female
+                                    </div>
+                                </div>
+
+                                <div class="btn btn-primary" data-toggle="button"
+                                     style="margin-left: 37px">
+                                    <input  type="checkbox" name="team"
+                                        style="display:none"
+                                        aria-pressed="false" autocomplete="off"></input>Teams Only</div>
+                            </div>
+                            <div class="formGroup row">
+                                <label for="price">
+                                <input  type="text" name="price"
+                                        class="input-form"
+                                        placeholder="Price"></input></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display:none">
+            <field:select field="eventCartItem" id="c_com_bibsmobile_model_EventCartItemPriceChange_eventCartItem" itemValue="id" items="${eventcartitems}" itemLabel="name" path="/eventitems" z="user-managed"/>
+        </div>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItemPriceChange" render="${not empty dependencies}" z="OPR4AwIXH96J63tUV2BUksx/BoM="/>
-
-<!--     <div id="elessar-header">
-        <div id="elessar-container">
-            <span>Please specify a timespan for your price changes. (You can double-middle-click to delete)</span>
-        </div>
-    </div> -->
+    
     <script>
-    <!-- window.onload = init; -->
+    window.onload = function(){
+        initForm();
+        initDateTimePickers();
+        initRangeBar();
+    }
 
-    function init(){
-        var startDate = moment();
-        var endDate = startDate.add(1, 'day');
+    function initForm(){
+        jQuery("input[name=lowAgeThreshold]").focusOut
+    }
+
+    var todayDate = moment().startOf('day');
+    var tomorrowDate = moment(todayDate).add(1, 'days');
+    function initDateTimePickers(){
+        jQuery("#priceStartDate")
+            .datetimepicker({
+                defaultDate: todayDate,
+                useSeconds: true,
+                sideBySide: true
+            });
+        jQuery("#priceEndDate")
+            .datetimepicker({
+                defaultDate: tomorrowDate,
+                useSeconds: true,
+                sideBySide: true
+            });
+
+        jQuery("#priceStartDate").on("dp.change",function (e) {
+            jQuery('#priceEndDate').data("DateTimePicker").setMinDate(e.date);
+
+            <!-- check if end date was previously set -->
+            var selectedDate = moment(e.date);
+            var currEndDate = moment(jQuery('#priceEndDate').data("DateTimePicker").getDate());
+            if( currEndDate.isBefore(selectedDate) ){
+                jQuery('#priceEndDate').data("DateTimePicker").setDate(moment(e.date).add(1, 'days'));
+            }
+        });
+        jQuery("#priceEndDate").on("dp.change",function (e) {
+            jQuery('#priceStartDate').data("DateTimePicker").setMaxDate(e.date);
+            
+            <!-- check if start date was previously set -->
+            var selectedDate = moment(e.date);
+            var currStartDate = moment(jQuery('#priceEndDate').data("DateTimePicker").getDate());
+
+            if( selectedDate.isBefore(currStartDate) ){
+                jQuery('#priceStartDate').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
+            }
+        });
+    }
+
+    function initRangeBar(){
+        var startDate = moment(jQuery('#priceStartDate').data("DateTimePicker"));
+        var endDate = moment(jQuery('#priceEndDate').data("DateTimePicker"));
 
         var rangeBar = new RangeBar({
             min: moment().startOf('day').format('LLLL'),
@@ -38,10 +147,6 @@
             },
             values: [
                 [
-                  moment().startOf('day').format('LLLL'),
-                  moment().startOf('day').add(1, 'hours').format('LLLL')
-                ],
-                [
                   moment().startOf('day').add(1.5, 'hours').format('LLLL'),
                   moment().startOf('day').add(3.5, 'hours').format('LLLL')
                 ],
@@ -49,12 +154,9 @@
             label: function(a){
                 return moment(a[1]).from(a[0], true);
             },
-            snap: 1000 * 60 * 15,
-            minSize: 1000 * 60 * 60,
-            barClass: 'progress',
-            rangeClass: 'bar',
             allowDelete: true,
-            allowSwap: true
+            allowSwap: true,
+            bgLabels: 6
         });
 
         jQuery('#elessar-container').append(rangeBar.$el);

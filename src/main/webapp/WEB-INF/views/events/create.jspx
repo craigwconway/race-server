@@ -5,7 +5,7 @@
     <div style="padding:0 2%">
     <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
         <div class="formGroup row">
-            <h3 style="margin-left: 2%">Event Details:</h3>
+            <h3 style="margin-left: 2%">Event Details</h3>
             <label for="eventDate" class="col-md-6 col-sm-6">
                 <input  type="text" name="timeStart"
                     class="form-control"
@@ -22,6 +22,7 @@
             <label for="eventWebsite" class="col-md-6 col-sm-6">
             <input  type="text" name="website"
                     class="input-form"
+                    id="mask-website"
                     placeholder="Website"
                     value="${event.website}"></input></label>
             <label for="eventOrg" class="col-md-6 col-sm-6">
@@ -29,16 +30,16 @@
                     class="input-form"
                     placeholder="Organization"
                     value="${event.organization}"></input></label>
-            <!-- <label for="eventCharity" class="col-md-6 col-sm-6">
+            <label for="eventCharity" class="col-md-6 col-sm-6">
             <input  type="text" name="charity"
                     class="input-form"
                     placeholder="Charity Name"
-                    value="${event.charity}"></input></label> -->
+                    value="${event.charity}"></input></label>
             <label for="eventPhone" class="col-md-6 col-sm-6">
             <input  type="text" name="phone"
                     class="input-form"
+                    id="#mask-phone"
                     placeholder="Phone Number"
-                    minlength="10" max-length="15"
                     value="${event.phone}"></input></label>
 
         <!-- <field:input field="name" placeholder="Name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/> 
@@ -54,7 +55,7 @@
                     <input  id="geoaddress"
                             type="text" name="address"
                             class="input-form"
-                            placeholder="Address"
+                            placeholder="Address or Location"
                             value="${event.address}"></input>
                 </label>
             </div>
@@ -173,15 +174,26 @@
             myRegDates.toggle('slow');
         });
 
+        var todayDate = moment().startOf('day');
         jQuery("input[name='timeStart']")
             .datetimepicker({
-                useSeconds: true
-            })
-            <!-- .focusout(function(){ -->
-                <!-- var res = moment(jQuery("#eventDatepicker").val()); -->
-                <!-- var parse = moment(res, pattern); -->
-                <!-- jQuery("#eventDatepicker").val(parse); -->
-            <!-- }) -->
+                defaultDate: todayDate,
+                useSeconds: true,
+                sideBySide: true
+            });
+
+        jQuery("#mask-website").click(function(){
+            var content = jQuery("#mask-website").val();
+            if( !content ){
+                jQuery("#mask-website").val("http://");
+            }
+        })
+
+        jQuery("input[name='website']").focusout(function(){
+            var fulltext = jQuery("input[name='website']").val();
+            jQuery("input[name='website']").val(fulltext);
+        });
+
         setGeocomplete();
     }
 
