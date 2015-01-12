@@ -838,7 +838,7 @@ public class EventController {
         		}
         	} else if (2 == time) {
             		for (Event event : Event.findAllEvents()) {
-            			if(event.getTimeStart().after(presentCutoff)) {
+            			if(event.getTimeStart().before(presentCutoff)) {
             				events.put(event.getId(),event);
             			}
             		}        		
