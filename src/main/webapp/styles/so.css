@@ -1,10 +1,12 @@
 .form-container{
-	width: 50%;
-	margin: auto 3%;
+	width: 44%;
+	margin-left: 3%;
 }
 
 .row{
 	width: 100%;
+	margin-left: 0px;
+	margin-right: 0px;	
 	margin-bottom: 10px;
 	display: block;
 }
@@ -30,9 +32,13 @@
 	width: 80%;
 }
 
+#back{
+	margin-left: 3%;
+}
+
 /* panel sizes */
 .panel-container{
-	width: 100%;
+	width: 80%;
 }
 .panel-container-left{
 	display: inline-block;

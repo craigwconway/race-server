@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
         <div class="form-container">
-        <h3>Add Product</h3>
+            <h3>Add Product</h3>
             <div class="row">
                 <input  type="text" name="name"
                         class="input-form"
@@ -30,7 +30,7 @@
                         data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
             </div>
             <div class="row">
-                <div class="col-md-3 col-sm-3" style="margin: 0% auto; padding: 0%">
+                <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
                 <select name="gender" class="form-control" id="gender-type">
                     <option selected="selected">Gender</option>
                     <option value="MALE">Male</option>
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 col-sm-3" style="margin: 0% auto; padding: 0%">
+                <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
                 <select name="type" class="form-control" id="ticket-type">
                     <option selected="selected">Select Type</option>
                     <option value="TICKET">Ticket</option>
@@ -69,7 +69,76 @@
                         placeholder="Quantity"></input>
                 </div>
             </div>
+            <div class="row">
+                <button type="button" class="btn btn-info btn-lg"
+                        style="margin-left: 0px" id="add-button">Add Price Change</button></div>
         </div>
+        <div class="form-container">
+            <div class="row" id="add-container">
+                <div class="panel panel-success add-price-change">
+                    <div class="panel-heading">Category Details</div>
+                    <div class="panel-body" style="margin: auto 4%">
+                        <div class="formGroup row">
+                            <div class="col-md-6 col-sm-12">
+                                <input  type="text" data-for="startDate"
+                                    class="form-control price-change-field"
+                                    id="change-priceStartDate"
+                                    placeholder="Price start date"
+                                    data-provide="datepicker"
+                                    data-date-format="MM/DD/YYYY h:mm:ss a"
+                                    value="${eventCartItemPriceChange.startDate}"></input></div>
+                            <div class="col-md-6 col-sm-12">
+                                <input  type="text" data-for="endDate"
+                                    class="form-control price-change-field"
+                                    id="change-priceEndDate"
+                                    placeholder="Price end date"
+                                    data-provide="datepicker"
+                                    data-date-format="MM/DD/YYYY h:mm:ss a"
+                                    value="${eventCartItemPriceChange.endDate}"></input></div>
+                        </div>
+                        <div class="formGroup row" >
+                            <div class="col-md-6 col-sm-6">
+                            <input  type="text" data-for="lowAgeThreshold"
+                                    class="input-form price-change-field"
+                                    placeholder="Min Age"
+                                    value=""></input></div>
+                            <div class="col-md-6 col-sm-6">
+                            <input  type="text" data-for="highAgeThreshold"
+                                    class="input-form price-change-field"
+                                    placeholder="Max Age"
+                                    value=""></input></div>
+                        </div>
+                        <div class="formGroup row">
+                            <div class="col-md-6 col-sm-6">
+                            <select data-for="gender" class="form-control price-change-field" id="gender-type">
+                                <option selected="selected">Gender</option>
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                                <option value="MALE_AND_FEMALE">Both</option>
+                            </select></div>
+
+                            <div class="col-md-6 col-sm-6">
+                                <button type="button" data-for="team" data-toggle="button"
+                                    class="btn btn-primary price-change-field"
+                                    aria-pressed="false" autocomplete="off">Teams Only</button>
+                            </div>
+                        </div>
+                        <div class="formGroup row">
+                            <div class="col-md-6 col-sm-6">
+                            <input  type="text" data-for="price"
+                                    class="input-form price-change-field"
+                                    placeholder="Price"></input></div>
+                        </div>
+                        <div class="formGroup row">
+                            <div style="text-align:right">
+                                <button type="button" class="btn btn-success" onclick="savePriceChange()">Save Price Change</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- required fields not displayed for user -->
         <div style="display:none">
             <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
@@ -78,72 +147,12 @@
         </div>
     </form:create>
     
-    
-            <div class="row">
-            <button type="button" class="btn btn-info" id="add-button">Add Price Change</button></div>
-            <div class="row" id="add-container">
-                <div class="panel panel-success add-price-change">
-                    <div class="panel-heading">Category Details</div>
-                    <div class="panel-body" style="text-align:center">
-                        <div class="formGroup row">
-                            <label for="startDate" style="margin-right: 60px;">
-                                <input  type="text" name="startDate"
-                                    class="form-control" style="width:117%;"
-                                    id="priceStartDate"
-                                    placeholder="Price start date"
-                                    data-provide="datepicker"
-                                    data-date-format="MM/DD/YYYY h:mm:ss a"
-                                    value="${eventCartItemPriceChange.startDate}"></input></label>
-                            <label for="endDate">
-                                <input  type="text" name="endDate"
-                                    class="form-control" style="width:117%;"
-                                    id="priceEndDate"
-                                    placeholder="Price end date"
-                                    data-provide="datepicker"
-                                    data-date-format="MM/DD/YYYY h:mm:ss a"
-                                    value="${eventCartItemPriceChange.endDate}"></input></label>
-                        </div>
-                        <div class="formGroup row" style="margin-left:0px">
-                            <label for="lowAgeThreshold" >
-                            <input  type="text" name="lowAgeThreshold"
-                                    class="input-form"
-                                    placeholder="Min Age"
-                                    value=""></input></label>
-                            <label for="highAgeThreshold">
-                            <input  type="text" name="highAgeThreshold"
-                                    class="input-form"
-                                    placeholder="Max Age"
-                                    value=""></input></label>
-                        </div>
-                        <div class="formGroup row" style="margin-left:-10px">
-                            <div class="btn-group" role="group" data-toggle="button">
-                                <div class="btn btn-primary">
-                                    <input style="display:none" type="checkbox" value="0" aria-pressed="false" autocomplete="off"></input>Male
-                                </div>
-                                <div class="btn btn-primary">
-                                    <input style="display:none" type="checkbox" value="1" aria-pressed="false" autocomplete="off"></input>Female
-                                </div>
-                            </div>
-
-                            <div class="btn btn-primary" data-toggle="button"
-                                 style="margin-left: 37px">
-                                <input  type="checkbox" name="team"
-                                    style="display:none"
-                                    aria-pressed="false" autocomplete="off"></input>Teams Only</div>
-                        </div>
-                        <div class="formGroup row">
-                            <label for="price">
-                            <input  type="text" name="price"
-                                    class="input-form"
-                                    placeholder="Price"></input></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 
     <script>
     window.onload = function(){
+        var priceChangeObjectArray = [];
+
         initForm();
         initDateTimePickers();
     }
@@ -156,13 +165,43 @@
             jQuery(".add-price-change").show();
             jQuery("#add-container").after(jQuery(".add-price-change"));
         })
-    }
 
+    }
+    
     function parseEventId(){
         var url = window.location.href;
         var urllen = url.length;
         var ind = url.lastIndexOf("=");
         return url.substring(ind+1, urllen);
+    }
+
+    function savePriceChange(){
+        var priceChangeObject = {};
+
+        jQuery(".price-change-field").each(function(i){
+            var key = jQuery(this).attr("data-for");
+            var val = jQuery(this).val();
+
+            if( key == "team" ){
+                if(jQuery(this).hasClass('active')){
+                    val = true;
+                }
+                else{
+                    val = false;
+                }
+            }
+            priceChangeObject[key] = val;
+        })
+
+        <!-- TODO: once constructor for EventCartItemPriceChange is ready, submit array in POST call -->
+        console.log(priceChangeObject);
+
+        <!-- create new thumbnail to represent saved price change -->
+        createThumbnail(priceChangeObject.startDate, priceChangeObject.endDate);
+    }
+
+    function createThumbnail(startDate, endDate){
+        
     }
 
     var todayDate = moment().startOf('day');
@@ -180,6 +219,18 @@
                 useSeconds: true,
                 sideBySide: true
             });
+        jQuery("#change-priceStartDate")
+            .datetimepicker({
+                defaultDate: tomorrowDate,
+                useSeconds: true,
+                sideBySide: true
+            });
+        jQuery("#change-priceEndDate")
+            .datetimepicker({
+                defaultDate: moment(tomorrowDate).add(1, 'days'),
+                useSeconds: true,
+                sideBySide: true
+            });
 
         jQuery("#priceStartDate").on("dp.change",function (e) {
             jQuery('#priceEndDate').data("DateTimePicker").setMinDate(e.date);
@@ -193,6 +244,7 @@
         });
         jQuery("#priceEndDate").on("dp.change",function (e) {
             jQuery('#priceStartDate').data("DateTimePicker").setMaxDate(e.date);
+            jQuery('#change-priceStartDate').data("DateTimePicker").setMinDate(e.date);
             
             <!-- check if start date was previously set -->
             var selectedDate = moment(e.date);
@@ -202,6 +254,59 @@
                 jQuery('#priceStartDate').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
             }
         });
+
+        <!-- on change-ui -->
+        jQuery("#change-priceEndDate").on("dp.change",function (e) {
+            jQuery('#change-priceStartDate').data("DateTimePicker").setMaxDate(e.date);
+            
+            <!-- check if start date was previously set -->
+            var selectedDate = moment(e.date);
+            var currStartDate = moment(jQuery('#change-priceEndDate').data("DateTimePicker").getDate());
+
+            if( selectedDate.isBefore(currStartDate) ){
+                jQuery('#priceStartDate').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
+            }
+        });
+        jQuery("#change-priceEndDate").on("dp.change",function (e) {
+            jQuery('#change-priceStartDate').data("DateTimePicker").setMaxDate(e.date);
+            
+            <!-- check if start date was previously set -->
+            var selectedDate = moment(e.date);
+            var currStartDate = moment(jQuery('#change-priceEndDate').data("DateTimePicker").getDate());
+
+            if( selectedDate.isBefore(currStartDate) ){
+                jQuery('#priceStartDate').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
+            }
+        });
     }
+
+    function initRangeBar(){
+        var ECIstart = moment(jQuery("#priceStartDate").data("DateTimePicker"));
+        var ECIend   = moment(jQuery("#priceEndDate").data("DateTimePicker"));
+
+        var rangeBar = new RangeBar({
+            min: moment().startOf('day').format('LLLL'),
+            max: moment().endOf('day').format('LLLL'),
+            valueFormat: function(ts) {
+                return moment(ts).format('LLLL');
+            },
+            valueParse: function(date) {
+                return moment(date).valueOf();
+            },
+            values: [
+                [
+                  moment().startOf('day').add(1.5, 'hours').format('LLLL'),
+                  moment().startOf('day').add(3.5, 'hours').format('LLLL')
+                ],
+            ],
+            label: function(a){
+                return moment(a[1]).from(a[0], true);
+            },
+            allowDelete: true,
+            allowSwap: true,
+            bgLabels: 6
+        });
+
+        jQuery('#elessar-container').append(rangeBar.$el);
     </script>
 </div>

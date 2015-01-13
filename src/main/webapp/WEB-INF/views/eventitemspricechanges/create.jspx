@@ -90,7 +90,6 @@
     }
 
     function initForm(){
-        jQuery("input[name=lowAgeThreshold]").focusOut
     }
 
     var todayDate = moment().startOf('day');
