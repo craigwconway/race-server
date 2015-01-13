@@ -74,7 +74,7 @@
                         style="margin-left: 0px" id="add-button">Add Price Change</button></div>
         </div>
 
-        <div class="panel-container-left">
+        <div class="panel-container-right">
             <div class="row" id="add-container">
                 <div class="panel panel-success add-price-change">
                     <div class="panel-heading">Category Details</div>
@@ -143,9 +143,8 @@
         <div class="row">
             <div id="elessar-header">
                 <div id="elessar-container">
-                    <span><h4>Please specify a timespan for your price changes.</h4>
-                        <p>(Click below to add an event, drag to change times, and double-middle-click to delete)</p></span>
-                </div>
+                    <span><h4>Price Change Timeline</h4>
+                    <p>Base price: &#36;</p></span></div>
             </div>
         </div>
 
@@ -161,34 +160,74 @@
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 
     <script>
-    window.onload = function(){
-        var priceChangeObjectArray = [];
+    <!-- global variables -->
+    var priceChangeObjectArray = [];
+    var rangeBar;
 
+    window.onload = function(){
+
+        <!-- event id is currently defaulted to the event name, but database wants an event id.
+             this section parses the event id directly from the url. -->
+        parseEventId();
         initForm();
         initDateTimePickers();
     }
 
-    function initForm(){
-        var eid = parseEventId();
-        jQuery("#_event_id").val(eid);
-        jQuery(".add-price-change").hide();
-        jQuery("#add-button").click(function(){
-            jQuery(".add-price-change").show();
-            jQuery("#add-container").after(jQuery(".add-price-change"));
-        })
-
-    }
-    
     function parseEventId(){
         var url = window.location.href;
         var urllen = url.length;
         var ind = url.lastIndexOf("=");
-        return url.substring(ind+1, urllen);
+        var eid = url.substring(ind+1, urllen);
+        jQuery("#_event_id").val(eid);
     }
 
+    function initForm(){
+        <!-- hide certain div elements that shouldn't appear until the user clicks on UI elements.  -->
+        jQuery(".add-price-change").hide();
+        jQuery("#elessar-header").hide();
+
+        <!-- populate header for price timeline with base price value. -->
+        jQuery("input[name='price']").change(function(){
+            var val = jQuery(this).val();
+            jQuery("#elessar-container p").append(val);
+        })
+
+        <!-- logic for "Add Price Change button":
+            1) show price change detail form section on the right side of the page
+            2) initialize price timeline at the bottom of the forms
+         -->
+        var initialized = false;
+        jQuery("#add-button").click(function(){
+            if( !initialized ){
+                initRangeBar();
+                initialized = true;
+            }
+            jQuery(".add-price-change").show();
+            jQuery("#elessar-header").show();
+            jQuery("#add-container").after(jQuery(".add-price-change"));
+        })
+    }
+    
+    <!-- logic for "Save Price Change button". gets called every time the button is clicked.
+        BACKLOGIC()
+        1) grab all fields and save into priceChangeObject
+        2) initialize EventCartItemPriceChange pc for each priceChangeObject
+        3) add into priceChanges (array of ECIPC)
+
+        FRONTLOGIC()
+        4) add new bar for timeline
+        5) add thumbnail navigation for each price change for user to edit
+
+      -->
     function savePriceChange(){
         var priceChangeObject = {};
 
+        priceChangeObject = backLogic();
+        frontLogic(priceChangeObject);
+    }
+
+    function backLogic(){
+        var obj = {};
         jQuery(".price-change-field").each(function(i){
             var key = jQuery(this).attr("data-for");
             var val = jQuery(this).val();
@@ -201,19 +240,29 @@
                     val = false;
                 }
             }
-            priceChangeObject[key] = val;
+            obj[key] = val;
         })
 
         <!-- TODO: once constructor for EventCartItemPriceChange is ready, submit array in POST call -->
-        console.log(priceChangeObject);
+        return obj;
+    }
 
+    function frontLogic(obj){
+        <!-- create new bar for timeline -->
+        createBar(obj);
         <!-- create new thumbnail to represent saved price change -->
-        createThumbnail(priceChangeObject.startDate, priceChangeObject.endDate);
+        createThumbnail(obj.startDate, obj.endDate);
+    }
+
+    function createBar(obj){
+        var minDate = moment(obj.startDate);
+        var maxDate = moment(obj.endDate);
+        console.log(minDate)
+        rangeBar.val([minDate, maxDate]);
     }
 
     function createThumbnail(startDate, endDate){
         console.log(startDate, endDate);
-        initRangeBar();
     }
 
     var todayDate = moment().startOf('day');
@@ -296,10 +345,8 @@
     function initRangeBar(){
         var ECIstart = moment(jQuery("#ECIStart").data("DateTimePicker").getDate());
         var ECIend   = moment(jQuery('#ECIEnd').data("DateTimePicker").getDate());
-        var pcStart  = moment(jQuery("#pcStart").data("DateTimePicker").getDate());
-        var pcEnd    = moment(jQuery('#pcEnd').data("DateTimePicker").getDate());
 
-        var rangeBar = new RangeBar({
+        rangeBar = new RangeBar({
             readonly: true,
             min: moment(ECIstart).startOf('day').format('MM/DD/YY hh:mm A'),
             max: moment(ECIend).endOf('day').format('MM/DD/YY hh:mm A'),
@@ -309,12 +356,6 @@
             valueParse: function(date) {
                 return moment(date).valueOf();
             },
-            values: [
-                [
-                  moment(pcStart).format('MM/DD/YY hh:mm A'),
-                  moment(pcEnd).format('MM/DD/YY hh:mm A')
-                ],
-            ],
             label: function(a){
                 var from =  moment(a[0]);
                 var until =  moment(a[1]);
@@ -327,7 +368,7 @@
             snap: 1000 * 60 * 15,
             allowDelete: true,
             allowSwap: true,
-            bgLabels: 6
+            bgLabels: 8
         });
 
         jQuery('#elessar-container').append(rangeBar.$el);

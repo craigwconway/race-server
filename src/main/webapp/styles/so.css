@@ -49,8 +49,7 @@
 
 .panel-container-right{
 	display: inline-block;
-	width: 40%;
-	margin-left: 2%;
+	width: 50%;
 }
 
 /* elessar */
@@ -59,7 +58,8 @@
 }
 #elessar-container{
 	margin: auto 8%;
-	padding: 5% 0;
+	padding-top: 2%;
+	padding-bottom: 4%;
 	text-align: center;
 	color: #423f3f;
 }
