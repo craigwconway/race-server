@@ -147,7 +147,6 @@
             <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" z="user-managed"/>
             <field:display field="latitude" id="s_com_bibsmobile_model_Event_latitude" object="${event}" z="user-managed"/>
             <field:display field="longitude" id="s_com_bibsmobile_model_Event_longitude" object="${event}" z="user-managed"/>
-            <field:display field="type" id="s_com_bibsmobile_model_Event_type" object="${event}" z="user-managed"/>
             <field:display field="website" id="s_com_bibsmobile_model_Event_website" object="${event}" z="user-managed"/>
             <field:display field="phone" id="s_com_bibsmobile_model_Event_phone" object="${event}" z="user-managed"/>
             <field:display field="email" id="s_com_bibsmobile_model_Event_email" object="${event}" z="user-managed"/>
@@ -159,20 +158,12 @@
             <field:display field="photo" id="s_com_bibsmobile_model_Event_photo" object="${event}" z="user-managed"/>
             <field:display field="photo2" id="s_com_bibsmobile_model_Event_photo2" object="${event}" z="user-managed"/>
             <field:display field="photo3" id="s_com_bibsmobile_model_Event_photo3" object="${event}" z="user-managed"/>
-            <field:display field="map" id="s_com_bibsmobile_model_Event_map" object="${event}" z="user-managed"/>
-            <field:display field="map2" id="s_com_bibsmobile_model_Event_map2" object="${event}" z="user-managed"/>
-            <field:display field="map3" id="s_com_bibsmobile_model_Event_map3" object="${event}" z="user-managed"/>
             <field:display field="results1" id="s_com_bibsmobile_model_Event_results1" object="${event}" z="user-managed"/>
             <field:display field="results2" id="s_com_bibsmobile_model_Event_results2" object="${event}" z="user-managed"/>
             <field:display field="results3" id="s_com_bibsmobile_model_Event_results3" object="${event}" z="user-managed"/>
-            <field:display field="alert1" id="s_com_bibsmobile_model_Event_alert1" object="${event}" z="user-managed"/>
-            <field:display field="alert2" id="s_com_bibsmobile_model_Event_alert2" object="${event}" z="user-managed"/>
-            <field:display field="alert3" id="s_com_bibsmobile_model_Event_alert3" object="${event}" z="user-managed"/>
             <field:display field="donateUrl" id="s_com_bibsmobile_model_Event_donateUrl" object="${event}" z="user-managed"/>
             <field:display field="facebookUrl1" id="s_com_bibsmobile_model_Event_facebookUrl1" object="${event}" z="user-managed"/>
-            <field:display field="facebookUrl2" id="s_com_bibsmobile_model_Event_facebookUrl2" object="${event}" z="user-managed"/>
             <field:display field="photoUploadUrl" id="s_com_bibsmobile_model_Event_photoUploadUrl" object="${event}" z="user-managed"/>
-            <field:display field="coursemaps" id="s_com_bibsmobile_model_Event_coursemaps" object="${event}" z="user-managed"/>
             <field:display field="courseRules" id="s_com_bibsmobile_model_Event_courseRules" object="${event}" z="user-managed"/>
             <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" z="user-managed"/>
             <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" z="user-managed"/>

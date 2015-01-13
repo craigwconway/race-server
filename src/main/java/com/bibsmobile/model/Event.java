@@ -80,17 +80,16 @@ public class Event {
     private String city;
 
     private String state;
-
+    
     private String zip;
 
     private String country;
+    
+    private String location;
 
     private Double latitude;
 
     private Double longitude;
-
-    @Deprecated
-    private String type;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<EventType> eventTypes = new HashSet<>();
@@ -103,9 +102,8 @@ public class Event {
     @Email
     private String email;
 
+    @URL
     private String registration;
-
-    private String parking;
 
     private String general;
 
@@ -113,17 +111,13 @@ public class Event {
 
     private String organization;
 
+    private String parking;
+    
     private String photo;
 
     private String photo2;
 
     private String photo3;
-
-    private String map;
-
-    private String map2;
-
-    private String map3;
 
     @Column(name = "results")
     private String results1;
@@ -144,21 +138,13 @@ public class Event {
     	setResults3(awardsConfig.toJson());
     }
 
-    private String alert1;
-
-    private String alert2;
-
-    private String alert3;
-
     private String donateUrl;
 
     private String facebookUrl1;
 
-    private String facebookUrl2;
-
     private String photoUploadUrl;
 
-    private String coursemaps;
+    private String hashtag;
 
     private String courseRules;
 
@@ -225,7 +211,7 @@ public class Event {
 
     /**
      */
-    private String waiver;
+    private String waiver;  //TODO: Replace this with S3 HTML object
 
     @PrePersist
     protected void onCreate() {
@@ -432,6 +418,7 @@ public class Event {
         return q.executeUpdate();
     }
 
+    /*
     public static TypedQuery<Event> findEventsByTypeEquals(String type, int firstResult, int maxResults) {
         if (type == null || type.isEmpty())
             throw new IllegalArgumentException("The type argument is required");
@@ -442,7 +429,7 @@ public class Event {
         q.setMaxResults(maxResults);
         return q;
     }
-
+*/
     public static TypedQuery<String> findAllEventsCountries() {
         EntityManager em = Event.entityManager();
         return em.createQuery("SELECT distinct event.country FROM Event AS event", String.class);
@@ -532,32 +519,28 @@ public class Event {
         if (this == obj) return true;
         if (obj.getClass() != this.getClass()) return false;
         Event rhs = (Event) obj;
-        return new EqualsBuilder().append(this.address, rhs.address).append(this.alert1, rhs.alert1).append(this.alert2, rhs.alert2)
-                .append(this.alert3, rhs.alert3).append(this.city, rhs.city)
-                .append(this.country, rhs.country).append(this.courseRules, rhs.courseRules).append(this.coursemaps, rhs.coursemaps).append(this.created, rhs.created)
+        return new EqualsBuilder().append(this.address, rhs.address).append(this.city, rhs.city).append(this.state, rhs.state)
+                .append(this.country, rhs.country).append(this.location, rhs.location).append(this.zip, rhs.zip).append(this.courseRules, rhs.courseRules).append(this.hashtag, rhs.hashtag).append(this.created, rhs.created)
                 .append(this.description, rhs.description).append(this.donateUrl, rhs.donateUrl).append(this.email, rhs.email).append(this.facebookUrl1, rhs.facebookUrl1)
-                .append(this.facebookUrl2, rhs.facebookUrl2).append(this.featured, rhs.featured).append(this.general, rhs.general).append(this.gunFired, rhs.gunFired)
+                .append(this.featured, rhs.featured).append(this.general, rhs.general).append(this.gunFired, rhs.gunFired)
                 .append(this.gunTime, rhs.gunTime).append(this.gunTimeStart, rhs.gunTimeStart).append(this.id, rhs.id).append(this.latitude, rhs.latitude)
-                .append(this.longitude, rhs.longitude).append(this.map, rhs.map).append(this.map2, rhs.map2).append(this.map3, rhs.map3)
-                .append(this.name, rhs.name).append(this.organization, rhs.organization).append(this.parking, rhs.parking).append(this.phone, rhs.phone)
+                .append(this.longitude, rhs.longitude).append(this.name, rhs.name).append(this.organization, rhs.organization).append(this.parking, rhs.parking).append(this.phone, rhs.phone)
                 .append(this.photo, rhs.photo).append(this.photo2, rhs.photo2).append(this.photo3, rhs.photo3).append(this.photoUploadUrl, rhs.photoUploadUrl)
                 .append(this.regEnabled, rhs.regEnabled).append(this.regEnd, rhs.regEnd).append(this.regStart, rhs.regStart).append(this.registration, rhs.registration)
                 .append(this.results1, rhs.results1).append(this.results2, rhs.results2).append(this.results3, rhs.results3).append(this.running, rhs.running)
-                .append(this.state, rhs.state).append(this.sync, rhs.sync).append(this.syncId, rhs.syncId).append(this.timeEnd, rhs.timeEnd)
-                .append(this.timeStart, rhs.timeStart).append(this.type, rhs.type).append(this.updated, rhs.updated).append(this.waiver, rhs.waiver)
-                .append(this.website, rhs.website).append(this.zip, rhs.zip).isEquals();
+                .append(this.sync, rhs.sync).append(this.syncId, rhs.syncId).append(this.timeEnd, rhs.timeEnd)
+                .append(this.timeStart, rhs.timeStart).append(this.updated, rhs.updated).append(this.waiver, rhs.waiver)
+                .append(this.website, rhs.website).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.address).append(this.alert1).append(this.alert2).append(this.alert3)
-                .append(this.city).append(this.country).append(this.courseRules).append(this.coursemaps).append(this.created).append(this.description)
-                .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.facebookUrl2).append(this.featured).append(this.general).append(this.gunFired)
-                .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.latitude).append(this.longitude).append(this.map).append(this.map2).append(this.map3)
-                .append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
+        return new HashCodeBuilder().append(this.address).append(this.city).append(this.state).append(this.country).append(this.location).append(this.zip).append(this.courseRules).append(this.hashtag).append(this.created).append(this.description)
+                .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.featured).append(this.general).append(this.gunFired)
+                .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.latitude).append(this.longitude).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
                 .append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.results1)
-                .append(this.results2).append(this.results3).append(this.running).append(this.state).append(this.sync).append(this.syncId)
-                .append(this.timeEnd).append(this.timeStart).append(this.type).append(this.updated).append(this.waiver).append(this.website).append(this.zip).toHashCode();
+                .append(this.results2).append(this.results3).append(this.running).append(this.sync).append(this.syncId)
+                .append(this.timeEnd).append(this.timeStart).append(this.updated).append(this.waiver).append(this.website).toHashCode();
     }
 
     public static Long countFindEventsByStateEquals(String state) {
@@ -581,6 +564,7 @@ public class Event {
         return q.getSingleResult();
     }
 
+    /*
     public static Long countFindEventsByTypeEquals(String type) {
         if (type == null || type.isEmpty())
             throw new IllegalArgumentException("The type argument is required");
@@ -589,7 +573,7 @@ public class Event {
         q.setParameter("type", type);
         return (q.getSingleResult());
     }
-
+*/
     public static TypedQuery<Event> findEventsByStateEquals(String state) {
         if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
@@ -645,7 +629,7 @@ public class Event {
         q.setParameter("city", city);
         return q;
     }
-
+/*
     public static TypedQuery<Event> findEventsByTypeEquals(String type) {
         if (type == null || type.isEmpty())
             throw new IllegalArgumentException("The type argument is required");
@@ -654,7 +638,8 @@ public class Event {
         q.setParameter("type", type);
         return q;
     }
-
+*/
+/*
     public static TypedQuery<Event> findEventsByTypeEquals(String type, String sortFieldName, String sortOrder) {
         if (type == null || type.isEmpty())
             throw new IllegalArgumentException("The type argument is required");
@@ -670,14 +655,14 @@ public class Event {
         q.setParameter("type", type);
         return q;
     }
-
+*/
     @PersistenceContext
     transient EntityManager entityManager;
 
     public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("raceImages", "raceResults", "resultsFiles", "awardCategorys", "name", "timeStart",
-            "timeEnd", "featured", "address", "city", "state", "zip", "country", "latitude", "longitude", "type", "eventTypes", "website", "phone", "email",
-            "registration", "parking", "general", "description", "organization", "photo", "photo2", "photo3", "map", "map2", "map3", "results1", "results2",
-            "results3", "alert1", "alert2", "alert3", "donateUrl", "facebookUrl1", "facebookUrl2", "photoUploadUrl", "coursemaps",
+            "timeEnd", "featured", "address", "city", "state", "country", "latitude", "longitude", "eventTypes", "website", "phone", "email",
+            "registration", "general", "description", "organization", "parking", "photo", "photo2", "photo3", "results1", "results2",
+            "results3", "donateUrl", "facebookUrl1", "photoUploadUrl", "hashtag",
             "courseRules", "running", "gunFired", "sync", "syncId", "regEnabled", "regStart", "regEnd", "gunTime", "gunTimeStart", "created", "updated", "photos", "alerts",
             "maps", "results", "eventUserGroups", "waiver");
 
@@ -890,14 +875,6 @@ public class Event {
         this.state = state;
     }
 
-    public String getZip() {
-        return this.zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
     public String getCountry() {
         return this.country;
     }
@@ -920,14 +897,6 @@ public class Event {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
-    }
-
-    public String getType() {
-        return this.type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public Set<EventType> getEventTypes() {
@@ -968,14 +937,6 @@ public class Event {
 
     public void setRegistration(String registration) {
         this.registration = registration;
-    }
-
-    public String getParking() {
-        return this.parking;
-    }
-
-    public void setParking(String parking) {
-        this.parking = parking;
     }
 
     public String getGeneral() {
@@ -1026,30 +987,6 @@ public class Event {
         this.photo3 = photo3;
     }
 
-    public String getMap() {
-        return this.map;
-    }
-
-    public void setMap(String map) {
-        this.map = map;
-    }
-
-    public String getMap2() {
-        return this.map2;
-    }
-
-    public void setMap2(String map2) {
-        this.map2 = map2;
-    }
-
-    public String getMap3() {
-        return this.map3;
-    }
-
-    public void setMap3(String map3) {
-        this.map3 = map3;
-    }
-
     public String getResults1() {
         return this.results1;
     }
@@ -1074,30 +1011,6 @@ public class Event {
         this.results3 = results3;
     }
 
-    public String getAlert1() {
-        return this.alert1;
-    }
-
-    public void setAlert1(String alert1) {
-        this.alert1 = alert1;
-    }
-
-    public String getAlert2() {
-        return this.alert2;
-    }
-
-    public void setAlert2(String alert2) {
-        this.alert2 = alert2;
-    }
-
-    public String getAlert3() {
-        return this.alert3;
-    }
-
-    public void setAlert3(String alert3) {
-        this.alert3 = alert3;
-    }
-
     public String getDonateUrl() {
         return this.donateUrl;
     }
@@ -1114,14 +1027,6 @@ public class Event {
         this.facebookUrl1 = facebookUrl1;
     }
 
-    public String getFacebookUrl2() {
-        return this.facebookUrl2;
-    }
-
-    public void setFacebookUrl2(String facebookUrl2) {
-        this.facebookUrl2 = facebookUrl2;
-    }
-
     public String getPhotoUploadUrl() {
         return this.photoUploadUrl;
     }
@@ -1130,12 +1035,12 @@ public class Event {
         this.photoUploadUrl = photoUploadUrl;
     }
 
-    public String getCoursemaps() {
-        return this.coursemaps;
+    public String getHashtag() {
+        return this.hashtag;
     }
 
-    public void setCoursemaps(String coursemaps) {
-        this.coursemaps = coursemaps;
+    public void setHashtag(String hashtag) {
+        this.hashtag = hashtag;
     }
 
     public String getCourseRules() {
@@ -1325,5 +1230,23 @@ public class Event {
 	}
 	public void setLive(boolean live) {
 		this.live = live;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	public String getZip() {
+		return zip;
+	}
+	public void setZip(String zip) {
+		this.zip = zip;
+	}
+	public String getParking() {
+		return parking;
+	}
+	public void setParking(String parking) {
+		this.parking = parking;
 	}
 }

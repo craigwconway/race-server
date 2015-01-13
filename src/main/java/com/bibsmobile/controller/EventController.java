@@ -751,14 +751,14 @@ public class EventController {
         }
         return Event.toJsonArray(Event.findEventsByStateEquals(state, (page - 1) * size, size).getResultList());
     }
-
+/*
     @RequestMapping(value = "/bytype", method = RequestMethod.GET)
     @ResponseBody
     public String findEventsByType(@RequestParam("type") String type, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return Event.toJsonArray(Event.findEventsByTypeEquals(type, (page - 1) * size, size).getResultList());
     }
-
+*/
     @RequestMapping(value = "/cities", method = RequestMethod.GET)
     @ResponseBody
     public String findEventsCities(@RequestParam(value = "country", required = false) String country) {
@@ -790,9 +790,11 @@ public class EventController {
         return Event.toJsonArray(events.values());
     }
 
-    @RequestMapping(value = "/search/webappsearch/{userGroupId}/{time}", method = RequestMethod.GET)
+    @RequestMapping(value = "/search/webappsearch/", method = RequestMethod.GET)
     @ResponseBody
-    public String findByUserGroupandTime(@PathVariable Long userGroupId, @PathVariable Long time) {
+    public String findByUserGroupandTime(
+    		@RequestParam(value = "userGroupId", required = false) Long userGroupId,
+    		@RequestParam(value = "time", required = false) Long time) {
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
         Map<Long, Event> events = new HashMap<>();
         // Determine the timeout point. Events time out after five days.
@@ -826,6 +828,22 @@ public class EventController {
 	                    events.put(event.getId(), event);
 	                }
 	            }
+        	}
+        } else {
+        	if (1 == time) {
+        		for (Event event : Event.findAllEvents()) {
+        			if(event.getTimeStart().after(presentCutoff)) {
+        				events.put(event.getId(),event);
+        			}
+        		}
+        	} else if (2 == time) {
+            		for (Event event : Event.findAllEvents()) {
+            			if(event.getTimeStart().before(presentCutoff)) {
+            				events.put(event.getId(),event);
+            			}
+            		}        		
+        	} else {
+        		return Event.toJsonArray(Event.findAllEvents());
         	}
         }
         return Event.toJsonArray(events.values());

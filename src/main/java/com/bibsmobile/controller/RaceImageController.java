@@ -36,9 +36,10 @@ public class RaceImageController {
 
     @RequestMapping(value = "/api", method = RequestMethod.GET)
     public ResponseEntity<String> api(@RequestParam("filePath") String filePath, @RequestParam("raceId") long raceId,
-            @RequestParam(value = "bib", required = false) List<String> bib, @RequestParam(value = "type", required = false) List<String> types) {
+            @RequestParam(value = "bib", required = false) List<Long> bib, @RequestParam(value = "type", required = false) List<String> types) {
         RaceImage raceImage = new RaceImage(filePath, raceId, bib, types);
         if (CollectionUtils.isEmpty(bib)) {
+        	System.out.println("no bib found");
             raceImage.persist();
         }
         HttpHeaders headers = new HttpHeaders();
