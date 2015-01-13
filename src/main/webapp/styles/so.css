@@ -42,9 +42,8 @@
 }
 .panel-container-left{
 	display: inline-block;
-	width: 55%;
+	width: 44%;
 	margin-left: 3%;
-	text-align: center;
 	vertical-align: top;
 }
 
@@ -52,8 +51,6 @@
 	display: inline-block;
 	width: 40%;
 	margin-left: 2%;
-	text-align: center;
-	vertical-align: middle;
 }
 
 /* elessar */
@@ -61,7 +58,8 @@
 	
 }
 #elessar-container{
-	padding: 3% 0;
+	margin: auto 8%;
+	padding: 5% 0;
 	text-align: center;
 	color: #423f3f;
 }
@@ -79,10 +77,11 @@
 }
 
 .elessar-label{
-    -webkit-transform: rotate(45deg);
+/*    -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
     -o-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
-	transform-origin: 0% 100%;
+	transform-origin: 0% 100%;*/
+	transform: translate(0px, 30px);
 }

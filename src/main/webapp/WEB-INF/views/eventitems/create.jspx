@@ -3,7 +3,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
-        <div class="form-container">
+        <div class="panel-container-left">
             <h3>Add Product</h3>
             <div class="row">
                 <input  type="text" name="name"
@@ -17,14 +17,14 @@
                 <div class="col-md-6 col-sm-6" style="margin-left:0px;padding-left:0px">
                     <input  type="text" name="startDate"
                         class="form-control"
-                        id="priceStartDate"
+                        id="ECIStart"
                         placeholder="Price start date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
                 <div class="col-md-6 col-sm-6" style="margin-left: -10%">
                     <input  type="text" name="endDate"
                         class="form-control"
-                        id="priceEndDate"
+                        id="ECIEnd"
                         placeholder="Price end date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
@@ -73,7 +73,8 @@
                 <button type="button" class="btn btn-info btn-lg"
                         style="margin-left: 0px" id="add-button">Add Price Change</button></div>
         </div>
-        <div class="form-container">
+
+        <div class="panel-container-left">
             <div class="row" id="add-container">
                 <div class="panel panel-success add-price-change">
                     <div class="panel-heading">Category Details</div>
@@ -82,7 +83,7 @@
                             <div class="col-md-6 col-sm-12">
                                 <input  type="text" data-for="startDate"
                                     class="form-control price-change-field"
-                                    id="change-priceStartDate"
+                                    id="pcStart"
                                     placeholder="Price start date"
                                     data-provide="datepicker"
                                     data-date-format="MM/DD/YYYY h:mm:ss a"
@@ -90,7 +91,7 @@
                             <div class="col-md-6 col-sm-12">
                                 <input  type="text" data-for="endDate"
                                     class="form-control price-change-field"
-                                    id="change-priceEndDate"
+                                    id="pcEnd"
                                     placeholder="Price end date"
                                     data-provide="datepicker"
                                     data-date-format="MM/DD/YYYY h:mm:ss a"
@@ -139,6 +140,16 @@
             </div>
         </div>
         
+        <div class="row">
+            <div id="elessar-header">
+                <div id="elessar-container">
+                    <span><h4>Please specify a timespan for your price changes.</h4>
+                        <p>(Click below to add an event, drag to change times, and double-middle-click to delete)</p></span>
+                </div>
+            </div>
+        </div>
+
+
         <!-- required fields not displayed for user -->
         <div style="display:none">
             <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
@@ -201,112 +212,125 @@
     }
 
     function createThumbnail(startDate, endDate){
-        
+        console.log(startDate, endDate);
+        initRangeBar();
     }
 
     var todayDate = moment().startOf('day');
     var tomorrowDate = moment(todayDate).add(1, 'days');
     function initDateTimePickers(){
-        jQuery("#priceStartDate")
+        jQuery("#ECIStart")
             .datetimepicker({
                 defaultDate: todayDate,
                 useSeconds: true,
                 sideBySide: true
             });
-        jQuery("#priceEndDate")
+        jQuery("#ECIEnd")
             .datetimepicker({
-                defaultDate: tomorrowDate,
+                defaultDate: moment(todayDate).add(1, 'weeks'),
                 useSeconds: true,
                 sideBySide: true
             });
-        jQuery("#change-priceStartDate")
+        jQuery("#pcStart")
             .datetimepicker({
-                defaultDate: tomorrowDate,
+                defaultDate: todayDate,
                 useSeconds: true,
                 sideBySide: true
             });
-        jQuery("#change-priceEndDate")
+        jQuery("#pcEnd")
             .datetimepicker({
-                defaultDate: moment(tomorrowDate).add(1, 'days'),
+                defaultDate: tomorrowDate,
                 useSeconds: true,
                 sideBySide: true
             });
 
-        jQuery("#priceStartDate").on("dp.change",function (e) {
-            jQuery('#priceEndDate').data("DateTimePicker").setMinDate(e.date);
+        jQuery("#ECIStart").on("dp.change",function (e) {
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+            jQuery('#pcStart').data("DateTimePicker").setMinDate(e.date);
 
             <!-- check if end date was previously set -->
             var selectedDate = moment(e.date);
-            var currEndDate = moment(jQuery('#priceEndDate').data("DateTimePicker").getDate());
+            var currEndDate = moment(jQuery('#ECIEnd').data("DateTimePicker").getDate());
             if( currEndDate.isBefore(selectedDate) ){
-                jQuery('#priceEndDate').data("DateTimePicker").setDate(moment(e.date).add(1, 'days'));
+                jQuery('#ECIEnd').data("DateTimePicker").setDate(moment(e.date).add(1, 'days'));
             }
         });
-        jQuery("#priceEndDate").on("dp.change",function (e) {
-            jQuery('#priceStartDate').data("DateTimePicker").setMaxDate(e.date);
-            jQuery('#change-priceStartDate').data("DateTimePicker").setMinDate(e.date);
+        jQuery("#ECIEnd").on("dp.change",function (e) {
+            jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+            jQuery('#pcEnd').data("DateTimePicker").setMaxDate(e.date);
             
             <!-- check if start date was previously set -->
             var selectedDate = moment(e.date);
-            var currStartDate = moment(jQuery('#priceEndDate').data("DateTimePicker").getDate());
+            var currStartDate = moment(jQuery('#ECIEnd').data("DateTimePicker").getDate());
 
             if( selectedDate.isBefore(currStartDate) ){
-                jQuery('#priceStartDate').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
+                jQuery('#ECIStart').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
             }
         });
 
         <!-- on change-ui -->
-        jQuery("#change-priceEndDate").on("dp.change",function (e) {
-            jQuery('#change-priceStartDate').data("DateTimePicker").setMaxDate(e.date);
+        jQuery("#pcEnd").on("dp.change",function (e) {
+            jQuery('#pcStart').data("DateTimePicker").setMaxDate(e.date);
             
             <!-- check if start date was previously set -->
             var selectedDate = moment(e.date);
-            var currStartDate = moment(jQuery('#change-priceEndDate').data("DateTimePicker").getDate());
+            var currStartDate = moment(jQuery('#pcEnd').data("DateTimePicker").getDate());
 
             if( selectedDate.isBefore(currStartDate) ){
-                jQuery('#priceStartDate').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
+                jQuery('#ECIStart').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
             }
         });
-        jQuery("#change-priceEndDate").on("dp.change",function (e) {
-            jQuery('#change-priceStartDate').data("DateTimePicker").setMaxDate(e.date);
+        jQuery("#pcEnd").on("dp.change",function (e) {
+            jQuery('#pcStart').data("DateTimePicker").setMaxDate(e.date);
             
             <!-- check if start date was previously set -->
             var selectedDate = moment(e.date);
-            var currStartDate = moment(jQuery('#change-priceEndDate').data("DateTimePicker").getDate());
+            var currStartDate = moment(jQuery('#pcEnd').data("DateTimePicker").getDate());
 
             if( selectedDate.isBefore(currStartDate) ){
-                jQuery('#priceStartDate').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
+                jQuery('#ECIStart').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
             }
         });
     }
 
     function initRangeBar(){
-        var ECIstart = moment(jQuery("#priceStartDate").data("DateTimePicker"));
-        var ECIend   = moment(jQuery("#priceEndDate").data("DateTimePicker"));
+        var ECIstart = moment(jQuery("#ECIStart").data("DateTimePicker").getDate());
+        var ECIend   = moment(jQuery('#ECIEnd').data("DateTimePicker").getDate());
+        var pcStart  = moment(jQuery("#pcStart").data("DateTimePicker").getDate());
+        var pcEnd    = moment(jQuery('#pcEnd').data("DateTimePicker").getDate());
 
         var rangeBar = new RangeBar({
-            min: moment().startOf('day').format('LLLL'),
-            max: moment().endOf('day').format('LLLL'),
+            readonly: true,
+            min: moment(ECIstart).startOf('day').format('MM/DD/YY hh:mm A'),
+            max: moment(ECIend).endOf('day').format('MM/DD/YY hh:mm A'),
             valueFormat: function(ts) {
-                return moment(ts).format('LLLL');
+                return moment(ts).format('MM/DD/YY hh:mm A');
             },
             valueParse: function(date) {
                 return moment(date).valueOf();
             },
             values: [
                 [
-                  moment().startOf('day').add(1.5, 'hours').format('LLLL'),
-                  moment().startOf('day').add(3.5, 'hours').format('LLLL')
+                  moment(pcStart).format('MM/DD/YY hh:mm A'),
+                  moment(pcEnd).format('MM/DD/YY hh:mm A')
                 ],
             ],
             label: function(a){
-                return moment(a[1]).from(a[0], true);
+                var from =  moment(a[0]);
+                var until =  moment(a[1]);
+                var duration = until.diff(from, 'hours');
+                if(duration &lt; 32){
+                    return moment(a[1]).from(a[0], true);
+                }
+                return from.format('Do hh:mm A') + ' to ' + until.format('Do hh:mm A');
             },
+            snap: 1000 * 60 * 15,
             allowDelete: true,
             allowSwap: true,
             bgLabels: 6
         });
 
         jQuery('#elessar-container').append(rangeBar.$el);
+    }
     </script>
 </div>

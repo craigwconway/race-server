@@ -106,6 +106,7 @@ public class EventCartItem {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL }, mappedBy = "eventCartItem")
     private Set<EventCartItemPriceChange> priceChanges;
+    private EventCartItemPriceChange pc = new EventCartItemPriceChange();
 
     /**
      */
