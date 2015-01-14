@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
                 <select name="gender" class="form-control" id="gender-type">
-                    <option selected="selected">Gender</option>
+                    <option selected="selected" disabled="disabled">Gender</option>
                     <option value="MALE">Male</option>
                     <option value="FEMALE">Female</option>
                     <option value="MALE_AND_FEMALE">Both</option>
@@ -112,7 +112,7 @@
                         <div class="formGroup row">
                             <div class="col-md-6 col-sm-6">
                             <select data-for="gender" class="form-control price-change-field" id="gender-type">
-                                <option selected="selected">Gender</option>
+                                <option selected="selected" disabled="disabled">Gender</option>
                                 <option value="MALE">Male</option>
                                 <option value="FEMALE">Female</option>
                                 <option value="MALE_AND_FEMALE">Both</option>
@@ -160,16 +160,31 @@
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 
     <script>
+    <!-- prototype utilities -->
+    RangeBar.prototype.rangeList = [];
+    RangeBar.prototype.insertRange = function(minDate, maxDate){
+        var min = rangeBar.abnormalise(minDate);
+        var max = rangeBar.abnormalise(maxDate);
+
+        if(rangeBar.rangeList.length > 0){
+            rangeBar.rangeList.forEach(function(i){
+                console.log(i)
+            })
+        }
+
+        rangeBar.addRange([min, max]);
+        rangeBar.rangeList.push([minDate, maxDate]);
+    }
+
     <!-- global variables -->
     var priceChangeObjectArray = [];
     var rangeBar;
 
     window.onload = function(){
-
         <!-- event id is currently defaulted to the event name, but database wants an event id.
              this section parses the event id directly from the url. -->
-        parseEventId();
         initForm();
+        parseEventId();
         initDateTimePickers();
     }
 
@@ -215,8 +230,9 @@
         3) add into priceChanges (array of ECIPC)
 
         FRONTLOGIC()
-        4) add new bar for timeline
-        5) add thumbnail navigation for each price change for user to edit
+        1) clear form fields
+        2) add new bar for timeline
+        3) add thumbnail navigation for each price change for user to edit
 
       -->
     function savePriceChange(){
@@ -248,8 +264,13 @@
     }
 
     function frontLogic(obj){
+        <!-- clear form fields -->
+        jQuery(".price-change-field").val('');
+        jQuery("select.price-change-field").find('option:contains("Gender")').attr('selected', true);
+
         <!-- create new bar for timeline -->
         createBar(obj);
+
         <!-- create new thumbnail to represent saved price change -->
         createThumbnail(obj.startDate, obj.endDate);
     }
@@ -257,8 +278,8 @@
     function createBar(obj){
         var minDate = moment(obj.startDate);
         var maxDate = moment(obj.endDate);
-        console.log(minDate)
-        rangeBar.val([minDate, maxDate]);
+
+        rangeBar.insertRange(minDate, maxDate);
     }
 
     function createThumbnail(startDate, endDate){
@@ -267,6 +288,7 @@
 
     var todayDate = moment().startOf('day');
     var tomorrowDate = moment(todayDate).add(1, 'days');
+    var weekDate = moment(todayDate).add(1, 'weeks');
     function initDateTimePickers(){
         jQuery("#ECIStart")
             .datetimepicker({
@@ -356,11 +378,12 @@
             valueParse: function(date) {
                 return moment(date).valueOf();
             },
+            values: [],
             label: function(a){
                 var from =  moment(a[0]);
                 var until =  moment(a[1]);
                 var duration = until.diff(from, 'hours');
-                if(duration &lt; 32){
+                if(duration &lt; 30){
                     return moment(a[1]).from(a[0], true);
                 }
                 return from.format('Do hh:mm A') + ' to ' + until.format('Do hh:mm A');
@@ -368,7 +391,7 @@
             snap: 1000 * 60 * 15,
             allowDelete: true,
             allowSwap: true,
-            bgLabels: 8
+            bgLabels: 6
         });
 
         jQuery('#elessar-container').append(rangeBar.$el);
