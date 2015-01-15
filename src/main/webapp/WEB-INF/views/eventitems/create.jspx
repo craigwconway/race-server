@@ -144,7 +144,8 @@
             <div id="elessar-header">
                 <div id="elessar-container">
                     <span><h4>Price Change Timeline</h4>
-                    <p>Base price: &#36;</p></span></div>
+                    <p>(Hover to see prices, double-click to remove)<br/>
+                    Base price: &#36;</p></span></div>
             </div>
         </div>
 
@@ -162,18 +163,62 @@
     <script>
     <!-- prototype utilities -->
     RangeBar.prototype.rangeList = [];
-    RangeBar.prototype.insertRange = function(minDate, maxDate){
-        var min = rangeBar.abnormalise(minDate);
-        var max = rangeBar.abnormalise(maxDate);
+    RangeBar.prototype.insertRange = function(obj){
+        <!-- get pixel values of min and max ranges -->
+        var min = rangeBar.abnormalise(obj.startDate);
+        var max = rangeBar.abnormalise(obj.endDate);
+        var minDate = moment(obj.startDate);
+        var maxDate = moment(obj.endDate);
 
+        <!-- check if the ranges overlap. if so, append a new rangebar. -->
         if(rangeBar.rangeList.length > 0){
             rangeBar.rangeList.forEach(function(i){
-                console.log(i)
+                if( minDate.isBetween(i[0]) || maxDate.isBetween(i[1]) ){
+                    initRangeBar();
+                }
             })
         }
 
-        rangeBar.addRange([min, max]);
-        rangeBar.rangeList.push([minDate, maxDate]);
+        var bar = rangeBar.addRange([min, max]);
+        rangeBar.rangeList.push([obj.startDate, obj.endDate]);
+
+        <!-- TODO: Add a #id attribute to each bar to identify its associations -->
+        jQuery(bar.$el).data("data", obj);
+        
+        <!-- add tooltip to each bar -->
+        jQuery(bar.$el).attr("data-toggle", "tooltip");
+        jQuery(bar.$el).attr("data-placement", "bottom");
+        jQuery(bar.$el).attr("title", function(){
+            return "$" + obj.price;
+        });
+        jQuery(bar.$el).attr("dblclicked", false);  <!-- hack to remove tooltip on doubleclick -->
+        jQuery('[data-toggle="tooltip"]').tooltip();
+
+        <!-- remove on double-click -->
+        jQuery(bar.$el).dblclick(function(){
+            var dblclicked = jQuery(this).data('dblclicked');
+            if( !dblclicked ){
+                jQuery(this).attr("dblclicked", true);
+
+                var info = jQuery(this).data('data');
+                var dateInfo = [info.startDate, info.endDate];
+                var index = -1;
+                for( i = 0; i &lt; rangeBar.rangeList.length; i++ ){
+                    var item = (rangeBar.rangeList)[i];
+                    if( item[0] == dateInfo[0] &amp;&amp; item[1] == dateInfo[1] ){
+                        index = i;
+                    }
+                }
+
+                if( index > -1 ){
+                    rangeBar.rangeList.splice(index, 1);
+                    jQuery(this).tooltip('disable');
+                    jQuery(this).mouseout(function(){
+                        jQuery(this).empty();
+                    })
+                }
+            }
+        })
     }
 
     <!-- global variables -->
@@ -204,7 +249,7 @@
         <!-- populate header for price timeline with base price value. -->
         jQuery("input[name='price']").change(function(){
             var val = jQuery(this).val();
-            jQuery("#elessar-container p").append(val);
+            jQuery("#elessar-container p").html("(Hover to see prices, double-click to remove)<br/>Base price: $" + val);
         })
 
         <!-- logic for "Add Price Change button":
@@ -269,17 +314,10 @@
         jQuery("select.price-change-field").find('option:contains("Gender")').attr('selected', true);
 
         <!-- create new bar for timeline -->
-        createBar(obj);
+        rangeBar.insertRange(obj);
 
         <!-- create new thumbnail to represent saved price change -->
         createThumbnail(obj.startDate, obj.endDate);
-    }
-
-    function createBar(obj){
-        var minDate = moment(obj.startDate);
-        var maxDate = moment(obj.endDate);
-
-        rangeBar.insertRange(minDate, maxDate);
     }
 
     function createThumbnail(startDate, endDate){

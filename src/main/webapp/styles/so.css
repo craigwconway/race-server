@@ -69,8 +69,8 @@
 
 .elessar-range {
 	background: #00dffc;
-	border-left: #423f3f 1px solid;
-	border-right: #423f3f 1px solid;
+	border-left: rgba(66,63,63,.5) 1px solid;
+	border-right: rgba(66,63,63,.5) 1px solid;
 }
 
 .elessar-rangebar {
@@ -85,6 +85,7 @@
     transform: rotate(45deg);
 	transform-origin: 0% 100%;*/
 	transform: translate(0px, 30px);
+	color: #3A3A3A;
 }
 
 .elessar-readonly {
