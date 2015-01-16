@@ -32,7 +32,7 @@
         </c:if>
         <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
 		Export
-		</button>
+		</button>		
         <button class="btn btn-default btn-top" onclick="cloud()" type="button">
 		Cloud
 		</button>
@@ -65,6 +65,11 @@
         <span id="progress" style="margin:0;margin-left:6px;display:none;">
             <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
         </span>
+    </sec:authorize>
+    <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+        <button class="btn btn-default btn-top" onclick="redirectBackup()" type="button">
+			bibs file
+		</button>
     </sec:authorize>
     <script>
 	function cloud(){
@@ -111,6 +116,9 @@
 	function redirectExport(){
 		window.location="/bibs-server/events/export?event=${event.id}";
 	}
+	function redirectBackup(){
+		window.location="/bibs-server/events/exportBackup?event=${event.id}";
+	}	
     function redirectAwards(){
         window.location="/bibs-server/events/awards?event=${event.id}";
     }

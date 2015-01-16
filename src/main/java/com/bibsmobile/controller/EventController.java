@@ -27,9 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.google.gson.JsonObject;
-
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
@@ -56,7 +56,6 @@ import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.AwardCategoryResults;
-
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
@@ -74,7 +73,6 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.util.UserProfileUtil;
-
 import com.bibsmobile.service.AbstractTimer;
 
 import flexjson.JSONSerializer;
@@ -713,6 +711,52 @@ public class EventController {
 
     }
 
+    @RequestMapping(value = "/exportBackup", method = RequestMethod.GET)
+    public static void exportBackup(@RequestParam(value = "event", required = true) Long event, HttpServletResponse response) throws IOException {
+        Event _event = Event.findEvent(event);
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + _event.getName() + ".bibs\"");
+        OutputStream resOs = response.getOutputStream();
+        List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
+        long bib, startTime, endTime;
+        byte[] writeBuffer = new byte[8];
+        for (RaceResult r : runners) {
+        	bib = r.getBib();
+        	startTime = r.getTimestart();
+        	endTime = r.getTimeofficial();
+        	// My rapper name is lil Endian but big E is going to take over here:
+            writeBuffer[0] = (byte)(bib >>> 56);
+            writeBuffer[1] = (byte)(bib >>> 48);
+            writeBuffer[2] = (byte)(bib >>> 40);
+            writeBuffer[3] = (byte)(bib >>> 32);
+            writeBuffer[4] = (byte)(bib >>> 24);
+            writeBuffer[5] = (byte)(bib >>> 16);
+            writeBuffer[6] = (byte)(bib >>>  8);
+            writeBuffer[7] = (byte)(bib >>>  0);
+            resOs.write(writeBuffer, 0, 8);
+            writeBuffer[0] = (byte)(startTime >>> 56);
+            writeBuffer[1] = (byte)(startTime >>> 48);
+            writeBuffer[2] = (byte)(startTime >>> 40);
+            writeBuffer[3] = (byte)(startTime >>> 32);
+            writeBuffer[4] = (byte)(startTime >>> 24);
+            writeBuffer[5] = (byte)(startTime >>> 16);
+            writeBuffer[6] = (byte)(startTime >>>  8);
+            writeBuffer[7] = (byte)(startTime >>>  0);
+            resOs.write(writeBuffer, 0, 8);
+            writeBuffer[0] = (byte)(endTime >>> 56);
+            writeBuffer[1] = (byte)(endTime >>> 48);
+            writeBuffer[2] = (byte)(endTime >>> 40);
+            writeBuffer[3] = (byte)(endTime >>> 32);
+            writeBuffer[4] = (byte)(endTime >>> 24);
+            writeBuffer[5] = (byte)(endTime >>> 16);
+            writeBuffer[6] = (byte)(endTime >>>  8);
+            writeBuffer[7] = (byte)(endTime >>>  0);
+            resOs.write(writeBuffer, 0, 8);	
+        }
+        resOs.flush();
+        resOs.close();
+    }    
+    
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         // check the rights the user has for event
