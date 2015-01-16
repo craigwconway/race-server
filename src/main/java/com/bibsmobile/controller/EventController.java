@@ -768,11 +768,13 @@ public class EventController {
 
     @RequestMapping(value = "/importBackup", method = RequestMethod.POST)
     @ResponseBody
-    public String importUploadedBibsfile(@ModelAttribute("uploadFile") UploadFile uploadFile, @RequestParam(value = "event", required = true) Long event) throws IOException {
+    public String importUploadedBibsfile(@ModelAttribute("uploadFile") MultipartFile uploadFile, @RequestParam(value = "event", required = true) Long event) throws IOException {
         //byte[] input = uploadFile.getFile().getBytes();
         Event syncEvent = Event.findEvent(event);
-        long length = uploadFile.getFile().getSize()/24;
-        DataInputStream inf = new DataInputStream(new ByteArrayInputStream(uploadFile.getFile().getBytes())); //java verbosity game strong
+        System.out.println("Enter importbackup");
+        System.out.println(uploadFile);
+        long length = uploadFile.getSize()/24;
+        DataInputStream inf = new DataInputStream(new ByteArrayInputStream(uploadFile.getBytes())); //java verbosity game strong
         List<RaceResult> syncResults = RaceResult.findRaceResultsByEvent(syncEvent).getResultList(); // Retrieve old results
         Map <Long, RaceResult> syncResultsMap = new HashMap();
         for(RaceResult r:syncResults) {
