@@ -1,8 +1,12 @@
 package com.bibsmobile.controller;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,11 +29,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.ws.rs.PUT;
 
 import com.google.gson.JsonObject;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
@@ -45,12 +51,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -68,6 +76,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.UploadFile;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
@@ -755,6 +764,32 @@ public class EventController {
         }
         resOs.flush();
         resOs.close();
+    }    
+
+    @RequestMapping(value = "/importBackup", method = RequestMethod.POST)
+    @ResponseBody
+    public String importUploadedBibsfile(@ModelAttribute("uploadFile") UploadFile uploadFile, @RequestParam(value = "event", required = true) Long event) throws IOException {
+        //byte[] input = uploadFile.getFile().getBytes();
+        Event syncEvent = Event.findEvent(event);
+        long length = uploadFile.getFile().getSize()/24;
+        DataInputStream inf = new DataInputStream(new ByteArrayInputStream(uploadFile.getFile().getBytes())); //java verbosity game strong
+        List<RaceResult> syncResults = RaceResult.findRaceResultsByEvent(syncEvent).getResultList(); // Retrieve old results
+        Map <Long, RaceResult> syncResultsMap = new HashMap();
+        for(RaceResult r:syncResults) {
+        	syncResultsMap.put(r.getBib(), r);
+        }
+        for(long itr = 0; itr < length; itr++) {
+	    	long bib = inf.readLong();
+	    	long startTime = inf.readLong();
+	    	long endTime = inf.readLong();
+	    	RaceResult tmpResult = syncResultsMap.get(bib);
+	    	if(tmpResult.getTimestart() != startTime || tmpResult.getTimeofficial() != endTime) {
+	    		tmpResult.setTimestart(startTime);
+	    		tmpResult.setTimeofficial(endTime);
+	    		tmpResult.merge();
+	    	}
+        }
+        return "{\"Accepted\":true}";
     }    
     
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
