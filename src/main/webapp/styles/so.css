@@ -36,7 +36,33 @@
 	margin-left: 3%;
 }
 
+/* navigation */
+.circle{
+	display: inline-block;
+	margin: 5px;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: #00dffc;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 30px;
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+}
+
 /* panel sizes */
+.category-container{
+	text-align: right;
+}
+
+.panel{
+	width: 70%;
+	margin-top: 2%;
+	margin-right: 15%;
+}
+
 .panel-container{
 	width: 80%;
 }
@@ -53,8 +79,20 @@
 }
 
 /* elessar */
+
+.elessar-left{
+	display: inline-block;
+	width: 65%;
+	vertical-align: top;
+}
+
+.elessar-right{
+	display: inline-block;
+	width: 35%;
+}
+
+
 #elessar-header{
-	
 }
 #elessar-container{
 	margin: auto 8%;
