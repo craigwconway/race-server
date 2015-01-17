@@ -1,5 +1,6 @@
 package com.bibsmobile.controller;
 
+import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemPriceChange;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -146,6 +149,46 @@ public class EventCartItemPriceChangeController {
         return new ResponseEntity<>(
                 EventCartItemPriceChange.toJsonArray(EventCartItemPriceChange.findEventCartItemPriceChangesByEventCartItem(eventCartItem).getResultList()), headers, HttpStatus.OK);
     }
+
+    @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindEventCartItemPriceChangesByEvent(@RequestParam("event") long eventId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        Event event = Event.findEvent(eventId);
+        List<EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        List<EventCartItemPriceChange> ecipcs = new ArrayList();
+        for(EventCartItem eci : ecis) {
+            ecipcs.addAll(eci.getPriceChanges());
+        }
+        return new ResponseEntity<>(
+                EventCartItemPriceChange.toJsonArray(ecipcs), headers, HttpStatus.OK);
+    }   
+
+    @RequestMapping(value = "/search", params = "find=FullByEvent", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindFullEventCartItemsByEvent(@RequestParam("event") Long eventId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        Event event = Event.findEvent(eventId);
+        List<EventCartItem> resultList;
+        if (event == null) {
+            resultList = Collections.emptyList();
+        } else {
+            resultList = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+            String resultString = "";
+            // for each eventcartitem, make a json entity and append it to a megastring
+            int itr = 0;
+            List <EventCartItem> returnList = new ArrayList();
+            for(EventCartItem eci : resultList) {
+                EventCartItem neweci = eci;
+                neweci.setPriceChanges(new HashSet(EventCartItemPriceChange.findEventCartItemPriceChangesByEventCartItem(eci).getResultList()));
+                returnList.add(neweci);
+            }
+            return new ResponseEntity<>(EventCartItem.toJsonArray(returnList), headers, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(EventCartItem.toJsonArray(resultList), headers, HttpStatus.OK);
+    } 
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventCartItemPriceChange eventCartItemPriceChange, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {

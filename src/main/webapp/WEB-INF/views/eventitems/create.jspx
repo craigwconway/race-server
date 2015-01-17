@@ -207,11 +207,6 @@
         <!-- hide certain div elements that shouldn't appear until the user clicks on UI elements.  -->
         jQuery("#elessar-header").hide();
 
-        <!-- populate header for price timeline with base price value. -->
-        jQuery("input[name='price']").change(function(){
-            var val = jQuery(this).val();
-            jQuery("#elessar-container p").html("(Hover to see prices, double-click to remove)<br/>Base price: $" + val);
-        })
 
         <!-- logic for "Add Price Change button":
             1) show price change detail form section on the right side of the page

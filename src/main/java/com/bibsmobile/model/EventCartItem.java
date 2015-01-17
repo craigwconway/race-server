@@ -184,7 +184,7 @@ public class EventCartItem {
     }
 
     public static String toJsonArray(Collection<EventCartItem> collection) {
-        return new JSONSerializer().exclude("*.class").serialize(collection);
+        return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
     }
 
     public static String toJsonArray(Collection<EventCartItem> collection, String[] fields) {

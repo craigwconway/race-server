@@ -58,13 +58,13 @@
 }
 
 .panel{
-	width: 70%;
+	width: 100%;
 	margin-top: 2%;
 	margin-right: 15%;
 }
 
 .panel-container{
-	width: 80%;
+	width: 94%;
 }
 .panel-container-left{
 	display: inline-block;
@@ -72,7 +72,6 @@
 	margin-left: 3%;
 	vertical-align: top;
 }
-
 .panel-container-right{
 	display: inline-block;
 	width: 50%;
@@ -82,11 +81,12 @@
 
 .elessar-left{
 	display: inline-block;
-	width: 65%;
+	width: 63%;
 	vertical-align: top;
 }
 
 .elessar-right{
+	margin-left: 2%;
 	display: inline-block;
 	width: 35%;
 }
@@ -128,4 +128,12 @@
 
 .elessar-readonly {
 	opacity: 1.0;
+}
+
+.glyphicon-remove{
+	color: #DD0000;
+}
+
+.glyphicon-ok {
+	color: #00DD00;
 }
