@@ -183,6 +183,10 @@ public class EventCartItem {
         return new JSONDeserializer<List<EventCartItem>>().use("values", EventCartItem.class).deserialize(json);
     }
 
+    public static String toDeepJsonArray(Collection<EventCartItem> collection) {
+    	return new JSONSerializer().exclude("event").exclude("*.class").deepSerialize(collection);
+    }
+    
     public static String toJsonArray(Collection<EventCartItem> collection) {
         return new JSONSerializer().exclude("*.class").serialize(collection);
     }
