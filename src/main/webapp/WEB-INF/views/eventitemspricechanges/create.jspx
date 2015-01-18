@@ -62,7 +62,7 @@
                         <div id="elessar-header">
                             <div id="elessar-container">
                                 <span><h4>Please specify a timespan for your price changes.</h4>
-                                    <p>(Click below to add an event, drag to change times, and double-middle-click to delete)</p></span>
+                                    <p>Base price: $ ${eventCartItemPriceChange.eventCartItem.price}</p></span>
                             </div>
                         </div>
                     </div>
@@ -108,6 +108,7 @@
     
     <script>
     var postObject = {};
+    var priceChangeObjectArray = [];
     var pcDateList = [];
     var rangeBar;
 
@@ -119,14 +120,17 @@
 
         var bar = rangeBar.addRange([min, max]);
         rangeBar.rangeList.push([minDate, maxDate]);
+        obj["startDate"] = minDate;
+        obj["endDate"] = maxDate;
 
-        <!-- TODO: Add a #id attribute to each bar to identify its associations -->
         jQuery(bar.$el).data("data", obj);
-        
-        <!-- add tooltip to each bar -->
+        jQuery(bar.$el).attr("data-minVal", min);
+        jQuery(bar.$el).attr("data-maxVal", max);
         jQuery(bar.$el).attr("id", function(){
             return "pc" + index;
             });
+        
+        <!-- add tooltip to each bar -->
         jQuery(bar.$el).attr("data-toggle", "tooltip");
         jQuery(bar.$el).attr("data-placement", "bottom");
         jQuery(bar.$el).attr("title", function(){
@@ -162,6 +166,7 @@
                 if( index > -1 ){
                     rangeBar.rangeList.splice(index, 1);
                     priceChangeObjectArray.splice(pcIndex, 1);
+                    pcDateList.splice(index, 1);
                     jQuery("#_priceChanges_id").val(priceChangeObjectArray);
 
                     jQuery(this).tooltip('disable');
@@ -208,6 +213,9 @@
         jQuery("#elessar-panel-header")
             .html(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ")" );
 
+        postObject['eventCartItem'] = null;
+        priceChangeObjectArray.push(postObject);
+
         jQuery("#pc-nav").show();
         initRangeBar();
     }
@@ -225,11 +233,13 @@
 
     function elessarSave(){
         var pcStart = moment(jQuery("#priceStartDate").val());
-        var pcEnd = moment(jQuery("#eciEndDate").val());    <!-- initialized as ECI end date -->
-
-        console.log("user entered: ")
+        var pcEnd = moment(jQuery("#eciEndDate").val()).format('MM/DD/YYYY hh:mm:ss A');    <!-- initialized as ECI end date -->
+        console.log("user entered:")
         console.log(pcStart)
-        
+        console.log(pcEnd)
+        var price = jQuery('input[name="price"]').val();
+        postObject["price"] = price;        
+
         var elessarMin;
         var elessarMax;
         var earliestStartDate;
@@ -254,11 +264,15 @@
                 var d = pcDateList[i];
                 if( pcStart.isBetween(d[0], d[1]) ){
                     pcDateList[i][1] = pcStart;
-                    elessarMin = pcStart;
+                    elessarMin = moment(pcStart);
                     elessarMax = d[1];
                     <!-- NEED TO REMOVE OLD LABEL & ADD 2 LABELS.. -->
                     <!-- save index -->
                     <!-- use index to change endDate of indexed range -->
+                    var minDate = rangeBar.normalise(jQuery("pc"+i).attr("data-min"));
+                    var maxDate = rangeBar.normalise(jQuery("pc"+i).attr("data-max"));
+                    console.log(minDate);
+                    console.log(maxDate);
                 }
                 <!-- 2 -->
                 else if( pcStart.isBefore(d[0]) ){
@@ -269,8 +283,12 @@
                     }
                 }
             }
+            pcDateList.push([elessarMin, elessarMax]);
         }
 
+        console.log("inserting ranges: ");
+        console.log(elessarMin)
+        console.log(elessarMax)
         rangeBar.insertRange(elessarMin, elessarMax, postObject, index);
     }
 
