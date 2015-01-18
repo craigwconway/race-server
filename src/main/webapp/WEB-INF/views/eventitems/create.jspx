@@ -86,7 +86,7 @@
                         placeholder="Price start date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"
-                        value="${eventCartItemPriceChange.startDate}"></input></div>
+                        value="${event.timeStart}"></input></div>
                 <div class="col-md-6 col-sm-12">
                     <input  type="text" data-for="endDate"
                         class="form-control price-change-field"
@@ -94,7 +94,7 @@
                         placeholder="Price end date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"
-                        value="${eventCartItemPriceChange.endDate}"></input></div>
+                        value="${event.timeEnd}"></input></div>
             </div>
             <div class="formGroup row">
                 <div class="col-md-6 col-sm-6">
