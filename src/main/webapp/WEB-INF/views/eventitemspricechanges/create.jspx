@@ -108,7 +108,7 @@
     
     <script>
     var postObject = {};
-    var priceChangeObjectArray = [];
+    var elessarRangeList = [];
     var pcDateList = [];
     var rangeBar;
 
@@ -156,8 +156,8 @@
                 }
 
                 var pcIndex = -1;
-                for( i = 0; i &lt; priceChangeObjectArray.length; i++ ){
-                    var item = priceChangeObjectArray[i];
+                for( i = 0; i &lt; elessarRangeList.length; i++ ){
+                    var item = elessarRangeList[i];
                     if( item.startDate == dateInfo[0] &amp;&amp; item.endDate == dateInfo[1] ){
                         pcIndex = i;
                     }
@@ -165,9 +165,9 @@
 
                 if( index > -1 ){
                     rangeBar.rangeList.splice(index, 1);
-                    priceChangeObjectArray.splice(pcIndex, 1);
+                    elessarRangeList.splice(pcIndex, 1);
                     pcDateList.splice(index, 1);
-                    jQuery("#_priceChanges_id").val(priceChangeObjectArray);
+                    jQuery("#_priceChanges_id").val(elessarRangeList);
 
                     jQuery(this).tooltip('disable');
                     jQuery(this).mouseout(function(){
@@ -214,39 +214,32 @@
             .html(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ")" );
 
         postObject['eventCartItem'] = null;
-        priceChangeObjectArray.push(postObject);
+        elessarRangeList.push(postObject);
 
         jQuery("#pc-nav").show();
         initRangeBar();
     }
 
-    function initDateTimePickers(){
-        var eciStartDate = moment(jQuery("#eciStartDate").val());
-
-        jQuery("#priceStartDate")
-            .datetimepicker({
-                defaultDate: eciStartDate,
-                useSeconds: true,
-                sideBySide: true
-            });
-    }
-
+    var earliestStartDate;
+    var index;
     function elessarSave(){
         var pcStart = moment(jQuery("#priceStartDate").val());
-        var pcEnd = moment(jQuery("#eciEndDate").val()).format('MM/DD/YYYY hh:mm:ss A');    <!-- initialized as ECI end date -->
-        console.log("user entered:")
-        console.log(pcStart)
-        console.log(pcEnd)
+        var pcEnd = moment(jQuery("#eciEndDate").val()).format('MM/DD/YYYY hh:mm:ss a');    <!-- initialized as ECI end date -->
+        pcEnd = moment(pcEnd);
+
+        console.log("user entered:");
+        console.log(pcStart);
+        console.log(pcEnd);
         var price = jQuery('input[name="price"]').val();
-        postObject["price"] = price;        
+        postObject["price"] = price;
 
         var elessarMin;
         var elessarMax;
-        var earliestStartDate;
-        var index;
 
         <!-- this is the first price change item added -->
         if( pcDateList.length == 0 ){
+            console.log(pcStart)
+            console.log(pcEnd)
             pcDateList.push([pcStart, pcEnd]);
             earliestStartDate = pcStart;
             elessarMin = pcStart;
@@ -277,8 +270,11 @@
                 <!-- 2 -->
                 else if( pcStart.isBefore(d[0]) ){
                     elessarMin = pcStart;
-                    if( d[0].isBefore(earliestStartDate) ){
+                    elessarMax = earliestStartDate;
+                    if( moment(d[0]).isBefore(earliestStartDate) ){
+                        console.log("new earliestStartDate");
                         earliestStartDate = d[0];
+                        elessarMax.subtract(1, 'ms');
                         elessarMax = earliestStartDate;
                     }
                 }
@@ -316,10 +312,16 @@
             label: function(a){
                 var from =  moment(a[0]);
                 var until =  moment(a[1]);
-                var duration = until.diff(from, 'hours');
-                if(duration &lt; 30){
+                var min = rangeBar.abnormalise(from);
+                var max = rangeBar.abnormalise(until);
+                var width = max - min;
+                if( width &lt; 0.2 ){
                     return moment(a[1]).from(a[0], true);
                 }
+                <!-- var duration = until.diff(from, 'hours');
+                if(duration &lt; 30){
+                    return moment(a[1]).from(a[0], true);
+                } -->
                 return from.format('Do hh:mm A') + ' to ' + until.format('Do hh:mm A');
             },
             snap: 1000 * 60 * 15,
@@ -329,6 +331,17 @@
         });
 
         jQuery('#elessar-container').append(rangeBar.$el);
+    }
+
+    function initDateTimePickers(){
+        var eciStartDate = moment(jQuery("#eciStartDate").val());
+
+        jQuery("#priceStartDate")
+            .datetimepicker({
+                defaultDate: eciStartDate,
+                useSeconds: true,
+                sideBySide: true
+            });
     }
     </script>
 </div>

@@ -228,14 +228,6 @@
 
         frontLogic(priceChangeObject); -->
 
-    function frontLogic(obj){
-        <!-- clear form fields -->
-        jQuery(".price-change-field").val('');
-        jQuery("select.price-change-field").find('option:contains("Gender")').attr('selected', true);
-
-        <!-- create new bar for timeline -->
-        rangeBar.insertRange(obj);
-    }
 
     var eventStart = moment(jQuery("#eventStartDate").val());
     console.log(jQuery("#eventStartDate").val());
