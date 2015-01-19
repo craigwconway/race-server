@@ -112,6 +112,20 @@ public class EventCartItemController {
         return new ResponseEntity<>(EventCartItem.toJsonArray(resultList), headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/search", params = "find=FullByEvent", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindFullEventCartItemsByEvent(@RequestParam("event") Long eventId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        Event event = Event.findEvent(eventId);
+        List<EventCartItem> resultList;
+        if (event == null) {
+            resultList = Collections.emptyList();
+        } else {
+            resultList = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        }
+        return new ResponseEntity<>(EventCartItem.toDeepJsonArray(resultList), headers, HttpStatus.OK);
+    }    
     /*
      * Model attributes
      */

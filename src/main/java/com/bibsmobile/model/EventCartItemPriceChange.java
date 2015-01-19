@@ -31,7 +31,31 @@ import flexjson.JSONSerializer;
 @Entity
 public class EventCartItemPriceChange {
 
-    /**
+	// Here is a big constructor
+    public EventCartItemPriceChange(Date startDate, Date endDate,
+			String categoryName, int lowAgeThreshold, int highAgeThreshold,
+			EventCartItemGenderEnum gender, boolean team,
+			EventCartItem eventCartItem, long price) {
+		super(); // lots of parameters
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.categoryName = categoryName;
+		this.lowAgeThreshold = lowAgeThreshold;
+		this.highAgeThreshold = highAgeThreshold;
+		this.gender = gender;
+		this.team = team;
+		this.eventCartItem = eventCartItem;
+		this.price = price;
+	}
+
+    // Here is a little constructor
+	public EventCartItemPriceChange() {
+		super(); // No parameters
+	}
+
+    
+    
+	/**
      */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")

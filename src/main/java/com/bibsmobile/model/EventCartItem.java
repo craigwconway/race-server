@@ -150,6 +150,14 @@ public class EventCartItem {
         return this.price;
     }
 
+    public void addEmptyPriceChange() {
+    	// For so to use in create.jspx
+    	Set<EventCartItemPriceChange> currentPriceChanges = getPriceChanges();
+    	EventCartItemPriceChange newPriceChange = new EventCartItemPriceChange();
+    	currentPriceChanges.add(newPriceChange);
+    	this.setPriceChanges(currentPriceChanges);
+    }
+    
     public static TypedQuery<EventCartItem> findEventCartItemsByEvents(List<Event> events) {
         if (events == null)
             throw new IllegalArgumentException("The events argument is required");
@@ -175,6 +183,10 @@ public class EventCartItem {
         return new JSONDeserializer<List<EventCartItem>>().use("values", EventCartItem.class).deserialize(json);
     }
 
+    public static String toDeepJsonArray(Collection<EventCartItem> collection) {
+    	return new JSONSerializer().exclude("event").exclude("*.class").deepSerialize(collection);
+    }
+    
     public static String toJsonArray(Collection<EventCartItem> collection) {
         return new JSONSerializer().exclude("*.class").serialize(collection);
     }
