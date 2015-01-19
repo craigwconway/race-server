@@ -3,6 +3,7 @@ package com.bibsmobile.util;
 import java.util.Random;
 
 import com.bibsmobile.model.AwardCategory;
+import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
@@ -153,7 +154,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             userProfile.setLastname("User");
             userProfile.persist();
         }
-
+        //Generate a deviceinfo if there is not yet one in the system
+        if(null != DeviceInfo.findDeviceInfo(new Long(1))) {
+        	DeviceInfo info = new DeviceInfo();
+        	info.setRunnersUsed(new Long(0));
+        	info.persist();
+        }
+        
         //store default roles
         if (UserAuthority.countUserAuthoritys() < 1) {
             for (String authorityName : new String[] { UserAuthority.SYS_ADMIN, UserAuthority.EVENT_ADMIN, UserAuthority.USER_ADMIN, UserAuthority.USER }) {
