@@ -113,7 +113,7 @@ public class DeviceInfo {
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            UserAuthority attached = UserAuthority.findUserAuthority(this.id);
+            DeviceInfo attached = DeviceInfo.findDeviceInfo(this.id);
             this.entityManager.remove(attached);
         }
     }
