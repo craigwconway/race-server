@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Transient;
 
 import org.springframework.beans.factory.annotation.Configurable;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable
 @Entity
 public class DeviceInfo {
+	@Id
+	private long id;
 	
 	private Long runnersUsed;
 	
