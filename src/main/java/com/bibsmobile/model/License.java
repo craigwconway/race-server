@@ -3,6 +3,7 @@ package com.bibsmobile.model;
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Transient;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,60 @@ public class License {
 	@Id
 	private long id;
 
+	@Transient
+	private byte[] macAddress;
 	
+	@Transient
+	private long issuetime;
+	
+	@Transient
+	private long expiretime;
+	
+	@Transient
+	private long issueunits;
+	
+	@Transient
+	private long endunits;
+	
+	
+
+	
+	/**
+	 * Pulls mac address as unique id from token.
+	 * @return A 6 byte array containing mac address.
+	 */
+	public byte[] getMacAddress() {
+		return macAddress;
+	}
+	
+    /**
+	 * @return the issuetime
+	 */
+	public long getIssuetime() {
+		return issuetime;
+	}
+
+	/**
+	 * @return the expiretime
+	 */
+	public long getExpiretime() {
+		return expiretime;
+	}
+
+	/**
+	 * @return the issueunits
+	 */
+	public long getIssueunits() {
+		return issueunits;
+	}
+
+
+	/**
+	 * @return the endunits
+	 */
+	public long getEndunits() {
+		return endunits;
+	}
 	
 	
 	// -------------------------------------------
@@ -31,8 +85,8 @@ public class License {
 	// with the starting ID. If they have tampered
 	// with the device id, the user is trying to exploit
 	// the system
-	
-    public static License findLicense(Long id) {
+
+	public static License findLicense(Long id) {
         if (id == null)
             return null;
         return entityManager().find(License.class, id);
@@ -96,5 +150,4 @@ public class License {
 	// End the gramps framework overhead:
 	// -------------------------------------------
 	// -------------------------------------------
-	
 }
