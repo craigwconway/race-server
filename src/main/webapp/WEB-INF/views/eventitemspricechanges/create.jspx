@@ -2,7 +2,6 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <form:create id="fc_com_bibsmobile_model_EventCartItemPriceChange" modelAttribute="eventCartItemPriceChange" path="/eventitemspricechanges" render="${empty dependencies}" z="qOGRzwTeDj/+/ie5dRn7lrTZBG4=">
     <div>
         <div class="panel-container-left">
             <h3 style="margin-left: 2%">Price Change</h3>
@@ -63,7 +62,7 @@
                         <div id="elessar-header">
                             <div id="elessar-container">
                                 <span><h4>Scroll to navigate, click to remove, double-click to add or edit.</h4>
-                                    <p>Base price: $ ${eventCartItemPriceChange.eventCartItem.price}</p></span>
+                                    <p class="base-price">Base price: $</p></span>
                                 <div class="slider"><!--  --></div>
                             </div>
                         </div>
@@ -96,19 +95,11 @@
                 </div>
             </div>
         </div>
-        
-        <div style="display:none">
-            <field:select field="eventCartItem" id="c_com_bibsmobile_model_EventCartItemPriceChange_eventCartItem" itemValue="id" items="${eventcartitems}" itemLabel="name" path="/eventitems" z="user-managed"/>
-            <input id="eciStartDate" value="${eventCartItemPriceChange.eventCartItem.timeStart}"></input>
-            <input id="eciEndDate" value="${eventCartItemPriceChange.eventCartItem.timeEnd}"></input>
-            <input id="eciBasePrice" value="${eventCartItemPriceChange.eventCartItem.price}"></input>
-        </div>
     </div>
-    </form:create>
-    <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItemPriceChange" render="${not empty dependencies}" z="OPR4AwIXH96J63tUV2BUksx/BoM="/>
     
     <script>
     var postObject = {};
+    var eci;
     var eciStart;
     var eciEnd;
     var eciBasePrice;
@@ -182,8 +173,8 @@
     var timelineList = [];
 
     window.onload = function(){
-        getEventData();
-        initDateTimePickers();
+        var id = parseEventId();
+        getEventData(id);
     }
 
     function savePCType(){
@@ -192,7 +183,7 @@
             var key = jQuery(this).attr("data-for");
             var val = jQuery(this).val();
             if( key == "team" ){
-                if(jQuery(this).hasClass('active')){
+                if(jQuery(this).parent().attr('aria-pressed') == "true"){
                     val = true;
                 }else{
                     val = false;
@@ -230,6 +221,8 @@
 
         jQuery("#group"+ index).find(".panel-heading")
             .html(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
+
+        initDateTimePickers();
     }
 
     function shiftTimeline(caller){
@@ -247,47 +240,50 @@
         item["start"] = dateVal;
         item["content"] = price;
 
-        console.log(index);
         itemList[index].add(item);
-        console.log(itemList[index]);
 
         timeline.fit();
     }
 
-    function initDateTimePickers(){
-        var eciStartDate = moment(jQuery("#eciStartDate").val());
-
-        jQuery(".priceStartDate")
-            .datetimepicker({
-                defaultDate: eciStartDate,
-                useSeconds: true,
-                sideBySide: true
-            });
-
-        eciStart = moment(jQuery("#eciStartDate").val()).format('MM/DD/YYYY h:mm:ss a');
-        eciEnd   = moment(jQuery("#eciEndDate").val()).format('MM/DD/YYYY h:mm:ss a');
-        eciStart = moment(eciStart);
-        eciEnd   = moment(eciEnd);
-        eciBasePrice = parseInt(jQuery("#eciBasePrice").val());        
+    function parseEventId(){
+        var url = window.location.href;
+        var urllen = url.length;
+        var ind = url.lastIndexOf("=");
+        var eid = url.substring(ind+1, urllen);
+        return eid;
     }
 
-    function getEventData(){
-<!--         var request = jQuery.ajax({
-            url: "/bibs-server/events/",
+    function getEventData(id){
+        var request = jQuery.ajax({
+            url: "/bibs-server/eventitems/" + id,
             type: "GET",
             dataType: "json"
             });
         request.done(function( data ) {
-                if(data.length &gt; 0){
-                    document.location='/bibs-server/raceresults?form&amp;event=${param.event}';
-                }else{
-                    alert("Please create an Event first.");
-                    document.location='/bibs-server/events?form';
-                }
-            });
+            if( data !== null ){
+                eci = data;
+                eciStart = moment(data.timeStart).format('MM/DD/YYYY h:mm:ss a');
+                eciEnd = moment(data.timeEnd).format('MM/DD/YYYY h:mm:ss a');
+                eciBasePrice = data.price;
+            }else{
+            }
+        });
         request.fail(function( jqXHR, textStatus ) {
             // error
-            }); -->
+        });
+    }
+
+    function initDateTimePickers(){
+        jQuery(".priceStartDate").each(function(){
+            jQuery(this).datetimepicker({
+                defaultDate: moment(eciStart),
+                useSeconds: true,
+                sideBySide: true
+            });
+        });
+        jQuery(".base-price").each(function(){
+            jQuery(this).append(eciBasePrice);
+        });
     }
     </script>
 </div>
