@@ -184,7 +184,7 @@ public class EventCartItem {
     }
 
     public static String toDeepJsonArray(Collection<EventCartItem> collection) {
-    	return new JSONSerializer().exclude("event").exclude("*.class").deepSerialize(collection);
+    	return new JSONSerializer().exclude("event.awardCategorys").exclude("event.resultsFiles").exclude("event.raceResults").exclude("event.raceImages").exclude("*.class").deepSerialize(collection);
     }
     
     public static String toJsonArray(Collection<EventCartItem> collection) {
