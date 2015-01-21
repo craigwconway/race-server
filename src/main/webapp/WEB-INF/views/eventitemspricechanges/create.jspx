@@ -95,10 +95,15 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <button id="back" type="button" class="btn" onclick="window.history.back();">Cancel</button>
+            <button class="btn btn-success" id="proceed" type="submit" onclick="postPriceChanges()">Save</button>
+        </div>
     </div>
     
     <script>
     var postObject = {};
+    var eciId;
     var eci;
     var eciStart;
     var eciEnd;
@@ -171,10 +176,11 @@
     }
     var itemList = [];
     var timelineList = [];
+    var pcList = [];
 
     window.onload = function(){
-        var id = parseEventId();
-        getEventData(id);
+        eciId = parseEventId();
+        getEventData(eciId);
     }
 
     function savePCType(){
@@ -209,6 +215,12 @@
         timeline = new vis.Timeline(container, itemList[index], options);
         timelineList.push(timeline);
 
+        var pc = {};
+        pc["obj"] = obj;
+        pc["items"] = items;
+        pc["timeline"] = timeline;
+        pcList.push(pc);
+
         <!-- change header text -->
         var gender;
         if( obj.gender == "MALE" ){ gender = "M"; }
@@ -241,8 +253,7 @@
         item["content"] = price;
 
         itemList[index].add(item);
-
-        timeline.fit();
+        timelineList[index].fit();
     }
 
     function parseEventId(){
@@ -272,6 +283,7 @@
             // error
         });
     }
+    // bibs-server/eventitemspricechanges/jsonArray
 
     function initDateTimePickers(){
         jQuery(".priceStartDate").each(function(){
@@ -282,7 +294,78 @@
             });
         });
         jQuery(".base-price").each(function(){
-            jQuery(this).append(eciBasePrice);
+            jQuery(this).text("Base price: $" + eciBasePrice);
+        });
+    }
+
+    function priceChange(price, id, start, end, name, minAge, maxAge, gender, team){
+        this.startDate = start;
+        this.eventCartItem = id;
+        this.endDate = end;
+        this.categoryName = name;
+        this.lowAgeThreshold = minAge;
+        this.highAgeThreshold = maxAge;
+        this.gender = gender;
+        this.team = team;
+        this.price = price;
+    }
+
+    function postPriceChanges(){
+        // iterate by group
+        var postObjList = [];
+        for( var i = 0; i &lt; pcList.length; i++ ){
+            var groupData = pcList[i].items._data;
+            for( var j = 0; j &lt; Object.keys(groupData).length; j++ ){
+                var keys = Object.keys(groupData);
+                var index = keys[j];
+                var objStartDate;
+                var objEndDate;
+                if( j == keys.length-1 ){
+                    objStartDate = groupData[index].start;
+                    objEndDate = eciEnd;                    
+                }
+                else{
+                    var nextIndex = keys[j+1];
+                    objStartDate = groupData[index].start;
+                    objEndDate = moment(groupData[nextIndex].start).subtract(1, 'ms');
+                }
+                if( moment.isMoment(objStartDate) ){ objStartDate = objStartDate.format("MM/DD/YYYY h:mm:ss a"); }
+                if( moment.isMoment(objEndDate) ){ objEndDate = objEndDate.format("MM/DD/YYYY h:mm:ss a"); }
+
+                var pc = new Object();
+                pc = jQuery.extend({
+                    price: parseInt(groupData[index].content),
+                    eventCartItem: eciId,
+                    startDate: objStartDate,
+                    endDate: objEndDate
+                }, pcList[i].obj);
+                pc.eventCartItem = eciId;
+                postObjList.push(pc);
+            }
+        }
+
+        console.log(postObjList)
+
+        var request = jQuery.ajax({
+            url: "/bibs-server/eventitemspricechanges/jsonArray",
+            type: 'POST',
+            data: postObjList
+        });
+        
+        request.done(function(data){
+            if( data !== null ){
+                // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+            }
+            else{
+                // error
+                // alert("There was an error while saving your price changes. Please try again!");
+                // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+            }
+        });
+        request.fail(function( jqXHR, textStatus ) {
+            // error
+            alert("There was an error while saving your price changes. Please try again!");
+            // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
         });
     }
     </script>
