@@ -157,6 +157,8 @@ public class RaceResult implements Comparable<RaceResult> {
     private String timemile3;
 
     private String timemile4;
+    
+    private boolean licensed;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
@@ -1191,4 +1193,18 @@ public class RaceResult implements Comparable<RaceResult> {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+	/**
+	 * @return boolean - True if the result is a licensed race result
+	 */
+	public boolean isLicensed() {
+		return licensed;
+	}
+
+	/**
+	 * @param boolean - Set true when licensing a result, false if unlicensed
+	 */
+	public void setLicensed(boolean licensed) {
+		this.licensed = licensed;
+	}
 }

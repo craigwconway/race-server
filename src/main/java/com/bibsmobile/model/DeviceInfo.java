@@ -69,6 +69,29 @@ public class DeviceInfo {
 
 	// -------------------------------------------
 	// -------------------------------------------
+	// Quick Add/Remove
+	// -------------------------------------------
+	public static void quickBlindAddRunner() {
+		DeviceInfo info = DeviceInfo.findDeviceInfo(new Long(1));
+		info.setRunnersUsed(info.getRunnersUsed() + 1);
+		info.merge();
+	}
+	public static void quickBlindRemoveRunner() {
+		DeviceInfo info = DeviceInfo.findDeviceInfo(new Long(1));
+		info.setRunnersUsed(info.getRunnersUsed() - 1);
+		info.merge();
+	}
+	
+	public void quickAddRunner() {
+		setRunnersUsed(getRunnersUsed() + 1);
+	}
+	
+	public void quickRemoveRunner() {
+		setRunnersUsed(getRunnersUsed() - 1);
+	}
+	
+	// -------------------------------------------
+	// -------------------------------------------
 	// Database transaction functions
 	// -------------------------------------------
 	// Right now we only want to find a device info
