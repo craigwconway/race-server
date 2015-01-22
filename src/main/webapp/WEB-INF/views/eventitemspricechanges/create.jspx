@@ -349,7 +349,10 @@
         var request = jQuery.ajax({
             url: "/bibs-server/eventitemspricechanges/jsonArray",
             type: 'POST',
-            data: postObjList
+            dataType: 'json',
+            data: {
+                values: postObjList
+            }
         });
         
         request.done(function(data){
