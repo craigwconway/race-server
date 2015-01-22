@@ -4,7 +4,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <div style="margin-left: 0; width: 85%;">
+    <div style="margin-left: 0; width: 95%;">
     <form method="post" class="navbar-form navbar-left" style="width: 100%" role="search">
         <div class="form-group">
             <c:if test="${events != null}">
@@ -25,7 +25,7 @@
             <input class="form-control" style="margin-left: 7px;" type="text" name="invoiceId" placeholder="Invoice ID" value="${invoiceId}"></input>
             <input class="form-control" style="margin-left: 7px;" type="text" name="email" placeholder="E-Mail" value="${email}"></input>
         </div>
-        <input class="btn btn-success" type="submit" value="Search"></input>
+        <input class="btn btn-success" style="margin-left: 7px" type="submit" value="Search"></input>
     </form>
     </div>
     <div class="row"><!--  --></div>
