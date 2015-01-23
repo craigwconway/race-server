@@ -99,3 +99,13 @@
 .glyphicon-ok {
 	color: #00DD00;
 }
+
+/* 	d3 charts 	*/
+.d3-container{
+	margin: 0 auto;
+	width: 80%;
+}
+
+#chart svg {
+	height: 400px;
+}

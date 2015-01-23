@@ -15,20 +15,26 @@
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-6" style="margin-left:0px;padding-left:0px">
-                    <input  type="text" name="startDate"
+                    Item Sale Start Date: 
+                    <input  type="text" name="timeStart"
                         class="form-control"
                         id="ECIStart"
                         placeholder="Price start date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
                 <div class="col-md-6 col-sm-6" style="margin-left: -10%">
-                    <input  type="text" name="endDate"
+                    Item Sale End Date: 
+                    <input  type="text" name="timeEnd"
                         class="form-control"
                         id="ECIEnd"
                         placeholder="Price end date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
+                <div style="display:none">
+                    <input id="eventStartDate" value="${event.timeStart}"></input>
+                </div>
             </div>
+            <div class="row">${event}</div>
             <div class="row">
                 <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
                 <select name="gender" class="form-control" id="gender-type">
@@ -53,7 +59,7 @@
             <div class="row">
                 <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
                 <select name="type" class="form-control" id="ticket-type">
-                    <option selected="selected">Select Type</option>
+                    <option selected="selected">Product Type</option>
                     <option value="TICKET">Ticket</option>
                     <option value="T_SHIRT">T-shirt</option>
                     <option value="DONATION">Donation</option>
@@ -69,166 +75,22 @@
                         placeholder="Quantity"></input>
                 </div>
             </div>
-            <div class="row">
-                <button type="button" class="btn btn-info btn-lg"
-                        style="margin-left: 0px" id="add-button">Add Price Change</button></div>
         </div>
-
-        <div class="panel-container-right">
-            <div class="row" id="add-container">
-                <div class="panel panel-success add-price-change">
-                    <div class="panel-heading">Category Details</div>
-                    <div class="panel-body" style="margin: auto 4%">
-                        <div class="formGroup row">
-                            <div class="col-md-6 col-sm-12">
-                                <input  type="text" data-for="startDate"
-                                    class="form-control price-change-field"
-                                    id="pcStart"
-                                    placeholder="Price start date"
-                                    data-provide="datepicker"
-                                    data-date-format="MM/DD/YYYY h:mm:ss a"
-                                    value="${eventCartItemPriceChange.startDate}"></input></div>
-                            <div class="col-md-6 col-sm-12">
-                                <input  type="text" data-for="endDate"
-                                    class="form-control price-change-field"
-                                    id="pcEnd"
-                                    placeholder="Price end date"
-                                    data-provide="datepicker"
-                                    data-date-format="MM/DD/YYYY h:mm:ss a"
-                                    value="${eventCartItemPriceChange.endDate}"></input></div>
-                        </div>
-                        <div class="formGroup row" >
-                            <div class="col-md-6 col-sm-6">
-                            <input  type="text" data-for="lowAgeThreshold"
-                                    class="input-form price-change-field"
-                                    placeholder="Min Age"
-                                    value=""></input></div>
-                            <div class="col-md-6 col-sm-6">
-                            <input  type="text" data-for="highAgeThreshold"
-                                    class="input-form price-change-field"
-                                    placeholder="Max Age"
-                                    value=""></input></div>
-                        </div>
-                        <div class="formGroup row">
-                            <div class="col-md-6 col-sm-6">
-                            <select data-for="gender" class="form-control price-change-field" id="gender-type">
-                                <option selected="selected" disabled="disabled">Gender</option>
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option>
-                                <option value="MALE_AND_FEMALE">Both</option>
-                            </select></div>
-
-                            <div class="col-md-6 col-sm-6">
-                                <button type="button" data-for="team" data-toggle="button"
-                                    class="btn btn-primary price-change-field"
-                                    aria-pressed="false" autocomplete="off">Teams Only</button>
-                            </div>
-                        </div>
-                        <div class="formGroup row">
-                            <div class="col-md-6 col-sm-6">
-                            <input  type="text" data-for="price"
-                                    class="input-form price-change-field"
-                                    placeholder="Price"></input></div>
-                        </div>
-                        <div class="formGroup row">
-                            <div style="text-align:right">
-                                <button type="button" class="btn btn-success" onclick="savePriceChange()">Save Price Change</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div id="elessar-header">
-                <div id="elessar-container">
-                    <span><h4>Price Change Timeline</h4>
-                    <p>(Hover to see prices, double-click to remove)<br/>
-                    Base price: &#36;</p></span></div>
-            </div>
-        </div>
-
 
         <!-- required fields not displayed for user -->
         <div style="display:none">
             <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
             <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
             <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
+            <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
         </div>
     </form:create>
     
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 
     <script>
-    <!-- prototype utilities -->
-    RangeBar.prototype.rangeList = [];
-    RangeBar.prototype.insertRange = function(obj){
-        <!-- get pixel values of min and max ranges -->
-        var min = rangeBar.abnormalise(obj.startDate);
-        var max = rangeBar.abnormalise(obj.endDate);
-        var minDate = moment(obj.startDate);
-        var maxDate = moment(obj.endDate);
-
-        <!-- check if the ranges overlap. if so, append a new rangebar. -->
-        if(rangeBar.rangeList.length > 0){
-            rangeBar.rangeList.forEach(function(i){
-                if( minDate.isBetween(i[0]) || maxDate.isBetween(i[1]) ){
-                    initRangeBar();
-                }
-            })
-        }
-
-        var bar = rangeBar.addRange([min, max]);
-        rangeBar.rangeList.push([obj.startDate, obj.endDate]);
-
-        <!-- TODO: Add a #id attribute to each bar to identify its associations -->
-        jQuery(bar.$el).data("data", obj);
-        
-        <!-- add tooltip to each bar -->
-        jQuery(bar.$el).attr("data-toggle", "tooltip");
-        jQuery(bar.$el).attr("data-placement", "bottom");
-        jQuery(bar.$el).attr("title", function(){
-            return "$" + obj.price;
-        });
-        jQuery(bar.$el).attr("dblclicked", false);  <!-- hack to remove tooltip on doubleclick -->
-        jQuery('[data-toggle="tooltip"]').tooltip();
-
-        <!-- remove on double-click -->
-        jQuery(bar.$el).dblclick(function(){
-            var dblclicked = jQuery(this).data('dblclicked');
-            if( !dblclicked ){
-                jQuery(this).attr("dblclicked", true);
-
-                var info = jQuery(this).data('data');
-                var dateInfo = [info.startDate, info.endDate];
-                var index = -1;
-                for( i = 0; i &lt; rangeBar.rangeList.length; i++ ){
-                    var item = (rangeBar.rangeList)[i];
-                    if( item[0] == dateInfo[0] &amp;&amp; item[1] == dateInfo[1] ){
-                        index = i;
-                    }
-                }
-
-                if( index > -1 ){
-                    rangeBar.rangeList.splice(index, 1);
-                    jQuery(this).tooltip('disable');
-                    jQuery(this).mouseout(function(){
-                        jQuery(this).empty();
-                    })
-                }
-            }
-        })
-    }
-
     <!-- global variables -->
-    var priceChangeObjectArray = [];
-    var rangeBar;
-
     window.onload = function(){
-        <!-- event id is currently defaulted to the event name, but database wants an event id.
-             this section parses the event id directly from the url. -->
-        initForm();
         parseEventId();
         initDateTimePickers();
     }
@@ -241,132 +103,24 @@
         jQuery("#_event_id").val(eid);
     }
 
-    function initForm(){
-        <!-- hide certain div elements that shouldn't appear until the user clicks on UI elements.  -->
-        jQuery(".add-price-change").hide();
-        jQuery("#elessar-header").hide();
-
-        <!-- populate header for price timeline with base price value. -->
-        jQuery("input[name='price']").change(function(){
-            var val = jQuery(this).val();
-            jQuery("#elessar-container p").html("(Hover to see prices, double-click to remove)<br/>Base price: $" + val);
-        })
-
-        <!-- logic for "Add Price Change button":
-            1) show price change detail form section on the right side of the page
-            2) initialize price timeline at the bottom of the forms
-         -->
-        var initialized = false;
-        jQuery("#add-button").click(function(){
-            if( !initialized ){
-                initRangeBar();
-                initialized = true;
-            }
-            jQuery(".add-price-change").show();
-            jQuery("#elessar-header").show();
-            jQuery("#add-container").after(jQuery(".add-price-change"));
-        })
-    }
-    
-    <!-- logic for "Save Price Change button". gets called every time the button is clicked.
-        BACKLOGIC()
-        1) grab all fields and save into priceChangeObject
-        2) initialize EventCartItemPriceChange pc for each priceChangeObject
-        3) add into priceChanges (array of ECIPC)
-
-        FRONTLOGIC()
-        1) clear form fields
-        2) add new bar for timeline
-        3) add thumbnail navigation for each price change for user to edit
-
-      -->
-    function savePriceChange(){
-        var priceChangeObject = {};
-
-        priceChangeObject = backLogic();
-        frontLogic(priceChangeObject);
-    }
-
-    function backLogic(){
-        var obj = {};
-        jQuery(".price-change-field").each(function(i){
-            var key = jQuery(this).attr("data-for");
-            var val = jQuery(this).val();
-
-            if( key == "team" ){
-                if(jQuery(this).hasClass('active')){
-                    val = true;
-                }
-                else{
-                    val = false;
-                }
-            }
-            obj[key] = val;
-        })
-
-        <!-- TODO: once constructor for EventCartItemPriceChange is ready, submit array in POST call -->
-        return obj;
-    }
-
-    function frontLogic(obj){
-        <!-- clear form fields -->
-        jQuery(".price-change-field").val('');
-        jQuery("select.price-change-field").find('option:contains("Gender")').attr('selected', true);
-
-        <!-- create new bar for timeline -->
-        rangeBar.insertRange(obj);
-
-        <!-- create new thumbnail to represent saved price change -->
-        createThumbnail(obj.startDate, obj.endDate);
-    }
-
-    function createThumbnail(startDate, endDate){
-        console.log(startDate, endDate);
-    }
-
-    var todayDate = moment().startOf('day');
-    var tomorrowDate = moment(todayDate).add(1, 'days');
-    var weekDate = moment(todayDate).add(1, 'weeks');
+    var eventStart = moment(jQuery("#eventStartDate").val());
     function initDateTimePickers(){
         jQuery("#ECIStart")
             .datetimepicker({
-                defaultDate: todayDate,
+                defaultDate: moment().startOf('day'),
                 useSeconds: true,
                 sideBySide: true
             });
         jQuery("#ECIEnd")
             .datetimepicker({
-                defaultDate: moment(todayDate).add(1, 'weeks'),
-                useSeconds: true,
-                sideBySide: true
-            });
-        jQuery("#pcStart")
-            .datetimepicker({
-                defaultDate: todayDate,
-                useSeconds: true,
-                sideBySide: true
-            });
-        jQuery("#pcEnd")
-            .datetimepicker({
-                defaultDate: tomorrowDate,
+                defaultDate: eventStart.startOf('day').subtract(7, 'days'),
                 useSeconds: true,
                 sideBySide: true
             });
 
-        jQuery("#ECIStart").on("dp.change",function (e) {
-            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
-            jQuery('#pcStart').data("DateTimePicker").setMinDate(e.date);
-
-            <!-- check if end date was previously set -->
-            var selectedDate = moment(e.date);
-            var currEndDate = moment(jQuery('#ECIEnd').data("DateTimePicker").getDate());
-            if( currEndDate.isBefore(selectedDate) ){
-                jQuery('#ECIEnd').data("DateTimePicker").setDate(moment(e.date).add(1, 'days'));
-            }
-        });
+        <!-- on change-ui -->
         jQuery("#ECIEnd").on("dp.change",function (e) {
             jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
-            jQuery('#pcEnd').data("DateTimePicker").setMaxDate(e.date);
             
             <!-- check if start date was previously set -->
             var selectedDate = moment(e.date);
@@ -376,63 +130,6 @@
                 jQuery('#ECIStart').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
             }
         });
-
-        <!-- on change-ui -->
-        jQuery("#pcEnd").on("dp.change",function (e) {
-            jQuery('#pcStart').data("DateTimePicker").setMaxDate(e.date);
-            
-            <!-- check if start date was previously set -->
-            var selectedDate = moment(e.date);
-            var currStartDate = moment(jQuery('#pcEnd').data("DateTimePicker").getDate());
-
-            if( selectedDate.isBefore(currStartDate) ){
-                jQuery('#ECIStart').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
-            }
-        });
-        jQuery("#pcEnd").on("dp.change",function (e) {
-            jQuery('#pcStart').data("DateTimePicker").setMaxDate(e.date);
-            
-            <!-- check if start date was previously set -->
-            var selectedDate = moment(e.date);
-            var currStartDate = moment(jQuery('#pcEnd').data("DateTimePicker").getDate());
-
-            if( selectedDate.isBefore(currStartDate) ){
-                jQuery('#ECIStart').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
-            }
-        });
-    }
-
-    function initRangeBar(){
-        var ECIstart = moment(jQuery("#ECIStart").data("DateTimePicker").getDate());
-        var ECIend   = moment(jQuery('#ECIEnd').data("DateTimePicker").getDate());
-
-        rangeBar = new RangeBar({
-            readonly: true,
-            min: moment(ECIstart).startOf('day').format('MM/DD/YY hh:mm A'),
-            max: moment(ECIend).endOf('day').format('MM/DD/YY hh:mm A'),
-            valueFormat: function(ts) {
-                return moment(ts).format('MM/DD/YY hh:mm A');
-            },
-            valueParse: function(date) {
-                return moment(date).valueOf();
-            },
-            values: [],
-            label: function(a){
-                var from =  moment(a[0]);
-                var until =  moment(a[1]);
-                var duration = until.diff(from, 'hours');
-                if(duration &lt; 30){
-                    return moment(a[1]).from(a[0], true);
-                }
-                return from.format('Do hh:mm A') + ' to ' + until.format('Do hh:mm A');
-            },
-            snap: 1000 * 60 * 15,
-            allowDelete: true,
-            allowSwap: true,
-            bgLabels: 6
-        });
-
-        jQuery('#elessar-container').append(rangeBar.$el);
     }
     </script>
 </div>
