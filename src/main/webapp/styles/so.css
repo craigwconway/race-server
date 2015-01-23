@@ -91,3 +91,11 @@
 .elessar-readonly {
 	opacity: 1.0;
 }
+
+.glyphicon-remove{
+	color: #DD0000;
+}
+
+.glyphicon-ok {
+	color: #00DD00;
+}
