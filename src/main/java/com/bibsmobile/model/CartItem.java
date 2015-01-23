@@ -204,12 +204,14 @@ public class CartItem {
         this.size = size;
     }
 
+    // HACK
+    // TODO: fix quickfix on price to something cooler
     public long getPrice() {
-        return this.price;
+        return this.price / 100;
     }
 
     public void setPrice(long price) {
-        this.price = price;
+        this.price = price * 100;
     }
 
     @PersistenceContext
