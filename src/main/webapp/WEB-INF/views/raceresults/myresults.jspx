@@ -14,7 +14,7 @@
 		setEventSelection(getUrlParam('event'));
 		removeNulls();
 	    // press enter submit
-	    $("input").keyup(function(e){
+	    jQuery("input").keyup(function(e){
 	        if(e.which == 10 || e.which == 13){
 				search();
 	        }
