@@ -25,13 +25,8 @@
 <script src="${mask_url}" type="text/javascript">;//?</script>
 <script src="${geocomplete_url}" type="text/javascript">;//?</script>
 <script src="${datepicker_url}" type="text/javascript">;//?</script>
-<<<<<<< HEAD
 <script src="${vis_url}" type="text/javascript">;//?</script>
 <!-- <script src="${jquery_ui_url}" type="text/javascript">;//?</script> -->
-<!-- <script src="${date_slider_handle_url}" type="text/javascript">;//?</script> -->
-=======
-<!-- <script src="${jquery_ui_url}" type="text/javascript">;//?</script> -->
->>>>>>> d6e0b7054dd2850c0fcbd2803906057ee4c2fb82
 
 <!-- results mapping code   -->
 
@@ -65,7 +60,6 @@
   <spring:url value="/resources/styles/nv.d3.min.css" var="nvd3_css_url" />
   <spring:url value="/resources/styles/elessar.css" var="elessar_css_url" />
   <spring:url value="/resources/styles/so.css" var="so_url" />
-  <!-- <spring:url value="/resources/styles/iThing.css" var="slider_css_url" /> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="${bootstrap_url }" rel="stylesheet"/>
   <link href="${datepicker_css_url }" rel="stylesheet"/>
