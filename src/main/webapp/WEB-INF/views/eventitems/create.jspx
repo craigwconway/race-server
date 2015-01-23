@@ -3,8 +3,8 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
-        <div class="form-container">
-        <h3>Add Product</h3>
+        <div class="panel-container-left">
+            <h3>Add Product</h3>
             <div class="row">
                 <input  type="text" name="name"
                         class="input-form"
@@ -15,24 +15,30 @@
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-6" style="margin-left:0px;padding-left:0px">
-                    <input  type="text" name="startDate"
+                    Item Sale Start Date: 
+                    <input  type="text" name="timeStart"
                         class="form-control"
-                        id="priceStartDate"
+                        id="ECIStart"
                         placeholder="Price start date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
                 <div class="col-md-6 col-sm-6" style="margin-left: -10%">
-                    <input  type="text" name="endDate"
+                    Item Sale End Date: 
+                    <input  type="text" name="timeEnd"
                         class="form-control"
-                        id="priceEndDate"
+                        id="ECIEnd"
                         placeholder="Price end date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
+                <div style="display:none">
+                    <input id="eventStartDate" value="${event.timeStart}"></input>
+                </div>
             </div>
+            <div class="row">${event}</div>
             <div class="row">
-                <div class="col-md-3 col-sm-3" style="margin: 0% auto; padding: 0%">
+                <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
                 <select name="gender" class="form-control" id="gender-type">
-                    <option selected="selected">Gender</option>
+                    <option selected="selected" disabled="disabled">Gender</option>
                     <option value="MALE">Male</option>
                     <option value="FEMALE">Female</option>
                     <option value="MALE_AND_FEMALE">Both</option>
@@ -51,9 +57,9 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3 col-sm-3" style="margin: 0% auto; padding: 0%">
+                <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
                 <select name="type" class="form-control" id="ticket-type">
-                    <option selected="selected">Select Type</option>
+                    <option selected="selected">Product Type</option>
                     <option value="TICKET">Ticket</option>
                     <option value="T_SHIRT">T-shirt</option>
                     <option value="DONATION">Donation</option>
@@ -70,136 +76,58 @@
                 </div>
             </div>
         </div>
+
         <!-- required fields not displayed for user -->
         <div style="display:none">
             <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
             <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
             <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
+            <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
         </div>
     </form:create>
     
-    
-            <div class="row">
-            <button type="button" class="btn btn-info" id="add-button">Add Price Change</button></div>
-            <div class="row" id="add-container">
-                <div class="panel panel-success add-price-change">
-                    <div class="panel-heading">Category Details</div>
-                    <div class="panel-body" style="text-align:center">
-                        <div class="formGroup row">
-                            <label for="startDate" style="margin-right: 60px;">
-                                <input  type="text" name="startDate"
-                                    class="form-control" style="width:117%;"
-                                    id="priceStartDate"
-                                    placeholder="Price start date"
-                                    data-provide="datepicker"
-                                    data-date-format="MM/DD/YYYY h:mm:ss a"
-                                    value="${eventCartItemPriceChange.startDate}"></input></label>
-                            <label for="endDate">
-                                <input  type="text" name="endDate"
-                                    class="form-control" style="width:117%;"
-                                    id="priceEndDate"
-                                    placeholder="Price end date"
-                                    data-provide="datepicker"
-                                    data-date-format="MM/DD/YYYY h:mm:ss a"
-                                    value="${eventCartItemPriceChange.endDate}"></input></label>
-                        </div>
-                        <div class="formGroup row" style="margin-left:0px">
-                            <label for="lowAgeThreshold" >
-                            <input  type="text" name="lowAgeThreshold"
-                                    class="input-form"
-                                    placeholder="Min Age"
-                                    value=""></input></label>
-                            <label for="highAgeThreshold">
-                            <input  type="text" name="highAgeThreshold"
-                                    class="input-form"
-                                    placeholder="Max Age"
-                                    value=""></input></label>
-                        </div>
-                        <div class="formGroup row" style="margin-left:-10px">
-                            <div class="btn-group" role="group" data-toggle="button">
-                                <div class="btn btn-primary">
-                                    <input style="display:none" type="checkbox" value="0" aria-pressed="false" autocomplete="off"></input>Male
-                                </div>
-                                <div class="btn btn-primary">
-                                    <input style="display:none" type="checkbox" value="1" aria-pressed="false" autocomplete="off"></input>Female
-                                </div>
-                            </div>
-
-                            <div class="btn btn-primary" data-toggle="button"
-                                 style="margin-left: 37px">
-                                <input  type="checkbox" name="team"
-                                    style="display:none"
-                                    aria-pressed="false" autocomplete="off"></input>Teams Only</div>
-                        </div>
-                        <div class="formGroup row">
-                            <label for="price">
-                            <input  type="text" name="price"
-                                    class="input-form"
-                                    placeholder="Price"></input></label>
-                        </div>
-                    </div>
-                </div>
-            </div>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 
     <script>
+    <!-- global variables -->
     window.onload = function(){
-        initForm();
+        parseEventId();
         initDateTimePickers();
-    }
-
-    function initForm(){
-        var eid = parseEventId();
-        jQuery("#_event_id").val(eid);
-        jQuery(".add-price-change").hide();
-        jQuery("#add-button").click(function(){
-            jQuery(".add-price-change").show();
-            jQuery("#add-container").after(jQuery(".add-price-change"));
-        })
     }
 
     function parseEventId(){
         var url = window.location.href;
         var urllen = url.length;
         var ind = url.lastIndexOf("=");
-        return url.substring(ind+1, urllen);
+        var eid = url.substring(ind+1, urllen);
+        jQuery("#_event_id").val(eid);
     }
 
-    var todayDate = moment().startOf('day');
-    var tomorrowDate = moment(todayDate).add(1, 'days');
+    var eventStart = moment(jQuery("#eventStartDate").val());
     function initDateTimePickers(){
-        jQuery("#priceStartDate")
+        jQuery("#ECIStart")
             .datetimepicker({
-                defaultDate: todayDate,
+                defaultDate: moment().startOf('day'),
                 useSeconds: true,
                 sideBySide: true
             });
-        jQuery("#priceEndDate")
+        jQuery("#ECIEnd")
             .datetimepicker({
-                defaultDate: tomorrowDate,
+                defaultDate: eventStart.startOf('day').subtract(7, 'days'),
                 useSeconds: true,
                 sideBySide: true
             });
 
-        jQuery("#priceStartDate").on("dp.change",function (e) {
-            jQuery('#priceEndDate').data("DateTimePicker").setMinDate(e.date);
-
-            <!-- check if end date was previously set -->
-            var selectedDate = moment(e.date);
-            var currEndDate = moment(jQuery('#priceEndDate').data("DateTimePicker").getDate());
-            if( currEndDate.isBefore(selectedDate) ){
-                jQuery('#priceEndDate').data("DateTimePicker").setDate(moment(e.date).add(1, 'days'));
-            }
-        });
-        jQuery("#priceEndDate").on("dp.change",function (e) {
-            jQuery('#priceStartDate').data("DateTimePicker").setMaxDate(e.date);
+        <!-- on change-ui -->
+        jQuery("#ECIEnd").on("dp.change",function (e) {
+            jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
             
             <!-- check if start date was previously set -->
             var selectedDate = moment(e.date);
-            var currStartDate = moment(jQuery('#priceEndDate').data("DateTimePicker").getDate());
+            var currStartDate = moment(jQuery('#ECIEnd').data("DateTimePicker").getDate());
 
             if( selectedDate.isBefore(currStartDate) ){
-                jQuery('#priceStartDate').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
+                jQuery('#ECIStart').data("DateTimePicker").setDate(moment(e.date).subtract(1, 'days'));
             }
         });
     }

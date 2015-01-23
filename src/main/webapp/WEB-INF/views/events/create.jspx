@@ -182,12 +182,12 @@
                 sideBySide: true
             });
 
-        jQuery("#mask-website").click(function(){
+        jQuery("#mask-website").focus(function(){
             var content = jQuery("#mask-website").val();
             if( !content ){
                 jQuery("#mask-website").val("http://");
             }
-        })
+        });
 
         jQuery("input[name='website']").focusout(function(){
             var fulltext = jQuery("input[name='website']").val();

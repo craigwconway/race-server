@@ -1,0 +1,7 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    ERROR message - ticket transfer has failed, your event director has either disabled it for the event or you have entered an incorrect ticket
+    contact hello@mybibs.co for questions
+    bibs website
+</div>
