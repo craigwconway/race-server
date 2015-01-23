@@ -51,7 +51,7 @@ public class UserProfile implements UserDetails {
     private String state;
 
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "MM-dd-yyyy")
+    @DateTimeFormat(pattern = "MM/dd/yyyy")
     private Date birthdate;
 
     private String gender;
