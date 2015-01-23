@@ -18,7 +18,7 @@
  
 	<spring:url value="/events/raceday" var="raceday_url" />
 	<spring:url value="/events?page=1&amp;size=10" var="events_url" />
-	<spring:url value="/events/reports" var="reports_url" />
+	<spring:url value="/registrations/reports" var="reports_url" />
 	<spring:url value="/raceresults?/myresults" var="runners_url" />
 	<spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
 	<spring:url value="/timers?page=1&amp;size=10" var="timers_url" />
