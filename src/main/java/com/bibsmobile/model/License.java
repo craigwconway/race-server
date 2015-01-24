@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class License {
 	@Id
 	private long id;
+	
+	private byte[] token;
 
 	@Transient
 	private byte[] macAddress;
@@ -38,6 +40,20 @@ public class License {
 	
 	
 
+
+	/**
+	 * @return Get the license token from the database
+	 */
+	public byte[] getToken() {
+		return token;
+	}
+
+	/**
+	 * @param token the license token we are setting
+	 */
+	public void setToken(byte[] token) {
+		this.token = token;
+	}
 	
 	/**
 	 * Pulls mac address as unique id from token.
