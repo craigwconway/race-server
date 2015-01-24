@@ -317,6 +317,7 @@ public class StripeController {
                     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                     resultString += "See you on " + sdf.format(cartEvent.getTimeStart()) + "!\n";
                     resultString += "- the bibs team";
+                    resultString += "\n\nIssues? Your transaction id is: B" + c.getId() + "T" + c.getStripeChargeId();
                     MailgunUtil.send(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
                 }
 
