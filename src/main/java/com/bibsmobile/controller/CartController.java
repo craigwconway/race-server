@@ -1,6 +1,7 @@
 package com.bibsmobile.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -101,6 +102,14 @@ public class CartController {
         headers.add("Content-Type", "application/json");
         Cart cart = Cart.fromJsonToCart(json);
         cart.setId(id);
+        List<CartItem> cartItems = cart.getCartItems();
+        if(null != cartItems) {
+	        for(CartItem cartItem: cartItems) {
+	        	System.out.println("updatingcartitem: " + cartItem);
+	        	cartItem.setUserProfile(cart.getUser());
+	        	cartItem.persist();
+	        }
+        }
         if (cart.merge() == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
