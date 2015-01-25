@@ -222,8 +222,10 @@ public class StripeController {
             c.setStatus(Cart.PROCESSING);
             c.persist();
 
-            long cartTotalCents = c.getTotal();
-
+            // HACK
+            // TODO: this better
+            long cartTotalCents = c.getTotal() * 100;
+            System.out.println("This is our price: " + c.getTotal());
             // needs to be logged in, if
             // 1) no card token was submitted
             // 2) card should be remembered
@@ -315,6 +317,7 @@ public class StripeController {
                     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                     resultString += "See you on " + sdf.format(cartEvent.getTimeStart()) + "!\n";
                     resultString += "- the bibs team";
+                    resultString += "\n\nIssues? Your transaction id is: B" + c.getId() + "T" + c.getStripeChargeId();
                     MailgunUtil.send(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
                 }
 

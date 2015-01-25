@@ -67,4 +67,14 @@ public class RegistrationsController {
 
         return "registrations/search";
     }
+    
+    @RequestMapping(value = "reports", method = RequestMethod.GET)
+    public String reportsForm(@RequestParam(value="event", required=false) Long eventId, Model uiModel) {
+        UserProfile user = UserProfileUtil.getLoggedInUserProfile();
+        if (eventId != null && !PermissionsUtil.isEventAdmin(user, Event.findEvent(eventId))) {
+            return "accessDeniedFailure";
+        }
+        return "registrations/reports";
+    }
+    
 }

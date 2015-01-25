@@ -90,88 +90,7 @@
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 
     <script>
-    <!-- prototype utilities -->
-    RangeBar.prototype.rangeList = [];
-    RangeBar.prototype.insertRange = function(obj){
-        <!-- get pixel values of min and max ranges -->
-        var min = rangeBar.abnormalise(obj.startDate);
-        var max = rangeBar.abnormalise(obj.endDate);
-        var minDate = moment(obj.startDate);
-        var maxDate = moment(obj.endDate);
-
-        <!-- check if the ranges overlap. if so, append a new rangebar. -->
-        if(rangeBar.rangeList.length > 0){
-            rangeBar.rangeList.forEach(function(i){
-                console.log(i)
-                if( minDate.isBetween(i[0]) || maxDate.isBetween(i[1]) ){
-                    initRangeBar();
-                }
-            })
-        }
-
-        var bar = rangeBar.addRange([min, max]);
-        rangeBar.rangeList.push([obj.startDate, obj.endDate]);
-
-        <!-- TODO: Add a #id attribute to each bar to identify its associations -->
-        jQuery(bar.$el).data("data", obj);
-        
-        <!-- add tooltip to each bar -->
-        jQuery(bar.$el).attr("data-toggle", "tooltip");
-        jQuery(bar.$el).attr("data-placement", "bottom");
-        jQuery(bar.$el).attr("title", function(){
-            return "$" + obj.price;
-        });
-        jQuery(bar.$el).attr("dblclicked", false);  <!-- hack to remove tooltip on doubleclick -->
-        jQuery('[data-toggle="tooltip"]').tooltip();
-
-        <!-- remove on double-click -->
-        jQuery(bar.$el).dblclick(function(){
-            var dblclicked = jQuery(this).data('dblclicked');
-            if( !dblclicked ){
-                jQuery(this).attr("dblclicked", true);
-
-                var info = jQuery(this).data('data');
-                var dateInfo = [info.startDate, info.endDate];
-                var index = -1;
-                for( i = 0; i &lt; rangeBar.rangeList.length; i++ ){
-                    var item = (rangeBar.rangeList)[i];
-                    if( item[0] == dateInfo[0] &amp;&amp; item[1] == dateInfo[1] ){
-                        index = i;
-                    }
-                }
-
-                var pcIndex = -1;
-                for( i = 0; i &lt; priceChangeObjectArray.length; i++ ){
-                    var item = priceChangeObjectArray[i];
-                    if( item.startDate == dateInfo[0] &amp;&amp; item.endDate == dateInfo[1] ){
-                        pcIndex = i;
-                    }
-                }
-
-                if( index > -1 ){
-                    rangeBar.rangeList.splice(index, 1);
-                    priceChangeObjectArray.splice(pcIndex, 1);
-                    jQuery("#_priceChanges_id").val(priceChangeObjectArray);
-
-                    jQuery(this).tooltip('disable');
-                    jQuery(this).mouseout(function(){
-                        jQuery(this).empty();
-                    })
-                }
-            }
-        })
-    }
-
-    <!-- global variables -->
-    var categoryList = [];
-    var categoryNames = [];
-    var priceChangeObjectArray = [];
-    var rangeBar;
-
     window.onload = function(){
-        <!-- event id is currently defaulted to the event name, but database wants an event id.
-             this section parses the event id directly from the url. -->
-        initForm();
         parseEventId();
         initDateTimePickers();
     }
@@ -184,53 +103,8 @@
         jQuery("#_event_id").val(eid);
     }
 
-    function initForm(){
-        <!-- hide certain div elements that shouldn't appear until the user clicks on UI elements.  -->
-        jQuery("#elessar-header").hide();
-
-        <!-- logic for "Add Price Change button":
-            1) show price change detail form section on the right side of the page
-            2) initialize price timeline at the bottom of the forms
-         -->
-        var initialized = false;
-        jQuery("#add-button").click(function(){
-
-            if( !initialized ){
-                initRangeBar();
-                initialized = true;
-            }
-            jQuery(".add-pc-category").show();
-            jQuery("#elessar-header").show();
-            jQuery("#category-container").after(jQuery(".add-pc-category"));
-        })
-    }
-
-    <!-- logic for "Save Price Change button". gets called every time the button is clicked.
-        BACKLOGIC()
-        1) grab all fields and save into priceChangeObject
-        2) initialize EventCartItemPriceChange pc for each priceChangeObject
-        3) add into priceChanges (array of ECIPC)
-
-        FRONTLOGIC()
-        1) clear form fields
-        2) add new bar for timeline
-        3) add thumbnail navigation for each price change for user to edit
-      -->
-
-
-<!--         var priceChangeObject = {};
-
-        priceChangeObject = backLogic();
-        priceChangeObject['eventCartItem'] = null;
-        priceChangeObjectArray.push(priceChangeObject);
-        jQuery("#_priceChanges_id").val(priceChangeObjectArray);
-        console.log(priceChangeObjectArray);
-
-        frontLogic(priceChangeObject); -->
-
 
     var eventStart = moment(jQuery("#eventStartDate").val());
-    console.log(jQuery("#eventStartDate").val());
     function initDateTimePickers(){
         jQuery("#ECIStart")
             .datetimepicker({

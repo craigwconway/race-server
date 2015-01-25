@@ -1,11 +1,13 @@
 package com.bibsmobile.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.bibsmobile.model.EventCartItemPriceChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,14 +43,14 @@ public class CartController {
     }
 
     @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
-    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel, @ModelAttribute UserProfile userProfile,
+    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, @RequestParam("priceChangeId") Long eventCartItemPriceChangeId, Model uiModel, @ModelAttribute UserProfile userProfile,
             HttpServletRequest request) {
         if (userProfile.getId() == null) {
             UserProfileUtil.disableUserProfile(userProfile);
             userProfile.persist();
         }
         // TODO: implement if needed color and size in admin panel
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile, null, null);
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, EventCartItemPriceChange.findEventCartItemPriceChange(eventCartItemPriceChangeId), quantity, userProfile, null, null);
         uiModel.addAttribute("cart", cart);
         return "redirect:/carts/item/" + eventCartItemId;
     }
@@ -101,6 +103,14 @@ public class CartController {
         headers.add("Content-Type", "application/json");
         Cart cart = Cart.fromJsonToCart(json);
         cart.setId(id);
+        List<CartItem> cartItems = cart.getCartItems();
+        if(null != cartItems) {
+	        for(CartItem cartItem: cartItems) {
+	        	System.out.println("updatingcartitem: " + cartItem);
+	        	cartItem.setUserProfile(cart.getUser());
+	        	cartItem.persist();
+	        }
+        }
         if (cart.merge() == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }

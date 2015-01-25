@@ -3,6 +3,8 @@ package com.bibsmobile.model.wrapper;
 import java.util.Collection;
 import java.util.List;
 
+import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -17,6 +19,7 @@ public class CartItemReqWrapper {
     private UserProfile userProfile;
     private String size;
     private String color;
+    private long priceChangeId;
 
     public UserProfile getUserProfile() {
         return this.userProfile;
@@ -40,6 +43,18 @@ public class CartItemReqWrapper {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public EventCartItemPriceChange getEventCartItemPriceChange() {
+        return EventCartItemPriceChange.findEventCartItemPriceChange(this.priceChangeId);
+    }
+
+    public void setPriceChangeId(long priceChangeId) {
+        this.priceChangeId = priceChangeId;
+    }
+
+    public long getPriceChangeId() {
+        return this.priceChangeId;
     }
 
     @Override

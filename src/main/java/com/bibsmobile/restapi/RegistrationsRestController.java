@@ -67,16 +67,22 @@ public class RegistrationsRestController {
                                @RequestParam("firstName") String firstName,
                                @RequestParam("email") String email,
                                Model uiModel) {
-        CartItem cartItem = RegistrationsUtil.findCartItemFromInvoice(invoiceId, firstName, email);
-        if (cartItem == null) throw new IllegalArgumentException("CartItem not found");
-        uiModel.addAttribute("firstname", cartItem.getUserProfile().getFirstname());
-        uiModel.addAttribute("lastname", cartItem.getUserProfile().getLastname());
-        uiModel.addAttribute("email", cartItem.getUserProfile().getEmail());
-        uiModel.addAttribute("phone", cartItem.getUserProfile().getPhone());
-        uiModel.addAttribute("emergencycontactname", cartItem.getUserProfile().getEmergencyContactName());
-        uiModel.addAttribute("emergencycontactphone", cartItem.getUserProfile().getEmergencyContactPhone());
-        uiModel.addAttribute("birthdate", cartItem.getUserProfile().getBirthdate());
-        return "registrations/transfer";
+    	try {
+            CartItem cartItem = RegistrationsUtil.findCartItemFromInvoice(invoiceId, firstName, email);
+            if (cartItem == null) throw new IllegalArgumentException("CartItem not found");
+            uiModel.addAttribute("firstname", cartItem.getUserProfile().getFirstname());
+            uiModel.addAttribute("lastname", cartItem.getUserProfile().getLastname());
+            uiModel.addAttribute("email", cartItem.getUserProfile().getEmail());
+            uiModel.addAttribute("phone", cartItem.getUserProfile().getPhone());
+            uiModel.addAttribute("emergencycontactname", cartItem.getUserProfile().getEmergencyContactName());
+            uiModel.addAttribute("emergencycontactphone", cartItem.getUserProfile().getEmergencyContactPhone());
+            uiModel.addAttribute("birthdate", cartItem.getUserProfile().getBirthdate());
+            return "registrations/transfer";   		
+    	} catch(Exception e) {
+    		System.out.println(e);
+    		return "registrations/transfererror";
+    	}
+
     }
 
     @RequestMapping(value = "/transfer", method = RequestMethod.POST, headers = "Accept=application/json")

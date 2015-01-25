@@ -62,10 +62,10 @@
 				var proceed = false;
 				if (confirm("Clear ALL runner times for this Event?")) {
 					if (!confirm("Caution: Are your sure? This cannot be undone.")) {
-						return false;
+						location.reload(true);
 					}
 				} else {
-					return false;
+					location.reload(true);
 				}
 				// empty table
 				jQuery("#results"+eventId).html("<tr><td></td></tr>");
@@ -79,10 +79,10 @@
 				var proceed = false;
 				if (confirm("Clear ALL runner times for this Event?")) {
 					if (!confirm("Caution: Are your sure? This cannot be undone.")) {
-						return false;
+						location.reload(true);
 					}
 				} else {
-					return false;
+					location.reload(true);
 				}
 				// empty table
 				jQuery("#results"+eventId).html("<tr><td></td></tr>");
@@ -401,10 +401,13 @@ function startReader(id){
 		dataType: "html"
 		});
 	readerStart.done(function( msg ) {
-		if(msg!="true") 	
-			alert("Reader not available.")
-		else
+		if(msg!="true"){
+			alert("Reader not available.");
+			location.reload(true);
+		}
+		else{
 			readerOn[id]=true;
+		}
 		timerStatus(id);
 	});
 	readerStart.fail(function( jqXHR, textStatus ) {
@@ -490,6 +493,7 @@ function stopReader(id){
 		});
 	request.fail(function( jqXHR, textStatus ) {
 		alert("Error");
+		location.reload(true);
 		});
 }
 
@@ -546,7 +550,8 @@ function gun(eventId){
 		}
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert("Error firing gun.")
+		alert("Error firing gun.");
+		location.reload(true);
 		});
 }
 
@@ -565,7 +570,8 @@ function manual(eventId){
 		readerQuery(eventId);
 		});
 	request.fail(function( jqXHR, textStatus ) {
-		alert("Error")
+		alert("Error");
+		location.reload(true);
 		});
 }
 

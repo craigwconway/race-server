@@ -394,12 +394,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.bull.javamelody</groupId>
-			<artifactId>javamelody-core</artifactId>
-			<version>1.43.0</version>
-		</dependency>
-
-		<dependency>
 			<groupId>ltkjava2</groupId>
 			<artifactId>ltkjava2</artifactId>
 			<version>10.16.0.240</version>
