@@ -4,4 +4,7 @@
 <definition extends="default" name="licensing/upload">
         <put-attribute name="body" value="/WEB-INF/views/licensing/upload.jspx"/>
     </definition>
+<definition extends="default" name="licensing/success">
+        <put-attribute name="body" value="/WEB-INF/views/licensing/success.jspx"/>
+    </definition>    
 </tiles-definitions>
