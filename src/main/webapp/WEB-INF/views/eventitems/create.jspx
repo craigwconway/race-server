@@ -84,12 +84,12 @@
             <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
             <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
         </div>
+        
     </form:create>
     
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
 
     <script>
-    <!-- global variables -->
     window.onload = function(){
         parseEventId();
         initDateTimePickers();
@@ -102,6 +102,7 @@
         var eid = url.substring(ind+1, urllen);
         jQuery("#_event_id").val(eid);
     }
+
 
     var eventStart = moment(jQuery("#eventStartDate").val());
     function initDateTimePickers(){

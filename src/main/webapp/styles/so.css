@@ -32,13 +32,28 @@
 	width: 80%;
 }
 
+.parsley-custom-error-message{
+	font-size: small;
+	color: #D91813;
+}
+
 #back{
 	margin-left: 3%;
 }
 
 /* panel sizes */
+.category-container{
+	text-align: right;
+}
+
+.panel{
+	width: 100%;
+	margin-top: 2%;
+	margin-right: 15%;
+}
+
 .panel-container{
-	width: 80%;
+	width: 94%;
 }
 .panel-container-left{
 	display: inline-block;
@@ -46,50 +61,45 @@
 	margin-left: 3%;
 	vertical-align: top;
 }
-
 .panel-container-right{
 	display: inline-block;
 	width: 50%;
 }
 
 /* elessar */
-#elessar-header{
-	
+
+.elessar-left{
+	display: inline-block;
+	width: 63%;
+	vertical-align: top;
 }
+
+.elessar-right{
+	margin-left: 2%;
+	display: inline-block;
+	width: 35%;
+}
+
 #elessar-container{
-	margin: auto 8%;
+	width: 88%;
+	margin: auto 6%;
 	padding-top: 2%;
 	padding-bottom: 4%;
 	text-align: center;
-	color: #423f3f;
+	float: left;
+	font: 10pt;
 }
 
-.elessar-handle {
+.vispanel.left{
+	font-weight: bold;
 }
 
-.elessar-range {
-	background: #00dffc;
-	border-left: rgba(66,63,63,.5) 1px solid;
-	border-right: rgba(66,63,63,.5) 1px solid;
+.glyphicon-remove{
+	color: #DD0000;
 }
 
-.elessar-rangebar {
-	background: #3A3A3A;
-}
-
-.elessar-label{
-/*    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-	transform-origin: 0% 100%;*/
-	transform: translate(0px, 30px);
-	color: #3A3A3A;
-}
-
-.elessar-readonly {
-	opacity: 1.0;
+.glyphicon-ok {
+	color: #00DD00;
 }
 
 .glyphicon-remove{
