@@ -32,6 +32,11 @@
 	width: 80%;
 }
 
+.parsley-custom-error-message{
+	font-size: small;
+	color: #D91813;
+}
+
 #back{
 	margin-left: 3%;
 }
