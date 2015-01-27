@@ -6,5 +6,8 @@
     </definition>
 <definition extends="default" name="licensing/success">
         <put-attribute name="body" value="/WEB-INF/views/licensing/success.jspx"/>
-    </definition>    
+    </definition>
+<definition extends="default" name="licensing/invalid">
+        <put-attribute name="body" value="/WEB-INF/views/licensing/invalid.jspx"/>
+    </definition>
 </tiles-definitions>

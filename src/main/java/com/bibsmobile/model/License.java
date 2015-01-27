@@ -1,10 +1,14 @@
 package com.bibsmobile.model;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Transient;
 
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -17,8 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 * @version 1.0
 * @since   2015-01-19 
 */
+@Configurable
+@Entity
 public class License {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
 	private byte[] token;
