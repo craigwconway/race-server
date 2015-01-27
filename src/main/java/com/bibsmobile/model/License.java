@@ -28,6 +28,17 @@ public class License {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
+	/**
+	 * Unencrypted Token Format (bigE, 64b):
+	 * 8b Issuetime
+	 * 8b Starttime
+	 * 8b Endtime
+	 * 8b Startunits
+	 * 8b Licensewidth
+	 * 8b UID +2b pad
+	 * 8b UserID
+	 * 8b UID +2b pad issue machine
+	 */
 	private byte[] token;
 
 	@Transient
@@ -99,6 +110,10 @@ public class License {
 		return endunits;
 	}
 	
+	// License validation functions
+	public boolean validateLength() {
+		return(this.token.length == 64);
+	}
 	
 	// -------------------------------------------
 	// -------------------------------------------

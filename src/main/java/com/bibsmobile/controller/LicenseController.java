@@ -50,6 +50,9 @@ public class LicenseController {
 			if (!Arrays.equals(newLicense.getMacAddress(), systemInfo.getMacAddress())) {
 				throw new Exception("License for another machine");
 			}
+			if (!newLicense.validateLength()) {
+				throw new Exception("Invalid length license");
+			}
 			System.out.println(newLicense);
 			newLicense.persist();
 	    	return "licensing/success";
