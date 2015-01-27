@@ -4,29 +4,87 @@
     <jsp:output omit-xml-declaration="yes"/>
     <div id="added" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;margin:5px;padding:5px;">Runner Added</div>
     <form:create id="fc_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" render="${empty dependencies}" z="lDbQbfi+ahMJ+wsQw7rqYz4MxJc=">
-        <field:select field="event" id="c_com_bibsmobile_model_RaceResult_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/>
-        <field:input field="bib" id="c_com_bibsmobile_model_RaceResult_bib" required="true" z="hcgJpmS2s2exxb4PUp3zI+R6RlU="/>
-        <field:input field="firstname" id="c_com_bibsmobile_model_RaceResult_firstname" z="zKn6S2DhCQNPre9I507NFqdbR+Y="/>
-        <field:input field="lastname" id="c_com_bibsmobile_model_RaceResult_lastname" z="mbmpcyW9rdA70EKca3Hl8acqVVo="/>
-        <field:input field="age" id="c_com_bibsmobile_model_RaceResult_age" z="yZ94xj05TOypkGqmv/EMn/G6TAw="/>
-        <div>
-            <table>
-                <tr>
-                    <td>
-                        <label for="custom-gender">Gender:</label>
-                    </td>
-                    <td>
-                        <select id="custom-gender" name="custom-gender" onchange="change('gender')" style="width:100px">
-                            <option id="gender-0" value="M" selected="true">Male</option>
-                            <option id="gender-1" value="F">Female</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-            <br/>
+        <div style="display:none">
+            <field:select field="event" id="c_com_bibsmobile_model_RaceResult_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/>
         </div>
-        <field:input field="city" id="c_com_bibsmobile_model_RaceResult_city" z="NaUD9KS712aVBFoLI+iHu7qJSq8="/>
-        <field:input field="state" id="c_com_bibsmobile_model_RaceResult_state" z="BYXMVk0UAC6iGqpJ3cmxgqF45cA="/>
+        <div style="width: 40%; margin-left: 3%;">
+        <h3>Add Runner</h3>
+        <div class="row">
+            <div class="col-md-4 col-sm-4" style="margin-left:0;padding-left:0;">
+            <input  type="number" name="bib"
+                    class="form-control"
+                    placeholder="Bib Number"
+                    min="1"
+                    data-parsley-error-message="Please enter a bib number."
+                    data-parsley-required="true"></input>
+            </div>
+        </div>
+        <div class="row">
+            <input  type="text" name="firstname"
+                class="form-control"
+                id="firstname"
+                placeholder="First name"
+                data-parsley-error-message="Please provide a first name."
+                data-parsley-required="true"></input>
+        </div>
+        <div class="row">
+            <input  type="text" name="lastname"
+                class="form-control"
+                id="lastname"
+                placeholder="Last name"
+                data-parsley-error-message="Please provide a last name."
+                data-parsley-required="true"></input>
+        </div>
+        <div class="row">
+            <div class="col-md-5 col-sm-5" style="margin: 0% auto; padding: 0%">
+            <select name="gender" class="form-control" id="gender-type"
+                    data-parsley-error-message="Please select a gender.">
+                <option selected="selected" disabled="disabled">Gender</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select></div>
+            <div class="col-md-6 col-sm-6">
+            <input  type="number" name="age"
+                    class="form-control"
+                    placeholder="Age"
+                    min="1"
+                    max="120"
+                    data-parsley-error-message="Invalid age."
+                    value=""></input>
+            </div>
+        </div>
+        <div class="row">
+            <input  type="text" name="city"
+                    class="form-control"
+                    placeholder="City"
+                    data-parsley-error-message="Please enter a city."
+                    value=""></input>
+        </div>
+        <div class="row">
+            <input  type="text" name="state"
+                    class="form-control"
+                    placeholder="State"
+                    data-parsley-error-message="Please enter a state."
+                    value=""></input>
+        </div>
+        <div class="row">
+            <div style="margin-left:0;padding-left:0;">
+                <span>Official Time</span>
+                <div class="form-group" style="margin-top: 7px;">
+                <div class="input-group date">
+                    <input  type="text" name="timeofficialdisplay"
+                            class="form-control" style="margin-top: 0; margin-bottom:0"
+                            id="timedisp"
+                            placeholder="Official Time (hh:mm:ss)"
+                            data-provide="datepicker"
+                            data-date-format="HH:mm:ss"
+                            data-parsley-error-message="Invalid time format. (hh:mm:ss required)"></input>
+                    <span class="input-group-addon" id="removetime"><span class="glyphicon glyphicon-remove"></span></span>
+                </div></div>
+            </div>
+        </div>
+        </div>
+
         <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
         <div style="display:none;">
             <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
@@ -80,9 +138,9 @@
 	jQuery('[name=event]').val( Math.max(0,GetURLParameter("event")) );
 	window.onload=function(){
 	    jQuery("#_bib_id").focus();
-		jQuery("#_gender_id").val("M");
-		jQuery("#_c_com_bibsmobile_model_RaceResult_gender_id").hide();
-		
+        setValidation();
+        initDateTimePickers();
+
 		if(GetURLParameter("added")){
 			jQuery("#added").show().delay(3000).fadeOut();
 			jQuery("#added").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
@@ -91,6 +149,31 @@
 		};
     function change(field){
    		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
+    }
+
+    function setValidation(){
+        jQuery('#raceResult').parsley({
+            errorsWrapper: '<div class="has-error"></div>',
+            errorTemplate: '<span></span>'
+        });
+    }
+
+    function initDateTimePickers(){
+        jQuery("#timedisp")
+            .datetimepicker({
+                pickDate: false,
+                pickTime: true,
+                useSeconds: true,
+                format: 'LTS'
+            });
+
+        jQuery("#timedisp").on('dp.show', function(){
+            jQuery("#timedisp").data("DateTimePicker").setDate(moment().startOf('day'));
+        });
+
+        jQuery("#removetime").click(function(){
+            jQuery("#timedisp").val("");
+        });
     }
 
     function removeNulls(){
