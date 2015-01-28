@@ -2,70 +2,123 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <div style="padding:10px;">
-        <select class="form-control" id="rtype" name="rtype" onchange="changeType()" style="width:300px">
-            <option id="type-0" value="0">Demo (No Reader)</option>
-            <option id="type-1" value="1">ThingMagic</option>
-        </select>
-        <select class="form-control" id="pos" name="pos" onchange="changePos()" style="width:300px">
-            <option id="starting" value="0">Starting Line</option>
-            <option id="finishing" value="1">Finish Line</option>
-        </select>
-    </div>
-    <form:update id="fu_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" versionField="Version" z="gHW4sjp6C91L58dzI5umszglaCQ=">
-        <div id="selectPorts">
-            <strong>Ports:</strong>
-            <input name="port" onclick="updatePorts()" type="checkbox" value="1">1</input>
-            <input name="port" onclick="updatePorts()" type="checkbox" value="2">2</input>
-            <input name="port" onclick="updatePorts()" type="checkbox" value="3">3</input>
-            <input name="port" onclick="updatePorts()" type="checkbox" value="4">4</input>
+    <div style="margin-left: 3%;">
+        <div class="row">
+            <select class="form-control" id="rtype" name="rtype" onchange="changeType()" style="width:300px">
+                <option id="type-0" value="0">Demo (No Reader)</option>
+                <option id="type-1" value="1">ThingMagic</option>
+            </select>
+        </div>
+        <div class="row">
+            <select class="form-control" id="pos" name="pos" onchange="changePos()" style="width:300px">
+                <option id="starting" value="0">Starting Line</option>
+                <option id="finishing" value="1">Finish Line</option>
+            </select>
+        </div>
+        <form:update id="fu_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" versionField="Version" z="gHW4sjp6C91L58dzI5umszglaCQ=">
+        <div class="form-horizontal" style="width: 100%">
+            <div class="form-group" id="selectPorts">
+                <label for="selectPorts" class="col-sm-1 control-label">Ports</label>
+                <div class="col-sm-4">
+                    <div class="btn-group" data-toggle="buttons">
+                        <div class="btn btn-default btn-sm">
+                            <input name="port" onclick="updatePorts()" type="checkbox" value="1" autocomplete="off">1</input>
+                        </div>
+                        <div class="btn btn-default btn-sm">
+                            <input name="port" onclick="updatePorts()" type="checkbox" value="1" autocomplete="off">2</input>
+                        </div>
+                        <div class="btn btn-default btn-sm">
+                            <input name="port" onclick="updatePorts()" type="checkbox" value="1" autocomplete="off">3</input>
+                        </div>
+                        <div class="btn btn-default btn-sm">
+                            <input name="port" onclick="updatePorts()" type="checkbox" value="1" autocomplete="off">4</input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="url" class="col-sm-1 control-label">Reader Location</label>
+                <div class="col-sm-4"><input  type="url" name="url"
+                        class="form-control"
+                        placeholder="Reader Location"
+                        data-parsley-error-message="Please enter a valid url."
+                        value="${timerConfig.url}"></input></div>
+            </div>
+            <div class="form-group">
+                <label for="readTimeout" class="col-sm-1 control-label">Read Timeout</label>
+                <div class="col-sm-4"><input  type="number" name="readTimeout"
+                        class="form-control"
+                        placeholder="Read Timeout"
+                        data-parsley-error-message="Invalid timeout number."
+                        value="${timerConfig.readTimeout}"></input></div>
+            </div>
+            <div class="form-group">
+                <label for="ports" class="col-sm-1 control-label">Ports</label>
+                <div class="col-sm-4"><input  type="text" name="ports"
+                        class="form-control"
+                        placeholder="Ports"
+                        data-parsley-error-message="Please indicate port numbers separated by commas. (e.g. 1,2,3)"
+                        value=""></input></div>
+            </div>
+            <div class="form-group">
+                <label for="connectionTimeout" class="col-sm-1 control-label">Connection Timeout</label>
+                <div class="col-sm-4"><input  type="number" name="connectionTimeout"
+                        class="form-control"
+                        placeholder="Connection Timeout"
+                        data-parsley-error-message="Invalid timeout number."
+                        value="${timerConfig.connectionTimeout}"></input></div>
+            </div>
+            <div class="form-group">
+                <label for="filename" class="col-sm-1 control-label">Filename</label>
+                <div class="col-sm-4"><input  type="text" name="filename"
+                        class="form-control"
+                        placeholder="Filename"
+                        data-parsley-error-message="Invalid filename."
+                        value=""></input></div>
+            </div>
         </div>
         <field:input field="position" id="c_com_bibsmobile_model_TimerConfig_position" z="yamQ8KWzGfWz+41JyeNXITbQ6K4="/>
-        <field:input field="url" id="c_com_bibsmobile_model_TimerConfig_url" z="YQG6sHqrsWv50OpnvgYxdIUonpM="/>
-        <field:input field="readTimeout" id="c_com_bibsmobile_model_TimerConfig_readTimeout" z="/+mgpFRssYFOzU8d28QtwFU+oT8="/>
         <field:input field="events" id="c_com_bibsmobile_model_TimerConfig_events" render="false" z="user-managed"/>
         <field:input field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" render="false" z="user-managed"/>
         <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" render="false" z="user-managed"/>
         <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
-        <field:input field="ports" id="c_com_bibsmobile_model_TimerConfig_ports" z="rf0jhsCCYnzTYenBS4pjvKpBnEg="/>
-        <field:input field="connectionTimeout" id="c_com_bibsmobile_model_TimerConfig_connectionTimeout" z="y+l45Se+jgHmr0AJawxJc7Ou7/E="/>
-        <field:input field="filename" id="c_com_bibsmobile_model_TimerConfig_filename" z="DpYTidu0C9wlXeI3kL0MkybazoI="/>
-    </form:update>
+        </form:update>
+    </div>
     <script>
-    window.onload=function(){
-    	// type
-    	if(1 == Math.max(0,jQuery("#_type_id").val()))	
-    		document.getElementById("type-1").selected=true;
-        jQuery("#_c_com_bibsmobile_model_TimerConfig_type_id").hide();
-    	// position
-    	if(1 == Math.max(0,jQuery("#_position_id").val()))
-    		document.getElementById("finishing").selected=true;
-        jQuery("#_c_com_bibsmobile_model_TimerConfig_position_id").hide();
-        // ports
-        initPorts();
-    };
-   	function changeType(){
-   		jQuery("#_type_id").val(document.getElementById("rtype").value);
-    }
-   	function changePos(){
-   		jQuery("#_position_id").val(document.getElementById("pos").value);
-    }
-   	function updatePorts(){
-   		var ports = "";
-   		$('#selectPorts :checked').each(function() {
-   			if(ports.length &gt; 0 ) ports += ',';
-   	       	ports += $(this).val();
-   	     });
-   		jQuery("#_ports_id").val(ports);
-   	}
-   	function initPorts(){
-   		var ports = jQuery("#_ports_id").val();
-   		$('#selectPorts :input').each(function() {
-   			if(ports.indexOf($(this).val()) &gt; -1){
-   				$(this).prop('checked','true'); 
-   			}
-   	     });
-        jQuery("#_c_com_bibsmobile_model_TimerConfig_ports_id").hide();
-   	}
+        window.onload=function(){
+        	// type
+        	if(1 == Math.max(0,jQuery("#_type_id").val()))	
+        		document.getElementById("type-1").selected=true;
+            jQuery("#_c_com_bibsmobile_model_TimerConfig_type_id").hide();
+        	// position
+        	if(1 == Math.max(0,jQuery("#_position_id").val()))
+        		document.getElementById("finishing").selected=true;
+            jQuery("#_c_com_bibsmobile_model_TimerConfig_position_id").hide();
+            // ports
+            initPorts();
+        };
+        function changeType(){
+           jQuery("#_type_id").val(document.getElementById("rtype").value);
+       }
+       function changePos(){
+           jQuery("#_position_id").val(document.getElementById("pos").value);
+       }
+       function updatePorts(){
+           var ports = "";
+           $('#selectPorts :checked').each(function() {
+              if(ports.length &gt; 0 ) ports += ',';
+              ports += $(this).val();
+          });
+           jQuery("#_ports_id").val(ports);
+       }
+       function initPorts(){
+           var ports = jQuery("#_ports_id").val();
+           $('#selectPorts :input').each(function() {
+              if(ports.indexOf($(this).val()) &gt; -1){
+                 $(this).prop('checked','true'); 
+             }
+         });
+           jQuery("#_c_com_bibsmobile_model_TimerConfig_ports_id").hide();
+       }
     </script>
 </div>
