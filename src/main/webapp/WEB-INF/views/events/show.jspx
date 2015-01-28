@@ -3,149 +3,139 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-	.event-name{
-		font-size: 28px;
-		font-weight: bold;
-		margin-right: 12px;
-	}
-	.event-location{
-		font-size: 18px;
-		font-weight: normal;
-		margin-right: 12px;
-	}
+        .map-canvas{
+            float: right;
+            width: 300px; 
+            height: 300px;
+            margin-right: 6%;
+            margin-top: 1%;
+            margin-bottom: 3%;
+        }
+    	.event-name{
+    		font-size: 28px;
+    		font-weight: bold;
+    		margin-right: 12px;
+    	}
+    	.event-location{
+    		font-size: 18px;
+    		font-weight: normal;
+    		margin-right: 12px;
+    	}
+        .navbar-inverse { background-color: #F2F2F2}
+        .navbar-inverse .navbar-nav>.active>a:hover,.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC}
+        .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6}
+        .dropdown-menu { background-color: #FFFFFF}
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #00DFF6}
+        .navbar-inverse { background-image: none; }
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-image: none; }
+        .navbar-inverse { border-color: #FFFFFF}
+        .navbar-inverse .navbar-brand { color: #002F4C}
+        .navbar-inverse .navbar-brand:hover { color: #002F4C}
+        .navbar-inverse .navbar-nav>li>a { color: #002F4C}
+        .navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { color: #FFFFFF}
+        .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { color: #002F4C}
+        .navbar-inverse .navbar-nav>.active>a:hover, .navbar-inverse .navbar-nav>.active>a:focus { color: #FFFFFF}
+        .dropdown-menu>li>a { color: #333333}
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #FFFFFF}
+        .navbar-inverse .navbar-nav>.dropdown>a .caret { border-top-color: #999999}
+        .navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF}
+        .navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999}
+        .navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF}
     </style>
-    <button class="btn btn-primary btn-top" onclick="redirectAwards()" type="button">
-		Awards
-	</button>
     
-    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-        <button class="btn btn-default btn-top" onclick="redirectImport()" type="button">
-		Import
-		</button>
-        <button class="btn btn-default btn-top" onclick="redirectDropboxImport()" type="button">
-        Import from Dropbox
-        </button>
-        <c:if test="${dropboxUnlink == true}">
-            <button class="btn btn-default btn-top" onclick="redirectDropboxDeauth()" type="button">
-            Unlink Dropbox Account
-            </button>
-        </c:if>
-        <button class="btn btn-default btn-top" onclick="redirectExport()" type="button">
-		Export
-		</button>		
-        <button class="btn btn-default btn-top" onclick="cloud()" type="button">
-		Cloud
-		</button>
-        <c:if test="${lastImport != null}">
-            <button class="btn btn-default btn-top" onclick="redirectChangeFileMapping()" type="button">
-            Change file mapping
-            </button>
-        </c:if>
-        <button class="btn btn-default btn-top" onclick="regUrl()" type="button">
-		Registration Button
-		</button>
-        <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
-            <button class="btn btn-default btn-top" onclick="redirectEnableReg()" type="button">
-                Enable Registration
-            </button>
-        </c:if>
-        <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
-            <button class="btn btn-default btn-top" onclick="redirectManageReg()" type="button">
-                Manage Registration
-            </button>
-            <button class="btn btn-default btn-top" onclick="redirectSearchReg()" type="button">
-                Search Registrations
-            </button>
-        </c:if>
-        <c:if test='${(eventadmin)}'>
-            <button class="btn btn-default btn-top" type="button">
-                Reports
-            </button>
-        </c:if>
-        <span id="progress" style="margin:0;margin-left:6px;display:none;">
-            <img src="/bibs-server/resources/images/loading.gif" title="loading..."/>
-        </span>
-    </sec:authorize>
-    <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-        <button class="btn btn-default btn-top" onclick="redirectBackup()" type="button">
-			bibs file
-		</button>
-    </sec:authorize>
-    <script>
-	function cloud(){
-		jQuery("#progress").show();
-		var r = jQuery.ajax({
-			url: "/bibs-server/events/cloud?event=${event.id}",
-			type: "GET",
-			dataType: "html"
-			});
-		r.done(function(data){
-			jQuery("#progress").hide();
-			if("true" == data){
-				alert("Cloud Sync Complete.");
-			}else if("eventnotfound" == data){
-				alert("Event not found.");
-			}else{
-				alert("Cloud Sync Failed.");
-			}
-		});
-		r.fail(function( s,s ) {
-			jQuery("#progress").hide();
-		});
-	}
-    
-	function redirectImport(){
-		window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
-	}
-	function regUrl(){
-		window.location="/bibs-server/events/regbutton?event=${event.id}";
-	}
-    function redirectDropboxImport(){
-        window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
-    }
-    function redirectDropboxDeauth(){
-        jQuery.ajax({
-            url: "/bibs-server/dropbox/deauth",
-            type: "POST",
-            dataType: "json",
-            complete: function() {
-                window.location.reload();
-            }
-        });
-    }
-	function redirectExport(){
-		window.location="/bibs-server/events/export?event=${event.id}";
-	}
-	function redirectBackup(){
-		window.location="/bibs-server/events/exportBackup?event=${event.id}";
-	}	
-    function redirectAwards(){
-        window.location="/bibs-server/events/awards?event=${event.id}";
-    }
-    function redirectChangeFileMapping(){
-        window.location="/bibs-server/resultsfilemappings/${lastMapping.id}?form";
-    }
-    function redirectEnableReg(){
-        window.location="/bibs-server/events/${event.id}/enablereg";
-    }
-    function redirectManageReg(){
-        window.location="/bibs-server/eventitems?event=${event.id}";
-    }
-    function redirectSearchReg(){
-        window.location="/bibs-server/registrations/search?event=${event.id}";
-    }
-	</script>
     <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-        <h3>${event.name}  <small>${event.city} ${event.state}</small>
-        </h3>
-        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
-        <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
-        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-            <c:if test="${lastImport != null}">
-                <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
-                <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
-            </c:if>
-        </sec:authorize>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="navbar-brand">${event.name}</div>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
+                    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                        <c:if test='${(eventadmin)}'>
+                            <li><a href="#">Reports</a></li>
+                        </c:if>
+                    </sec:authorize>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Registration<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
+                                <li><a href="#" onclick="redirectEnableReg(); return false;">Enable Registration</a></li>
+                            </c:if>
+                            <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
+                                <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
+                                <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
+                            </c:if>
+                            <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import Results<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" onclick="redirectImport();return false;">Import</a></li>
+                            <li><a href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a></li>
+                            <c:if test="${dropboxUnlink == true}">
+                                <li><a href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a></li>
+                            </c:if>
+                            <li><a href="#">Import bibs file</a></li>
+                        </ul>
+                    </li>
+                    </sec:authorize>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Export Results<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                                <li><a href="#" onclick="redirectExport();return false;">Export</a></li>
+                                <li><a href="#" onclick="cloud();return false;">Cloud Sync</a></li>
+                                <c:if test="${lastImport != null}">
+                                    <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
+                                </c:if>
+                            </sec:authorize>
+                            <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+                                <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
+                            </sec:authorize>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+        <div style="width:100%;text-align:right"><small>If this map doesn't display the correct location, please double-check your event settings!</small></div>
+        <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
+        <div style="margin: 0 5%;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.3em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929">
+            <h3 style="font-family:Quicksand;font-weight:600;">${event.name}</h3>
+            <span id="addy">${event.address}<br/>${event.city}, ${event.state}</span>
+
+            <div class="row" style="margin-left:0; padding-left:0; margin-top: 50px">
+                <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
+                <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
+                <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                    <c:if test="${lastImport != null}">
+                        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                        <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+                    </c:if>
+                </sec:authorize>
+            </div>
+        </div>
         <div style="display:none;">
             <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
             <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="user-managed"/>
@@ -196,5 +186,91 @@
 	        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
 	        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
 	    </div>
-	    </page:show>
+    </page:show>
+    <script>
+        window.onload = init;
+
+        function init(){
+            initMap();
+        }
+
+        function initMap(){
+            var addy = jQuery("#addy").text();
+            var options = {
+                map: ".map-canvas",
+                mapOptions: {
+                    draggable: false
+                },
+                markerOptions: {
+                    clickable: false
+                },
+                location: addy
+            };
+
+            jQuery("#geocomplete").geocomplete(options);
+        }
+
+        function cloud(){
+            jQuery("#progress").show();
+            var r = jQuery.ajax({
+                url: "/bibs-server/events/cloud?event=${event.id}",
+                type: "GET",
+                dataType: "html"
+                });
+            r.done(function(data){
+                jQuery("#progress").hide();
+                if("true" == data){
+                    alert("Cloud Sync Complete.");
+                }else if("eventnotfound" == data){
+                    alert("Event not found.");
+                }else{
+                    alert("Cloud Sync Failed.");
+                }
+            });
+            r.fail(function( s,s ) {
+                jQuery("#progress").hide();
+            });
+        }
+        
+        function redirectImport(){
+            window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
+        }
+        function regUrl(){
+            window.location="/bibs-server/events/regbutton?event=${event.id}";
+        }
+        function redirectDropboxImport(){
+            window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
+        }
+        function redirectDropboxDeauth(){
+            jQuery.ajax({
+                url: "/bibs-server/dropbox/deauth",
+                type: "POST",
+                dataType: "json",
+                complete: function() {
+                    window.location.reload();
+                }
+            });
+        }
+        function redirectExport(){
+            window.location="/bibs-server/events/export?event=${event.id}";
+        }
+        function redirectBackup(){
+            window.location="/bibs-server/events/exportBackup?event=${event.id}";
+        }   
+        function redirectAwards(){
+            window.location="/bibs-server/events/awards?event=${event.id}";
+        }
+        function redirectChangeFileMapping(){
+            window.location="/bibs-server/resultsfilemappings/${lastMapping.id}?form";
+        }
+        function redirectEnableReg(){
+            window.location="/bibs-server/events/${event.id}/enablereg";
+        }
+        function redirectManageReg(){
+            window.location="/bibs-server/eventitems?event=${event.id}";
+        }
+        function redirectSearchReg(){
+            window.location="/bibs-server/registrations/search?event=${event.id}";
+        }
+    </script>
 </div>
