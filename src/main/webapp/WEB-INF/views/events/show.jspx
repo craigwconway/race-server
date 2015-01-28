@@ -115,19 +115,27 @@
         </div>
     </nav>
         <div style="width:100%;text-align:right"><small>If this map doesn't display the correct location, please double-check your event settings!</small></div>
-        <div class="map-canvas"></div>
-        <h3>${event.name}</h3>
-        <span id="latStr" style="display:none">${event.latitude}</span>
-        <span id="longStr" style="display:none">${event.longitude}</span>
-        <input id="geocomplete" style="display:none" type="text">${event.latitude}, ${event.longitude}</input>
-        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
-        <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
-        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-            <c:if test="${lastImport != null}">
-                <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
-                <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
-            </c:if>
-        </sec:authorize>
+        <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
+        <div style="margin: 0 5%;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.3em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929">
+            <h3 style="font-family:Quicksand;font-weight:600;">${event.name}</h3>
+            <span id="addy">${event.address}<br/>${event.city}, ${event.state}</span>
+
+            <div class="row" style="margin-left:0; padding-left:0; margin-top: 50px">
+                <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
+                <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
+                <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                    <c:if test="${lastImport != null}">
+                        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                        <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+                    </c:if>
+                </sec:authorize>
+            </div>
+        </div>
         <div style="display:none;">
             <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
             <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="user-managed"/>
@@ -187,8 +195,7 @@
         }
 
         function initMap(){
-            var latitude = jQuery("#latStr").text();
-            var longitude = jQuery("#longStr").text();
+            var addy = jQuery("#addy").text();
             var options = {
                 map: ".map-canvas",
                 mapOptions: {
@@ -197,7 +204,7 @@
                 markerOptions: {
                     clickable: false
                 },
-                location: "NYC"
+                location: addy
             };
 
             jQuery("#geocomplete").geocomplete(options);
