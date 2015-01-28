@@ -155,7 +155,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             userProfile.persist();
         }
         //Generate a deviceinfo if there is not yet one in the system
-        if(null != DeviceInfo.findDeviceInfo(new Long(1))) {
+        if(null == DeviceInfo.findDeviceInfo(new Long(1))) {
         	DeviceInfo info = new DeviceInfo();
         	info.setRunnersUsed(new Long(0));
         	info.persist();

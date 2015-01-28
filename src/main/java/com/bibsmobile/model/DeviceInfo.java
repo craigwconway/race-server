@@ -55,13 +55,18 @@ public class DeviceInfo {
 	 */
 	public byte[] getMacAddress() {
 		// Get macaddress from system info:
+		System.out.println("enter getMacAddress");
 		InetAddress ip;
 		try {
+			System.out.println("getting mac address");
 			ip = InetAddress.getLocalHost();
+			System.out.println("ip: " + ip.getHostAddress());
 			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
 			byte[] mac = network.getHardwareAddress();
+			System.out.println("mac: " + network.getHardwareAddress().toString());
 			return mac;
 		} catch (Exception e) {
+			System.out.println("Couldn't find macaddress");
 			System.out.println(e);
 			return null;
 		}

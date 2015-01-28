@@ -45,8 +45,14 @@ public class LicenseController {
 				throw new Exception("Empty license token");
 			}
 			License newLicense = new License();
-			DeviceInfo systemInfo = DeviceInfo.findDeviceInfo((long) 1);
+			DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
 			newLicense.setToken(tokenBytes);
+			System.out.println(newLicense.getMacAddress().length);
+			System.out.println("get macaddress for system: " +  systemInfo );
+			System.out.println(systemInfo.getMacAddress().length);
+			
+			byte[] macaddr = systemInfo.getMacAddress();
+			System.out.println(macaddr);
 			if (!Arrays.equals(newLicense.getMacAddress(), systemInfo.getMacAddress())) {
 				throw new Exception("License for another machine");
 			}

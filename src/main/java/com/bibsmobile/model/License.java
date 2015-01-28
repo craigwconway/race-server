@@ -1,5 +1,7 @@
 package com.bibsmobile.model;
 
+import java.util.Arrays;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -78,14 +80,37 @@ public class License {
 	 * @return A 6 byte array containing mac address.
 	 */
 	public byte[] getMacAddress() {
-		return macAddress;
+		return Arrays.copyOfRange(token, 40, 46);
 	}
 	
     /**
 	 * @return the issuetime
 	 */
 	public long getIssuetime() {
-		return issuetime;
+		byte[] tt = dc();
+		long tmpissuetime = tt[0] & 0xff;
+		tmpissuetime <<= 8;
+		tmpissuetime = tt[1] & 0xff;
+		tmpissuetime <<= 8;
+		tmpissuetime = tt[2] & 0xff;
+		tmpissuetime <<= 8;
+		tmpissuetime = tt[3] & 0xff;
+		tmpissuetime <<= 8;
+		tmpissuetime = tt[4] & 0xff;
+		tmpissuetime <<= 8;
+		tmpissuetime = tt[5] & 0xff;
+		tmpissuetime <<= 8;
+		tmpissuetime = tt[6] & 0xff;
+		tmpissuetime <<= 8;
+		tmpissuetime = tt[7] & 0xff;
+		return tmpissuetime;
+	}
+
+
+
+	private byte[] dc() {
+		// TODO Auto-generated method stub
+		return token;
 	}
 
 	/**
@@ -99,7 +124,23 @@ public class License {
 	 * @return the issueunits
 	 */
 	public long getIssueunits() {
-		return issueunits;
+		byte[] tt = dc();
+		long tmpissueunits = tt[24] & 0xff;
+		tmpissueunits <<= 8;
+		tmpissueunits = tt[25] & 0xff;
+		tmpissueunits <<= 8;
+		tmpissueunits = tt[26] & 0xff;
+		tmpissueunits <<= 8;
+		tmpissueunits = tt[27] & 0xff;
+		tmpissueunits <<= 8;
+		tmpissueunits = tt[28] & 0xff;
+		tmpissueunits <<= 8;
+		tmpissueunits = tt[29] & 0xff;
+		tmpissueunits <<= 8;
+		tmpissueunits = tt[30] & 0xff;
+		tmpissueunits <<= 8;
+		tmpissueunits = tt[31] & 0xff;
+		return tmpissueunits;
 	}
 
 
@@ -107,7 +148,23 @@ public class License {
 	 * @return the endunits
 	 */
 	public long getEndunits() {
-		return endunits;
+		byte[] tt = dc();
+		long tmpendunits = tt[32] & 0xff;
+		tmpendunits <<= 8;
+		tmpendunits = tt[33] & 0xff;
+		tmpendunits <<= 8;
+		tmpendunits = tt[34] & 0xff;
+		tmpendunits <<= 8;
+		tmpendunits = tt[35] & 0xff;
+		tmpendunits <<= 8;
+		tmpendunits = tt[36] & 0xff;
+		tmpendunits <<= 8;
+		tmpendunits = tt[37] & 0xff;
+		tmpendunits <<= 8;
+		tmpendunits = tt[38] & 0xff;
+		tmpendunits <<= 8;
+		tmpendunits = tt[39] & 0xff;
+		return tmpendunits;
 	}
 	
 	// License validation functions
