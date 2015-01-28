@@ -121,7 +121,7 @@
 				style="margin:0;margin-left: 3px;display:none;"
 				onclick="stopReader(--id--);">Stop</button>
 			<span id="reader-progress---id--" style="margin:0;margin-left:6px;display:none;">
-				<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> </span>
+				<img src="/bibs-server/resources/images/logo_04.gif" style="width:32px;height:auto;max-height:32px;" title="loading..."/> </span>
 			</div>
    		</div>
 	</div>

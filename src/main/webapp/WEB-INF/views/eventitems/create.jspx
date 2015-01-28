@@ -16,7 +16,7 @@
                     placeholder="Product description"><!-- --></textarea>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-6" style="margin-left:0px;padding-left:0px">
+                <div class="col-md-6 col-sm-3" style="margin-left:0px;padding-left:0px">
                     Item Sale Start Date: 
                     <input  type="text" name="timeStart"
                         class="form-control"
@@ -26,7 +26,7 @@
                         data-date-format="MM/DD/YYYY h:mm:ss a"
                         data-parsley-error-message="Please specify a start date."
                         data-parsley-required="true"></input></div>
-                <div class="col-md-6 col-sm-6" style="margin-left: -10%">
+                <div class="col-md-6 col-sm-3" style="margin-left: -10%">
                     Item Sale End Date: 
                     <input  type="text" name="timeEnd"
                         class="form-control"
@@ -82,10 +82,11 @@
                     <option value="DONATION">Donation</option>
                 </select></div>
                 <div class="col-md-4 col-sm-4" style="margin-left: -30px;">
-                <input  type="text" name="price"
+                <input  type="number" name="price"
                         class="form-control"
                         placeholder="Base price"
-                        data-parsley-error-message="Please indicate a base price."
+                        min="1"
+                        data-parsley-error-message="Invalid base price."
                         data-parsley-required="true"></input>
                 </div>
                 <div class="col-md-4 col-sm-4" style="margin-left: -40px;">
@@ -133,24 +134,30 @@
         });
 
         jQuery("#lowAge").change(function(){
+            var low = jQuery("#lowAge").val();
             var high = jQuery("#highAge").val();
-            if( (high == null) || (high == 0) ){ high = 120; }
-            if( jQuery(this).val() &gt;= high ){
-                jQuery(this).val(high);
-            }
-            else{
-                jQuery("#highAge").attr("min", jQuery(this).val());
+            if( (low == null) || (low == 0) ){ jQuery("#lowAge").val(""); }
+            if( high !== null ){
+                if( low &gt;= high ){
+                    jQuery(this).val(high);
+                }
+                else{
+                    jQuery("#highAge").attr("min", jQuery(this).val());
+                }
             }
         });
 
         jQuery("#highAge").change(function(){
             var low = jQuery("#lowAge").val();
-            if( (low == null) || (low == 0) ){ low = 1; }
-            if( jQuery(this).val() &lt;= low ){
-                jQuery(this).val(low);
-            }
-            else{
-                jQuery("#lowAge").attr("max", jQuery(this).val());
+            var high = jQuery("#highAge").val();
+            if( (high == null) || (high == 0) ){ jQuery("#highAge").val("") }
+            if( low !== null ){
+                if( high &lt;= low ){
+                    jQuery(this).val(low);
+                }
+                else{
+                    jQuery("#lowAge").attr("max", jQuery(this).val());
+                }
             }
         });
     }
@@ -167,6 +174,7 @@
                 useSeconds: true,
                 sideBySide: true
             });
+        jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
 
         <!-- on change-ui -->
         jQuery("#ECIStart").on("dp.change",function (e) {
