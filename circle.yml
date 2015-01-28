@@ -10,7 +10,7 @@ deployment:
     commands:
       - deployment/deploy_bibslabs.sh
   so:
-    branch: /s0*/
+    branch: /s0.*/
     commands:
       - deployment/deploy_s0.sh
   dev:
