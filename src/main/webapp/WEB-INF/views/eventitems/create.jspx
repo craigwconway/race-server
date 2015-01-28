@@ -82,10 +82,11 @@
                     <option value="DONATION">Donation</option>
                 </select></div>
                 <div class="col-md-4 col-sm-4" style="margin-left: -30px;">
-                <input  type="text" name="price"
+                <input  type="number" name="price"
                         class="form-control"
                         placeholder="Base price"
-                        data-parsley-error-message="Please indicate a base price."
+                        min="1"
+                        data-parsley-error-message="Invalid base price."
                         data-parsley-required="true"></input>
                 </div>
                 <div class="col-md-4 col-sm-4" style="margin-left: -40px;">
@@ -133,24 +134,30 @@
         });
 
         jQuery("#lowAge").change(function(){
+            var low = jQuery("#lowAge").val();
             var high = jQuery("#highAge").val();
-            if( (high == null) || (high == 0) ){ high = 120; }
-            if( jQuery(this).val() &gt;= high ){
-                jQuery(this).val(high);
-            }
-            else{
-                jQuery("#highAge").attr("min", jQuery(this).val());
+            if( (low == null) || (low == 0) ){ jQuery("#lowAge").val(""); }
+            if( high !== null ){
+                if( low &gt;= high ){
+                    jQuery(this).val(high);
+                }
+                else{
+                    jQuery("#highAge").attr("min", jQuery(this).val());
+                }
             }
         });
 
         jQuery("#highAge").change(function(){
             var low = jQuery("#lowAge").val();
-            if( (low == null) || (low == 0) ){ low = 1; }
-            if( jQuery(this).val() &lt;= low ){
-                jQuery(this).val(low);
-            }
-            else{
-                jQuery("#lowAge").attr("max", jQuery(this).val());
+            var high = jQuery("#highAge").val();
+            if( (high == null) || (high == 0) ){ jQuery("#highAge").val("") }
+            if( low !== null ){
+                if( high &lt;= low ){
+                    jQuery(this).val(low);
+                }
+                else{
+                    jQuery("#lowAge").attr("max", jQuery(this).val());
+                }
             }
         });
     }
