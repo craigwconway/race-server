@@ -36,7 +36,7 @@
         .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { color: #002F4C}
         .navbar-inverse .navbar-nav>.active>a:hover, .navbar-inverse .navbar-nav>.active>a:focus { color: #FFFFFF}
         .dropdown-menu>li>a { color: #333333}
-        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #FFFFFF}
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #333333}
         .navbar-inverse .navbar-nav>.dropdown>a .caret { border-top-color: #999999}
         .navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF}
         .navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999}
@@ -64,7 +64,7 @@
                     <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                         <c:if test='${(eventadmin)}'>
-                            <li><a href="#">Reports</a></li>
+                            <li><a href="#" onclick="redirectReport();return false;">Reports</a></li>
                         </c:if>
                     </sec:authorize>
                 </ul>
@@ -77,9 +77,12 @@
                                 <li><a href="#" onclick="redirectEnableReg(); return false;">Enable Registration</a></li>
                             </c:if>
                             <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
+                                <li class="disabled"><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
                                 <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                 <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
+                                <li class="disabled"><a href="#" onclick="redirectExportReg(); return false;">Export Registrations</a></li>
                             </c:if>
+                            <li class="disabled"><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
                             <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
                         </ul>
                     </li>
@@ -91,7 +94,7 @@
                             <c:if test="${dropboxUnlink == true}">
                                 <li><a href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a></li>
                             </c:if>
-                            <li><a href="#">Import bibs file</a></li>
+                            <li class="disabled"><a href="#">Import bibs file</a></li>
                         </ul>
                     </li>
                     </sec:authorize>
@@ -118,14 +121,16 @@
         <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
         <div style="margin: 0 5%;
             font-family: 'Open Sans', sans-serif;
-            font-size: 1.3em;
+            font-size: 1.2em;
             font-weight: 100;
             line-height: 27px;
-            color: #292929">
+            color: #292929;
+            float:left">
             <h3 style="font-family:Quicksand;font-weight:600;">${event.name}</h3>
             <span id="addy">${event.address}<br/>${event.city}, ${event.state}</span>
-
-            <div class="row" style="margin-left:0; padding-left:0; margin-top: 50px">
+            <div class="row" style="margin-left:0; padding-left:0; margin-top: 30px">
+                <label for="reg">Registration:</label><span class="reglive">${event.regEnabled}</span><br/>
+                <label for="live">Live:</label><span class="reglive">${event.live}</span>
                 <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
                 <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -191,7 +196,20 @@
         window.onload = init;
 
         function init(){
+            initInfo();
             initMap();
+        }
+
+        function initInfo(){
+            jQuery(".reglive").each(function(){
+                var outer_html = jQuery(this).html();
+                if(outer_html === "true"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+                }
+                else if(outer_html === "false"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
+                }
+            })
         }
 
         function initMap(){
@@ -232,6 +250,9 @@
             });
         }
         
+        function redirectReport(){
+            window.location="/bibs-server/registrations/reports?event=${event.id}";
+        }
         function redirectImport(){
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
         }
@@ -266,11 +287,17 @@
         function redirectEnableReg(){
             window.location="/bibs-server/events/${event.id}/enablereg";
         }
+        function redirectDisableReg(){
+            window.location="/bibs-server/events/${event.id}/disablereg";
+        }
         function redirectManageReg(){
             window.location="/bibs-server/eventitems?event=${event.id}";
         }
         function redirectSearchReg(){
             window.location="/bibs-server/registrations/search?event=${event.id}";
+        }
+        function redirectExportReg(){
+            window.location="/bibs-server/registrations/export?event=${event.id}";
         }
     </script>
 </div>
