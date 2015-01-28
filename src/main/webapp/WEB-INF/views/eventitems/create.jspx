@@ -16,7 +16,7 @@
                     placeholder="Product description"><!-- --></textarea>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-6" style="margin-left:0px;padding-left:0px">
+                <div class="col-md-6 col-sm-3" style="margin-left:0px;padding-left:0px">
                     Item Sale Start Date: 
                     <input  type="text" name="timeStart"
                         class="form-control"
@@ -26,7 +26,7 @@
                         data-date-format="MM/DD/YYYY h:mm:ss a"
                         data-parsley-error-message="Please specify a start date."
                         data-parsley-required="true"></input></div>
-                <div class="col-md-6 col-sm-6" style="margin-left: -10%">
+                <div class="col-md-6 col-sm-3" style="margin-left: -10%">
                     Item Sale End Date: 
                     <input  type="text" name="timeEnd"
                         class="form-control"

@@ -66,8 +66,18 @@
 	width: 50%;
 }
 
-/* elessar */
+/*	timepicker  */
+.bootstrap-datetimepicker-widget.timepicker-sbs{
+	width: 600px;
+}
+.bootstrap-datetimepicker-widget table{
+	width: 90%;
+}
+.timepicker-picker{
+	margin-left: -30px;
+}
 
+/* elessar */
 .elessar-left{
 	display: inline-block;
 	width: 63%;
