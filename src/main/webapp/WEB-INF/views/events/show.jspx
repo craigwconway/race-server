@@ -21,26 +21,6 @@
     		font-weight: normal;
     		margin-right: 12px;
     	}
-        .circle{
-            display: inline-block;
-            width: 25px;
-            height: 25px;
-            line-height: 25px;
-            border-radius: 50%;
-            overflow: hidden;
-            color: #FFFFFF;
-            border: 1px solid #C8C8C8;
-            background: #F2F2F2;
-            vertical-align: middle;
-        }
-        .circle:hover{
-            background: #C8C8C8;
-        }
-        .circle span{
-            width: 100%;
-            text-align: center;
-            -webkit-text-stroke: 1px white;
-        }
         .navbar-inverse { background-color: #F2F2F2}
         .navbar-inverse .navbar-nav>.active>a:hover,.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC}
         .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6}

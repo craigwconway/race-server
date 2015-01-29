@@ -135,6 +135,26 @@
 	color: #00DD00;
 }
 
+.circle{
+    display: inline-block;
+    vertical-align: middle;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid #C8C8C8;
+    background: #F2F2F2;
+}
+.circle:hover{
+    background: #C8C8C8;
+}
+.circle span{
+    width: 100%;
+    text-align: center;
+    -webkit-text-stroke: 1px white;
+}
+
 /* 	d3 charts 	*/
 .d3-container{
 	margin: 0 auto;
