@@ -43,23 +43,18 @@
         .navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF}
     </style>
     
-    <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
+    <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <div class="navbar-brand">${event.name}</div>
+                <button type="button" class="btn btn-info navbar-btn" onclick="editForm(); return false;">Edit</button>
+                <button type="button" class="btn btn-danger navbar-btn" onclick="deleteEvent(); return false;">Delete</button>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav" style="margin-left:10px;">
                     <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li>
                     <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -191,7 +186,7 @@
 	        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
 	        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
 	    </div>
-    </page:show>
+    </page>
     <script>
         window.onload = init;
 
@@ -250,6 +245,21 @@
             });
         }
         
+        function editForm(){
+            window.location="/bibs-server/events/${event.id}?form";
+        }
+        function deleteEvent(){
+            if( confirm('Are you sure you want to delete this item? This cannot be undone.') ){
+                jQuery.ajax({
+                    url: "/bibs-server/events/${event.id}",
+                    type: "DELETE",
+                    dataType: "json",
+                    complete: function() {
+                        window.location="/bibs-server/events";
+                    }
+                });
+            }
+        }
         function redirectReport(){
             window.location="/bibs-server/registrations/reports?event=${event.id}";
         }
