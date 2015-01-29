@@ -44,6 +44,23 @@
     </style>
     
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
+    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="zero-clipboard"><span class="btn-clipboard">Copy to Clipboard</span></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -115,7 +132,6 @@
         <div style="width:100%;text-align:right"><small>If this map doesn't display the correct location, please double-check your event settings!</small></div>
         <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
         <div style="margin: 0 5%;
-            font-family: 'Open Sans', sans-serif;
             font-size: 1.2em;
             font-weight: 100;
             line-height: 27px;
@@ -135,23 +151,6 @@
                     </c:if>
                 </sec:authorize>
             </div>
-
-        <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
-                        <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
-                    </div>
-                    <div class="modal-body">
-                        
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         </div>
         <div style="display:none;">
@@ -294,15 +293,32 @@
         function redirectImport(){
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
         }
+
+        var initModal = false;
         function regUrl(){
             jQuery("#regButton").modal('show');
 
+            var client = new ZeroClipboard( document.getElementById("copy-button") );
+                client.on( "ready", function( readyEvent ) {
+                    // alert( "ZeroClipboard SWF is ready!" );
+                    client.on( "aftercopy", function(e) {
+                        // `this` === `client`
+                        // `event.target` === the element that was clicked
+                        e.target.style.display = "none";
+                        alert("Copied text to clipboard: " + e.data["text/plain"] );
+                    } );
+            } );
+
             var text = "";
+
             jQuery.get("/bibs-server/events/regbutton?event=${event.id}", function(data, status){
                 text = data;
-                jQuery(".modal-body").html(text);
+                if( !initModal ){
+                    jQuery(".modal-body").append('<div class="highlight">'+text+'</div>');
+                    client.clip(jQuery('.language-html').text());
+                    initModal = true;
+                }
             });
-            // window.location="/bibs-server/events/regbutton?event=${event.id}";
         }
         function redirectDropboxImport(){
             window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";

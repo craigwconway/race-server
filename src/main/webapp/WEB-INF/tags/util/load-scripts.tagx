@@ -73,7 +73,7 @@
   <!-- <link href="${slider_css_url }" rel="stylesheet"/> -->
 
   <!-- FONTS -->
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans:100,300" rel="stylesheet" type="text/css"/>
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:100,300,400" rel="stylesheet" type="text/css"/>
 
   <style>
   	.box{ display:inline !important;}
