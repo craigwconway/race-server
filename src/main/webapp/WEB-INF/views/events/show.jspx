@@ -21,6 +21,26 @@
     		font-weight: normal;
     		margin-right: 12px;
     	}
+        .circle{
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+            border-radius: 50%;
+            overflow: hidden;
+            color: #FFFFFF;
+            border: 1px solid #C8C8C8;
+            background: #F2F2F2;
+            vertical-align: middle;
+        }
+        .circle:hover{
+            background: #C8C8C8;
+        }
+        .circle span{
+            width: 100%;
+            text-align: center;
+            -webkit-text-stroke: 1px white;
+        }
         .navbar-inverse { background-color: #F2F2F2}
         .navbar-inverse .navbar-nav>.active>a:hover,.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC}
         .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6}
@@ -72,7 +92,7 @@
                                 <li><a href="#" onclick="redirectEnableReg(); return false;">Enable Registration</a></li>
                             </c:if>
                             <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
-                                <li class="disabled"><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
+                                <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
                                 <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                 <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                 <li class="disabled"><a href="#" onclick="redirectExportReg(); return false;">Export Registrations</a></li>
@@ -124,8 +144,8 @@
             <h3 style="font-family:Quicksand;font-weight:600;">${event.name}</h3>
             <span id="addy">${event.address}<br/>${event.city}, ${event.state}</span>
             <div class="row" style="margin-left:0; padding-left:0; margin-top: 30px">
-                <label for="reg">Registration:</label><span class="reglive">${event.regEnabled}</span><br/>
-                <label for="live">Live:</label><span class="reglive">${event.live}</span>
+                <label for="reg">Registration:</label><div class="circle"><span class="reg">${event.regEnabled}</span></div><br/>
+                <label for="live">Live:</label><div class="circle"><span class="live">${event.live}</span></div>
                 <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
                 <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -196,13 +216,22 @@
         }
 
         function initInfo(){
-            jQuery(".reglive").each(function(){
+            jQuery(".reg").each(function(){
                 var outer_html = jQuery(this).html();
                 if(outer_html === "true"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+                    jQuery(this).html('<span class="glyphicon glyphicon-ok" onclick="redirectDisableReg()"></span>')
                 }
                 else if(outer_html === "false"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
+                    jQuery(this).html('<span class="glyphicon glyphicon-remove" onclick="redirectEnableReg()"></span>')
+                }
+            })
+            jQuery(".live").each(function(){
+                var outer_html = jQuery(this).html();
+                if(outer_html === "true"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-ok" onclick="redirectDisableLive()"></span>')
+                }
+                else if(outer_html === "false"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-remove" onclick="redirectEnableLive()"></span>')
                 }
             })
         }
@@ -299,6 +328,12 @@
         }
         function redirectDisableReg(){
             window.location="/bibs-server/events/${event.id}/disablereg";
+        }
+        function redirectEnableLive(){
+            window.location="/bibs-server/events/${event.id}/enablelive";
+        }
+        function redirectDisableLive(){
+            window.location="/bibs-server/events/${event.id}/disablelive";
         }
         function redirectManageReg(){
             window.location="/bibs-server/eventitems?event=${event.id}";
