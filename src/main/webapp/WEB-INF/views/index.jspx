@@ -14,4 +14,5 @@
   </util:panel>
   --> 
  <h1 style="margin:60px;">Welcome to bibs</h1>
+ <div class="push"><!--  --></div>
  </div>
