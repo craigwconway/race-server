@@ -19,13 +19,11 @@
 	<spring:url value="/events/raceday" var="raceday_url" />
 	<spring:url value="/events?page=1&amp;size=10" var="events_url" />
 	<spring:url value="/registrations/reports" var="reports_url" />
-	<spring:url value="/raceresults?/myresults" var="runners_url" />
 	<spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
 	<spring:url value="/timers?page=1&amp;size=10" var="timers_url" />
  
     <ul class="nav nav-tabs pull-left" >
 	  		<li id="nav_events"><a href="${events_url}">Events</a></li>
-	  		<li id="nav_runners"><a href="${runners_url}">Runners</a></li>
 		<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_EVENT_ADMIN,ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
 		<sec:authentication var="principal" property="principal" />
 <!-- 			<li id="nav_profile"><a href="/bibs-server/userprofiles/byusername/${principal.username }" > -->

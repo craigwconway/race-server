@@ -73,12 +73,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav" style="margin-left:10px;">
                     <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                         <c:if test='${(eventadmin)}'>
                             <li><a href="#" onclick="redirectReport();return false;">Reports</a></li>
+                            <li><a href="#" onclick="redirectAthletes();return false;">Athletes</a></li>
                         </c:if>
                     </sec:authorize>
+                    <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -289,6 +290,9 @@
         }
         function redirectReport(){
             window.location="/bibs-server/registrations/reports?event=${event.id}";
+        }
+        function redirectAthletes(){
+            window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
         }
         function redirectImport(){
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
