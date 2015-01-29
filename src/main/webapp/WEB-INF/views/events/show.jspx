@@ -160,6 +160,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                         <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
                     </div>
                     <div class="modal-body">
@@ -315,6 +316,12 @@
         }
         function regUrl(){
             jQuery("#regButton").modal('show');
+
+            var text = "";
+            jQuery.get("/bibs-server/events/regbutton?event=${event.id}", function(data, status){
+                text = data;
+                jQuery(".modal-body").html(text);
+            });
             // window.location="/bibs-server/events/regbutton?event=${event.id}";
         }
         function redirectDropboxImport(){
