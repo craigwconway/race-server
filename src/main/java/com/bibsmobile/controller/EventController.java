@@ -1201,7 +1201,10 @@ public class EventController {
         }
     }
     
-
+    /*
+     * Enable registration for an event
+     * @return returns the event show view
+     */
     @RequestMapping(value = "/{id}/enablereg", produces = "text/html")
     public String enableReg(@PathVariable("id") Long id, Model uiModel) {
         Event event = Event.findEvent(id);
@@ -1217,6 +1220,67 @@ public class EventController {
         return "redirect:/events/" + event.getId();
     }
 
+    /*
+     * Disable registration for an event
+     * @return returns the event show view
+     */
+    @RequestMapping(value = "/{id}/disablereg", produces = "text/html")
+    public String disablereg(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        event.setRegEnabled(false);
+        event.persist();
+
+        return "redirect:/events/" + event.getId();
+    }
+
+    /*
+     * Make event live
+     * Events that are not live do not show up for non-sysadmin or owner users
+     * Events that are live are returned in all queries that can target them
+     * @return returns the event show view
+     */
+    @RequestMapping(value = "/{id}/enablelive", produces = "text/html")
+    public String enablelive(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        event.setLive(true);
+        event.persist();
+
+        return "redirect:/events/" + event.getId();
+    }    
+
+    /*
+     * Make event undead
+     * Events that are not live do not show up for non-sysadmin or owner users
+     * Events that are live are returned in all queries that can target them
+     * @return returns the event show view
+     */
+    @RequestMapping(value = "/{id}/disablelive", produces = "text/html")
+    public String disablelive(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        event.setLive(false);
+        event.persist();
+
+        return "redirect:/events/" + event.getId();
+    }
+    
     void addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
