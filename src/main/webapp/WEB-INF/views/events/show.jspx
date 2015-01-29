@@ -155,6 +155,23 @@
                     </c:if>
                 </sec:authorize>
             </div>
+
+        <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
+                    </div>
+                    <div class="modal-body">
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         </div>
         <div style="display:none;">
             <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
@@ -206,6 +223,7 @@
 	        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
 	        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
 	    </div>
+
     </page>
     <script>
         window.onload = init;
@@ -296,7 +314,8 @@
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
         }
         function regUrl(){
-            window.location="/bibs-server/events/regbutton?event=${event.id}";
+            jQuery("#regButton").modal('show');
+            // window.location="/bibs-server/events/regbutton?event=${event.id}";
         }
         function redirectDropboxImport(){
             window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";

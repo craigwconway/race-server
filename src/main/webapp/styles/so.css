@@ -88,8 +88,8 @@
 .bootstrap-datetimepicker-widget table{
 	width: 90%;
 }
-.timepicker-picker{
-	margin-left: -30px;
+.datepicker{
+	margin-right: -30px;
 }
 
 /* elessar */
