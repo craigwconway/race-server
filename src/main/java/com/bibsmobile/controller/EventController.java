@@ -149,6 +149,10 @@ public class EventController {
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
         }*/
+
+        // Generate a hashtag based on event name
+        event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));        
+        
         event.persist();
         System.out.println("persisting event");
         // Add to usergroup:
