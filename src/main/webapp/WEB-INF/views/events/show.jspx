@@ -54,8 +54,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                     <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
                 </div>
-                <div class="modal-body">
-                    <div class="zero-clipboard"><span class="btn-clipboard">Copy to Clipboard</span></div>
+                <div class="modal-body"><!--  -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -300,17 +299,6 @@
         var initModal = false;
         function regUrl(){
             jQuery("#regButton").modal('show');
-
-            var client = new ZeroClipboard( document.getElementById("copy-button") );
-                client.on( "ready", function( readyEvent ) {
-                    // alert( "ZeroClipboard SWF is ready!" );
-                    client.on( "aftercopy", function(e) {
-                        // `this` === `client`
-                        // `event.target` === the element that was clicked
-                        e.target.style.display = "none";
-                        alert("Copied text to clipboard: " + e.data["text/plain"] );
-                    } );
-            } );
 
             var text = "";
 
