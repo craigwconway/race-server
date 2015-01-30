@@ -13,6 +13,11 @@
     </p>
   </util:panel>
   --> 
+
+  <style>
+  body{
+    background-image: url('images/1080p.jpg');
+  }
+  </style>
  <h1 style="margin:60px;">Welcome to bibs</h1>
- <div class="push"><!--  --></div>
  </div>

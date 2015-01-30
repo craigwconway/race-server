@@ -44,15 +44,13 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="btn btn-info navbar-btn" onclick="editForm(); return false;">Edit</button>
-                <button type="button" class="btn btn-danger navbar-btn" onclick="deleteEvent(); return false;">Delete</button>
+            <div class="navbar-header"><!--  -->
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav" style="margin-left:10px;">
-                    <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li>
+                    <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                         <c:if test='${(eventadmin)}'>
                             <li><a href="#" onclick="redirectReport();return false;">Reports</a></li>
@@ -60,6 +58,7 @@
                         </c:if>
                     </sec:authorize>
                     <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
+                    <li class="disabled"><a href="#">Event Types</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -75,12 +74,13 @@
                                 <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                 <li class="disabled"><a href="#" onclick="redirectExportReg(); return false;">Export Registrations</a></li>
                             </c:if>
-                            <li class="disabled"><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
+                            <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                             <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
+                            <li class="disabled"><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import Results<span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Results<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#" onclick="redirectImport();return false;">Import</a></li>
                             <li><a href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a></li>
@@ -88,24 +88,18 @@
                                 <li><a href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a></li>
                             </c:if>
                             <li class="disabled"><a href="#">Import bibs file</a></li>
+                            <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                            <li><a href="#" onclick="redirectExport();return false;">Export</a></li>
+                            <li><a href="#" onclick="cloud();return false;">Cloud Sync</a></li>
+                            <c:if test="${lastImport != null}">
+                                <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
+                            </c:if>
+                            <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
+                            <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                            <li><a href="#" onclick="redirectLiveResults();return false;">Live Results Link</a></li>
                         </ul>
                     </li>
                     </sec:authorize>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Export Results<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                                <li><a href="#" onclick="redirectExport();return false;">Export</a></li>
-                                <li><a href="#" onclick="cloud();return false;">Cloud Sync</a></li>
-                                <c:if test="${lastImport != null}">
-                                    <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
-                                </c:if>
-                            </sec:authorize>
-                            <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                                <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
-                            </sec:authorize>
-                        </ul>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -132,7 +126,8 @@
                     </c:if>
                 </sec:authorize>
             </div>
-
+            <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
+            <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
         </div>
         <div style="display:none;">
             <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
@@ -322,6 +317,9 @@
         }
         function redirectBackup(){
             window.location="/bibs-server/events/exportBackup?event=${event.id}";
+        }   
+        function redirectLiveResults(){
+            window.location="/bibs-server/events/webappid";
         }   
         function redirectAwards(){
             window.location="/bibs-server/events/awards?event=${event.id}";

@@ -9,7 +9,8 @@
 	<spring:url var="reports_url" 	value="/registrations/reports" />
 	<spring:url var="users_url" 	value="/userprofiles?page=1&amp;size=10" />
 	<spring:url var="timers_url" 	value="/timers?page=1&amp;size=10" />
-	<spring:url var="logout" value="/resources/j_spring_security_logout" />
+	<spring:url var="login" 		value="/login" />
+	<spring:url var="logout" 		value="/resources/j_spring_security_logout" />
 	<spring:message code="button_home" var="home_label" htmlEscape="false" />
 
 	<div style="clear:both;"/>
@@ -36,14 +37,31 @@
                 	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                   		<li id="nav_reports"><a href="${reports_url}">Reports</a></li>
                   	</sec:authorize>
-                	<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                		<spring:url var="login" value="/login" />
-                		<li><a href="${ login }">Login</a></li>
-                	</sec:authorize>
                 </ul>
+                <form 	class="navbar-form navbar-right" id="loginForm" style="margin: auto 0;padding-top:2px;display:none;"
+                		data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom"
+                		method="POST" action="/bibs-server/resources/j_spring_security_check" name="f">
+					<input  type="text" class="form-control" placeholder="Username" name="j_username"
+							style="padding: auto 0; vertical-align:inherit;"
+	                        data-parsley-error-message="Please enter a username."
+	                        data-parsley-required="true"></input>
+					<input  type="password" class="form-control" placeholder="Password" name="j_password"
+							style="padding: auto 0; vertical-align:inherit;margin-left:5px;"
+	                        data-parsley-error-message="Please enter a password."
+	                        data-parsley-required="true"></input>
+					<button type="submit" class="btn btn-default" style="padding: auto 0; vertical-align:inherit;">Submit</button>
+				</form>
+                <c:if test="${not empty param.login_error} || ${empty param.login_error}">
+                	<script>
+                		jQuery("#loginForm").tooltip("show");
+                	</script>
+			    </c:if>
                 <ul class="nav navbar-nav navbar-right">
+                	<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+	            		<li><a href="${login}" id="loginButton">bibs login <span class="glyphicon glyphicon-log-in" style="margin-left:3px;"></span></a></li>
+                	</sec:authorize>
                     <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                    	<li><a href="${logout }">Logout</a></li>
+                    	<li><a href="${logout}">Logout <span class="glyphicon glyphicon-log-out" style="margin-left:3px;"></span></a></li>
                     </sec:authorize>
                 </ul>
             </div>
@@ -53,15 +71,50 @@
     <div style="height: 50px; max-height: 340px;"></div>
 	
 	<script>
-	// derive active tab from current url
-	if((window.location+"").indexOf('raceday') &gt; 1) 
-		jQuery( "#nav_raceday" ).attr("class", "active" );
-	else if((window.location+"").indexOf('events') &gt; 1) 
-		jQuery( "#nav_events" ).attr("class", "active" );
-	else if((window.location+"").indexOf('reports') &gt; 1) 
-		jQuery( "#nav_reports" ).attr("class", "active" );
-	else if((window.location+"").indexOf('raceresults') &gt; 1) 
-		jQuery( "#nav_timers" ).attr("class", "active" );
+	document.onload = function(){
+		// derive active tab from current url
+		if((window.location+"").indexOf('raceday') &gt; 1) 
+			jQuery( "#nav_raceday" ).attr("class", "active" );
+		else if((window.location+"").indexOf('events') &gt; 1) 
+			jQuery( "#nav_events" ).attr("class", "active" );
+		else if((window.location+"").indexOf('reports') &gt; 1) 
+			jQuery( "#nav_reports" ).attr("class", "active" );
+		else if((window.location+"").indexOf('raceresults') &gt; 1) 
+			jQuery( "#nav_timers" ).attr("class", "active" );
+
+		initValidator();
+	}
+
+	function initValidator(){
+		jQuery('#loginForm').parsley({
+			 errorsContainer: function (ParsleyField) {
+				return ParsleyField.$element.attr("title");
+			 },
+			 errorsWrapper: false
+		})
+
+		jQuery.listen('parsley:field:error', function(fieldInstance) {
+			var messages = ParsleyUI.getErrorsMessages(fieldInstance);
+            fieldInstance.$element.tooltip('destroy');
+			fieldInstance.$element.tooltip({
+				animation: false,
+				container: 'body',
+				placement: 'top',
+				title: messages
+			});
+			
+			console.log("error")
+			formInstance.submitEvent.preventDefault();
+		})
+
+		jQuery.listen('parsley:field:success', function(fieldInstance) {     
+            fieldInstance.$element.tooltip('destroy');
+        });
+	}
+
+	function loginHandler(){
+		jQuery("#loginForm").animate({width:"toggle", height: "toggle"}, "slow");
+	}
 	</script>
 	
 	<style>
