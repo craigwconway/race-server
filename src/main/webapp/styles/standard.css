@@ -18,9 +18,10 @@ body{
 	margin: 0;
 	padding-bottom: 4rem;
 	min-height: 100%;
+	background-image: url('images/pic3.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: 100%;
+    background-size: cover;
 }
 
 /* header and footer elements */

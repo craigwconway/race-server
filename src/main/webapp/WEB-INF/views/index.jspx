@@ -16,8 +16,12 @@
 
   <style>
   body{
-    background-image: url('images/1080p.jpg');
+    background-image: url('images/pic8.jpg');
   }
   </style>
- <h1 style="margin:60px;">Welcome to bibs</h1>
- </div>
+  <div style="margin-top:10%;margin-left: 30%;
+              font-family:Quicksand;font-weight:400;">
+    <div style="font-size: 3.5em;">Welcome</div>
+    <div style="font-size: 1.8em;">bibs control center</div>
+  </div>
+</div>
