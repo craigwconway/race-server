@@ -33,6 +33,8 @@
         .event-navbar-inverse .event-navbar-brand { color: #DFE0D9 }
         .event-navbar-inverse .event-navbar-brand:hover { color: #DFE0D9 }
         .event-navbar-inverse .navbar-nav>li>a { color: #DFE0D9 }
+        .event-navbar-inverse .navbar-nav>.disabled>a { color: #878179 }
+        .event-navbar-inverse .navbar-nav>.disabled>a:hover { background-color: rgba(50,50,50,1); color: #878179; }
         .event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { color: #FFFFFF }
         .event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { color: #002F4C }
         .event-navbar-inverse .navbar-nav>.active>a:hover, .event-navbar-inverse .navbar-nav>.active>a:focus { color: #FFFFFF }
