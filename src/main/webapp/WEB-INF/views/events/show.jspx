@@ -64,7 +64,8 @@
         </div>
     </div>
 
-    <nav class="navbar event-navbar-inverse" style="margin-top:-2%;">
+
+    <nav class="navbar event-navbar-inverse navbar-fixed-top" style="margin-top:50px;">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="event-navbar-header"><!--  -->
@@ -127,7 +128,7 @@
             </div>
         </div>
     </nav>
-        <div style="width:100%;text-align:right"><small>If this map doesn't display the correct location, please double-check your event settings!</small></div>
+        <div style="width:100%;text-align:right;padding-top:50px"><small>If this map doesn't display the correct location, please double-check your event settings!</small></div>
         <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
         <div style="margin: 0 5%;
             font-size: 1.2em;
