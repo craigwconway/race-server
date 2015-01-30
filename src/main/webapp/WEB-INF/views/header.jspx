@@ -39,27 +39,21 @@
                   	</sec:authorize>
                 </ul>
                 <form 	class="navbar-form navbar-right" id="loginForm" style="margin: auto 0;padding-top:2px;display:none;"
-                		data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom"
                 		method="POST" action="/bibs-server/resources/j_spring_security_check" name="f">
+					<div class="form-group" data-toggle="tooltip" data-placement="bottom" title="Login Error!">
 					<input  type="text" class="form-control" placeholder="Username" name="j_username"
 							style="padding: auto 0; vertical-align:inherit;"
 	                        data-parsley-error-message="Please enter a username."
-	                        data-parsley-required="true"></input>
-					<input  type="password" class="form-control" placeholder="Password" name="j_password"
+	                        data-parsley-required="true"></input></div>
+					<div class="form-group"><input  type="password" class="form-control" placeholder="Password" name="j_password"
 							style="padding: auto 0; vertical-align:inherit;margin-left:5px;"
 	                        data-parsley-error-message="Please enter a password."
-	                        data-parsley-required="true"></input>
+	                        data-parsley-required="true"></input></div>
 					<button type="submit" class="btn btn-default" style="padding: auto 0; vertical-align:inherit;">Submit</button>
 				</form>
-                <c:if test="${not empty param.login_error} || ${empty param.login_error}">
-                	<script>
-                		jQuery("#loginForm").tooltip("show");
-                	</script>
-			    </c:if>
                 <ul class="nav navbar-nav navbar-right">
                 	<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 	            		<li><a href="#" id="loginButton" onclick="loginHandler()">bibs login <span class="glyphicon glyphicon-log-in" style="margin-left:3px;"></span></a></li>
-	            		<li><a href="${login}" id="loginButton">Login <span class="glyphicon glyphicon-log-in" style="margin-left:3px;"></span></a></li>
                 	</sec:authorize>
                     <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                     	<li><a href="${logout}">Logout <span class="glyphicon glyphicon-log-out" style="margin-left:3px;"></span></a></li>
@@ -72,45 +66,29 @@
     <div style="height: 50px; max-height: 340px;"></div>
 	
 	<script>
-	document.onload = function(){
-		// derive active tab from current url
-		if((window.location+"").indexOf('raceday') &gt; 1) 
-			jQuery( "#nav_raceday" ).attr("class", "active" );
-		else if((window.location+"").indexOf('events') &gt; 1) 
-			jQuery( "#nav_events" ).attr("class", "active" );
-		else if((window.location+"").indexOf('reports') &gt; 1) 
-			jQuery( "#nav_reports" ).attr("class", "active" );
-		else if((window.location+"").indexOf('raceresults') &gt; 1) 
-			jQuery( "#nav_timers" ).attr("class", "active" );
+	window.onload = init;
 
-		initValidator();
+	function init(){
+		initTooltip();
 	}
 
-	function initValidator(){
-		jQuery('#loginForm').parsley({
-			 errorsContainer: function (ParsleyField) {
-				return ParsleyField.$element.attr("title");
-			 },
-			 errorsWrapper: false
-		})
-
-		jQuery.listen('parsley:field:error', function(fieldInstance) {
-			var messages = ParsleyUI.getErrorsMessages(fieldInstance);
-            fieldInstance.$element.tooltip('destroy');
-			fieldInstance.$element.tooltip({
-				animation: false,
-				container: 'body',
-				placement: 'top',
-				title: messages
-			});
-			
-			console.log("error")
-			formInstance.submitEvent.preventDefault();
-		})
-
-		jQuery.listen('parsley:field:success', function(fieldInstance) {     
-            fieldInstance.$element.tooltip('destroy');
-        });
+	function initTooltip(){
+	    var url = window.location.href;
+	    var urllen = url.length;
+	    var ind = url.lastIndexOf("=");
+	    var eid = url.substring(ind+1, urllen);
+	    if( eid == 't' ){
+	    	jQuery('input[name="j_username"]').parent().addClass("has-error");
+	    	jQuery('input[name="j_password"]').parent().addClass("has-error");
+		    jQuery("#loginForm").show();
+		    jQuery('input[name="j_username"]').focus();
+		    jQuery('input[name="j_username"]').parent().tooltip("show");
+	    }
+	    else{
+	    	jQuery('input[name="j_username"]').parent().removeClass("has-error");
+	    	jQuery('input[name="j_password"]').parent().removeClass("has-error");
+	    	return false;
+	    }
 	}
 
 	function loginHandler(){

@@ -33,6 +33,12 @@
 .navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF}
 .navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999}
 .navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF}
+.has-error .form-control::-webkit-input-placeholder {color: #a16363;}
+.has-error .form-control:-moz-placeholder {color: #a16363;}
+.has-error .form-control::-moz-placeholder {color: #a16363;}
+.has-error .form-control:-ms-input-placeholder {color: #a16363;}
+.has-error .form-control::-webkit-input-placeholder, .has-error .form-control::-webkit-input-placeholder {color: #a16363;}
+.has-error .form-control:-moz-placeholder, .has-error .form-control:-moz-placeholder {color: #a16363;}
 
 .form-container{
 	width: 44%;
