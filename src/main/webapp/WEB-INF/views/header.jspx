@@ -13,7 +13,7 @@
 	<spring:url var="logout" 		value="/resources/j_spring_security_logout" />
 	<spring:message code="button_home" var="home_label" htmlEscape="false" />
 
-	<div style="clear:both;"/>
+	<div style="clear:both; margin-top:-2%"/>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
