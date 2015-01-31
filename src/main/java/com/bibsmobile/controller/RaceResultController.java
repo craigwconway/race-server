@@ -6,6 +6,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.UserProfileUtil;
+import com.bibsmobile.model.License;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
@@ -220,6 +221,9 @@ public class RaceResultController {
             return "raceresults/create";
         }
         uiModel.asMap().clear();
+        // LICENSING GIBBERISH HERE:
+        raceResult.setLicensed(License.isUnitAvailible());
+        // END LICENSING GIBBERISH
         raceResult.persist();
         long eventId = 0;
         if (null != raceResult.getEvent()) {

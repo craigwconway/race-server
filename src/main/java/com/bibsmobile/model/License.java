@@ -251,4 +251,15 @@ public class License {
 	// End the gramps framework overhead:
 	// -------------------------------------------
 	// -------------------------------------------
+    
+    // license util functions:
+    public static boolean isUnitAvailible() {
+    	DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
+    	License systemLicense = License.findCurrentLicense();
+    	if(systemLicense.getEndunits() < systemInfo.getRunnersUsed()) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
 }
