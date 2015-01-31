@@ -4,13 +4,22 @@
     <jsp:output omit-xml-declaration="yes"/>
     <div id="added" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;margin:5px;padding:5px;">Runner Added</div>
     <form:create id="fc_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" render="${empty dependencies}" z="lDbQbfi+ahMJ+wsQw7rqYz4MxJc=">
-        <div style="display:none">
-            <field:select field="event" id="c_com_bibsmobile_model_RaceResult_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/>
-        </div>
         <div style="width: 40%; margin-left: 3%;">
         <h3>Add Runner</h3>
-        <div class="row">
-            <div class="col-md-4 col-sm-4" style="margin-left:0;padding-left:0;">
+        <div class="form-group">
+            <label for="event" class="col-sm-3 control-label" style="padding-top:10px">Event: </label>
+            <div class="col-md-8 col-sm-8" style="margin: 0% auto; padding: 0%">
+            <select class="form-control" id="event-type" name="event"
+                    data-parsley-error-message="Please select an event.">
+                <option selected="selected" disabled="disabled">Select Event</option>
+                <c:forEach var="item" items="${events}">
+                    <option value="${item.id}">${item}</option>
+                </c:forEach>
+            </select></div>
+        </div>
+        <div class="form-group">
+            <label for="event" class="col-sm-3 control-label" style="padding-top:10px">Bib Number: </label>
+            <div class="col-md-8 col-sm-8" style="margin: 0% auto; margin-bottom:10px; padding: 0%">
             <input  type="number" name="bib"
                     class="form-control"
                     placeholder="Bib Number"
@@ -135,9 +144,8 @@
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
     <script>
     // select event based on param
-	jQuery('[name=event]').val( Math.max(0,GetURLParameter("event")) );
 	window.onload=function(){
-	    jQuery("#_bib_id").focus();
+        parseEventId();
         setValidation();
         initDateTimePickers();
 
@@ -145,8 +153,16 @@
 			jQuery("#added").show().delay(3000).fadeOut();
 			jQuery("#added").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
 		}
-		
-		};
+	};
+
+    function parseEventId(){
+        var url = window.location.href;
+        var urllen = url.length;
+        var ind = url.lastIndexOf("=");
+        var eid = url.substring(ind+1, urllen);
+        jQuery('#event-type option[value="'+ eid +'"]').attr("selected", "selected");
+    }
+
     function change(field){
    		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
     }
