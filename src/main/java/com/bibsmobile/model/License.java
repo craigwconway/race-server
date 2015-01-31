@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Entity;
@@ -181,6 +182,11 @@ public class License {
 	// with the device id, the user is trying to exploit
 	// the system
 
+    public static License findCurrentLicense() {
+    	// I think this is the fastest way to do it?
+        return entityManager().createQuery("SELECT o FROM License o ORDER BY id DESC", License.class).setMaxResults(1).getSingleResult();
+    }
+    
 	public static License findLicense(Long id) {
         if (id == null)
             return null;
