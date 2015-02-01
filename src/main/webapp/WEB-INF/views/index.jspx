@@ -64,6 +64,8 @@
 
 <script>
     window.onload = function(){
+        jQuery(".not-list:first-child").focus();
+        
         jQuery(".event-date").each(function(i, d){
             var str = jQuery(d).text()
             str = str.substring(0,str.length-2);
