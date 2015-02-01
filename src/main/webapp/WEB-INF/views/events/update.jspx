@@ -245,10 +245,10 @@
 
             var longitude = result.geometry.location.D;
             var lat =  result.geometry.location.k;
-            if( !longitude ){
+            if( longitude !== null ){
                 jQuery("#geolong").val(longitude);
             }
-            if( !lat ){
+            if( lat !== null ){
                 jQuery("#geolat").val(lat);
             }         
         }).bind("geocode:error", function(results, status){
