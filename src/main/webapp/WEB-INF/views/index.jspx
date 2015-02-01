@@ -1,4 +1,4 @@
-<div xmlns:spring="http://www.springframework.org/tags" xmlns:sec="http://www.springframework.org/security/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:sec="http://www.springframework.org/security/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8" />
     <jsp:output omit-xml-declaration="yes" />
     <sec:authorize access="not hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -20,18 +20,61 @@
         <style>
             body{
                 background-image: url('images/auth.jpg');
-                background-size: cover;
-                background-repeat: no-repeat;
+                background-size: cover; background-repeat: no-repeat;
             }
+            a:link, a:visited, a:hover, a:active { text-decoration: none; color: rgba(30,30,30,1); }
+            .not-list{
+                display: block;
+                margin: 10px;
+                padding: 10px;
+                height: 80px;
+                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+            }
+            .not-list.content{
+                height:100%;
+                vertical-align: middle;
+            }
+            .not-list:hover, .not-list:focus, .clear-btn:hover, .clear-btn:focus{
+                background: rgba(255,255,255,0.8);
+            }
+            .not-list:last-child{
+                border-bottom: none;
+                background: none;
+            }
+            .event-name{ font-size:1.9em; line-height:1.3em; }
+            .event-info{ font-weight:100; font-size:1.3em; }
+            .event-date{ line-height: 2.4em; vertical-align:middle; font-size:1.1em; font-weight:bold; }
+            .clear-btn{ padding: 5px; border: 1px solid rgba(30,30,30,0.5); background: rgba(255,255,255,0.5); text-align:center; }
         </style>
-    <!-- <page id="pl_com_bibsmobile_model_Event" items="${events}"> -->
-        <div style="margin-left: 10%;font-family:Quicksand;">
-
+    <page id="pl_com_bibsmobile_model_Event" items="${events}">
+        <div style="margin-left: 40%;margin-top:2%;font-family:Quicksand;">
+            <c:forEach var="item" items="${events}">
+                <a class="not-list" href="#" onclick="redirectEvent(${item.id})">
+                    <div class="col-sm-9 content"><span class="event-name">${item.name}</span><br/>
+                    <span class="event-info">${item.city}, ${item.state}</span></div>
+                    <div class="col-sm-3 event-date content">${item.timeStart}</div>
+                </a>
+            </c:forEach>
+            <div class="not-list">
+                <a href="#" onclick="redirectEventList()"><div class="col-sm-offset-9 col-sm-2 clear-btn"><span>see all events</span></div></a>
+            </div>
         </div>
-    <!-- </page> -->
+    </page>
     </sec:authorize>
 
 <script>
-console.log("${events}");
+    window.onload = function(){
+        jQuery(".event-date").each(function(i, d){
+            var mom = moment(d).format("MMM Do YYYY");
+            jQuery(this).text(mom);
+        })
+    }
+
+    function redirectEvent(id){
+        return window.location='/bibs-server/events/'+id;
+    }
+    function redirectEventList(){
+        return window.location='/bibs-server/events?page=1&amp;size=10';
+    }
 </script>
 </div>

@@ -53,10 +53,10 @@
 				</form>
                 <ul class="nav navbar-nav navbar-right">
                 	<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-	            		<li><a href="#" id="loginButton" onclick="loginHandler()">bibs login <span class="glyphicon glyphicon-log-in" style="margin-left:3px;"></span></a></li>
+	            		<li><a href="#" id="loginButton" onclick="loginHandler()">login <span class="glyphicon glyphicon-log-in" style="margin-left:3px;"></span></a></li>
                 	</sec:authorize>
                     <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                    	<li><a href="${logout}">Logout <span class="glyphicon glyphicon-log-out" style="margin-left:3px;"></span></a></li>
+                    	<li><a href="${logout}">logout <span class="glyphicon glyphicon-log-out" style="margin-left:3px;"></span></a></li>
                     </sec:authorize>
                 </ul>
             </div>
