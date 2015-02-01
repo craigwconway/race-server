@@ -110,7 +110,7 @@
                             </sec:authorize>
                         </ul>
                     </li>
-                    <li class="disabled"><a href="#">Event Types</a></li>
+                    <!-- <li class="disabled"><a href="#">Event Types</a></li> -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right" id="child-2">
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -167,8 +167,8 @@
             <div id="event-time"><div class="col-sm-6" id="date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
 
             <div id="event-details">
-                <div class="col-sm-6 reglive-label">Registration</div>
-                <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="reg">${event.regEnabled}</span></div></div>
+                <div class="col-sm-6 reglive-label" style="margin-bottom:5px">Registration</div>
+                <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0;margin-bottom:5px"><div class="btn btn-default btn-sm"><span class="reg">${event.regEnabled}</span></div></div>
                 <div class="col-sm-6 reglive-label">Live</div>
                 <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="live">${event.live}</span></div></div>
                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
