@@ -5,7 +5,6 @@
 	<spring:url var="banner" 		value="/resources/images/bibsicon.png" />
 	<spring:url var="home" 			value="/" />
 	<spring:url var="raceday_url" 	value="/events/raceday" />
-	<spring:url var="events_url" 	value="/events?page=1&amp;size=10" />
 	<spring:url var="reports_url" 	value="/registrations/reports" />
 	<spring:url var="users_url" 	value="/userprofiles?page=1&amp;size=10" />
 	<spring:url var="timers_url" 	value="/timers?page=1&amp;size=10" />
@@ -27,15 +26,14 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav" style="margin-left:10px;">
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
-	                <li id="nav_events"><a href="${events_url}">Events</a></li>
                 	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
                   		<li id="nav_raceday"><a href="${raceday_url}">Race Day</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                  		<li id="nav_timers"><a href="${timers_url}">Admin</a></li>
+                  		<li id="nav_timers"><a href="${timers_url}">Settings</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                  		<li id="nav_reports"><a href="${reports_url}">Reports</a></li>
+                  		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
                   	</sec:authorize>
                 </ul>
                 <form 	class="navbar-form navbar-right" id="loginForm" style="margin: auto 0;padding-top:2px;display:none;"
