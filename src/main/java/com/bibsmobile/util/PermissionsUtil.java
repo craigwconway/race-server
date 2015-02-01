@@ -61,4 +61,21 @@ public final class PermissionsUtil {
         }
         return false;
     }
+    
+    /**
+     * Returns true if the user is an eventadmin in general
+     * not for a particular event. They do not have permissions for all events as
+     * eventadmin for this to be true
+     * @param user
+     * @return
+     */
+    public static boolean isVaguelyEventAdmin(UserProfile user) {
+        if (user == null) return false;
+        for (UserAuthorities uas : user.getUserAuthorities()) {
+            if (uas.getUserAuthority().isAuthority(UserAuthority.EVENT_ADMIN)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
