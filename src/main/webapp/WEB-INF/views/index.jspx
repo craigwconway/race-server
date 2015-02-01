@@ -65,7 +65,9 @@
 <script>
     window.onload = function(){
         jQuery(".event-date").each(function(i, d){
-            var mom = moment(d).format("MMM Do YYYY");
+            var str = jQuery(d).text()
+            str = str.substring(0,str.length-2);
+            var mom = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
             jQuery(this).text(mom);
         })
     }
