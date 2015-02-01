@@ -32,5 +32,6 @@
     </sec:authorize>
 
 <script>
+console.log("${events}");
 </script>
 </div>
