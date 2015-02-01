@@ -69,7 +69,7 @@
             <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
                 <div class="form-group">
                     <label for="gunFired" class="col-sm-1 control-label">Gun Fired:</label>
-                    <div class="col-sm-4"><div class="circle"><span class="reg">${event.gunFired}</span></div></div>
+                    <div class="col-sm-4"><div class="btn btn-default btn-sm"><span class="reg">${event.gunFired}</span></div></div>
                     <input style="display:none" id="checkgun" type="checkbox" name="gunFired"></input>
                 </div>
                 <div class="form-group">
