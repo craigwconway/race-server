@@ -53,14 +53,19 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav" id="child-1" style="margin-left:10px;">
-                    <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
-                    <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
-                    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                        <c:if test='${(eventadmin)}'>
-                            <li><a href="#" onclick="redirectAthletes();return false;">Athletes</a></li>
-                            <li><a href="#" onclick="redirectReport();return false;">Reports</a></li>
-                        </c:if>
-                    </sec:authorize>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Details<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
+                            <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
+                            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                                <c:if test='${(eventadmin)}'>
+                                    <li><a href="#" onclick="redirectAthletes();return false;">Athletes</a></li>
+                                    <li><a href="#" onclick="redirectReport();return false;">Reports</a></li>
+                                </c:if>
+                            </sec:authorize>
+                        </ul>
+                    </li>
                     <li class="disabled"><a href="#">Event Types</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" id="child-2">
@@ -109,7 +114,7 @@
     </nav>
         <div style="width:100%;text-align:right;padding-top:50px"><small>Can't see the map, please double-check your event settings!</small></div>
         <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
-        <div style="margin-left: 5%; margin-top:5%;
+        <div style="margin-left: 5%;
             font-size: 1.2em;
             font-weight: 100;
             line-height: 27px;

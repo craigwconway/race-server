@@ -61,7 +61,7 @@
         </div>
     </nav>
 
-    <div style="height: 50px; max-height: 340px;"></div>
+    <div style="height: 50px; max-height: 340px;"><!--  --></div>
 	
 	<script>
 	window.onload = init;
