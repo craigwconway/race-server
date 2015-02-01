@@ -3,13 +3,35 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-        .map-canvas{
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 102%;
+            margin-top: 3%;
+            margin-left: -1%;
+            margin-right: -3%;
+            padding-top: 4%;
+            padding-bottom: 4%;
+            padding-left: 5%;
+        }
+        .info-container{
+            width: 60%;
+            font-size: 1.2em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+        }
+        .map-container{
             float: right;
-            width: 300px; 
-            height: 300px;
+            width: 300px;
+            height: auto;
             margin-right: 6%;
             margin-top: 1%;
-            margin-bottom: 3%;
+            text-align: right;
+        }
+        .map-canvas{
+            width: 300px; 
+            height: 300px;
         }
     	.event-name{
             font-family: Quicksand;
@@ -21,8 +43,30 @@
     		font-size: 1.2em;
     	}
         #event-time{
+            width: 60%;
+            margin-top: 5px;
             font-family: Quicksand;
             font-weight: bold;
+        }
+        #date{
+            margin-left: 0;
+            padding-left: 0;
+            text-align: left;
+        }
+        #time{
+            text-align: right;
+        }
+        #event-details{
+            width: 60%;
+            margin-top: 50px;
+        }
+        .reglive-label{
+            text-align:left;
+            margin-left:0;
+            padding-left:0
+        }
+        .button-container{
+            padding-top: 150px;
         }
     </style>
     
@@ -112,22 +156,21 @@
             </div>
         </div>
     </nav>
-        <div style="width:100%;text-align:right;padding-top:50px"><small>Can't see the map, please double-check your event settings!</small></div>
-        <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
-        <div style="margin-left: 5%;
-            font-size: 1.2em;
-            font-weight: 100;
-            line-height: 27px;
-            color: #292929;
-            float:left">
+    <div class="white-overlay">
+        <div class="map-container">
+            <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
+            <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
+        </div>
+        <div class="info-container">
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
-            <div id="event-time">${event.timeStart}</div>
+            <div id="event-time"><div class="col-sm-6" id="date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
 
-            <div class="row" style="margin-left:0; padding-left:0; margin-top: 30px">
-                <label for="reg">Registration:</label><div class="circle"><span class="reg">${event.regEnabled}</span></div><br/>
-                <label for="live">Live:</label><div class="circle"><span class="live">${event.live}</span></div>
-                <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
+            <div id="event-details">
+                <div class="col-sm-6 reglive-label">Registration</div>
+                <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="reg">${event.regEnabled}</span></div></div>
+                <div class="col-sm-6 reglive-label">Live</div>
+                <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="live">${event.live}</span></div></div>
                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                     <c:if test="${lastImport != null}">
                         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
@@ -135,8 +178,10 @@
                     </c:if>
                 </sec:authorize>
             </div>
-            <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
-            <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
+            <div class="button-container">
+                <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
+                <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
+            </div>
         </div>
         <div style="display:none;">
             <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
@@ -188,7 +233,7 @@
 	        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
 	        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
 	    </div>
-
+    </div>
     </page>
     <script>
         window.onload = init;
@@ -202,8 +247,10 @@
         function initInfo(){
             var str = jQuery("#event-time").text()
             str = str.substring(0,str.length-2);
-            var mom = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
-            jQuery("#event-time").text(mom);
+            var momdate = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
+            var momtime = moment(str, "YYYY-MM-DD HH:mm:ss").format('h:mm a');
+            jQuery("#date").text(momdate);
+            jQuery("#time").text("first start " + momtime);
 
             jQuery(".reg").each(function(){
                 var outer_html = jQuery(this).html();

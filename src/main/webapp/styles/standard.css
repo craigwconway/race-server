@@ -13,13 +13,15 @@ html {
 }
 
 body{
+    background-image: url('images/auth.jpg');
+    background-size: cover;
+	background-repeat: no-repeat;
 	font-family: 'Open Sans', sans-serif;
 	font-weight: 400;
 	position: relative;
 	margin: 0;
 	padding-bottom: 4rem;
     background-attachment: fixed;
-    background-size: cover;
 }
 
 /* header and footer elements */
