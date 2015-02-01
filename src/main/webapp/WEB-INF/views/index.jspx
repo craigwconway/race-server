@@ -15,25 +15,48 @@
     </sec:authorize>
 
     <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-<!--     <page id="pl_com_bibsmobile_model_Event" items="${events}">
-        <div style="margin-left: 10%;font-family:Quicksand;font-weight:400;">
+    <!-- <page id="pl_com_bibsmobile_model_Event" items="${events}"> -->
+        <div style="margin-left: 10%;font-family:Quicksand;">
             <div class="race-item-container">
-                <h3 style="font-size:2.2em;">bibs control center</h3>
+                <h3 style="font-size:2.2em;font-weight:bold;margin-bottom:2%">bibs control center</h3>
 
-                <c:forEach var="item" items="${events}">
-                <div class="race-item">
+                <!-- <c:forEach var="item" items="${events}"> -->
+                <div class="race-item" style="background-image: url('images/stock6.jpg');">
                     <div class="race-item-overlay">
-                        <input type="image"
-                            class="race-button"/>
+                        <input type="hidden" class="race-button"/>
                         <br/>
-                        <h3>${item.name}</h3>
-                        <h4><span>${item.timeStart}</span></h4>
+                        <div class="text">
+                            <h3>Race Title</h3>
+                            <h4><span>MM/DD/YYYY 9AM</span></h4>
+                        </div>
                     </div>
                 </div>
-                </c:forEach>
+
+                <div class="race-item" style="background-image: url('images/stock1.jpg');">
+                    <div class="race-item-overlay">
+                        <input type="hidden" class="race-button"/>
+                        <br/>
+                        <div class="text">
+                            <h3>Race Title</h3>
+                            <h4><span>MM/DD/YYYY 9AM</span></h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="race-item" style="background-image: url('images/stock5.jpg');">
+                    <div class="race-item-overlay">
+                        <input type="hidden" class="race-button"/>
+                        <br/>
+                        <div class="text">
+                            <h3>Race Title</h3>
+                            <h4><span>MM/DD/YYYY 9AM</span></h4>
+                        </div>
+                    </div>
+                </div>
+                <!-- </c:forEach> -->
             </div>
         </div>
-    </page> -->
+    <!-- </page> -->
     </sec:authorize>
 
 <script>
