@@ -40,6 +40,70 @@
 .has-error .form-control::-webkit-input-placeholder, .has-error .form-control::-webkit-input-placeholder {color: #a16363;}
 .has-error .form-control:-moz-placeholder, .has-error .form-control:-moz-placeholder {color: #a16363;}
 
+.race-item-container{
+    position: relative;
+    padding: 0.5% 5%;
+    text-align: center;
+}
+
+.race-item{
+    width: 25%;
+    height: 300px;
+    display: inline-block;
+    margin: 0 2%;
+
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    border: 15px solid #FFFFFF;
+}
+
+.race-item h3{
+    vertical-align: middle;
+	padding: 0 2%;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 1.3em;
+}
+
+.race-item-overlay{
+	background-color: rgba(40,43,48,0.45);
+	display: block;
+	width: 100%;
+	height: 100%;
+	transition: opacity 0.3s ease 0s;
+}
+
+.race-button{
+    position: relative;
+    height: auto;
+    width: 100%;
+    max-width: 150px;
+    -moz-opacity: 0.4;
+    opacity: 0.4;
+}
+
+.race-button-selected{
+    position: relative;
+    height: auto;
+    width: 100%;
+    -moz-opacity: 1;
+    opacity: 1;
+}
+
+.race-button:hover {
+    -moz-opacity: 1;
+    opacity: 1;
+}
+
+.race-text-selected{
+    font-family: "Gotham Narrow-Bold", sans-serif;
+}
+
+.race-text{
+    font-family: "Gotham Narrow-Book", sans-serif;
+}
+
 .form-container{
 	width: 44%;
 	margin-left: 3%;
@@ -154,14 +218,6 @@
 	color: #00DD00;
 }
 
-.glyphicon-remove{
-	color: #DD0000;
-}
-
-.glyphicon-ok {
-	color: #00DD00;
-}
-
 .circle{
     display: inline-block;
     vertical-align: middle;
@@ -181,8 +237,6 @@
     text-align: center;
     -webkit-text-stroke: 1px white;
 }
-
-.zero-clipboard{position:relative;display:none}.btn-clipboard{position:absolute;top:0;right:0;z-index:10;display:block;padding:5px 8px;font-size:12px;color:#767676;cursor:pointer;background-color:#fff;border:1px solid #e1e1e8;border-radius:0 4px 0 4px}.btn-clipboard-hover{color:#fff;background-color:#563d7c;border-color:#563d7c}
 
 /* 	d3 charts 	*/
 .d3-container{

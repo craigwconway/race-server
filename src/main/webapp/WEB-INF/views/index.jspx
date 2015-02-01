@@ -1,24 +1,11 @@
 <div xmlns:spring="http://www.springframework.org/tags" xmlns:sec="http://www.springframework.org/security/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8" />
     <jsp:output omit-xml-declaration="yes" />
-<!-- 
-<spring:message var="app_name" code="application_name" htmlEscape="false" />
-<spring:message var="title" code="welcome_titlepane" arguments="${app_name}" htmlEscape="false" />
-<util:panel id="title" title="${title}">
-<h3>
-<spring:message code="welcome_h3" arguments="${app_name}" />
-</h3>
-<p>
-<spring:message code="welcome_text" />
-</p>
-</util:panel>
---> 
-
-<style>
-    body{
-        background-image: url('images/pic8.jpg');
-    }
-</style>
+    <style>
+        body{
+            background-image: url('images/pic8.jpg');
+        }
+    </style>
     <sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <div style="margin-top:10%;margin-left: 30%;
     font-family:Quicksand;font-weight:400;">
@@ -28,11 +15,27 @@
     </sec:authorize>
 
     <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-            <div style="margin-top:10%;margin-left: 30%;
-    font-family:Quicksand;font-weight:400;">
-            <div style="font-size: 3.5em;">logged in</div>
-            <div style="font-size: 1.8em;">bibs control center</div>
+<!--     <page id="pl_com_bibsmobile_model_Event" items="${events}">
+        <div style="margin-left: 10%;font-family:Quicksand;font-weight:400;">
+            <div class="race-item-container">
+                <h3 style="font-size:2.2em;">bibs control center</h3>
+
+                <c:forEach var="item" items="${events}">
+                <div class="race-item">
+                    <div class="race-item-overlay">
+                        <input type="image"
+                            class="race-button"/>
+                        <br/>
+                        <h3>${item.name}</h3>
+                        <h4><span>${item.timeStart}</span></h4>
+                    </div>
+                </div>
+                </c:forEach>
+            </div>
         </div>
+    </page> -->
     </sec:authorize>
 
+<script>
+</script>
 </div>
