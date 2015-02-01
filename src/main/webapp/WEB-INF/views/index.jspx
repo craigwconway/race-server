@@ -1,12 +1,14 @@
 <div xmlns:spring="http://www.springframework.org/tags" xmlns:sec="http://www.springframework.org/security/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8" />
     <jsp:output omit-xml-declaration="yes" />
-    <style>
-        body{
-            background-image: url('images/pic8.jpg');
-        }
-    </style>
-    <sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+    <sec:authorize access="not hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <style>
+            body{
+                background-image: url('images/unauth.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+            }
+        </style>
         <div style="margin-top:10%;margin-left: 30%;
     font-family:Quicksand;font-weight:400;">
             <div style="font-size: 3.5em;">Welcome</div>
@@ -14,47 +16,17 @@
         </div>
     </sec:authorize>
 
-    <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <style>
+            body{
+                background-image: url('images/auth.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+            }
+        </style>
     <!-- <page id="pl_com_bibsmobile_model_Event" items="${events}"> -->
         <div style="margin-left: 10%;font-family:Quicksand;">
-            <div class="race-item-container">
-                <h3 style="font-size:2.2em;font-weight:bold;margin-bottom:2%">bibs control center</h3>
 
-                <!-- <c:forEach var="item" items="${events}"> -->
-                <div class="race-item" style="background-image: url('images/stock6.jpg');">
-                    <div class="race-item-overlay">
-                        <input type="hidden" class="race-button"/>
-                        <br/>
-                        <div class="text">
-                            <h3>Race Title</h3>
-                            <h4><span>MM/DD/YYYY 9AM</span></h4>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="race-item" style="background-image: url('images/stock1.jpg');">
-                    <div class="race-item-overlay">
-                        <input type="hidden" class="race-button"/>
-                        <br/>
-                        <div class="text">
-                            <h3>Race Title</h3>
-                            <h4><span>MM/DD/YYYY 9AM</span></h4>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="race-item" style="background-image: url('images/stock5.jpg');">
-                    <div class="race-item-overlay">
-                        <input type="hidden" class="race-button"/>
-                        <br/>
-                        <div class="text">
-                            <h3>Race Title</h3>
-                            <h4><span>MM/DD/YYYY 9AM</span></h4>
-                        </div>
-                    </div>
-                </div>
-                <!-- </c:forEach> -->
-            </div>
         </div>
     <!-- </page> -->
     </sec:authorize>
