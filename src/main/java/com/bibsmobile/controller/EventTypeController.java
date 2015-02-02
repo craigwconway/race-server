@@ -32,6 +32,7 @@ public class EventTypeController {
         return "redirect:/eventtypes/" + this.encodeUrlPathSegment(eventType.getId().toString(), httpServletRequest);
     }
 
+    
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         this.populateEditForm(uiModel, new EventType());

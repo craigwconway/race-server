@@ -10,10 +10,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,16 +32,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Entity
 public class EventType {
 
-    @NotNull
     private String typeName;
-
+    
+    @NotNull
+    private String distance;
+    
+    @NotNull
+    private String racetype;
+    
+    private Long meters;
+    
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     private Date startTime;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Event> events = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Event event;
 
     @PersistenceContext
     transient EntityManager entityManager;
@@ -176,16 +185,58 @@ public class EventType {
         this.startTime = startTime;
     }
 
-    public Set<Event> getEvents() {
-        return this.events;
+    public Event getEvent() {
+        return this.event;
     }
 
-    public void setEvents(Set<Event> events) {
-        this.events = events;
+    public void setEvent(Event events) {
+        this.event = events;
     }
 
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
+	/**
+	 * @return the distance
+	 */
+	public String getDistance() {
+		return distance;
+	}
+
+	/**
+	 * @param distance the distance to set
+	 */
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
+
+	/**
+	 * @return the racetype
+	 */
+	public String getRacetype() {
+		return racetype;
+	}
+
+	/**
+	 * @param racetype the racetype to set
+	 */
+	public void setRacetype(String racetype) {
+		this.racetype = racetype;
+	}
+
+	/**
+	 * @return the meters
+	 */
+	public Long getMeters() {
+		return meters;
+	}
+
+	/**
+	 * @param meters the meters to set
+	 */
+	public void setMeters(Long meters) {
+		this.meters = meters;
+	}
 }
