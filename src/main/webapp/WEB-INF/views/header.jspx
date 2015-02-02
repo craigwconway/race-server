@@ -27,10 +27,10 @@
                 <ul class="nav navbar-nav" style="margin-left:10px;">
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
                 	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                  		<li id="nav_raceday"><a href="${raceday_url}">Race Day</a></li>
+                  		<li id="nav_raceday"><a href="${raceday_url}"><span class="glyphicon glyphicon-signal" style="margin-right:5px;"><!--  --></span> Race Day</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                  		<li id="nav_timers"><a href="${timers_url}">Settings</a></li>
+                  		<li id="nav_timers"><a href="${timers_url}"><span class="glyphicon glyphicon-cog" style="margin-right:5px;"><!--  --></span> Settings</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                   		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
