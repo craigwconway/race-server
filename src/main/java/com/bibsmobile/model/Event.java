@@ -91,8 +91,8 @@ public class Event {
 
     private Double longitude;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<EventType> eventTypes = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
+    private Set<EventType> eventTypes;
 
     @URL
     private String website;
