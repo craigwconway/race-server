@@ -169,6 +169,7 @@
                             </c:if>
                             <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
                             <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                            
                             <li><a href="#" onclick="redirectLiveResults();return false;">Live Results Link</a></li>
                         </ul>
                     </li>

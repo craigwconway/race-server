@@ -57,7 +57,7 @@
   
   
   <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
-  <spring:url value="/resources/styles/Font-Awesome/css/font-awesome.min.css" var="fontawesome_url" />
+  <spring:url value="/resources/styles/font-awesome/css/font-awesome.min.css" var="fontawesome_url" />
   <spring:url value="/resources/styles/bootstrap-datetimepicker.css" var="datepicker_css_url" />
   <spring:url value="/resources/styles/jquery-ui.css" var="jquery_ui_css_url" />
   <spring:url value="/resources/styles/vis.min.css" var="vis_css_url" />
