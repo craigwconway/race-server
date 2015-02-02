@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
@@ -104,7 +104,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                     <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
                 </div>
-                <div class="modal-body"><!--  -->
+                <div class="modal-body">
+                <div class="preview">Preview: 
+                    <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
+                </div>
+                Embed the code below to generate a bibs registration button:<br/>
+                <c:set var="reghtml" value='&lt;form action="https://bibs-frontend.herokuapp.com/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'></c:set>
+                <pre>${fn:escapeXml(reghtml)}</pre>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -113,6 +119,26 @@
         </div>
     </div>
 
+    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" aria-labelledby="live-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="live-label">Live Results Snippet</h4>
+                </div>
+                <div class="modal-body">Embed code below to generate a bibs registration button:
+                <pre>&lt;form action="https://bibs-frontend.herokuapp.com/registration/#/${event.id}" method="get"&gt;
+                &lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;
+                Register
+                &lt;/button&gt;
+                &lt;/form&gt;</pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <nav class="navbar event-navbar-inverse navbar-fixed-top" style="margin-top:50px">
         <div class="container-fluid">
@@ -344,16 +370,16 @@
         function regUrl(){
             jQuery("#regButton").modal('show');
 
-            var text = "";
+            // var text = "";
 
-            jQuery.get("/bibs-server/events/regbutton?event=${event.id}", function(data, status){
-                text = data;
-                if( !initModal ){
-                    jQuery(".modal-body").append('<div class="highlight">'+text+'</div>');
-                    client.clip(jQuery('.language-html').text());
-                    initModal = true;
-                }
-            });
+            // jQuery.get("/bibs-server/events/regbutton?event=${event.id}", function(data, status){
+            //     text = data;
+            //     if( !initModal ){
+            //         jQuery(".modal-body").append('<div class="highlight">'+text+'</div>');
+            //         client.clip(jQuery('.language-html').text());
+            //         initModal = true;
+            //     }
+            // });
         }
         function redirectDropboxImport(){
             window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
