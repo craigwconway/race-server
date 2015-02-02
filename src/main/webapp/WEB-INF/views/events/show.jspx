@@ -3,6 +3,10 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
+        body{
+            background-image: url('../images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
         .white-overlay{
             display: block;
             background: rgba(255,255,255,.8);
