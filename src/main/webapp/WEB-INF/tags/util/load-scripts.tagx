@@ -57,6 +57,7 @@
   
   
   <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
+  <spring:url value="/resources/styles/Font-Awesome/css/font-awesome.min.css" var="fontawesome_url" />
   <spring:url value="/resources/styles/bootstrap-datetimepicker.css" var="datepicker_css_url" />
   <spring:url value="/resources/styles/jquery-ui.css" var="jquery_ui_css_url" />
   <spring:url value="/resources/styles/vis.min.css" var="vis_css_url" />
@@ -65,6 +66,7 @@
   <!-- <spring:url value="/resources/styles/iThing.css" var="slider_css_url" /> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="${bootstrap_url }" rel="stylesheet"/>
+  <link href="${fontawesome_url }" rel="stylesheet"/>
   <link href="${datepicker_css_url }" rel="stylesheet"/>
   <link href="${vis_css_url }" rel="stylesheet"/>
   <link href="${nvd3_css_url }" rel="stylesheet"/>
