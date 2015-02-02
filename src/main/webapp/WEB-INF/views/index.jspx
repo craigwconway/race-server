@@ -57,7 +57,10 @@
                     </a>
                 </c:forEach>
                 <div class="not-list">
-                    <a href="#" onclick="redirectEventList()"><div class="col-sm-offset-9 col-sm-2 clear-btn"><span>see all events</span></div></a>
+                    <div class="row">
+                    <a href="#" onclick="redirectEventCreate()"><div class="col-sm-offset-9 col-sm-2 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> add event</span></div></a></div>
+                    <div class="row">
+                    <a href="#" onclick="redirectEventList()"><div class="col-sm-offset-9 col-sm-2 btn btn-default"><span>more events</span></div></a></div>
                 </div>
             </c:if>
             <c:if test="${empty events}">
@@ -84,6 +87,19 @@
             var mom = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
             jQuery(this).text(mom);
         })
+    }
+
+    function getAllEvents(){
+        var request = jQuery.ajax({
+            url: "/bibs-server/events/",
+            type: "GET",
+            dataType: "json"
+            });
+        request.done(function( d ) {
+            console.log(d)
+        });
+        request.fail(function( jqXHR, textStatus ) {
+        });
     }
 
     function redirectEvent(id){

@@ -375,7 +375,19 @@
             window.location="/bibs-server/events/exportBackup?event=${event.id}";
         }   
         function redirectLiveResults(){
-            window.location="/bibs-server/events/webappid";
+            // window.location="/bibs-server/events/webappid";
+            var request = jQuery.ajax({
+                url: "/bibs-server/events/webappid",
+                type: "GET",
+                dataType: "json"
+                });
+            request.done(function( d ) {
+                if( d !== "" || d !== null ){
+                    console.log(d)
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
         }   
         function redirectAwards(){
             window.location="/bibs-server/events/awards?event=${event.id}";
