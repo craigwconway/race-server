@@ -205,13 +205,11 @@ public class EventController {
 		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
 			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
 				UserGroup ug = ugua.getUserGroup();
-				String success = "https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/" + ug.getId().toString() + "/t/all/events";
-				return success;
+				return ug.getId().toString();
 			}
 		}
 
-        String err = new String("Error with results delivery: Please contact brandon@mybibs.co for automatic result inquiries.");
-        return err;
+        return "";
     }    
 
     @RequestMapping(value = "/regbutton", method = RequestMethod.GET)
