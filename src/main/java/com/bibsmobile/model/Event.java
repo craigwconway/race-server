@@ -344,7 +344,7 @@ public class Event {
             min = max;
         String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
         if (!gender.isEmpty()) HQL += " AND o.gender = :gender ";
-        if (min >= 0 && max > 0) HQL += "AND (cast(o.age, int) >= :min AND cast(o.age, int) <= :max ) ";
+        if (min >= 0 && max > 0) HQL += "AND o.age >= :min AND o.age <= :max ) ";
         HQL += " order by o.timeofficialdisplay asc";
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
