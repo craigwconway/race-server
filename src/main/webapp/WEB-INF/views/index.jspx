@@ -48,16 +48,26 @@
         </style>
     <page id="pl_com_bibsmobile_model_Event" items="${events}">
         <div style="margin-left: 40%;margin-top:2%;font-family:Quicksand;">
-            <c:forEach var="item" items="${events}">
-                <a class="not-list" href="#" onclick="redirectEvent(${item.id})">
-                    <div class="col-sm-9 content"><span class="event-name">${item.name}</span><br/>
-                    <span class="event-info">${item.city}, ${item.state}</span></div>
-                    <div class="col-sm-3 event-date content">${item.timeStart}</div>
+            <c:if test="${not empty events}">
+                <c:forEach var="item" items="${events}">
+                    <a class="not-list" href="#" onclick="redirectEvent(${item.id})">
+                        <div class="col-sm-9 content"><span class="event-name">${item.name}</span><br/>
+                        <span class="event-info">${item.city}, ${item.state}</span></div>
+                        <div class="col-sm-3 event-date content">${item.timeStart}</div>
+                    </a>
+                </c:forEach>
+                <div class="not-list">
+                    <a href="#" onclick="redirectEventList()"><div class="col-sm-offset-9 col-sm-2 clear-btn"><span>see all events</span></div></a>
+                </div>
+            </c:if>
+            <c:if test="${empty events}">
+                <a class="not-list" href="#" onclick="redirectEventCreate();">
+                    <div class="col-sm-9 content"><span class="event-name">No Events Found</span><br/>
+                    <span class="event-info">Add Event</span></div>
+                    <div class="col-sm-3 content"><!--  --></div>
                 </a>
-            </c:forEach>
-            <div class="not-list">
-                <a href="#" onclick="redirectEventList()"><div class="col-sm-offset-9 col-sm-2 clear-btn"><span>see all events</span></div></a>
-            </div>
+                <div class="empty"><!-- --></div>
+            </c:if>
         </div>
     </page>
     </sec:authorize>
@@ -78,6 +88,9 @@
 
     function redirectEvent(id){
         return window.location='/bibs-server/events/'+id;
+    }
+    function redirectEventCreate(){
+        return window.location='/bibs-server/events?form';
     }
     function redirectEventList(){
         return window.location='/bibs-server/events?page=1&amp;size=10';
