@@ -68,6 +68,28 @@
         .button-container{
             padding-top: 150px;
         }
+        .event-navbar-inverse { background-color: rgba(50,50,50,1) }
+        .event-navbar-inverse .navbar-nav>.active>a:hover,.event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC }
+        .event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6 }
+        .dropdown-menu { background-color: rgba(50,50,50,1) }
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #00DFF6 }
+        .event-navbar-inverse { background-image: none; }
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-image: none; }
+        .event-navbar-inverse { border-color: #FFFFFF}
+        .event-navbar-inverse .event-navbar-brand { color: #DFE0D9 }
+        .event-navbar-inverse .event-navbar-brand:hover { color: #DFE0D9 }
+        .event-navbar-inverse .navbar-nav>li>a { color: #DFE0D9 }
+        .event-navbar-inverse .navbar-nav>.disabled>a { color: #878179 }
+        .event-navbar-inverse .navbar-nav>.disabled>a:hover { background-color: rgba(50,50,50,1); color: #878179; }
+        .event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { color: #FFFFFF }
+        .event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { color: #002F4C }
+        .event-navbar-inverse .navbar-nav>.active>a:hover, .event-navbar-inverse .navbar-nav>.active>a:focus { color: #FFFFFF }
+        .dropdown-menu>li>a { color: #DFE0D9 }
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #333333 }
+        .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-top-color: #999999 }
+        .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF }
+        .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999 }
+        .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF }
     </style>
     
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
@@ -88,7 +110,7 @@
     </div>
 
 
-    <nav class="navbar navbar-inverse navbar-fixed-top" style="margin-top:50px;display:none">
+    <nav class="navbar event-navbar-inverse navbar-fixed-top" style="margin-top:50px">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header"><!--  -->
@@ -96,20 +118,15 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav" id="child-1" style="margin-left:10px;">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Details<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
-                            <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
-                            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                                <c:if test='${(eventadmin)}'>
-                                    <li><a href="#" onclick="redirectAthletes();return false;">Athletes</a></li>
-                                    <li><a href="#" onclick="redirectReport();return false;">Reports</a></li>
-                                </c:if>
-                            </sec:authorize>
-                        </ul>
-                    </li>
+                <ul class="nav navbar-nav" style="margin-left:10px;">
+                    <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
+                    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                        <c:if test='${(eventadmin)}'>
+                            <li><a href="#" onclick="redirectReport();return false;">Reports</a></li>
+                            <li><a href="#" onclick="redirectAthletes();return false;">Athletes</a></li>
+                        </c:if>
+                    </sec:authorize>
+                    <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
                     <!-- <li class="disabled"><a href="#">Event Types</a></li> -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right" id="child-2">
@@ -240,7 +257,7 @@
 
         function init(){
             initInfo();
-            recreateNav();
+            // recreateNav();
             initMap();
         }
 
