@@ -327,13 +327,13 @@
             request.done(function( d ) {
                 if( d !== "" || d !== null ){
                     id = d;
-                    console.log(d);
                 }
-                else{
+                if( d == "" ){
                     jQuery(".show-live").hide();
                 }
             });
             request.fail(function( jqXHR, textStatus ) {
+                jQuery(".show-live").hide();
             });
         }
 
