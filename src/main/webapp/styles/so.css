@@ -13,6 +13,21 @@
 	font-weight:bold;
 }
 
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
+	.navbar-inverse .navbar-toggle{ border-color: #002F4C; background-color: rgba(255,255,255,0.5) }
+	.navbar-inverse .navbar-toggle .icon-bar{ background-color: #002F4C; }
+	.navbar-inverse .navbar-toggle:focus{ background-color: #002F4C; }
+	.navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #FFFFFF; }
+	.navbar-inverse .navbar-toggle:hover{ background-color: #002F4C; }
+	.navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #FFFFFF; }
+	.navbar-inverse .navbar-collapse{
+		background-color: rgba(255,255,255,0.9);
+	}
+	.navbar-inverse .navbar-form{
+		border: none;
+	}
+	.navbar-nav{ text-align: center; }
+}
 @media (max-width: 767px) {
 	.navbar-inverse .navbar-toggle{ border-color: #002F4C; background-color: rgba(255,255,255,0.5) }
 	.navbar-inverse .navbar-toggle .icon-bar{ background-color: #002F4C; }

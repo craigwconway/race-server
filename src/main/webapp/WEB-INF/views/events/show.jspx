@@ -3,6 +3,22 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
+    @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
+        .event-navbar-inverse .navbar-collapse {
+            background-color: rgba(80,80,80,0.9);
+        }
+        .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
+        .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
+        .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
+        .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
+        .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
+        .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
+        .event-navbar-inverse .navbar-form{
+            border: none;
+        }
+        .event-navbar-nav{ text-align: center; }
+        .navbar-brand{ color: white; display: block; }
+    }
     @media (max-width: 767px) {
         .event-navbar-inverse .navbar-collapse {
             background-color: rgba(80,80,80,0.9);
