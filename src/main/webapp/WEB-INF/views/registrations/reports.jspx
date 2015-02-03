@@ -116,7 +116,7 @@
                            <div class="content">
                              <div class="header">Cart Item Title</div>
                              <div class="description">
-                               <div class="ui small yellow statistic">
+                               <div class="ui tiny yellow statistic">
                                    <div class="label">
                                        Purchased
                                    </div>

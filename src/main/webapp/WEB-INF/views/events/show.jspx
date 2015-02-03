@@ -158,7 +158,7 @@
                     <li><a href="#" onclick="redirectAwards();return false;"><i class="fa fa-trophy" style="margin-right: 5px"><!--  --></i> Awards</a></li>
                     <!-- <li class="disabled"><a href="#">Event Types</a></li> -->
                 </ul>
-                <ul class="nav navbar-nav navbar-right" id="child-2">
+                <ul class="nav navbar-nav navbar-right">
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
@@ -288,7 +288,6 @@
 
         function init(){
             initInfo();
-            // recreateNav();
             initMap();
         }
 
@@ -339,8 +338,7 @@
         }
 
         function recreateNav(){
-            jQuery("#bs-example-navbar-collapse-1 ul:first-child").append(jQuery("#child-1").children());
-            jQuery("#bs-example-navbar-collapse-1 ul:first-child").append(jQuery("#child-2").children());
+            jQuery("#bs-example-navbar-collapse-1 ul:first-child").prepend(jQuery("#child-1").children());
         }
 
         function initMap(){
@@ -434,10 +432,6 @@
         }
         function redirectBackup(){
             window.location="/bibs-server/events/exportBackup?event=${event.id}";
-        }   
-        function getLiveResultsId(){
-            // window.location="/bibs-server/events/webappid";
-
         }   
         function redirectAwards(){
             window.location="/bibs-server/events/awards?event=${event.id}";

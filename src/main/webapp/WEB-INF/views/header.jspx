@@ -26,11 +26,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav" style="margin-left:10px;">
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
-                	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                  		<li id="nav_raceday"><a href="${raceday_url}"><span class="fa fa-flag-checkered" style="margin-right:5px;"><!--  --></span> Race Day</a></li>
+					<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+	                	<li><a href="#" onclick="redirectEventList();return false;"><i class="fa fa-globe" style="margin-right: 5px"><!--  --></i> all events</a></li>
+	                	<li><a href="#" onclick="redirectAthleteList();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> all athletes</a></li>
+                  		<li id="nav_raceday"><a href="${raceday_url}"><span class="fa fa-flag-checkered" style="margin-right:5px;"><!--  --></span> race day</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                  		<li id="nav_timers"><a href="${timers_url}"><span class="fa fa-cog" style="margin-right:5px;"><!--  --></span> Settings</a></li>
+                  		<li id="nav_timers"><a href="${timers_url}"><span class="fa fa-cog" style="margin-right:5px;"><!--  --></span> settings</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                   		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
@@ -87,6 +89,13 @@
 	    	jQuery('input[name="j_password"]').parent().removeClass("has-error");
 	    	return false;
 	    }
+	}
+
+	function redirectEventList(){
+	    window.location='/bibs-server/events?page=1&amp;size=10';
+	}
+	function redirectAthleteList(){
+	    window.location='/bibs-server/raceresults?/myresults';
 	}
 
 	function loginHandler(){
