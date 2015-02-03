@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,6 +71,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAwardsConfig;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.EventUserGroupId;
 import com.bibsmobile.model.RaceResult;
@@ -149,6 +151,10 @@ public class EventController {
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
         }*/
+
+        // Generate a hashtag based on event name
+        event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));        
+        
         event.persist();
         System.out.println("persisting event");
         // Add to usergroup:
@@ -1130,6 +1136,42 @@ public class EventController {
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
         return "redirect:/events";
     }
+    
+
+    @RequestMapping(method = RequestMethod.POST, value = "addTypeToEvent/{id}", produces = "text/html") 
+    public String createTypeInEvent(Model uiModel,
+    		@PathVariable("id") Long id,
+    		@RequestParam(value = "typeName", required = false) String typeName,
+    		@RequestParam("distance") String distance,
+    		@RequestParam("racetype") String racetype,
+    		@RequestParam(value = "startTime") Date startTime) {
+    	// Try to create an event:
+    	Event event = Event.findEvent(id);
+    	if(null == event) {
+    		System.out.println("no event found");
+    		return "/";
+    	}
+    	// Try to create an event:
+    	EventType formType = new EventType();
+    	// Set parameters:
+    	if(typeName == null) {
+    		formType.setTypeName(racetype + " - " + distance);
+    	}
+    	formType.setTypeName(typeName);
+    	formType.setEvent(event);
+    	formType.setDistance(distance);
+    	formType.setRacetype(racetype);
+    	if(startTime != null) {
+        	formType.setStartTime(startTime);
+    	}
+    	formType.persist();
+    	Set<EventType> eventTypes = event.getEventTypes();
+    	eventTypes.add(formType);
+    	event.setEventTypes(eventTypes);
+    	event.persist();
+    	uiModel.addAttribute("event", event);
+    	return "events/show";
+    }    
     
     @RequestMapping(value = "/createAwardCategories", produces = "text/html")
     public String createAgeGenderRankings(
