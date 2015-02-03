@@ -109,7 +109,7 @@
                     <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
                 </div>
                 Embed the code below to generate a bibs registration button:<br/>
-                <c:set var="reghtml" value='&lt;form action="https://bibs-frontend.herokuapp.com/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'></c:set>
+                <c:set var="reghtml" value='&lt;form action="https://bibs-frontend.herokuapp.com/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
                 <pre>${fn:escapeXml(reghtml)}</pre>
                 </div>
                 <div class="modal-footer">
@@ -126,12 +126,11 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                     <h4 class="modal-title" id="live-label">Live Results Snippet</h4>
                 </div>
-                <div class="modal-body">Embed code below to generate a bibs registration button:
-                <pre>&lt;form action="https://bibs-frontend.herokuapp.com/registration/#/${event.id}" method="get"&gt;
-                &lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;
-                Register
-                &lt;/button&gt;
-                &lt;/form&gt;</pre>
+                <div class="modal-body">
+                Copy the url below to share live results:<br/>
+                <c:set var="livehead" value='&lt;a href="https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/'/>
+                <c:set var="livetail" value='/t/all/events"&gt;&lt;/a&gt;'/>
+                <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -194,9 +193,9 @@
                                 <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
                             </c:if>
                             <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
-                            <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                            <!-- DIVIDER --><li role="presentation" class="divider show-live"></li><!-- DIVIDER -->
                             
-                            <li><a href="#" onclick="redirectLiveResults();return false;">Live Results Link</a></li>
+                            <li class="show-live"><a href="#" onclick="liveUrl();return false;">Live Results Link</a></li>
                         </ul>
                     </li>
                     </sec:authorize>
@@ -318,6 +317,24 @@
                     jQuery(this).html('<span class="glyphicon glyphicon-remove" onclick="redirectEnableLive()"></span>')
                 }
             })
+
+            var id = "";
+            var request = jQuery.ajax({
+                url: "/bibs-server/events/webappid",
+                type: "GET",
+                dataType: "json"
+                });
+            request.done(function( d ) {
+                if( d !== "" || d !== null ){
+                    id = d;
+                    console.log(d);
+                }
+                else{
+                    jQuery(".show-live").hide();
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
         }
 
         function recreateNav(){
@@ -381,6 +398,23 @@
             //     }
             // });
         }
+        function liveUrl(){
+            jQuery("#liveResults").modal('show');
+            var id = "";
+            var request = jQuery.ajax({
+                url: "/bibs-server/events/webappid",
+                type: "GET",
+                dataType: "json"
+                });
+            request.done(function( d ) {
+                if( d !== "" || d !== null ){
+                    id = d;
+                    jQuery("#liveid").text(id);
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
+        }
         function redirectDropboxImport(){
             window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
         }
@@ -400,20 +434,9 @@
         function redirectBackup(){
             window.location="/bibs-server/events/exportBackup?event=${event.id}";
         }   
-        function redirectLiveResults(){
+        function getLiveResultsId(){
             // window.location="/bibs-server/events/webappid";
-            var request = jQuery.ajax({
-                url: "/bibs-server/events/webappid",
-                type: "GET",
-                dataType: "json"
-                });
-            request.done(function( d ) {
-                if( d !== "" || d !== null ){
-                    console.log(d)
-                }
-            });
-            request.fail(function( jqXHR, textStatus ) {
-            });
+
         }   
         function redirectAwards(){
             window.location="/bibs-server/events/awards?event=${event.id}";
