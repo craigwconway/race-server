@@ -3,6 +3,25 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
+    @media (max-width: 767px) {
+        .event-navbar-inverse .navbar-collapse {
+            background-color: rgba(80,80,80,0.9);
+        }
+        .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
+        .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
+        .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
+        .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
+        .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
+        .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
+        .event-navbar-inverse .navbar-form{
+            border: none;
+        }
+        .event-navbar-nav{ text-align: center; }
+        .navbar-brand{ color: white; display: block; }
+    }
+    @media (min-width:768px ){
+        .navbar-brand{ display: none; }
+    }
         body{
             background-image: url('../images/auth.jpg');
             background-size: cover; background-repeat: no-repeat;
@@ -142,12 +161,19 @@
     <nav class="navbar event-navbar-inverse navbar-fixed-top" style="margin-top:50px">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header"><!--  -->
+            <div class="navbar-header">
+                <button type="btn btn-default" class="navbar-toggle" data-toggle="collapse" data-target=".event-show-navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                </button>
+                <div class="navbar-brand">Event Settings</div>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav" style="margin-left:10px;">
+            <div class="collapse navbar-collapse event-show-navbar">
+                <ul class="nav navbar-nav">
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                         <c:if test='${(eventadmin)}'>
