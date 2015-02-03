@@ -1,17 +1,115 @@
-<div xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
-<jsp:directive.page contentType="text/html;charset=UTF-8" />
-  <jsp:output omit-xml-declaration="yes" />
-  <!-- 
-  <spring:message var="app_name" code="application_name" htmlEscape="false" />
-  <spring:message var="title" code="welcome_titlepane" arguments="${app_name}" htmlEscape="false" />
-  <util:panel id="title" title="${title}">
-    <h3>
-      <spring:message code="welcome_h3" arguments="${app_name}" />
-    </h3>
-    <p>
-      <spring:message code="welcome_text" />
-    </p>
-  </util:panel>
-  --> 
- <h1 style="margin:60px;">Welcome to bibs</h1>
- </div>
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:sec="http://www.springframework.org/security/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <sec:authorize access="not hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <style>
+            body{
+                background-image: url('images/unauth.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+            }
+        </style>
+        <div style="margin-top:10%;margin-left: 30%;
+    font-family:Quicksand;font-weight:400;">
+            <div style="font-size: 3.5em;">Welcome</div>
+            <div style="font-size: 1.8em;">bibs control center</div>
+        </div>
+    </sec:authorize>
+
+    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <style>
+            body{
+                background-image: url('images/auth.jpg');
+                background-size: cover; background-repeat: no-repeat;
+            }
+            a:link, a:visited, a:hover, a:active { text-decoration: none; color: rgba(30,30,30,1); }
+            .not-list{
+                display: block;
+                margin: 10px;
+                padding: 10px;
+                height: 80px;
+                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+            }
+            .not-list.content{
+                height:100%;
+                vertical-align: middle;
+            }
+            .not-list:hover, .not-list:focus, .clear-btn:hover, .clear-btn:focus{
+                background: rgba(255,255,255,0.8);
+            }
+            .not-list:last-child{
+                border-bottom: none;
+                background: none;
+            }
+            .event-name{ font-size:1.9em; line-height:1.3em; }
+            .event-info{ font-weight:100; font-size:1.3em; }
+            .event-date{ line-height: 2.4em; vertical-align:middle; font-size:1.1em; font-weight:bold; }
+            .clear-btn{ padding: 5px; border: 1px solid rgba(30,30,30,0.5); background: rgba(255,255,255,0.5); text-align:center; }
+        </style>
+    <page id="pl_com_bibsmobile_model_Event" items="${events}">
+        <div style="margin-left: 40%;margin-top:2%;font-family:Quicksand;">
+            <c:if test="${not empty events}">
+                <c:forEach var="item" items="${events}">
+                    <a class="not-list" href="#" onclick="redirectEvent(${item.id})">
+                        <div class="col-sm-9 content"><span class="event-name">${item.name}</span><br/>
+                        <span class="event-info">${item.city}, ${item.state}</span></div>
+                        <div class="col-sm-3 event-date content">${item.timeStart}</div>
+                    </a>
+                </c:forEach>
+                <div class="not-list">
+                    <div class="row">
+                    <a href="#" onclick="redirectEventCreate()"><div class="col-sm-offset-9 col-sm-2 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> add event</span></div></a></div>
+                    <div class="row">
+                    <a href="#" onclick="redirectEventList()"><div class="col-sm-offset-9 col-sm-2 btn btn-default"><span>more events</span></div></a></div>
+                </div>
+            </c:if>
+            <c:if test="${empty events}">
+                <a class="not-list" href="#" onclick="redirectEventCreate();">
+                    <div class="col-sm-9 content"><span class="event-name">No Events Found</span><br/>
+                    <span class="event-info">Add Event</span></div>
+                    <div class="col-sm-3 content"><!--  --></div>
+                </a>
+                <div class="empty"><!-- --></div>
+            </c:if>
+        </div>
+    </page>
+    </sec:authorize>
+
+<script>
+    window.onload = function(){
+        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            jQuery(".not-list:first-child").focus();
+        }
+
+        jQuery(".event-date").each(function(i, d){
+            var str = jQuery(d).text()
+            str = str.substring(0,str.length-2);
+            var mom = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
+            jQuery(this).text(mom);
+        })
+    }
+
+    function getAllEvents(){
+        var request = jQuery.ajax({
+            url: "/bibs-server/events/",
+            type: "GET",
+            dataType: "json"
+            });
+        request.done(function( d ) {
+            console.log(d)
+        });
+        request.fail(function( jqXHR, textStatus ) {
+        });
+    }
+
+    function redirectEvent(id){
+        return window.location='/bibs-server/events/'+id;
+    }
+    function redirectEventCreate(){
+        return window.location='/bibs-server/events?form';
+    }
+    function redirectEventList(){
+        return window.location='/bibs-server/events?page=1&amp;size=10';
+    }
+</script>
+</div>

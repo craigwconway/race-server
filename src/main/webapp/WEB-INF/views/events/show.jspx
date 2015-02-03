@@ -1,93 +1,184 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-        .map-canvas{
+        body{
+            background-image: url('../images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 102%;
+            margin-top: 3%;
+            margin-left: -1%;
+            margin-right: -3%;
+            padding-top: 4%;
+            padding-bottom: 4%;
+            padding-left: 5%;
+        }
+        .info-container{
+            width: 60%;
+            font-size: 1.2em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+        }
+        .map-container{
             float: right;
-            width: 300px; 
-            height: 300px;
+            width: 300px;
+            height: auto;
             margin-right: 6%;
             margin-top: 1%;
-            margin-bottom: 3%;
+            text-align: right;
+        }
+        .map-canvas{
+            width: 300px; 
+            height: 300px;
         }
     	.event-name{
-    		font-size: 28px;
+            font-family: Quicksand;
+    		font-size: 2em;
     		font-weight: bold;
-    		margin-right: 12px;
+            line-height: 1.5em;
     	}
     	.event-location{
-    		font-size: 18px;
-    		font-weight: normal;
-    		margin-right: 12px;
+    		font-size: 1.2em;
     	}
-        .navbar-inverse { background-color: #F2F2F2}
-        .navbar-inverse .navbar-nav>.active>a:hover,.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC}
-        .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6}
-        .dropdown-menu { background-color: #FFFFFF}
-        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #00DFF6}
-        .navbar-inverse { background-image: none; }
+        #event-time{
+            width: 60%;
+            margin-top: 5px;
+            font-family: Quicksand;
+            font-weight: bold;
+        }
+        #date{
+            margin-left: 0;
+            padding-left: 0;
+            text-align: left;
+        }
+        #time{
+            text-align: right;
+        }
+        #event-details{
+            width: 60%;
+            margin-top: 50px;
+        }
+        .reglive-label{
+            text-align:left;
+            margin-left:0;
+            padding-left:0
+        }
+        .button-container{
+            padding-top: 150px;
+        }
+        .event-navbar-inverse { background-color: rgba(50,50,50,1) }
+        .event-navbar-inverse .navbar-nav>.active>a:hover,.event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC }
+        .event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6 }
+        .dropdown-menu { background-color: rgba(50,50,50,1) }
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #00DFF6 }
+        .event-navbar-inverse { background-image: none; }
         .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-image: none; }
-        .navbar-inverse { border-color: #FFFFFF}
-        .navbar-inverse .navbar-brand { color: #002F4C}
-        .navbar-inverse .navbar-brand:hover { color: #002F4C}
-        .navbar-inverse .navbar-nav>li>a { color: #002F4C}
-        .navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { color: #FFFFFF}
-        .navbar-inverse .navbar-nav>.active>a,.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus { color: #002F4C}
-        .navbar-inverse .navbar-nav>.active>a:hover, .navbar-inverse .navbar-nav>.active>a:focus { color: #FFFFFF}
-        .dropdown-menu>li>a { color: #333333}
-        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #333333}
-        .navbar-inverse .navbar-nav>.dropdown>a .caret { border-top-color: #999999}
-        .navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF}
-        .navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999}
-        .navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF}
+        .event-navbar-inverse { border-color: #FFFFFF}
+        .event-navbar-inverse .event-navbar-brand { color: #DFE0D9 }
+        .event-navbar-inverse .event-navbar-brand:hover { color: #DFE0D9 }
+        .event-navbar-inverse .navbar-nav>li>a { color: #DFE0D9 }
+        .event-navbar-inverse .navbar-nav>.disabled>a { color: #878179 }
+        .event-navbar-inverse .navbar-nav>.disabled>a:hover { background-color: rgba(50,50,50,1); color: #878179; }
+        .event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { color: #FFFFFF }
+        .event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { color: #002F4C }
+        .event-navbar-inverse .navbar-nav>.active>a:hover, .event-navbar-inverse .navbar-nav>.active>a:focus { color: #FFFFFF }
+        .dropdown-menu>li>a { color: #DFE0D9 }
+        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #333333 }
+        .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-top-color: #999999 }
+        .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF }
+        .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999 }
+        .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF }
     </style>
     
-    <page:show id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-    <nav class="navbar navbar-inverse">
+    <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
+    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
+                </div>
+                <div class="modal-body">
+                <div class="preview">Preview: 
+                    <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
+                </div>
+                Embed the code below to generate a bibs registration button:<br/>
+                <c:set var="reghtml" value='&lt;form action="https://bibs-frontend.herokuapp.com/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
+                <pre>${fn:escapeXml(reghtml)}</pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" aria-labelledby="live-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="live-label">Live Results Snippet</h4>
+                </div>
+                <div class="modal-body">
+                Copy the url below to share live results:<br/>
+                <c:set var="livehead" value='&lt;a href="https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/'/>
+                <c:set var="livetail" value='/t/all/events"&gt;&lt;/a&gt;'/>
+                <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar event-navbar-inverse navbar-fixed-top" style="margin-top:50px">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <div class="navbar-brand">${event.name}</div>
+            <div class="navbar-header"><!--  -->
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#" onclick="redirectAwards();return false;">Awards</a></li>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav" style="margin-left:10px;">
+                    <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                         <c:if test='${(eventadmin)}'>
-                            <li><a href="#" onclick="redirectReport();return false;">Reports</a></li>
+                            <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px"><!--  --></i> Reports</a></li>
+                            <li><a href="#" onclick="redirectAthletes();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> Athletes</a></li>
                         </c:if>
                     </sec:authorize>
+                    <li><a href="#" onclick="redirectAwards();return false;"><i class="fa fa-trophy" style="margin-right: 5px"><!--  --></i> Awards</a></li>
+                    <!-- <li class="disabled"><a href="#">Event Types</a></li> -->
                 </ul>
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav navbar-right" id="child-2">
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Registration<span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
                                 <li><a href="#" onclick="redirectEnableReg(); return false;">Enable Registration</a></li>
                             </c:if>
                             <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
-                                <li class="disabled"><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
+                                <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
                                 <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                 <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                 <li class="disabled"><a href="#" onclick="redirectExportReg(); return false;">Export Registrations</a></li>
                             </c:if>
-                            <li class="disabled"><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
+                            <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                             <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
+                            <li class="disabled"><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Import Results<span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-file-text" style="margin-right: 5px"><!--  --></i> Results<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#" onclick="redirectImport();return false;">Import</a></li>
                             <li><a href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a></li>
@@ -95,50 +186,48 @@
                                 <li><a href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a></li>
                             </c:if>
                             <li class="disabled"><a href="#">Import bibs file</a></li>
+                            <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                            <li><a href="#" onclick="redirectExport();return false;">Export</a></li>
+                            <li><a href="#" onclick="cloud();return false;">Cloud Sync</a></li>
+                            <c:if test="${lastImport != null}">
+                                <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
+                            </c:if>
+                            <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
+                            <!-- DIVIDER --><li role="presentation" class="divider show-live"></li><!-- DIVIDER -->
+                            
+                            <li class="show-live"><a href="#" onclick="liveUrl();return false;">Live Results Link</a></li>
                         </ul>
                     </li>
                     </sec:authorize>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Export Results<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                                <li><a href="#" onclick="redirectExport();return false;">Export</a></li>
-                                <li><a href="#" onclick="cloud();return false;">Cloud Sync</a></li>
-                                <c:if test="${lastImport != null}">
-                                    <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
-                                </c:if>
-                            </sec:authorize>
-                            <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                                <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
-                            </sec:authorize>
-                        </ul>
-                    </li>
                 </ul>
             </div>
         </div>
     </nav>
-        <div style="width:100%;text-align:right"><small>If this map doesn't display the correct location, please double-check your event settings!</small></div>
-        <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
-        <div style="margin: 0 5%;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 1.2em;
-            font-weight: 100;
-            line-height: 27px;
-            color: #292929;
-            float:left">
-            <h3 style="font-family:Quicksand;font-weight:600;">${event.name}</h3>
-            <span id="addy">${event.address}<br/>${event.city}, ${event.state}</span>
-            <div class="row" style="margin-left:0; padding-left:0; margin-top: 30px">
-                <label for="reg">Registration:</label><span class="reglive">${event.regEnabled}</span><br/>
-                <label for="live">Live:</label><span class="reglive">${event.live}</span>
-                <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
-                <field:display date="true" dateTimePattern="${event_guntime_date_format}" field="gunTime" id="s_com_bibsmobile_model_Event_gunTime" object="${event}" z="user-managed"/>
+    <div class="white-overlay">
+        <div class="map-container">
+            <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
+            <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
+        </div>
+        <div class="info-container">
+            <div class="event-name">${event.name}</div>
+            <div class="event-location">${event.city}, ${event.state}</div>
+            <div id="event-time"><div class="col-sm-6" id="date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
+
+            <div id="event-details">
+                <div class="col-sm-6 reglive-label" style="margin-bottom:5px">Registration</div>
+                <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0;margin-bottom:5px"><div class="btn btn-default btn-sm"><span class="reg">${event.regEnabled}</span></div></div>
+                <div class="col-sm-6 reglive-label">Live</div>
+                <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="live">${event.live}</span></div></div>
                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                     <c:if test="${lastImport != null}">
                         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
                         <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
                     </c:if>
                 </sec:authorize>
+            </div>
+            <div class="button-container">
+                <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
+                <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
             </div>
         </div>
         <div style="display:none;">
@@ -191,29 +280,70 @@
 	        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
 	        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
 	    </div>
-    </page:show>
+    </div>
+    </page>
     <script>
         window.onload = init;
 
         function init(){
             initInfo();
+            // recreateNav();
             initMap();
         }
 
         function initInfo(){
-            jQuery(".reglive").each(function(){
+            var str = jQuery("#event-time").text()
+            str = str.substring(0,str.length-2);
+            var momdate = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
+            var momtime = moment(str, "YYYY-MM-DD HH:mm:ss").format('h:mm a');
+            jQuery("#date").text(momdate);
+            jQuery("#time").text("first start " + momtime);
+
+            jQuery(".reg").each(function(){
                 var outer_html = jQuery(this).html();
                 if(outer_html === "true"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+                    jQuery(this).html('<span class="glyphicon glyphicon-ok" onclick="redirectDisableReg()"></span>')
                 }
                 else if(outer_html === "false"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
+                    jQuery(this).html('<span class="glyphicon glyphicon-remove" onclick="redirectEnableReg()"></span>')
                 }
             })
+            jQuery(".live").each(function(){
+                var outer_html = jQuery(this).html();
+                if(outer_html === "true"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-ok" onclick="redirectDisableLive()"></span>')
+                }
+                else if(outer_html === "false"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-remove" onclick="redirectEnableLive()"></span>')
+                }
+            })
+
+            var id = "";
+            var request = jQuery.ajax({
+                url: "/bibs-server/events/webappid",
+                type: "GET",
+                dataType: "json"
+                });
+            request.done(function( d ) {
+                if( d !== "" || d !== null ){
+                    id = d;
+                    console.log(d);
+                }
+                else{
+                    jQuery(".show-live").hide();
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
+        }
+
+        function recreateNav(){
+            jQuery("#bs-example-navbar-collapse-1 ul:first-child").append(jQuery("#child-1").children());
+            jQuery("#bs-example-navbar-collapse-1 ul:first-child").append(jQuery("#child-2").children());
         }
 
         function initMap(){
-            var addy = jQuery("#addy").text();
+            var addy = '${event.latitude}' + "," + '${event.longitude}';
             var options = {
                 map: ".map-canvas",
                 mapOptions: {
@@ -228,36 +358,62 @@
             jQuery("#geocomplete").geocomplete(options);
         }
 
-        function cloud(){
-            jQuery("#progress").show();
-            var r = jQuery.ajax({
-                url: "/bibs-server/events/cloud?event=${event.id}",
-                type: "GET",
-                dataType: "html"
-                });
-            r.done(function(data){
-                jQuery("#progress").hide();
-                if("true" == data){
-                    alert("Cloud Sync Complete.");
-                }else if("eventnotfound" == data){
-                    alert("Event not found.");
-                }else{
-                    alert("Cloud Sync Failed.");
-                }
-            });
-            r.fail(function( s,s ) {
-                jQuery("#progress").hide();
-            });
+        function editForm(){
+            window.location="/bibs-server/events/${event.id}?form";
         }
-        
+        function deleteEvent(){
+            if( confirm('Are you sure you want to delete this item? This cannot be undone.') ){
+                jQuery.ajax({
+                    url: "/bibs-server/events/${event.id}",
+                    type: "DELETE",
+                    dataType: "json",
+                    complete: function() {
+                        window.location="/bibs-server/events";
+                    }
+                });
+            }
+        }
         function redirectReport(){
             window.location="/bibs-server/registrations/reports?event=${event.id}";
+        }
+        function redirectAthletes(){
+            window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
         }
         function redirectImport(){
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
         }
+
+        var initModal = false;
         function regUrl(){
-            window.location="/bibs-server/events/regbutton?event=${event.id}";
+            jQuery("#regButton").modal('show');
+
+            // var text = "";
+
+            // jQuery.get("/bibs-server/events/regbutton?event=${event.id}", function(data, status){
+            //     text = data;
+            //     if( !initModal ){
+            //         jQuery(".modal-body").append('<div class="highlight">'+text+'</div>');
+            //         client.clip(jQuery('.language-html').text());
+            //         initModal = true;
+            //     }
+            // });
+        }
+        function liveUrl(){
+            jQuery("#liveResults").modal('show');
+            var id = "";
+            var request = jQuery.ajax({
+                url: "/bibs-server/events/webappid",
+                type: "GET",
+                dataType: "json"
+                });
+            request.done(function( d ) {
+                if( d !== "" || d !== null ){
+                    id = d;
+                    jQuery("#liveid").text(id);
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
         }
         function redirectDropboxImport(){
             window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
@@ -278,6 +434,10 @@
         function redirectBackup(){
             window.location="/bibs-server/events/exportBackup?event=${event.id}";
         }   
+        function getLiveResultsId(){
+            // window.location="/bibs-server/events/webappid";
+
+        }   
         function redirectAwards(){
             window.location="/bibs-server/events/awards?event=${event.id}";
         }
@@ -290,6 +450,12 @@
         function redirectDisableReg(){
             window.location="/bibs-server/events/${event.id}/disablereg";
         }
+        function redirectEnableLive(){
+            window.location="/bibs-server/events/${event.id}/enablelive";
+        }
+        function redirectDisableLive(){
+            window.location="/bibs-server/events/${event.id}/disablelive";
+        }
         function redirectManageReg(){
             window.location="/bibs-server/eventitems?event=${event.id}";
         }
@@ -298,6 +464,27 @@
         }
         function redirectExportReg(){
             window.location="/bibs-server/registrations/export?event=${event.id}";
+        }
+        function cloud(){
+            jQuery("#progress").show();
+            var r = jQuery.ajax({
+                url: "/bibs-server/events/cloud?event=${event.id}",
+                type: "GET",
+                dataType: "html"
+                });
+            r.done(function(data){
+                jQuery("#progress").hide();
+                if("true" == data){
+                    alert("Cloud Sync Complete.");
+                }else if("eventnotfound" == data){
+                    alert("Event not found.");
+                }else{
+                    alert("Cloud Sync Failed.");
+                }
+            });
+            r.fail(function( s,s ) {
+                jQuery("#progress").hide();
+            });
         }
     </script>
 </div>

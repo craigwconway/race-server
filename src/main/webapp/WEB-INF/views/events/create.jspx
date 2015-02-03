@@ -75,19 +75,19 @@
             </div>
             <div style="display:none">
                 <label for="eventCountry">
-                <input  id="geocountry" type="text" name="country"
+                <input  id="geocountry" type="text" name="country" placeholder="country"
                         value="${event.country}"></input>
                 </label>
                 <label for="eventZip">
-                <input  id="geozip" type="text" name="zip"
+                <input  id="geozip" type="text" name="zip" placeholder="zip"
                         value="${event.zip}"></input>
                 </label>
                 <label for="eventLat">
-                <input  id="geolat" type="text" name="latitude"
+                <input  id="geolat" type="text" name="latitude" placeholder="latitude"
                         value="${event.latitude}"></input>
                 </label>
                 <label for="eventLong">
-                <input  id="geolong" type="text" name="longitude"
+                <input  id="geolong" type="text" name="longitude" placeholder="longitude"
                         value="${event.longitude}"></input>
                 </label>
             </div>
@@ -214,7 +214,9 @@
             detailsAttribute: "data-geo",
             types: ["geocode"]
         }).bind("geocode:result", function(event, result){
+            console.log(result)
             var components = result.address_components;
+            console.log(components)
             var addr = "";
             clearForm();
             jQuery.each(components, function(i, d){
@@ -226,16 +228,24 @@
                         addr += d.long_name;
                         break;
                     case 'locality':
-                        jQuery("#geocity").val(d.long_name);
+                        if( d.long_name !== null ){
+                            jQuery("#geocity").val(d.long_name);
+                        }
                         break;
                     case 'administrative_area_level_1':
-                        jQuery("#geostate").val(d.short_name);
+                        if( d.short_name !== null ){
+                            jQuery("#geostate").val(d.short_name);
+                        }
                         break;
                     case 'country':
-                        jQuery("#geocountry").val(d.long_name);
+                        if( d.long_name !== null ){
+                            jQuery("#geocountry").val(d.long_name);
+                        }
                         break;
                     case 'postal_code':
-                        jQuery("#geozip").val(d.long_name);
+                        if( d.long_name !== null ){
+                            jQuery("#geozip").val(d.long_name);
+                        }
                         break;
                 }    
             })
@@ -246,10 +256,10 @@
 
             var longitude = result.geometry.location.D;
             var lat =  result.geometry.location.k;
-            if( !longitude ){
+            if( longitude !== null ){
                 jQuery("#geolong").val(longitude);
             }
-            if( !lat ){
+            if( lat !== null ){
                 jQuery("#geolat").val(lat);
             }         
         }).bind("geocode:error", function(results, status){
