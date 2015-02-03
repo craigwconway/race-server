@@ -169,10 +169,11 @@ public class EventCartItemController {
 
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> listJson() {
+    public ResponseEntity<String> listJson(@RequestParam(value = "event") Long event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        List<EventCartItem> result = EventCartItem.findAllEventCartItems();
+        Event e = Event.findEvent(event);
+        List <EventCartItem> result = EventCartItem.findEventCartItemsByEvent(e).getResultList();
         return new ResponseEntity<>(EventCartItem.toJsonArray(result), headers, HttpStatus.OK);
     }
 
