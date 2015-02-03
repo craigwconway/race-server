@@ -212,20 +212,15 @@
         jQuery("#demo input").geocomplete({
             details: ".details",
             detailsAttribute: "data-geo",
-            types: ["geocode"]
+            types: ["geocode"],
+            blur: true
         }).bind("geocode:result", function(event, result){
-            console.log(result)
             var components = result.address_components;
-            console.log(components)
             var addr = "";
-            clearForm();
             jQuery.each(components, function(i, d){
                 switch(d.types[0]){
-                    case 'street_number':
-                        addr += d.long_name + " ";
-                        break;
-                    case 'route':
-                        addr += d.long_name;
+                    case 'street_addr':
+                        addr = 'street_addr';
                         break;
                     case 'locality':
                         if( d.long_name !== null ){
@@ -247,26 +242,40 @@
                             jQuery("#geozip").val(d.long_name);
                         }
                         break;
-                }    
+                }
             })
 
             if( addr.length > 0 ){
                 jQuery("#geoaddress").val(addr);
             }
 
-            var longitude = result.geometry.location.D;
-            var lat =  result.geometry.location.k;
+            var longitude = result.geometry.location.lat();
+            var lat =  result.geometry.location.lng();
             if( longitude !== null ){
                 jQuery("#geolong").val(longitude);
             }
             if( lat !== null ){
                 jQuery("#geolat").val(lat);
-            }         
+            }
+
+            if( jQuery("#geocity").val() == "" ){
+                jQuery("#geocity").focus();
+                var geoaddr = jQuery("#geoaddress").val();
+                var splitaddr = geoaddr.split(",");
+                jQuery("#geocity").val(splitaddr[1]);
+                jQuery("#geostate").val(splitaddr[2]);
+            }
+
         }).bind("geocode:error", function(results, status){
-            console.log(results)
-            console.log(status)
             if( status == 'google.maps.GeocoderStatus.ZERO_STATUS'){
                 console.log("zero status")
+            }
+
+            if( jQuery("#geocity").val() == "" ){
+                var geoaddr = jQuery("#geoaddress").val();
+                var splitaddr = geoaddr.split(",");
+                jQuery("#geocity").val(splitaddr[1]);
+                jQuery("#geostate").val(splitaddr[2]);
             }
         });
     }
