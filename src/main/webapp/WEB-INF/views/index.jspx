@@ -18,18 +18,56 @@
 
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <style>
+        @media (min-width: 1000px) {
+            .event-container{
+                margin-left: 40%;
+                margin-top:2%;
+                font-family:Quicksand;
+            }
+            .not-list{
+                display: block;
+                margin: 1em;
+                padding: 1em;
+                height: 6em;
+                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+            }
+            .event-name{ font-size:1.9em; line-height:1.3em; }
+        }
+        @media (max-width: 999px) and (min-width: 700px) {
+            .event-container{
+                margin-left: 30%;
+                margin-top:2%;
+                font-family:Quicksand;
+            }
+            .not-list{
+                display: block;
+                margin: 1em;
+                padding: 1em;
+                height: 8em;
+                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+            }
+            .event-name{ font-size:1.5em; line-height:1.1em; }
+        }
+        @media (max-width: 699px){
+            .event-container{
+                margin-left: 20%;
+                margin-top:2%;
+                font-family:Quicksand;
+            }
+            .not-list{
+                display: block;
+                margin: 1em;
+                padding: 1em;
+                height: 8em;
+                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+            }
+            .event-name{ font-size:1.5em; line-height:1.1em; }
+        }
             body{
                 background-image: url('images/auth.jpg');
                 background-size: cover; background-repeat: no-repeat;
             }
             a:link, a:visited, a:hover, a:active { text-decoration: none; color: rgba(30,30,30,1); }
-            .not-list{
-                display: block;
-                margin: 10px;
-                padding: 10px;
-                height: 80px;
-                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-            }
             .not-list.content{
                 height:100%;
                 vertical-align: middle;
@@ -41,26 +79,25 @@
                 border-bottom: none;
                 background: none;
             }
-            .event-name{ font-size:1.9em; line-height:1.3em; }
             .event-info{ font-weight:100; font-size:1.3em; }
             .event-date{ line-height: 2.4em; vertical-align:middle; font-size:1.1em; font-weight:bold; }
             .clear-btn{ padding: 5px; border: 1px solid rgba(30,30,30,0.5); background: rgba(255,255,255,0.5); text-align:center; }
         </style>
     <page id="pl_com_bibsmobile_model_Event" items="${events}">
-        <div style="margin-left: 40%;margin-top:2%;font-family:Quicksand;">
+        <div class="event-container">
             <c:if test="${not empty events}">
                 <c:forEach var="item" items="${events}">
                     <a class="not-list" href="#" onclick="redirectEvent(${item.id})">
-                        <div class="col-sm-9 content"><span class="event-name">${item.name}</span><br/>
+                        <div class="col-md-9 col-sm-12 content"><span class="event-name">${item.name}</span><br/>
                         <span class="event-info">${item.city}, ${item.state}</span></div>
-                        <div class="col-sm-3 event-date content">${item.timeStart}</div>
+                        <div class="col-md-3 col-sm-12 event-date content">${item.timeStart}</div>
                     </a>
                 </c:forEach>
                 <div class="not-list">
                     <div class="row">
-                    <a href="#" onclick="redirectEventCreate()"><div class="col-sm-offset-9 col-sm-2 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> add event</span></div></a></div>
+                    <a href="#" onclick="redirectEventCreate()"><div class="col-md-offset-9 col-md-2 col-sm-offset-5 col-sm-3 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> add event</span></div></a></div>
                     <div class="row">
-                    <a href="#" onclick="redirectEventList()"><div class="col-sm-offset-9 col-sm-2 btn btn-default"><span>more events</span></div></a></div>
+                    <a href="#" onclick="redirectEventList()"><div class="col-md-offset-9 col-md-2 col-sm-offset-5 col-sm-3 btn btn-default"><span>more events</span></div></a></div>
                 </div>
             </c:if>
             <c:if test="${empty events}">
