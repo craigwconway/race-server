@@ -174,13 +174,3 @@
     text-align: center;
     -webkit-text-stroke: 1px white;
 }
-
-/* 	d3 charts 	*/
-.d3-container{
-	margin: 0 auto;
-	width: 80%;
-}
-
-#chart svg {
-	height: 400px;
-}
