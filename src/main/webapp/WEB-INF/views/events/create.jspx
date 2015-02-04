@@ -2,11 +2,48 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <div style="padding:0 2%">
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            font-size: 1.2em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+        }
+        .form-fields>input, #demo>input{
+            width: 400px;
+            margin: 5px auto; 
+        }
+        .submit{
+            margin: 0 auto;
+            width: 400px;
+            text-align: right;
+        }
+    </style>
+    <div class="white-overlay">
     <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
-        <div style="margin-left: 2%; width: 50%">
-            <h3 >Event Details</h3>
-            <div class="form-group">
+        <div class="info-container">
+            <h2 class="ui icon header">
+                <i class="fa fa-cog"><!--  --></i>
+                <div class="content">Create Event
+                    <div class="sub header">Provide the details for this future event.</div>
+                </div>
+            </h2>
+            <div class="form-fields">
                 <input  type="text" name="timeStart"
                         class="form-control"
                         id="eventDatepicker"
@@ -15,15 +52,13 @@
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"
                         data-parsley-error-message="Please enter a date for this event."
-                        data-parsley-required="true"></input></div>
-            <div class="form-group">
+                        data-parsley-required="true"></input>
                 <input  type="text" name="name"
                         class="form-control"
                         placeholder="Event name"
                         value="${event.name}"
                         data-parsley-error-message="Please enter an event name."
-                        data-parsley-required="required"></input></div>
-            <div class="form-group">
+                        data-parsley-required="required"></input>
                 <input  type="url" name="website"
                         class="form-control"
                         id="mask-website"
@@ -31,18 +66,15 @@
                         value="${event.website}"
                         data-parsley-type="url"
                         data-parsley-error-message="Please enter a valid website starting with http:// or https://"
-                        data-parsley-required="required"></input></div>
-            <div class="form-group">
+                        data-parsley-required="required"></input>
                 <input  type="text" name="organization"
                         class="form-control"
                         placeholder="Organization"
-                        value="${event.organization}"></input></div>
-            <div class="form-group">
+                        value="${event.organization}"></input>
                 <input  type="text" name="charity"
                         class="form-control"
                         placeholder="Charity Name"
-                        value="${event.charity}"></input></div>
-            <div class="form-group">
+                        value="${event.charity}"></input>
                 <input  type="text" name="phone"
                         class="form-control"
                         id="#mask-phone"
@@ -50,52 +82,44 @@
                         value="${event.phone}"
                         data-parsley-length="[10,18]"
                         data-parsley-error-message="Please enter a valid phone number."
-                        data-parsley-required="required"></input></div>
-		<div id="demo">
-            <div class="row">
+                        data-parsley-required="required"></input>
+            </div>
+    		<div id="demo">
                 <input  id="geoaddress"
                         type="text" name="address"
                         class="form-control"
                         placeholder="Address or Location"
                         value="${event.address}"></input>
-            </div>
-            <div class="row">
-                <div class="col-md-5 col-sm-5" style="margin-left:0; padding-left:0">
                 <input  id="geocity"
                         type="text" name="city"
                         class="form-control"
                         placeholder="City"
-                        value="${event.city}"></input></div>
-                <div class="col-md-5 col-sm-5" style="margin-left:0; padding-left:0">
+                        value="${event.city}"></input>
                 <input  id="geostate"
                         type="text" name="state"
                         class="form-control"
                         placeholder="State"
-                        value="${event.state}"></input></div>
+                        value="${event.state}"></input>
+                <div style="display:none">
+                    <label for="eventCountry">
+                    <input  id="geocountry" type="text" name="country" placeholder="country"
+                            value="${event.country}"></input>
+                    </label>
+                    <label for="eventZip">
+                    <input  id="geozip" type="text" name="zip" placeholder="zip"
+                            value="${event.zip}"></input>
+                    </label>
+                    <label for="eventLat">
+                    <input  id="geolat" type="text" name="latitude" placeholder="latitude"
+                            value="${event.latitude}"></input>
+                    </label>
+                    <label for="eventLong">
+                    <input  id="geolong" type="text" name="longitude" placeholder="longitude"
+                            value="${event.longitude}"></input>
+                    </label>
+                </div>
             </div>
-            <div style="display:none">
-                <label for="eventCountry">
-                <input  id="geocountry" type="text" name="country" placeholder="country"
-                        value="${event.country}"></input>
-                </label>
-                <label for="eventZip">
-                <input  id="geozip" type="text" name="zip" placeholder="zip"
-                        value="${event.zip}"></input>
-                </label>
-                <label for="eventLat">
-                <input  id="geolat" type="text" name="latitude" placeholder="latitude"
-                        value="${event.latitude}"></input>
-                </label>
-                <label for="eventLong">
-                <input  id="geolong" type="text" name="longitude" placeholder="longitude"
-                        value="${event.longitude}"></input>
-                </label>
-            </div>
-
-            <spring:url var="googs" value="/resources/images/google-power.png" />
-            <img src="${googs}" /> 
         </div>
-    </div>
 		
     	<div style="display:none;">
             <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="user-managed"/>

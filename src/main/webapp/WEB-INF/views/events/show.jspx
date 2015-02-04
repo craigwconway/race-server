@@ -318,6 +318,30 @@
                 }
             })
 
+            getWebappId();
+        }
+
+        /*
+            - typeName (optional, string) - optional custom name from racedirector
+            - distance (string,list) - list of common race types. Regex populates fields
+            - startTime (time of specific event)
+            - raceType (string, from list) - denotes running/triathlon/etc
+        */
+
+        function getEventTypes(){
+            var request = jQuery.ajax({
+                type: "POST",
+                dataType: "text",
+                data: typeObj
+                });
+            request.done(function( d ) {
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
+
+        }
+
+        function getWebappId(){
             var id = "";
             var request = jQuery.ajax({
                 url: "/bibs-server/events/webappid",
