@@ -247,9 +247,14 @@ public class ResultsFileMappingController {
         for (int j = 0; j < nextLine.length; j++) {
             if (map[j].equals("-")) continue;
             if (!json.toString().equals("{")) json.append(",");
-            json.append(map[j] + ":\"" + nextLine[j] + "\"");
+            if(!map[j].equals("age")) {
+            	json.append(map[j] + ":\"" + nextLine[j] + "\"");
+            } else {
+            	json.append(map[j] + ":" + nextLine[j]);
+            }
         }
         json.append("}");
+        System.out.println(json);
         RaceResult result = RaceResult.fromJsonToRaceResult(json.toString());
         result.setEvent(event);
         RaceResult exists = null;
