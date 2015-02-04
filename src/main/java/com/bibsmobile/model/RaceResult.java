@@ -181,7 +181,7 @@ public class RaceResult implements Comparable<RaceResult> {
     }
 
     public String getTimeofficialdisplay() {
-        if (this.timestart == 0 || this.timeofficial == 0)
+        if (this.timestart == 0 || this.timeofficial == 0 || this.licensed == false)
             return "";
         return RaceResult.toHumanTime(this.timestart, this.timeofficial);
     }

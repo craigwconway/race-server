@@ -102,6 +102,7 @@ public class LicenseController {
 			}
 			System.out.println(newLicense);
 			newLicense.persist();
+			uiModel.addAttribute("remaining", getRemainingLicenseUnits());
 	    	return "licensing/success";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

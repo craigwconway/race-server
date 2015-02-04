@@ -6,6 +6,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.UserProfileUtil;
+import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
@@ -222,9 +223,12 @@ public class RaceResultController {
         }
         uiModel.asMap().clear();
         // LICENSING GIBBERISH HERE:
+        DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
         raceResult.setLicensed(License.isUnitAvailible());
         // END LICENSING GIBBERISH
         raceResult.persist();
+        systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
+        systemInfo.persist();
         long eventId = 0;
         if (null != raceResult.getEvent()) {
             eventId = raceResult.getEvent().getId();
@@ -392,6 +396,11 @@ public class RaceResultController {
         headers.add("Content-Type", "application/json");
         if (raceResult == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        if(true == raceResult.isLicensed()) {
+        	if(raceResult.getTimeofficial() == 0) {
+        		DeviceInfo.quickBlindRemoveRunner();
+        	}
         }
         raceResult.remove();
         return new ResponseEntity<>(headers, HttpStatus.OK);

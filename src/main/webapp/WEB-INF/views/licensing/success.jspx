@@ -2,5 +2,12 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <h3>Shrugmode engaged:</h3>
-    You have 400 shrugs left until your shoulders get tired.
+    License applied and runners may be assigned times
+    <script>
+    window.onload = init;
+    function init() {
+    	var txtNode = document.createTextNode(encodeURIComponent("${remaining}"));
+    	console.log("${remaining}");
+    }
+    </script>
 </div>
