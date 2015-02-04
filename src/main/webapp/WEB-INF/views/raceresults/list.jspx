@@ -19,6 +19,11 @@
 				search();
 	        }
 	    });
+
+        jQuery(".clickable-row").click(function() {
+          console.log(jQuery(this).attr("href"))
+          window.document.location = jQuery(this).attr("href");
+        });
     };
     function removeNulls(){
     	jQuery("td").each(function(index,element){

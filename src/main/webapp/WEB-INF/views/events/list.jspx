@@ -36,7 +36,7 @@
         window.onload = init;
 
         function init(){
-            jQuery("td:nth-child(n+5)").each(function(){
+            jQuery("td:nth-child(n+4)").each(function(){
                 var outer_html = jQuery(this).html();
                 if(outer_html === "true"){
                     jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
@@ -45,6 +45,11 @@
                     jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
                 }
             })
+
+            jQuery(".clickable-row").click(function() {
+              console.log(jQuery(this).attr("href"))
+              window.document.location = jQuery(this).attr("href");
+            });
         }
     </script>
 </div>

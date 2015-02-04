@@ -45,10 +45,27 @@
 
     <spring:eval var="colCounter" expression="1" />
 
-    <table class="table">
+    <style>
+      table{
+          border-collapse: collapse;   
+      }
+      tr {
+          border-top: 1px solid #fff;
+      }
+      tr:hover:not(:last-child) {
+          background-color: rgba(0,223,246,0.2);
+      }
+      th {
+          background-color: #fff;
+      }
+      td:hover:not(:last-child) {
+          cursor: pointer;
+      }
+    </style>
+    <table class="ui blue table">
       <thead>
         <tr>
-          <th class="table-btn"></th>
+<!--           <th class="table-btn"></th>
           <c:if test="${update}">
             <th></th>
             <spring:eval var="colCounter" expression="colCounter  + 1" />
@@ -56,7 +73,7 @@
           <c:if test="${delete}">
             <th></th>
             <spring:eval var="colCounter" expression="colCounter  + 1" />
-          </c:if>
+          </c:if> -->
           <c:forTokens items="${columnLabels}" delims="${'&#9999;'}" var="columnHeading">
             <th>
               <c:out value="${columnHeading}" />
@@ -66,11 +83,10 @@
         </tr>
       </thead>
       <c:forEach items="${data}" var="item">
-        <tr>
-          
+        <spring:url value="${path}/${itemId+1}" var="show_form_url" />
+        <tr class="clickable-row" href="${show_form_url}">
           <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
-          <td class="utilbox">
-            <spring:url value="${path}/${itemId}" var="show_form_url" />
+<!--           <td class="utilbox">
             <spring:url value="/resources/images/show.png" var="show_image_url" />
             <spring:message arguments="${typeName}" code="entity_show" var="show_label" htmlEscape="false" />
             <a href="${show_form_url}" alt="${fn:escapeXml(show_label)}" title="${fn:escapeXml(show_label)}">
@@ -107,7 +123,7 @@
                 </c:if>
               </form:form>
             </td>
-          </c:if>
+          </c:if> -->
           
           <c:forTokens items="${columnProperties}" delims="${'&#9999;'}" var="column" varStatus="num">
             <c:set var="columnMaxLength" value="${lengths[num.count-1]}" />
@@ -137,8 +153,6 @@
               <c:out value="${colTxt}" />
             </td>
           </c:forTokens>
-          
-          
         </tr>
       </c:forEach>
       <tr class="footer">
@@ -166,5 +180,4 @@
     </table>
 
   </c:if>
-
 </jsp:root>

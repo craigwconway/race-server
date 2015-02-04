@@ -22,4 +22,12 @@
             <table:column id="c_com_bibsmobile_model_TimerConfig_filename" property="filename" render="false" z="user-managed"/>
         </table:table>
     </page:list>
+    <script>
+        window.onload = function(){
+            jQuery(".clickable-row").click(function() {
+              console.log(jQuery(this).attr("href"))
+              window.document.location = jQuery(this).attr("href");
+            });
+        }
+    </script>
 </div>
