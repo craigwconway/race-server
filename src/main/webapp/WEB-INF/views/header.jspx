@@ -1,73 +1,103 @@
-<div id="header" 
-	 xmlns:sec="http://www.springframework.org/security/tags"
-	  xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" version="2.0">
-  <jsp:directive.page contentType="text/html;charset=UTF-8" />
-  <jsp:output omit-xml-declaration="yes" />
+<div id="header" xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
 
-<div id="header-nav">
+	<spring:url var="banner" 		value="/resources/images/bibsicon.png" />
+	<spring:url var="home" 			value="/" />
+	<spring:url var="raceday_url" 	value="/events/raceday" />
+	<spring:url var="reports_url" 	value="/registrations/reports" />
+	<spring:url var="users_url" 	value="/userprofiles?page=1&amp;size=10" />
+	<spring:url var="timers_url" 	value="/timers?page=1&amp;size=10" />
+	<spring:url var="login" 		value="/login" />
+	<spring:url var="logout" 		value="/resources/j_spring_security_logout" />
+	<spring:message code="button_home" var="home_label" htmlEscape="false" />
 
-	<div class="pull-left">
-	  <spring:url var="banner" value="/resources/images/bibsicon.png" />
-	  <spring:url var="home" value="/" />
-	  <spring:message code="button_home" var="home_label" htmlEscape="false" />
-	  <div class="icon" style="width=50px;height=50px;padding:10px"><a href="${home}" name="${fn:escapeXml(home_label)}" title="${fn:escapeXml(home_label)}">
-	    <img src="${banner}" width="30" height="30"/> 
-	  </a>
-	  </div>
-	</div>
- 
-	<spring:url value="/events/raceday" var="raceday_url" />
-	<spring:url value="/events?page=1&amp;size=10" var="events_url" />
-	<spring:url value="/registrations/reports" var="reports_url" />
-	<spring:url value="/raceresults?/myresults" var="runners_url" />
-	<spring:url value="/userprofiles?page=1&amp;size=10" var="users_url" />
-	<spring:url value="/timers?page=1&amp;size=10" var="timers_url" />
- 
-    <ul class="nav nav-tabs pull-left" >
-	  		<li id="nav_events"><a href="${events_url}">Events</a></li>
-	  		<li id="nav_runners"><a href="${runners_url}">Runners</a></li>
-		<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_EVENT_ADMIN,ROLE_USER_ADMIN,ROLE_SYS_ADMIN')">
-		<sec:authentication var="principal" property="principal" />
-<!-- 			<li id="nav_profile"><a href="/bibs-server/userprofiles/byusername/${principal.username }" > -->
-<!-- 				Profile</a></li> -->
-		</sec:authorize>
-		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-	  		<li id="nav_raceday"><a href="${raceday_url}">Race Day</a></li>
-	  	</sec:authorize>
-		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-	  		<li id="nav_timers"><a href="${timers_url}">Admin</a></li>
-	  	</sec:authorize>
-		<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-	  		<li id="nav_reports"><a href="${reports_url}">Reports</a></li>
-	  	</sec:authorize>
-		<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-			<spring:url var="login" value="/login" />
-			<li><a href="${ login }">Login</a></li>
-		</sec:authorize>
-	</ul>
-	
-	<div style="float:right">
-		<sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-			<spring:url var="logout" value="/resources/j_spring_security_logout" />
-			<i><a href="${logout }">Logout</a></i>
-		</sec:authorize>
-	</div>
-	
-</div><!-- header-nav -->
+	<div style="clear:both;"/>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+	            <button type="btn btn-default" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		            <span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+				</button>
+	            <div class="icon" style="width=50px;height=50px;padding:10px">
+		            <a href="${home}" name="${fn:escapeXml(home_label)}" title="${fn:escapeXml(home_label)}"><img src="${banner}" width="30" height="30"/></a>
+	            </div>
+            </div>
 
-<div style="clear:both;"/>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
+                	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+                  		<li id="nav_raceday"><a href="${raceday_url}"><span class="fa fa-flag-checkered" style="margin-right:5px;"><!--  --></span> Race Day</a></li>
+                  	</sec:authorize>
+                	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+                  		<li id="nav_timers"><a href="${timers_url}"><span class="fa fa-cog" style="margin-right:5px;"><!--  --></span> Settings</a></li>
+                  	</sec:authorize>
+                	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                  		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
+                  	</sec:authorize>
+                </ul>
+                <form 	class="navbar-form navbar-right" id="loginForm" style="margin: auto 0;padding-top:2px;display:none;"
+                		method="POST" action="/bibs-server/resources/j_spring_security_check" name="f">
+					<div class="form-group" data-toggle="tooltip" data-placement="bottom" title="Login Error!">
+					<input  type="text" class="form-control" placeholder="Username" name="j_username"
+							style="padding: auto 0; vertical-align:inherit;"
+	                        data-parsley-error-message="Please enter a username."
+	                        data-parsley-required="true"></input></div>
+					<div class="form-group"><input  type="password" class="form-control" placeholder="Password" name="j_password"
+							style="padding: auto 0; vertical-align:inherit;margin-left:5px;"
+	                        data-parsley-error-message="Please enter a password."
+	                        data-parsley-required="true"></input></div>
+					<button type="submit" class="btn btn-default" style="padding: auto 0; vertical-align:inherit;">Submit</button>
+				</form>
+                <ul class="nav navbar-nav navbar-right">
+                	<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+	            		<li><a href="#" id="loginButton" onclick="loginHandler()">login <span class="glyphicon glyphicon-log-in" style="margin-left:3px;"></span></a></li>
+                	</sec:authorize>
+                    <sec:authorize access="hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                    	<li><a href="${logout}">logout <span class="glyphicon glyphicon-log-out" style="margin-left:3px;"></span></a></li>
+                    </sec:authorize>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div style="height: 50px; max-height: 340px;"><!--  --></div>
 	
 	<script>
-	// derive active tab from current url
-	if((window.location+"").indexOf('raceday') &gt; 1) 
-		jQuery( "#nav_raceday" ).attr("class", "active" );
-	else if((window.location+"").indexOf('events') &gt; 1) 
-		jQuery( "#nav_events" ).attr("class", "active" );
-	else if((window.location+"").indexOf('reports') &gt; 1) 
-		jQuery( "#nav_reports" ).attr("class", "active" );
-	else if((window.location+"").indexOf('raceresults') &gt; 1) 
-		jQuery( "#nav_runners" ).attr("class", "active" );
-	else jQuery( "#nav_timers" ).attr("class", "active" );
+	window.onload = init;
+
+	function init(){
+		initTooltip();
+	}
+
+	function initTooltip(){
+	    var url = window.location.href;
+	    var urllen = url.length;
+	    var ind = url.lastIndexOf("=");
+	    var eid = url.substring(ind+1, urllen);
+	    if( eid == 't' ){
+	    	jQuery('input[name="j_username"]').parent().addClass("has-error");
+	    	jQuery('input[name="j_password"]').parent().addClass("has-error");
+		    jQuery("#loginForm").show();
+		    jQuery('input[name="j_username"]').focus();
+		    jQuery('input[name="j_username"]').parent().tooltip("show");
+	    }
+	    else{
+	    	jQuery('input[name="j_username"]').parent().removeClass("has-error");
+	    	jQuery('input[name="j_password"]').parent().removeClass("has-error");
+	    	return false;
+	    }
+	}
+
+	function loginHandler(){
+		jQuery("#loginForm").animate({width:"toggle", height: "toggle"}, "slow");
+	}
 	</script>
 	
 	<style>

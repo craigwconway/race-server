@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ import javax.validation.Valid;
 import javax.ws.rs.PUT;
 
 import com.google.gson.JsonObject;
+import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 
@@ -70,6 +72,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAwardsConfig;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.EventUserGroupId;
 import com.bibsmobile.model.RaceResult;
@@ -124,6 +127,7 @@ public class EventController {
     public String create(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             this.populateEditForm(uiModel, event);
+            uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
             return "events/create";
         }
         uiModel.asMap().clear();
@@ -149,6 +153,10 @@ public class EventController {
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
         }*/
+
+        // Generate a hashtag based on event name
+        event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));        
+        
         event.persist();
         System.out.println("persisting event");
         // Add to usergroup:
@@ -199,13 +207,11 @@ public class EventController {
 		for(UserAuthorities ua : loggedInUser.getUserAuthorities()) {
 			for(UserGroupUserAuthority ugua : ua.getUserGroupUserAuthorities()) {
 				UserGroup ug = ugua.getUserGroup();
-				String success = "https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/" + ug.getId().toString() + "/t/all/events";
-				return success;
+				return ug.getId().toString();
 			}
 		}
 
-        String err = new String("Error with results delivery: Please contact brandon@mybibs.co for automatic result inquiries.");
-        return err;
+        return "";
     }    
 
     @RequestMapping(value = "/regbutton", method = RequestMethod.GET)
@@ -803,6 +809,7 @@ public class EventController {
 
         if (bindingResult.hasErrors()) {
             this.populateEditForm(uiModel, event);
+            uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
             return "events/update";
         }
 
@@ -1020,6 +1027,7 @@ public class EventController {
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         this.populateEditForm(uiModel, new Event());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "events/create";
     }
 
@@ -1037,6 +1045,7 @@ public class EventController {
         uiModel.addAttribute("lastMapping", latestMapping);
         uiModel.addAttribute("eventadmin", PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e));
         uiModel.addAttribute("itemId", id);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "events/show";
     }
 
@@ -1070,6 +1079,7 @@ public class EventController {
             uiModel.addAttribute("events", Event.findEventsForUser(user, -1, -1, sortFieldName, sortOrder));
         }
         this.addDateTimeFormatPatterns(uiModel);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "events/list";
     }
 
@@ -1111,6 +1121,7 @@ public class EventController {
             return null;
         }
         this.populateEditForm(uiModel, event);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "events/update";
     }
 
@@ -1128,8 +1139,46 @@ public class EventController {
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "redirect:/events";
     }
+    
+
+    @RequestMapping(method = RequestMethod.POST, value = "addTypeToEvent/{id}", produces = "text/html") 
+    public String createTypeInEvent(Model uiModel,
+    		@PathVariable("id") Long id,
+    		@RequestParam(value = "typeName", required = false) String typeName,
+    		@RequestParam("distance") String distance,
+    		@RequestParam("racetype") String racetype,
+    		@RequestParam(value = "startTime") Date startTime) {
+    	// Try to create an event:
+    	Event event = Event.findEvent(id);
+    	if(null == event) {
+    		System.out.println("no event found");
+    		return "/";
+    	}
+    	// Try to create an event:
+    	EventType formType = new EventType();
+    	// Set parameters:
+    	if(typeName == null) {
+    		formType.setTypeName(racetype + " - " + distance);
+    	}
+    	formType.setTypeName(typeName);
+    	formType.setEvent(event);
+    	formType.setDistance(distance);
+    	formType.setRacetype(racetype);
+    	if(startTime != null) {
+        	formType.setStartTime(startTime);
+    	}
+    	formType.persist();
+    	Set<EventType> eventTypes = event.getEventTypes();
+    	eventTypes.add(formType);
+    	event.setEventTypes(eventTypes);
+    	event.persist();
+    	uiModel.addAttribute("event", event);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+    	return "events/show";
+    }    
     
     @RequestMapping(value = "/createAwardCategories", produces = "text/html")
     public String createAgeGenderRankings(
@@ -1155,6 +1204,7 @@ public class EventController {
         uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("awardCategoryResults", results);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
     }
     
@@ -1179,6 +1229,7 @@ public class EventController {
         uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("awardCategoryResults", results);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender="+gender;
     }
     
@@ -1191,6 +1242,7 @@ public class EventController {
     	uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("results", results);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "events/overall";
     }
 
@@ -1201,7 +1253,10 @@ public class EventController {
         }
     }
     
-
+    /*
+     * Enable registration for an event
+     * @return returns the event show view
+     */
     @RequestMapping(value = "/{id}/enablereg", produces = "text/html")
     public String enableReg(@PathVariable("id") Long id, Model uiModel) {
         Event event = Event.findEvent(id);
@@ -1213,10 +1268,75 @@ public class EventController {
 
         event.setRegEnabled(true);
         event.persist();
-
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
         return "redirect:/events/" + event.getId();
     }
 
+    /*
+     * Disable registration for an event
+     * @return returns the event show view
+     */
+    @RequestMapping(value = "/{id}/disablereg", produces = "text/html")
+    public String disablereg(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        
+        event.setRegEnabled(false);
+        event.persist();
+        
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        return "redirect:/events/" + event.getId();
+    }
+
+    /*
+     * Make event live
+     * Events that are not live do not show up for non-sysadmin or owner users
+     * Events that are live are returned in all queries that can target them
+     * @return returns the event show view
+     */
+    @RequestMapping(value = "/{id}/enablelive", produces = "text/html")
+    public String enablelive(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        event.setLive(true);
+        event.persist();
+        
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        return "redirect:/events/" + event.getId();
+    }    
+
+    /*
+     * Make event undead
+     * Events that are not live do not show up for non-sysadmin or owner users
+     * Events that are live are returned in all queries that can target them
+     * @return returns the event show view
+     */
+    @RequestMapping(value = "/{id}/disablelive", produces = "text/html")
+    public String disablelive(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        event.setLive(false);
+        event.persist();
+        
+        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        return "redirect:/events/" + event.getId();
+    }
+    
     void addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");

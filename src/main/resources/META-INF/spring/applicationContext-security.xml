@@ -24,7 +24,7 @@
 
     <!-- HTTP security configurations -->
     <http auto-config="false" use-expressions="true">
-        <form-login login-processing-url="/resources/j_spring_security_check" login-page="/login" authentication-failure-url="/login?login_error=t" />
+        <form-login login-processing-url="/resources/j_spring_security_check" login-page="/login" authentication-failure-url="/?login_error=t" />
 
         <intercept-url pattern="/timers/**"  access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')" />
 
