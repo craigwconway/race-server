@@ -39,7 +39,7 @@
             }
             .submit{
                 margin: 0 auto;
-                width: 400px;
+                width: 500px;
                 text-align: right;
             }
         </style>
