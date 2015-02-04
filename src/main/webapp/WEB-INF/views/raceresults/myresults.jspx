@@ -51,18 +51,18 @@
     
     function search(){
     	if(isNaN(event)) event = 0;
-    	var request = $.ajax({
+    	var request = jQuery.ajax({
     		url: "/bibs-server/raceresults/search?event="+event+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
     		type: "GET",
     		dataType: "json"
     		});
     	request.done(function( data ) {
     			var results = runnerSearchResultsTable(data);
-    			$('.table').html(results);
+    			jQuery('.table').html(results);
     		});
     	request.fail(function( jqXHR, textStatus ) {
     			alert("Error");
-    			$("#query").focus();
+    			jQuery("#query").focus();
     		});
     }
     
