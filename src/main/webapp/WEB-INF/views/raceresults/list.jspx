@@ -3,131 +3,153 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-    label{
-    	width:60px;
-    }
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            min-height: 500px;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            width: 80%;
+            margin: 0 auto;
+            color: #292929;
+        }
+        label{
+        	width:60px;
+        }
     </style>
     <script>
-    var event = getUrlParam('event');
-    
-    window.onload=function(){
-		setEventSelection(getUrlParam('event'));
-		removeNulls();
-	    // press enter submit
-	    jQuery("input").keyup(function(e){
-	        if(e.which == 10 || e.which == 13){
-				search();
-	        }
-	    });
+        var event = getUrlParam('event');
+        
+        window.onload=function(){
+    		setEventSelection(getUrlParam('event'));
+    		removeNulls();
+    	    // press enter submit
+    	    jQuery("input").keyup(function(e){
+    	        if(e.which == 10 || e.which == 13){
+    				search();
+    	        }
+    	    });
 
-        jQuery(".clickable-row").click(function() {
-          console.log(jQuery(this).attr("href"))
-          window.document.location = jQuery(this).attr("href");
-        });
-    };
-    function removeNulls(){
-    	jQuery("td").each(function(index,element){
-    		if(element.innerHTML.indexOf(' null null 0')&gt;0)
-    			element.innerHTML=element.innerHTML.replace(' null null 0','');
-    	});
-    }
-    function setEventSelection(id){
-    	jQuery("#event-"+id).prop('selected','true');
-    }
-    
-    function filterByEvent(){
-    	var uri = document.location;
-    	uri = updateQueryStringParameter(uri+"","event",document.getElementById("event").value);
-    	uri = updateQueryStringParameter(uri+"","page","1");
-    	uri = updateQueryStringParameter(uri+"","size","10");
-    	document.location = uri;
-    }
-    
-    function updateQueryStringParameter(uri, key, value) {
-    	  var re = new RegExp("([?|&amp;])" + key + "=.*?(&amp;|$)", "i");
-    	  separator = uri.indexOf("?") !== -1 ? "&amp;" : "?";
-    	  if (uri.match(re)) {
-    	    return uri.replace(re, '$1' + key + "=" + value + '$2');
-    	  }
-    	  else {
-    	    return uri + separator + key + "=" + value;
-    	  }
-    }
-    
-    function search(){
-    	if(isNaN(event)) event = 0;
-    	var request = jQuery.ajax({
-    		url: "/bibs-server/raceresults/search?event="+event+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
-    		type: "GET",
-    		dataType: "json"
-    		});
-    	request.done(function( data ) {
-    			var results = runnerSearchResultsTable(data);
-    			jQuery('.table').html(results);
-    		});
-    	request.fail(function( jqXHR, textStatus ) {
-    			alert("Error");
-    			jQuery("#query").focus();
-    		});
-    }
-    
-    function getUrlParam(sParam)
-    {
-        return purl().param(sParam);
-    }
-    
-    function addRunner(){
-   		var request = jQuery.ajax({
-   			url: "/bibs-server/events/",
-   			type: "GET",
-   			dataType: "json"
-   			});
-   		request.done(function( data ) {
-				if(data.length &gt; 0){
-					document.location='/bibs-server/raceresults?form&amp;event=${param.event}';
-				}else{
-					alert("Please create an Event first.");
-					document.location='/bibs-server/events?form';
-				}
-   			});
-   		request.fail(function( jqXHR, textStatus ) {
-   			// error
-   			});
-    }
+            jQuery(".clickable-row").click(function() {
+              console.log(jQuery(this).attr("href"))
+              window.document.location = jQuery(this).attr("href");
+            });
+        };
+        function removeNulls(){
+        	jQuery("td").each(function(index,element){
+        		if(element.innerHTML.indexOf(' null null 0')&gt;0)
+        			element.innerHTML=element.innerHTML.replace(' null null 0','');
+        	});
+        }
+        function setEventSelection(id){
+        	jQuery("#event-"+id).prop('selected','true');
+        }
+        
+        function filterByEvent(){
+        	var uri = document.location;
+        	uri = updateQueryStringParameter(uri+"","event",document.getElementById("event").value);
+        	uri = updateQueryStringParameter(uri+"","page","1");
+        	uri = updateQueryStringParameter(uri+"","size","10");
+        	document.location = uri;
+        }
+        
+        function updateQueryStringParameter(uri, key, value) {
+        	  var re = new RegExp("([?|&amp;])" + key + "=.*?(&amp;|$)", "i");
+        	  separator = uri.indexOf("?") !== -1 ? "&amp;" : "?";
+        	  if (uri.match(re)) {
+        	    return uri.replace(re, '$1' + key + "=" + value + '$2');
+        	  }
+        	  else {
+        	    return uri + separator + key + "=" + value;
+        	  }
+        }
+        
+        function search(){
+        	if(isNaN(event)) event = 0;
+        	var request = jQuery.ajax({
+        		url: "/bibs-server/raceresults/search?event="+event+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
+        		type: "GET",
+        		dataType: "json"
+        		});
+        	request.done(function( data ) {
+        			var results = runnerSearchResultsTable(data);
+        			jQuery('.table').html(results);
+        		});
+        	request.fail(function( jqXHR, textStatus ) {
+        			alert("Error");
+        			jQuery("#query").focus();
+        		});
+        }
+        
+        function getUrlParam(sParam)
+        {
+            return purl().param(sParam);
+        }
+        
+        function addRunner(){
+       		var request = jQuery.ajax({
+       			url: "/bibs-server/events/",
+       			type: "GET",
+       			dataType: "json"
+       			});
+       		request.done(function( data ) {
+    				if(data.length &gt; 0){
+    					document.location='/bibs-server/raceresults?form&amp;event=${param.event}';
+    				}else{
+    					alert("Please create an Event first.");
+    					document.location='/bibs-server/events?form';
+    				}
+       			});
+       		request.fail(function( jqXHR, textStatus ) {
+       			// error
+       			});
+        }
     </script>
-    <div class="pull-left">
-        <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()" style="width:300px">
-            <option id="event-0" value="0">All Events</option>
-            <c:forEach items="${events}" var="event" varStatus="i">
-                <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
-            </c:forEach>
-        </select>
+    <div class="white-overlay">
+        <div class="info-container">
+            <div class="pull-left">
+                <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()" style="width:300px">
+                    <option id="event-0" value="0">All Events</option>
+                    <c:forEach items="${events}" var="event" varStatus="i">
+                        <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
+                    </c:forEach>
+                </select>
+            </div>
+        <!--     <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')"> -->
+                <button class="btn btn-primary pull-left btn-top" onclick="addRunner()" style="margin:0;margin-left: 3px;" type="button">Add Runner</button>
+        <!--     </sec:authorize> -->
+            <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+                <button class="btn btn-success pull-left btn-top" onclick="document.location='/bibs-server/raceresults/bibs';" style="margin:0;margin-left: 3px;" type="button">
+        		Write Bibs
+        	</button>
+            </sec:authorize>
+            <div class="pull-right">
+                <label>Search</label>
+                <input class="form-control" id="query" placeholder="by Name" style="width:200px;display:inline;" type="text"/>
+                <input class="form-control" id="bib" placeholder="by Bib" style="width:100px;display:inline;" type="text"/>
+                <button class="btn btn-default" onclick="search()" style="margin:0;margin-left: 3px;">Go</button>
+            </div>
+            <div style="clear:both;"/>
+            <page:list id="pl_com_bibsmobile_model_RaceResult" items="${raceresults}" z="YFteNpNSy87fSVCYb1X/4lNLBoA=">
+                <table:table data="${raceresults}" id="l_com_bibsmobile_model_RaceResult" path="/raceresults" z="8A8H2AFIrX6CW2kysD/E4yuVCqQ=">
+                    <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
+                    <table:column id="c_com_bibsmobile_model_RaceResult_firstname" property="firstname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
+                    <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
+                    <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
+                    <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="user-managed"/>
+                    <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" z="user-managed" render="false"/>
+                </table:table>
+            </page:list>
+        </div>
     </div>
-<!--     <sec:authorize access="hasAnyRole('ROLE_USER_ADMIN,ROLE_SYS_ADMIN')"> -->
-        <button class="btn btn-primary pull-left btn-top" onclick="addRunner()" style="margin:0;margin-left: 3px;" type="button">
-		Add Runner
-	</button>
-<!--     </sec:authorize> -->
-    <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-        <button class="btn btn-success pull-left btn-top" onclick="document.location='/bibs-server/raceresults/bibs';" style="margin:0;margin-left: 3px;" type="button">
-		Write Bibs
-	</button>
-    </sec:authorize>
-    <div class="pull-right">
-        <label>Search</label>
-        <input class="form-control" id="query" placeholder="by Name" style="width:200px;display:inline;" type="text"/>
-        <input class="form-control" id="bib" placeholder="by Bib" style="width:100px;display:inline;" type="text"/>
-        <button class="btn btn-default" onclick="search()" style="margin:0;margin-left: 3px;">Go</button>
-    </div>
-    <div style="clear:both;"/>
-    <page:list id="pl_com_bibsmobile_model_RaceResult" items="${raceresults}" z="YFteNpNSy87fSVCYb1X/4lNLBoA=">
-        <table:table data="${raceresults}" id="l_com_bibsmobile_model_RaceResult" path="/raceresults" z="8A8H2AFIrX6CW2kysD/E4yuVCqQ=">
-            <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_firstname" property="firstname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" z="user-managed" render="false"/>
-        </table:table>
-    </page:list>
 </div>
