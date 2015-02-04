@@ -136,7 +136,7 @@ public final class ResultsFileUtil {
         rimport.setErrors(0);
         rimport.setErrorRows("");
         if (!map.isEmpty()) {
-            ResultsFileMappingController.doImport(rimport);
+            //ResultsFileMappingController.doImport(rimport);
         }
         rimport.persist();
 
