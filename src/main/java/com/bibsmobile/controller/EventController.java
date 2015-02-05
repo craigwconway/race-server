@@ -127,7 +127,7 @@ public class EventController {
     public String create(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             this.populateEditForm(uiModel, event);
-            uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+            uiModel.addAttribute("build", BuildTypeUtil.getBuild());
             return "events/create";
         }
         uiModel.asMap().clear();
@@ -809,7 +809,7 @@ public class EventController {
 
         if (bindingResult.hasErrors()) {
             this.populateEditForm(uiModel, event);
-            uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+            uiModel.addAttribute("build", BuildTypeUtil.getBuild());
             return "events/update";
         }
 
@@ -1027,7 +1027,7 @@ public class EventController {
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         this.populateEditForm(uiModel, new Event());
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/create";
     }
 
@@ -1045,7 +1045,7 @@ public class EventController {
         uiModel.addAttribute("lastMapping", latestMapping);
         uiModel.addAttribute("eventadmin", PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e));
         uiModel.addAttribute("itemId", id);
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/show";
     }
 
@@ -1079,7 +1079,7 @@ public class EventController {
             uiModel.addAttribute("events", Event.findEventsForUser(user, -1, -1, sortFieldName, sortOrder));
         }
         this.addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/list";
     }
 
@@ -1121,7 +1121,7 @@ public class EventController {
             return null;
         }
         this.populateEditForm(uiModel, event);
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/update";
     }
 
@@ -1139,7 +1139,7 @@ public class EventController {
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events";
     }
     
@@ -1176,7 +1176,7 @@ public class EventController {
     	event.setEventTypes(eventTypes);
     	event.persist();
     	uiModel.addAttribute("event", event);
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
     	return "events/show";
     }    
     
@@ -1204,7 +1204,7 @@ public class EventController {
         uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("awardCategoryResults", results);
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
     }
     
@@ -1229,7 +1229,7 @@ public class EventController {
         uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("awardCategoryResults", results);
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender="+gender;
     }
     
@@ -1242,7 +1242,7 @@ public class EventController {
     	uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("results", results);
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/overall";
     }
 
@@ -1268,7 +1268,7 @@ public class EventController {
 
         event.setRegEnabled(true);
         event.persist();
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }
 
@@ -1289,7 +1289,7 @@ public class EventController {
         event.setRegEnabled(false);
         event.persist();
         
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }
 
@@ -1311,7 +1311,7 @@ public class EventController {
         event.setLive(true);
         event.persist();
         
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }    
 
@@ -1333,7 +1333,7 @@ public class EventController {
         event.setLive(false);
         event.persist();
         
-        uiModel.addAttribute("build", BuildTypeUtil.getBuildType());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }
     
