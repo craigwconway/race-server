@@ -78,13 +78,13 @@
    			dataType: "json"
    			});
    		request.done(function( data ) {
-				if(data.length &gt; 0){
-					document.location='/bibs-server/raceresults?form&amp;event=${param.event}';
-				}else{
-					alert("Please create an Event first.");
-					document.location='/bibs-server/events?form';
-				}
-   			});
+			if(data.length &gt; 0){
+				document.location='/bibs-server/raceresults?form';
+			}else{
+				alert("Please create an Event first.");
+				document.location='/bibs-server/events?form';
+			}
+			});
    		request.fail(function( jqXHR, textStatus ) {
    			// error
    			});
