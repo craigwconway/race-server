@@ -58,16 +58,16 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Price Change Detail</div>
                 <div class="panel-body">
-                    <div class="elessar-left">
-                        <div id="elessar-header">
-                            <div id="elessar-container">
+                    <div class="vis-left">
+                        <div id="vis-header">
+                            <div id="vis-container">
                                 <span><h4>Scroll to navigate, click to remove, double-click to add or edit.</h4>
                                     <p class="base-price">Base price: $</p></span>
                                 <div class="slider"><!--  --></div>
                             </div>
                         </div>
                     </div>
-                    <div class="elessar-right">
+                    <div class="vis-right">
                         <div class="row">
                         Start Date: <input  type="text" name="startDate"
                                 class="form-control priceStartDate"
@@ -283,7 +283,6 @@
                 // error
             });
         }
-        // bibs-server/eventitemspricechanges/jsonArray
 
         function initDateTimePickers(){
             jQuery(".priceStartDate").each(function(){
@@ -335,22 +334,22 @@
                     var pc = new Object();
                     pc = jQuery.extend({
                         price: parseInt(groupData[index].content),
-                        eventCartItem: eciId,
+                        eventCartItem: {'id':parseInt(eciId)},
                         startDate: objStartDate,
                         endDate: objEndDate
                     }, pcList[i].obj);
-                    pc.eventCartItem = eciId;
+                    pc.eventCartItem = {'id':parseInt(eciId)};
                     postObjList.push(pc);
                 }
             }
 
-            console.log(postObjList)
+            console.log(postObjList);
 
             var request = jQuery.ajax({
                 url: "/bibs-server/eventitemspricechanges/jsonArray",
                 contentType: 'application/json',
                 type: 'POST',
-                data: postObjList
+                data:  [{"startDate": "01/01/2015 00:00:01", "endDate": "02/01/2015 23:59:59", "categoryName": "cat1", "lowAgeThreshold": 1, "highAgeThreshold": 120, "gender": "MALE", "team": false, "eventCartItem": { "id": 1 }, "price": 100}, {"startDate": "01/01/2015 00:00:01", "endDate": "02/01/2015 23:59:59", "categoryName": "cat2", "lowAgeThreshold": 1, "highAgeThreshold": 120, "gender": "FEMALE", "team": true, "eventCartItem": { "id": 1 }, "price": 50}]
             });
             
             request.done(function(data){

@@ -2,27 +2,92 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <button class="btn btn-default btn-top" onclick="priceChanges()" type="button">
-        Price Changes
-    </button>
+    <style>
+        body{
+            background-image: url('../images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            width: 500px;
+            font-weight: 100;
+            color: #292929;
+        }
+        .quicklinks{
+            margin: 0 auto;
+            width: 500px;
+            float: none;
+        }
+        .ui.list{
+            text-align: left;
+        }
+        .ui.horizontal.labels .label, .ui.horizontal.label{
+            width: 25%;
+            margin-right: 15px;
+        }
+    </style>
+    <div class="white-overlay">
+        <div style="width:500px; margin: 0 auto;">
+            <div class="pull-right">
+                <button class="btn btn-default btn-top" onclick="priceChanges()" type="button">Price Changes</button>
+            </div>
+        </div>
+
+    <page:show id="ps_com_bibsmobile_model_EventCartItem" object="${eventcartitem}" path="/eventitems" z="0Vio973EeZc1TEtv7EngzcpLOg0=">
+        <div class="info-container">
+            <h2 class="ui icon header" style="margin-top:10px">
+                <c:if test="${eventcartitem.type == 'TICKET'}">
+                    <div class="ui yellow header"><i class="fa fa-ticket fa-2x"><!--  --></i></div>
+                </c:if>
+                <c:if test="${eventcartitem.type == 'T_SHIRT'}">
+                    <div class="ui teal header"><i class="fa fa-shirtsinbulk fa-2x"><!--  --></i></div>
+                </c:if>
+                <c:if test="${eventcartitem.type == 'DONATION'}">
+                    <div class="ui blue header"><i class="fa fa-heart-o fa-2x"><!--  --></i></div>
+                </c:if>
+                <div class="content">${eventcartitem.event}
+                    <div class="sub header">${eventcartitem.name}</div>
+                </div>
+            </h2>
+            <div class="meta">
+                ${eventcartitem.description}
+            </div>
+            <h4 class="ui horizontal header divider">
+                Details
+            </h4>
+            <div class="ui very relaxed list">
+              <div class="item">
+                <div class="ui blue horizontal label">Base Price</div>${eventcartitem.price}
+              </div>
+              <div class="item">
+                <div class="ui blue horizontal label">Time Limit</div>${eventcartitem.timeLimit}
+              </div>
+              <div class="item">
+                <div class="ui blue horizontal label">Start Time</div>${eventcartitem.timeStart}
+              </div>
+              <div class="item">
+                <div class="ui blue horizontal label">End Time</div>${eventcartitem.timeEnd}
+              </div>
+              <div class="item">
+                <div class="ui blue horizontal label">Age Group</div>${eventcartitem.minAge} to ${eventcartitem.maxAge}
+              </div>
+            </div>
+        </div>
+    </page:show>
+    </div>
     <script>
         function priceChanges(){
             window.location="/bibs-server/eventitemspricechanges?eventitem=${eventcartitem.id}";
         }
     </script>
-    <page:show id="ps_com_bibsmobile_model_EventCartItem" object="${eventcartitem}" path="/eventitems" z="0Vio973EeZc1TEtv7EngzcpLOg0=">
-        <field:display field="event" id="s_com_bibsmobile_model_EventCartItem_event" object="${eventcartitem}" z="kUWTdCJULj5f7xzBlreY2fW2Ls4="/>
-        <field:display field="name" id="s_com_bibsmobile_model_EventCartItem_name" object="${eventcartitem}" z="fSF3/h1qoAcKUYWkoVBG3N6LFb8="/>
-        <field:display field="description" id="s_com_bibsmobile_model_EventCartItem_description" object="${eventcartitem}" z="mCCYhaC4YuyDD8OiMy9CMEOJ8rw="/>
-        <field:display field="timeLimit" id="s_com_bibsmobile_model_EventCartItem_timeLimit" object="${eventcartitem}" z="plu3qggjRCWuZyHT9uAFuyC0e48="/>
-        <field:display date="true" dateTimePattern="${eventCartItem_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_EventCartItem_timeStart" object="${eventcartitem}" z="ez2n8gsY7sk4qMHe91tE4WGwgJQ="/>
-        <field:display date="true" dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_EventCartItem_timeEnd" object="${eventcartitem}" z="2PA4wA6Rn6RebAbmSCHKt5oJOfA="/>
-        <field:display field="available" id="s_com_bibsmobile_model_EventCartItem_available" object="${eventcartitem}" z="twLTBBz7EJt8xNiUicYdNKI3qD0="/>
-        <field:display field="type" id="s_com_bibsmobile_model_EventCartItem_type" object="${eventcartitem}" z="KwyOSZQcg5o2G1wtiyn8ecWnsT8="/>
-        <field:display field="minAge" id="s_com_bibsmobile_model_EventCartItem_minAge" object="${eventcartitem}" z="X7xbnmgxiIuCaQajDLOg/1gyU7w="/>
-        <field:display field="maxAge" id="s_com_bibsmobile_model_EventCartItem_maxAge" object="${eventcartitem}" z="JRw1Z09/k0Gy1IiowcNMEvu5E+Q="/>
-        <field:display field="gender" id="s_com_bibsmobile_model_EventCartItem_gender" object="${eventcartitem}" z="bRa/Rrqy/vTC3PltGly4nJn6qjI="/>
-        <field:display field="eventType" id="s_com_bibsmobile_model_EventCartItem_eventType" object="${eventcartitem}" z="DGhQGLPXojrSSsjKfB195kuWXwY="/>
-        <field:display field="price" id="s_com_bibsmobile_model_EventCartItem_price" object="${eventcartitem}" z="3YHpSkJ+Bw3vnWGttus+yS8o0dA="/>
-    </page:show>
 </div>
