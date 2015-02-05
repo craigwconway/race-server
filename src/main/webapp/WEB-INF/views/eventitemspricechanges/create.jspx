@@ -102,271 +102,273 @@
     </div>
     
     <script>
-    var postObject = {};
-    var eciId;
-    var eci;
-    var eciStart;
-    var eciEnd;
-    var eciBasePrice;
-    var options   = {
-        editable: true,
-        format: {
-                minorLabels: {
-                    millisecond:'SSS',
-                    second:     's',
-                    minute:     'HH:mm',
-                    hour:       'HH:mm',
-                    weekday:    'ddd D',
-                    day:        'D',
-                    month:      'MMM',
-                    year:       'YYYY'
+        var postObject = {};
+        var eciId;
+        var eci;
+        var eciStart;
+        var eciEnd;
+        var eciBasePrice;
+        var options   = {
+            editable: true,
+            format: {
+                    minorLabels: {
+                        millisecond:'SSS',
+                        second:     's',
+                        minute:     'HH:mm',
+                        hour:       'HH:mm',
+                        weekday:    'ddd D',
+                        day:        'D',
+                        month:      'MMM',
+                        year:       'YYYY'
+                    },
+                    majorLabels: {
+                        millisecond:'HH:mm:ss',
+                        second:     'D MMM HH:mm',
+                        minute:     'ddd D MMM',
+                        hour:       'ddd D MMM',
+                        weekday:    'MMM YYYY',
+                        day:        'MMM YYYY',
+                        month:      'YYYY',
+                        year:       ''
+                    }
                 },
-                majorLabels: {
-                    millisecond:'HH:mm:ss',
-                    second:     'D MMM HH:mm',
-                    minute:     'ddd D MMM',
-                    hour:       'ddd D MMM',
-                    weekday:    'MMM YYYY',
-                    day:        'MMM YYYY',
-                    month:      'YYYY',
-                    year:       ''
+            onAdd: function (item, callback) {
+                item.content = prompt('Price at this date:', item.content);
+                if (item.content != null) {
+                    callback(item); // send back adjusted new item
+                }
+                else {
+                    callback(null); // cancel item creation
                 }
             },
-        onAdd: function (item, callback) {
-            item.content = prompt('Price at this date:', item.content);
-            if (item.content != null) {
-                callback(item); // send back adjusted new item
-            }
-            else {
-                callback(null); // cancel item creation
-            }
-        },
-        onMove: function (item, callback) {
-            if (confirm('Do you really want to move the item to\n' +
-                'start: ' + item.start + '?')) {
-                callback(item); // send back item as confirmation (can be changed)
-            }
-            else {
-                callback(null); // cancel editing item
-            }
-        },
-        onUpdate: function (item, callback) {
-            item.content = prompt('Edit price:', item.content);
-            if (item.content != null) {
-                callback(item); // send back adjusted item
-            }
-            else {
-                callback(null); // cancel updating the item
-            }
-        },
-        onRemove: function (item, callback) {
-            if (confirm('Remove this price change?')) {
-                callback(item); // confirm deletion
-            }
-            else {
-                callback(null); // cancel deletion
-            }
-        },
-        minHeight: '150px',
-        min:    eciStart,
-        max:    eciEnd,
-        start:  eciStart,
-        end:    eciEnd,
-        zoomMin: 1000*60*60
-    }
-    var itemList = [];
-    var timelineList = [];
-    var pcList = [];
-
-    window.onload = function(){
-        eciId = parseEventId();
-        getEventData(eciId);
-    }
-
-    function savePCType(){
-        var obj = {};
-        jQuery(".category-field").each(function(i){
-            var key = jQuery(this).attr("data-for");
-            var val = jQuery(this).val();
-            if( key == "team" ){
-                if(jQuery(this).parent().attr('aria-pressed') == "true"){
-                    val = true;
-                }else{
-                    val = false;
+            onMove: function (item, callback) {
+                if (confirm('Do you really want to move the item to\n' +
+                    'start: ' + item.start + '?')) {
+                    callback(item); // send back item as confirmation (can be changed)
                 }
-            }
-            obj[key] = val;
-        });
-
-        postObject = obj;
-        postObject['eventCartItem'] = null;
-
-        var index = timelineList.length;
-        addGroup(obj, index);
-    }
-
-    function addGroup(obj, index){
-        <!-- add panel -->
-        var query = jQuery(".pc-nav").children();
-        query.clone().appendTo(".pc-groups").attr("id", "group"+index);
-        container = document.getElementById("group"+index).getElementsByClassName("slider")[0];
-        var items = new vis.DataSet();
-        itemList.push(items);
-        timeline = new vis.Timeline(container, itemList[index], options);
-        timelineList.push(timeline);
-
-        var pc = {};
-        pc["obj"] = obj;
-        pc["items"] = items;
-        pc["timeline"] = timeline;
-        pcList.push(pc);
-
-        <!-- change header text -->
-        var gender;
-        if( obj.gender == "MALE" ){ gender = "M"; }
-        if( obj.gender == "FEMALE" ){ gender = "F"; }
-        if( obj.gender == "MALE_AND_FEMALE" ){ gender = "any"; }
-
-        var team;
-        if( obj.team == true ){ team = "Teams: required" }
-        else if( !obj.team ){ team = "Teams: optional" }
-
-        jQuery("#group"+ index).find(".panel-heading")
-            .html(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
-
-        initDateTimePickers();
-    }
-
-    function shiftTimeline(caller){
-        var timelineIndex = caller.closest(".panel-default").attr("id");
-        var index = parseInt(timelineIndex[5]);
-
-        var dateVal = moment(jQuery("#"+timelineIndex).find(".priceStartDate").val()).format('MM/DD/YYYY h:mm:ss a');
-        var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
-        dateVal = moment(dateVal);
-        price   = parseInt(price);
-
-
-        var item = {};
-        item["id"] = index + "-" + price;
-        item["start"] = dateVal;
-        item["content"] = price;
-
-        itemList[index].add(item);
-        timelineList[index].fit();
-    }
-
-    function parseEventId(){
-        var url = window.location.href;
-        var urllen = url.length;
-        var ind = url.lastIndexOf("=");
-        var eid = url.substring(ind+1, urllen);
-        return eid;
-    }
-
-    function getEventData(id){
-        var request = jQuery.ajax({
-            url: "/bibs-server/eventitems/" + id,
-            type: "GET",
-            dataType: "json"
-            });
-        request.done(function( data ) {
-            if( data !== null ){
-                eci = data;
-                eciStart = moment(data.timeStart).format('MM/DD/YYYY h:mm:ss a');
-                eciEnd = moment(data.timeEnd).format('MM/DD/YYYY h:mm:ss a');
-                eciBasePrice = data.price;
-            }else{
-            }
-        });
-        request.fail(function( jqXHR, textStatus ) {
-            // error
-        });
-    }
-    // bibs-server/eventitemspricechanges/jsonArray
-
-    function initDateTimePickers(){
-        jQuery(".priceStartDate").each(function(){
-            jQuery(this).datetimepicker({
-                defaultDate: moment(eciStart),
-                useSeconds: true,
-                sideBySide: true
-            });
-        });
-        jQuery(".base-price").each(function(){
-            jQuery(this).text("Base price: $" + eciBasePrice);
-        });
-    }
-
-    function priceChange(price, id, start, end, name, minAge, maxAge, gender, team){
-        this.startDate = start;
-        this.eventCartItem = id;
-        this.endDate = end;
-        this.categoryName = name;
-        this.lowAgeThreshold = minAge;
-        this.highAgeThreshold = maxAge;
-        this.gender = gender;
-        this.team = team;
-        this.price = price;
-    }
-
-    function postPriceChanges(){
-        // iterate by group
-        var postObjList = [];
-        for( var i = 0; i &lt; pcList.length; i++ ){
-            var groupData = pcList[i].items._data;
-            for( var j = 0; j &lt; Object.keys(groupData).length; j++ ){
-                var keys = Object.keys(groupData);
-                var index = keys[j];
-                var objStartDate;
-                var objEndDate;
-                if( j == keys.length-1 ){
-                    objStartDate = groupData[index].start;
-                    objEndDate = eciEnd;                    
+                else {
+                    callback(null); // cancel editing item
                 }
-                else{
-                    var nextIndex = keys[j+1];
-                    objStartDate = groupData[index].start;
-                    objEndDate = moment(groupData[nextIndex].start).subtract(1, 'ms');
+            },
+            onUpdate: function (item, callback) {
+                item.content = prompt('Edit price:', item.content);
+                if (item.content != null) {
+                    callback(item); // send back adjusted item
                 }
-                if( moment.isMoment(objStartDate) ){ objStartDate = objStartDate.format("MM/DD/YYYY h:mm:ss a"); }
-                if( moment.isMoment(objEndDate) ){ objEndDate = objEndDate.format("MM/DD/YYYY h:mm:ss a"); }
+                else {
+                    callback(null); // cancel updating the item
+                }
+            },
+            onRemove: function (item, callback) {
+                if (confirm('Remove this price change?')) {
+                    callback(item); // confirm deletion
+                }
+                else {
+                    callback(null); // cancel deletion
+                }
+            },
+            minHeight: '150px',
+            min:    eciStart,
+            max:    eciEnd,
+            start:  eciStart,
+            end:    eciEnd,
+            zoomMin: 1000*60*60
+        }
+        var itemList = [];
+        var timelineList = [];
+        var pcList = [];
 
-                var pc = new Object();
-                pc = jQuery.extend({
-                    price: parseInt(groupData[index].content),
-                    eventCartItem: eciId,
-                    startDate: objStartDate,
-                    endDate: objEndDate
-                }, pcList[i].obj);
-                pc.eventCartItem = eciId;
-                postObjList.push(pc);
-            }
+        window.onload = function(){
+            eciId = parseEventId();
+            getEventData(eciId);
         }
 
-        console.log(postObjList)
+        function savePCType(){
+            var obj = {};
+            jQuery(".category-field").each(function(i){
+                var key = jQuery(this).attr("data-for");
+                var val = jQuery(this).val();
+                if( key == "team" ){
+                    if(jQuery(this).parent().attr('aria-pressed') == "true"){
+                        val = true;
+                    }else{
+                        val = false;
+                    }
+                }
+                obj[key] = val;
+            });
 
-        var request = jQuery.ajax({
-            url: "/bibs-server/eventitemspricechanges/jsonArray",
-            type: 'POST',
-            data: postObjList
-        });
-        
-        request.done(function(data){
-            if( data !== null ){
-                // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
-            }
-            else{
+            postObject = obj;
+            postObject['eventCartItem'] = null;
+
+            var index = timelineList.length;
+            addGroup(obj, index);
+        }
+
+        function addGroup(obj, index){
+            <!-- add panel -->
+            var query = jQuery(".pc-nav").children();
+            query.clone().appendTo(".pc-groups").attr("id", "group"+index);
+            container = document.getElementById("group"+index).getElementsByClassName("slider")[0];
+            var items = new vis.DataSet();
+            itemList.push(items);
+            timeline = new vis.Timeline(container, itemList[index], options);
+            timelineList.push(timeline);
+
+            var pc = {};
+            pc["obj"] = obj;
+            pc["items"] = items;
+            pc["timeline"] = timeline;
+            pcList.push(pc);
+
+            <!-- change header text -->
+            var gender;
+            if( obj.gender == "MALE" ){ gender = "M"; }
+            if( obj.gender == "FEMALE" ){ gender = "F"; }
+            if( obj.gender == "MALE_AND_FEMALE" ){ gender = "any"; }
+
+            var team;
+            if( obj.team == true ){ team = "Teams: required" }
+            else if( !obj.team ){ team = "Teams: optional" }
+
+            jQuery("#group"+ index).find(".panel-heading")
+                .html(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
+
+            initDateTimePickers();
+        }
+
+        function shiftTimeline(caller){
+            var timelineIndex = caller.closest(".panel-default").attr("id");
+            var index = parseInt(timelineIndex[5]);
+
+            var dateVal = moment(jQuery("#"+timelineIndex).find(".priceStartDate").val()).format('MM/DD/YYYY h:mm:ss a');
+            var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
+            dateVal = moment(dateVal);
+            price   = parseInt(price);
+
+
+            var item = {};
+            item["id"] = index + "-" + price;
+            item["start"] = dateVal;
+            item["content"] = price;
+
+            itemList[index].add(item);
+            timelineList[index].fit();
+        }
+
+        function parseEventId(){
+            var url = window.location.href;
+            var urllen = url.length;
+            var ind = url.lastIndexOf("=");
+            var eid = url.substring(ind+1, urllen);
+            return eid;
+        }
+
+        function getEventData(id){
+            var request = jQuery.ajax({
+                url: "/bibs-server/eventitems/" + id,
+                type: "GET",
+                dataType: "json"
+                });
+            request.done(function( data ) {
+                if( data !== null ){
+                    eci = data;
+                    eciStart = moment(data.timeStart).format('MM/DD/YYYY h:mm:ss a');
+                    eciEnd = moment(data.timeEnd).format('MM/DD/YYYY h:mm:ss a');
+                    eciBasePrice = data.price;
+                }else{
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
                 // error
-                // alert("There was an error while saving your price changes. Please try again!");
-                // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+            });
+        }
+        // bibs-server/eventitemspricechanges/jsonArray
+
+        function initDateTimePickers(){
+            jQuery(".priceStartDate").each(function(){
+                jQuery(this).datetimepicker({
+                    defaultDate: moment(eciStart),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            });
+            jQuery(".base-price").each(function(){
+                jQuery(this).text("Base price: $" + eciBasePrice);
+            });
+        }
+
+        function priceChange(price, id, start, end, name, minAge, maxAge, gender, team){
+            this.startDate = start;
+            this.eventCartItem = id;
+            this.endDate = end;
+            this.categoryName = name;
+            this.lowAgeThreshold = minAge;
+            this.highAgeThreshold = maxAge;
+            this.gender = gender;
+            this.team = team;
+            this.price = price;
+        }
+
+        function postPriceChanges(){
+            // iterate by group
+            var postObjList = [];
+            for( var i = 0; i &lt; pcList.length; i++ ){
+                var groupData = pcList[i].items._data;
+                for( var j = 0; j &lt; Object.keys(groupData).length; j++ ){
+                    var keys = Object.keys(groupData);
+                    var index = keys[j];
+                    var objStartDate;
+                    var objEndDate;
+                    if( j == keys.length-1 ){
+                        objStartDate = groupData[index].start;
+                        objEndDate = eciEnd;                    
+                    }
+                    else{
+                        var nextIndex = keys[j+1];
+                        objStartDate = groupData[index].start;
+                        objEndDate = moment(groupData[nextIndex].start).subtract(1, 'ms');
+                    }
+                    if( moment.isMoment(objStartDate) ){ objStartDate = objStartDate.format("MM/DD/YYYY h:mm:ss a"); }
+                    if( moment.isMoment(objEndDate) ){ objEndDate = objEndDate.format("MM/DD/YYYY h:mm:ss a"); }
+
+                    var pc = new Object();
+                    pc = jQuery.extend({
+                        price: parseInt(groupData[index].content),
+                        eventCartItem: eciId,
+                        startDate: objStartDate,
+                        endDate: objEndDate
+                    }, pcList[i].obj);
+                    pc.eventCartItem = eciId;
+                    postObjList.push(pc);
+                }
             }
-        });
-        request.fail(function( jqXHR, textStatus ) {
-            // error
-            alert("There was an error while saving your price changes. Please try again!");
-            // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
-        });
-    }
+
+            console.log(postObjList)
+
+            var request = jQuery.ajax({
+                url: "/bibs-server/eventitemspricechanges/jsonArray",
+                contentType: 'application/json',
+                type: 'POST',
+                data: postObjList
+            });
+            
+            request.done(function(data){
+                if( data !== null ){
+                    console.log("posted")
+                    // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+                }
+                else{
+                    // error
+                    alert("There was an error while saving your price changes. Please try again!");
+                    // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
+                // error
+                alert("There was an error while saving your price changes. Please try again!");
+                // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+            });
+        }
     </script>
 </div>

@@ -2,187 +2,242 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
-        <div class="panel-container-left">
-            <h3>Add Product</h3>
-            <div class="row">
-                <input  type="text" name="name"
-                        class="form-control"
-                        placeholder="Product name"
-                        data-parsley-error-message="Please enter a product name."
-                        data-parsley-required="true"></input>
-                <textarea  name="description"
-                    class="form-control" rows="2"
-                    placeholder="Product description"><!-- --></textarea>
-            </div>
-            <div class="row">
-                <div class="col-md-6 col-sm-3" style="margin-left:0px;padding-left:0px">
-                    Item Sale Start Date: 
-                    <input  type="text" name="timeStart"
-                        class="form-control"
-                        id="ECIStart"
-                        placeholder="Price start date"
-                        data-provide="datepicker"
-                        data-date-format="MM/DD/YYYY h:mm:ss a"
-                        data-parsley-error-message="Please specify a start date."
-                        data-parsley-required="true"></input></div>
-                <div class="col-md-6 col-sm-3" style="margin-left: -10%">
-                    Item Sale End Date: 
-                    <input  type="text" name="timeEnd"
-                        class="form-control"
-                        id="ECIEnd"
-                        placeholder="Price end date"
-                        data-provide="datepicker"
-                        data-date-format="MM/DD/YYYY h:mm:ss a"
-                        data-parsley-error-message="Please specify an end date."
-                        data-parsley-required="true"></input></div>
-                <div style="display:none">
-                    <input id="eventStartDate" value="${event.timeStart}"></input>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .ui.form.info-container{
+            margin: 0 auto;
+            width: 400px;
+            font-weight: 100;
+            color: #292929;
+        }
+        .ui.form .fields{
+            margin-bottom: -5px;
+        }
+        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
+            margin-bottom: 5px;
+        }
+        .ui.form input, .ui.form textarea, .ui.form select, #demo>input{
+            width: 400px;
+            margin: 5px auto; 
+        }
+        .ui.form select{
+            height: 38px;
+            font-size: 1em;
+        }
+        .ui.form textarea{
+            height: 0;
+            min-height: 5em;
+        }
+        .submit{
+            margin: 0 auto;
+            width: 400px;
+            text-align: right;
+        }
+        .ui.form input[type="number"]{
+            height: 38px;
+        }
+    </style>
+    <div class="white-overlay">
+        <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
+            <div class="ui form info-container">
+                <h2 class="ui icon header">
+                    <i class="fa fa-cog"><!--  --></i>
+                    <div class="content">Add Product
+                        <div class="sub header">Provide the details for this product.</div>
+                    </div>
+                </h2>
+                <div class="form-fields">
+                    <input  type="text" name="name"
+                            class="form-control"
+                            placeholder="Product name"
+                            data-parsley-error-message="Please enter a product name."
+                            data-parsley-required="true"></input>
+                    <textarea  name="description"
+                        class="form-control" rows="2"
+                        placeholder="Product description"><!-- --></textarea>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
-                <select name="gender" class="form-control" id="gender-type"
-                        data-parsley-error-message="Please select a gender type."
-                        data-parsley-required="true">
-                    <option selected="selected" disabled="disabled">Gender</option>
-                    <option value="MALE">Male</option>
-                    <option value="FEMALE">Female</option>
-                    <option value="MALE_AND_FEMALE">Both</option>
-                </select></div>
-                <div class="col-md-4 col-sm-4" style="margin-left:-30px;">
-                <input  type="number" name="lowAgeThreshold"
-                        class="form-control" id="lowAge"
-                        placeholder="Min Age"
-                        min="1"
-                        max="120"
-                        data-parsley-error-message="Invalid age."
-                        data-parsley-required="true"
-                        value=""></input>
-                </div>
-                <div class="col-md-4 col-sm-4" style="margin-left:-40px;">
-                <input  type="number" name="highAgeThreshold"
-                        class="form-control" id="highAge"
-                        placeholder="Max Age"
-                        min="1"
-                        max="120"
-                        data-parsley-error-message="Invalid age."
-                        data-parsley-required="true"
-                        value=""></input>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 col-sm-4" style="margin: 0% auto; padding: 0%">
-                <select name="type" class="form-control" id="ticket-type"
-                        data-parsley-error-message="Please select a product type."
-                        data-parsley-required="true">
-                    <option selected="selected" disabled="disabled">Product Type</option>
-                    <option value="TICKET">Ticket</option>
-                    <option value="T_SHIRT">T-shirt</option>
-                    <option value="DONATION">Donation</option>
-                </select></div>
-                <div class="col-md-4 col-sm-4" style="margin-left: -30px;">
-                <input  type="number" name="price"
-                        class="form-control"
-                        placeholder="Base price"
-                        min="1"
-                        data-parsley-error-message="Invalid base price."
-                        data-parsley-required="true"></input>
-                </div>
-                <div class="col-md-4 col-sm-4" style="margin-left: -40px;">
-                <input  type="number" name="available"
-                        class="form-control"
-                        placeholder="Quantity"
-                        min="1"
-                        data-parsley-error-message="Invalid maximum quantity."
-                        data-parsley-required="true"></input>
-                </div>
-            </div>
-        </div>
+                <div class="form-fields">
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Item Sale Start Date: </label>
+                            <input  type="text" name="timeStart"
+                                id="ECIStart"
+                                placeholder="Price start date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-parsley-error-message="Please specify a start date."
+                                data-parsley-required="true"></input>
+                        </div>
+                        <div class="field">
+                            <label>Item Sale End Date: </label>
+                            <input  type="text" name="timeEnd"
+                                id="ECIEnd"
+                                placeholder="Price end date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-parsley-error-message="Please specify an end date."
+                                data-parsley-required="true"></input>
+                        </div>
+                    </div>
+                    <div style="display:none">
+                        <input id="eventStartDate" value="${event.timeStart}"></input>
+                    </div>
 
-        <!-- required fields not displayed for user -->
-        <div style="display:none">
-            <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
-            <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
-            <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
-            <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
-        </div>
-        
-    </form:create>
+                    <select id="gender-type" name="gender"
+                            data-parsley-error-message="Please select a gender.">
+                        <option value="">Gender</option>
+                        <option value="MALE_AND_FEMALE">Both</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+
+                    <div class="two fields">
+                        <div class="field">
+                            <label><!--  --></label>
+                            <input  type="number" name="lowAgeThreshold"
+                                    id="lowAge"
+                                    placeholder="Min Age"
+                                    min="1"
+                                    max="120"
+                                    data-parsley-error-message="Invalid age."
+                                    data-parsley-required="true"
+                                    value=""></input>
+                        </div>
+                        <div class="field">
+                            <label><!--  --></label>
+                            <input  type="number" name="highAgeThreshold"
+                                    id="highAge"
+                                    placeholder="Max Age"
+                                    min="1"
+                                    max="120"
+                                    data-parsley-error-message="Invalid age."
+                                    data-parsley-required="true"
+                                    value=""></input>
+                        </div>
+                    </div>
+
+                    <select name="type" class="form-control" id="ticket-type"
+                            data-parsley-error-message="Please select a product type."
+                            data-parsley-required="true">
+                        <option selected="selected" disabled="disabled">Product Type</option>
+                        <option value="TICKET">Ticket</option>
+                        <option value="T_SHIRT">T-shirt</option>
+                        <option value="DONATION">Donation</option>
+                    </select>
+                    <div class="ui labeled input">
+                        <div class="ui label">$</div>
+                        <input  type="number" name="price"
+                                class="form-control"
+                                placeholder="Base price"
+                                min="1"
+                                data-parsley-error-message="Invalid base price."
+                                data-parsley-required="true"></input>
+                    </div>
+                    <input  type="number" name="available"
+                            class="form-control" style="margin-top:5px"
+                            placeholder="Quantity"
+                            min="1"
+                            data-parsley-error-message="Invalid maximum quantity."
+                            data-parsley-required="true"></input>
+                </div>
+            </div>
+
+            <!-- required fields not displayed for user -->
+            <div style="display:none">
+                <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
+                <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
+                <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
+                <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
+            </div>
+            
+        </form:create>
     
-    <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
-
+        <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
+    </div>
     <script>
-    window.onload = function(){
-        parseEventId();
-        setValidation();
-        initDateTimePickers();
-    }
+        window.onload = function(){
+            parseEventId();
+            setValidation();
+            initDateTimePickers();
+        }
 
-    function parseEventId(){
-        var url = window.location.href;
-        var urllen = url.length;
-        var ind = url.lastIndexOf("=");
-        var eid = url.substring(ind+1, urllen);
-        jQuery("#_event_id").val(eid);
-    }
+        function parseEventId(){
+            var url = window.location.href;
+            var urllen = url.length;
+            var ind = url.lastIndexOf("=");
+            var eid = url.substring(ind+1, urllen);
+            jQuery("#_event_id").val(eid);
+        }
 
-    function setValidation(){
-        jQuery('#eventCartItem').parsley({
-            errorsWrapper: '<div class="has-error"></div>',
-            errorTemplate: '<span></span>'
-        });
-
-        jQuery("#lowAge").change(function(){
-            var low = jQuery("#lowAge").val();
-            var high = jQuery("#highAge").val();
-            if( (low == null) || (low == 0) ){ jQuery("#lowAge").val(""); }
-            if( high !== null ){
-                if( low &gt;= high ){
-                    jQuery(this).val(high);
-                }
-                else{
-                    jQuery("#highAge").attr("min", jQuery(this).val());
-                }
-            }
-        });
-
-        jQuery("#highAge").change(function(){
-            var low = jQuery("#lowAge").val();
-            var high = jQuery("#highAge").val();
-            if( (high == null) || (high == 0) ){ jQuery("#highAge").val("") }
-            if( low !== null ){
-                if( high &lt;= low ){
-                    jQuery(this).val(low);
-                }
-                else{
-                    jQuery("#lowAge").attr("max", jQuery(this).val());
-                }
-            }
-        });
-    }
-
-    function initDateTimePickers(){
-        jQuery("#ECIStart")
-            .datetimepicker({
-                defaultDate: moment().startOf('day'),
-                useSeconds: true,
-                sideBySide: true
+        function setValidation(){
+            jQuery('#eventCartItem').parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
             });
-        jQuery("#ECIEnd")
-            .datetimepicker({
-                useSeconds: true,
-                sideBySide: true
-            });
-        jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
 
-        <!-- on change-ui -->
-        jQuery("#ECIStart").on("dp.change",function (e) {
-            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
-        });
-        jQuery("#ECIEnd").on("dp.change",function (e) {
-            jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
-        });
-    }
+            jQuery("#lowAge").change(function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                if( (low == null) || (low == 0) ){ jQuery("#lowAge").val(""); }
+                if( high !== null ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highAge").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery("#highAge").change(function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                if( (high == null) || (high == 0) ){ jQuery("#highAge").val("") }
+                if( low !== null ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowAge").attr("max", jQuery(this).val());
+                    }
+                }
+            });
+        }
+
+        function initDateTimePickers(){
+            jQuery("#ECIStart")
+                .datetimepicker({
+                    defaultDate: moment().startOf('day'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery("#ECIEnd")
+                .datetimepicker({
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+
+            <!-- on change-ui -->
+            jQuery("#ECIStart").on("dp.change",function (e) {
+                jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+            });
+            jQuery("#ECIEnd").on("dp.change",function (e) {
+                jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+            });
+        }
     </script>
 </div>
