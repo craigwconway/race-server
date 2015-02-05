@@ -120,12 +120,12 @@
 							<th colspan="6">
 								<span class="awards-title">${acr.category.name}</span>
 								<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-								<span style="padding: 4px;">
-									<a href="/bibs-server/awardcategorys/${acr.category.id}?form" title="Edit"><i class="fa fa-edit fa-2x"><!--  --></i></a>
-								</span>
-								<span style="padding: 4px;">
-									<a href="javascript:deleteAwardCategory(${acr.category.id})" title="Delete"><i class="fa fa-trash fa-2x"><!--  --></i></a>
-								</span>
+									<span style="padding: 4px;">
+										<a href="/bibs-server/awardcategorys/${acr.category.id}?form" title="Edit"><i class="fa fa-edit fa-2x"><!--  --></i></a>
+									</span>
+									<span style="padding: 4px;">
+										<a href="javascript:deleteAwardCategory(${acr.category.id})" title="Delete"><i class="fa fa-trash fa-2x"><!--  --></i></a>
+									</span>
 								</sec:authorize>
 							</th>
 						</tr>
