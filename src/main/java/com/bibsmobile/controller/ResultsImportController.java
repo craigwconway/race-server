@@ -32,6 +32,7 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.service.RaceResultService;
+import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.XlsToCsv;
 
 @RequestMapping("/resultsimports")
@@ -54,11 +55,13 @@ public class ResultsImportController {
             IOException {
         if (bindingResult.hasErrors()) {
             this.populateEditForm(uiModel, resultsImport);
+            uiModel.addAttribute("build", BuildTypeUtil.getBuild());
             return "resultsimports/create";
         }
         uiModel.asMap().clear();
         this.doImport(resultsImport);
         resultsImport.persist();
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/resultsimports/" + this.encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }
 
@@ -136,6 +139,7 @@ public class ResultsImportController {
     public String show(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("resultsimport", ResultsImport.findResultsImport(id));
         uiModel.addAttribute("itemId", id);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "resultsimports/show";
     }
 
@@ -151,6 +155,7 @@ public class ResultsImportController {
         } else {
             uiModel.addAttribute("resultsimports", ResultsImport.findAllResultsImports(sortFieldName, sortOrder));
         }
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "resultsimports/list";
     }
 
@@ -162,12 +167,14 @@ public class ResultsImportController {
         }
         uiModel.asMap().clear();
         resultsImport.merge();
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/resultsimports/" + this.encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }
 
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         this.populateEditForm(uiModel, ResultsImport.findResultsImport(id));
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "resultsimports/update";
     }
 
@@ -179,6 +186,7 @@ public class ResultsImportController {
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/resultsimports";
     }
 
