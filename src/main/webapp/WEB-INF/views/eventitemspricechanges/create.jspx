@@ -321,15 +321,19 @@
                     var objEndDate;
                     if( j == keys.length-1 ){
                         objStartDate = groupData[index].start;
-                        objEndDate = eciEnd;                    
+                        objEndDate = eciEnd;
                     }
                     else{
                         var nextIndex = keys[j+1];
                         objStartDate = groupData[index].start;
                         objEndDate = moment(groupData[nextIndex].start).subtract(1, 'ms');
                     }
-                    if( moment.isMoment(objStartDate) ){ objStartDate = objStartDate.format("MM/DD/YYYY h:mm:ss a"); }
-                    if( moment.isMoment(objEndDate) ){ objEndDate = objEndDate.format("MM/DD/YYYY h:mm:ss a"); }
+                    if( objStartDate !== null ){
+                        objStartDate = moment(objStartDate).format("MM/DD/YYYY HH:mm:ss");
+                    }
+                    if( objEndDate !== null ){
+                        objEndDate = moment(objEndDate).format("MM/DD/YYYY HH:mm:ss");
+                    }
 
                     var pc = new Object();
                     pc = jQuery.extend({
@@ -348,8 +352,9 @@
             var request = jQuery.ajax({
                 url: "/bibs-server/eventitemspricechanges/jsonArray",
                 contentType: 'application/json',
+                dataType: 'json',
                 type: 'POST',
-                data:  [{"startDate": "01/01/2015 00:00:01", "endDate": "02/01/2015 23:59:59", "categoryName": "cat1", "lowAgeThreshold": 1, "highAgeThreshold": 120, "gender": "MALE", "team": false, "eventCartItem": { "id": 1 }, "price": 100}, {"startDate": "01/01/2015 00:00:01", "endDate": "02/01/2015 23:59:59", "categoryName": "cat2", "lowAgeThreshold": 1, "highAgeThreshold": 120, "gender": "FEMALE", "team": true, "eventCartItem": { "id": 1 }, "price": 50}]
+                data: JSON.stringify(postObjList)
             });
             
             request.done(function(data){
