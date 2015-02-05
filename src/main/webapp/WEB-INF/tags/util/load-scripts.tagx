@@ -11,6 +11,7 @@
 <spring:url value="/resources/scripts/jquery.geocomplete.js" var="geocomplete_url" />
 <spring:url value="/resources/scripts/jquery.mask.min.js" var="mask_url" />
 <spring:url value="/resources/scripts/jquery-ui.js" var="jquery_ui_url" />
+<spring:url value="/resources/scripts/semantic.js" var="semantic_url" />
 <spring:url value="/resources/scripts/vis.min.js" var="vis_url" />
 <spring:url value="/resources/scripts/moment.min.js" var="moment_url" />
 <spring:url value="/resources/scripts/d3.min.js" var="d3_url" />
@@ -20,6 +21,7 @@
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places">;//?</script>
 <script src="${moment_url}" type="text/javascript">;//?</script>
 <script src="${bootjs_url}" type="text/javascript">;//?</script>
+<script src="${semantic_url}" type="text/javascript">;//?</script>
 <script src="${d3_url}" type="text/javascript">;//?</script>
 <script src="${nvd3_url}" type="text/javascript">;//?</script>
 <script src="${mask_url}" type="text/javascript">;//?</script>
@@ -57,7 +59,9 @@
   
   
   <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
+  <spring:url value="/resources/styles/font-awesome/css/font-awesome.min.css" var="fontawesome_url" />
   <spring:url value="/resources/styles/bootstrap-datetimepicker.css" var="datepicker_css_url" />
+  <spring:url value="/resources/styles/semantic.css" var="semantic_css_url" />
   <spring:url value="/resources/styles/jquery-ui.css" var="jquery_ui_css_url" />
   <spring:url value="/resources/styles/vis.min.css" var="vis_css_url" />
   <spring:url value="/resources/styles/nv.d3.min.css" var="nvd3_css_url" />
@@ -65,6 +69,8 @@
   <!-- <spring:url value="/resources/styles/iThing.css" var="slider_css_url" /> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="${bootstrap_url }" rel="stylesheet"/>
+  <link href="${fontawesome_url }" rel="stylesheet"/>
+  <link href="${semantic_css_url }" rel="stylesheet"/>
   <link href="${datepicker_css_url }" rel="stylesheet"/>
   <link href="${vis_css_url }" rel="stylesheet"/>
   <link href="${nvd3_css_url }" rel="stylesheet"/>
@@ -73,7 +79,7 @@
   <!-- <link href="${slider_css_url }" rel="stylesheet"/> -->
 
   <!-- FONTS -->
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans:100,300" rel="stylesheet" type="text/css"/>
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans:100,300,400" rel="stylesheet" type="text/css"/>
 
   <style>
   	.box{ display:inline !important;}

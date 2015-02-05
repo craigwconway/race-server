@@ -138,7 +138,7 @@ public class DropBoxController {
         newImport.setResultsFileMapping(latestMapping);
         // do the actual import
         if (newImport.getErrors() == 0) {
-            ResultsFileMappingController.doImport(newImport);
+            new ResultsFileMappingController().doImport(newImport);
         } else {
             newImport.setRowsProcessed(1);
             newImport.setRunDate(new Date());

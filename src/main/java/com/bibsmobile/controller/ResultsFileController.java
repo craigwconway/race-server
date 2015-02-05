@@ -76,7 +76,7 @@ public class ResultsFileController {
             resultsFile.setAutomaticUpdates(false);
         } catch (Exception e) {
             e.printStackTrace();
-            return "resultsfiles/create";
+            return "resultsfiles/create?form&event="+resultsFile.getEvent().getId();
         }
         uiModel.asMap().clear();
         try {

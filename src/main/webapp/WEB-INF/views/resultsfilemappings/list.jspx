@@ -13,4 +13,12 @@
             <table:column id="c_com_bibsmobile_model_ResultsFileMapping_name" property="name" z="FXubtzWxZmjKKKW6IepbyjbnKJI="/>
         </table:table>
     </page:list>
+    <script>
+        window.onload = function(){
+            jQuery(".clickable-row").click(function() {
+              console.log(jQuery(this).attr("href"))
+              window.document.location = jQuery(this).attr("href");
+            });
+        }
+    </script>
 </div>

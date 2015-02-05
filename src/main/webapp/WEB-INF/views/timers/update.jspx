@@ -63,7 +63,7 @@
                     class="form-control"
                     placeholder="Ports"
                     data-parsley-error-message="Please indicate port numbers separated by commas. (e.g. 1,2,3)"
-                    value=""></input></div>
+                    value="${timerConfig.ports}"></input></div>
         </div>
         <div class="form-group">
             <label for="connectionTimeout" class="col-sm-1 control-label">Connection Timeout</label>
@@ -79,7 +79,7 @@
                     class="form-control"
                     placeholder="Filename"
                     data-parsley-error-message="Invalid filename."
-                    value=""></input></div>
+                    value="${timerConfig.filename}"></input></div>
         </div>
         <field:input field="position" id="c_com_bibsmobile_model_TimerConfig_position" z="yamQ8KWzGfWz+41JyeNXITbQ6K4="></field:input>
         <field:input field="events" id="c_com_bibsmobile_model_TimerConfig_events" render="false" z="user-managed"></field:input>
@@ -109,16 +109,16 @@
        }
        function updatePorts(){
            var ports = "";
-           $('#selectPorts :checked').each(function() {
+           jQuery('input:checked').each(function() {
               if(ports.length &gt; 0 ) ports += ',';
-              ports += $(this).val();
+              ports += jQuery(this).val();
           });
            jQuery("#_ports_id").val(ports);
        }
        function initPorts(){
-           var ports = jQuery("#_ports_id").val();
-           $('#selectPorts :input').each(function() {
-              if(ports.indexOf($(this).val()) &gt; -1){
+           var ports = jQuery('input[name="ports"]').val();
+           jQuery('#selectPorts :input').each(function() {
+              if(ports.indexOf(jQuery(this).val()) &gt; -1){
                  $(this).prop('checked','true'); 
              }
          });

@@ -71,7 +71,7 @@
                 <div class="input-group date">
                     <input  type="text" name="timeofficialdisplay"
                             class="form-control" style="margin-top: 0; margin-bottom:0"
-                            id="timedisp"
+                            id="timedisp" value="${raceResult.timeofficialdisplay}"
                             placeholder="Official Time (hh:mm:ss)"
                             data-provide="datepicker"
                             data-date-format="HH:mm:ss"
@@ -151,17 +151,16 @@
         }
 
         function initDateTimePickers(){
+            var rrTime = "${raceResult.timeofficialdisplay}";
+            var momentRRTime = moment.duration(rrTime);
             jQuery("#timedisp")
                 .datetimepicker({
+                    defaultDate: momentRRTime,
                     pickDate: false,
                     pickTime: true,
                     useSeconds: true,
                     format: 'LTS'
                 });
-
-            jQuery("#timedisp").on('dp.show', function(){
-                jQuery("#timedisp").data("DateTimePicker").setDate(moment().startOf('day'));
-            });
 
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").val("");

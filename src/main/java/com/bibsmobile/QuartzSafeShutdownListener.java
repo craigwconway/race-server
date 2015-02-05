@@ -6,7 +6,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-public class RetardedPieceOfShitListener implements ServletContextListener {
+public class QuartzSafeShutdownListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
     }
