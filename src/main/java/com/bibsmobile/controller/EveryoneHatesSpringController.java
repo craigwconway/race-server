@@ -37,11 +37,15 @@ public class EveryoneHatesSpringController {
 			events = Event.findEventEntries(0, 3, "id", "DESC");			
 		} else if(PermissionsUtil.isVaguelyEventAdmin(loggedInUser)) {
 			// Case: Eventadmin: the user is using this on the bibs website.
-			events = Event.findEventsForUser(loggedInUser);
+			events = Event.findEventsForUser(loggedInUser, 0, 3, "id", "DESC");
 			if(null == events) {
 				uiModel.addAttribute("events", null);
 				uiModel.addAttribute("build", BuildTypeUtil.getBuild());
 				return "index";
+			} else {
+				uiModel.addAttribute("events", events);
+				uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+			
 			}
 			// Now we need to filter events by date			
 			events.toArray();

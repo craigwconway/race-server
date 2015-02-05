@@ -143,14 +143,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             userProfile.setPassword("eventadmin");
             userProfile.setFirstname("Event");
             userProfile.setLastname("Administrator");
-            userProfile.persist();
-
-            userProfile = new UserProfile();
-            userProfile.setUsername("shrugbot");
-            userProfile.setPassword("shrugs");
-            userProfile.setFirstname("Shrugbot");
-            userProfile.setLastname("Facepunch");
-            userProfile.persist();            
+            userProfile.persist();  
             
             userProfile = new UserProfile();
             userProfile.setUsername("useradmin");
@@ -202,30 +195,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                     userAuthorities.persist();
                 }
             }
-
-            tmpUserProfile = UserProfile.findUserProfilesByUsernameEquals("shrugbot").getSingleResult();
-            userAuthority1 = UserAuthority.findUserAuthoritysByAuthorityEquals("ROLE_EVENT_ADMIN").getSingleResult();
-            if (tmpUserProfile != null && userAuthority1 != null) {
-                id.setUserAuthority(userAuthority1);
-                id.setUserProfile(tmpUserProfile);
-                if (UserAuthorities.findUserAuthorities(id) == null) {
-                    userAuthorities = new UserAuthorities();
-                    userAuthorities.setId(id);
-                    userAuthorities.persist();
-                }
-            }            
-			UserGroup userGroup = new UserGroup();
-			userGroup.setName("shruggers_anonymous");
-			userGroup.setGroupType(UserGroupType.COMPANY);			
-			Set<UserGroupUserAuthority> userGroupUserAuthorities = new HashSet<>();			
-			UserGroupUserAuthority userGroupUserAuthority = new UserGroupUserAuthority();
-			UserGroupUserAuthorityID userGroupUserAuthorityID = new UserGroupUserAuthorityID();
-			userGroupUserAuthorityID.setUserAuthorities(userAuthorities);
-			userGroupUserAuthorityID.setUserGroup(userGroup);
-			userGroupUserAuthority.setId(userGroupUserAuthorityID);			
-			userGroupUserAuthorities.add(userGroupUserAuthority);			
-			userGroup.setUserGroupUserAuthorities(userGroupUserAuthorities);
-			userGroup.persist();
             
             tmpUserProfile = UserProfile.findUserProfilesByUsernameEquals("useradmin").getSingleResult();
             userAuthority1 = UserAuthority.findUserAuthoritysByAuthorityEquals("ROLE_EVENT_ADMIN").getSingleResult();
