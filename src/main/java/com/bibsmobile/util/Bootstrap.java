@@ -1,6 +1,8 @@
 package com.bibsmobile.util;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.Event;
@@ -10,10 +12,14 @@ import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupType;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.job.BaseJob;
 import com.bibsmobile.job.CartExpiration;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,8 +143,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             userProfile.setPassword("eventadmin");
             userProfile.setFirstname("Event");
             userProfile.setLastname("Administrator");
-            userProfile.persist();
-
+            userProfile.persist();  
+            
             userProfile = new UserProfile();
             userProfile.setUsername("useradmin");
             userProfile.setPassword("useradmin");
@@ -189,7 +195,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
                     userAuthorities.persist();
                 }
             }
-
+            
             tmpUserProfile = UserProfile.findUserProfilesByUsernameEquals("useradmin").getSingleResult();
             userAuthority1 = UserAuthority.findUserAuthoritysByAuthorityEquals("ROLE_EVENT_ADMIN").getSingleResult();
             if (tmpUserProfile != null && userAuthority1 != null) {

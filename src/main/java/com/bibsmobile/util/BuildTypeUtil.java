@@ -8,20 +8,18 @@ package com.bibsmobile.util;
  *
  */
 public class BuildTypeUtil {
-	public enum BuildType {
-		MASTER, DEVELOP, RFID, RFID_LICENSED
+	private static BuildType build;
+	
+	public static boolean usesLicensing() {
+		return build.isLicensing();
 	}
 	
-	public static BuildType getBuildType() {
-		return BuildType.MASTER;
+	public static boolean usesRegistration() {
+		return build.isRegistration();
 	}
 	
-	public static boolean needsLicense() {
-		BuildType type = getBuildType();
-		if(BuildType.RFID_LICENSED == type) {
-			return true;
-		} else {
-			return false;
-		}
+	public static BuildType getBuild() {
+		return build;
 	}
+	
 }
