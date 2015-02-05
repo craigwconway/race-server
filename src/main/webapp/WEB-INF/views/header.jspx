@@ -35,7 +35,7 @@
 					<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
 	                	<li><a href="#" onclick="redirectEventList();return false;"><i class="fa fa-globe" style="margin-right: 5px"><!--  --></i> all events</a></li>
 	                	<li><a href="#" onclick="redirectAthleteList();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> all athletes</a></li>
-                  		<li id="nav_raceday"><a href="${raceday_url}"><span class="fa fa-flag-checkered" style="margin-right:5px;"><!--  --></span> race day</a></li>
+                  		<li id="nav_raceday"><a href="${raceday_url}"><span class="fa fa-wifi" style="margin-right:5px;"><!--  --></span> rfid</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
                   		<li id="nav_timers"><a href="${timers_url}"><span class="fa fa-cog" style="margin-right:5px;"><!--  --></span> settings</a></li>
