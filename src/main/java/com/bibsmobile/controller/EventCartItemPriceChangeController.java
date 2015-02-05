@@ -82,8 +82,15 @@ public class EventCartItemPriceChangeController {
     @ResponseBody
     public String createFromJson(@RequestBody String json) {
         EventCartItemPriceChange eventCartItemPriceChange = EventCartItemPriceChange.fromJsonToEventCartItemPriceChange(json);
-        eventCartItemPriceChange.persist();
-        return eventCartItemPriceChange.toJson();
+        long id = eventCartItemPriceChange.getEventCartItem().getId();
+        EventCartItem eci = EventCartItem.findEventCartItem(id);
+        if (eci != null) {
+            eventCartItemPriceChange.setEventCartItem(eci);
+            eventCartItemPriceChange.persist();
+            return eventCartItemPriceChange.toJson();
+        } else {
+            return "{\"error\": \"invalid event cart item\"}";
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
@@ -109,11 +116,19 @@ public class EventCartItemPriceChangeController {
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
-        for (EventCartItemPriceChange eventCartItemPriceChange : EventCartItemPriceChange.fromJsonArrayToEventCartItemPriceChanges(json)) {
-            eventCartItemPriceChange.persist();
-        }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        for (EventCartItemPriceChange eventCartItemPriceChange : EventCartItemPriceChange.fromJsonArrayToEventCartItemPriceChanges(json)) {
+            long id = eventCartItemPriceChange.getEventCartItem().getId();
+            EventCartItem eci = EventCartItem.findEventCartItem(id);
+            if (eci != null) {
+                eventCartItemPriceChange.setEventCartItem(eci);
+                eventCartItemPriceChange.persist();
+            } else {
+                return new ResponseEntity<>(headers, HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+            eventCartItemPriceChange.persist();
+        }
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 

@@ -17,6 +17,12 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
+	            <button type="btn btn-default" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		            <span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+				</button>
 	            <div class="icon" style="width=50px;height=50px;padding:10px">
 		            <a href="${home}" name="${fn:escapeXml(home_label)}" title="${fn:escapeXml(home_label)}"><img src="${banner}" width="30" height="30"/></a>
 	            </div>
@@ -24,7 +30,7 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav" style="margin-left:10px;">
+                <ul class="nav navbar-nav">
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
 					<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
 	                	<li><a href="#" onclick="redirectEventList();return false;"><i class="fa fa-globe" style="margin-right: 5px"><!--  --></i> all events</a></li>
