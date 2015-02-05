@@ -8,6 +8,7 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.util.XlsToCsv;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -19,8 +20,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -245,12 +249,20 @@ public class ResultsFileMappingController {
         }
         StringBuffer json = new StringBuffer("{");
         for (int j = 0; j < nextLine.length; j++) {
-            if (map[j].equals("-")) continue;
-            if (!json.toString().equals("{")) json.append(",");
-            if(!map[j].equals("age")) {
-            	json.append(map[j] + ":\"" + nextLine[j] + "\"");
+            if (map[j].equals("-")){
+            	continue;
+            }
+            if (!json.toString().equals("{")){
+            	json.append(",");
+            }
+            if(map[j].equals("bib")) {
+            	if(!StringUtils.isNumeric(nextLine[j].trim())){
+                	json.append(map[j] + ":0" ); // bib NaN, default to 0
+            	}
+            }else if(!map[j].equals("age")) {
+            	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");
             } else {
-            	json.append(map[j] + ":" + nextLine[j]);
+            	json.append(map[j] + ":" + nextLine[j].trim());
             }
         }
         json.append("}");
@@ -263,6 +275,11 @@ public class ResultsFileMappingController {
         } catch (Exception e) {
         }
         if (null != exists) {
+        	if(exists.getTimeofficial() > 0){
+        		result.setTimestart(exists.getTimestart());
+        		result.setTimeofficial(exists.getTimeofficial());
+        		result.setTimeofficialdisplay(exists.getTimeofficialdisplay());
+        	}
             exists.merge(result);
             exists.merge();
         } else {
