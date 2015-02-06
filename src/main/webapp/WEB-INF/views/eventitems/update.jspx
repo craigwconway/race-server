@@ -186,7 +186,7 @@
                 </div>
 
                 <div class="ui labeled input">
-                    <div class="ui blue label">Gun Fired</div>
+                    <div class="ui blue label">Time Limit</div>
                     <div class="btn btn-default btn-sm time-limit" onclick="limitToggle()">${eventCartItem.timeLimit}</div>
                     <input style="display:none" id="checklimit" type="checkbox" name="timeLimit"></input>
                 </div>
