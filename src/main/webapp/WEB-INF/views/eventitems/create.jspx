@@ -59,6 +59,14 @@
                         <div class="sub header">Provide the details for this product.</div>
                     </div>
                 </h2>
+                <select name="type" class="form-control" id="ticket-type"
+                        data-parsley-error-message="Please select a product type."
+                        data-parsley-required="true">
+                    <option selected="selected" disabled="disabled">Product Type</option>
+                    <option value="TICKET">Ticket</option>
+                    <option value="T_SHIRT">T-shirt</option>
+                    <option value="DONATION">Donation</option>
+                </select>
                 <div class="form-fields">
                     <input  type="text" name="name"
                             class="form-control"
@@ -128,15 +136,6 @@
                                     value=""></input>
                         </div>
                     </div>
-
-                    <select name="type" class="form-control" id="ticket-type"
-                            data-parsley-error-message="Please select a product type."
-                            data-parsley-required="true">
-                        <option selected="selected" disabled="disabled">Product Type</option>
-                        <option value="TICKET">Ticket</option>
-                        <option value="T_SHIRT">T-shirt</option>
-                        <option value="DONATION">Donation</option>
-                    </select>
                     <div class="ui labeled input">
                         <div class="ui label">$</div>
                         <input  type="number" name="price"

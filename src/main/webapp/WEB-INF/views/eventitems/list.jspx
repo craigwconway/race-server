@@ -38,7 +38,7 @@
     <div class="white-overlay">
         <div class="info-container">
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
-            <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button">Add a Product</button></div>
+            <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus"><!--  --></i>product</button></div>
             <h2 class="ui icon header">
               <i class="fa fa-gears fa-2x fa-rotate-90"><!--  --></i>
               <div class="content" style="margin-top:5px">
