@@ -123,34 +123,28 @@
         		Write Bibs
         	</button>
             </sec:authorize> -->
-            <div class="ui stackable grid">
-                <div class="twelve column row">
-                    <div class="left floated three wide column">
-                        <div class="ui input">
-                            <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()" style="width:300px">
-                                <option id="event-0" value="0">All Events</option>
-                                <c:forEach items="${events}" var="event" varStatus="i">
-                                    <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
-                                </c:forEach>
-                            </select>
+            <div class="pull-left">
+                <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()" style="width:300px">
+                    <option id="event-0" value="0">All Events</option>
+                    <c:forEach items="${events}" var="event" varStatus="i">
+                        <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div class="pull-right">
+                <div class="ui form">
+                    <div class="fields">
+                        <div class="field">
+                            <input id="query" placeholder="by Name" type="text"></input>
                         </div>
-                    </div>
-                    <div class="right floated nine wide column">
-                        <div class="ui form">
-                            <div class="fields">
-                                <div class="field">
-                                    <input id="query" placeholder="by Name" type="text"></input>
-                                </div>
-                                <div class="field">
-                                    <input id="bib" placeholder="by Bib" type="text"></input>
-                                </div>
-                                <div class="field">
-                                    <div class="ui button" onclick="search()"><i class="fa fa-search"><!--  --></i></div>
-                                </div>
-                                <div class="field">
-                                    <div class="ui blue button" onclick="addRunner()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>athlete</div>
-                                </div>
-                            </div>
+                        <div class="field">
+                            <input id="bib" placeholder="by Bib" type="text"></input>
+                        </div>
+                        <div class="field">
+                            <div class="ui button" onclick="search()"><i class="fa fa-search"><!--  --></i></div>
+                        </div>
+                        <div class="field">
+                            <div class="ui blue button" onclick="addRunner()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>athlete</div>
                         </div>
                     </div>
                 </div>
