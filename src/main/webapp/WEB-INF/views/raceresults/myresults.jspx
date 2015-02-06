@@ -102,12 +102,12 @@
         <button class="btn btn-primary pull-left btn-top" onclick="addRunner()" style="margin:0;margin-left: 3px;" type="button">
 		Add Runner
 	</button>
-<!--     </sec:authorize> -->
+<!--     </sec:authorize> 
     <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
         <button class="btn btn-success pull-left btn-top" onclick="document.location='/bibs-server/raceresults/bibs';" style="margin:0;margin-left: 3px;" type="button">
 		Write Bibs
 	</button>
-    </sec:authorize>
+    </sec:authorize>-->
     <div class="pull-right">
         <label>Search</label>
         <input class="form-control" id="query" placeholder="by Name" style="width:200px;display:inline;" type="text"/>
