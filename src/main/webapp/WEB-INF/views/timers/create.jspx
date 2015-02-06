@@ -50,57 +50,59 @@
         }
     </style>
     <div class="white-overlay">
-    <div class="ui form info-container">
-        <h2 class="ui icon header">
-            <i class="fa fa-wifi"><!--  --></i>
-            <div class="content">Add Reader
-                <div class="sub header">Provide the details for this reader.</div>
+        <div class="ui form info-container">
+            <h2 class="ui icon header">
+                <i class="fa fa-wifi"><!--  --></i>
+                <div class="content">Add Reader
+                    <div class="sub header">Provide the details for this reader.</div>
+                </div>
+            </h2>
+            <select id="rtype" name="rtype" onchange="changeType()">
+                <option id="type-0" value="0">Demo (No Reader)</option>
+                <option id="type-1" value="1">ThingMagic</option>
+            </select>
+            <select id="pos" name="pos" onchange="changePos()">
+                <option id="starting" value="0">Starting Line</option>
+                <option id="finishing" value="1">Finish Line</option>
+            </select>
+            <div class="form-fields">
+                <input  type="url" name="url"
+                        placeholder="Reader Location"
+                        data-parsley-error-message="Please enter a valid url."
+                        value=""></input>
             </div>
-        </h2>
-        <select id="rtype" name="rtype" onchange="changeType()">
-            <option id="type-0" value="0">Demo (No Reader)</option>
-            <option id="type-1" value="1">ThingMagic</option>
-        </select>
-        <select id="pos" name="pos" onchange="changePos()">
-            <option id="starting" value="0">Starting Line</option>
-            <option id="finishing" value="1">Finish Line</option>
-        </select>
-        <div class="form-fields">
-            <input  type="url" name="url"
-                    placeholder="Reader Location"
-                    data-parsley-error-message="Please enter a valid url."
-                    value=""></input>
-        </div>
-        <div class="form-fields">
-            <input  type="number" name="readTimeout"
-                    placeholder="Read Timeout"
-                    data-parsley-error-message="Invalid timeout number."
-                    value=""></input>
-        </div>
-        <div class="form-fields">
-            <input  type="text" name="ports"
-                    placeholder="Ports"
-                    data-parsley-error-message="Please indicate port numbers separated by commas. (e.g. 1,2,3)"
-                    value=""></input>
-        </div>
-        <div class="form-fields">
-            <input  type="number" name="connectionTimeout"
-                    placeholder="Connection Timeout"
-                    data-parsley-error-message="Invalid timeout number."
-                    value=""></input>
-        </div>
-        <div class="form-fields">
-            <input  type="text" name="filename"
-                    placeholder="Filename"
-                    data-parsley-error-message="Invalid filename."
-                    value=""></input>
-        </div>
-        <form:create id="fc_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" render="${empty dependencies}" z="YzUgA5KW7YH0/ivLKZagV+5WiHs=">
-            <field:input field="position" id="c_com_bibsmobile_model_TimerConfig_position" z="yamQ8KWzGfWz+41JyeNXITbQ6K4="/>
-            <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
-            <field:input field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" render="false" z="user-managed"/>
-            <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" render="false" z="user-managed"/>
-        </form:create>
+            <div class="form-fields">
+                <input  type="number" name="readTimeout"
+                        placeholder="Read Timeout"
+                        data-parsley-error-message="Invalid timeout number."
+                        value=""></input>
+            </div>
+            <div class="form-fields">
+                <input  type="text" name="ports"
+                        placeholder="Ports"
+                        data-parsley-error-message="Please indicate port numbers separated by commas. (e.g. 1,2,3)"
+                        value=""></input>
+            </div>
+            <div class="form-fields">
+                <input  type="number" name="connectionTimeout"
+                        placeholder="Connection Timeout"
+                        data-parsley-error-message="Invalid timeout number."
+                        value=""></input>
+            </div>
+            <div class="form-fields">
+                <input  type="text" name="filename"
+                        placeholder="Filename"
+                        data-parsley-error-message="Invalid filename."
+                        value=""></input>
+            </div>
+            <form:create id="fc_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" render="${empty dependencies}" z="YzUgA5KW7YH0/ivLKZagV+5WiHs=">
+                <div style="display:none">
+                    <field:input field="position" id="c_com_bibsmobile_model_TimerConfig_position" z="yamQ8KWzGfWz+41JyeNXITbQ6K4="/>
+                    <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
+                    <field:input field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" render="false" z="user-managed"/>
+                    <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" render="false" z="user-managed"/>
+                </div>
+            </form:create>
         </div>
     </div>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_TimerConfig" render="${not empty dependencies}" z="wKZtWYD4VUhFJUi1mFDoCmL7dQY="/>
