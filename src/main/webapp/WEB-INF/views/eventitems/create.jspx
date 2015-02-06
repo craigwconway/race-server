@@ -188,11 +188,14 @@
                 errorTemplate: '<span></span>'
             });
 
-            jQuery("#lowAge").change(function(){
+            jQuery("#lowAge").on('input', function(){
                 var low = jQuery("#lowAge").val();
                 var high = jQuery("#highAge").val();
-                if( (low == null) || (low == 0) ){ jQuery("#lowAge").val(""); }
-                if( high !== null ){
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+                if( high !== "" ){
                     if( low &gt;= high ){
                         jQuery(this).val(high);
                     }
@@ -202,11 +205,13 @@
                 }
             });
 
-            jQuery("#highAge").change(function(){
+            jQuery("#highAge").on('input', function(){
                 var low = jQuery("#lowAge").val();
                 var high = jQuery("#highAge").val();
-                if( (high == null) || (high == 0) ){ jQuery("#highAge").val("") }
-                if( low !== null ){
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+                if( low !== "" ){
                     if( high &lt;= low ){
                         jQuery(this).val(low);
                     }

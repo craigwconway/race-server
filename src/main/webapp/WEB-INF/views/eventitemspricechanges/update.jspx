@@ -208,6 +208,39 @@
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
             });
+
+            jQuery("#lowAge").on('input', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+                if( high !== "" ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highAge").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery("#highAge").on('input', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+                if( low !== "" ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowAge").attr("max", jQuery(this).val());
+                    }
+                }
+            });
         }
         
         function teamToggle(){
