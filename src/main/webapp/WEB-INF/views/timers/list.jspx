@@ -27,8 +27,11 @@
     </style>
     <div class="white-overlay">
         <div class="info-container">
-            <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/timers?form';" type="button">
-            	Add Reader</button>
+            <div class="pull-right">
+                <button class="ui button" onclick="document.location='/bibs-server/timers?form';" type="button">
+                	<i class="fa fa-plus"><!--  --></i> reader</button>
+            </div>
+            <div class="clearfix"><!--  --></div>
             <!--
             <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/userprofiles';" type="button">
                 Manage Users</button>
