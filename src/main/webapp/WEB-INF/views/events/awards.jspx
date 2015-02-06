@@ -33,30 +33,18 @@
 		b {
 			fint-size: 15px;
 		}
-
 		input {
 			margin-left: 6px;
 		}
-
 		label {
 			width: 100px;
 			text-align:right;
 		}
-
 		i{
 			margin-left: 10px;
 		}
-
 		.awards-title {
 			font-size: 18px;
-		}
-
-		.fa-trash{
-			color: #DD0000;
-		}
-
-		.awards-table {
-			
 		}
 	</style>
 	<div class="white-overlay">
@@ -120,12 +108,8 @@
 							<th colspan="6">
 								<span class="awards-title">${acr.category.name}</span>
 								<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-									<span style="padding: 4px;">
-										<a href="/bibs-server/awardcategorys/${acr.category.id}?form" title="Edit"><i class="fa fa-edit fa-2x"><!--  --></i></a>
-									</span>
-									<span style="padding: 4px;">
-										<a href="javascript:deleteAwardCategory(${acr.category.id})" title="Delete"><i class="fa fa-trash fa-2x"><!--  --></i></a>
-									</span>
+									<div class="pull-right"><a href="/bibs-server/awardcategorys/${acr.category.id}?form" title="Edit"><div class="ui icon yellow button"><i style="margin-left:0; margin-right: 0" class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
+									<a href="javascript:deleteAwardCategory(${acr.category.id})" title="Delete"><div class="ui icon red button"><i style="margin-left:0; margin-right: 0" class="fa fa-trash"><!--  --></i></div></a></div>
 								</sec:authorize>
 							</th>
 						</tr>
