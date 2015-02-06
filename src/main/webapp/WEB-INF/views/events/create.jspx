@@ -38,7 +38,7 @@
     <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
         <div class="info-container">
             <h2 class="ui icon header">
-                <i class="fa fa-cog"><!--  --></i>
+                <i class="fa fa-bullhorn"><!--  --></i>
                 <div class="content">Create Event
                     <div class="sub header">Provide the details for this future event.</div>
                 </div>

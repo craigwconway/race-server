@@ -24,12 +24,15 @@
             line-height: 27px;
             color: #292929;
         }
+        .info-container button{
+            float: right;
+        }
     </style>
     <div class="white-overlay">
         <div class="info-container">
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/events?form';" type="button">
-        		Add Event
+        		<span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> event</span>
         		</button>
         		<!-- <button class="btn btn-default btn-top" onclick="redirectMegaexport()" type="button">Megaexport</button> -->
             </sec:authorize>
