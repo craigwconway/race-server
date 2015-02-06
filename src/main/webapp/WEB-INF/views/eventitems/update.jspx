@@ -125,13 +125,13 @@
                 </div>
                 <div class="ui labeled input">
                     <div class="ui blue label">Gender</div>
-                    <select class="ui dropdown" id="gender-type" name="gender"
-                            data-parsley-error-message="Please select a gender.">
-                        <option value="">Gender</option>
-                        <option value="MALE_AND_FEMALE">Both</option>
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                    </select>
+                        <select class="ui dropdown" id="gender-type" name="gender"
+                                data-parsley-error-message="Please select a gender.">
+                            <option value="">Gender</option>
+                            <option id="gender-x" value="MALE_AND_FEMALE">Any</option>
+                            <option id="gender-f" value="MALE">Male</option>
+                            <option id="gender-m" value="FEMALE">Female</option>
+                        </select>
                 </div>
                 <div class="ui labeled input">
                     <div class="ui blue label">Min Age</div>
@@ -192,13 +192,12 @@
                 </div>
             </div>
         </div>
+        <div style="display:none"><field:select field="gender" id="c_com_bibsmobile_model_EventCartItem_gender" items="${eventcartitemgenderenums}" path="eventcartitemgenderenums" z="+Jg/WI19uo3scDKsAgDOwlnJVVA="/><field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/></div>
         </form:update>
     </div>
 
     <script>
         window.onload=function(){
-            setValidation();
-            initDateTimePickers();
             jQuery(".time-limit").each(function(){
                 var content = jQuery(this).html();
                 if(content === "true"){
@@ -208,7 +207,16 @@
                     jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
                 }
             })
-            jQuery('select.dropdown').dropdown();
+            
+            setValidation();
+            initDropdowns();
+            initDateTimePickers();
+        }
+
+        function initDropdowns(){
+            jQuery('#event-type').dropdown('set selected', '${eventCartItem.event.id}');
+            jQuery('#gender-type').dropdown('set selected', '${eventCartItem.gender}');
+            jQuery('#ticket-type').dropdown('set selected', '${eventCartItem.type}');
         }
 
         function limitToggle(){
@@ -255,6 +263,12 @@
         }
 
         function initDateTimePickers(){
+            var start = "${eventCartItem.timeStart}";
+            var end = "${eventCartItem.timeEnd}";
+            var momStart = moment(start).format('MM/DD/YYYY h:mm:ss a');
+            var momEnd = moment(end).format('MM/DD/YYYY h:mm:ss a');
+            jQuery("#ECIStart").val(momStart);
+            jQuery("#ECIEnd").val(momEnd);
             jQuery("#ECIStart")
                 .datetimepicker({
                     defaultDate: moment().startOf('day'),
