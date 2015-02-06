@@ -1,12 +1,9 @@
 package com.bibsmobile.model;
 
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.transaction.annotation.Transactional;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,19 +17,43 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.transaction.annotation.Transactional;
+
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
 public class EventCartItemPriceChange {
 
+	// Here is a big constructor
+    public EventCartItemPriceChange(Date startDate, Date endDate,
+			String categoryName, int lowAgeThreshold, int highAgeThreshold,
+			EventCartItemGenderEnum gender, boolean team,
+			EventCartItem eventCartItem, long price) {
+		super(); // lots of parameters
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.categoryName = categoryName;
+		this.lowAgeThreshold = lowAgeThreshold;
+		this.highAgeThreshold = highAgeThreshold;
+		this.gender = gender;
+		this.team = team;
+		this.eventCartItem = eventCartItem;
+		this.price = price;
+	}
+
     // Here is a little constructor
 	public EventCartItemPriceChange() {
 		super(); // No parameters
 	}
+
+    
     
 	/**
      */
@@ -60,12 +81,6 @@ public class EventCartItemPriceChange {
     /**
      */
     private long price;
-
-    public boolean isValidAt(Date date) {
-        boolean atStartDate = (this.getStartDate() != null && this.getStartDate().compareTo(date) <= 0);
-        boolean atEndDate = (this.getEndDate() != null && this.getEndDate().compareTo(date) >= 0);
-        return (atStartDate && atEndDate);
-    }
 
     public Date getStartDate() {
         return this.startDate;
