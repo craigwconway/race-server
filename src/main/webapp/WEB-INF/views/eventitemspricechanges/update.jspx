@@ -99,7 +99,7 @@
                     </div>
                     <div class="ui labeled input">
                         <div class="ui blue label">Start Date</div>
-                            <input  type="text" name="timeStart"
+                            <input  type="text" name="startDate"
                                 id="pcStart"
                                 placeholder="Price start date"
                                 value="${eventCartItemPriceChange.startDate}"
@@ -110,7 +110,7 @@
                     </div>
                     <div class="ui labeled input">
                         <div class="ui blue label">End Date</div>
-                            <input  type="text" name="timeEnd"
+                            <input  type="text" name="endDate"
                                 id="pcEnd"
                                 placeholder="Price end date"
                                 value="${eventCartItemPriceChange.endDate}"
@@ -131,12 +131,12 @@
                     </div>
                     <div class="ui labeled input">
                         <div class="ui blue label">Gender</div>
-                        <select class="ui dropdown" id="award-gender" name="gender"
+                        <select class="ui dropdown" id="gender-type" name="gender"
                                 data-parsley-error-message="Please select a gender.">
                             <option value="">Gender</option>
-                            <option id="gender-x" value="x">Any</option>
-                            <option id="gender-f" value="M">Male</option>
-                            <option id="gender-m" value="F">Female</option>
+                            <option id="gender-x" value="MALE_AND_FEMALE">Any</option>
+                            <option id="gender-f" value="MALE">Male</option>
+                            <option id="gender-m" value="FEMALE">Female</option>
                         </select>
                     </div>
                     <div class="ui labeled input">
@@ -146,7 +146,6 @@
                     </div>
                     <div style="display:none">
                         <field:select field="eventCartItem" id="c_com_bibsmobile_model_EventCartItemPriceChange_eventCartItem" itemValue="id" items="${eventcartitems}" itemLabel="name" path="/eventitems" z="user-managed"/>
-                        <field:select field="gender" id="c_com_bibsmobile_model_EventCartItemPriceChange_gender" items="${eventcartitempricechangegenderenums}" path="eventcartitempricechangegenderenums" z="pcBsWrGiipZzQXlspoZn+Gh+RKk="/>
                     </div>
                 </div>
             </div>
@@ -154,8 +153,6 @@
         </div>
     <script>
         window.onload = function(){
-            setValidation();
-            jQuery('select.dropdown').dropdown();
 
             jQuery(".med-button").each(function(){
                 var content = jQuery(this).html();
@@ -166,13 +163,44 @@
                     jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
                 }
             })
-            var gender = jQuery("#_c_com_bibsmobile_model_EventCartItemPriceChange_gender_id").val();
-            if("x" == gender)   
-                document.getElementById("gender-x").selected=true;
-            if("F" == gender)   
-                document.getElementById("gender-f").selected=true;
-            if("M" == gender)
-                document.getElementById("gender-m").selected=true;
+
+            initDropdowns();
+            initDateTimePickers();
+            setValidation();
+        }
+
+        function initDropdowns(){
+            jQuery('#gender-type').dropdown('set selected', '${eventCartItemPriceChange.gender}');
+        }
+
+        function initDateTimePickers(){
+            var start = "${eventCartItemPriceChange.startDate}";
+            var end = "${eventCartItemPriceChange.endDate}";
+            console.log(end);
+            var momStart = moment(start).format('MM/DD/YYYY h:mm:ss a');
+            var momEnd = moment(end).format('MM/DD/YYYY h:mm:ss a');
+            jQuery("#pcStart").val(momStart);
+            jQuery("#pcEnd").val(momEnd);
+            jQuery("#pcStart")
+                .datetimepicker({
+                    defaultDate: moment().startOf('day'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery("#pcEnd")
+                .datetimepicker({
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery('#pcEnd').data("DateTimePicker").setMinDate(jQuery("#pcStart").data("DateTimePicker").getDate());
+
+            <!-- on change-ui -->
+            jQuery("#pcStart").on("dp.change",function (e) {
+                jQuery('#pcEnd').data("DateTimePicker").setMinDate(e.date);
+            });
+            jQuery("#pcEnd").on("dp.change",function (e) {
+                jQuery('#pcStart').data("DateTimePicker").setMaxDate(e.date);
+            });
         }
 
         function setValidation(){
