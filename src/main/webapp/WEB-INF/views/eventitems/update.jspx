@@ -1,21 +1,280 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    ${eventCartItem.event.name}
-    <form:update id="fu_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" versionField="Version" z="PdYR4Rq85GJZ0+pKtpmrAP5I3PY=">
-        <field:select field="event" id="c_com_bibsmobile_model_EventCartItem_event" itemValue="id" items="${events}" path="/events" z="Mpt8K6YrAEB3O0PYBS7l4NwMCU8="/>
-        <field:input field="name" id="c_com_bibsmobile_model_EventCartItem_name" z="dSVCfVY0Ubmxz6e6aYw3W6ve1ic="/>
-        <field:input field="description" id="c_com_bibsmobile_model_EventCartItem_description" z="PUHaF+kcXtSHZosW2pLOs4XAOYc="/>
-        <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
-        <field:datetime dateTimePattern="${eventCartItem_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_EventCartItem_timeStart" z="R67dcL0GUsFRBsgYDAp1Zl48lYc="/>
-        <field:datetime dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_EventCartItem_timeEnd" z="kq5uOMjsGDgMTTJLRga/lgiNCI0="/>
-        <field:input field="available" id="c_com_bibsmobile_model_EventCartItem_available" z="zHPmOaa/kg0T8qHJQjSiKu0Wu8s="/>
-        <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" required="true" z="g+W9OR2k/yrQ4Pj87bO3WG88/SU="/>
-        <field:input field="minAge" id="c_com_bibsmobile_model_EventCartItem_minAge" z="gLMoH8RvkqgTOLu7e6f+ru8/Akg="/>
-        <field:input field="maxAge" id="c_com_bibsmobile_model_EventCartItem_maxAge" z="gxKwAx4uoNx6quMhyMo4rXfd2jA="/>
-        <field:select field="gender" id="c_com_bibsmobile_model_EventCartItem_gender" items="${eventcartitemgenderenums}" path="eventcartitemgenderenums" z="+Jg/WI19uo3scDKsAgDOwlnJVVA="/>
-        <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
-        <field:input field="price" id="c_com_bibsmobile_model_EventCartItem_price" z="5a38EjZfb2r/0Aw0kSlEQrbjT2E="/>
-    </form:update>
+    <style>
+        body{
+            background-image: url('../images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            font-weight: 100;
+            color: #292929;
+        }
+        .ui.labeled.input {
+            display: table;
+            margin: 5px auto;
+            text-align: left;
+            width: 400px;
+        }
+        .ui.labeled.input > .label {
+            width: 25%;
+        }
+        .ui.button, .ui.button:hover{
+            width: 8%;
+            color: #DD0000;
+        }
+        .form-fields>input{
+            width: 400px;
+            margin: 5px auto; 
+        }
+        .ui.selection.dropdown{
+            width: 100%;
+            height: 34px;
+            line-height: 0.65em;
+            font-size: 1em;
+        }
+        .ui.form{
+            width: 400px;
+            margin: 0 auto;
+        }
+        .ui.labeled.input input[type="number"]{
+            height: 36px;
+        }
+        .ui.textarea, .ui.form textarea{
+            width: 400px;
+            margin: 5px auto;
+            height: 0;
+            min-height: 5em;
+        }
+        .submit{
+            margin: 0 auto;
+            width: 400px;
+            text-align: right;
+        }
+    </style>
+    <div class="white-overlay">
+        <form:update id="fu_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" versionField="Version" z="PdYR4Rq85GJZ0+pKtpmrAP5I3PY=">
+        <div class="info-container">
+            <h2 class="ui icon header">
+                <i class="fa fa-cog"><!--  --></i>
+                <div class="content">Edit Product
+                    <div class="sub header">Edit the details for ${eventCartItem.name}.</div>
+                </div>
+            </h2>
+
+            <div class="form-horizontal">
+                <div class="ui labeled input">
+                    <div class="ui blue label">Event</div>
+                    <select class="ui dropdown" id="event-type" name="event"
+                            data-parsley-error-message="Please select an event.">
+                        <option value="">Select Event</option>
+                        <c:forEach var="item" items="${events}">
+                            <option value="${item.id}">${item}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Name</div>
+                    <input  type="text" name="name"
+                            class="form-control"
+                            placeholder="Product name"
+                            value="${eventCartItem.name}"
+                            data-parsley-error-message="Please enter a product name."
+                            data-parsley-required="true"></input>
+                </div>
+                <div class="ui form form-fields">
+                    <textarea  name="description"
+                        placeholder="Product description"
+                        value="${eventCartItem.description}"><!-- --></textarea>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Item Sale Start Date: </label>
+                            <input  type="text" name="timeStart"
+                                id="ECIStart"
+                                placeholder="Price start date"
+                                value="${eventCartItem.timeStart}"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-parsley-error-message="Please specify a start date."
+                                data-parsley-required="true"></input>
+                        </div>
+                        <div class="field">
+                            <label>Item Sale End Date: </label>
+                            <input  type="text" name="timeEnd"
+                                id="ECIEnd"
+                                placeholder="Price end date"
+                                value="${eventCartItem.timeEnd}"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-parsley-error-message="Please specify an end date."
+                                data-parsley-required="true"></input>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Gender</div>
+                    <select class="ui dropdown" id="gender-type" name="gender"
+                            data-parsley-error-message="Please select a gender.">
+                        <option value="">Gender</option>
+                        <option value="MALE_AND_FEMALE">Both</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
+                    </select>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Min Age</div>
+                        <input  type="number" name="minAge"
+                                id="lowAge"
+                                placeholder="Min Age"
+                                min="1"
+                                max="120"
+                                value="${eventCartItem.minAge}"
+                                data-parsley-error-message="Invalid age."
+                                data-parsley-required="true"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Max Age</div>
+                        <input  type="number" name="maxAge"
+                                id="highAge"
+                                placeholder="Max Age"
+                                min="1"
+                                max="120"
+                                value="${eventCartItem.maxAge}"
+                                data-parsley-error-message="Invalid age."
+                                data-parsley-required="true"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Type</div>
+                    <select name="type" class="ui dropdown" id="ticket-type"
+                            data-parsley-error-message="Please select a product type."
+                            data-parsley-required="true">
+                        <option value="">Product Type</option>
+                        <option value="TICKET">Ticket</option>
+                        <option value="T_SHIRT">T-shirt</option>
+                        <option value="DONATION">Donation</option>
+                    </select>
+                </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Price ($)</div>
+                        <input  type="number" name="price"
+                                class="form-control"
+                                placeholder="Base price"
+                                min="1"
+                                value="${eventCartItem.price}"
+                                data-parsley-error-message="Invalid base price."
+                                data-parsley-required="true"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Quantity</div>
+                    <input  type="number" name="available"
+                            placeholder="Quantity"
+                            min="1" value="${eventCartItem.available}"
+                            data-parsley-error-message="Invalid maximum quantity."
+                            data-parsley-required="true"></input>
+                </div>
+
+                <div class="ui labeled input">
+                    <div class="ui blue label">Gun Fired</div>
+                    <div class="btn btn-default btn-sm time-limit" onclick="limitToggle()">${eventCartItem.timeLimit}</div>
+                    <input style="display:none" id="checklimit" type="checkbox" name="timeLimit"></input>
+                </div>
+            </div>
+        </div>
+        </form:update>
+    </div>
+
+    <script>
+        window.onload=function(){
+            setValidation();
+            initDateTimePickers();
+            jQuery(".time-limit").each(function(){
+                var content = jQuery(this).html();
+                if(content === "true"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+                }
+                else if(content === "false"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
+                }
+            })
+            jQuery('select.dropdown').dropdown();
+        }
+
+        function limitToggle(){
+            jQuery("#checklimit").prop("checked", function(i, val) {
+                var str = val ? 'glyphicon-ok' : 'glyphicon-remove';
+                jQuery(".time-limit").html('<span class="glyphicon ' + str + '"></span>')
+                return !val;
+            });
+        }
+
+        function setValidation(){
+            jQuery('#eventCartItem').parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
+            });
+
+            jQuery("#lowAge").change(function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                if( (low == null) || (low == 0) ){ jQuery("#lowAge").val(""); }
+                if( high !== null ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highAge").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery("#highAge").change(function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                if( (high == null) || (high == 0) ){ jQuery("#highAge").val("") }
+                if( low !== null ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowAge").attr("max", jQuery(this).val());
+                    }
+                }
+            });
+        }
+
+        function initDateTimePickers(){
+            jQuery("#ECIStart")
+                .datetimepicker({
+                    defaultDate: moment().startOf('day'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery("#ECIEnd")
+                .datetimepicker({
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+
+            <!-- on change-ui -->
+            jQuery("#ECIStart").on("dp.change",function (e) {
+                jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+            });
+            jQuery("#ECIEnd").on("dp.change",function (e) {
+                jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+            });
+        }
+    </script>
 </div>
