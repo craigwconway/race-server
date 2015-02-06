@@ -8,7 +8,7 @@
             <field:input field="age" id="c_com_bibsmobile_model_RaceResult_age" z="yZ94xj05TOypkGqmv/EMn/G6TAw="/>
         </div>
         <div style="width: 40%; margin-left: 3%;">
-        <h3>Edit Runner</h3>
+        <h3>Edit Athlete</h3>
         <div class="row">
             <div class="col-md-4 col-sm-4" style="margin-left:0;padding-left:0;">
             <input  type="number" name="bib" value="${raceResult.bib}"

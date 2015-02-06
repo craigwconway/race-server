@@ -55,8 +55,8 @@
         <div class="ui form info-container">
             <h2 class="ui icon header">
                 <i class="fa fa-cog"><!--  --></i>
-                <div class="content">Add Runner
-                    <div class="sub header">Provide the details for this runner.</div>
+                <div class="content">Add Athlete
+                    <div class="sub header">Provide the details for this athlete.</div>
                 </div>
             </h2>
             <select class="form-control" id="event-type" name="event"
