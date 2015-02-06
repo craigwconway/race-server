@@ -36,8 +36,10 @@ public class EveryoneHatesSpringController {
 			// Case: Sysadmin: the user is using this on raceday.
 			events = Event.findEventEntries(0, 3, "id", "DESC");			
 		} else if(PermissionsUtil.isVaguelyEventAdmin(loggedInUser)) {
+			System.out.println("evenadmin detected");
 			// Case: Eventadmin: the user is using this on the bibs website.
 			events = Event.findEventsForUser(loggedInUser, 0, 3, "id", "DESC");
+			System.out.println(events);
 			if(null == events) {
 				uiModel.addAttribute("events", null);
 				uiModel.addAttribute("build", BuildTypeUtil.getBuild());
@@ -45,9 +47,11 @@ public class EveryoneHatesSpringController {
 			} else {
 				uiModel.addAttribute("events", events);
 				uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+				return "index";
 			
 			}
-			// Now we need to filter events by date			
+			// Now we need to filter events by date
+			/*
 			events.toArray();
 			Collections.sort(events, new Comparator<Event>() {
 				public int compare(Event e1, Event e2) {
@@ -95,7 +99,7 @@ public class EveryoneHatesSpringController {
 			    uiModel.addAttribute("build", BuildTypeUtil.getBuild());
 			    return "index";
 			}
-			
+			*/
 		} else {
 			events = null;
 		}
