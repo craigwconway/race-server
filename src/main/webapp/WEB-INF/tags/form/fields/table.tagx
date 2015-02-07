@@ -83,7 +83,8 @@
         </tr>
       </thead>
       <c:forEach items="${data}" var="item">
-        <spring:url value="${path}/${itemId+1}" var="show_form_url" />
+        <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
+        <spring:url value="${path}/${itemId}" var="show_form_url" />
         <tr class="clickable-row" href="${show_form_url}">
           <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
 <!--           <td class="utilbox">
