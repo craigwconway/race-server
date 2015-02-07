@@ -62,14 +62,14 @@
             </h2>
             <div class="ui labeled input">
                 <div class="ui blue label">Reader Type</div>
-                <select class="ui dropdown" id="rtype" name="rtype" onchange="changeType()">
+                <select class="ui dropdown" id="rtype" name="type">
                     <option id="type-0" value="0">Demo (No Reader)</option>
                     <option id="type-1" value="1">ThingMagic</option>
                 </select>
             </div>
             <div class="ui labeled input">
                 <div class="ui blue label">Position</div>
-                <select class="ui dropdown" id="pos" name="pos" onchange="changePos()">
+                <select class="ui dropdown" id="pos" name="position">
                     <option id="starting" value="0">Starting Line</option>
                     <option id="finishing" value="1">Finish Line</option>
                 </select>
@@ -85,7 +85,7 @@
             </div>
             <div class="ui labeled input">
                 <div class="ui blue label">Reader Location</div>
-                <input  type="url" name="url"
+                <input  type="string" name="url"
                         placeholder="Reader Location"
                         data-parsley-error-message="Please enter a valid url."
                         value="${timerConfig.url}"></input>
@@ -119,12 +119,6 @@
             // ports
             initPorts();
         };
-        function changeType(){
-           jQuery("#_type_id").val(document.getElementById("rtype").value);
-       }
-       function changePos(){
-           jQuery("#_position_id").val(document.getElementById("pos").value);
-       }
        function updatePorts(){
             var ports = "";
             jQuery('.ui.button').each(function() {
@@ -132,7 +126,9 @@
                     ports += jQuery(this).text()+","
                 }
             });
+            ports = ports.substring(0, ports.length - 1);
             jQuery("#ports").val(ports);
+            console.log(ports);
        }
        function initPorts(){
             jQuery('.ui.button').state();

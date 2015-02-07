@@ -57,18 +57,18 @@
                     <div class="sub header">Provide the details for this reader.</div>
                 </div>
             </h2>
-            <select id="rtype" name="rtype" onchange="changeType()">
+            <select id="type" name="type">
                 <option id="type-0" value="0">Demo (No Reader)</option>
                 <option id="type-1" value="1">ThingMagic</option>
             </select>
-            <select id="pos" name="pos" onchange="changePos()">
+            <select id="position" name="position">
                 <option id="starting" value="0">Starting Line</option>
                 <option id="finishing" value="1">Finish Line</option>
             </select>
             <div class="form-fields">
-                <input  type="url" name="url"
+                <input  type="text" name="url"
                         placeholder="Reader Location"
-                        data-parsley-error-message="Please enter a valid url."
+                        data-parsley-error-message="Please enter a valid IP address."
                         value=""></input>
             </div>
             <div class="form-fields">
@@ -116,12 +116,5 @@
     	if(1 == Math.max(0,jQuery("#_position_id").val()))
     		document.getElementById("finishing").selected=true;
         jQuery("#_c_com_bibsmobile_model_TimerConfig_position_id").hide();
-    };
-   	function changeType(){
-   		jQuery("#_type_id").val(document.getElementById("rtype").value);
-    }
-   	function changePos(){
-   		jQuery("#_position_id").val(document.getElementById("pos").value);
-    }
-    </script>
+    };    </script>
 </div>
