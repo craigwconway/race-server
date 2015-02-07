@@ -77,10 +77,10 @@
             <div class="ui labeled input">
                 <div class="ui blue label">Ports</div>
                 <div class="ui active buttons">
-                    <div class="ui toggle button" id="port-1">1</div>
-                    <div class="ui toggle button" id="port-2">2</div>
-                    <div class="ui toggle button" id="port-3">3</div>
-                    <div class="ui toggle button" id="port-4">4</div>
+                    <div class="ui toggle button" id="port-1" onclick="updatePorts(1)">1</div>
+                    <div class="ui toggle button" id="port-2" onclick="updatePorts(2)">2</div>
+                    <div class="ui toggle button" id="port-3" onclick="updatePorts(3)">3</div>
+                    <div class="ui toggle button" id="port-4" onclick="updatePorts(4)">4</div>
                 </div>
             </div>
             <div class="ui labeled input">
@@ -119,16 +119,22 @@
             // ports
             initPorts();
         };
-       function updatePorts(){
-            var ports = "";
-            jQuery('.ui.button').each(function() {
-                if(jQuery(this).hasClass("active")){
-                    ports += jQuery(this).text()+","
-                }
-            });
-            ports = ports.substring(0, ports.length - 1);
-            jQuery("#ports").val(ports);
-            console.log(ports);
+        var one = false; var two = false; var three = false; var four = false;
+        function updatePorts(val){
+            if( val == 1 ){ one = !one; }
+            if( val == 2 ){ two = !two; }
+            if( val == 3 ){ three = !three; }
+            if( val == 4 ){ four = !four; }
+            var str = "";
+            if(one){ str += "1," }
+            if(two){ str += "2," }
+            if(three){ str += "3," }
+            if(four){ str += "4," }
+            if(str.length > 1){
+                str = str.substr(0, str.length-1);
+            }
+            jQuery("#ports").val(str);
+            console.log(str);
        }
        function initPorts(){
             jQuery('.ui.button').state();
