@@ -115,7 +115,7 @@
                     <div class="two fields">
                         <div class="field">
                             <label><!--  --></label>
-                            <input  type="number" name="lowAgeThreshold"
+                            <input  type="number" name="minAge"
                                     id="lowAge"
                                     placeholder="Min Age"
                                     min="1"
@@ -126,7 +126,7 @@
                         </div>
                         <div class="field">
                             <label><!--  --></label>
-                            <input  type="number" name="highAgeThreshold"
+                            <input  type="number" name="maxAge"
                                     id="highAge"
                                     placeholder="Max Age"
                                     min="1"
