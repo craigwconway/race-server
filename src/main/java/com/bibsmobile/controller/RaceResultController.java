@@ -240,10 +240,9 @@ public class RaceResultController {
 
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
-        this.addDateTimeFormatPatterns(uiModel);
-        uiModel.addAttribute("raceresult", RaceResult.findRaceResult(id));
-        uiModel.addAttribute("itemId", id);
-        return "raceresults/show";
+    	// sketchy bait-and-switch because that's what bibs does
+        this.populateEditForm(uiModel, RaceResult.findRaceResult(id));
+        return "raceresults/update";
     }
 
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
@@ -353,6 +352,8 @@ public class RaceResultController {
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
+    	// TODO: Restrict this to RFID only builds. If we do this with the live results
+    	// and someone leaves announcermode running, the server becomes dead.
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         List<RaceResult> result = RaceResult.findAllRaceResults();
