@@ -81,7 +81,7 @@ function runnerSearchResultsTable(data){
 		var city = (null!=data[i].city) ? data[i].city : "";
 		var state = (null!=data[i].state) ? data[i].state : "";
 		
-		results += "<tr onclick=\"document.location='/bibs-server/raceresults/"+data[i].id+"';\">";
+		results += "<tr onclick=\"document.location='/bibs-server/raceresults/"+data[i].id+"?form';\">";
 		results += "<td>&nbsp;</td>";
 		results += "<td>"+bib+"</td>";
 		results += "<td>"+firstname+"</td>";

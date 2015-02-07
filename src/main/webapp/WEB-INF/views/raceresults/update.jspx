@@ -55,6 +55,9 @@
         .ui.action.input:not([class*="left action"]) > .button, .ui.action.input:not([class*="left action"]) > .buttons > .button{
             width:10%;
         }
+        i{
+            margin-right: 5px;
+        }
     </style>
     <div class="white-overlay">
         <form:update id="fu_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" versionField="Version" z="F9aarHhR5nq4t+oI83y+vKqDH/g=">
@@ -63,6 +66,8 @@
                 <field:input field="age" id="c_com_bibsmobile_model_RaceResult_age" z="yZ94xj05TOypkGqmv/EMn/G6TAw="/>
             </div>
             <div class="ui form info-container">
+                <div class="pull-right"><button onclick="if( confirm('Are you sure want to delete this athlete?') ) document.getElementById('deleteForm').submit();" class="ui red button" type="button"><i class="fa fa-trash"><!--  --></i>delete</button></div>
+                <div style="clear:both"><!--  --></div>
                 <h2 class="ui icon header">
                     <i class="fa fa-cog"><!--  --></i>
                     <div class="content">Edit Athlete
