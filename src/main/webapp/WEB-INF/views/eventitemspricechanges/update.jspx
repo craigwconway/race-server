@@ -226,7 +226,7 @@
                 }
             });
 
-            jQuery("#highAge").on('input', function(){
+            jQuery("#highAge").on('change', function(){
                 var low = jQuery("#lowAge").val();
                 var high = jQuery("#highAge").val();
                 low = parseInt(low);
