@@ -38,12 +38,16 @@
     </style>
     <div class="white-overlay">
         <div style="width:500px; margin: 0 auto;">
+            <div class="pull-left">
+                <button class="btn btn-default btn-top" onclick="onBack()" type="button">Back</button>
+                <a href="/bibs-server/eventitemspricechanges/${item.id}?form" title="Edit"><div class="ui icon yellow button"><i style="margin-right:0" class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
+                        <a href="javascript:deletePriceChange(${item.id})" title="Delete"><div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div></a>
+            </div>
             <div class="pull-right">
                 <button class="btn btn-default btn-top" onclick="priceChanges()" type="button">Price Changes</button>
             </div>
         </div>
-
-    <page:show id="ps_com_bibsmobile_model_EventCartItem" object="${eventcartitem}" path="/eventitems" z="0Vio973EeZc1TEtv7EngzcpLOg0=">
+        <div style="clear:both"></div>
         <div class="info-container">
             <h2 class="ui icon header" style="margin-top:10px">
                 <c:if test="${eventcartitem.type == 'TICKET'}">
@@ -83,9 +87,11 @@
               </div>
             </div>
         </div>
-    </page:show>
     </div>
     <script>
+        function onBack(){
+            window.history.back();
+        }
         function priceChanges(){
             window.location="/bibs-server/eventitemspricechanges?eventitem=${eventcartitem.id}";
         }

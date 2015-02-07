@@ -84,6 +84,9 @@
                 jQuery(this).text(momdate);
             })
         }
+        function onBack(){
+            window.history.back();
+        }
         function addItemPriceChange(){
             window.location="/bibs-server/eventitemspricechanges?form&amp;eventitem=${eventitem.id}";
         }
