@@ -18,7 +18,7 @@
 <spring:url value="/resources/scripts/nv.d3.min.js" var="nvd3_url" />
 <spring:url value="/resources/scripts/parsley.min.js" var="parsley_url" />
 
-<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places">;//?</script>
+<script src="//maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places">;//?</script>
 <script src="${moment_url}" type="text/javascript">;//?</script>
 <script src="${bootjs_url}" type="text/javascript">;//?</script>
 <script src="${semantic_url}" type="text/javascript">;//?</script>
@@ -79,7 +79,7 @@
   <!-- <link href="${slider_css_url }" rel="stylesheet"/> -->
 
   <!-- FONTS -->
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans:100,300,400" rel="stylesheet" type="text/css"/>
+  <link href="//fonts.googleapis.com/css?family=Open+Sans:100,300,400" rel="stylesheet" type="text/css"/>
 
   <style>
   	.box{ display:inline !important;}
