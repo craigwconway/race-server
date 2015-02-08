@@ -8,87 +8,87 @@
     }
     </style>
     <script>
-    var event = getUrlParam('event');
-    
-    window.onload=function(){
-		setEventSelection(getUrlParam('event'));
-		removeNulls();
-	    // press enter submit
-	    jQuery("input").keyup(function(e){
-	        if(e.which == 10 || e.which == 13){
-				search();
-	        }
-	    });
-    };
-    function removeNulls(){
-    	jQuery("td").each(function(index,element){
-    		if(element.innerHTML.indexOf(' null null 0')&gt;0)
-    			element.innerHTML=element.innerHTML.replace(' null null 0','');
-    	});
-    }
-    function setEventSelection(id){
-    	jQuery("#event-"+id).prop('selected','true');
-    }
-    
-    function filterByEvent(){
-    	var uri = document.location;
-    	uri = updateQueryStringParameter(uri+"","event",document.getElementById("event").value);
-    	uri = updateQueryStringParameter(uri+"","page","1");
-    	uri = updateQueryStringParameter(uri+"","size","10");
-    	document.location = uri;
-    }
-    
-    function updateQueryStringParameter(uri, key, value) {
-    	  var re = new RegExp("([?|&amp;])" + key + "=.*?(&amp;|$)", "i");
-    	  separator = uri.indexOf("?") !== -1 ? "&amp;" : "?";
-    	  if (uri.match(re)) {
-    	    return uri.replace(re, '$1' + key + "=" + value + '$2');
-    	  }
-    	  else {
-    	    return uri + separator + key + "=" + value;
-    	  }
-    }
-    
-    function search(){
-    	if(isNaN(event)) event = 0;
-    	var request = jQuery.ajax({
-    		url: "/bibs-server/raceresults/search?event="+event+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
-    		type: "GET",
-    		dataType: "json"
-    		});
-    	request.done(function( data ) {
-    			var results = runnerSearchResultsTable(data);
-    			jQuery('.table').html(results);
-    		});
-    	request.fail(function( jqXHR, textStatus ) {
-    			alert("Error");
-    			jQuery("#query").focus();
-    		});
-    }
-    
-    function getUrlParam(sParam)
-    {
-        return purl().param(sParam);
-    }
-    
-    function addRunner(){
-   		var request = jQuery.ajax({
-   			url: "/bibs-server/myevents/",
-   			type: "GET",
-   			dataType: "json"
-   			});
-   		request.done(function( data ) {
-				if(data.length &gt; 0){
-					document.location='/bibs-server/raceresults?form&amp;event=${param.event}';
-				}else{
-					alert("Please create an Event first.");
-					document.location='/bibs-server/events?form';
-				}
-   			});
-   		request.fail(function( jqXHR, textStatus ) {
-   			// error
-   			});
-    }
+        var event = getUrlParam('event');
+        
+        window.onload=function(){
+    		setEventSelection(getUrlParam('event'));
+    		removeNulls();
+    	    // press enter submit
+    	    jQuery("input").keyup(function(e){
+    	        if(e.which == 10 || e.which == 13){
+    				search();
+    	        }
+    	    });
+        };
+        function removeNulls(){
+        	jQuery("td").each(function(index,element){
+        		if(element.innerHTML.indexOf(' null null 0')&gt;0)
+        			element.innerHTML=element.innerHTML.replace(' null null 0','');
+        	});
+        }
+        function setEventSelection(id){
+        	jQuery("#event-"+id).prop('selected','true');
+        }
+        
+        function filterByEvent(){
+        	var uri = document.location;
+        	uri = updateQueryStringParameter(uri+"","event",document.getElementById("event").value);
+        	uri = updateQueryStringParameter(uri+"","page","1");
+        	uri = updateQueryStringParameter(uri+"","size","10");
+        	document.location = uri;
+        }
+        
+        function updateQueryStringParameter(uri, key, value) {
+        	  var re = new RegExp("([?|&amp;])" + key + "=.*?(&amp;|$)", "i");
+        	  separator = uri.indexOf("?") !== -1 ? "&amp;" : "?";
+        	  if (uri.match(re)) {
+        	    return uri.replace(re, '$1' + key + "=" + value + '$2');
+        	  }
+        	  else {
+        	    return uri + separator + key + "=" + value;
+        	  }
+        }
+        
+        function search(){
+        	if(isNaN(event)) event = 0;
+        	var request = jQuery.ajax({
+        		url: "/bibs-server/raceresults/search?event="+event+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
+        		type: "GET",
+        		dataType: "json"
+        		});
+        	request.done(function( data ) {
+        			var results = runnerSearchResultsTable(data);
+        			jQuery('.table').html(results);
+        		});
+        	request.fail(function( jqXHR, textStatus ) {
+        			alert("Error");
+        			jQuery("#query").focus();
+        		});
+        }
+        
+        function getUrlParam(sParam)
+        {
+            return purl().param(sParam);
+        }
+        
+        function addRunner(){
+       		var request = jQuery.ajax({
+       			url: "/bibs-server/myevents/",
+       			type: "GET",
+       			dataType: "json"
+       			});
+       		request.done(function( data ) {
+    			if(data.length &gt; 0){
+    				document.location='/bibs-server/raceresults?form';
+    			}else{
+    				alert("Please create an Event first.");
+    				document.location='/bibs-server/events?form';
+    			}
+    			});
+       		request.fail(function( jqXHR, textStatus ) {
+       			// error
+       			});
+        }
     </script>
     <div class="pull-left">
         <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()" style="width:300px">
@@ -102,12 +102,12 @@
         <button class="btn btn-primary pull-left btn-top" onclick="addRunner()" style="margin:0;margin-left: 3px;" type="button">
 		Add Runner
 	</button>
-<!--     </sec:authorize> -->
+<!--     </sec:authorize> 
     <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
         <button class="btn btn-success pull-left btn-top" onclick="document.location='/bibs-server/raceresults/bibs';" style="margin:0;margin-left: 3px;" type="button">
 		Write Bibs
 	</button>
-    </sec:authorize>
+    </sec:authorize>-->
     <div class="pull-right">
         <label>Search</label>
         <input class="form-control" id="query" placeholder="by Name" style="width:200px;display:inline;" type="text"/>

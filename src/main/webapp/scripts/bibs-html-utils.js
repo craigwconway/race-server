@@ -81,11 +81,8 @@ function runnerSearchResultsTable(data){
 		var city = (null!=data[i].city) ? data[i].city : "";
 		var state = (null!=data[i].state) ? data[i].state : "";
 		
-		results += "<tr>";
-		results += "<td><a href=\"/bibs-server/raceresults/"+data[i].id+"\">" +
-				"<img src=\"/bibs-server/resources/images/show.png\" " +
-					"title=\"Show Runner\"/>" +
-				"</a></td>";
+		results += "<tr onclick=\"document.location='/bibs-server/raceresults/"+data[i].id+"?form';\">";
+		results += "<td>&nbsp;</td>";
 		results += "<td>"+bib+"</td>";
 		results += "<td>"+firstname+"</td>";
 		results += "<td>"+lastname+"</td>";

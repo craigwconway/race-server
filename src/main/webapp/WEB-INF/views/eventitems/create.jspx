@@ -59,6 +59,14 @@
                         <div class="sub header">Provide the details for this product.</div>
                     </div>
                 </h2>
+                <select name="type" class="form-control" id="ticket-type"
+                        data-parsley-error-message="Please select a product type."
+                        data-parsley-required="true">
+                    <option selected="selected" disabled="disabled">Product Type</option>
+                    <option value="TICKET">Ticket</option>
+                    <option value="T_SHIRT">T-shirt</option>
+                    <option value="DONATION">Donation</option>
+                </select>
                 <div class="form-fields">
                     <input  type="text" name="name"
                             class="form-control"
@@ -107,7 +115,7 @@
                     <div class="two fields">
                         <div class="field">
                             <label><!--  --></label>
-                            <input  type="number" name="lowAgeThreshold"
+                            <input  type="number" name="minAge"
                                     id="lowAge"
                                     placeholder="Min Age"
                                     min="1"
@@ -118,7 +126,7 @@
                         </div>
                         <div class="field">
                             <label><!--  --></label>
-                            <input  type="number" name="highAgeThreshold"
+                            <input  type="number" name="maxAge"
                                     id="highAge"
                                     placeholder="Max Age"
                                     min="1"
@@ -128,15 +136,6 @@
                                     value=""></input>
                         </div>
                     </div>
-
-                    <select name="type" class="form-control" id="ticket-type"
-                            data-parsley-error-message="Please select a product type."
-                            data-parsley-required="true">
-                        <option selected="selected" disabled="disabled">Product Type</option>
-                        <option value="TICKET">Ticket</option>
-                        <option value="T_SHIRT">T-shirt</option>
-                        <option value="DONATION">Donation</option>
-                    </select>
                     <div class="ui labeled input">
                         <div class="ui label">$</div>
                         <input  type="number" name="price"
@@ -188,11 +187,14 @@
                 errorTemplate: '<span></span>'
             });
 
-            jQuery("#lowAge").change(function(){
+            jQuery("#lowAge").on('input', function(){
                 var low = jQuery("#lowAge").val();
                 var high = jQuery("#highAge").val();
-                if( (low == null) || (low == 0) ){ jQuery("#lowAge").val(""); }
-                if( high !== null ){
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+                if( high !== "" ){
                     if( low &gt;= high ){
                         jQuery(this).val(high);
                     }
@@ -202,11 +204,13 @@
                 }
             });
 
-            jQuery("#highAge").change(function(){
+            jQuery("#highAge").on('change', function(){
                 var low = jQuery("#lowAge").val();
                 var high = jQuery("#highAge").val();
-                if( (high == null) || (high == 0) ){ jQuery("#highAge").val("") }
-                if( low !== null ){
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+                if( low !== "" ){
                     if( high &lt;= low ){
                         jQuery(this).val(low);
                     }

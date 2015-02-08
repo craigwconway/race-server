@@ -95,7 +95,7 @@
                 </c:forEach>
                 <div class="not-list">
                     <div class="row">
-                    <a href="#" onclick="redirectEventCreate()"><div class="col-md-offset-9 col-md-2 col-sm-offset-5 col-sm-3 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> add event</span></div></a></div>
+                    <a href="#" onclick="redirectEventCreate()"><div class="col-md-offset-9 col-md-2 col-sm-offset-5 col-sm-3 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> event</span></div></a></div>
                     <div class="row">
                     <a href="#" onclick="redirectEventList()"><div class="col-md-offset-9 col-md-2 col-sm-offset-5 col-sm-3 btn btn-default"><span>more events</span></div></a></div>
                 </div>

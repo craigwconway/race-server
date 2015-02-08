@@ -2,72 +2,108 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <div class="form-horizontal" style="width: 100%; margin-left: 3%">
-        <h3>Add Reader</h3>
-        <div class="form-group">
-            <label for="rtype" class="col-sm-1 control-label">Reader Type</label>
-                <div class="col-sm-4">
-                    <select class="form-control" id="rtype" name="rtype" onchange="changeType()" style="width:300px">
-                        <option id="type-0" value="0">Demo (No Reader)</option>
-                        <option id="type-1" value="1">ThingMagic</option>
-                    </select>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .ui.form.info-container{
+            margin: 0 auto;
+            width: 400px;
+            font-weight: 100;
+            color: #292929;
+        }
+        .ui.form .form-fields{
+            margin-bottom: 5px;
+        }
+        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
+            margin-bottom: 5px;
+        }
+        .ui.form input, .ui.form textarea, .ui.form select, #demo>input{
+            width: 400px;
+            margin: 5px auto; 
+        }
+        .ui.form select{
+            height: 38px;
+            font-size: 1em;
+        }
+        .submit{
+            margin: 0 auto;
+            width: 400px;
+            text-align: right;
+        }
+        .ui.form input[type="number"]{
+            height: 38px;
+        }
+        .ui.action.input:not([class*="left action"]) > .button, .ui.action.input:not([class*="left action"]) > .buttons > .button{
+            width:10%;
+        }
+    </style>
+    <div class="white-overlay">
+        <div class="ui form info-container">
+            <h2 class="ui icon header">
+                <i class="fa fa-wifi"><!--  --></i>
+                <div class="content">Add Reader
+                    <div class="sub header">Provide the details for this reader.</div>
                 </div>
-        </div>
-        <div class="form-group">
-            <label for="pos" class="col-sm-1 control-label">Reader Type</label>
-                <div class="col-sm-4">
-                    <select class="form-control" id="pos" name="pos" onchange="changePos()" style="width:300px">
-                        <option id="starting" value="0">Starting Line</option>
-                        <option id="finishing" value="1">Finish Line</option>
-                    </select>
+            </h2>
+            <select id="type" name="type">
+                <option id="type-0" value="0">Demo (No Reader)</option>
+                <option id="type-1" value="1">ThingMagic</option>
+            </select>
+            <select id="position" name="position">
+                <option id="starting" value="0">Starting Line</option>
+                <option id="finishing" value="1">Finish Line</option>
+            </select>
+            <div class="form-fields">
+                <input  type="text" name="url"
+                        placeholder="Reader Location"
+                        data-parsley-error-message="Please enter a valid IP address."
+                        value=""></input>
+            </div>
+            <div class="form-fields">
+                <input  type="number" name="readTimeout"
+                        placeholder="Read Timeout"
+                        data-parsley-error-message="Invalid timeout number."
+                        value=""></input>
+            </div>
+            <div class="form-fields">
+                <input  type="text" name="ports"
+                        placeholder="Ports"
+                        data-parsley-error-message="Please indicate port numbers separated by commas. (e.g. 1,2,3)"
+                        value=""></input>
+            </div>
+            <div class="form-fields">
+                <input  type="number" name="connectionTimeout"
+                        placeholder="Connection Timeout"
+                        data-parsley-error-message="Invalid timeout number."
+                        value=""></input>
+            </div>
+            <div class="form-fields">
+                <input  type="text" name="filename"
+                        placeholder="Filename"
+                        data-parsley-error-message="Invalid filename."
+                        value=""></input>
+            </div>
+            <form:create id="fc_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" render="${empty dependencies}" z="YzUgA5KW7YH0/ivLKZagV+5WiHs=">
+                <div style="display:none">
+                    <field:input field="position" id="c_com_bibsmobile_model_TimerConfig_position" z="yamQ8KWzGfWz+41JyeNXITbQ6K4="/>
+                    <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
+                    <field:input field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" render="false" z="user-managed"/>
+                    <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" render="false" z="user-managed"/>
                 </div>
+            </form:create>
         </div>
-        <div class="form-group">
-            <label for="url" class="col-sm-1 control-label">Reader Location</label>
-            <div class="col-sm-4"><input  type="url" name="url"
-                    class="form-control"
-                    placeholder="Reader Location"
-                    data-parsley-error-message="Please enter a valid url."
-                    value=""></input></div>
-        </div>
-        <div class="form-group">
-            <label for="readTimeout" class="col-sm-1 control-label">Read Timeout</label>
-            <div class="col-sm-4"><input  type="number" name="readTimeout"
-                    class="form-control"
-                    placeholder="Read Timeout"
-                    data-parsley-error-message="Invalid timeout number."
-                    value=""></input></div>
-        </div>
-        <div class="form-group">
-            <label for="ports" class="col-sm-1 control-label">Ports</label>
-            <div class="col-sm-4"><input  type="text" name="ports"
-                    class="form-control"
-                    placeholder="Ports"
-                    data-parsley-error-message="Please indicate port numbers separated by commas. (e.g. 1,2,3)"
-                    value=""></input></div>
-        </div>
-        <div class="form-group">
-            <label for="connectionTimeout" class="col-sm-1 control-label">Connection Timeout</label>
-            <div class="col-sm-4"><input  type="number" name="connectionTimeout"
-                    class="form-control"
-                    placeholder="Connection Timeout"
-                    data-parsley-error-message="Invalid timeout number."
-                    value=""></input></div>
-        </div>
-        <div class="form-group">
-            <label for="filename" class="col-sm-1 control-label">Filename</label>
-            <div class="col-sm-4"><input  type="text" name="filename"
-                    class="form-control"
-                    placeholder="Filename"
-                    data-parsley-error-message="Invalid filename."
-                    value=""></input></div>
-        </div>
-    <form:create id="fc_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" render="${empty dependencies}" z="YzUgA5KW7YH0/ivLKZagV+5WiHs=">
-        <field:input field="position" id="c_com_bibsmobile_model_TimerConfig_position" z="yamQ8KWzGfWz+41JyeNXITbQ6K4="/>
-        <field:input field="type" id="c_com_bibsmobile_model_TimerConfig_type" z="oIWOK1VMItZwPip/QVGNQNZ2buc="/>
-        <field:input field="readPower" id="c_com_bibsmobile_model_TimerConfig_readPower" render="false" z="user-managed"/>
-        <field:input field="writePower" id="c_com_bibsmobile_model_TimerConfig_writePower" render="false" z="user-managed"/>
-    </form:create>
     </div>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_TimerConfig" render="${not empty dependencies}" z="wKZtWYD4VUhFJUi1mFDoCmL7dQY="/>
     <script>
@@ -80,12 +116,5 @@
     	if(1 == Math.max(0,jQuery("#_position_id").val()))
     		document.getElementById("finishing").selected=true;
         jQuery("#_c_com_bibsmobile_model_TimerConfig_position_id").hide();
-    };
-   	function changeType(){
-   		jQuery("#_type_id").val(document.getElementById("rtype").value);
-    }
-   	function changePos(){
-   		jQuery("#_position_id").val(document.getElementById("pos").value);
-    }
-    </script>
+    };    </script>
 </div>

@@ -33,6 +33,7 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.BibsLLRPTimer;
 import com.bibsmobile.service.DummyTimer;
 import com.bibsmobile.service.Timer;
+import com.bibsmobile.util.BuildTypeUtil;
 
 @RequestMapping("/timers")
 @Controller
@@ -290,16 +291,19 @@ public class TimerConfigController {
     public String create(@Valid TimerConfig timerConfig, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, timerConfig);
+            uiModel.addAttribute("build", BuildTypeUtil.getBuild());
             return "timers/create";
         }
         uiModel.asMap().clear();
         timerConfig.persist();
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/timers/" + encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);
     }
 
 	@RequestMapping(params = "form", produces = "text/html")
     public String createForm(Model uiModel) {
         populateEditForm(uiModel, new TimerConfig());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "timers/create";
     }
 
@@ -307,6 +311,7 @@ public class TimerConfigController {
     public String show(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("timerconfig", TimerConfig.findTimerConfig(id));
         uiModel.addAttribute("itemId", id);
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "timers/show";
     }
 
@@ -321,6 +326,7 @@ public class TimerConfigController {
         } else {
             uiModel.addAttribute("timerconfigs", TimerConfig.findAllTimerConfigs(sortFieldName, sortOrder));
         }
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "timers/list";
     }
 
@@ -328,16 +334,19 @@ public class TimerConfigController {
     public String update(@Valid TimerConfig timerConfig, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
             populateEditForm(uiModel, timerConfig);
+            uiModel.addAttribute("build", BuildTypeUtil.getBuild());
             return "timers/update";
         }
         uiModel.asMap().clear();
         timerConfig.merge();
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/timers/" + encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);
     }
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         populateEditForm(uiModel, TimerConfig.findTimerConfig(id));
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "timers/update";
     }
 
@@ -348,6 +357,7 @@ public class TimerConfigController {
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/timers";
     }
 

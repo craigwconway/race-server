@@ -2,85 +2,123 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <div id="added" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;margin:5px;padding:5px;">Runner Added</div>
-    <form:create id="fc_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" render="${empty dependencies}" z="lDbQbfi+ahMJ+wsQw7rqYz4MxJc=">
-        <div style="width: 40%; margin-left: 3%;">
-        <h3>Add Runner</h3>
-        <div class="form-group">
-            <label for="event" class="col-sm-3 control-label" style="padding-top:10px">Event: </label>
-            <div class="col-md-8 col-sm-8" style="margin: 0% auto; padding: 0%">
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .ui.form.info-container{
+            margin: 0 auto;
+            width: 400px;
+            font-weight: 100;
+            color: #292929;
+        }
+        .ui.form .form-fields{
+            margin-bottom: 5px;
+        }
+        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
+            margin-bottom: 5px;
+        }
+        .ui.form input, .ui.form textarea, .ui.form select, #demo>input{
+            width: 400px;
+            margin: 5px auto; 
+        }
+        .ui.form select{
+            height: 38px;
+            font-size: 1em;
+        }
+        .submit{
+            margin: 0 auto;
+            width: 400px;
+            text-align: right;
+        }
+        .ui.form input[type="number"]{
+            height: 38px;
+        }
+        .ui.action.input:not([class*="left action"]) > .button, .ui.action.input:not([class*="left action"]) > .buttons > .button{
+            width:10%;
+        }
+    </style>
+    <div class="white-overlay">
+        <div id="added" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;margin:5px;padding:5px;">Runner Added</div>
+        <form:create id="fc_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" render="${empty dependencies}" z="lDbQbfi+ahMJ+wsQw7rqYz4MxJc=">
+        <div class="ui form info-container">
+            <h2 class="ui icon header">
+                <i class="fa fa-cog"><!--  --></i>
+                <div class="content">Add Athlete
+                    <div class="sub header">Provide the details for this athlete.</div>
+                </div>
+            </h2>
             <select class="form-control" id="event-type" name="event"
                     data-parsley-error-message="Please select an event.">
                 <option selected="selected" disabled="disabled">Select Event</option>
                 <c:forEach var="item" items="${events}">
                     <option value="${item.id}">${item}</option>
                 </c:forEach>
-            </select></div>
-        </div>
-        <div class="form-group">
-            <label for="event" class="col-sm-3 control-label" style="padding-top:10px">Bib Number: </label>
-            <div class="col-md-8 col-sm-8" style="margin: 0% auto; margin-bottom:10px; padding: 0%">
-            <input  type="number" name="bib"
-                    class="form-control"
-                    placeholder="Bib Number"
-                    min="1"
-                    data-parsley-error-message="Please enter a bib number."
+            </select>
+            <div class="form-fields">
+                <input  type="number" name="bib"
+                        placeholder="Bib Number"
+                        min="1"
+                        data-parsley-error-message="Please enter a bib number."
+                        data-parsley-required="true"></input>
+            </div>
+            <div class="form-fields">
+                <input  type="text" name="firstname"
+                    id="firstname"
+                    placeholder="First name"
+                    data-parsley-error-message="Please provide a first name."
                     data-parsley-required="true"></input>
             </div>
-        </div>
-        <div class="row">
-            <input  type="text" name="firstname"
-                class="form-control"
-                id="firstname"
-                placeholder="First name"
-                data-parsley-error-message="Please provide a first name."
-                data-parsley-required="true"></input>
-        </div>
-        <div class="row">
-            <input  type="text" name="lastname"
-                class="form-control"
-                id="lastname"
-                placeholder="Last name"
-                data-parsley-error-message="Please provide a last name."
-                data-parsley-required="true"></input>
-        </div>
-        <div class="row">
-            <div class="col-md-5 col-sm-5" style="margin: 0% auto; padding: 0%">
-            <select name="gender" class="form-control" id="gender-type"
+            <div class="form-fields">
+                <input  type="text" name="lastname"
+                    id="lastname"
+                    placeholder="Last name"
+                    data-parsley-error-message="Please provide a last name."
+                    data-parsley-required="true"></input>
+            </div>
+            <select name="gender" id="gender-type"
                     data-parsley-error-message="Please select a gender.">
                 <option selected="selected" disabled="disabled">Gender</option>
                 <option value="M">Male</option>
                 <option value="F">Female</option>
-            </select></div>
-            <div class="col-md-6 col-sm-6">
-            <input  type="number" name="age"
-                    class="form-control"
-                    placeholder="Age"
-                    min="1"
-                    max="120"
-                    data-parsley-error-message="Invalid age."
-                    value=""></input>
+            </select>
+            <div class="form-fields">
+                <input  type="number" name="age"
+                        placeholder="Age"
+                        min="1"
+                        max="120"
+                        data-parsley-error-message="Invalid age."
+                        value=""></input>
             </div>
-        </div>
-        <div class="row">
-            <input  type="text" name="city"
-                    class="form-control"
-                    placeholder="City"
-                    data-parsley-error-message="Please enter a city."
-                    value=""></input>
-        </div>
-        <div class="row">
-            <input  type="text" name="state"
-                    class="form-control"
-                    placeholder="State"
-                    data-parsley-error-message="Please enter a state."
-                    value=""></input>
-        </div>
-        <div class="row">
-            <div style="margin-left:0;padding-left:0;">
-                <span>Official Time</span>
-                <div class="form-group" style="margin-top: 7px;">
-                <div class="input-group date">
+            <div class="form-fields">
+                <div class="two fields">
+                    <div class="field">
+                        <input  type="text" name="city"
+                                placeholder="City"
+                                data-parsley-error-message="Please enter a city."
+                                value=""></input>
+                    </div>
+                    <div class="field">
+                        <input  type="text" name="state"
+                                placeholder="State"
+                                data-parsley-error-message="Please enter a state."
+                                value=""></input>
+                    </div>
+                </div>
+            </div>
+            <div class="form-fields">
+                <div class="ui action input">
                     <input  type="text" name="timeofficialdisplay"
                             class="form-control" style="margin-top: 0; margin-bottom:0"
                             id="timedisp"
@@ -88,59 +126,59 @@
                             data-provide="datepicker"
                             data-date-format="HH:mm:ss"
                             data-parsley-error-message="Invalid time format. (hh:mm:ss required)"></input>
-                    <span class="input-group-addon" id="removetime"><span class="glyphicon glyphicon-remove"></span></span>
-                </div></div>
+                    <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
+                </div>
+            </div>
+
+            <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
+            <div style="display:none;">
+                <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
+                <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" render="false" z="user-managed"/>
+                <field:input field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" render="false" z="user-managed"/>
+                <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" render="false" z="user-managed"/>
+                <field:input field="middlename2" id="c_com_bibsmobile_model_RaceResult_middlename2" render="false" z="user-managed"/>
+                <field:input field="timegun" id="c_com_bibsmobile_model_RaceResult_timegun" render="false" z="user-managed"/>
+                <field:input field="timechip" id="c_com_bibsmobile_model_RaceResult_timechip" render="false" z="user-managed"/>
+                <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" render="false" z="user-managed"/>
+                <field:input field="timerun" id="c_com_bibsmobile_model_RaceResult_timerun" render="false" z="user-managed"/>
+                <field:input field="timeswim" id="c_com_bibsmobile_model_RaceResult_timeswim" render="false" z="user-managed"/>
+                <field:input field="timetrans1" id="c_com_bibsmobile_model_RaceResult_timetrans1" render="false" z="user-managed"/>
+                <field:input field="timetrans2" id="c_com_bibsmobile_model_RaceResult_timetrans2" render="false" z="user-managed"/>
+                <field:input field="timebike" id="c_com_bibsmobile_model_RaceResult_timebike" render="false" z="user-managed"/>
+                <field:input field="timepace" id="c_com_bibsmobile_model_RaceResult_timepace" render="false" z="user-managed"/>
+                <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" render="false" z="user-managed"/>
+                <field:input field="rankoverall" id="c_com_bibsmobile_model_RaceResult_rankoverall" render="false" z="user-managed"/>
+                <field:input field="rankage" id="c_com_bibsmobile_model_RaceResult_rankage" render="false" z="user-managed"/>
+                <field:input field="rankgender" id="c_com_bibsmobile_model_RaceResult_rankgender" render="false" z="user-managed"/>
+                <field:input field="rankclass" id="c_com_bibsmobile_model_RaceResult_rankclass" render="false" z="user-managed"/>
+                <field:input field="fullname" id="c_com_bibsmobile_model_RaceResult_fullname" render="false" z="user-managed"/>
+                <field:input field="lisencenumber" id="c_com_bibsmobile_model_RaceResult_lisencenumber" render="false" z="user-managed"/>
+                <field:input field="laps" id="c_com_bibsmobile_model_RaceResult_laps" render="false" z="user-managed"/>
+                <field:input field="timesplit" id="c_com_bibsmobile_model_RaceResult_timesplit" render="false" z="user-managed"/>
+                <field:input field="time5k" id="c_com_bibsmobile_model_RaceResult_time5k" render="false" z="user-managed"/>
+                <field:input field="time10k" id="c_com_bibsmobile_model_RaceResult_time10k" render="false" z="user-managed"/>
+                <field:input field="time15k" id="c_com_bibsmobile_model_RaceResult_time15k" render="false" z="user-managed"/>
+                <field:input field="type" id="c_com_bibsmobile_model_RaceResult_type" render="false" z="user-managed"/>
+                <field:input field="medal1" id="c_com_bibsmobile_model_RaceResult_medal1" render="false" z="user-managed"/>
+                <field:input field="medal2" id="c_com_bibsmobile_model_RaceResult_medal2" render="false" z="user-managed"/>
+                <field:input field="medal3" id="c_com_bibsmobile_model_RaceResult_medal3" render="false" z="user-managed"/>
+                <field:input field="award" id="c_com_bibsmobile_model_RaceResult_award" render="false" z="user-managed"/>
+                <field:input field="timer" id="c_com_bibsmobile_model_RaceResult_timer" render="false" z="user-managed"/>
+                <field:input field="timesplit1" id="c_com_bibsmobile_model_RaceResult_timesplit1" render="false" z="user-managed"/>
+                <field:input field="timesplit2" id="c_com_bibsmobile_model_RaceResult_timesplit2" render="false" z="user-managed"/>
+                <field:input field="timesplit3" id="c_com_bibsmobile_model_RaceResult_timesplit3" render="false" z="user-managed"/>
+                <field:input field="timesplit4" id="c_com_bibsmobile_model_RaceResult_timesplit4" render="false" z="user-managed"/>
+                <field:input field="timemile1" id="c_com_bibsmobile_model_RaceResult_timemile1" render="false" z="user-managed"/>
+                <field:input field="timemile2" id="c_com_bibsmobile_model_RaceResult_timemile2" render="false" z="user-managed"/>
+                <field:input field="timemile3" id="c_com_bibsmobile_model_RaceResult_timemile3" render="false" z="user-managed"/>
+                <field:input field="timemile4" id="c_com_bibsmobile_model_RaceResult_timemile4" render="false" z="user-managed"/>
+                <field:datetime dateTimePattern="${raceResult_updated_date_format}" field="updated" id="c_com_bibsmobile_model_RaceResult_updated" render="false" z="user-managed"/>
+                <field:simple field="raceImage" id="c_com_bibsmobile_model_RaceResult_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" render="false" z="user-managed"/>
+                <field:select field="userProfile" id="c_com_bibsmobile_model_RaceResult_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" render="false" z="user-managed"/>
             </div>
         </div>
-        </div>
-
-        <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
-        <div style="display:none;">
-            <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
-            <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" render="false" z="user-managed"/>
-            <field:input field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" render="false" z="user-managed"/>
-            <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" render="false" z="user-managed"/>
-            <field:input field="middlename2" id="c_com_bibsmobile_model_RaceResult_middlename2" render="false" z="user-managed"/>
-            <field:input field="timegun" id="c_com_bibsmobile_model_RaceResult_timegun" render="false" z="user-managed"/>
-            <field:input field="timechip" id="c_com_bibsmobile_model_RaceResult_timechip" render="false" z="user-managed"/>
-            <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" render="false" z="user-managed"/>
-            <field:input field="timerun" id="c_com_bibsmobile_model_RaceResult_timerun" render="false" z="user-managed"/>
-            <field:input field="timeswim" id="c_com_bibsmobile_model_RaceResult_timeswim" render="false" z="user-managed"/>
-            <field:input field="timetrans1" id="c_com_bibsmobile_model_RaceResult_timetrans1" render="false" z="user-managed"/>
-            <field:input field="timetrans2" id="c_com_bibsmobile_model_RaceResult_timetrans2" render="false" z="user-managed"/>
-            <field:input field="timebike" id="c_com_bibsmobile_model_RaceResult_timebike" render="false" z="user-managed"/>
-            <field:input field="timepace" id="c_com_bibsmobile_model_RaceResult_timepace" render="false" z="user-managed"/>
-            <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" render="false" z="user-managed"/>
-            <field:input field="rankoverall" id="c_com_bibsmobile_model_RaceResult_rankoverall" render="false" z="user-managed"/>
-            <field:input field="rankage" id="c_com_bibsmobile_model_RaceResult_rankage" render="false" z="user-managed"/>
-            <field:input field="rankgender" id="c_com_bibsmobile_model_RaceResult_rankgender" render="false" z="user-managed"/>
-            <field:input field="rankclass" id="c_com_bibsmobile_model_RaceResult_rankclass" render="false" z="user-managed"/>
-            <field:input field="fullname" id="c_com_bibsmobile_model_RaceResult_fullname" render="false" z="user-managed"/>
-            <field:input field="lisencenumber" id="c_com_bibsmobile_model_RaceResult_lisencenumber" render="false" z="user-managed"/>
-            <field:input field="laps" id="c_com_bibsmobile_model_RaceResult_laps" render="false" z="user-managed"/>
-            <field:input field="timesplit" id="c_com_bibsmobile_model_RaceResult_timesplit" render="false" z="user-managed"/>
-            <field:input field="time5k" id="c_com_bibsmobile_model_RaceResult_time5k" render="false" z="user-managed"/>
-            <field:input field="time10k" id="c_com_bibsmobile_model_RaceResult_time10k" render="false" z="user-managed"/>
-            <field:input field="time15k" id="c_com_bibsmobile_model_RaceResult_time15k" render="false" z="user-managed"/>
-            <field:input field="type" id="c_com_bibsmobile_model_RaceResult_type" render="false" z="user-managed"/>
-            <field:input field="medal1" id="c_com_bibsmobile_model_RaceResult_medal1" render="false" z="user-managed"/>
-            <field:input field="medal2" id="c_com_bibsmobile_model_RaceResult_medal2" render="false" z="user-managed"/>
-            <field:input field="medal3" id="c_com_bibsmobile_model_RaceResult_medal3" render="false" z="user-managed"/>
-            <field:input field="award" id="c_com_bibsmobile_model_RaceResult_award" render="false" z="user-managed"/>
-            <field:input field="timer" id="c_com_bibsmobile_model_RaceResult_timer" render="false" z="user-managed"/>
-            <field:input field="timesplit1" id="c_com_bibsmobile_model_RaceResult_timesplit1" render="false" z="user-managed"/>
-            <field:input field="timesplit2" id="c_com_bibsmobile_model_RaceResult_timesplit2" render="false" z="user-managed"/>
-            <field:input field="timesplit3" id="c_com_bibsmobile_model_RaceResult_timesplit3" render="false" z="user-managed"/>
-            <field:input field="timesplit4" id="c_com_bibsmobile_model_RaceResult_timesplit4" render="false" z="user-managed"/>
-            <field:input field="timemile1" id="c_com_bibsmobile_model_RaceResult_timemile1" render="false" z="user-managed"/>
-            <field:input field="timemile2" id="c_com_bibsmobile_model_RaceResult_timemile2" render="false" z="user-managed"/>
-            <field:input field="timemile3" id="c_com_bibsmobile_model_RaceResult_timemile3" render="false" z="user-managed"/>
-            <field:input field="timemile4" id="c_com_bibsmobile_model_RaceResult_timemile4" render="false" z="user-managed"/>
-            <field:datetime dateTimePattern="${raceResult_updated_date_format}" field="updated" id="c_com_bibsmobile_model_RaceResult_updated" render="false" z="user-managed"/>
-            <field:simple field="raceImage" id="c_com_bibsmobile_model_RaceResult_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" render="false" z="user-managed"/>
-            <field:select field="userProfile" id="c_com_bibsmobile_model_RaceResult_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" render="false" z="user-managed"/>
-        </div>
-    </form:create>
+        </form:create>
+    </div>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
     <script>
     // select event based on param

@@ -3,6 +3,29 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
+    @media (max-width: 980px){
+        .info-container{
+            margin: 0 auto;
+            width: 90%;
+            font-size: 1em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+        }
+        .ui.statistics .statistic > .value, .ui.statistic > .value{
+            font-size: 3em;
+        }
+    }
+    @media (min-width: 981px){
+        .info-container{
+            margin: 0 auto;
+            width: 70%;
+            font-size: 1.2em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+        }
+    }
         body{
             background-image: url('../images/auth.jpg');
             background-size: cover; background-repeat: no-repeat;
@@ -17,14 +40,6 @@
             padding-top: 2%;
             padding-bottom: 4%;
             padding-left: 5%;
-        }
-        .info-container{
-            margin: 0 auto;
-            width: 70%;
-            font-size: 1.2em;
-            font-weight: 100;
-            line-height: 27px;
-            color: #292929;
         }
         .description{
             text-align: center;

@@ -12,6 +12,21 @@
 	src: url(quicksand/Quicksand-Bold.otf);
 	font-weight:bold;
 }
+@font-face{
+	font-family: Open Sans;
+	src: url(open/OpenSans-Bold.ttf);
+	font-weight:bold;
+}
+@font-face{
+	font-family: Open Sans;
+	src: url(open/OpenSans-Light.ttf);
+	font-weight:100;
+}
+@font-face{
+	font-family: Open Sans;
+	src: url(open/OpenSans-Regular.ttf);
+	font-weight:400;
+}
 
 @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
 	.navbar-inverse .navbar-toggle{ border-color: #002F4C; background-color: rgba(255,255,255,0.5) }
