@@ -85,7 +85,7 @@
             })
         }
         function onBack(){
-            window.history.back();
+            window.location="/bibs-server/eventitems?event=${eventcartitem.event.id}"
         }
         function addItemPriceChange(){
             window.location="/bibs-server/eventitemspricechanges?form&amp;eventitem=${eventitem.id}";

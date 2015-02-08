@@ -98,7 +98,7 @@
     </div>
     <script>
         function onBack(){
-            window.location="/bibs-server/eventitems?event=${eventcartitem.event.id}";
+            window.location="/bibs-server/events/${eventcartitem.event.id}";
         }
         function priceChanges(){
             window.location="/bibs-server/eventitemspricechanges?eventitem=${eventcartitem.id}";
