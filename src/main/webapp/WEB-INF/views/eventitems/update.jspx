@@ -31,10 +31,6 @@
         .ui.labeled.input > .label {
             width: 25%;
         }
-        .ui.button, .ui.button:hover{
-            width: 8%;
-            color: #DD0000;
-        }
         .form-fields>input{
             width: 400px;
             margin: 5px auto; 
@@ -123,6 +119,33 @@
                         </div>
                     </div>
                 </div>
+                <c:if test="${eventCartItem.type == 'T_SHIRT'}">
+                    <div class="ui labeled input shirt-settings">
+                        <div class="ui blue label">Sizes</div>
+                        <div class="ui active buttons">
+                            <div class="ui toggle button" id="size-1" onclick="updateShirt('XS')">XS</div>
+                            <div class="ui toggle button" id="size-2" onclick="updateShirt('S')">S</div>
+                            <div class="ui toggle button" id="size-3" onclick="updateShirt('M')">M</div>
+                            <div class="ui toggle button" id="size-4" onclick="updateShirt('L')">L</div>
+                            <div class="ui toggle button" id="size-5" onclick="updateShirt('XL')">XL</div>
+                        </div>
+                    </div>
+                    <div class="ui labeled input shirt-settings">
+                        <div class="ui blue label">Colors</div>
+                        <div class="ui active four buttons">
+                            <div class="ui toggle black basic button" id="color-black" onclick="updateShirt('black')">black</div>
+                            <div class="ui toggle black basic button" id="color-white" onclick="updateShirt('white')">white</div>
+                            <div class="ui toggle red basic button" id="color-red" onclick="updateShirt('red')">red</div>
+                            <div class="ui toggle yellow basic button" id="color-yellow" onclick="updateShirt('yellow')">yellow</div>
+                            <div class="ui toggle green basic button" id="color-green" onclick="updateShirt('green')">green</div>
+                            <div class="ui toggle blue basic button" id="color-blue" onclick="updateShirt('blue')">blue</div>
+                            <div class="ui toggle teal basic button" id="color-teal" onclick="updateShirt('teal')">teal</div>
+                            <div class="ui toggle purple basic button" id="color-purple" onclick="updateShirt('purple')">purple</div>
+                        </div>
+                    </div>
+                    <div style="display:none"><input type="text" name="tshirtSizes"></input></div>
+                    <div style="display:none"><input type="text" name="tshirtColors"></input></div>
+                </c:if>
                 <div class="ui labeled input">
                     <div class="ui blue label">Gender</div>
                         <select class="ui dropdown" id="gender-type" name="gender"
@@ -210,6 +233,9 @@
             
             setValidation();
             initDropdowns();
+        
+            jQuery('.ui.button').state();
+            initShirtValues();
             initDateTimePickers();
         }
 
@@ -217,6 +243,70 @@
             jQuery('#event-type').dropdown('set selected', '${eventCartItem.event.id}');
             jQuery('#gender-type').dropdown('set selected', '${eventCartItem.gender}');
             jQuery('#ticket-type').dropdown('set selected', '${eventCartItem.type}');
+        }
+
+        var xs = false; var sm = false; var md = false; var lg = false; var xl = false;
+        var blk = false; var wht = false; var red = false; var yel = false;
+        var grn = false; var blue = false; var teal = false; var purp = false;
+        function initShirtValues(){
+            var sizes = '${eventCartItem.tshirtSizes}';
+            var colors = '${eventCartItem.tshirtColors}';
+            sizes = sizes.split(',');
+            colors = colors.split(',');
+            for(i=0; i &lt; sizes.length; i++){
+                if( sizes[i] == 'XS' ){ xs = true; jQuery("#size-1").addClass('active'); }
+                if( sizes[i] == 'S' ){ sm = true; jQuery("#size-2").addClass('active'); }
+                if( sizes[i] == 'M' ){ md = true; jQuery("#size-3").addClass('active'); }
+                if( sizes[i] == 'L' ){ lg = true; jQuery("#size-4").addClass('active'); }
+                if( sizes[i] == 'XL' ){ xl = true; jQuery("#size-5").addClass('active'); }
+            }
+            for(i=0; i &lt; colors.length; i++){
+                if( colors[i] == 'Black' ){ blk = true; jQuery("#color-black").addClass('active'); }
+                if( colors[i] == 'White' ){ wht = true; jQuery("#color-white").addClass('active'); }
+                if( colors[i] == 'Red' ){ red = true; jQuery("#color-red").addClass('active'); }
+                if( colors[i] == 'Yellow' ){ yel = true; jQuery("#color-yellow").addClass('active'); }
+                if( colors[i] == 'Green' ){ grn = true; jQuery("#color-green").addClass('active'); }
+                if( colors[i] == 'Blue' ){ blue = true; jQuery("#color-blue").addClass('active'); }
+                if( colors[i] == 'Teal' ){ teal = true; jQuery("#color-teal").addClass('active'); }
+                if( colors[i] == 'Purple' ){ purp = true; jQuery("#color-purple").addClass('active'); }
+            }
+        }
+
+        function updateShirt(val){
+            switch(val) {
+                case 'XS': xs = !xs; break;
+                case 'S':  sm = !sm; break;
+                case 'M':  md = !md; break;
+                case 'L':  lg = !lg; break;
+                case 'XL': xl = !xl; break;
+                case 'black':   blk  = !blk; break;
+                case 'white':   wht  = !wht; break;
+                case 'red':     red  = !red; break;
+                case 'yellow':  yel  = !yel; break;
+                case 'green':   grn  = !grn; break;
+                case 'blue':    blue = !blue; break;
+                case 'teal':    teal = !teal; break;
+                case 'purple':  purp = !purp; break;
+                default: break;
+            }
+            var sizes = ""; var colors = "";
+            if(xs){ sizes += "XS,"; }
+            if(sm){ sizes += "S,"; }
+            if(md){ sizes += "M,"; }
+            if(lg){ sizes += "L,"; }
+            if(xl){ sizes += "XL,"; }
+            if(blk){ colors += "Black,"; }
+            if(wht){ colors += "White,"; }
+            if(red){ colors += "Red,"; }
+            if(yel){ colors += "Yellow,"; }
+            if(grn){ colors += "Green,"; }
+            if(blue){ colors += "Blue,"; }
+            if(teal){ colors += "Teal,"; }
+            if(purp){ colors += "Purple,"; }
+            if( sizes.length > 1 ){ sizes = sizes.substr(0, sizes.length-1); }
+            if( colors.length > 1 ){ colors = colors.substr(0, colors.length-1); }
+            jQuery('input[name="tshirtSizes"]').val(sizes);
+            jQuery('input[name="tshirtColors"]').val(colors);
         }
 
         function limitToggle(){
