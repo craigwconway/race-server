@@ -101,7 +101,7 @@
         }
         function sendDelete(id){    
             var request = jQuery.ajax({
-                url: "/bibs-server/awardcategorys/delete/"+id
+                url: "/bibs-server/eventitemspricechanges/delete/"+id
                 });
         }
     </script>

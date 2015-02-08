@@ -40,7 +40,7 @@
         <div style="width:500px; margin: 0 auto;">
             <div class="pull-left">
                 <button class="btn btn-default btn-top" onclick="onBack()" type="button">Back</button>
-                <a href="/bibs-server/eventitemspricechanges/${eventcartitem.id}?form" title="Edit"><div class="ui icon yellow button"><i style="margin-right:0" class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
+                <a href="/bibs-server/eventitems/${eventcartitem.id}?form" title="Edit"><div class="ui icon yellow button"><i style="margin-right:0" class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
                         <a href="javascript:deletePriceChange(${eventcartitem.id})" title="Delete"><div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div></a>
             </div>
             <div class="pull-right">
@@ -102,6 +102,17 @@
         }
         function priceChanges(){
             window.location="/bibs-server/eventitemspricechanges?eventitem=${eventcartitem.id}";
+        }
+        function deleteProduct(id){
+            if(confirm("Delete Product?")){
+                jQuery(".cat-"+id).remove();
+                sendDelete(id);
+            }
+        }
+        function sendDelete(id){    
+            var request = jQuery.ajax({
+                url: "/bibs-server/eventitems/delete/"+id
+                });
         }
     </script>
 </div>
