@@ -40,8 +40,8 @@
         <div style="width:500px; margin: 0 auto;">
             <div class="pull-left">
                 <button class="btn btn-default btn-top" onclick="onBack()" type="button">Back</button>
-                <a href="/bibs-server/eventitemspricechanges/${item.id}?form" title="Edit"><div class="ui icon yellow button"><i style="margin-right:0" class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
-                        <a href="javascript:deletePriceChange(${item.id})" title="Delete"><div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div></a>
+                <a href="/bibs-server/eventitemspricechanges/${eventcartitem.id}?form" title="Edit"><div class="ui icon yellow button"><i style="margin-right:0" class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
+                        <a href="javascript:deletePriceChange(${eventcartitem.id})" title="Delete"><div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div></a>
             </div>
             <div class="pull-right">
                 <button class="btn btn-default btn-top" onclick="priceChanges()" type="button">Price Changes</button>
@@ -70,6 +70,14 @@
                 Details
             </h4>
             <div class="ui very relaxed list">
+            <c:if test="${eventcartitem.type == 'T_SHIRT'}">
+              <div class="item">
+                <div class="ui blue horizontal label">Sizes</div>${eventcartitem.tshirtSizes}
+              </div>
+              <div class="item">
+                <div class="ui blue horizontal label">Colors</div>${eventcartitem.tshirtColors}
+              </div>
+            </c:if>
               <div class="item">
                 <div class="ui blue horizontal label">Base Price</div>${eventcartitem.price}
               </div>
