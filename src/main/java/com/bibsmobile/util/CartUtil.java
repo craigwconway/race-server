@@ -24,6 +24,8 @@ import com.bibsmobile.model.UserProfile;
 public final class CartUtil {
     private static final Logger log = LoggerFactory.getLogger(CartUtil.class);
     public static final String SESSION_ATTR_CART_ID = "cartId";
+    private static final double BIBS_ABSOLUTE_FEE = 100;
+    private static final double BIBS_RELATIVE_FEE = 0.02;
 
     private CartUtil() {
         super();
@@ -146,6 +148,7 @@ public final class CartUtil {
         for (CartItem ci : cart.getCartItems()) {
             total += (ci.getQuantity() * ci.getPrice());
         }
+        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
         cart.setTotal(total);
         cart.merge();
 
