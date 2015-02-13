@@ -4,6 +4,7 @@ import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.UserProfile;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -94,12 +95,25 @@ public final class RegistrationsUtil {
 
             // check user data on cart items
             for (CartItem ci : c.getCartItems()) {
+                // check User Profile
                 if (firstNameGiven)
                     matchFirstName = ci.getUserProfile().getFirstname() != null && ci.getUserProfile().getFirstname().equalsIgnoreCase(firstName);
                 else if (lastNameGiven)
                     matchLastName = ci.getUserProfile().getLastname() != null && ci.getUserProfile().getLastname().equalsIgnoreCase(lastName);
                 else if (emailGiven)
                     matchEmail = ci.getUserProfile().getEmail() != null && ci.getUserProfile().getEmail().equalsIgnoreCase(email);
+
+                // check team members
+                if (ci.getTeam() != null) {
+                    for (UserProfile teamMember : ci.getTeam().getMembers()) {
+                        if (firstNameGiven)
+                            matchFirstName = teamMember.getFirstname() != null && teamMember.getFirstname().equalsIgnoreCase(firstName);
+                        else if (lastNameGiven)
+                            matchLastName = teamMember.getLastname() != null && teamMember.getLastname().equalsIgnoreCase(lastName);
+                        else if (emailGiven)
+                            matchEmail = teamMember.getEmail() != null && teamMember.getEmail().equalsIgnoreCase(email);
+                    }
+                }
             }
 
             if (matchFirstName || matchLastName || matchEmail || matchInvoiceId)

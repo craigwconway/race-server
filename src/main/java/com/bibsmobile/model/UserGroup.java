@@ -3,6 +3,7 @@ package com.bibsmobile.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -322,5 +323,14 @@ public class UserGroup {
     @Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public Set<UserProfile> getMembers() {
+        Set<UserProfile> members = new HashSet<>();
+        for (UserGroupUserAuthority ugua : this.getUserGroupUserAuthorities()) {
+            UserAuthorities uas = ugua.getUserAuthorities();
+            members.add(uas.getUserProfile());
+        }
+        return members;
     }
 }

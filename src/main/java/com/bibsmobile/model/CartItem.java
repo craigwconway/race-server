@@ -43,6 +43,9 @@ public class CartItem {
     @JoinColumn(name = "user_profile_id")
     private UserProfile userProfile;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private UserGroup team;
+
     private int quantity;
 
     private Date created;
@@ -138,6 +141,14 @@ public class CartItem {
 
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
+    }
+
+    public UserGroup getTeam() {
+        return team;
+    }
+
+    public void setTeam(UserGroup team) {
+        this.team = team;
     }
 
     public int getQuantity() {
