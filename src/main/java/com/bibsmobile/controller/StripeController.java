@@ -232,17 +232,6 @@ public class StripeController {
             // failure if no card token provided and no customer saved
             UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
             
-            // HACK FOR CONFERENCE:
-            if (loggedInUser != null) {
-            	c.setUser(loggedInUser);
-            	for(CartItem ci : c.getCartItems()) {
-            		ci.setUserProfile(loggedInUser);
-            		ci.persist();
-            	}
-            	c.persist();
-            }
-            // END OF HACK FOR CONFRENECE:
-            
             if (stripeCardToken == null && loggedInUser == null)
                 return new ResponseEntity<>("not logged in", HttpStatus.UNAUTHORIZED);
             if (rememberCard && loggedInUser == null)

@@ -117,6 +117,7 @@ public final class CartUtil {
                                 eventCartItem.merge();
                                 ci.setQuantity(quantity);
                                 ci.setUpdated(now);
+                                ci.setUserProfile(userProfile);
                                 ci.persist();
                             }
 
