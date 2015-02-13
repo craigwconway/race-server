@@ -49,7 +49,7 @@ public class CartController {
             userProfile.persist();
         }
         // TODO: implement if needed color and size in admin panel
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile, null, null);
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile, null, null, false);
         uiModel.addAttribute("cart", cart);
         return "redirect:/carts/item/" + eventCartItemId;
     }

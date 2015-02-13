@@ -15,6 +15,8 @@ import flexjson.JSONSerializer;
 
 public class CartItemReqWrapper {
     private UserProfile userProfile;
+
+    private boolean newItem;
     private String size;
     private String color;
 
@@ -40,6 +42,14 @@ public class CartItemReqWrapper {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public boolean isNewItem() {
+        return newItem;
+    }
+
+    public void setNewItem(boolean newItem) {
+        this.newItem = newItem;
     }
 
     @Override
