@@ -7,6 +7,7 @@ import java.util.Set;
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthorities;
@@ -165,7 +166,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         	DeviceInfo info = new DeviceInfo();
         	info.setRunnersUsed(new Long(0));
         	info.persist();
+        	// If we have no deviceinfo, we also do not have any licenses:
+        	License newLicense = new License();
+        	byte[] token = new byte[64];
+        	newLicense.setToken(token);
+        	newLicense.persist();
         }
+        
         
         //store default roles
         if (UserAuthority.countUserAuthoritys() < 1) {

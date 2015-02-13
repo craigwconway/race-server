@@ -679,6 +679,18 @@ public class RaceResult implements Comparable<RaceResult> {
         return entityManager().createQuery("SELECT o FROM RaceResult o", RaceResult.class).getResultList();
     }
 
+    public static List<RaceResult> findUnlicensedResults() {
+    	try {
+    		Event unassignedEvent = Event.findEventByNameEquals("Unassigned Results");
+            EntityManager em = RaceResult.entityManager();
+            TypedQuery <RaceResult> q = em.createQuery("SELECT o FROM RaceResult o where o.licensed = false AND o.event != :event", RaceResult.class);
+            q.setParameter("event", unassignedEvent);
+            return q.getResultList();
+    	} catch(Exception e) {
+            return entityManager().createQuery("SELECT o FROM RaceResult o where o.licensed = false", RaceResult.class).getResultList();
+    	}
+    }
+    
     public static List<RaceResult> findAllRaceResults(String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM RaceResult o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {

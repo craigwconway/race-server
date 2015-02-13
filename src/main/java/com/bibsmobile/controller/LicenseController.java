@@ -3,8 +3,11 @@ package com.bibsmobile.controller;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.apache.commons.codec.binary.Hex;
 import org.joda.time.DateTime;
@@ -22,7 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.License;
+import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.google.gson.JsonObject;
 
@@ -39,6 +44,9 @@ public class LicenseController {
     @RequestMapping(produces = "text/html")
     public String list( Model uiModel) {
         UserProfile user = UserProfileUtil.getLoggedInUserProfile();
+    	List <RaceResult> unlicensed = RaceResult.findUnlicensedResults();
+    	uiModel.addAttribute("unlicensed", unlicensed.size());
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "licensing/upload";
     }
     
@@ -78,6 +86,35 @@ public class LicenseController {
     		json.addProperty("days", 0);
     	}
         return new ResponseEntity<>(json.toString(), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "activate", produces = "text/html")
+    public String activateResponse(Model uiModel) {
+    	DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
+    	License license = License.findCurrentLicense();
+    	List <RaceResult> unlicensed = RaceResult.findUnlicensedResults();
+    	Long unitsRemaining = license.getEndunits() - systemInfo.getRunnersUsed();
+    	if(unitsRemaining >= 0) {
+        	if(unlicensed.size() <= unitsRemaining) {
+        		for(RaceResult r : unlicensed) {
+        			r.setLicensed(true);
+        			systemInfo.quickAddRunner();
+        			systemInfo = systemInfo.merge();
+        		}
+        		uiModel.addAttribute("unlicensed", 0);
+        	} else {
+        		Iterator<RaceResult> unlicensedIterator = unlicensed.iterator();
+        		for(int i = 0; i < unitsRemaining; i++) {
+        			RaceResult r = unlicensedIterator.next();
+        			r.setLicensed(true);
+        			systemInfo.quickAddRunner();
+        			systemInfo.merge();
+        		}
+        		uiModel.addAttribute("unlicensed", unlicensed.size() - unitsRemaining);
+        	}
+    	}
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+    	return "licensing/upload";
     }
     
     @RequestMapping(value = "jupload", method = RequestMethod.POST)
@@ -168,14 +205,17 @@ public class LicenseController {
 			}
 			System.out.println(newLicense);
 			newLicense.persist();
+            uiModel.addAttribute("build", BuildTypeUtil.getBuild());
 			uiModel.addAttribute("remaining", getRemainingLicenseUnits());
 	    	return "licensing/success";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+            uiModel.addAttribute("build", BuildTypeUtil.getBuild());
 			return "licensing/invalid";
 		} catch (Exception e) {
 			e.printStackTrace();
+            uiModel.addAttribute("build", BuildTypeUtil.getBuild());
 			return "licensing/invalid";
 		}
 
