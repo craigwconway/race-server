@@ -101,6 +101,10 @@
                 </div>
                 <div class="active content">
                     <div class="ui blue attached segment">
+                        <div class="ui yellow message">
+                            <i class="close fa fa-times"><!--  --></i>
+                          <i class="fa fa-question-circle"><!--  --></i>You can add multiple categories!
+                        </div>
                     <form id="add-pc-category" data-parsley-validate="data-parsley-validate">
                         <div class="ui labeled input">
                             <div class="ui blue label">Category Name</div>
@@ -323,6 +327,10 @@
                         jQuery("#lowAge").attr("max", jQuery(this).val());
                     }
                 }
+            });
+
+            jQuery('.message .close').on('click', function() {
+                jQuery(this).closest('.message').fadeOut();
             });
         }
 
