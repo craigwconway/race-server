@@ -138,31 +138,6 @@
 	margin-left: 3%;
 }
 
-/* panel sizes */
-.category-container{
-	text-align: right;
-}
-
-.panel{
-	width: 100%;
-	margin-top: 2%;
-	margin-right: 15%;
-}
-
-.panel-container{
-	width: 94%;
-}
-.panel-container-left{
-	display: inline-block;
-	width: 44%;
-	margin-left: 3%;
-	vertical-align: top;
-}
-.panel-container-right{
-	display: inline-block;
-	width: 50%;
-}
-
 /*	timepicker  */
 .bootstrap-datetimepicker-widget.timepicker-sbs{
 	width: 600px;
