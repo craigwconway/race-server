@@ -77,15 +77,26 @@
     </div>
     </sec:authorize>
     <script>
+        var eid;
         window.onload = function(){
+            eid = parseEventId();
             jQuery(".item-date-ribbon").each(function(){
                 var pcdate = jQuery(this).text();
                 var momdate = moment(pcdate).format('MMM Do \'YY h:mm a');
                 jQuery(this).text(momdate);
             })
         }
+
+        function parseEventId(){
+            var url = window.location.href;
+            var urllen = url.length;
+            var ind = url.lastIndexOf("=");
+            var eid = url.substring(ind+1, urllen);
+            return eid;
+        }
+
         function onBack(){
-            window.location="/bibs-server/eventitems?event=${eventcartitem.event.id}"
+            window.location="/bibs-server/eventitems/"+eid;
         }
         function addItemPriceChange(){
             window.location="/bibs-server/eventitemspricechanges?form&amp;eventitem=${eventitem.id}";
