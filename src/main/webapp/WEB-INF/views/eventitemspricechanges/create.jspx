@@ -541,7 +541,7 @@
             });
             request.fail(function( jqXHR, textStatus ) {
                 // error
-                // alert("There was an error while saving your price changes. Please try again!");
+                alert("There was an error while saving your price changes. Please try again!");
                 onBack();
             });
         }
