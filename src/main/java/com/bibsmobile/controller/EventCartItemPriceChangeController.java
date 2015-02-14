@@ -232,7 +232,7 @@ public class EventCartItemPriceChangeController {
         }
         uiModel.asMap().clear();
         eventCartItemPriceChange.merge();
-        return "redirect:/eventitemspricechanges/" + this.encodeUrlPathSegment(eventCartItemPriceChange.getId().toString(), httpServletRequest);
+        return "redirect:/eventitemspricechanges?eventitem=" + this.encodeUrlPathSegment(eventCartItemPriceChange.getEventCartItem().getId().toString(), httpServletRequest);
     }
 
     void addDateTimeFormatPatterns(Model uiModel) {

@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.MailgunUtil;
 import com.bibsmobile.util.RegistrationsUtil;
@@ -21,6 +22,7 @@ import com.stripe.model.Card;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.model.Refund;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -292,6 +294,12 @@ public class StripeController {
                 c.setStatus(Cart.COMPLETE);
                 c.setStripeChargeId(stripeCharge.getId());
                 c.persist();
+                //Review this plz
+                for(CartItem ci : c.getCartItems()) {
+                	EventCartItem eciUpdate = ci.getEventCartItem();
+                	eciUpdate.setPurchased(eciUpdate.getPurchased() + 1);
+                	eciUpdate.merge();
+                }
 
                 // can only sent an email if we have a logged in users email
                 if (loggedInUser != null) {
