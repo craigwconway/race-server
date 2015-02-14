@@ -363,7 +363,6 @@
 
                 var index = timelineList.length;
                 addGroup(obj, index);
-                formInstance.submitEvent.preventDefault();
                 return;
             }
             else{
@@ -532,19 +531,22 @@
             request.done(function(data){
                 if( data !== null ){
                     console.log("posted")
-                    document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+                    onBack();
                 }
                 else{
                     // error
                     // alert("There was an error while saving your price changes. Please try again!");
-                    document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+                    onBack();
                 }
             });
             request.fail(function( jqXHR, textStatus ) {
                 // error
                 // alert("There was an error while saving your price changes. Please try again!");
-                // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+                onBack();
             });
+        }
+        function onBack(){
+            document.location='/bibs-server/eventitemspricechanges?eventitem=' + eciId;
         }
     </script>
 </div>
