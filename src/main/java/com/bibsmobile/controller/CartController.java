@@ -27,6 +27,7 @@ import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.CartUtil;
@@ -42,14 +43,14 @@ public class CartController {
     }
 
     @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
-    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel, @ModelAttribute UserProfile userProfile,
+    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, @RequestParam("priceChangeId") Long eventCartItemPriceChangeId, Model uiModel, @ModelAttribute UserProfile userProfile,
             HttpServletRequest request) {
         if (userProfile.getId() == null) {
             UserProfileUtil.disableUserProfile(userProfile);
             userProfile.persist();
         }
         // TODO: implement if needed color and size in admin panel
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile, null, null, false);
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, EventCartItemPriceChange.findEventCartItemPriceChange(eventCartItemPriceChangeId), quantity, userProfile, null, null, false);
         uiModel.addAttribute("cart", cart);
         return "redirect:/carts/item/" + eventCartItemId;
     }

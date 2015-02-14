@@ -8,6 +8,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.UserProfile;
 
 import flexjson.JSONDeserializer;
@@ -19,6 +21,8 @@ public class CartItemReqWrapper {
     private boolean newItem;
     private String size;
     private String color;
+    private long priceChangeId;
+    
 
     public UserProfile getUserProfile() {
         return this.userProfile;
@@ -50,6 +54,18 @@ public class CartItemReqWrapper {
 
     public void setNewItem(boolean newItem) {
         this.newItem = newItem;
+    }
+    
+    public EventCartItemPriceChange getEventCartItemPriceChange() {
+    	return EventCartItemPriceChange.findEventCartItemPriceChange(this.priceChangeId);
+    }
+    
+    public void setPriceChangeId(long priceChangeId) {
+    	this.priceChangeId = priceChangeId;
+    }
+    
+    public long getPriceChangeId(long priceChangeId) {
+    	return this.priceChangeId;
     }
 
     @Override

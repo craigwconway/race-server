@@ -38,6 +38,9 @@ public class CartItem {
 
     @ManyToOne
     private EventCartItem eventCartItem;
+    
+    @ManyToOne
+    private EventCartItemPriceChange priceChange;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_profile_id")
@@ -135,6 +138,14 @@ public class CartItem {
         this.eventCartItem = eventCartItem;
     }
 
+    public EventCartItemPriceChange getEventCartItemPriceChange() {
+    	return this.priceChange;
+    }
+    
+    public void setEventCartItemPriceChange(EventCartItemPriceChange priceChange) {
+    	this.priceChange = priceChange;
+    }
+    
     public UserProfile getUserProfile() {
         return this.userProfile;
     }

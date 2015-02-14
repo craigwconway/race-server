@@ -19,6 +19,7 @@ import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.UserProfile;
 
 public final class CartUtil {
@@ -31,7 +32,7 @@ public final class CartUtil {
         super();
     }
 
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, Integer quantity, UserProfile userProfile, String color, String size, boolean forceNewItem) {
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, String color, String size, boolean forceNewItem) {
          // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());
 
@@ -88,7 +89,7 @@ public final class CartUtil {
         CartItem cartItem;
         // if doesn't have product in cart and not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
-            cartItem = getCartItem(cart, now, eventCartItem, userProfile, quantity, color, size);
+            cartItem = getCartItem(cart, now, priceChange, eventCartItem, userProfile, quantity, color, size);
             cartItem.persist();
             cart.getCartItems().add(cartItem);
         } else {
@@ -137,7 +138,7 @@ public final class CartUtil {
             }
 
             if (!existedCartItem && quantity > 0) {
-                cartItem = getCartItem(cart, now, eventCartItem, userProfile, quantity, color, size);
+                cartItem = getCartItem(cart, now, priceChange, eventCartItem, userProfile, quantity, color, size);
                 cartItem.persist();
                 cart.getCartItems().add(cartItem);
             }
@@ -166,13 +167,17 @@ public final class CartUtil {
         return cart;
     }
 
-    private static CartItem getCartItem(Cart cart, Date now, EventCartItem eventCartItem, UserProfile userProfile, Integer quantity, String color, String size) {
+    private static CartItem getCartItem(Cart cart, Date now, EventCartItemPriceChange priceChange, EventCartItem eventCartItem, UserProfile userProfile, Integer quantity, String color, String size) {
         CartItem cartItem = new CartItem();
         if (eventCartItem.getType() == EventCartItemTypeEnum.T_SHIRT) {
             cartItem.setColor(color);
             cartItem.setSize(size);
         }
-        cartItem.setPrice(eventCartItem.getActualPrice());
+        
+        if (priceChange != null && !priceChange.isValidAt(new Date())) {
+        	throw new IllegalArgumentException("Price change not valid right now!");
+        }
+        
         cartItem.setCart(cart);
         cartItem.setEventCartItem(eventCartItem);
         // add maximum available quantity
@@ -183,7 +188,13 @@ public final class CartUtil {
         cartItem.setCreated(now);
         cartItem.setUpdated(now);
         cartItem.setUserProfile(userProfile);
-
+        cartItem.setEventCartItemPriceChange(priceChange);
+        if (priceChange == null) {
+        	cartItem.setPrice(eventCartItem.getPrice());
+        } else {
+        	cartItem.setPrice(priceChange.getPrice());
+        }
+        
         // updating available quantity in eventcartitem
         eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
         eventCartItem.merge();

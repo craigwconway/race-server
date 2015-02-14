@@ -42,7 +42,7 @@ public class CartRestController {
         if (registrationProfile.getId() == null) {
             this.userProfileService.saveUserProfile(registrationProfile);
         }
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, eventCartItemQuantity, registrationProfile, color, size, cartItemRequestWrapper.isNewItem());
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, cartItemRequestWrapper.getEventCartItemPriceChange(), eventCartItemQuantity, registrationProfile, color, size, cartItemRequestWrapper.isNewItem());
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);
