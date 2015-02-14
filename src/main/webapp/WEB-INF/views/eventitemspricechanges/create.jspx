@@ -103,7 +103,7 @@
                     <div class="ui blue attached segment">
                         <div class="ui yellow message">
                             <i class="close fa fa-times"><!--  --></i>
-                          <i class="fa fa-question-circle"><!--  --></i>You can add multiple categories!
+                            <i class="fa fa-question-circle"><!--  --></i>You can add multiple categories!
                         </div>
                     <form id="add-pc-category" data-parsley-validate="data-parsley-validate">
                         <div class="ui labeled input">
@@ -173,8 +173,12 @@
                     <div class="vis-left">
                         <div id="vis-header">
                             <div id="vis-container">
-                                <span><h4>Scroll to navigate, click to remove, double-click to add or edit.</h4>
-                                    <p class="base-price">Base price: $</p></span>
+                                <div class="ui yellow message">
+                                    <i class="close fa fa-times"><!--  --></i>
+                                    <i class="fa fa-question-circle"><!--  --></i>
+                                    Scroll to navigate, click to remove, double-click to add or edit.
+                                </div>
+                                <p class="base-price">Base price: $</p>
                                 <div class="slider"><!--  --></div>
                             </div>
                         </div>
@@ -397,6 +401,10 @@
                 .html(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
 
             initDateTimePickers();
+
+            jQuery('.message .close').on('click', function() {
+                jQuery(this).closest('.message').fadeOut();
+            });
         }
 
         function shiftTimeline(caller){
