@@ -6,6 +6,9 @@ import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.UserGroup;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.joda.time.DateTime;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -98,7 +101,18 @@ public class CartItemRestController {
                     	dailyMoney.put(checkoutTime.toString("YYYY/MM/dd"), dailyPrices);
                     	
                     }
-                    return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
+                    JsonObject responseObj = new JsonObject();
+                    Gson gson = new Gson();
+                    JsonElement moneyTree = gson.toJsonTree(totalMoney);
+                    responseObj.add("totalMoney", moneyTree);
+                    JsonElement quantityTree = gson.toJsonTree(totalQuantity);
+                    responseObj.add("totalQuantity", quantityTree);
+                    JsonElement dailyMoneyTree = gson.toJsonTree(dailyMoney);
+                    responseObj.add("dailyMoney", dailyMoneyTree);
+                    JsonElement cartItemTree = gson.toJsonTree(cartItems);
+                    responseObj.add("cartItems", cartItemTree);
+                    //return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
+                    return new ResponseEntity<>(responseObj.toString(), headers, HttpStatus.OK);
                 }
             }
         } else if (eventCartItemType != null) {
