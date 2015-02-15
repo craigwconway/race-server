@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.bibsmobile.model.UserGroup;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -32,7 +33,7 @@ public final class CartUtil {
         super();
     }
 
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, String color, String size, boolean forceNewItem) {
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, boolean forceNewItem) {
          // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());
 
@@ -89,7 +90,7 @@ public final class CartUtil {
         CartItem cartItem;
         // if doesn't have product in cart and not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
-            cartItem = getCartItem(cart, now, priceChange, eventCartItem, userProfile, quantity, color, size);
+            cartItem = getCartItem(cart, now, priceChange, eventCartItem, userProfile, team, quantity, color, size);
             cartItem.persist();
             cart.getCartItems().add(cartItem);
         } else {
@@ -138,7 +139,7 @@ public final class CartUtil {
             }
 
             if (!existedCartItem && quantity > 0) {
-                cartItem = getCartItem(cart, now, priceChange, eventCartItem, userProfile, quantity, color, size);
+                cartItem = getCartItem(cart, now, priceChange, eventCartItem, userProfile, team, quantity, color, size);
                 cartItem.persist();
                 cart.getCartItems().add(cartItem);
             }
@@ -167,7 +168,7 @@ public final class CartUtil {
         return cart;
     }
 
-    private static CartItem getCartItem(Cart cart, Date now, EventCartItemPriceChange priceChange, EventCartItem eventCartItem, UserProfile userProfile, Integer quantity, String color, String size) {
+    private static CartItem getCartItem(Cart cart, Date now, EventCartItemPriceChange priceChange, EventCartItem eventCartItem, UserProfile userProfile, UserGroup team, Integer quantity, String color, String size) {
         CartItem cartItem = new CartItem();
         if (eventCartItem.getType() == EventCartItemTypeEnum.T_SHIRT) {
             cartItem.setColor(color);
@@ -188,13 +189,15 @@ public final class CartUtil {
         cartItem.setCreated(now);
         cartItem.setUpdated(now);
         cartItem.setUserProfile(userProfile);
+        cartItem.setTeam(team);
         cartItem.setEventCartItemPriceChange(priceChange);
         if (priceChange == null) {
         	cartItem.setPrice(eventCartItem.getPrice());
         } else {
         	cartItem.setPrice(priceChange.getPrice());
         }
-        
+
+
         // updating available quantity in eventcartitem
         eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
         eventCartItem.merge();
