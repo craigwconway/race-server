@@ -68,7 +68,7 @@
                 <div class="form-horizontal">
                     <div class="ui labeled input">
                         <div class="ui blue label">Category Name</div>
-                        <input  type="text" name="name"
+                        <input  type="text" name="categoryName"
                                 class="form-control"
                                 placeholder="Category name"
                                 value="${eventCartItemPriceChange.categoryName}"
