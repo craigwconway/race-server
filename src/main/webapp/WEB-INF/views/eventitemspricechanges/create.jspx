@@ -77,6 +77,9 @@
             display: inline-block;
             width: 50%;
         }
+        .ui.form input[type="number"]{
+            padding: 0.5em 1em;
+        }
         ul{
             margin: 0;
         }
@@ -156,6 +159,16 @@
                                             class="category-field" autocomplete="off"></input>
                                 </div>
                         </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">$</div>
+                            <input  type="number" data-for="base"
+                                    class="category-field" id="eci-base-price"
+                                    placeholder="Base price"
+                                    min="1"
+                                    data-parsley-group="category"
+                                    data-parsley-error-message="Invalid base price."
+                                    data-parsley-required="true"></input>
+                        </div>
                         <div class="pull-right">
                             <button class="ui blue button" type="button" onclick="savePCType()">Add Category</button>
                         </div>
@@ -178,7 +191,7 @@
                                     <i class="fa fa-question-circle"><!--  --></i>
                                     Scroll to navigate, click to remove, double-click to add or edit.
                                 </div>
-                                <p class="base-price">Base price: $</p>
+                                <p class="eci-price">Base price: $</p>
                                 <div class="slider"><!--  --></div>
                             </div>
                         </div>
@@ -224,6 +237,7 @@
         var eciStart;
         var eciEnd;
         var eciBasePrice;
+        var newBasePrice;
         var options   = {
             editable: true,
             format: {
@@ -355,6 +369,9 @@
                             val = false;
                         }
                     }
+                    if( key == "base" ){
+                        newBasePrice = val;
+                    }
                     obj[key] = val;
                 });
 
@@ -377,6 +394,19 @@
             container = document.getElementById("group"+index).getElementsByClassName("slider")[0];
             var items = new vis.DataSet();
             itemList.push(items);
+
+            <!-- initialize first item -->
+            var price = jQuery("#eci-base-price").val();
+            var dateVal = moment(eciStart).format('MM/DD/YYYY h:mm:ss a');
+
+            if( price !== null &amp;&amp; dateVal !== null ){
+                var item = {};
+                    item["id"] = index + "-" + price;
+                    item["start"] = dateVal;
+                    item["content"] = price;
+                    itemList[index].add(item);
+            }
+
             timeline = new vis.Timeline(container, itemList[index], options);
             timelineList.push(timeline);
 
@@ -399,6 +429,10 @@
             jQuery("#group"+ index).find(".panel-heading")
                 .html(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
 
+            jQuery(".eci-price").each(function(){
+                jQuery(this).text("Base price: $" + newBasePrice);
+            });
+
             initDateTimePickers();
 
             jQuery('.message .close').on('click', function() {
@@ -414,8 +448,7 @@
             var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
             dateVal = moment(dateVal);
             price   = parseInt(price);
-
-
+            
             var item = {};
             item["id"] = index + "-" + price;
             item["start"] = dateVal;
@@ -442,10 +475,10 @@
             request.done(function( data ) {
                 if( data !== null ){
                     eci = data;
-                    console.log(eci);
+                    // console.log(eci);
                     eciStart = moment(data.timeStart).format('MM/DD/YYYY h:mm:ss a');
                     eciEnd = moment(data.timeEnd).format('MM/DD/YYYY h:mm:ss a');
-                    eciBasePrice = data.price;
+                    eciBasePrice = eci.price;
                     jQuery("#event-name").text(eci.name);
                     jQuery(".base-price").each(function(){
                         jQuery(this).text("Base price: $" + eciBasePrice);
@@ -541,7 +574,7 @@
             });
             request.fail(function( jqXHR, textStatus ) {
                 // error
-                alert("There was an error while saving your price changes. Please try again!");
+                // alert("There was an error while saving your price changes. Please try again!");
                 onBack();
             });
         }
