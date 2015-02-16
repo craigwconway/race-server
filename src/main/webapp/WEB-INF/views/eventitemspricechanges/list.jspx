@@ -40,7 +40,7 @@
     <div class="white-overlay">
         <div class="info-container">
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
-            <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItemPriceChange()" type="button"><i class="fa fa-plus"><!--  --></i>Price Change</button></div>
+            <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItemPriceChange()" type="button"><i class="fa fa-plus"><!--  --></i>Category</button></div>
             <div class="clearfix"><!--  --></div>
             <page:list id="pl_com_bibsmobile_model_EventCartItemPriceChange" items="${eventcartitempricechanges}" z="WMiJzrJ1IWZWaft43kpuzLU+jlw=">
             <h2 class="ui icon header">
@@ -102,7 +102,8 @@
             window.location="/bibs-server/eventitemspricechanges?form&amp;eventitem=${eventitem.id}";
         }
         function redirectItemDetail(id){
-            window.location="/bibs-server/eventitemspricechanges/"+id;
+            // window.location="/bibs-server/eventitemspricechanges/"+id;
+            window.location="/bibs-server/eventitemspricechanges/${item.id}?form";
         }
         function deletePriceChange(id){
             if(confirm("Delete Price Change?")){
