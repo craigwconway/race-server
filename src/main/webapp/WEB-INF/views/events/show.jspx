@@ -174,6 +174,32 @@
         </div>
     </div>
 
+    <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="export-label">Export Registration</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <button type="button" class="ui button" style="width:150px" onclick="exportRegHandler(false)">
+                            <i class="fa fa-file-o" style="margin-right:7px"><!--  --></i>Export New
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button type="button" class="ui button" style="width:150px" onclick="exportRegHandler(true)">
+                            <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Export All
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <nav class="navbar event-navbar-inverse navbar-fixed-top" style="margin-top:50px">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -212,7 +238,7 @@
                                 <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
                                 <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                 <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
-                                <li class="disabled"><a href="#" onclick="redirectExportReg(); return false;">Export Registrations</a></li>
+                                <li><a href="#" onclick="exportModal(); return false;">Export Registrations</a></li>
                             </c:if>
                             <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                             <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
@@ -249,7 +275,7 @@
     <div class="white-overlay">
         <div class="map-container">
             <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
-            <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
+            <!-- <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div> -->
         </div>
         <div class="info-container">
             <div class="event-name">${event.name}</div>
@@ -330,7 +356,7 @@
 
         function init(){
             initInfo();
-            initMap();
+            // initMap();
         }
 
         function initInfo(){
@@ -451,17 +477,6 @@
         var initModal = false;
         function regUrl(){
             jQuery("#regButton").modal('show');
-
-            // var text = "";
-
-            // jQuery.get("/bibs-server/events/regbutton?event=${event.id}", function(data, status){
-            //     text = data;
-            //     if( !initModal ){
-            //         jQuery(".modal-body").append('<div class="highlight">'+text+'</div>');
-            //         client.clip(jQuery('.language-html').text());
-            //         initModal = true;
-            //     }
-            // });
         }
         function liveUrl(){
             jQuery("#liveResults").modal('show');
@@ -478,6 +493,19 @@
                 }
             });
             request.fail(function( jqXHR, textStatus ) {
+            });
+        }
+        function exportModal(){
+            jQuery("#exportReg").modal('show');
+        }
+        function exportRegHandler(all){
+            var callUrl = "/bibs-server/cartitems/export?event=${event.id}&amp;all=false";
+            if(all){
+                callUrl = "/bibs-server/cartitems/export?event=${event.id}&amp;all=true"; 
+            }
+            var request = jQuery.ajax({
+                url: callUrl,
+                type: "GET"
             });
         }
         function redirectDropboxImport(){
@@ -522,9 +550,6 @@
         }
         function redirectSearchReg(){
             window.location="/bibs-server/registrations/search?event=${event.id}";
-        }
-        function redirectExportReg(){
-            window.location="/bibs-server/registrations/export?event=${event.id}";
         }
         function cloud(){
             jQuery("#progress").show();
