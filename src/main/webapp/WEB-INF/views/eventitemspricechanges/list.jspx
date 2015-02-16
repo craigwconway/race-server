@@ -112,8 +112,12 @@
         }
         function sendDelete(id){    
             var request = jQuery.ajax({
-                url: "/bibs-server/eventitemspricechanges/delete/"+id
-                });
+                url: "/bibs-server/eventitemspricechanges/"+id,
+                type: 'DELETE',
+                success: function(){
+                    window.location.reload(true);
+                }
+            });
         }
     </script>
 </div>
