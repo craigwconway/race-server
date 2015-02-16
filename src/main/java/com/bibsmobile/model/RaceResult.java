@@ -199,10 +199,11 @@ public class RaceResult implements Comparable<RaceResult> {
             PropertyDescriptor[] pDescArr = info.getPropertyDescriptors();
             for (PropertyDescriptor pDesc : pDescArr) {
                 System.out.println(pDesc.getName());
-                Object getterReturn = pDesc.getReadMethod().invoke(raceResult, (Object) null);
+                Object getterReturn = pDesc.getReadMethod().invoke(raceResult, (Object[]) null);
                 System.out.println(getterReturn);
                 if (null != getterReturn && null != pDesc.getWriteMethod()) {
                     pDesc.getWriteMethod().invoke(this, getterReturn);
+                    System.out.println("Writing: " + getterReturn + " as: " + pDesc.getWriteMethod());
                 }
             }
         } catch (Exception e) {
