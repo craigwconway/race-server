@@ -499,14 +499,11 @@
             jQuery("#exportReg").modal('show');
         }
         function exportRegHandler(all){
-            var callUrl = "/bibs-server/cartitems/export?event=${event.id}&amp;all=false";
+            var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false";
             if(all){
-                callUrl = "/bibs-server/cartitems/export?event=${event.id}&amp;all=true"; 
+                callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true"; 
             }
-            var request = jQuery.ajax({
-                url: callUrl,
-                type: "GET"
-            });
+            window.location=callUrl;
         }
         function redirectDropboxImport(){
             window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
