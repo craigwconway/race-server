@@ -297,7 +297,7 @@ public class StripeController {
                 //Review this plz
                 for(CartItem ci : c.getCartItems()) {
                 	EventCartItem eciUpdate = ci.getEventCartItem();
-                	eciUpdate.setPurchased(eciUpdate.getPurchased() + 1);
+                	eciUpdate.setPurchased(eciUpdate.getPurchased() + ci.getQuantity());
                 	eciUpdate.merge();
                 }
 
