@@ -3,6 +3,7 @@ package com.bibsmobile.model.wrapper;
 import java.util.Collection;
 import java.util.List;
 
+import com.bibsmobile.model.UserGroup;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -17,6 +18,7 @@ import flexjson.JSONSerializer;
 
 public class CartItemReqWrapper {
     private UserProfile userProfile;
+    private UserGroup team;
 
     private boolean newItem;
     private String size;
@@ -30,6 +32,14 @@ public class CartItemReqWrapper {
 
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
+    }
+
+    public UserGroup getTeam() {
+        return team;
+    }
+
+    public void setTeam(UserGroup team) {
+        this.team = team;
     }
 
     public String getSize() {
