@@ -209,6 +209,9 @@
                 if( selected == 'T_SHIRT' ){
                     jQuery(".shirt-settings").show();
                 }
+                else{
+                    jQuery(".shirt-settings").hide();
+                }
             })
         }
 
