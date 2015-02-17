@@ -45,7 +45,7 @@
             <page:list id="pl_com_bibsmobile_model_EventCartItemPriceChange" items="${eventcartitempricechanges}" z="WMiJzrJ1IWZWaft43kpuzLU+jlw=">
             <h2 class="ui icon header">
                 <i class="fa fa-gears fa-2x fa-rotate-90"><!--  --></i>
-                <div class="content" style="margin-top:5px">Manage Price Changes
+                <div class="content" style="margin-top:5px">Manage Categories
                     <div class="sub header">${eventitem.name}<br/> Current base price: $${eventitem.price}</div>
                 </div>
             </h2>
@@ -115,6 +115,7 @@
             var request = jQuery.ajax({
                 url: "/bibs-server/eventitemspricechanges/"+id,
                 type: 'DELETE',
+                dataType: "json",
                 success: function(){
                     window.location.reload(true);
                 }
