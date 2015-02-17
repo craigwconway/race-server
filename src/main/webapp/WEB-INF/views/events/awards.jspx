@@ -52,6 +52,17 @@
             <div class="pull-left">
                 <button class="btn btn-default btn-top" onclick="onBack()" type="button">Back</button>
             </div>
+			<div class="pull-right">
+				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+				<button class="btn btn-primary btn-top"
+					onclick="create()" 
+					type="button"><i class="fa fa-plus" style="margin-left:0; margin-right:5px"><!--  --></i> Category</button>
+				</sec:authorize>
+					
+				<button class="btn btn-success btn-top" 
+					onclick="printAwards()"
+					type="button">Print</button>
+			</div>
         </div>
         <div style="clear:both"></div>
 	    <div class="info-container">
@@ -62,7 +73,7 @@
 		        </div>
 		    </h2>
 
-			<div id="awards-nav"> 
+			<div class="awards-nav"> 
 				<button class="btn btn-info btn-top"
 					onclick="byGender('M')" 
 					type="button">Age M</button>
@@ -78,17 +89,6 @@
 				<button class="btn btn-info btn-top" 
 					onclick="overall()"
 					type="button">Overall</button>
-					
-				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-				<button class="btn btn-primary btn-top"
-					onclick="create()" 
-					type="button">Add Category</button>
-				</sec:authorize>
-					
-				<button class="btn btn-success btn-top" 
-					onclick="printAwards()"
-					type="button">Print</button>
-
 				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 					<div class="ui large form">
 						<div class="inline fields">
@@ -170,12 +170,12 @@
 			jQuery('table').css('max-width','500px');
 			jQuery('#search-box').hide();
 			jQuery('#header-nav').hide();
-			jQuery('#awards-nav').hide();
+			jQuery('.awards-nav').hide();
 			window.print();
 			alert("Print Complete!");
 			jQuery('table').css('max-width','none');
 			jQuery('#header-nav').show();
-			jQuery('#awards-nav').show();
+			jQuery('.awards-nav').show();
 		}
 
 		function byGender(gender){
