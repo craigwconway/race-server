@@ -104,9 +104,9 @@
                 </div>
                 <div class="active content">
                     <div class="ui blue attached segment">
-                        <div class="ui yellow message">
+                        <div class="ui yellow message" id="notify">
                             <i class="close fa fa-times"><!--  --></i>
-                            <i class="fa fa-question-circle"><!--  --></i>You can add multiple categories!
+                            <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg">You can add multiple categories!</span>
                         </div>
                     <form id="add-pc-category" data-parsley-validate="data-parsley-validate">
                         <div class="ui labeled input">
@@ -186,7 +186,7 @@
                     <div class="vis-left">
                         <div id="vis-header">
                             <div id="vis-container">
-                                <div class="ui yellow message">
+                                <div class="ui yellow message" id="vis-guide">
                                     <i class="close fa fa-times"><!--  --></i>
                                     <i class="fa fa-question-circle"><!--  --></i>
                                     Scroll to navigate, click to remove, double-click to add or edit.
@@ -241,27 +241,27 @@
         var options   = {
             editable: true,
             format: {
-                    minorLabels: {
-                        millisecond:'SSS',
-                        second:     's',
-                        minute:     'HH:mm',
-                        hour:       'HH:mm',
-                        weekday:    'ddd D',
-                        day:        'D',
-                        month:      'MMM',
-                        year:       'YYYY'
-                    },
-                    majorLabels: {
-                        millisecond:'HH:mm:ss',
-                        second:     'D MMM HH:mm',
-                        minute:     'ddd D MMM',
-                        hour:       'ddd D MMM',
-                        weekday:    'MMM YYYY',
-                        day:        'MMM YYYY',
-                        month:      'YYYY',
-                        year:       ''
-                    }
+                minorLabels: {
+                    millisecond:'SSS',
+                    second:     's',
+                    minute:     'HH:mm',
+                    hour:       'HH:mm',
+                    weekday:    'ddd D',
+                    day:        'D',
+                    month:      'MMM',
+                    year:       'YYYY'
                 },
+                majorLabels: {
+                    millisecond:'HH:mm:ss',
+                    second:     'D MMM HH:mm',
+                    minute:     'ddd D MMM',
+                    hour:       'ddd D MMM',
+                    weekday:    'MMM YYYY',
+                    day:        'MMM YYYY',
+                    month:      'YYYY',
+                    year:       ''
+                }
+            },
             onAdd: function (item, callback) {
                 item.content = prompt('Price at this date:', item.content);
                 if (item.content != null) {
@@ -298,11 +298,10 @@
                 }
             },
             minHeight: '150px',
-            min:    eciStart,
-            max:    eciEnd,
-            start:  eciStart,
-            end:    eciEnd,
-            zoomMin: 1000*60*60
+            min: new Date(eciStart),                // lower limit of visible range
+            max: new Date(eciEnd),                // upper limit of visible range
+            zoomMin: 1000 * 60 * 60,             // one day in milliseconds
+            zoomMax: 1000 * 60 * 60 * 24 * 31 * 3     // about three months in milliseconds
         }
         var itemList = [];
         var timelineList = [];
@@ -380,6 +379,18 @@
 
                 var index = timelineList.length;
                 addGroup(obj, index);
+                
+                // notification message
+                jQuery("#notify").show();
+                jQuery("#notify").removeClass("yellow");
+                jQuery("#notify").addClass("green");
+                jQuery("#notify-icon").removeClass('fa-question-circle');
+                jQuery("#notify-icon").addClass('fa-check-circle');
+                jQuery("#notify-msg").text("Category added! Add price changes below!");
+                jQuery("#notify").delay(5000).fadeOut('slow');
+
+                // clear form fields
+                jQuery("#add-pc-category")[0].reset();
                 return;
             }
             else{
@@ -435,11 +446,16 @@
 
             initDateTimePickers();
 
+            // remove helper message
+            // jQuery("#vis-guide").show();
+            // jQuery("#vis-guide").delay(10000).fadeOut('slow');
+
             jQuery('.message .close').on('click', function() {
                 jQuery(this).closest('.message').fadeOut();
             });
         }
 
+        /*  TODO: bug   */
         function shiftTimeline(caller){
             var timelineIndex = caller.closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
