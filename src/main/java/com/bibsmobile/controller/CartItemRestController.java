@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Map;
 import java.util.Date;
 import java.util.List;
@@ -77,15 +78,15 @@ public class CartItemRestController {
                     	}
                     	if (currentQuantity != null) {
                     		currentQuantity += ci.getQuantity();
-                    		totalMoney.put(type, currentQuantity);
+                    		totalQuantity.put(type, currentQuantity);
                     	} else {
                     		currentQuantity = (long) ci.getQuantity();
-                    		totalMoney.put(type, currentQuantity);
+                    		totalQuantity.put(type, currentQuantity);
                     	}
                     	// Now update Daily section, get time at midnight:
                     	DateTime checkoutTime = new DateTime(ci.getCreated());
                     	checkoutTime = checkoutTime.withTimeAtStartOfDay();
-                    	Map<String, Long> dailyPrices = dailyMoney.get(checkoutTime.toString("YYYY/MM/dd"));
+                    	Map<String, Long> dailyPrices = dailyMoney.get(checkoutTime.toString("YYYY-MM-dd"));
                     	if ( dailyPrices == null) {
                     		dailyPrices = new HashMap<String, Long>();
                     	}
@@ -98,9 +99,47 @@ public class CartItemRestController {
                     		currentDailyPrice = ci.getPrice() * ci.getQuantity();
                     		dailyPrices.put(type, currentDailyPrice);
                     	}
-                    	dailyMoney.put(checkoutTime.toString("YYYY/MM/dd"), dailyPrices);
+                    	dailyMoney.put(checkoutTime.toString("YYYY-MM-dd"), dailyPrices);
                     	
                     }
+                    
+                    if(!dailyMoney.isEmpty()) {
+                        // filling the data for sos0:
+                        DateTime minDate = null;
+                        DateTime maxDate = null;
+                        for(String dateString : dailyMoney.keySet()) {
+                        	DateTime dt = new DateTime(dateString);
+                        	if(null == minDate || null == maxDate) {
+                        		minDate = dt;
+                        		maxDate = dt;
+                        	} else {
+                        		minDate = minDate.isBefore(dt) ? minDate : dt;
+                        		maxDate = maxDate.isAfter(dt) ? maxDate : dt;
+                        	}
+                        	
+                        }
+                        // now lets fill up dailyMoney
+                		//Fill this with zeroes
+                		HashMap <String, Long> fillMap = new HashMap <String, Long> ();
+                		for (EventCartItemTypeEnum type : EventCartItemTypeEnum.values()) {
+                			fillMap.put(type.toString(), new Long(0));
+                		}
+                        for(DateTime dateIterator = minDate; dateIterator.isBefore(maxDate); dateIterator = dateIterator.plusDays(1)) {
+                        	String fillString = dateIterator.toString("YYYY-MM-dd");
+                        	if(!dailyMoney.containsKey(fillString)) {
+                        		dailyMoney.put(fillString, fillMap);
+                        	}
+                        }
+                    }
+
+                    
+                    System.out.println("TotalMoney:");
+                    System.out.println(totalMoney);
+                    System.out.println("Total Quantity:");
+                    System.out.println(totalQuantity);
+                    System.out.println("dailyMoneh:");
+                    System.out.println(dailyMoney);
+                   
                     JsonObject responseObj = new JsonObject();
                     Gson gson = new Gson();
                     JsonElement moneyTree = gson.toJsonTree(totalMoney);
@@ -109,8 +148,8 @@ public class CartItemRestController {
                     responseObj.add("totalQuantity", quantityTree);
                     JsonElement dailyMoneyTree = gson.toJsonTree(dailyMoney);
                     responseObj.add("dailyMoney", dailyMoneyTree);
-                    JsonElement cartItemTree = gson.toJsonTree(cartItems);
-                    responseObj.add("cartItems", cartItemTree);
+                    //JsonElement cartItemTree = gson.toJsonTree(cartItems);
+                    //responseObj.add("cartItems", cartItemTree);
                     //return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
                     return new ResponseEntity<>(responseObj.toString(), headers, HttpStatus.OK);
                 }
