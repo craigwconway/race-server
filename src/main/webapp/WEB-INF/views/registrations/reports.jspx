@@ -372,8 +372,18 @@
             return chart;
         });
 
+    var eid;
+    function parseEventId(){
+        var url = window.location.href;
+        var urllen = url.length;
+        var ind = url.lastIndexOf("=");
+        var eid = url.substring(ind+1, urllen);
+        return eid;
+    }
+    
     function onBack(){
-    	window.history.back();
+        eid = parseEventId();
+        document.location='/bibs-server/events/' + eid;
     }
 </script>
 </div>
