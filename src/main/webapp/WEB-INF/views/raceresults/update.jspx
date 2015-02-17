@@ -205,7 +205,7 @@
     </div>
     <script>
         window.onload = function(){
-            jQuery("#_bib_id").focus();
+            jQuery('input[name="bib"]').focus();
             initForm();
             setValidation();
             initDateTimePickers();
