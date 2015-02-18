@@ -3,11 +3,14 @@ package com.bibsmobile.model.wrapper;
 import java.util.Collection;
 import java.util.List;
 
+import com.bibsmobile.model.UserGroup;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.UserProfile;
 
 import flexjson.JSONDeserializer;
@@ -15,8 +18,13 @@ import flexjson.JSONSerializer;
 
 public class CartItemReqWrapper {
     private UserProfile userProfile;
+    private UserGroup team;
+
+    private boolean newItem;
     private String size;
     private String color;
+    private long priceChangeId;
+    
 
     public UserProfile getUserProfile() {
         return this.userProfile;
@@ -24,6 +32,14 @@ public class CartItemReqWrapper {
 
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
+    }
+
+    public UserGroup getTeam() {
+        return team;
+    }
+
+    public void setTeam(UserGroup team) {
+        this.team = team;
     }
 
     public String getSize() {
@@ -40,6 +56,26 @@ public class CartItemReqWrapper {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public boolean isNewItem() {
+        return newItem;
+    }
+
+    public void setNewItem(boolean newItem) {
+        this.newItem = newItem;
+    }
+    
+    public EventCartItemPriceChange getEventCartItemPriceChange() {
+    	return EventCartItemPriceChange.findEventCartItemPriceChange(this.priceChangeId);
+    }
+    
+    public void setPriceChangeId(long priceChangeId) {
+    	this.priceChangeId = priceChangeId;
+    }
+    
+    public long getPriceChangeId(long priceChangeId) {
+    	return this.priceChangeId;
     }
 
     @Override

@@ -40,12 +40,12 @@
     <div class="white-overlay">
         <div class="info-container">
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
-            <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItemPriceChange()" type="button"><i class="fa fa-plus"><!--  --></i>Price Change</button></div>
+            <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItemPriceChange()" type="button"><i class="fa fa-plus"><!--  --></i>Category</button></div>
             <div class="clearfix"><!--  --></div>
             <page:list id="pl_com_bibsmobile_model_EventCartItemPriceChange" items="${eventcartitempricechanges}" z="WMiJzrJ1IWZWaft43kpuzLU+jlw=">
             <h2 class="ui icon header">
                 <i class="fa fa-gears fa-2x fa-rotate-90"><!--  --></i>
-                <div class="content" style="margin-top:5px">Manage Price Changes
+                <div class="content" style="margin-top:5px">Manage Categories
                     <div class="sub header">${eventitem.name}<br/> Current base price: $${eventitem.price}</div>
                 </div>
             </h2>
@@ -77,21 +77,33 @@
     </div>
     </sec:authorize>
     <script>
+        var eid;
         window.onload = function(){
+            eid = parseEventId();
             jQuery(".item-date-ribbon").each(function(){
                 var pcdate = jQuery(this).text();
                 var momdate = moment(pcdate).format('MMM Do \'YY h:mm a');
                 jQuery(this).text(momdate);
             })
         }
+
+        function parseEventId(){
+            var url = window.location.href;
+            var urllen = url.length;
+            var ind = url.lastIndexOf("=");
+            var eid = url.substring(ind+1, urllen);
+            return eid;
+        }
+
         function onBack(){
-            window.history.back();
+            window.location="/bibs-server/eventitems/"+eid;
         }
         function addItemPriceChange(){
             window.location="/bibs-server/eventitemspricechanges?form&amp;eventitem=${eventitem.id}";
         }
         function redirectItemDetail(id){
-            window.location="/bibs-server/eventitemspricechanges/"+id;
+            // window.location="/bibs-server/eventitemspricechanges/"+id;
+            window.location="/bibs-server/eventitemspricechanges/${item.id}?form";
         }
         function deletePriceChange(id){
             if(confirm("Delete Price Change?")){
@@ -101,8 +113,13 @@
         }
         function sendDelete(id){    
             var request = jQuery.ajax({
-                url: "/bibs-server/awardcategorys/delete/"+id
-                });
+                url: "/bibs-server/eventitemspricechanges/"+id,
+                type: 'DELETE',
+                dataType: "json",
+                success: function(){
+                    window.location.reload(true);
+                }
+            });
         }
     </script>
 </div>

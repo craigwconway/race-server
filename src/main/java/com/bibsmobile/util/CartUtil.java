@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.bibsmobile.model.UserGroup;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -19,18 +20,21 @@ import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.UserProfile;
 
 public final class CartUtil {
     private static final Logger log = LoggerFactory.getLogger(CartUtil.class);
     public static final String SESSION_ATTR_CART_ID = "cartId";
+    private static final double BIBS_ABSOLUTE_FEE = 100;
+    private static final double BIBS_RELATIVE_FEE = 0.02;
 
     private CartUtil() {
         super();
     }
 
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, Integer quantity, UserProfile userProfile, String color, String size) {
-        // make sure our UserProfile is attached
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, boolean forceNewItem) {
+         // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());
 
         boolean newCart = false;
@@ -86,53 +90,56 @@ public final class CartUtil {
         CartItem cartItem;
         // if doesn't have product in cart and not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
-            cartItem = getCartItem(cart, now, eventCartItem, userProfile, quantity, color, size);
+            cartItem = getCartItem(cart, now, priceChange, eventCartItem, userProfile, team, quantity, color, size);
             cartItem.persist();
             cart.getCartItems().add(cartItem);
         } else {
             boolean existedCartItem = false;
-            for (CartItem ci : cart.getCartItems()) {
-                // if product already exists in cart
-                if (ci.getEventCartItem().getId().equals(eventCartItemId)) {
+            if (!forceNewItem) {
+                for (CartItem ci : cart.getCartItems()) {
+                    // if product already exists in cart
+                    if (ci.getEventCartItem().getId().equals(eventCartItemId)) {
 
-                    existedCartItem = true;
-                    // adding
-                    if (quantity > 0) {
+                        existedCartItem = true;
+                        // adding
+                        if (quantity > 0) {
 
-                        if (quantity != ci.getQuantity()) {
-                            if (quantity > ci.getQuantity()) {
-                                // only if increasing
-                                if (eventCartItem.getAvailable() < quantity) {
-                                    quantity = eventCartItem.getAvailable();
+                            if (quantity != ci.getQuantity()) {
+                                if (quantity > ci.getQuantity()) {
+                                    // only if increasing
+                                    if (eventCartItem.getAvailable() < quantity) {
+                                        quantity = eventCartItem.getAvailable();
+                                    }
+                                    eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
+                                } else {
+                                    // quantity < ci.getQuantity()
+                                    // diff>0
+                                    int diff = ci.getQuantity() - quantity;
+                                    // add removed quantity to available
+                                    eventCartItem.setAvailable(eventCartItem.getAvailable() + diff);
                                 }
-                                eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);
-                            } else {
-                                // quantity < ci.getQuantity()
-                                // diff>0
-                                int diff = ci.getQuantity() - quantity;
-                                // add removed quantity to available
-                                eventCartItem.setAvailable(eventCartItem.getAvailable() + diff);
+                                eventCartItem.merge();
+                                ci.setQuantity(quantity);
+                                ci.setUpdated(now);
+                                ci.setUserProfile(userProfile);
+                                ci.persist();
                             }
-                            eventCartItem.merge();
-                            ci.setQuantity(quantity);
-                            ci.setUpdated(now);
-                            ci.persist();
-                        }
 
+                        }
+                        // removing
+                        else {
+                            // add removed quantity to available
+                            eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
+                            ci.remove();
+                        }
+                        eventCartItem.merge();
+                        break;
                     }
-                    // removing
-                    else {
-                        // add removed quantity to available
-                        eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
-                        ci.remove();
-                    }
-                    eventCartItem.merge();
-                    break;
                 }
             }
 
             if (!existedCartItem && quantity > 0) {
-                cartItem = getCartItem(cart, now, eventCartItem, userProfile, quantity, color, size);
+                cartItem = getCartItem(cart, now, priceChange, eventCartItem, userProfile, team, quantity, color, size);
                 cartItem.persist();
                 cart.getCartItems().add(cartItem);
             }
@@ -143,6 +150,7 @@ public final class CartUtil {
         for (CartItem ci : cart.getCartItems()) {
             total += (ci.getQuantity() * ci.getPrice());
         }
+        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
         cart.setTotal(total);
         cart.merge();
 
@@ -160,13 +168,17 @@ public final class CartUtil {
         return cart;
     }
 
-    private static CartItem getCartItem(Cart cart, Date now, EventCartItem eventCartItem, UserProfile userProfile, Integer quantity, String color, String size) {
+    private static CartItem getCartItem(Cart cart, Date now, EventCartItemPriceChange priceChange, EventCartItem eventCartItem, UserProfile userProfile, UserGroup team, Integer quantity, String color, String size) {
         CartItem cartItem = new CartItem();
         if (eventCartItem.getType() == EventCartItemTypeEnum.T_SHIRT) {
             cartItem.setColor(color);
             cartItem.setSize(size);
         }
-        cartItem.setPrice(eventCartItem.getActualPrice());
+        
+        if (priceChange != null && !priceChange.isValidAt(new Date())) {
+        	throw new IllegalArgumentException("Price change not valid right now!");
+        }
+        
         cartItem.setCart(cart);
         cartItem.setEventCartItem(eventCartItem);
         // add maximum available quantity
@@ -177,6 +189,14 @@ public final class CartUtil {
         cartItem.setCreated(now);
         cartItem.setUpdated(now);
         cartItem.setUserProfile(userProfile);
+        cartItem.setTeam(team);
+        cartItem.setEventCartItemPriceChange(priceChange);
+        if (priceChange == null) {
+        	cartItem.setPrice(eventCartItem.getPrice());
+        } else {
+        	cartItem.setPrice(priceChange.getPrice());
+        }
+
 
         // updating available quantity in eventcartitem
         eventCartItem.setAvailable(eventCartItem.getAvailable() - quantity);

@@ -80,7 +80,7 @@
     </sec:authorize>
     <script>
         function onBack(){
-            window.history.back();
+            window.location="/bibs-server/events/${event.id}";
         }
         function redirectItemDetail(id){
             window.location="/bibs-server/eventitems/"+id;

@@ -2,56 +2,181 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <div>
-        <div class="panel-container-left">
-            <h3 style="margin-left: 2%">Price Change</h3>
-            <div class="panel panel-success add-pc-category">
-                <div class="panel-heading">Add Category Type</div>
-                <div class="panel-body" style="margin: auto 4%">
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12" style="margin-left: 0px; padding-left: 0px">
-                        <input  type="text" name="categoryName"
-                                data-for="categoryName"
-                                class="input-form category-field"
-                                placeholder="Category Name"></input></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-5 col-sm-5" style="margin-left: 0px; padding-left: 0px">
-                        <input  type="text" name="lowAgeThreshold"
-                                data-for="lowAgeThreshold"
-                                class="input-form category-field"
-                                placeholder="Min Age"
-                                value=""></input></div>
-                        <div class="col-md-5 col-sm-5" style="margin-left: 25px; padding-left: 0px">
-                        <input  type="text" name="highAgeThreshold"
-                                data-for="highAgeThreshold"
-                                class="input-form category-field"
-                                placeholder="Max Age"
-                                value=""></input></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6" style="margin-left: 0px; padding-left: 0px">
-                        <select data-for="gender" class="form-control category-field" id="gender-type" name="gender">
-                                <option selected="selected" disabled="disabled">Gender</option>
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option>
-                                <option value="MALE_AND_FEMALE">Both</option>
-                            </select></div>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 102%;
+            margin-top: -2%;
+            margin-left: -1%;
+            margin-right: -3%;
+            padding-top: 2%;
+            padding-bottom: 4%;
+        }
+        .info-container{
+            margin: 0 5%;
+            width: auto;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+            text-align: center;
+        }
+        .ui.form .form-fields{
+            margin-bottom: 5px;
+        }
+        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
+            margin-bottom: 5px;
+        }
+        .ui.labeled.input {
+            display: table;
+            margin: 5px auto;
+            text-align: left;
+            width: 400px;
+        }
+        .ui.labeled.input > .label {
+            width: 32%;
+            font-weight: 300;
+        }
+        .ui.form select{
+            padding: 0.42em 1em;
+            height: 35px;
+        }
+        .ui.toggle.checkbox{
+            margin-left: 10px;
+        }
+        i{
+            margin-right: 5px;
+        }
 
-                        <div class="btn btn-primary" data-toggle="button"
-                             style="margin-left: 35px">
-                            <input  type="checkbox" name="team"
-                                style="display:none" data-for="team"
-                                class="category-field"
-                                aria-pressed="false" autocomplete="off"></input>Teams Only</div>
-                        <div class="formGroup row">
-                            <div style="text-align:right; margin-top: 3%; margin-right:5%">
-                                <button type="button" class="btn btn-success" onclick="savePCType()">Add Category</button>
-                            </div>
+        /* panel sizes */
+        .category-container{
+            text-align: right;
+        }
+
+        .panel{
+            width: 100%;
+            margin-top: 2%;
+            margin-right: 15%;
+        }
+
+        .panel-container{
+            width: 94%;
+            margin: 0 auto;
+        }
+        .panel-container-left{
+            display: inline-block;
+            width: 44%;
+            margin-left: 3%;
+            vertical-align: top;
+        }
+        .panel-container-right{
+            display: inline-block;
+            width: 50%;
+        }
+        .ui.form input[type="number"]{
+            padding: 0.5em 1em;
+        }
+        ul{
+            margin: 0;
+        }
+        li{
+            list-style-type: none;
+            margin-left: 10px;
+        }
+    </style>
+    <div class="white-overlay">
+        <div class="ui form info-container">
+            <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
+            <div class="clearfix"><!--  --></div>
+            <h2 class="ui icon header">
+                <i class="fa fa-calendar"><!--  --></i>
+                <div class="content" style="margin-top:5px">Add Price Changes
+                    <div class="sub header"><span id="event-name">${eventitem.name}</span><br/><span class="base-price"> Base price: $</span></div>
+                </div>
+            </h2>
+            <div class="ui accordion" style="width:400px;margin:0 auto;">
+                <div class="active title">
+                    <div class="ui top inverted primary blue attached header">Add Category Types <i class="fa fa-sort-desc" style="margin-right:0;margin-left:5px"><!--  --></i></div>
+                </div>
+                <div class="active content">
+                    <div class="ui blue attached segment">
+                        <div class="ui yellow message" id="notify">
+                            <i class="close fa fa-times"><!--  --></i>
+                            <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg">You can add multiple categories!</span>
                         </div>
+                    <form id="add-pc-category" data-parsley-validate="data-parsley-validate">
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Category Name</div>
+                            <input  type="text" name="categoryName"
+                                    data-for="categoryName"
+                                    class="input-form category-field"
+                                    placeholder="e.g. Youth Male, Female Teams"
+                                    data-parsley-group="category"
+                                    data-parsley-required="true"
+                                    data-parsley-error-message="Please specify a category name."></input>
+                        </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Min Age</div>
+                                <input  type="text" name="lowAgeThreshold"
+                                        data-for="lowAgeThreshold" id="lowAge"
+                                        class="input-form category-field"
+                                        placeholder="Min Age"
+                                        value=""
+                                        data-parsley-group="category"
+                                        data-parsley-required="true"
+                                        data-parsley-error-message="Invalid age."></input>
+                        </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Max Age</div>
+                                <input  type="text" name="highAgeThreshold"
+                                        data-for="highAgeThreshold" id="highAge"
+                                        class="input-form category-field"
+                                        placeholder="Max Age"
+                                        value=""
+                                        data-parsley-group="category"
+                                        data-parsley-required="true"
+                                        data-parsley-error-message="Invalid age."></input>
+                        </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Gender</div>
+                                <select data-for="gender" class="category-field" id="gender-type" name="gender"
+                                        data-parsley-group="category"
+                                        data-parsley-error-message="Please select a gender.">
+                                    <option selected="selected" disabled="disabled">Gender</option>
+                                    <option value="MALE">Male</option>
+                                    <option value="FEMALE">Female</option>
+                                    <option value="MALE_AND_FEMALE">Both</option>
+                                </select>
+                        </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Teams Only</div>
+                                <div class="ui toggle checkbox">
+                                    <input type="checkbox" name="team" data-for="team" id="team-check"
+                                            class="category-field" autocomplete="off"></input>
+                                </div>
+                        </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">$</div>
+                            <input  type="number" data-for="base"
+                                    class="category-field" id="eci-base-price"
+                                    placeholder="Base price"
+                                    min="1"
+                                    data-parsley-group="category"
+                                    data-parsley-error-message="Invalid base price."
+                                    data-parsley-required="true"></input>
+                        </div>
+                        <div class="pull-right">
+                            <button class="ui blue button" type="button" onclick="savePCType()">Add Category</button>
+                        </div>
+                    </form>
                     </div>
                 </div>
             </div>
+            
         </div>
         <div class="row panel-container pc-groups"><!--  --></div>
         <div class="row panel-container pc-nav" style="margin: 0 3%; display:none">
@@ -61,8 +186,12 @@
                     <div class="vis-left">
                         <div id="vis-header">
                             <div id="vis-container">
-                                <span><h4>Scroll to navigate, click to remove, double-click to add or edit.</h4>
-                                    <p class="base-price">Base price: $</p></span>
+                                <div class="ui yellow message" id="vis-guide">
+                                    <i class="close fa fa-times"><!--  --></i>
+                                    <i class="fa fa-question-circle"><!--  --></i>
+                                    Scroll to navigate, click to remove, double-click to add or edit.
+                                </div>
+                                <p class="eci-price">Base price: $</p>
                                 <div class="slider"><!--  --></div>
                             </div>
                         </div>
@@ -108,30 +237,31 @@
         var eciStart;
         var eciEnd;
         var eciBasePrice;
+        var newBasePrice;
         var options   = {
             editable: true,
             format: {
-                    minorLabels: {
-                        millisecond:'SSS',
-                        second:     's',
-                        minute:     'HH:mm',
-                        hour:       'HH:mm',
-                        weekday:    'ddd D',
-                        day:        'D',
-                        month:      'MMM',
-                        year:       'YYYY'
-                    },
-                    majorLabels: {
-                        millisecond:'HH:mm:ss',
-                        second:     'D MMM HH:mm',
-                        minute:     'ddd D MMM',
-                        hour:       'ddd D MMM',
-                        weekday:    'MMM YYYY',
-                        day:        'MMM YYYY',
-                        month:      'YYYY',
-                        year:       ''
-                    }
+                minorLabels: {
+                    millisecond:'SSS',
+                    second:     's',
+                    minute:     'HH:mm',
+                    hour:       'HH:mm',
+                    weekday:    'ddd D',
+                    day:        'D',
+                    month:      'MMM',
+                    year:       'YYYY'
                 },
+                majorLabels: {
+                    millisecond:'HH:mm:ss',
+                    second:     'D MMM HH:mm',
+                    minute:     'ddd D MMM',
+                    hour:       'ddd D MMM',
+                    weekday:    'MMM YYYY',
+                    day:        'MMM YYYY',
+                    month:      'YYYY',
+                    year:       ''
+                }
+            },
             onAdd: function (item, callback) {
                 item.content = prompt('Price at this date:', item.content);
                 if (item.content != null) {
@@ -168,11 +298,10 @@
                 }
             },
             minHeight: '150px',
-            min:    eciStart,
-            max:    eciEnd,
-            start:  eciStart,
-            end:    eciEnd,
-            zoomMin: 1000*60*60
+            min: new Date(eciStart),                // lower limit of visible range
+            max: new Date(eciEnd),                // upper limit of visible range
+            zoomMin: 1000 * 60 * 60,             // one day in milliseconds
+            zoomMax: 1000 * 60 * 60 * 24 * 31 * 3     // about three months in milliseconds
         }
         var itemList = [];
         var timelineList = [];
@@ -181,28 +310,92 @@
         window.onload = function(){
             eciId = parseEventId();
             getEventData(eciId);
+            jQuery('.ui.accordion').accordion();
+            jQuery('.ui.checkbox').checkbox();
+
+            jQuery("#lowAge").on('input', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+                if( high !== "" ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highAge").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery("#highAge").on('change', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+                if( low !== "" ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowAge").attr("max", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery('.message .close').on('click', function() {
+                jQuery(this).closest('.message').fadeOut();
+            });
         }
 
         function savePCType(){
-            var obj = {};
-            jQuery(".category-field").each(function(i){
-                var key = jQuery(this).attr("data-for");
-                var val = jQuery(this).val();
-                if( key == "team" ){
-                    if(jQuery(this).parent().attr('aria-pressed') == "true"){
-                        val = true;
-                    }else{
-                        val = false;
-                    }
-                }
-                obj[key] = val;
+            var pcform = jQuery("#add-pc-category").parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
             });
+            if(true === jQuery("#add-pc-category").parsley().validate('category')){
+                var obj = {};
+                jQuery(".category-field").each(function(i){
+                    var key = jQuery(this).attr("data-for");
+                    var val = jQuery(this).val();
+                    if( key == "team" ){
+                        if(jQuery("#team-check").prop("checked")){
+                            val = true;
+                        }else{
+                            val = false;
+                        }
+                    }
+                    if( key == "base" ){
+                        newBasePrice = val;
+                    }
+                    obj[key] = val;
+                });
 
-            postObject = obj;
-            postObject['eventCartItem'] = null;
+                postObject = obj;
+                postObject['eventCartItem'] = null;
 
-            var index = timelineList.length;
-            addGroup(obj, index);
+                var index = timelineList.length;
+                addGroup(obj, index);
+                
+                // notification message
+                jQuery("#notify").show();
+                jQuery("#notify").removeClass("yellow");
+                jQuery("#notify").addClass("green");
+                jQuery("#notify-icon").removeClass('fa-question-circle');
+                jQuery("#notify-icon").addClass('fa-check-circle');
+                jQuery("#notify-msg").text("Category added! Add price changes below!");
+                jQuery("#notify").delay(5000).fadeOut('slow');
+
+                // clear form fields
+                jQuery("#add-pc-category")[0].reset();
+                return;
+            }
+            else{
+                // error
+            }
         }
 
         function addGroup(obj, index){
@@ -212,6 +405,19 @@
             container = document.getElementById("group"+index).getElementsByClassName("slider")[0];
             var items = new vis.DataSet();
             itemList.push(items);
+
+            <!-- initialize first item -->
+            var price = jQuery("#eci-base-price").val();
+            var dateVal = moment(eciStart).format('MM/DD/YYYY h:mm:ss a');
+
+            if( price !== null &amp;&amp; dateVal !== null ){
+                var item = {};
+                    item["id"] = index + "-" + price;
+                    item["start"] = dateVal;
+                    item["content"] = price;
+                    itemList[index].add(item);
+            }
+
             timeline = new vis.Timeline(container, itemList[index], options);
             timelineList.push(timeline);
 
@@ -234,9 +440,22 @@
             jQuery("#group"+ index).find(".panel-heading")
                 .html(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
 
+            jQuery(".eci-price").each(function(){
+                jQuery(this).text("Base price: $" + newBasePrice);
+            });
+
             initDateTimePickers();
+
+            // remove helper message
+            // jQuery("#vis-guide").show();
+            // jQuery("#vis-guide").delay(10000).fadeOut('slow');
+
+            jQuery('.message .close').on('click', function() {
+                jQuery(this).closest('.message').fadeOut();
+            });
         }
 
+        /*  TODO: bug   */
         function shiftTimeline(caller){
             var timelineIndex = caller.closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
@@ -245,8 +464,7 @@
             var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
             dateVal = moment(dateVal);
             price   = parseInt(price);
-
-
+            
             var item = {};
             item["id"] = index + "-" + price;
             item["start"] = dateVal;
@@ -273,9 +491,14 @@
             request.done(function( data ) {
                 if( data !== null ){
                     eci = data;
+                    // console.log(eci);
                     eciStart = moment(data.timeStart).format('MM/DD/YYYY h:mm:ss a');
                     eciEnd = moment(data.timeEnd).format('MM/DD/YYYY h:mm:ss a');
-                    eciBasePrice = data.price;
+                    eciBasePrice = eci.price;
+                    jQuery("#event-name").text(eci.name);
+                    jQuery(".base-price").each(function(){
+                        jQuery(this).text("Base price: $" + eciBasePrice);
+                    });
                 }else{
                 }
             });
@@ -291,9 +514,6 @@
                     useSeconds: true,
                     sideBySide: true
                 });
-            });
-            jQuery(".base-price").each(function(){
-                jQuery(this).text("Base price: $" + eciBasePrice);
             });
         }
 
@@ -360,19 +580,22 @@
             request.done(function(data){
                 if( data !== null ){
                     console.log("posted")
-                    // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+                    onBack();
                 }
                 else{
                     // error
-                    alert("There was an error while saving your price changes. Please try again!");
-                    // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+                    // alert("There was an error while saving your price changes. Please try again!");
+                    onBack();
                 }
             });
             request.fail(function( jqXHR, textStatus ) {
                 // error
-                alert("There was an error while saving your price changes. Please try again!");
-                // document.location='bibs-server/eventitemspricechanges?eventitem=' + eciId;
+                // alert("There was an error while saving your price changes. Please try again!");
+                onBack();
             });
+        }
+        function onBack(){
+            document.location='/bibs-server/eventitemspricechanges?eventitem=' + eciId;
         }
     </script>
 </div>

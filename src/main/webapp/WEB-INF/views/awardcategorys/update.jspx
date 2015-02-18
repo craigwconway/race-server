@@ -1,56 +1,192 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <h3>Edit Award Category</h3>
-    <form:update id="fu_com_bibsmobile_model_AwardCategory" modelAttribute="awardCategory" path="/awardcategorys" versionField="Version" z="user-managed">
-        <field:select field="event" id="c_com_bibsmobile_model_AwardCategory_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/>
-        <field:input field="name" id="c_com_bibsmobile_model_AwardCategory_name" z="user-managed"/>
-        <field:input field="ageMin" id="c_com_bibsmobile_model_AwardCategory_ageMin" z="user-managed"/>
-        <field:input field="ageMax" id="c_com_bibsmobile_model_AwardCategory_ageMax" z="user-managed"/>
-        <field:input field="gender" id="c_com_bibsmobile_model_AwardCategory_gender" z="user-managed"/>
-        <div>
-            <table>
-                <tr>
-                    <td>
-                        <label for="custom-gender">Gender:</label>
-                    </td>
-                    <td>
-                        <select id="custom-gender" name="custom-gender" onchange="change('gender')" style="width:100px">
-                            <option id="gender-x" value="">Any</option>
-                            <option id="gender-0" value="M">Male</option>
-                            <option id="gender-1" value="F">Female</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-            <br/>
+    <style>
+        body{
+            background-image: url('../images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            font-weight: 100;
+            color: #292929;
+        }
+        .ui.labeled.input {
+            display: table;
+            margin: 5px auto;
+            text-align: left;
+            width: 500px;
+        }
+        .ui.labeled.input > .label {
+            width: 26%;
+        }
+        .ui.button, .ui.button:hover{
+            width: 8%;
+            color: #DD0000;
+        }
+        .form-fields>input{
+            width: 400px;
+            margin: 5px auto; 
+        }
+        .ui.selection.dropdown{
+            width: 100%;
+            height: 34px;
+            line-height: 0.65em;
+            font-size: 1em;
+        }
+        .submit{
+            margin: 0 auto;
+            width: 500px;
+            text-align: right;
+        }
+    </style>
+    <div class="white-overlay">
+        <div class="info-container">
+        <form:update id="fu_com_bibsmobile_model_AwardCategory" modelAttribute="awardCategory" path="/awardcategorys" versionField="Version" z="user-managed">
+            <h2 class="ui icon header">
+                <i class="fa fa-trophy"><!--  --></i>
+                <div class="content">Create Award Category
+                    <div class="sub header">Provide the details for this award category.</div>
+                </div>
+            </h2>
+            <div class="form-horizontal">
+                <div class="ui labeled input">
+                    <div class="ui orange label">Event</div>
+                    <select class="ui dropdown" id="event-type" name="event"
+                            data-parsley-error-message="Please select an event.">
+                        <option value="">Select Event</option>
+                        <c:forEach var="item" items="${events}">
+                            <option value="${item.id}">${item}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui orange label">Category Name</div>
+                    <input  type="text" name="name"
+                            class="form-control" id="cat-name"
+                            placeholder="Category Name"
+                            value="${awardCategory.name}"
+                            data-parsley-error-message="Please enter a category name."
+                            data-parsley-required="required"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui orange label">Min Age</div>
+                    <input  type="number" name="ageMin"
+                            id="lowAge"
+                            placeholder="1"
+                            min="1"
+                            max="120"
+                            data-parsley-error-message="Invalid age."
+                            data-parsley-required="true"
+                            value="${awardCategory.ageMin}"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui orange label">Max Age</div>
+                    <input  type="number" name="ageMax"
+                            id="highAge"
+                            placeholder="120"
+                            min="1"
+                            max="120"
+                            data-parsley-error-message="Invalid Age."
+                            data-parsley-required="required"
+                            value="${awardCategory.ageMax}"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui orange label">Gender</div>
+                    <select class="ui dropdown" id="award-gender" name="gender"
+                            data-parsley-error-message="Please select a gender.">
+                        <option value="">Gender</option>
+                        <option value="x">Any</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui orange label">List Size</div>
+                    <input  type="text" name="listSize"
+                            class="form-control"
+                            placeholder="List Size"
+                            data-parsley-error-message="Invalid list size."
+                            data-parsley-required="required"
+                            value="${awardCategory.listSize}"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui orange label">Award Priority</div>
+                    <input  type="number" name="sortOrder"
+                            placeholder="e.g. 1"
+                            min="1"
+                            data-parsley-error-message="Invalid priority number."
+                            data-parsley-required="required"
+                            value="${awardCategory.sortOrder}"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui orange label">Sort Order</div>
+                    <input  type="text" name="listSize"
+                            placeholder="Sort Order"
+                            data-parsley-error-message="Invalid sort order."
+                            data-parsley-required="required"
+                            value="${awardCategory.listSize}"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui orange label">Medal Category</div>
+                    <div class="btn btn-default btn-sm med-button med" onclick="medalToggle()">${awardCategory.medal}</div>
+                    <input style="display:none" id="checkmedal" type="checkbox" name="medal"><!--  --></input>
+                </div>
+            </div>
+        </form:update>
         </div>
-        <field:input field="listSize" id="c_com_bibsmobile_model_AwardCategory_listSize" z="user-managed"/>
-        <field:input field="sortOrder" id="c_com_bibsmobile_model_AwardCategory_sortOrder" z="user-managed"/> 
-        <label style="width: 150px;font-weight: bold;">This is a Medal Category</label>
-        <input type="checkbox" id="medal" name="medal" value="true"/>
-    </form:update>
+    </div>
     <script>
     window.onload=function(){
-    	if("M" == "${awardCategory.gender}"){
-    		jQuery('#gender-0').prop('selected', true);
-    	}
-    	if("F" == "${awardCategory.gender}"){
-    		jQuery('#gender-1').prop('selected', true);
-    	}
-		jQuery("#_c_com_bibsmobile_model_AwardCategory_gender_id").hide();
-		// medal hack
-		var name = jQuery("#_name_id").val();
-		var index = Math.round(name.indexOf('Medal: '));
-		if(index > -1){
-			jQuery("#_name_id").val( name.substring( 7, name.length) );
-			jQuery('#medal').prop('checked', true);
-		}
+        jQuery(".med").each(function(){
+            var content = jQuery(this).html();
+            if(content === "true"){
+                jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+            }
+            else if(content === "false"){
+                jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
+            }
+        })
+        jQuery('#event-type').dropdown('set selected', '${awardCategory.event.id}');
+        jQuery('#award-gender').dropdown('set selected', '${awardCategory.gender}');
+
+        jQuery('select.dropdown').dropdown();
+
+        setValidation();
     };
-    
-    function change(field){
-   		jQuery("#_"+field+"_id").val(document.getElementById("custom-"+field).value);
+
+    function setValidation(){
+        jQuery('#awardCategory').parsley({
+            errorsWrapper: '<div class="has-error"></div>',
+            errorTemplate: '<span></span>'
+        });
+    }
+
+    function parseEventId(){
+        var url = window.location.href;
+        var urllen = url.length;
+        var ind = url.lastIndexOf("=");
+        var eid = url.substring(ind+1, urllen);
+        jQuery('#event-type option[value="'+ eid +'"]').attr("selected", "selected");
+    }
+
+    function medalToggle(){
+        jQuery("#checkmedal").prop("checked", function(i, val) {
+            var str = val ? 'glyphicon-ok' : 'glyphicon-remove';
+            jQuery(".med").html('<span class="glyphicon ' + str + '"></span>')
+            return !val;
+        });
     }
     </script>
 </div>

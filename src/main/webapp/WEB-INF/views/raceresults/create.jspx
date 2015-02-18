@@ -181,23 +181,28 @@
     </div>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
     <script>
-    // select event based on param
-	window.onload=function(){
+    window.onload=function(){
+        // select event based on param
         parseEventId();
+        // focus bib number
         setValidation();
         initDateTimePickers();
 
-		if(GetURLParameter("added")){
-			jQuery("#added").show().delay(3000).fadeOut();
-			jQuery("#added").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
-		}
-	};
+        if(GetURLParameter("added")){
+            jQuery("#added").show().delay(3000).fadeOut();
+            jQuery("#added").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
+        }
+        
+        jQuery('input[name="bib"]').focus();
+    };
+
 
     function parseEventId(){
         var url = window.location.href;
         var urllen = url.length;
-        var ind = url.lastIndexOf("=");
-        var eid = url.substring(ind+1, urllen);
+        var ind = url.indexOf("=");
+        var eid = url.substring(ind+1, ind+2);
+        console.log(eid);
         jQuery('#event-type option[value="'+ eid +'"]').attr("selected", "selected");
     }
 

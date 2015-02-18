@@ -1,12 +1,12 @@
 package com.bibsmobile.controller;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.service.UserProfileService;
+import com.bibsmobile.util.CartUtil;
+import com.bibsmobile.util.UserProfileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,12 +25,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
-import com.bibsmobile.model.Cart;
-import com.bibsmobile.model.CartItem;
-import com.bibsmobile.model.UserProfile;
-import com.bibsmobile.service.UserProfileService;
-import com.bibsmobile.util.CartUtil;
-import com.bibsmobile.util.UserProfileUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @RequestMapping("/carts")
 @Controller
@@ -42,14 +40,15 @@ public class CartController {
     }
 
     @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
-    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel, @ModelAttribute UserProfile userProfile,
+    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, @RequestParam("priceChangeId") Long eventCartItemPriceChangeId, Model uiModel, @ModelAttribute UserProfile userProfile,
             HttpServletRequest request) {
         if (userProfile.getId() == null) {
             UserProfileUtil.disableUserProfile(userProfile);
             userProfile.persist();
         }
         // TODO: implement if needed color and size in admin panel
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile, null, null);
+
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, EventCartItemPriceChange.findEventCartItemPriceChange(eventCartItemPriceChangeId), quantity, userProfile, null, null, null, false);
         uiModel.addAttribute("cart", cart);
         return "redirect:/carts/item/" + eventCartItemId;
     }

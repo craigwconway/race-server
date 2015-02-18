@@ -25,7 +25,7 @@
         }
         .info-container{
             margin: 0 auto;
-            width: 50%;
+            width: 700px;
             font-weight: 100;
             line-height: 27px;
             color: #292929;
@@ -48,15 +48,32 @@
 		}
 	</style>
 	<div class="white-overlay">
+        <div style="width:700px; margin: 0 auto;">
+            <div class="pull-left">
+                <button class="btn btn-default btn-top" onclick="onBack()" type="button">Back</button>
+            </div>
+			<div class="pull-right">
+				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+				<button class="btn btn-primary btn-top"
+					onclick="create()" 
+					type="button"><i class="fa fa-plus" style="margin-left:0; margin-right:5px"><!--  --></i> Category</button>
+				</sec:authorize>
+					
+				<button class="btn btn-success btn-top" 
+					onclick="printAwards()"
+					type="button">Print</button>
+			</div>
+        </div>
+        <div style="clear:both"></div>
 	    <div class="info-container">
 		    <h2 class="ui icon header">
-		        <i class="fa fa-trophy fa-2x"><!--  --></i>
+		        <i class="fa fa-trophy fa-2x" style="margin-left:0"><!--  --></i>
 		        <div class="content">Official Results
 		            <div class="sub header">Standings for ${event.name}</div>
 		        </div>
 		    </h2>
 
-			<div id="awards-nav"> 
+			<div class="awards-nav"> 
 				<button class="btn btn-info btn-top"
 					onclick="byGender('M')" 
 					type="button">Age M</button>
@@ -72,17 +89,6 @@
 				<button class="btn btn-info btn-top" 
 					onclick="overall()"
 					type="button">Overall</button>
-					
-				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-				<button class="btn btn-primary btn-top"
-					onclick="create()" 
-					type="button">Add Category</button>
-				</sec:authorize>
-					
-				<button class="btn btn-success btn-top" 
-					onclick="printAwards()"
-					type="button">Print</button>
-
 				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 					<div class="ui large form">
 						<div class="inline fields">
@@ -149,6 +155,9 @@
 				jQuery('#master').prop('checked', true);
 			}
 		}
+        function onBack(){
+            window.location="/bibs-server/events/${event.id}"
+        }
 
 		function update(){
 			var loc = "/bibs-server/events/awards/update?event="+eventid;
@@ -161,12 +170,12 @@
 			jQuery('table').css('max-width','500px');
 			jQuery('#search-box').hide();
 			jQuery('#header-nav').hide();
-			jQuery('#awards-nav').hide();
+			jQuery('.awards-nav').hide();
 			window.print();
 			alert("Print Complete!");
 			jQuery('table').css('max-width','none');
 			jQuery('#header-nav').show();
-			jQuery('#awards-nav').show();
+			jQuery('.awards-nav').show();
 		}
 
 		function byGender(gender){

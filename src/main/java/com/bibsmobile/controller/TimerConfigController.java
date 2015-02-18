@@ -245,6 +245,7 @@ public class TimerConfigController {
 	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJson(@RequestBody String json, UriComponentsBuilder uriBuilder) {
         TimerConfig timerConfig = TimerConfig.fromJsonToTimerConfig(json);
+        timerConfig.setConnectionTimeout(10);
         timerConfig.persist();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
@@ -269,6 +270,7 @@ public class TimerConfigController {
         headers.add("Content-Type", "application/json");
         TimerConfig timerConfig = TimerConfig.fromJsonToTimerConfig(json);
         timerConfig.setId(id);
+        timerConfig.setConnectionTimeout(10);
         if (timerConfig.merge() == null) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
         }
@@ -295,6 +297,7 @@ public class TimerConfigController {
             return "timers/create";
         }
         uiModel.asMap().clear();
+        timerConfig.setConnectionTimeout(10);
         timerConfig.persist();
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/timers/" + encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);
@@ -338,6 +341,7 @@ public class TimerConfigController {
             return "timers/update";
         }
         uiModel.asMap().clear();
+        timerConfig.setConnectionTimeout(10);
         timerConfig.merge();
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/timers/" + encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);

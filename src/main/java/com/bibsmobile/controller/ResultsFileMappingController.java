@@ -258,6 +258,8 @@ public class ResultsFileMappingController {
             if(map[j].equals("bib")) {
             	if(!StringUtils.isNumeric(nextLine[j].trim())){
                 	json.append(map[j] + ":0" ); // bib NaN, default to 0
+            	} else {
+            		json.append(map[j] + ":" + nextLine[j].trim());
             	}
             }else if(!map[j].equals("age")) {
             	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");

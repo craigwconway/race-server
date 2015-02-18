@@ -66,7 +66,7 @@
                 <field:input field="age" id="c_com_bibsmobile_model_RaceResult_age" z="yZ94xj05TOypkGqmv/EMn/G6TAw="/>
             </div>
             <div class="ui form info-container">
-                <div class="pull-right"><button onclick="if( confirm('Are you sure want to delete this athlete?') ) document.getElementById('deleteForm').submit();" class="ui red button" type="button"><i class="fa fa-trash"><!--  --></i>delete</button></div>
+                <div class="pull-right"><button onclick="deleteAthlete()" class="ui red button" type="button"><i class="fa fa-trash"><!--  --></i>delete</button></div>
                 <div style="clear:both"><!--  --></div>
                 <h2 class="ui icon header">
                     <i class="fa fa-cog"><!--  --></i>
@@ -205,7 +205,7 @@
     </div>
     <script>
         window.onload = function(){
-            jQuery("#_bib_id").focus();
+            jQuery('input[name="bib"]').focus();
             initForm();
             setValidation();
             initDateTimePickers();
@@ -239,6 +239,19 @@
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").val("");
             });
+        }
+
+        function deleteAthlete(){
+            if( confirm('Are you sure you want to delete this item? This cannot be undone.') ){
+                jQuery.ajax({
+                    url: "/bibs-server/raceresults/${raceResult.id}",
+                    type: "DELETE",
+                    dataType: "json",
+                    complete: function() {
+                        window.location="/bibs-server/raceresults?/myresults&amp;event=${raceResult.event.id}";
+                    }
+                });
+            }
         }
     </script>
 </div>
