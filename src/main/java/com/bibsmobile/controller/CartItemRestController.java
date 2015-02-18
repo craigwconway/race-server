@@ -61,8 +61,14 @@ public class CartItemRestController {
                     List<CartItem> cartItems = CartItem.findCartItemsByEventCartItems(eventCartItems, fromDate, toDate).getResultList();
                     Map <String, Long> totalMoney = new HashMap();
                     Map <String, Long> totalQuantity = new HashMap();
-                    Map <String, Map<String, Long>> dailyQuantity = new HashMap();
-                    Map <String, Map<String, Long>> dailyMoney = new HashMap();
+                    Map <Long, Map<String, Long>> dailyQuantity = new HashMap();
+                    Map <Long, Map<String, Long>> dailyMoney = new HashMap();
+                    // now lets fill up dailyMoney
+            		//Fill this with zeroes
+            		HashMap <String, Long> fillMap = new HashMap <String, Long> ();
+            		for (EventCartItemTypeEnum type : EventCartItemTypeEnum.values()) {
+            			fillMap.put(type.toString(), new Long(0));
+            		}
                     SimpleDateFormat fmt = new SimpleDateFormat("YYYY-MM-dd");
                     for(CartItem ci : cartItems) {
                     	// First get type. Store as a string instead of a enum to support refunds
@@ -86,9 +92,10 @@ public class CartItemRestController {
                     	// Now update Daily section, get time at midnight:
                     	DateTime checkoutTime = new DateTime(ci.getCreated());
                     	checkoutTime = checkoutTime.withTimeAtStartOfDay();
-                    	Map<String, Long> dailyPrices = dailyMoney.get(checkoutTime.toString("YYYY-MM-dd"));
+                    	Map<String, Long> dailyPrices = dailyMoney.get(checkoutTime.getMillis());
                     	if ( dailyPrices == null) {
-                    		dailyPrices = new HashMap<String, Long>();
+                    		dailyPrices = fillMap;
+                    		
                     	}
                     	// Check if the type has existing entries:
                     	Long currentDailyPrice = dailyPrices.get(type);
@@ -99,7 +106,7 @@ public class CartItemRestController {
                     		currentDailyPrice = ci.getPrice() * ci.getQuantity();
                     		dailyPrices.put(type, currentDailyPrice);
                     	}
-                    	dailyMoney.put(checkoutTime.toString("YYYY-MM-dd"), dailyPrices);
+                    	dailyMoney.put(checkoutTime.getMillis(), dailyPrices);
                     	
                     }
                     
@@ -107,8 +114,8 @@ public class CartItemRestController {
                         // filling the data for sos0:
                         DateTime minDate = null;
                         DateTime maxDate = null;
-                        for(String dateString : dailyMoney.keySet()) {
-                        	DateTime dt = new DateTime(dateString);
+                        for(Long dateLong : dailyMoney.keySet()) {
+                        	DateTime dt = new DateTime(dateLong);
                         	if(null == minDate || null == maxDate) {
                         		minDate = dt;
                         		maxDate = dt;
@@ -118,16 +125,10 @@ public class CartItemRestController {
                         	}
                         	
                         }
-                        // now lets fill up dailyMoney
-                		//Fill this with zeroes
-                		HashMap <String, Long> fillMap = new HashMap <String, Long> ();
-                		for (EventCartItemTypeEnum type : EventCartItemTypeEnum.values()) {
-                			fillMap.put(type.toString(), new Long(0));
-                		}
                         for(DateTime dateIterator = minDate; dateIterator.isBefore(maxDate); dateIterator = dateIterator.plusDays(1)) {
-                        	String fillString = dateIterator.toString("YYYY-MM-dd");
-                        	if(!dailyMoney.containsKey(fillString)) {
-                        		dailyMoney.put(fillString, fillMap);
+                        	Long fillLong = dateIterator.getMillis();
+                        	if(!dailyMoney.containsKey(fillLong)) {
+                        		dailyMoney.put(fillLong, fillMap);
                         	}
                         }
                     }
