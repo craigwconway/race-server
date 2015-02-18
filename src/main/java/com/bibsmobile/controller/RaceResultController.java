@@ -5,6 +5,7 @@ import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
+import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.License;
@@ -222,19 +223,36 @@ public class RaceResultController {
             return "raceresults/create";
         }
         uiModel.asMap().clear();
+        
         // LICENSING GIBBERISH HERE:
-        DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
-        raceResult.setLicensed(License.isUnitAvailible());
+        if(BuildTypeUtil.usesLicensing()) {
+            DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
+            raceResult.setLicensed(License.isUnitAvailible());
+            raceResult.persist();
+            systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
+            systemInfo.persist();
+        } else {
+        	raceResult.persist();	
+        }
         // END LICENSING GIBBERISH
-        raceResult.persist();
-        systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
-        systemInfo.persist();
+
         long eventId = 0;
         if (null != raceResult.getEvent()) {
             eventId = raceResult.getEvent().getId();
         }
+        
+        // Tell user that they have a licensed raceresult, if that is the case
+        if (BuildTypeUtil.usesLicensing()) {
+        	if(raceResult.isLicensed()) {
+                return "redirect:/raceresults/?form&event=" + eventId + "&added="
+                        + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname() + " (licensed)", httpServletRequest);
+        	} else {
+                return "redirect:/raceresults/?form&event=" + eventId + "&added="
+                        + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname() + " (unlicensed)", httpServletRequest);
+        	}
+        }
         return "redirect:/raceresults/?form&event=" + eventId + "&added="
-                + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname(), httpServletRequest);
+                + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname() + "", httpServletRequest);
     }
 
     @Autowired

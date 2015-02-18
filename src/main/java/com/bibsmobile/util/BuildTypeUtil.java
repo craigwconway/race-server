@@ -8,7 +8,7 @@ package com.bibsmobile.util;
  *
  */
 public class BuildTypeUtil {
-	private static BuildType build;
+	private static BuildType build = new BuildType();
 	
 	public static boolean usesLicensing() {
 		return build.isLicensing();
