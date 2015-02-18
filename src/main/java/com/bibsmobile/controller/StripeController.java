@@ -309,6 +309,58 @@ public class StripeController {
 
                     // built text for order confirmation mail
                     String resultString = new String();
+                    resultString = MailgunUtil.REG_RECEIPT_ONE;
+                    resultString += cartEvent.getName();
+                    resultString += MailgunUtil.REG_RECEIPT_TWO;
+                    resultString += loggedInUser.getFirstname();
+                    resultString += MailgunUtil.REG_RECEIPT_THREE;
+                    resultString += cartEvent.getName();
+                    resultString += MailgunUtil.REG_RECEIPT_FOUR;
+                    resultString += loggedInUser.getFirstname() + " " + loggedInUser.getLastname();
+                    resultString += MailgunUtil.REG_RECEIPT_FIVE;
+                    for (CartItem ci : c.getCartItems()) {
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    	resultString += ci.getEventCartItem().getName();
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    	resultString += ci.getQuantity();
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                    	resultString += ci.getPrice();
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    }
+                    resultString += MailgunUtil.REG_RECEIPT_SEVEN_A;
+                    resultString += c.getTotal();
+                    resultString += MailgunUtil.REG_RECEIPT_SEVEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_EIGHT;
+                    resultString += MailgunUtil.REG_RECEIPT_NINE_A;
+                    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                    resultString += timeFormat.format(cartEvent.getTimeStart());
+                    resultString += MailgunUtil.REG_RECEIPT_NINE_B;
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_A;
+                    resultString += dateFormat.format(cartEvent.getTimeStart());
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_ELEVEN_A;
+                    resultString += cartEvent.getAddress();
+                    resultString += "<br>";
+                    resultString += cartEvent.getCity();
+                    if(cartEvent.getState() != null) {
+                    	resultString += ", " + cartEvent.getState();
+                    }
+                    resultString += MailgunUtil.REG_RECEIPT_ELEVEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_TWELVE_A;
+                    resultString += loggedInUser.getEmergencyContactName() + " " + loggedInUser.getEmergencyContactPhone();
+                    resultString += MailgunUtil.REG_RECEIPT_TWELVE_B;
+                    resultString += MailgunUtil.REG_RECEIPT_THIRTEEN_A;
+                    if(cartEvent.getWebsite() != null) {
+                    	resultString += cartEvent.getWebsite() + "<br>";
+                    }
+                    if(cartEvent.getPhone() != null) {
+                    	resultString += cartEvent.getPhone();
+                    }
+                    resultString += MailgunUtil.REG_RECEIPT_THIRTEEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_FOURTEEN;
+                    
+                    /*
                     resultString = "Hey " + loggedInUser.getFirstname() + ",\n";
                     resultString += "Thank you for registering for ";
                     resultString += cartEvent.getName(); // grab event with
@@ -327,7 +379,8 @@ public class StripeController {
                     resultString += "See you on " + sdf.format(cartEvent.getTimeStart()) + "!\n";
                     resultString += "- the bibs team";
                     resultString += "\n\nIssues? Your transaction id is: B" + c.getId() + "T" + c.getStripeChargeId();
-                    MailgunUtil.send(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
+                    */
+                    MailgunUtil.sendHTML(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
                 }
 
                 return new ResponseEntity<>("card charged", HttpStatus.OK);
