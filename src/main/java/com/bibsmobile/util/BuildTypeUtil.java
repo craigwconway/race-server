@@ -22,4 +22,8 @@ public class BuildTypeUtil {
 		return build;
 	}
 	
+	public static boolean usesRfid() {
+		return build.isRfid();
+	}
+	
 }

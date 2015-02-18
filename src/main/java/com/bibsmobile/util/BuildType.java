@@ -4,6 +4,7 @@ public final class BuildType {
 	private static BuildTypeName typeName = BuildTypeName.MASTER;
 	private static boolean licensing = false;
 	private static boolean registration = true;
+	private static boolean rfid = false;
 	
 	public BuildTypeName getTypeName() {
 		return typeName;
@@ -15,5 +16,9 @@ public final class BuildType {
 	
 	public boolean isRegistration() {
 		return registration;
+	}
+	
+	public boolean isRfid() {
+		return rfid;
 	}
 }
