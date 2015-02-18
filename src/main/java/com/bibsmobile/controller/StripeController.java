@@ -320,15 +320,15 @@ public class StripeController {
                     resultString += MailgunUtil.REG_RECEIPT_FIVE;
                     for (CartItem ci : c.getCartItems()) {
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
-                    	resultString += ci.getEventCartItem().getName();
+                    	resultString += " " + ci.getEventCartItem().getName();
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
                     	resultString += ci.getQuantity();
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
-                    	resultString += ci.getPrice();
+                    	resultString += "$" + ci.getPrice();
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_D;
                     }
                     resultString += MailgunUtil.REG_RECEIPT_SEVEN_A;
-                    resultString += c.getTotal();
+                    resultString += "$" + c.getTotal();
                     resultString += MailgunUtil.REG_RECEIPT_SEVEN_B;
                     resultString += MailgunUtil.REG_RECEIPT_EIGHT;
                     resultString += MailgunUtil.REG_RECEIPT_NINE_A;
@@ -340,8 +340,13 @@ public class StripeController {
                     resultString += dateFormat.format(cartEvent.getTimeStart());
                     resultString += MailgunUtil.REG_RECEIPT_TEN_B;
                     resultString += MailgunUtil.REG_RECEIPT_ELEVEN_A;
-                    resultString += cartEvent.getAddress();
-                    resultString += "<br>";
+                    if(cartEvent.getAddress() != null) {
+                        resultString += cartEvent.getAddress();
+                        resultString += "<br>";
+                    } else if(cartEvent.getLocation() != null) {
+                    	resultString += cartEvent.getLocation();
+                    	resultString += "<br>";
+                    }
                     resultString += cartEvent.getCity();
                     if(cartEvent.getState() != null) {
                     	resultString += ", " + cartEvent.getState();
