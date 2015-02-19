@@ -65,7 +65,7 @@
                             </div>
                         </div>
                         <div class="extra content">
-                            <div class="left floated">${item.purchased}/${item.available} sold</div>
+                            <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
                             <div class="right floated">$${item.price}</div>
                         </div>
                         <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
