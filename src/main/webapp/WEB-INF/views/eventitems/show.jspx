@@ -114,6 +114,7 @@
                 url: "/bibs-server/eventitems/"+id,
                 type: "DELETE",
                 dataType: "json",
+                data: { "id": id },
                 complete: function() {
                     onBack();
                 }
