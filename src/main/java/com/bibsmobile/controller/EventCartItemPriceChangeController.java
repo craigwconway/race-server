@@ -30,10 +30,12 @@ public class EventCartItemPriceChangeController {
     public String createForm(@RequestParam(value = "eventitem", required = true) Long eventitem, Model uiModel) {
         EventCartItemPriceChange i = new EventCartItemPriceChange();
         EventCartItem e = EventCartItem.findEventCartItem(eventitem);
+        List <EventCartItemPriceChange> pricechanges = EventCartItemPriceChange.findEventCartItemPriceChangesByEventCartItem(e).getResultList();
         i.setEventCartItem(e);
         List<EventCartItem> l = new ArrayList<>();
         l.add(e);
         uiModel.addAttribute("eventcartitems", l);
+        uiModel.addAttribute("pricechanges", pricechanges);
         this.populateEditForm(uiModel, i);
         return "eventitemspricechanges/create";
     }
