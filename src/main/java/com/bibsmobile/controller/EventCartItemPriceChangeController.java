@@ -134,6 +134,17 @@ public class EventCartItemPriceChangeController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJsonArray(@RequestBody String json) {
+        for (EventCartItemPriceChange tmp : EventCartItemPriceChange.fromJsonArrayToEventCartItemPriceChanges(json)) {
+            EventCartItemPriceChange eventCartItemPriceChange = EventCartItemPriceChange.findEventCartItemPriceChange(tmp.getId());
+            eventCartItemPriceChange.setEventCartItem(null);
+            eventCartItemPriceChange.persist();
+            eventCartItemPriceChange.remove();
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
