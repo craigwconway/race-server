@@ -262,7 +262,8 @@
                     dataType: "json",
                     complete: function() {
                         // window.location="/bibs-server/eventitemspricechanges?eventitem=${eventCartItemPriceChange.eventCartItem.id}";
-                    }
+                    },
+                    data: { "id": ${eventCartItemPriceChange.id} }
                 });
             }
         }
