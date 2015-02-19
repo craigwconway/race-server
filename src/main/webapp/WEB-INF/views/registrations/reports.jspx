@@ -75,7 +75,7 @@
                             <div class="label">
                                 Total Sales
                             </div>
-                            <div class="value" id="total-sales"><!--  --></div>
+                            <div class="value" id="total-sales"><!--  -->$0</div>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                             Tickets
                         </div>
                         <div class="value"><i class="fa fa-ticket"><!--  --></i>
-                            <span id="total-tickets" style="margin-left:10px;">42</span>
+                            <span id="total-tickets" style="margin-left:10px;">0</span>
                         </div>
                         <div class="meta"><span class="price" id="total-money-tickets"><!--  --></span></div>
                     </div>
@@ -96,7 +96,7 @@
                             T-shirts
                         </div>
                         <div class="value"><i class="fa fa-shirtsinbulk"><!--  --></i>
-                            <span id="total-shirts" style="margin-left:10px;">8</span>
+                            <span id="total-shirts" style="margin-left:10px;">0</span>
                         </div>
                         <div class="meta"><span class="price" id="total-money-shirts"><!--  --></span></div>
                     </div>
@@ -107,7 +107,7 @@
                             Donations
                         </div>
                         <div class="value"><i class="fa fa-heart-o"><!--  --></i>
-                            <span id="total-donations" style="margin-left:10px;">28</span>
+                            <span id="total-donations" style="margin-left:10px;">0</span>
                         </div>
                         <div class="meta"><span class="price" id="total-money-donations"><!--  --></span></div>
                     </div>
@@ -118,7 +118,7 @@
                             Refunded
                         </div>
                         <div class="value"><i class="fa fa-cart-arrow-down"><!--  --></i>
-                            <span id="total-refund" style="margin-left:10px;">1</span>
+                            <span id="total-refund" style="margin-left:10px;">0</span>
                         </div>
                         <div class="meta"><span class="price" id="total-money-refund"><!--  --></span></div>
                     </div>
@@ -150,7 +150,7 @@
                  </div>
             </div>
             <div class="d3-container">
-                <h3>Reports</h3>
+                <h3 style="text-align:center">No sales yet!</h3>
                 <div id="chart">
                     <svg><!--  --></svg>
                 </div>

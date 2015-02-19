@@ -40,7 +40,7 @@
     <div class="white-overlay">
         <div class="info-container">
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
-            <div class="pull-right"><div class="ui icon yellow button" onclick="addItemPriceChange()" ><i style="margin-right:5px;" class="fa fa-pencil fa-inverse"><!--  --></i> Edit</div></div>
+            <div class="pull-right"><div class="ui icon yellow button" onclick="addItemPriceChange()" ><i style="margin-right:5px;" class="fa fa-pencil fa-inverse"><!--  --></i> Add/Edit</div></div>
             <div class="clearfix"><!--  --></div>
             <page:list id="pl_com_bibsmobile_model_EventCartItemPriceChange" items="${eventcartitempricechanges}" z="WMiJzrJ1IWZWaft43kpuzLU+jlw=">
             <h2 class="ui icon header">

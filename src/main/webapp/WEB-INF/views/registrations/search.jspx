@@ -50,6 +50,7 @@
                 </div>
                 <input class="btn btn-success" style="margin-left: 7px" type="submit" value="Search"></input>
             </form>
+            <div style="clear:both"><!--  --></div>
             <div>
                 <page:list id="pl_com_bibsmobile_model_Registration" items="${registrations}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
                     <table class="ui table">

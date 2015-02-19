@@ -322,6 +322,9 @@
                 }
             },
             minHeight: '150px',
+            margin: {
+                item: 0
+            },
             min: new Date(eciStart),                // lower limit of visible range
             max: new Date(eciEnd),                // upper limit of visible range
             zoomMin: 1000 * 60 * 60,             // one day in milliseconds
@@ -566,7 +569,7 @@
             item["content"] = price;
 
             itemList[index].add(item);
-            timelineList[index].fit();
+            timelineList[index].fit(100);
         }
 
         function parseEventId(){
@@ -605,6 +608,8 @@
             jQuery(".priceStartDate").each(function(){
                 jQuery(this).datetimepicker({
                     defaultDate: moment(eciStart),
+                    minDate: moment(eciStart),
+                    maxDate: moment(eciEnd),
                     useSeconds: true,
                     sideBySide: true
                 });
