@@ -222,9 +222,19 @@ public class RaceResultController {
             this.populateEditForm(uiModel, raceResult);
             return "raceresults/create";
         }
+        // If this is an RFID build, do not allow the user to double up on a bib number:
+        if(BuildTypeUtil.usesRfid()) {
+        	Long matches = RaceResult.countFindRaceResultsByBibEquals(raceResult.getBib());
+        	if (matches > 0) {
+        		bindingResult.rejectValue("bib", "Duplicate Bib");
+        		uiModel.addAttribute("errors", "bib.duplicate");
+        		return "raceresults/create";
+        	}
+        }
+        
         uiModel.asMap().clear();
         
-        // LICENSING GIBBERISH HERE:
+        // If we are using licensing in the build, deduct a license 
         if(BuildTypeUtil.usesLicensing()) {
             DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
             raceResult.setLicensed(License.isUnitAvailible());
@@ -234,8 +244,8 @@ public class RaceResultController {
         } else {
         	raceResult.persist();	
         }
-        // END LICENSING GIBBERISH
-
+        
+        
         long eventId = 0;
         if (null != raceResult.getEvent()) {
             eventId = raceResult.getEvent().getId();

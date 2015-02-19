@@ -412,6 +412,13 @@ public class RaceResult implements Comparable<RaceResult> {
         q.setParameter("bib", bib);
         return q.getSingleResult();
     }
+    
+    public static Long countFindRaceResultsByBibEquals(long bib) {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.bib = :bib", Long.class);
+        q.setParameter("bib", bib);
+        return q.getSingleResult();
+    }    
 
     public static Long countFindRaceResultsByEventAndFirstnameLike(Event event, String firstname) {
         if (event == null)

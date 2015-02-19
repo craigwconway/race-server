@@ -187,9 +187,20 @@
         // focus bib number
         setValidation();
         initDateTimePickers();
-
+        console.log("${errors}")
+        var errors = '${errors}'
+        if(errors !== null) {
+    		if(errors == "bib.duplicate") {
+                jQuery("#added").show().delay(3000).fadeOut();
+                jQuery("#added").css("background-color", "#ff4e50")
+                jQuery("#added").html("That bib number already exists, please choose a different one");
+    		}
+        }
         if(GetURLParameter("added")){
             jQuery("#added").show().delay(3000).fadeOut();
+            if(decodeURIComponent(GetURLParameter("added")).indexOf('unlicensed') > -1) {
+            	jQuery("#added").css("background-color", "#EC971F")
+            }
             jQuery("#added").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
         }
         
