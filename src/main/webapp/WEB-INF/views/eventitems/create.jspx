@@ -284,10 +284,10 @@
             jQuery("#eventCartItem").submit(function(e) {
                 e.preventDefault();
                 jQuery('.size-boxes').each(function(){
-                    this.removeAttr('name');
+                    jQuery('.size-boxes').removeAttr('name');
                 });
                 jQuery('.color-boxes').each(function(){
-                    this.removeAttr('name');
+                    jQuery('.size-boxes').removeAttr('name');
                 });
                 this.submit();
             });
