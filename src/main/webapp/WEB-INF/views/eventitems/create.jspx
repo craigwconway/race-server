@@ -120,6 +120,14 @@
                             <div class="ui toggle button" id="size-3" onclick="updateShirt('M')">M</div>
                             <div class="ui toggle button" id="size-4" onclick="updateShirt('L')">L</div>
                             <div class="ui toggle button" id="size-5" onclick="updateShirt('XL')">XL</div>
+                            <span style="display:none">
+                                <input  class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xs"
+                                        data-parsley-mincheck="1" data-parsley-required="true" data-parsley-error-message="Please select at least one size."></input>
+                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-s"></input>
+                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-m"></input>
+                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-l"></input>
+                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xl"></input>
+                            </span>
                         </div>
                     </div>
                     <div style="display:none"><input type="text" name="tshirtSizes"></input></div>
@@ -134,6 +142,17 @@
                             <div class="ui toggle blue basic button" id="color-blue" onclick="updateShirt('blue')">blue</div>
                             <div class="ui toggle teal basic button" id="color-teal" onclick="updateShirt('teal')">teal</div>
                             <div class="ui toggle purple basic button" id="color-purple" onclick="updateShirt('purple')">purple</div>
+                            <span style="display:none">
+                                <input  class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-black"
+                                        data-parsley-mincheck="1" data-parsley-required="true" data-parsley-error-message="Please select at least one color."></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-white"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-red"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-yellow"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-green"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-blue"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-teal"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-purple"></input>
+                            </span>
                         </div>
                     </div>
                     <div style="display:none"><input type="text" name="tshirtColors"></input></div>
@@ -261,6 +280,17 @@
                     }
                 }
             });
+
+            jQuery("#eventCartItem").submit(function(e) {
+                e.preventDefault();
+                jQuery('.size-boxes').each(function(){
+                    this.removeAttr('name');
+                });
+                jQuery('.color-boxes').each(function(){
+                    this.removeAttr('name');
+                });
+                this.submit();
+            });
         }
 
         function initDateTimePickers(){
@@ -291,19 +321,19 @@
         var grn = false; var blue = false; var teal = false; var purp = false;
         function updateShirt(val){
             switch(val) {
-                case 'XS': xs = !xs; break;
-                case 'S':  sm = !sm; break;
-                case 'M':  md = !md; break;
-                case 'L':  lg = !lg; break;
-                case 'XL': xl = !xl; break;
-                case 'black':   blk  = !blk; break;
-                case 'white':   wht  = !wht; break;
-                case 'red':     red  = !red; break;
-                case 'yellow':  yel  = !yel; break;
-                case 'green':   grn  = !grn; break;
-                case 'blue':    blue = !blue; break;
-                case 'teal':    teal = !teal; break;
-                case 'purple':  purp = !purp; break;
+                case 'XS':      xs = !xs;       jQuery("#box-xs").click();          break;
+                case 'S':       sm = !sm;       jQuery("#box-s").click();           break;
+                case 'M':       md = !md;       jQuery("#box-m").click();           break;
+                case 'L':       lg = !lg;       jQuery("#box-l").click();           break;
+                case 'XL':      xl = !xl;       jQuery("#box-xl").click();          break;
+                case 'black':   blk  = !blk;    jQuery("#box-black").click();     break;
+                case 'white':   wht  = !wht;    jQuery("#box-white").click();     break;
+                case 'red':     red  = !red;    jQuery("#box-red").click();       break;
+                case 'yellow':  yel  = !yel;    jQuery("#box-yellow").click();    break;
+                case 'green':   grn  = !grn;    jQuery("#box-green").click();     break;
+                case 'blue':    blue = !blue;   jQuery("#box-blue").click();      break;
+                case 'teal':    teal = !teal;   jQuery("#box-teal").click();      break;
+                case 'purple':  purp = !purp;   jQuery("#box-purple").click();    break;
                 default: break;
             }
             var sizes = ""; var colors = "";
