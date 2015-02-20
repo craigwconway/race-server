@@ -95,6 +95,21 @@ public class RaceResultController {
         return rtn;
     }
 
+    @RequestMapping(value = "/byIdAndBib/{eventId}/{bib}", method = RequestMethod.GET)
+    @ResponseBody
+    public String byBib(@PathVariable long eventId, @PathVariable long bib) {
+        String rtn = "";
+        try {
+        	Event event = Event.findEvent(eventId);
+        	RaceResult raceResult = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
+            //RaceResult raceResult = RaceResult.findRaceResultsByEventAndBibEquals(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), bib).getSingleResult();
+            rtn = raceResult.toJson();
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return rtn;
+    }    
+    
     @RequestMapping(value = "/bybib/{eventName}/{bib}", method = RequestMethod.GET)
     @ResponseBody
     public String byBib(@PathVariable String eventName, @PathVariable long bib) {
@@ -108,6 +123,7 @@ public class RaceResultController {
         return rtn;
     }
 
+    
     @RequestMapping(value = "/byname/{eventName}/{firstName}/{lastName}", method = RequestMethod.GET)
     @ResponseBody
     public String byName(@PathVariable String eventName, @PathVariable String firstName, @PathVariable String lastName) {
@@ -121,6 +137,26 @@ public class RaceResultController {
                         .getResultList());
             else
                 rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(),
+                        firstName, lastName).getResultList());
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return rtn;
+    }
+    
+    @RequestMapping(value = "/byIdAndName/{eventId}/{firstName}/{lastName}", method = RequestMethod.GET)
+    @ResponseBody
+    public String byIdAndName(@PathVariable Long eventId, @PathVariable String firstName, @PathVariable String lastName) {
+        String rtn = "";
+        try {
+            if (firstName.equals("ANY"))
+                rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndLastnameLike(Event.findEvent(eventId), lastName)
+                        .getResultList());
+            else if (lastName.equals("ANY"))
+                rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLike(Event.findEvent(eventId), firstName)
+                        .getResultList());
+            else
+                rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event.findEvent(eventId),
                         firstName, lastName).getResultList());
         } catch (Exception e) {
             // e.printStackTrace();

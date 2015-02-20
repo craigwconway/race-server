@@ -878,7 +878,7 @@ public class EventController {
         return Event.toJsonArray(events.values());
     }
 
-    @RequestMapping(value = "/search/webappsearch/", method = RequestMethod.GET)
+    @RequestMapping(value = "/search/webappsearch", method = RequestMethod.GET)
     @ResponseBody
     public String findByUserGroupandTime(
     		@RequestParam(value = "userGroupId", required = false) Long userGroupId,
