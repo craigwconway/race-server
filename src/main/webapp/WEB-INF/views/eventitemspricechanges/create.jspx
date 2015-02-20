@@ -144,7 +144,7 @@
                             </div>
                             <div class="row">
                                 <div style="text-align:right; margin-top: 3%; margin-right:5%">
-                                    <button type="button" class="btn btn-success" onclick="shiftTimeline(jQuery(this))">Add Price</button>
+                                    <button type="button" class="btn btn-success" onclick="shiftTimeline(this)">Add Price</button>
                                 </div>
                             </div>
                         </div>
@@ -322,9 +322,6 @@
                 }
             },
             minHeight: '150px',
-            margin: {
-                item: 0
-            },
             min: new Date(eciStart),                // lower limit of visible range
             max: new Date(eciEnd),                // upper limit of visible range
             zoomMin: 1000 * 60 * 60,             // one day in milliseconds
@@ -338,7 +335,9 @@
         window.onload = function(){
             eciId = parseEventId();
             getEventData(eciId);
+        }
 
+        function initPage(){
             if(${not empty pricechanges}){
                 jQuery(".field-id").each(function(){
                     var id = jQuery(this).text();
@@ -401,7 +400,6 @@
         function updatePageLogic(){
             var obj = {};
             jQuery(".pcInfo").each(function(i){
-                // check if category exists already
                 var cat = jQuery(this).find('.field-categoryName').text();
                 var update = false;
 
@@ -410,12 +408,13 @@
                 obj.startDate = jQuery(this).find('.field-start').text();   obj.startDate = moment(obj.startDate);
                 obj.endDate = jQuery(this).find('.field-end').text();       obj.endDate = moment(obj.endDate);
 
+                // check if category exists already. if it exists, do not call addGroup.
                 if( categoryNameList.length > 0 &amp;&amp; categoryNameList.indexOf(cat) !== -1 ){
                     var index = categoryNameList.indexOf(cat);
                     obj = categoryObjList[index];
                     update = true;
                 }
-                else{
+                else{   // this is the first node of the category. initialize timeline with addGroup.
                     // grab all field info
                     obj.categoryName = cat;
                     obj.lowAgeThreshold = jQuery(this).find('.field-lowAge').text();    obj.lowAgeThreshold = parseInt(obj.lowAgeThreshold);
@@ -428,13 +427,15 @@
                     // add to relevant lists
                     categoryNameList.push(cat);
                     categoryObjList.push(obj);
+
+                    // create new dataset for timeline.
                     var items = new vis.DataSet();
                     itemList.push(items);
 
                     // initialize base price node
                     newBasePrice = obj.price;
-                    var index = timelineList.length;
 
+                    var index = timelineList.length;
                     addGroup(obj, index, true);
                 }
 
@@ -444,7 +445,7 @@
                     item["content"] = obj.price;
                     itemList[index].add(item);
 
-                // initialize timeline items
+                // make sure timeline items are fitted.
                 if( update ){
                     timelineList[index].fit();
                 }
@@ -470,12 +471,27 @@
                     obj[key] = val;
                 });
 
+
+                // create new dataset for timeline.
                 var items = new vis.DataSet();
                 itemList.push(items);
 
                 var index = timelineList.length;
                 addGroup(obj, index, false);
-                
+
+                var price = newBasePrice;
+                var dateVal = moment(eciStart).format('MM/DD/YYYY h:mm:ss a');
+                if( price !== null &amp;&amp; dateVal !== null ){
+                    var item = {};
+                        item["id"] = index + "-" + price;
+                        item["start"] = moment(dateVal);
+                        item["content"] = price;
+                        itemList[index].add(item);
+                }
+
+                // make sure timeline items are fitted.
+                timelineList[index].fit();
+
                 // notification message
                 jQuery("#notify").show();
                 jQuery("#notify").removeClass("yellow");
@@ -496,22 +512,9 @@
                 query.clone().appendTo(".pc-groups").attr("id", "group"+index);
             container = document.getElementById("group"+index).getElementsByClassName("slider")[0];
 
-            <!-- initialize first item -->
-            var price = newBasePrice;
-            var dateVal = moment(eciStart).format('MM/DD/YYYY h:mm:ss a');
-
-            if(!update){
-                if( price !== null &amp;&amp; dateVal !== null ){
-                    var item = {};
-                        item["id"] = index + "-" + price;
-                        item["start"] = dateVal;
-                        item["content"] = price;
-                        itemList[index].add(item);
-                }
-            }
-
             timeline = new vis.Timeline(container, itemList[index], options);
             timelineList.push(timeline);
+            timeline.fit();
 
             var pc = {};
             var selectiveObj = {};
@@ -553,10 +556,10 @@
             });
         }
 
-        /*  TODO: bug   */
         function shiftTimeline(caller){
-            var timelineIndex = caller.closest(".panel-default").attr("id");
+            var timelineIndex = jQuery(caller).closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
+            console.log(index);
 
             var dateVal = moment(jQuery("#"+timelineIndex).find(".priceStartDate").val()).format('MM/DD/YYYY h:mm:ss a');
             var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
@@ -569,7 +572,9 @@
             item["content"] = price;
 
             itemList[index].add(item);
-            timelineList[index].fit(100);
+            for( i = 0; i &lt; timelineList.length; i++ ){
+                timelineList[i].fit();
+            }
         }
 
         function parseEventId(){
@@ -596,6 +601,7 @@
                         jQuery(".base-price").each(function(){
                             jQuery(this).text("Base price: $" + eciBasePrice);
                         });
+                        initPage();
                     }else{
                     }
                 });
@@ -622,8 +628,6 @@
                 var id = parseInt(dom.slice(-1));
                 jQuery("#"+dom).remove();
                 pcList.splice(id, 1);
-                console.log(dom);
-                console.log(pcList);
             }
         }
 
