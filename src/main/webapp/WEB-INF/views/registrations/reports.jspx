@@ -150,7 +150,6 @@
                  </div>
             </div>
             <div class="d3-container">
-                <h3 style="text-align:center">No sales yet!</h3>
                 <div id="chart">
                     <svg><!--  --></svg>
                 </div>
