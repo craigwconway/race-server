@@ -351,6 +351,8 @@
 	    </div>
     </div>
     </page>
+    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
     <script>
         window.onload = init;
 
