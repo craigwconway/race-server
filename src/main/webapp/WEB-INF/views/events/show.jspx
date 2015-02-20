@@ -174,6 +174,31 @@
         </div>
     </div>
 
+    <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" aria-labelledby="waiver-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="waiver-label">Waiver</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="waiver-content" style="height: 200px; overflow-y:scroll">
+                        <b>WAIVER OF LIABILITY ACKNOWLEDEMENT</b>: I am voluntarily entering or agreeing to be a volunteer in this event. I understand that my participation in this event is physically demanding and can be a potentially hazardous activity, which could cause injury or death. I agree to not enter and participate unless I am medically able and properly trained, and by my signature, I certify that I am medically able to perform, am in good health, and am properly trained. I assume all risks associated with my participant in this event, including but not limited to: falls, contact with other participants, the effects of the weather, including high heat and /or humidity, traffic on the course and the conditions of the course, all such risks being known and appreciated by me. I understand that bicycles, skateboards, baby joggers, roller skates or blades, animals and radio headsets are not allowed in this event. I also understand that I must return the timing transponder issued to me for this event, if requested or I will be billed $30.00 as replacement cost. I also understand that if this event is canceled, rescheduled or details are changed for any reason beyond the control of race management that I hereby waive and release any claims against this event and it’s organizers that I may have as a results of any such changes and that my entry fee will not be refunded. I understand that if I cannot participate in this event, ie injury, family emergency, etc., that I will not receive a refund.
+                        <br/><br/>
+                        <b>AUTHORIZATION</b>: I agree to abide by any decision of event’s officials relative to any aspect of my participation in this event, including the right of any event official to deny or suspend my participation for any reason whatsoever. I grant permission for event's organizers to take pictures of me during this event and agree for this event to use any photos of me that may be taken during my participation. I grant permission to publish my name in the results of this event. I also grant permission for event's organizers to use my email address to communicate with me concerning other upcoming events and specifically, instructions for this event. I will abide by these guidelines.
+                        <br/><br/>
+                        <b>GUARDIAN’S PERMISSION AND RELEASE FOR MINOR</b>: If I am or will be applying for my child to participate in, or be a volunteer at, this event, I represent and warrant that I am the parent or legal guardian of the child and, as such, consent to my child’s participation in this event and I agree that the terms of this Waiver Releases, and Authorizations apply equally to my child and me and any claims I or my child may have in connection with this event. I also waive any derivative claims that relate to or arise out of my child’s participation in this event.
+                        <br/><br/>
+                        <b>AGREEMENT</b>: Having read the waiver including the acknowledgement, authorization and permission and knowing these facts and in consideration of your accepting my entry, I, for myself and anyone entitled to act on my behalf, waive and release 1st Place Sports, Inc,, 1st Place Sports Running Club, Inc, 1st Place Sports Management Services, Inc , the City of Jacksonville, its agencies departments and officials; any other Organizers of this event, all charitable beneficiaries of this event, all sponsors of this event, and their licensees, sponsors, employees, official, volunteers, including medical volunteers, and other representatives, agents, and successors of each of the foregoing, from present and future claims or liabilities of any kind arising out of my participation in this event, even though that liability may arise out of negligence or carelessness on the part of the persons or organizations named in this waiver.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -242,7 +267,7 @@
                             </c:if>
                             <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                             <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
-                            <li class="disabled"><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
+                            <li><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -274,7 +299,7 @@
     
     <div class="white-overlay">
         <div class="map-container">
-            <div class="map-canvas"><!--  --></div><input id="geocomplete" type="text"></input>
+            <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
             <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
         </div>
         <div class="info-container">
@@ -351,14 +376,12 @@
 	    </div>
     </div>
     </page>
-    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
-    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
     <script>
         window.onload = init;
 
         function init(){
             initInfo();
-            // initMap();
+            initMap();
         }
 
         function initInfo(){
@@ -497,6 +520,9 @@
             request.fail(function( jqXHR, textStatus ) {
             });
         }
+        function waiverUrl(){
+            jQuery("#waiverModal").modal('show');
+        }
         function exportModal(){
             jQuery("#exportReg").modal('show');
         }
@@ -572,4 +598,8 @@
             });
         }
     </script>
+    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+    <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
+    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
+    <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
 </div>

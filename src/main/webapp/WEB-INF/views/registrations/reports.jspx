@@ -192,17 +192,20 @@
         dailyHandler(d.dailyMoney);
 
         nv.addGraph(function() {
-            var chart = nv.models.lineChart()
+            var chart = nv.models.stackedAreaChart()
             .x(function(d) { return d[0]; })
             .y(function(d) { return d[1]; })
-            .color(d3.scale.category10().range())
+            .color(['#f2c61f','#00b5ad','#3b83c0'])
+            .clipEdge(true)
             .useInteractiveGuideline(true);
 
-            chart.xAxis.tickFormat(function(d) {
-                return d3.time.format('%x')(new Date(d));
-            });
+            chart.xAxis
+                .showMaxMin(false)
+                .tickFormat(function(d) {
+                    return d3.time.format('%x')(new Date(d));
+                });
 
-            chart.yAxis.tickFormat(d3.format(',f'));
+            chart.yAxis.tickFormat(d3.format('$f'));
 
             d3.select('#chart svg')
             .datum(nvdata)
@@ -268,6 +271,7 @@
         var ticketAry = [];
         var shirtAry = [];
         var donationAry = [];
+        var allAry = [];
         dates.forEach(function(item, i){
             // fillValues(dates[i], d[item], item);
             var day = Number(dates[i]);
@@ -276,22 +280,32 @@
             if('TICKET' in val){
                 ary = [day, val.TICKET];
                 ticketAry.push(ary);
+                allAry.push(ary);
             }
             if('T_SHIRT' in val){
                 ary = [day, val.T_SHIRT];
                 shirtAry.push(ary);
+                allAry.push(ary);
             }
             if('DONATION' in val){
                 ary = [day, val.DONATION];
                 donationAry.push(ary);
+                allAry.push(ary);
             }
         })
+        ticketAry.sort(function(a, b) {
+            return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
+        });
+        shirtAry.sort(function(a, b) {
+            return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
+        });
+        donationAry.sort(function(a, b) {
+            return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
+        });
         ticketObj.values = ticketAry;
         shirtObj.values = shirtAry;
         donationObj.values = donationAry;
         nvdata.push(ticketObj, shirtObj, donationObj);
-
-        console.log(JSON.stringify(nvdata));
     }
 
     function fillDates(){
