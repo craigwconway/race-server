@@ -174,7 +174,7 @@
     function getReportData(){
         var id = parseEventId();
         var request = jQuery.ajax({
-            url: "http://localhost:8080/bibs-server/rest/cartitems/search?eventId="+id,
+            url: "/bibs-server/rest/cartitems/search?eventId="+id,
             type: "GET",
             dataType: "json"
         })
@@ -291,7 +291,7 @@
         donationObj.values = donationAry;
         nvdata.push(ticketObj, shirtObj, donationObj);
 
-        // console.log(JSON.stringify(nvdata));
+        console.log(JSON.stringify(nvdata));
     }
 
     function fillDates(){
