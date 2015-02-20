@@ -164,7 +164,7 @@
                 <div class="modal-body">
                 Copy the url below to share live results:<br/>
                 <c:set var="livehead" value='&lt;a href="https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/'/>
-                <c:set var="livetail" value='/t/all/events"&gt;&lt;/a&gt;'/>
+                <c:set var="livetail" value='/t/1/events"&gt;&lt;/a&gt;'/>
                 <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
                 </div>
                 <div class="modal-footer">
