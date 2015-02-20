@@ -28,6 +28,9 @@
         .modal-header .close{
             margin-top: 0;
         }
+        td:hover:not(:last-child) {
+            cursor: pointer;
+        }
     </style>
     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="search-label" aria-hidden="true">
         <div class="modal-dialog">
@@ -51,7 +54,17 @@
                         <span id="modal-athlete"><!--  --></span>
                         <h3 class="ui header">Transaction ID</h3>
                         <span id="modal-transaction"><!--  --></span>
-                        <!-- <h3 class="ui header">Purchased Items</h3> -->
+                        <h3 class="ui header">Purchased Items</h3>
+                        <div id="modal-purchased"><!--  -->
+                        <table class="ui very basic table" id="cartitem-table" style="margin-top:0">
+                            <thead>
+                                <tr>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Item</td>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Quantity</td>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Price</td>
+                                </tr>
+                            </thead>
+                        </table></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -105,6 +118,20 @@
                                     <input id="lastname" type="text" style="display:none" value="${item.user.lastname}"></input>
                                     <td><c:out value="${item.stripeChargeId}"/></td>
                                     <input id="stripe" type="text" style="display:none" value="${item.stripeChargeId}"></input>
+                                    <c:forEach items="${item.cartItems}" var="cart">
+                                        <input  type="text" data-for="name"
+                                                class="cartitem name" style="display:none"
+                                                value="${cart.eventCartItem.name}"></input>
+                                        <input  type="text" data-for="type"
+                                                class="cartitem type" style="display:none"
+                                                value="${cart.eventCartItem.type}"></input>
+                                        <input  type="text" data-for="price"
+                                                class="cartitem price" style="display:none"
+                                                value="${cart.eventCartItem.price}"></input>
+                                        <input  type="text" data-for="quantity"
+                                                class="cartitem quantity" style="display:none"
+                                                value="${cart.quantity}"></input>
+                                    </c:forEach>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -121,6 +148,43 @@
             jQuery("#searchModal").modal('show');
             jQuery("#modal-athlete").text(jQuery("#firstname").val() + " " + jQuery("#lastname").val());
             jQuery("#modal-transaction").text(jQuery("#stripe").val());
+            var counter = 0;
+            var typeCount = 0;
+            var type;
+            var name;
+            var quantity;
+            var price;
+            jQuery(".cartitem").each(function(){
+                var info = jQuery(this).attr("data-for");
+                if( info == 'type' ){
+                    type = jQuery(this).val();
+                    if( type === 'T_SHIRT' ){ type = "T-Shirt"; }
+                    if( type === 'TICKET' ){ type = "Ticket"; }
+                    if( type === 'DONATION' ){ type = "Donation"; }
+                }
+                if( info == 'name' ){
+                    name = jQuery(this).val();
+                }
+                if( info == 'quantity' ){
+                    quantity = jQuery(this).val();
+                }
+                if( info == 'price' ){
+                    price = jQuery(this).val();
+                }
+                if( counter === 3 ){
+                    counter = 0;
+                    var row = jQuery("#cartitem-table").append('<tr id="row' + typeCount + '"></tr>')
+                    var rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="name' + typeCount + '"></td>')
+                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="quantity' + typeCount + '"></td>')
+                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="price' + typeCount + '"></td>')
+                    
+                    jQuery("#name"+typeCount).text(type + ": " + name);
+                    jQuery("#quantity"+typeCount).text(quantity);
+                    jQuery("#price"+typeCount).text(price);
+                    typeCount++;
+                }
+                counter++;
+            })
         }
     </script>
 </div>
