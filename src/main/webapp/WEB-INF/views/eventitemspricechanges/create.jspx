@@ -295,7 +295,10 @@
                         callback(null);
                     }
                     else{
-                        callback(item);
+                        if( item.content !== null ){
+                            alert("$"+item.content + " added for " + startDate.format("MM/DD/YYYY hh:mm:ss") + ".");
+                            callback(item);
+                        }
                     }
                 }
                 else{
@@ -326,7 +329,10 @@
                     callback(null);
                 }
                 else{
-                    callback(item);
+                    if( item.content !== null ){
+                        alert("Changed to $"+item.content + " for " + startDate.format("MM/DD/YYYY hh:mm:ss") + ".");
+                        callback(item);
+                    }
                 }
             },
             onRemove: function (item, callback) {
@@ -585,7 +591,6 @@
         function shiftTimeline(caller){
             var timelineIndex = jQuery(caller).closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
-            console.log(index);
 
             var dateVal = moment(jQuery("#"+timelineIndex).find(".priceStartDate").val()).format('MM/DD/YYYY h:mm:ss a');
             var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
@@ -597,7 +602,21 @@
             item["start"] = dateVal;
             item["content"] = price;
             if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
-                itemList[index].add(item);
+                var noDupes = true;
+                var list = itemList[index]._data;
+                var keys = Object.keys(list);
+                for(var i = 0; i &lt; keys.length; i++){
+                    var key = keys[i];
+                    var val = list[key];
+                    if( val.start.isSame(item["start"]) ){
+                        alert("This date is a duplicate. Please select a different date or you can also edit the current value by double-clicking the item.");
+                        noDupes = false;
+                    }
+                }
+                if( noDupes ){ itemList[index].add(item); }
+
+                jQuery("#"+timelineIndex).find('input[name="price"]').val();
+                alert("$"+price + " added for " + dateVal.format("MM/DD/YYYY hh:mm:ss") + ".");
             }
             else{
                 alert("This date is out of the sale range for this product. Please select a correct date.");

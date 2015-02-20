@@ -274,8 +274,8 @@
     
     <div class="white-overlay">
         <div class="map-container">
-            <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
-            <!-- <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div> -->
+            <div class="map-canvas"><!--  --></div><input id="geocomplete" type="text"></input>
+            <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
         </div>
         <div class="info-container">
             <div class="event-name">${event.name}</div>
