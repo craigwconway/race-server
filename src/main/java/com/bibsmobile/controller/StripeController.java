@@ -226,7 +226,7 @@ public class StripeController {
 
             // HACK
             // TODO: this better
-            long cartTotalCents = c.getTotal() * 100;
+            long cartTotalCents = c.getTotal();
             System.out.println("This is our price: " + c.getTotal());
             // needs to be logged in, if
             // 1) no card token was submitted
@@ -327,6 +327,7 @@ public class StripeController {
                     resultString += MailgunUtil.REG_RECEIPT_FOUR;
                     resultString += loggedInUser.getFirstname() + " " + loggedInUser.getLastname();
                     resultString += MailgunUtil.REG_RECEIPT_FIVE;
+                    long cartprice = 0;
                     for (CartItem ci : c.getCartItems()) {
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
                     	resultString += " " + ci.getEventCartItem().getName();
@@ -335,7 +336,18 @@ public class StripeController {
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
                     	resultString += "$" + ci.getPrice();
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    	cartprice += (ci.getPrice() * ci.getQuantity());
+                    	System.out.println("cartprice: " + cartprice);
                     }
+                    resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    resultString += "Protection Money";
+                    resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    resultString += "1";
+                    resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                    long bibsfee = c.getTotal() - cartprice;
+                    resultString += bibsfee;
+                    System.out.println("bibs fee: " + bibsfee);
+                    resultString += MailgunUtil.REG_RECEIPT_SIX_D;
                     resultString += MailgunUtil.REG_RECEIPT_SEVEN_A;
                     resultString += "$" + c.getTotal();
                     resultString += MailgunUtil.REG_RECEIPT_SEVEN_B;

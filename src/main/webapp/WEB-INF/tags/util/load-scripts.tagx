@@ -18,14 +18,14 @@
 <spring:url value="/resources/scripts/nv.d3.min.js" var="nvd3_url" />
 <spring:url value="/resources/scripts/parsley.min.js" var="parsley_url" />
 
-<script src="http://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false">;//?</script>
+<!-- <script src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false">;//?</script> -->
 <script src="${moment_url}" type="text/javascript">;//?</script>
 <script src="${bootjs_url}" type="text/javascript">;//?</script>
 <script src="${semantic_url}" type="text/javascript">;//?</script>
 <script src="${d3_url}" type="text/javascript">;//?</script>
 <script src="${nvd3_url}" type="text/javascript">;//?</script>
 <script src="${mask_url}" type="text/javascript">;//?</script>
-<script src="${geocomplete_url}" type="text/javascript">;//?</script>
+<!-- <script src="${geocomplete_url}" type="text/javascript">;//?</script> -->
 <script src="${datepicker_url}" type="text/javascript">;//?</script>
 <script src="${vis_url}" type="text/javascript">;//?</script>
 <script src="${parsley_url}" type="text/javascript">;//?</script>
