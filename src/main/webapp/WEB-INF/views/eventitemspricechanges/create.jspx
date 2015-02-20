@@ -288,29 +288,45 @@
             },
             onAdd: function (item, callback) {
                 item.content = prompt('Price at this date:', item.content);
-                if (item.content !== null) {
-                    callback(item); // send back adjusted new item
+                var startDate = moment(item.start);
+                if( startDate.isBefore(eciStart) == false &amp;&amp; startDate.isAfter(eciEnd) == false ){
+                    if( isNaN(item.content) ){
+                        alert("Please enter a $ value for this price change.");
+                        callback(null);
+                    }
+                    else{
+                        callback(item);
+                    }
                 }
-                else {
+                else{
+                    alert("This date is out of the sale range for this product. Please select a correct date.");
                     callback(null); // cancel item creation
                 }
             },
             onMove: function (item, callback) {
-                if (confirm('Do you really want to move the item to\n' +
-                    'start: ' + item.start + '?')) {
-                    callback(item); // send back item as confirmation (can be changed)
+                var startDate = moment(item.start);
+                if( startDate.isBefore(eciStart) == false &amp;&amp; startDate.isAfter(eciEnd) == false ){
+                    if (confirm('Do you really want to move the item to\n' +
+                        'start: ' + item.start + '?')) {
+                        callback(item); // send back item as confirmation (can be changed)
+                    }
+                    else {
+                        callback(null); // cancel editing item
+                    }
                 }
-                else {
-                    callback(null); // cancel editing item
+                else{
+                    alert("This date is out of the sale range for this product. Please select a correct date.");
+                    callback(null); // cancel item creation
                 }
             },
             onUpdate: function (item, callback) {
                 item.content = prompt('Edit price:', item.content);
-                if (item.content != null) {
-                    callback(item); // send back adjusted item
+                if( isNaN(item.content) ){
+                    alert("Please enter a $ value for this price change.");
+                    callback(null);
                 }
-                else {
-                    callback(null); // cancel updating the item
+                else{
+                    callback(item);
                 }
             },
             onRemove: function (item, callback) {
@@ -443,7 +459,12 @@
                     item["id"] = obj.id;
                     item["start"] = obj.startDate;
                     item["content"] = obj.price;
-                    itemList[index].add(item);
+                    if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+                        itemList[index].add(item);
+                    }
+                    else{
+                        alert("This date is out of the sale range for this product. Please select a correct date.");
+                    }
 
                 // make sure timeline items are fitted.
                 if( update ){
@@ -486,7 +507,12 @@
                         item["id"] = index + "-" + price;
                         item["start"] = moment(dateVal);
                         item["content"] = price;
-                        itemList[index].add(item);
+                        if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+                            itemList[index].add(item);
+                        }
+                        else{
+                            alert("This date is out of the sale range for this product. Please select a correct date.");
+                        }
                 }
 
                 // make sure timeline items are fitted.
@@ -570,8 +596,13 @@
             item["id"] = index + "-" + price;
             item["start"] = dateVal;
             item["content"] = price;
+            if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+                itemList[index].add(item);
+            }
+            else{
+                alert("This date is out of the sale range for this product. Please select a correct date.");
+            }
 
-            itemList[index].add(item);
             for( i = 0; i &lt; timelineList.length; i++ ){
                 timelineList[i].fit();
             }
