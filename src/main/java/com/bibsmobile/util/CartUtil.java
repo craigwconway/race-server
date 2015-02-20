@@ -27,7 +27,7 @@ public final class CartUtil {
     private static final Logger log = LoggerFactory.getLogger(CartUtil.class);
     public static final String SESSION_ATTR_CART_ID = "cartId";
     private static final double BIBS_ABSOLUTE_FEE = 100;
-    private static final double BIBS_RELATIVE_FEE = 0.02;
+    private static final double BIBS_RELATIVE_FEE = 0.06;
 
     private CartUtil() {
         super();

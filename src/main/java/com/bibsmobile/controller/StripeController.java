@@ -4,6 +4,7 @@ import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.MailgunUtil;
 import com.bibsmobile.util.RegistrationsUtil;
@@ -330,7 +331,17 @@ public class StripeController {
                     long cartprice = 0;
                     for (CartItem ci : c.getCartItems()) {
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
-                    	resultString += " " + ci.getEventCartItem().getName();
+                    	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.T_SHIRT) {
+                    		resultString += " T-Shirt - ";
+                    	} else if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.TICKET) {
+                    		resultString += " Ticket - ";
+                    	} else if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
+                    		resultString += " Donation - ";
+                    	}
+                    	resultString += ci.getEventCartItem().getName();
+                    	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.T_SHIRT) {
+                    		resultString += " " + ci.getSize() + " " + ci.getColor();
+                    	}
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
                     	resultString += ci.getQuantity();
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
@@ -340,25 +351,37 @@ public class StripeController {
                     	System.out.println("cartprice: " + cartprice);
                     }
                     resultString += MailgunUtil.REG_RECEIPT_SIX_A;
-                    resultString += "Protection Money";
+                    resultString += "Bibs Fee";
                     resultString += MailgunUtil.REG_RECEIPT_SIX_B;
-                    resultString += "1";
+                    resultString += " ";
                     resultString += MailgunUtil.REG_RECEIPT_SIX_C;
-                    long bibsfee = c.getTotal() - cartprice;
-                    resultString += bibsfee;
+                    long bibsfee = c.getTotal() - cartprice * 100;
+                    resultString += "$" + bibsfee/100 + ".";
+                    if(bibsfee % 100 > 9) {
+                    	resultString += bibsfee % 100;
+                    } else {
+                    	resultString += "0" + bibsfee % 10;
+                    }
                     System.out.println("bibs fee: " + bibsfee);
                     resultString += MailgunUtil.REG_RECEIPT_SIX_D;
                     resultString += MailgunUtil.REG_RECEIPT_SEVEN_A;
-                    resultString += "$" + c.getTotal();
+                    resultString += "$" + c.getTotal()/100 + ".";
+                    if(c.getTotal() % 100 > 9) {
+                    	resultString += c.getTotal() % 100;
+                    } else {
+                    	resultString += "0" + c.getTotal() % 10;
+                    }
                     resultString += MailgunUtil.REG_RECEIPT_SEVEN_B;
                     resultString += MailgunUtil.REG_RECEIPT_EIGHT;
                     resultString += MailgunUtil.REG_RECEIPT_NINE_A;
                     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                     resultString += timeFormat.format(cartEvent.getTimeStart());
+                    resultString += "<br>";
+                    resultString += dateFormat.format(cartEvent.getTimeStart());
                     resultString += MailgunUtil.REG_RECEIPT_NINE_B;
                     resultString += MailgunUtil.REG_RECEIPT_TEN_A;
-                    resultString += dateFormat.format(cartEvent.getTimeStart());
+                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId();
                     resultString += MailgunUtil.REG_RECEIPT_TEN_B;
                     resultString += MailgunUtil.REG_RECEIPT_ELEVEN_A;
                     if(cartEvent.getAddress() != null) {
