@@ -25,7 +25,42 @@
             line-height: 27px;
             color: #292929;
         }
+        .modal-header .close{
+            margin-top: 0;
+        }
     </style>
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="search-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title ui header" id="search-label">Receipt Copy <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button></h2>
+                </div>
+                <div class="modal-body">
+                    <div style="margin:0 auto;">
+                        <div class="pull-left">
+                            <button type="button" class="ui button" style="width:150px">
+                                <i class="fa fa-cart-arrow-down" style="margin-right:7px"><!--  --></i>Refund
+                            </button>
+                        </div>
+                        <div class="pull-right">
+                            <div class="ui icon yellow button"><i style="margin-right:0" class="fa fa-pencil fa-inverse"><!--  --></i></div>
+                            <div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div>
+                        </div>
+                        <div style="clear:both"><!--  --></div>
+                        <h3 class="ui header">Athlete Name</h3>
+                        <span id="modal-athlete"><!--  --></span>
+                        <h3 class="ui header">Transaction ID</h3>
+                        <span id="modal-transaction"><!--  --></span>
+                        <!-- <h3 class="ui header">Purchased Items</h3> -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="white-overlay">
         <div class="info-container">
             <form method="post" class="navbar-form navbar-left" role="search">
@@ -59,16 +94,17 @@
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Transaction ID</th>
-                                <th>Event Type</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach items="${registrations}" var="item">
-                                <tr>
+                                <tr class="clickable-row" onclick="searchModal()">
                                     <td><c:out value="${item.user.firstname}"/></td>
+                                    <input id="firstname" type="text" style="display:none" value="${item.user.firstname}"></input>
                                     <td><c:out value="${item.user.lastname}"/></td>
+                                    <input id="lastname" type="text" style="display:none" value="${item.user.lastname}"></input>
                                     <td><c:out value="${item.stripeChargeId}"/></td>
-                                    <td><c:out value="${item.eventType}"/></td>
+                                    <input id="stripe" type="text" style="display:none" value="${item.stripeChargeId}"></input>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -78,5 +114,13 @@
         </div>
     </div>
     <script>
+        window.onload = function(){
+
+        }
+        function searchModal(){
+            jQuery("#searchModal").modal('show');
+            jQuery("#modal-athlete").text(jQuery("#firstname").val() + " " + jQuery("#lastname").val());
+            jQuery("#modal-transaction").text(jQuery("#stripe").val());
+        }
     </script>
 </div>
