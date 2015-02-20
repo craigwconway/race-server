@@ -274,7 +274,7 @@
     
     <div class="white-overlay">
         <div class="map-container">
-            <div class="map-canvas"><!--  --></div><input id="geocomplete" type="text"></input>
+            <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
             <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
         </div>
         <div class="info-container">
@@ -351,14 +351,12 @@
 	    </div>
     </div>
     </page>
-    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
-    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
     <script>
         window.onload = init;
 
         function init(){
             initInfo();
-            // initMap();
+            initMap();
         }
 
         function initInfo(){
@@ -572,4 +570,8 @@
             });
         }
     </script>
+    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+    <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
+    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
+    <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
 </div>

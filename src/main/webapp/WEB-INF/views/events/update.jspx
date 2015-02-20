@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
         <style>
@@ -185,150 +185,155 @@
             </form:update>
         </div>
     <script>
-    window.onload = init;
+        window.onload = init;
 
-    function init(){
-        initInfo();
-        initDateTimePickers();
-        setValidation();
-        setGeocomplete();
-    }
+        function init(){
+            initInfo();
+            initDateTimePickers();
+            setValidation();
+            setGeocomplete();
+        }
 
-    function initInfo(){
-        jQuery(".reg").each(function(){
-            var content = jQuery(this).html();
-            if(content === "true"){
-                jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
-            }
-            else if(content === "false"){
-                jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
-            }
-        })
-    }
-
-    function gunToggle(){
-        jQuery("#checkgun").prop("checked", function(i, val) {
-            var str = val ? 'glyphicon-ok' : 'glyphicon-remove';
-            jQuery(".reg").html('<span class="glyphicon ' + str + '"></span>')
-            return !val;
-        });
-    }
-
-    function initDateTimePickers(){
-        var eventTime = "${event.timeStart}";
-        var momentEventTime = moment(eventTime).format('MM/DD/YYYY h:mm:ss a');
-        jQuery("#eventDatepicker").val(momentEventTime);
-        jQuery("#eventDatepicker")
-            .datetimepicker({
-                defaultDate: momentEventTime,
-                dateFormat: 'MM/DD/YYYY h:mm:ss a',
-                useSeconds: true,
-                sideBySide: true
-            });
-
-        var gunTime = "${event.gunTime}";
-        var momentGunTime = moment(gunTime).format('MM/DD/YYYY h:mm:ss a');
-        jQuery('input[name="gunTime"]').val("");
-        jQuery('input[name="gunTime"]')
-            .datetimepicker({
-                defaultDate: momentEventTime,
-                dateFormat: 'MM/DD/YYYY h:mm:ss a',
-                useSeconds: true,
-                sideBySide: true
-            });
-
-        jQuery("#removetime").click(function(){
-            jQuery('input[name="gunTime"]').val("");
-        });
-    }
-
-    function setValidation(){
-        jQuery('#event').parsley({
-            errorsWrapper: '<div class="has-error"></div>',
-            errorTemplate: '<span></span>'
-        });
-    }
-
-    function setGeocomplete(){
-        jQuery("#demo input").geocomplete({
-            details: ".details",
-            detailsAttribute: "data-geo",
-            types: ["geocode"],
-            blur: true
-        }).bind("geocode:result", function(event, result){
-            var components = result.address_components;
-            var addr = "";
-            jQuery.each(components, function(i, d){
-                switch(d.types[0]){
-                    case 'street_addr':
-                        addr = 'street_addr';
-                        break;
-                    case 'locality':
-                        if( d.long_name !== null ){
-                            jQuery("#geocity").val(d.long_name);
-                        }
-                        break;
-                    case 'administrative_area_level_1':
-                        if( d.short_name !== null ){
-                            jQuery("#geostate").val(d.short_name);
-                        }
-                        break;
-                    case 'country':
-                        if( d.long_name !== null ){
-                            jQuery("#geocountry").val(d.long_name);
-                        }
-                        break;
-                    case 'postal_code':
-                        if( d.long_name !== null ){
-                            jQuery("#geozip").val(d.long_name);
-                        }
-                        break;
+        function initInfo(){
+            jQuery(".reg").each(function(){
+                var content = jQuery(this).html();
+                if(content === "true"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+                }
+                else if(content === "false"){
+                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
                 }
             })
+        }
 
-            if( addr.length > 0 ){
-                jQuery("#geoaddress").val(addr);
-            }
+        function gunToggle(){
+            jQuery("#checkgun").prop("checked", function(i, val) {
+                var str = val ? 'glyphicon-ok' : 'glyphicon-remove';
+                jQuery(".reg").html('<span class="glyphicon ' + str + '"></span>')
+                return !val;
+            });
+        }
 
-            var longitude = result.geometry.location.lat();
-            var lat =  result.geometry.location.lng();
-            if( longitude !== null ){
-                jQuery("#geolong").val(longitude);
-            }
-            if( lat !== null ){
-                jQuery("#geolat").val(lat);
-            }
+        function initDateTimePickers(){
+            var eventTime = "${event.timeStart}";
+            var momentEventTime = moment(eventTime).format('MM/DD/YYYY h:mm:ss a');
+            jQuery("#eventDatepicker").val(momentEventTime);
+            jQuery("#eventDatepicker")
+                .datetimepicker({
+                    defaultDate: momentEventTime,
+                    dateFormat: 'MM/DD/YYYY h:mm:ss a',
+                    useSeconds: true,
+                    sideBySide: true
+                });
 
-            if( jQuery("#geocity").val() == "" ){
-                jQuery("#geocity").focus();
-                var geoaddr = jQuery("#geoaddress").val();
-                var splitaddr = geoaddr.split(",");
-                jQuery("#geocity").val(splitaddr[1]);
-                jQuery("#geostate").val(splitaddr[2]);
-            }
+            var gunTime = "${event.gunTime}";
+            var momentGunTime = moment(gunTime).format('MM/DD/YYYY h:mm:ss a');
+            jQuery('input[name="gunTime"]').val("");
+            jQuery('input[name="gunTime"]')
+                .datetimepicker({
+                    defaultDate: momentEventTime,
+                    dateFormat: 'MM/DD/YYYY h:mm:ss a',
+                    useSeconds: true,
+                    sideBySide: true
+                });
 
-        }).bind("geocode:error", function(results, status){
-            if( status == 'google.maps.GeocoderStatus.ZERO_STATUS'){
-                console.log("zero status")
-            }
+            jQuery("#removetime").click(function(){
+                jQuery('input[name="gunTime"]').val("");
+            });
+        }
 
-            if( jQuery("#geocity").val() == "" ){
-                var geoaddr = jQuery("#geoaddress").val();
-                var splitaddr = geoaddr.split(",");
-                jQuery("#geocity").val(splitaddr[1]);
-                jQuery("#geostate").val(splitaddr[2]);
-            }
-        });
-    }
+        function setValidation(){
+            jQuery('#event').parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
+            });
+        }
 
-    function clearForm(){
-        jQuery("#geoaddress").val("");
-        jQuery("#geocity").val("");
-        jQuery("#geostate").val("");
-        jQuery("#geocountry").val("");
-        jQuery("#geozip").val("");
-        jQuery("#geolong").val("");
-        jQuery("#geolat").val("");
-    }
+        function setGeocomplete(){
+            jQuery("#demo input").geocomplete({
+                details: ".details",
+                detailsAttribute: "data-geo",
+                types: ["geocode"],
+                blur: true
+            }).bind("geocode:result", function(event, result){
+                var components = result.address_components;
+                var addr = "";
+                jQuery.each(components, function(i, d){
+                    switch(d.types[0]){
+                        case 'street_addr':
+                            addr = 'street_addr';
+                            break;
+                        case 'locality':
+                            if( d.long_name !== null ){
+                                jQuery("#geocity").val(d.long_name);
+                            }
+                            break;
+                        case 'administrative_area_level_1':
+                            if( d.short_name !== null ){
+                                jQuery("#geostate").val(d.short_name);
+                            }
+                            break;
+                        case 'country':
+                            if( d.long_name !== null ){
+                                jQuery("#geocountry").val(d.long_name);
+                            }
+                            break;
+                        case 'postal_code':
+                            if( d.long_name !== null ){
+                                jQuery("#geozip").val(d.long_name);
+                            }
+                            break;
+                    }
+                })
+
+                if( addr.length > 0 ){
+                    jQuery("#geoaddress").val(addr);
+                }
+
+                var longitude = result.geometry.location.lat();
+                var lat =  result.geometry.location.lng();
+                if( longitude !== null ){
+                    jQuery("#geolong").val(longitude);
+                }
+                if( lat !== null ){
+                    jQuery("#geolat").val(lat);
+                }
+
+                if( jQuery("#geocity").val() == "" ){
+                    jQuery("#geocity").focus();
+                    var geoaddr = jQuery("#geoaddress").val();
+                    var splitaddr = geoaddr.split(",");
+                    jQuery("#geocity").val(splitaddr[1]);
+                    jQuery("#geostate").val(splitaddr[2]);
+                }
+
+            }).bind("geocode:error", function(results, status){
+                if( status == 'google.maps.GeocoderStatus.ZERO_STATUS'){
+                    console.log("zero status")
+                }
+
+                if( jQuery("#geocity").val() == "" ){
+                    var geoaddr = jQuery("#geoaddress").val();
+                    var splitaddr = geoaddr.split(",");
+                    jQuery("#geocity").val(splitaddr[1]);
+                    jQuery("#geostate").val(splitaddr[2]);
+                }
+            });
+        }
+
+        function clearForm(){
+            jQuery("#geoaddress").val("");
+            jQuery("#geocity").val("");
+            jQuery("#geostate").val("");
+            jQuery("#geocountry").val("");
+            jQuery("#geozip").val("");
+            jQuery("#geolong").val("");
+            jQuery("#geolat").val("");
+        }
 	</script>
+
+    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+    <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
+    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
+    <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
 </div>
