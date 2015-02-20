@@ -148,7 +148,7 @@ public final class CartUtil {
 
         long total = 0;
         for (CartItem ci : cart.getCartItems()) {
-            total += (ci.getQuantity() * ci.getPrice());
+            total += (ci.getQuantity() * ci.getPrice() * 100);
         }
         total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
         cart.setTotal(total);
