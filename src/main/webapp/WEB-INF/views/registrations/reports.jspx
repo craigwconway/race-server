@@ -192,15 +192,18 @@
         dailyHandler(d.dailyMoney);
 
         nv.addGraph(function() {
-            var chart = nv.models.lineChart()
+            var chart = nv.models.stackedAreaChart()
             .x(function(d) { return d[0]; })
             .y(function(d) { return d[1]; })
-            .color(d3.scale.category10().range())
+            .color(['#f2c61f','#00b5ad','#3b83c0'])
+            .clipEdge(true)
             .useInteractiveGuideline(true);
 
-            chart.xAxis.tickFormat(function(d) {
-                return d3.time.format('%x')(new Date(d));
-            });
+            chart.xAxis
+                .showMaxMin(false)
+                .tickFormat(function(d) {
+                    return d3.time.format('%x')(new Date(d));
+                });
 
             chart.yAxis.tickFormat(d3.format('$f'));
 
