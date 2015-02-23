@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -696,13 +697,27 @@ public class RaceResult implements Comparable<RaceResult> {
 
     public static List<RaceResult> findUnlicensedResults() {
     	try {
-    		Event unassignedEvent = Event.findEventByNameEquals("Unassigned Results");
             EntityManager em = RaceResult.entityManager();
-            TypedQuery <RaceResult> q = em.createQuery("SELECT o FROM RaceResult o where o.licensed = false AND o.event != :event", RaceResult.class);
-            q.setParameter("event", unassignedEvent);
-            return q.getResultList();
+            TypedQuery <RaceResult> q = em.createQuery("SELECT o FROM RaceResult o where o.event != :event", RaceResult.class);
+            System.out.println("get");
+            q.setParameter("event", Event.findEventByNameEquals("Unassigned Results"));
+            List <RaceResult> rrs= q.getResultList();
+            List <RaceResult> returnList = new LinkedList <RaceResult> ();
+            for(RaceResult rr : rrs) {
+            	if(!rr.isLicensed()) {
+            		returnList.add(rr);
+            	}
+            }
+            return returnList;
     	} catch(Exception e) {
-            return entityManager().createQuery("SELECT o FROM RaceResult o where o.licensed = false", RaceResult.class).getResultList();
+    		System.out.println("exception");
+            List <RaceResult> returnList = new LinkedList <RaceResult> ();
+            for(RaceResult rr : RaceResult.findAllRaceResults()) {
+            	if(!rr.isLicensed()) {
+            		returnList.add(rr);
+            	}
+            }
+            return returnList;
     	}
     }
     

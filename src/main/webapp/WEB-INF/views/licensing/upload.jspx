@@ -13,10 +13,12 @@
     <div id="licstatus" style="display:none; width:300px;" role="alert">
     License Expired, please reapply
 	</div>
-	
+    <div id="unlicstatus" style="display:none; width:300px;" role="alert">
+    No Unlicensed Runners Found
+	</div>	
 	<script>
 	// Get license status
-	window.onload = getLicenseStatus()
+	window.onload = licenseManagement()
 	function getLicenseStatus(){
 		// console.log("findUncategorized");
 		var r = jQuery.ajax({
@@ -46,6 +48,22 @@
 		r.fail(function( jqXHR, textStatus ) {
 			// console.log(textStatus);
 		});
+	}
+	function licenseActivator() {
+		var unlicensedResults = '${unlicensed}';
+		console.log(unlicensedResults);
+		if(unlicensedResults == '0') {
+			jQuery("#unlicstatus").show();
+			jQuery("#unlicstatus").addClass("alert alert-success");
+		} else {
+			jQuery("#unlicstatus").show();
+			jQuery("#unlicstatus").html('&lt;a href="#" class="alert-link"&gt;Activate &lt;/a&gt;' + unlicensedResults + ' Unlicensed Athletes.');
+			jQuery("#unlicstatus").addClass("alert alert-warning");
+		}
+	}
+	function licenseManagement() {
+		getLicenseStatus();
+		licenseActivator();
 	}
 	</script>
 </div>
