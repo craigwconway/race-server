@@ -44,6 +44,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bibsmobile.util.BuildTypeUtil;
+
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
@@ -181,8 +183,13 @@ public class RaceResult implements Comparable<RaceResult> {
     }
 
     public String getTimeofficialdisplay() {
-        if (this.timestart == 0 || this.timeofficial == 0 || this.licensed == false)
-            return "";
+    	if (BuildTypeUtil.usesLicensing()) {
+            if (this.timestart == 0 || this.timeofficial == 0 || this.licensed == false)
+                return "";
+    	} else {
+            if (this.timestart == 0 || this.timeofficial == 0)
+                return "";
+    	}
         return RaceResult.toHumanTime(this.timestart, this.timeofficial);
     }
 

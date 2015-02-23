@@ -10,5 +10,42 @@
   	<b>Submit</b>
 	</button>
     </form>
+    <div id="licstatus" style="display:none; width:300px;" role="alert">
+    License Expired, please reapply
+	</div>
+	
+	<script>
+	// Get license status
+	window.onload = getLicenseStatus()
+	function getLicenseStatus(){
+		// console.log("findUncategorized");
+		var r = jQuery.ajax({
+			url: "/bibs-server/licensing/status",
+			dataType: "json"
+			});
+		r.done(function( data ) {
+			console.log(data)
+			// If we have > 50 units left, display a regular message
+			var unitsRemaining = Number(data.units)
+			jQuery("#licstatus").show()
+			if(unitsRemaining &lt;= 0) {
+				jQuery("#licstatus").show();
+				jQuery("#licstatus").addClass("alert alert-danger");
+			} else if(unitsRemaining &lt; 50) {
+				jQuery("#licstatus").show();
+				jQuery("#licstatus").addClass("alert alert-warning");
+				jQuery("#licstatus").html("You have " + data.units + " runners remaining");
+			} else {
+				Query("#licstatus").show();
+				jQuery("#licstatus").addClass("alert alert-success");
+				jQuery("#licstatus").html("You have " + data.units + " runners remaining");
 
+			}
+			
+		});
+		r.fail(function( jqXHR, textStatus ) {
+			// console.log(textStatus);
+		});
+	}
+	</script>
 </div>
