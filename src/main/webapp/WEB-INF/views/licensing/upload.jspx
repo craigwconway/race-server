@@ -1,69 +1,71 @@
-<div xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+<div xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" xmlns:sec="http://www.springframework.org/security/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <h3>Apply license to engage shrugmode:</h3>
-    <form method="post" enctype="multipart/form-data">
-    <input class="btn btn-file" type="file" name="license"/>
-    <br/>
-	<button type="submit" class="btn btn-default" id="submit">
-  	<span class="glyphicon glyphicon-flash"></span>
-  	<b>Submit</b>
-	</button>
-    </form>
-    <div id="licstatus" style="display:none; width:300px;" role="alert">
-    License Expired, please reapply
-	</div>
-    <div id="unlicstatus" style="display:none; width:300px;" role="alert">
-    No Unlicensed Runners Found
-	</div>	
-	<script>
-	// Get license status
-	window.onload = licenseManagement()
-	function getLicenseStatus(){
-		// console.log("findUncategorized");
-		var r = jQuery.ajax({
-			url: "/bibs-server/licensing/status",
-			dataType: "json"
+     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+	    <h3>Apply license to engage shrugmode:</h3>
+	    <form method="post" enctype="multipart/form-data">
+	    <input class="btn btn-file" type="file" name="license"/>
+	    <br/>
+		<button type="submit" class="btn btn-default" id="submit">
+	  	<span class="glyphicon glyphicon-flash"></span>
+	  	<b>Submit</b>
+		</button>
+	    </form>
+	    <div id="licstatus" style="display:none; width:300px;" role="alert">
+	    License Expired, please reapply
+		</div>
+	    <div id="unlicstatus" style="display:none; width:300px;" role="alert">
+	    No Unlicensed Runners Found
+		</div>
+	</sec:authorize>
+		<script>
+		// Get license status
+		window.onload = licenseManagement()
+		function getLicenseStatus(){
+			// console.log("findUncategorized");
+			var r = jQuery.ajax({
+				url: "/bibs-server/licensing/status",
+				dataType: "json"
+				});
+			r.done(function( data ) {
+				console.log(data)
+				// If we have > 50 units left, display a regular message
+				var unitsRemaining = Number(data.units)
+				jQuery("#licstatus").show()
+				if(unitsRemaining &lt;= 0) {
+					jQuery("#licstatus").show();
+					jQuery("#licstatus").addClass("alert alert-danger");
+				} else if(unitsRemaining &lt; 50) {
+					jQuery("#licstatus").show();
+					jQuery("#licstatus").addClass("alert alert-warning");
+					jQuery("#licstatus").html("You have " + data.units + " runners remaining");
+				} else {
+					Query("#licstatus").show();
+					jQuery("#licstatus").addClass("alert alert-success");
+					jQuery("#licstatus").html("You have " + data.units + " runners remaining");
+	
+				}
+				
 			});
-		r.done(function( data ) {
-			console.log(data)
-			// If we have > 50 units left, display a regular message
-			var unitsRemaining = Number(data.units)
-			jQuery("#licstatus").show()
-			if(unitsRemaining &lt;= 0) {
-				jQuery("#licstatus").show();
-				jQuery("#licstatus").addClass("alert alert-danger");
-			} else if(unitsRemaining &lt; 50) {
-				jQuery("#licstatus").show();
-				jQuery("#licstatus").addClass("alert alert-warning");
-				jQuery("#licstatus").html("You have " + data.units + " runners remaining");
-			} else {
-				Query("#licstatus").show();
-				jQuery("#licstatus").addClass("alert alert-success");
-				jQuery("#licstatus").html("You have " + data.units + " runners remaining");
-
-			}
-			
-		});
-		r.fail(function( jqXHR, textStatus ) {
-			// console.log(textStatus);
-		});
-	}
-	function licenseActivator() {
-		var unlicensedResults = '${unlicensed}';
-		console.log(unlicensedResults);
-		if(unlicensedResults == '0') {
-			jQuery("#unlicstatus").show();
-			jQuery("#unlicstatus").addClass("alert alert-success");
-		} else {
-			jQuery("#unlicstatus").show();
-			jQuery("#unlicstatus").html('&lt;a href="#" class="alert-link"&gt;Activate &lt;/a&gt;' + unlicensedResults + ' Unlicensed Athletes.');
-			jQuery("#unlicstatus").addClass("alert alert-warning");
+			r.fail(function( jqXHR, textStatus ) {
+				// console.log(textStatus);
+			});
 		}
-	}
-	function licenseManagement() {
-		getLicenseStatus();
-		licenseActivator();
-	}
-	</script>
+		function licenseActivator() {
+			var unlicensedResults = '${unlicensed}';
+			console.log(unlicensedResults);
+			if(unlicensedResults == '0') {
+				jQuery("#unlicstatus").show();
+				jQuery("#unlicstatus").addClass("alert alert-success");
+			} else {
+				jQuery("#unlicstatus").show();
+				jQuery("#unlicstatus").html('&lt;a href="#" class="alert-link"&gt;Activate &lt;/a&gt;' + unlicensedResults + ' Unlicensed Athletes.');
+				jQuery("#unlicstatus").addClass("alert alert-warning");
+			}
+		}
+		function licenseManagement() {
+			getLicenseStatus();
+			licenseActivator();
+		}
+		</script>
 </div>
