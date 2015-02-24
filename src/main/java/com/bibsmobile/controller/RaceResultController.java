@@ -226,8 +226,13 @@ public class RaceResultController {
         if(BuildTypeUtil.usesRfid()) {
         	Long matches = RaceResult.countFindRaceResultsByBibEquals(raceResult.getBib());
         	if (matches > 0) {
+        		if(raceResult.getEvent() != null) {
+        			uiModel.addAttribute("selectedEventID", raceResult.getEvent().getId());
+        		}
         		bindingResult.rejectValue("bib", "Duplicate Bib");
         		uiModel.addAttribute("errors", "bib.duplicate");
+        		uiModel.addAttribute("raceResult", raceResult);
+        		uiModel.addAttribute("events", Event.findAllEvents());
         		return "raceresults/create";
         	}
         }
