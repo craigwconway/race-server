@@ -44,7 +44,7 @@
                         <a href="javascript:deleteProduct(${eventcartitem.id})" title="Delete"><div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div></a>
             </div>
             <div class="pull-right">
-                <button class="btn btn-default btn-top" onclick="priceChanges()" type="button">Price Changes</button>
+                <button class="btn btn-default btn-top" onclick="priceChanges()" type="button">Categories</button>
             </div>
         </div>
         <div style="clear:both"></div>
@@ -114,6 +114,7 @@
                 url: "/bibs-server/eventitems/"+id,
                 type: "DELETE",
                 dataType: "json",
+                data: { "id": id },
                 complete: function() {
                     onBack();
                 }

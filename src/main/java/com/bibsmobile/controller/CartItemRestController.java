@@ -94,7 +94,12 @@ public class CartItemRestController {
                     	checkoutTime = checkoutTime.withTimeAtStartOfDay();
                     	Map<String, Long> dailyPrices = dailyMoney.get(checkoutTime.getMillis());
                     	if ( dailyPrices == null) {
-                    		dailyPrices = fillMap;
+                    		dailyPrices = new HashMap <String, Long>();
+                    		for (EventCartItemTypeEnum ecit : EventCartItemTypeEnum.values()) {
+                    			dailyPrices.put(ecit.toString(), new Long(0));
+                    		}
+                    		System.out.println("new daily prices");
+                    		System.out.println(dailyPrices);
                     		
                     	}
                     	// Check if the type has existing entries:

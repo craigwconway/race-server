@@ -94,7 +94,6 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private Set<EventType> eventTypes;
 
-    @URL
     private String website;
 
     private String phone;
@@ -102,7 +101,6 @@ public class Event {
     @Email
     private String email;
 
-    @URL
     private String registration;
 
     private String general;

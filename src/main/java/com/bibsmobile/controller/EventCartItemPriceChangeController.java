@@ -30,10 +30,12 @@ public class EventCartItemPriceChangeController {
     public String createForm(@RequestParam(value = "eventitem", required = true) Long eventitem, Model uiModel) {
         EventCartItemPriceChange i = new EventCartItemPriceChange();
         EventCartItem e = EventCartItem.findEventCartItem(eventitem);
+        List <EventCartItemPriceChange> pricechanges = EventCartItemPriceChange.findEventCartItemPriceChangesByEventCartItem(e).getResultList();
         i.setEventCartItem(e);
         List<EventCartItem> l = new ArrayList<>();
         l.add(e);
         uiModel.addAttribute("eventcartitems", l);
+        uiModel.addAttribute("pricechanges", pricechanges);
         this.populateEditForm(uiModel, i);
         return "eventitemspricechanges/create";
     }
@@ -130,6 +132,17 @@ public class EventCartItemPriceChangeController {
             eventCartItemPriceChange.persist();
         }
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJsonArray(@RequestBody String json) {
+        for (EventCartItemPriceChange tmp : EventCartItemPriceChange.fromJsonArrayToEventCartItemPriceChanges(json)) {
+            EventCartItemPriceChange eventCartItemPriceChange = EventCartItemPriceChange.findEventCartItemPriceChange(tmp.getId());
+            eventCartItemPriceChange.setEventCartItem(null);
+            eventCartItemPriceChange.persist();
+            eventCartItemPriceChange.remove();
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
