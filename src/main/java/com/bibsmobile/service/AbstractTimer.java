@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
+import com.bibsmobile.util.BuildTypeUtil;
 
 public abstract class AbstractTimer implements Timer {
 	
@@ -52,7 +53,12 @@ public abstract class AbstractTimer implements Timer {
 		// timeout by timer config
 		if(bibtime < (bibTimes.get(cacheKey) + (timerConfig.getReadTimeout() * 1000)) ){
 			// match bib to running events
-			List<Event> events = Event.findEventsByRunning();
+			List <Event> events;
+			if(BuildTypeUtil.usesRfid()) {
+				events = Event.findAllEvents();
+			} else {
+				events = Event.findEventsByRunning();
+			}
 			System.out.println(slog+" running events "+events.size() );
 			boolean foundEventForBib = false;
 			for(Event event:events){

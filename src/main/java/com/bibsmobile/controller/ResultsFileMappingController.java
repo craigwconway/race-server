@@ -2,11 +2,14 @@ package com.bibsmobile.controller;
 
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.XlsToCsv;
 
 import java.io.File;
@@ -315,6 +318,13 @@ public class ResultsFileMappingController {
             exists.merge();
         } else {
             result.persist();
+            if(BuildTypeUtil.usesLicensing()) {
+            	DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
+                result.setLicensed(License.isUnitAvailible());
+                result.persist();
+                systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
+                systemInfo.persist();
+            }
         }
         resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);
     }
