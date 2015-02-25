@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -33,7 +32,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -247,34 +245,65 @@ public class ResultsFileMappingController {
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
             return;
         }
+        
+        long[] splits = new long[9];
+    	boolean hasSplits = false;
+    	
         StringBuffer json = new StringBuffer("{");
         for (int j = 0; j < nextLine.length; j++) {
             if (map[j].equals("-")){
             	continue;
             }
-            if (!json.toString().equals("{")){
-            	json.append(",");
-            }
             if(map[j].equals("bib")) {
+                if (!json.toString().equals("{")) json.append(",");
             	if(!StringUtils.isNumeric(nextLine[j].trim())){
                 	json.append(map[j] + ":0" ); // bib NaN, default to 0
-            	} else {
-            		json.append(map[j] + ":" + nextLine[j].trim());
+                	System.out.println("error bibs is not a number "+nextLine[j]);
+            	}else{
+            		json.append(map[j] + ":" + nextLine[j].trim() ); 
+            	}
+            }else if(map[j].startsWith("split")){
+            	try{
+	            	int index = Integer.valueOf(map[j].replaceAll("split", ""))-1;
+	            	splits[index] = RaceResult.fromHumanTime(event.getTimeStart().getTime(), nextLine[j]);
+	            	hasSplits = true;
+            	}catch(Exception e){
+            		System.out.println("split error "+e.getMessage());
             	}
             }else if(!map[j].equals("age")) {
+                if (!json.toString().equals("{")) json.append(",");
             	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");
-            } else {
+            }else{
+                if (!json.toString().equals("{")) json.append(",");
             	json.append(map[j] + ":" + nextLine[j].trim());
             }
         }
+        String strSplits = "";
+        if(hasSplits){
+        	try{
+		        for(long split:splits){
+		        	if(strSplits.length() > 0){
+		        		strSplits += ",";
+		        	}
+		        	strSplits += split+"";
+		        }
+		        System.out.println("ResultsFileMappingController splits "+strSplits);
+        	}catch(Exception e){
+        		e.printStackTrace();
+        	}
+        }
         json.append("}");
-        System.out.println(json);
-        RaceResult result = RaceResult.fromJsonToRaceResult(json.toString());
+        String fixedJson = json.toString().replaceAll(",,",",");
+        System.out.println("ResultsFileMappingController saveRaceResult() "+fixedJson);
+        RaceResult result = RaceResult.fromJsonToRaceResult(fixedJson);
         result.setEvent(event);
+        result.setTimesplit(strSplits);
+        System.out.println("ResultsFileMappingController splits2 "+result.getTimesplit());
         RaceResult exists = null;
         try {
             exists = RaceResult.findRaceResultsByEventAndBibEquals(event, result.getBib()).getSingleResult();
         } catch (Exception e) {
+            System.out.println("ResultsFileMappingController error "+e.getMessage());
         }
         if (null != exists) {
         	if(exists.getTimeofficial() > 0){

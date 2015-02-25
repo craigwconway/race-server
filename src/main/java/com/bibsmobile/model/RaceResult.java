@@ -40,6 +40,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -375,7 +376,25 @@ public class RaceResult implements Comparable<RaceResult> {
         return (int) ((other.timestart - other.timeofficial) - (this.timestart - this.timeofficial));
     }
 
+    public static long fromHumanTime(String humanReadable) {
+    	String[] arr = humanReadable.split(":");
+    	if(arr.length == 3){
+    		return new Period(Integer.valueOf(arr[0]),Integer.valueOf(arr[1]),Integer.valueOf(arr[2]),0).toStandardDuration().getMillis();
+    	}else if(arr.length == 2){
+    		return new Period(0,Integer.valueOf(arr[0]),Integer.valueOf(arr[1]),0).toStandardDuration().getMillis();
+    	}
+		System.out.println("invalid human readable "+humanReadable);
+        return 0;
+    }
+
+    public static long fromHumanTime(long startTime, String humanReadable) {
+        return startTime + fromHumanTime(humanReadable);
+    }
+
     public static String toHumanTime(long start, long finish) {
+    	if(finish == 0){
+    		return "00:00:00";
+    	}
         long l = finish - start;
         String rtn = "";
         l = Math.abs(l);

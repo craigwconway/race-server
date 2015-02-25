@@ -64,7 +64,7 @@
                 <div class="ui blue label">Reader Type</div>
                 <select class="ui dropdown" id="rtype" name="type">
                     <option id="type-0" value="0">Demo (No Reader)</option>
-                    <option id="type-1" value="1">ThingMagic</option>
+                    <option id="type-1" value="1">Bibs Timer</option>
                 </select>
             </div>
             <div class="ui labeled input">
@@ -72,6 +72,11 @@
                 <select class="ui dropdown" id="pos" name="position">
                     <option id="starting" value="0">Starting Line</option>
                     <option id="finishing" value="1">Finish Line</option>
+                    <option id="split1" value="2">Split 1</option>
+                    <option id="split2" value="3">Split 2</option>
+                    <option id="split3" value="4">Split 3</option>
+                    <option id="split4" value="5">Split 4</option>
+                    <option id="split5" value="6">Split 5</option>
                 </select>
             </div>
             <div class="ui labeled input">
@@ -118,6 +123,13 @@
             jQuery("#pos").dropdown('set selected', '${timerConfig.position}');
             // ports
             initPorts();
+            // If licensing build, do not show option 'Demo Timer'
+            var licensing = '${build.licensing}'
+            if(licensing === 'true') {
+            	dropdownElement = jQuery("#rtype");
+            	dropdownElement.find('option[value=0]').remove();
+            	//$("#rtype option[value='1']").remove();
+            }
         };
         var one = false; var two = false; var three = false; var four = false;
         function updatePorts(val){
