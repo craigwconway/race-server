@@ -3,41 +3,41 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-    @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
-        .event-navbar-inverse .navbar-collapse {
-            background-color: rgba(80,80,80,0.9);
+        @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
+            .event-navbar-inverse .navbar-collapse {
+                background-color: rgba(80,80,80,0.9);
+            }
+            .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
+            .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
+            .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
+            .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
+            .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
+            .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
+            .event-navbar-inverse .navbar-form{
+                border: none;
+            }
+            .event-navbar-nav{ text-align: center; }
+            .navbar-brand{ color: white; display: block; }
         }
-        .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
-        .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
-        .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
-        .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
-        .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
-        .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
-        .event-navbar-inverse .navbar-form{
-            border: none;
+        @media (max-width: 767px) {
+            .event-navbar-inverse .navbar-collapse {
+                background-color: rgba(80,80,80,0.9);
+            }
+            .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
+            .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
+            .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
+            .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
+            .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
+            .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
+            .event-navbar-inverse .navbar-form{
+                border: none;
+            }
+            .event-navbar-nav{ text-align: center; }
+            .navbar-brand{ color: white; display: block; }
         }
-        .event-navbar-nav{ text-align: center; }
-        .navbar-brand{ color: white; display: block; }
-    }
-    @media (max-width: 767px) {
-        .event-navbar-inverse .navbar-collapse {
-            background-color: rgba(80,80,80,0.9);
+        @media (min-width:768px ){
+            .navbar-brand{ display: none; }
         }
-        .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
-        .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
-        .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
-        .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
-        .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
-        .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
-        .event-navbar-inverse .navbar-form{
-            border: none;
-        }
-        .event-navbar-nav{ text-align: center; }
-        .navbar-brand{ color: white; display: block; }
-    }
-    @media (min-width:768px ){
-        .navbar-brand{ display: none; }
-    }
         body{
             background-image: url('../images/auth.jpg');
             background-size: cover; background-repeat: no-repeat;
@@ -244,7 +244,9 @@
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                         <c:if test='${(eventadmin)}'>
-                            <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px"><!--  --></i> Reports</a></li>
+                            <c:if test='${build.registration}'>
+                                <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px"><!--  --></i> Reports</a></li>
+                            </c:if>
                             <li><a href="#" onclick="redirectAthletes();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> Athletes</a></li>
                         </c:if>
                     </sec:authorize>
@@ -253,23 +255,25 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
-                                <li><a href="#" onclick="redirectEnableReg(); return false;">Enable Registration</a></li>
-                            </c:if>
-                            <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
-                                <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
-                                <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
-                                <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
-                                <li><a href="#" onclick="exportModal(); return false;">Export Registrations</a></li>
-                            </c:if>
-                            <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
-                            <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
-                            <li><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
-                        </ul>
-                    </li>
+                    <c:if test='${build.registration}'>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
+                                    <li><a href="#" onclick="redirectEnableReg(); return false;">Enable Registration</a></li>
+                                </c:if>
+                                <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
+                                    <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
+                                    <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
+                                    <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
+                                    <li><a href="#" onclick="exportModal(); return false;">Export Registrations</a></li>
+                                </c:if>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
+                                <li><a href="#" onclick="waiverUrl();return false;">Waiver</a></li>
+                            </ul>
+                        </li>
+                    </c:if>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-file-text" style="margin-right: 5px"><!--  --></i> Results<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
@@ -308,10 +312,12 @@
             <div id="event-time"><div class="col-sm-6" id="date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
 
             <div id="event-details">
-                <div class="col-sm-6 reglive-label" style="margin-bottom:5px">Registration</div>
-                <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0;margin-bottom:5px"><div class="btn btn-default btn-sm"><span class="reg">${event.regEnabled}</span></div></div>
-                <div class="col-sm-6 reglive-label">Live</div>
-                <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="live">${event.live}</span></div></div>
+                <c:if test='${build.registration}'>
+                    <div class="col-sm-6 reglive-label" style="margin-bottom:5px">Registration</div>
+                    <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0;margin-bottom:5px"><div class="btn btn-default btn-sm"><span class="reg">${event.regEnabled}</span></div></div>
+                    <div class="col-sm-6 reglive-label">Live</div>
+                    <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="live">${event.live}</span></div></div>
+                </c:if>
                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                     <c:if test="${lastImport != null}">
                         <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>

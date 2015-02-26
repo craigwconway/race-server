@@ -1,4 +1,25 @@
-@import 'https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic&subset=latin';
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-Medium.otf);
+  font-weight:700;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-MediumItalic.ttf);
+  font-weight:700;
+  font-style: italic;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-Thin.ttf);
+  font-weight:100;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-ThinItalic.ttf);
+  font-weight:400;
+  font-style: italic;
+}
 /*
  * # Semantic UI - 1.8.1
  * https://github.com/Semantic-Org/Semantic-UI

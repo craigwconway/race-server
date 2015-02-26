@@ -6,6 +6,7 @@
 	<spring:url var="home" 			value="/" />
 	<spring:url var="raceday_url" 	value="/events/raceday" />
 	<spring:url var="reports_url" 	value="/registrations/reports" />
+	<spring:url var="license_url" 	value="/licensing" />
 	<spring:url var="users_url" 	value="/userprofiles?page=1&amp;size=10" />
 	<spring:url var="timers_url" 	value="/timers?page=1&amp;size=10" />
 	<spring:url var="login" 		value="/login" />
@@ -39,6 +40,7 @@
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
                   		<li id="nav_timers"><a href="${timers_url}"><span class="fa fa-cog" style="margin-right:5px;"><!--  --></span> settings</a></li>
+                  			<li id="nav_license"><a href="${license_url}"><span class="fa fa-bolt" style="margin-right:5px;"><!--  --></span> licensing</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                   		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
@@ -110,21 +112,21 @@
 	</script>
 	
 	<style>
-	.dijitCalendarPopup{
-		background-color: #FFF;
-		border: solid grey 1px;
-	}
-	.dijitCheckBoxInput{
-		opacity: 1 !important;
-	}
-	.dijitValidationContainer {
-	    cursor: default;
-	    display: none!important;
-	}
-	h3{
-		padding-top: 0;
-		margin-top:0;
-	}
+		.dijitCalendarPopup{
+			background-color: #FFF;
+			border: solid grey 1px;
+		}
+		.dijitCheckBoxInput{
+			opacity: 1 !important;
+		}
+		.dijitValidationContainer {
+		    cursor: default;
+		    display: none!important;
+		}
+		h3{
+			padding-top: 0;
+			margin-top:0;
+		}
 	</style>
 	
 </div>
