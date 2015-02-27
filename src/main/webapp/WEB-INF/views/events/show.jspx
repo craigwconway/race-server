@@ -3,41 +3,6 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-        @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
-            .event-navbar-inverse .navbar-collapse {
-                background-color: rgba(80,80,80,0.9);
-            }
-            .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
-            .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
-            .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
-            .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
-            .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
-            .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
-            .event-navbar-inverse .navbar-form{
-                border: none;
-            }
-            .event-navbar-nav{ text-align: center; }
-            .navbar-brand{ color: white; display: block; }
-        }
-        @media (max-width: 767px) {
-            .event-navbar-inverse .navbar-collapse {
-                background-color: rgba(80,80,80,0.9);
-            }
-            .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
-            .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
-            .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
-            .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
-            .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
-            .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
-            .event-navbar-inverse .navbar-form{
-                border: none;
-            }
-            .event-navbar-nav{ text-align: center; }
-            .navbar-brand{ color: white; display: block; }
-        }
-        @media (min-width:768px ){
-            .navbar-brand{ display: none; }
-        }
         body{
             background-image: url('../images/auth.jpg');
             background-size: cover; background-repeat: no-repeat;
@@ -107,7 +72,8 @@
         .button-container{
             padding-top: 150px;
         }
-        .event-navbar-inverse { background-color: rgba(50,50,50,1) }
+        .event-navbar-inverse { background-color: rgba(50,50,50,1); z-index: 1000; }
+        .event-navbar-inverse .navbar-nav>li { z-index: 1000; }
         .event-navbar-inverse .navbar-nav>.active>a:hover,.event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC }
         .event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6 }
         .dropdown-menu { background-color: rgba(50,50,50,1) }
@@ -129,6 +95,56 @@
         .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF }
         .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999 }
         .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF }
+        @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
+            .event-navbar-inverse .navbar-collapse {
+                background-color: rgba(80,80,80,0.9);
+            }
+            .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
+            .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
+            .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
+            .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
+            .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
+            .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
+            .event-navbar-inverse .navbar-form{
+                border: none;
+            }
+            .event-navbar-nav{ text-align: center; }
+            .navbar-brand{ color: white; display: block; }
+        }
+        @media (max-width: 767px) {
+            .event-navbar-inverse .navbar-collapse {
+                background-color: rgba(80,80,80,0.9);
+            }
+            .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
+            .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
+            .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
+            .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
+            .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
+            .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
+            .event-navbar-inverse .navbar-form{
+                border: none;
+            }
+            .event-navbar-nav{ text-align: center; }
+            .navbar-brand{ color: white; display: block; }
+        }
+        @media (min-width:768px ){
+            .navbar-brand{ display: none; }
+        }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+            .map-container {
+                width: 95%;
+                margin-top: 15%;
+            }
+            .map-canvas { width: 90%; height: 250px; margin: 0 auto; }
+            .info-container{
+                width: 90%;
+                margin: 0 auto;
+            }
+            .event-name{ font-size: 1.7em; }
+            #event-time{ width: auto; }
+            #date, #time{ margin-left: 0; padding-left: 0; text-align: left; }
+            .button-container{ padding-top: 3%; }
+        }
     </style>
     
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
@@ -239,7 +255,7 @@
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse event-show-navbar">
+            <div class="collapse navbar-collapse event-show-navbar" style="z-index: 1000;">
                 <ul class="nav navbar-nav">
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
