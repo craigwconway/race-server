@@ -8,61 +8,86 @@
                 background-size: cover;
                 background-repeat: no-repeat;
             }
+            .welcome {
+                margin-top:10%;
+                margin-left: 30%;
+                font-family:Quicksand;
+                font-weight:400;
+            }
+            .welcome-head {
+                font-size: 3.5em;
+            }
+            .welcome-sub {
+                font-size: 1.8em;
+            }
+            @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+                .welcome {
+                    margin-top: 10%;
+                    margin-left: 15%;
+                    font-family:Quicksand;
+                    font-weight:400;
+                }
+                .welcome-head {
+                    font-size: 3em;
+                }
+                .welcome-sub {
+                    font-size: 1.5em;
+                }
+            }
         </style>
-        <div style="margin-top:10%;margin-left: 30%;
-    font-family:Quicksand;font-weight:400;">
-            <div style="font-size: 3.5em;">Welcome</div>
-            <div style="font-size: 1.8em;">bibs control center</div>
+        <div class="welcome">
+            <div class="welcome-head">Welcome</div>
+            <div class="welcome-sub">bibs control center</div>
         </div>
     </sec:authorize>
 
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <style>
-        @media (min-width: 1000px) {
-            .event-container{
-                margin-left: 40%;
-                margin-top:2%;
-                font-family:Quicksand;
+            @media (min-width: 1000px) {
+                .event-container{
+                    margin-left: 40%;
+                    margin-top:2%;
+                    font-family:Quicksand;
+                }
+                .not-list{
+                    display: block;
+                    margin: 1em;
+                    padding: 1em;
+                    height: 6em;
+                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+                }
+                .event-name{ font-size:1.9em; line-height:1.3em; }
             }
-            .not-list{
-                display: block;
-                margin: 1em;
-                padding: 1em;
-                height: 6em;
-                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+            @media (max-width: 999px) and (min-width: 700px) {
+                .event-container{
+                    margin-left: 30%;
+                    margin-top:2%;
+                    font-family:Quicksand;
+                }
+                .not-list{
+                    display: block;
+                    margin: 1em;
+                    padding: 1em;
+                    height: 8em;
+                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+                }
+                .event-name{ font-size:1.5em; line-height:1.1em; }
             }
-            .event-name{ font-size:1.9em; line-height:1.3em; }
-        }
-        @media (max-width: 999px) and (min-width: 700px) {
-            .event-container{
-                margin-left: 30%;
-                margin-top:2%;
-                font-family:Quicksand;
+            @media (max-width: 699px){
+                .event-container{
+                    margin-left: 20%;
+                    margin-top:2%;
+                    font-family:Quicksand;
+                }
+                .not-list{
+                    display: block;
+                    margin: 1em;
+                    padding: 1em;
+                    height: 8em;
+                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
+                }
+                .event-name{ font-size:1.5em; line-height:1.1em; }
             }
-            .not-list{
-                display: block;
-                margin: 1em;
-                padding: 1em;
-                height: 8em;
-                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-            }
-            .event-name{ font-size:1.5em; line-height:1.1em; }
-        }
-        @media (max-width: 699px){
-            .event-container{
-                margin-left: 20%;
-                margin-top:2%;
-                font-family:Quicksand;
-            }
-            .not-list{
-                display: block;
-                margin: 1em;
-                padding: 1em;
-                height: 8em;
-                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-            }
-            .event-name{ font-size:1.5em; line-height:1.1em; }
-        }
             body{
                 background-image: url('images/auth.jpg');
                 background-size: cover; background-repeat: no-repeat;
