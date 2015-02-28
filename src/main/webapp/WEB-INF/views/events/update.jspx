@@ -42,6 +42,18 @@
                 width: 500px;
                 text-align: right;
             }
+            @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+                .ui.labeled.input {
+                    width: 90%;
+                }
+                .ui.labeled.input > .label {
+                    width: 29%;
+                    font-size: 0.8em;
+                }
+                .submit{
+                    width: 90%;
+                }
+            }
         </style>
         <div class="white-overlay">
             <form:update id="fu_com_bibsmobile_model_Event" modelAttribute="event" path="/events" versionField="Version" z="HRUEbbTPOtP6NCVvkP7sA85e324=">

@@ -71,6 +71,29 @@
         	margin: 0 auto;
         	text-align: left;
         }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+        	.reader {
+        		width: 90%;
+        		float: left;
+        	}
+			#event {
+				margin:10px; 
+				width: 90%;
+			}
+			.ui.icon.header {
+				margin: 2rem 0em 0rem;
+			}
+			.event-row {
+				width: 90%;
+			}
+			.event-name {
+				font-size: 0.9em;
+				margin-right: 0;
+			}
+			.table td:nth-child(4), td:nth-child(5) {
+				display: none;
+			}
+        }
 	</style>
 	
     <div class="white-overlay">
