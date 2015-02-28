@@ -5,7 +5,10 @@ import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
+import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.UserProfileUtil;
+import com.bibsmobile.model.DeviceInfo;
+import com.bibsmobile.model.License;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
@@ -255,14 +258,52 @@ public class RaceResultController {
             this.populateEditForm(uiModel, raceResult);
             return "raceresults/create";
         }
+        // If this is an RFID build, do not allow the user to double up on a bib number:
+        if(BuildTypeUtil.usesRfid()) {
+        	Long matches = RaceResult.countFindRaceResultsByBibEquals(raceResult.getBib());
+        	if (matches > 0) {
+        		if(raceResult.getEvent() != null) {
+        			uiModel.addAttribute("selectedEventID", raceResult.getEvent().getId());
+        		}
+        		bindingResult.rejectValue("bib", "Duplicate Bib");
+        		uiModel.addAttribute("errors", "bib.duplicate");
+        		uiModel.addAttribute("raceResult", raceResult);
+        		uiModel.addAttribute("events", Event.findAllEvents());
+        		return "raceresults/create";
+        	}
+        }
+        
         uiModel.asMap().clear();
-        raceResult.persist();
+        
+        // If we are using licensing in the build, deduct a license 
+        if(BuildTypeUtil.usesLicensing()) {
+            DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
+            raceResult.setLicensed(License.isUnitAvailible());
+            raceResult.persist();
+            systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
+            systemInfo.persist();
+        } else {
+        	raceResult.persist();	
+        }
+        
+        
         long eventId = 0;
         if (null != raceResult.getEvent()) {
             eventId = raceResult.getEvent().getId();
         }
+        
+        // Tell user that they have a licensed raceresult, if that is the case
+        if (BuildTypeUtil.usesLicensing()) {
+        	if(raceResult.isLicensed()) {
+                return "redirect:/raceresults/?form&event=" + eventId + "&added="
+                        + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname() + " (licensed)", httpServletRequest);
+        	} else {
+                return "redirect:/raceresults/?form&event=" + eventId + "&added="
+                        + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname() + " (unlicensed)", httpServletRequest);
+        	}
+        }
         return "redirect:/raceresults/?form&event=" + eventId + "&added="
-                + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname(), httpServletRequest);
+                + this.encodeUrlPathSegment(raceResult.getBib() + " " + raceResult.getFirstname() + " " + raceResult.getLastname() + "", httpServletRequest);
     }
 
     @Autowired
@@ -425,6 +466,11 @@ public class RaceResultController {
         headers.add("Content-Type", "application/json");
         if (raceResult == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        if(true == raceResult.isLicensed()) {
+        	if(raceResult.getTimeofficial() == 0) {
+        		DeviceInfo.quickBlindRemoveRunner();
+        	}
         }
         raceResult.remove();
         return new ResponseEntity<>(headers, HttpStatus.OK);
