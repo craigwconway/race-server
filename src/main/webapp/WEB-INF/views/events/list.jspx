@@ -27,6 +27,11 @@
         .info-container button{
             float: right;
         }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+            .ui.blue.table thead, .ui.table:not(.unstackable) tr > td:nth-child(3), .ui.table:not(.unstackable) tr > td:nth-child(4) {
+                display: none !important;
+            }
+        }
     </style>
     <div class="white-overlay">
         <div class="info-container">
@@ -34,6 +39,7 @@
                 <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/events?form';" type="button">
         		<span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> event</span>
         		</button>
+                <div style="clear:both;"><!--  --></div>
         		<!-- <button class="btn btn-default btn-top" onclick="redirectMegaexport()" type="button">Megaexport</button> -->
             </sec:authorize>
             <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
@@ -44,9 +50,7 @@
                     <table:column id="c_com_bibsmobile_model_Event_regEnabled" property="regEnabled" z="user-managed" />
                     <table:column id="c_com_bibsmobile_model_Event_live" property="live" z="user-managed" />
                     <table:column date="true" dateTimePattern="${event_timestart_date_format}" id="c_com_bibsmobile_model_Event_timeStart" property="timeEnd" z="user-managed"/>
-                    <!--
-                    <table:column id="c_com_bibsmobile_model_Event_userGroup" property="userGroup" render="false" z="user-managed"/>
-        -->
+                    <!--<table:column id="c_com_bibsmobile_model_Event_userGroup" property="userGroup" render="false" z="user-managed"/>-->
                     <table:column id="c_com_bibsmobile_model_Event_raceImages" property="raceImages" render="false" z="user-managed"/>
                     <table:column id="c_com_bibsmobile_model_Event_raceResults" property="raceResults" render="false" z="user-managed"/>
                     <table:column id="c_com_bibsmobile_model_Event_resultsFiles" property="resultsFiles" render="false" z="user-managed"/>
@@ -64,7 +68,25 @@
         window.onload = init;
 
         function init(){
-            jQuery("td:nth-child(n+4)").each(function(){
+            jQuery("th:nth-child(2), td:nth-child(2)").each(function(i){
+                var city = jQuery(this).html();
+                var state = jQuery("tr:nth-child("+i+") > td:nth-child(3)").html();
+                if( i > 0 ){
+                    if( city === "" ){ city = "n/a"; }
+                    if( state === "" ){ state = "n/a"; }
+                    if( state.length === 2 ){ state = state.toUpperCase(); }
+                    jQuery(this).text(city + ", " + state);
+                }
+                else{
+                    jQuery(this).append(", State");
+                }
+            })
+
+            jQuery("th:nth-child(3), td:nth-child(3)").each(function(){
+                jQuery(this).remove();
+            })
+
+            jQuery("td:nth-child(n+3)").each(function(){
                 var outer_html = jQuery(this).html();
                 if(outer_html === "true"){
                     jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
