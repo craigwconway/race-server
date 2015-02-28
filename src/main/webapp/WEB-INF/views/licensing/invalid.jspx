@@ -48,10 +48,15 @@
           	We are happy to provide active support between 7AM EST to 11PM EST.
             <div style="clear:both"><!--  --></div>
           	<div style="margin-top:15px">
-              <button type="submit" class="ui green button" id="upload">
+              <button type="submit" class="ui green button" onclick="redirectLicense()" id="upload">
               	<i class="fa fa-random"><!--  --></i> Try a different license
             	</button>
             </div>
         </div>
     </div>
+    <script>
+        function redirectLicense(){
+            window.location="/bibs-server/licensing";
+        }
+    </script>
 </div>
