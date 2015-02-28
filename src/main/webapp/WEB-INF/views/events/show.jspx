@@ -260,7 +260,7 @@
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                         <c:if test='${(eventadmin)}'>
-                            <c:if test='${build.registration}'>
+                            <c:if test='${(build.registration)}'>
                                 <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px"><!--  --></i> Reports</a></li>
                             </c:if>
                             <li><a href="#" onclick="redirectAthletes();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> Athletes</a></li>
@@ -271,7 +271,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                    <c:if test='${build.registration}'>
+                    <c:if test='${(build.registration)}'>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
@@ -318,17 +318,22 @@
     </nav>
     
     <div class="white-overlay">
-        <div class="map-container">
-            <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
-            <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
-        </div>
+        <c:if test='${(build.registration)}'>
+            <div class="map-container">
+                <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
+                <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
+            </div>
+        </c:if>
+        <c:if test='${(!build.registration)}'>
+            <div class="map-container"><!--  --></div>
+        </c:if>
         <div class="info-container">
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
             <div id="event-time"><div class="col-sm-6" id="date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
 
             <div id="event-details">
-                <c:if test='${build.registration}'>
+                <c:if test='${(build.registration)}'>
                     <div class="col-sm-6 reglive-label" style="margin-bottom:5px">Registration</div>
                     <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0;margin-bottom:5px"><div class="btn btn-default btn-sm"><span class="reg">${event.regEnabled}</span></div></div>
                     <div class="col-sm-6 reglive-label">Live</div>
@@ -403,7 +408,9 @@
 
         function init(){
             initInfo();
-            initMap();
+            <c:if test='${(build.registration)}'>
+                initMap();
+            </c:if>
         }
 
         function initInfo(){
@@ -621,9 +628,9 @@
         }
     </script>
     <c:if test='${(build.registration)}'>
-    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
-    <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
-    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
-    <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
+        <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+        <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
+        <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
+        <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
     </c:if>
 </div>
