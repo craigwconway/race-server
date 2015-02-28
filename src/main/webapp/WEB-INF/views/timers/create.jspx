@@ -48,6 +48,21 @@
         .ui.action.input:not([class*="left action"]) > .button, .ui.action.input:not([class*="left action"]) > .buttons > .button{
             width:10%;
         }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+            .ui.form.info-container{
+                width: 90%;
+            }
+            .ui.labeled.input {
+                width: 90%;
+            }
+            .ui.labeled.input > .label {
+                width: 29%;
+                font-size: 0.8em;
+            }
+            .submit{
+                width: 90%;
+            }
+        }
     </style>
     <div class="white-overlay">
         <div class="ui form info-container">

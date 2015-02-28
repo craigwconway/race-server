@@ -24,6 +24,15 @@
             line-height: 27px;
             color: #292929;
         }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+            .ui.blue.table thead, .ui.table:not(.unstackable) tr > td:nth-child(2), .ui.table:not(.unstackable) tr > td:nth-child(3), .ui.table:not(.unstackable) tr > td:nth-child(4) {
+                display: none !important;
+            }
+            .clickable-row{
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 1em;
+            }
+        }
     </style>
     <div class="white-overlay">
         <div class="info-container">
