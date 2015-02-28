@@ -203,15 +203,16 @@
 							</div>
 						</div>
 						<button id="btn-manual---event_id--" type="button" class="btn btn-danger"
-							style="display:none"
+							style="display:none;margin:3px auto;margin-left: 3px;"
 							onclick="manual(--event_id--);"> Manual Time Set </button>
 						<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
+							style="margin:3px auto;margin-left: 3px;"
 							onclick="gun(--event_id--);"> Fire Gun! </button> 
 						<button id="btn-update---id--" type="button" class="btn btn-info" 
-							style="margin:0;margin-left: 3px;"
+							style="margin:3px auto;margin-left: 3px;"
 							onclick="clearAllTimes(--event_id--)">Clear All</button>
 						<button id="btn-update---id--" type="button" class="btn btn-info" 
-							style="margin:0;margin-left: 3px;"
+							style="margin:3px auto;margin-left: 3px;"
 							onclick="clearFinishTimes(--event_id--)">Clear Finish</button>				
 						<table id="results--event_id--" class="table" 
 							style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
