@@ -63,5 +63,15 @@
 			return false;
 		}
 	});
+	jQuery(function () {
+		console.log('ok');
+		for(var i=0;i&lt;20;i++){
+			console.log('i='+1);
+			for(var j=1;j&lt;10;j++){
+				console.log('j='+j);
+				jQuery("#label-"+i).append('<option value="split'+j+'">Split '+j+'</option>');
+			}
+		}
+	});
 	</script>
 </div>

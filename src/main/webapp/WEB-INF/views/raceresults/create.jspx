@@ -187,23 +187,42 @@
         // focus bib number
         setValidation();
         initDateTimePickers();
-
+        console.log("${errors}")
+        var errors = '${errors}'
+        if(errors !== null) {
+    		if(errors == "bib.duplicate") {
+    			console.log("${raceResult}")
+    			var userSelectedEvent = '${selectedEventID}';
+    			jQuery('#event-type option[value="'+ userSelectedEvent +'"]').attr("selected", "selected");
+                jQuery("#added").show().delay(3000).fadeOut();
+                jQuery("#added").css("background-color", "#ff4e50")
+                jQuery("#added").html("That bib number already exists, please choose a different one");
+    		}
+        }
         if(GetURLParameter("added")){
             jQuery("#added").show().delay(3000).fadeOut();
+            if(decodeURIComponent(GetURLParameter("added")).indexOf('unlicensed') > -1) {
+            	jQuery("#added").css("background-color", "#EC971F")
+            }
             jQuery("#added").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
         }
         
         jQuery('input[name="bib"]').focus();
     };
 
-
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&amp;]" + name + "=([^&amp;#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    
     function parseEventId(){
-        var url = window.location.href;
-        var urllen = url.length;
-        var ind = url.indexOf("=");
-        var eid = url.substring(ind+1, ind+2);
+        var eid = getParameterByName('event');
         console.log(eid);
-        jQuery('#event-type option[value="'+ eid +'"]').attr("selected", "selected");
+        if(eid != "") {
+            jQuery('#event-type option[value="'+ eid +'"]').attr("selected", "selected");
+        }
     }
 
     function change(field){

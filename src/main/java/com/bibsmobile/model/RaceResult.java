@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -39,10 +40,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.bibsmobile.util.BuildTypeUtil;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
@@ -157,6 +161,8 @@ public class RaceResult implements Comparable<RaceResult> {
     private String timemile3;
 
     private String timemile4;
+    
+    private boolean licensed;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
@@ -179,8 +185,13 @@ public class RaceResult implements Comparable<RaceResult> {
     }
 
     public String getTimeofficialdisplay() {
-        if (this.timestart == 0 || this.timeofficial == 0)
-            return "";
+    	if (BuildTypeUtil.usesLicensing()) {
+            if (this.timestart == 0 || this.timeofficial == 0 || this.licensed == false)
+                return "";
+    	} else {
+            if (this.timestart == 0 || this.timeofficial == 0)
+                return "";
+    	}
         return RaceResult.toHumanTime(this.timestart, this.timeofficial);
     }
 
@@ -365,7 +376,25 @@ public class RaceResult implements Comparable<RaceResult> {
         return (int) ((other.timestart - other.timeofficial) - (this.timestart - this.timeofficial));
     }
 
+    public static long fromHumanTime(String humanReadable) {
+    	String[] arr = humanReadable.split(":");
+    	if(arr.length == 3){
+    		return new Period(Integer.valueOf(arr[0]),Integer.valueOf(arr[1]),Integer.valueOf(arr[2]),0).toStandardDuration().getMillis();
+    	}else if(arr.length == 2){
+    		return new Period(0,Integer.valueOf(arr[0]),Integer.valueOf(arr[1]),0).toStandardDuration().getMillis();
+    	}
+		System.out.println("invalid human readable "+humanReadable);
+        return 0;
+    }
+
+    public static long fromHumanTime(long startTime, String humanReadable) {
+        return startTime + fromHumanTime(humanReadable);
+    }
+
     public static String toHumanTime(long start, long finish) {
+    	if(finish == 0){
+    		return "00:00:00";
+    	}
         long l = finish - start;
         String rtn = "";
         l = Math.abs(l);
@@ -410,6 +439,13 @@ public class RaceResult implements Comparable<RaceResult> {
         q.setParameter("bib", bib);
         return q.getSingleResult();
     }
+    
+    public static Long countFindRaceResultsByBibEquals(long bib) {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.bib = :bib", Long.class);
+        q.setParameter("bib", bib);
+        return q.getSingleResult();
+    }    
 
     public static Long countFindRaceResultsByEventAndFirstnameLike(Event event, String firstname) {
         if (event == null)
@@ -678,6 +714,32 @@ public class RaceResult implements Comparable<RaceResult> {
         return entityManager().createQuery("SELECT o FROM RaceResult o", RaceResult.class).getResultList();
     }
 
+    public static List<RaceResult> findUnlicensedResults() {
+    	try {
+            EntityManager em = RaceResult.entityManager();
+            TypedQuery <RaceResult> q = em.createQuery("SELECT o FROM RaceResult o where o.event != :event", RaceResult.class);
+            System.out.println("get");
+            q.setParameter("event", Event.findEventByNameEquals("Unassigned Results"));
+            List <RaceResult> rrs= q.getResultList();
+            List <RaceResult> returnList = new LinkedList <RaceResult> ();
+            for(RaceResult rr : rrs) {
+            	if(!rr.isLicensed()) {
+            		returnList.add(rr);
+            	}
+            }
+            return returnList;
+    	} catch(Exception e) {
+    		System.out.println("exception");
+            List <RaceResult> returnList = new LinkedList <RaceResult> ();
+            for(RaceResult rr : RaceResult.findAllRaceResults()) {
+            	if(!rr.isLicensed()) {
+            		returnList.add(rr);
+            	}
+            }
+            return returnList;
+    	}
+    }
+    
     public static List<RaceResult> findAllRaceResults(String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM RaceResult o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
@@ -1192,4 +1254,18 @@ public class RaceResult implements Comparable<RaceResult> {
     public void setUpdated(Date updated) {
         this.updated = updated;
     }
+
+	/**
+	 * @return boolean - True if the result is a licensed race result
+	 */
+	public boolean isLicensed() {
+		return licensed;
+	}
+
+	/**
+	 * @param boolean - Set true when licensing a result, false if unlicensed
+	 */
+	public void setLicensed(boolean licensed) {
+		this.licensed = licensed;
+	}
 }
