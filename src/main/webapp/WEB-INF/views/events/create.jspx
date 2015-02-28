@@ -33,6 +33,22 @@
             width: 400px;
             text-align: right;
         }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+            .form-fields>input, #demo>input{
+                width: 90%;
+                margin: 5px auto; 
+            }
+            .submit{
+                width: auto;
+                text-align: inherit;
+            }
+            .has-error{
+                margin: 0 auto;
+                width: 90%;
+                white-space: pre-line;
+                text-align: left;
+            }
+        }
     </style>
     <div class="white-overlay">
     <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">

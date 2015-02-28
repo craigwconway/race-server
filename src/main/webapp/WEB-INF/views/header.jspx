@@ -2,6 +2,50 @@
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 
+	<style>
+		.dijitCalendarPopup{
+			background-color: #FFF;
+			border: solid grey 1px;
+		}
+		.dijitCheckBoxInput{
+			opacity: 1 !important;
+		}
+		.dijitValidationContainer {
+		    cursor: default;
+		    display: none!important;
+		}
+		h3{
+			padding-top: 0;
+			margin-top:0;
+		}
+		input[name="password"] {
+			padding: auto 0;
+			vertical-align:inherit;
+			margin-left:5px;
+		}
+		#loginForm {
+			margin: auto 0;
+			padding-top:2px;
+		}
+		.login-submit {
+			padding: auto 0;
+			vertical-align:inherit;
+		}
+		@media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+			input[name="password"] {
+				margin-left: 0;
+				padding-left: 0;
+			}
+			#loginForm {
+				margin-left: 10%;
+				width: 100%;
+			}
+			.login-submit {
+				margin-left: 50%;
+			}
+		}
+	</style>
+	
 	<spring:url var="banner" 		value="/resources/images/bibsicon.png" />
 	<spring:url var="home" 			value="/" />
 	<spring:url var="raceday_url" 	value="/events/raceday" />
@@ -46,7 +90,7 @@
                   		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
                   	</sec:authorize>
                 </ul>
-                <form 	class="navbar-form navbar-right" id="loginForm" style="margin: auto 0;padding-top:2px;display:none;"
+                <form 	class="navbar-form navbar-right" id="loginForm" style="display:none;"
                 		method="POST" action="/bibs-server/resources/j_spring_security_check" name="f">
 					<div class="form-group" data-toggle="tooltip" data-placement="bottom" title="Login Error!">
 					<input  type="text" class="form-control" placeholder="Username" name="j_username"
@@ -54,10 +98,9 @@
 	                        data-parsley-error-message="Please enter a username."
 	                        data-parsley-required="true"></input></div>
 					<div class="form-group"><input  type="password" class="form-control" placeholder="Password" name="j_password"
-							style="padding: auto 0; vertical-align:inherit;margin-left:5px;"
 	                        data-parsley-error-message="Please enter a password."
 	                        data-parsley-required="true"></input></div>
-					<button type="submit" class="btn btn-default" style="padding: auto 0; vertical-align:inherit;">Submit</button>
+					<button type="submit" class="btn btn-default login-submit">Submit</button>
 				</form>
                 <ul class="nav navbar-nav navbar-right">
                 	<sec:authorize access="not hasAnyRole('ROLE_USER,ROLE_USER_ADMIN,ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -109,24 +152,5 @@
 	function loginHandler(){
 		jQuery("#loginForm").animate({width:"toggle", height: "toggle"}, "slow");
 	}
-	</script>
-	
-	<style>
-		.dijitCalendarPopup{
-			background-color: #FFF;
-			border: solid grey 1px;
-		}
-		.dijitCheckBoxInput{
-			opacity: 1 !important;
-		}
-		.dijitValidationContainer {
-		    cursor: default;
-		    display: none!important;
-		}
-		h3{
-			padding-top: 0;
-			margin-top:0;
-		}
-	</style>
-	
+	</script>	
 </div>
