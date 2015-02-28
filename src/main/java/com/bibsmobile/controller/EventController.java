@@ -1266,6 +1266,23 @@ public class EventController {
      * Enable registration for an event
      * @return returns the event show view
      */
+    @RequestMapping(value = "/{id}/waiver", produces = "text/html", method = RequestMethod.POST)
+    public String waiver(@PathVariable("id") Long id, @RequestParam(value = "waiver") String waiver, Model uiModel) {
+        Event event = Event.findEvent(id);
+        
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+        event.setWaiver("https://s3.amazonaws.com/galen-shennanigans/theOnlyRealWaiver.txt");
+        event.persist();
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+        return "redirect:/events/" + event.getId();
+    }    
+    /*
+     * Enable registration for an event
+     * @return returns the event show view
+     */
     @RequestMapping(value = "/{id}/enablereg", produces = "text/html")
     public String enableReg(@PathVariable("id") Long id, Model uiModel) {
         Event event = Event.findEvent(id);

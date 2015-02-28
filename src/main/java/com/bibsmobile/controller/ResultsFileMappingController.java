@@ -278,7 +278,11 @@ public class ResultsFileMappingController {
             	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");
             }else{
                 if (!json.toString().equals("{")) json.append(",");
-            	json.append(map[j] + ":" + nextLine[j].trim());
+                if(nextLine[j].trim() == "") {
+                	json.append(map[j] + ":null");
+                } else {
+                	json.append(map[j] + ":" + nextLine[j].trim());
+                }
             }
         }
         String strSplits = "";
