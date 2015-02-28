@@ -1,17 +1,57 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <h3>Invalid License:</h3>
-    <br/>
-    Contact bibs support:
-    <br/>
-	<span class="glyphicon glyphicon-earphone"> 1-762-233-7443</span>
-	<br/>
-	<span class="glyphicon glyphicon-envelope"> brandon@mybibs.co</span>
-	<br/>
-	We are happy to provide active support between 7AM EST to 11PM EST.
-	<button type="submit" class="btn btn-default" id="upload">
-  	<span class="glyphicon glyphicon-randdom"></span>
-  	<b> Try a different license</b>
-  	</button>
+    <style>
+      body{
+          background-image: url('images/auth.jpg');
+          background-size: cover; background-repeat: no-repeat;
+      }
+      .white-overlay{
+          display: block;
+          background: rgba(255,255,255,.8);
+          width: 103%;
+          margin-top: -2%;
+          margin-left: -1%;
+          padding-top: 2%;
+          padding-bottom: 2%;
+          text-align: center;
+      }
+      .info-container{
+          margin: 0 auto;
+          width: 500px;
+          min-height: 400px;
+          line-height: 27px;
+          color: #292929;
+      }
+      .ui.action.input{
+        width: 100%;
+      }
+      @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+        .info-container{
+          width: 90%;
+        }
+      }
+    </style>
+    <div class="white-overlay">
+        <div class="info-container">
+            <h2 class="ui icon header">
+                <i class="fa fa-bolt"><!--  --></i>
+                <div class="content">Invalid License
+                  <div class="sub header">Contact bibs support:</div>
+                </div>
+            </h2>
+            <div style="clear:both"><!--  --></div>
+          	<i class="fa fa-phone" style="margin-right:5px"><!--  --></i> 1-762-233-7443
+          	<br/>
+          	<i class="fa fa-envelope" style="margin-right:5px"><!--  --></i> brandon@mybibs.co
+            <br/>
+          	We are happy to provide active support between 7AM EST to 11PM EST.
+            <div style="clear:both"><!--  --></div>
+          	<div style="margin-top:15px">
+              <button type="submit" class="ui green button" id="upload">
+              	<i class="fa fa-random"><!--  --></i> Try a different license
+            	</button>
+            </div>
+        </div>
+    </div>
 </div>
