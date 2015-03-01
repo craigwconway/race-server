@@ -138,7 +138,7 @@
                 <div class="ui labeled input">
                     <div class="ui blue label">Age</div>
                         <input  type="number" name="age"
-                                placeholder="Age"
+                                placeholder="Age" id="age"
                                 min="1"
                                 max="120"
                                 data-parsley-error-message="Invalid age."
@@ -237,6 +237,13 @@
             jQuery('#raceResult').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
+            });
+
+            jQuery("#age").on('input', function(){
+                var age = jQuery("#age").val();
+                age = parseInt(age);
+
+                if( (age === "") || (isNaN(age)) ){ jQuery("#age").val(""); }
             });
         }
 
