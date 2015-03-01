@@ -1261,23 +1261,43 @@ public class EventController {
             return a.getTimeofficialdisplay().compareTo(b.getTimeofficialdisplay());
         }
     }
-    
+
     /*
-     * Enable registration for an event
-     * @return returns the event show view
+     * Event waiver
+     * @return s3 url of where waiver is found
      */
-    @RequestMapping(value = "/{id}/waiver", produces = "text/html", method = RequestMethod.POST)
-    public String waiver(@PathVariable("id") Long id, @RequestParam(value = "waiver") String waiver, Model uiModel) {
+    @RequestMapping(value = "/{id}/waiver", produces = "text/plain", method = RequestMethod.GET)
+    @ResponseBody
+    public String getWaiver(@PathVariable("id") Long id, @RequestBody String waiver, Model uiModel) {
         Event event = Event.findEvent(id);
         
         // check the rights the user has for event
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return null;
         }
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+        return event.getWaiver();
+    }
+    
+    /*
+     * Event waiver
+     * @return s3 url of where waiver is found
+     */
+    @RequestMapping(value = "/{id}/waiver", produces = "text/plain", method = RequestMethod.POST)
+    @ResponseBody
+    public String waiver(@PathVariable("id") Long id, @RequestBody String waiver, Model uiModel) {
+        Event event = Event.findEvent(id);
+        
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+        System.out.println("setting waiver");
+        System.out.println(waiver);
         event.setWaiver("https://s3.amazonaws.com/galen-shennanigans/theOnlyRealWaiver.txt");
         event.persist();
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
-        return "redirect:/events/" + event.getId();
+        return waiver;
     }    
     /*
      * Enable registration for an event
