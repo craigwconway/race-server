@@ -203,7 +203,9 @@
             initInfo();
             initDateTimePickers();
             setValidation();
-            setGeocomplete();
+            <c:if test='${(build.rfid)}'>
+                setGeocomplete();
+            </c:if>
         }
 
         function initInfo(){
@@ -344,8 +346,10 @@
         }
 	</script>
 
-    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
-    <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
-    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
-    <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
+    <c:if test='${(build.rfid)}'>
+        <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+        <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
+        <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
+        <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
+    </c:if>
 </div>
