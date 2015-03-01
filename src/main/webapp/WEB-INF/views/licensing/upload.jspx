@@ -147,7 +147,7 @@
 				jQuery("#unlicstatus").addClass("alert alert-success");
 			} else {
 				jQuery("#unlicstatus").show();
-				jQuery("#unlicstatus").html('&lt;a href="#" class="alert-link"&gt;Activate&lt;/a&gt; ' + unlicensedResults + ' Unlicensed Athletes.');
+				jQuery("#unlicstatus").html('&lt;a href="/bibs-server/licensing/activate" class="alert-link"&gt;Activate&lt;/a&gt; ' + unlicensedResults + ' Unlicensed Athletes.');
 				jQuery("#unlicstatus").addClass("alert alert-warning");
 			}
 		}
