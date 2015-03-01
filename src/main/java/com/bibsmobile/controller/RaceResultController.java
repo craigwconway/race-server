@@ -371,18 +371,40 @@ public class RaceResultController {
     	return "redirect:/raceresults/" + encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
 
     }
-
+    /**
+     * Open the HTML view of edit raceresult. 
+     * @param id ID of raceresult to edit (long raceResult.id)
+     * @param uiModel
+     * @return raceresult/update html view.
+     */
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         this.populateEditForm(uiModel, RaceResult.findRaceResult(id));
         return "raceresults/update";
     }
-
+    
+    /**
+     * Delete a race result by HTML. This is currently only accessible to sysadmin/eventadmin.
+     * TODO: restrict this to eventadmin who are managing the particular race result
+     * @param id - Unique id of raceresult to delete (raceResult.id)
+     * @param page - Page of list view to return to
+     * @param size - entries per page in list view
+     * @param uiModel
+     * @return Returns a redirect to the HTML list of raceresults.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
     public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
             Model uiModel) {
         RaceResult raceResult = RaceResult.findRaceResult(id);
+        if(BuildTypeUtil.usesLicensing() && raceResult.isLicensed()) {
+        	// If the timeofficialdisplay for this raceresults is nontrivial
+        	// refund the read
+        	if(raceResult.getTimeofficialdisplay().isEmpty() && !raceResult.isTimed()) {
+        		DeviceInfo.quickBlindRemoveRunner();
+        	}
+        }
         raceResult.remove();
+
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
         uiModel.addAttribute("size", (size == null) ? "10" : size.toString());

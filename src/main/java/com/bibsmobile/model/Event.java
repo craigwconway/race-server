@@ -98,7 +98,6 @@ public class Event {
 
     private String phone;
 
-    @Email
     private String email;
 
     private String registration;

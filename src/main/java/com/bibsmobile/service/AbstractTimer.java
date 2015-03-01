@@ -72,7 +72,7 @@ public abstract class AbstractTimer implements Timer {
 					foundEventForBib = true;
 					result.setEvent(event);
 					System.out.println(slog+" RUNNER: "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
-					
+					result.setTimed(true);
 					// calculate start, finish, split times
 					result = calculateOfficialTime(result, bibtime, timerConfig);
 					
