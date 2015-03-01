@@ -9,4 +9,14 @@ Master:
 
 Develop:
   - This branch holds merges and commits of new development features
-  = Develop currently deploys to bibslabs.co on a successful builds
+
+Build types:
+  - All build types have a typename visible in /src/main/java/com/bibsmobile/util/BuildTypeUtil.java
+  - These comes along with a set of properties that dictate what is shown in the UI:
+    -- licensing -- whether the build uses license tokens for reads
+    -- rfid -- whether this is an rfid included build
+    -- registration -- whether this is the live registration build for accepting payments/results
+
+Build Servers:
+ - Carpunch: This is the semistable engineering build server. This builds off of the develop branch
+ - Sakebomb: This is a private build server for so/galen. Builds are triggered from their branches
