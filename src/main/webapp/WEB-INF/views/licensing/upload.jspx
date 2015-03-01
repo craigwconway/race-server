@@ -128,7 +128,7 @@
 					jQuery("#licstatus").addClass("alert alert-warning");
 					jQuery("#licstatus").html("You have " + data.units + " runners remaining");
 				} else {
-					Query("#licstatus").show();
+					jQuery("#licstatus").show();
 					jQuery("#licstatus").addClass("alert alert-success");
 					jQuery("#licstatus").html("You have " + data.units + " runners remaining");
 	
