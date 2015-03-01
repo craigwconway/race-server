@@ -248,7 +248,6 @@
                         <span class="field-start">${item.startDate}</span>
                         <span class="field-end">${item.endDate}</span>
                     </div>
-                    <!-- <div>${item.eventCartItem}</div> -->
                 </c:forEach>
             </c:if>
             </page:list>
@@ -262,6 +261,8 @@
         var eciEnd;
         var eciBasePrice;
         var newBasePrice;
+        var eciLowAge;
+        var eciHighAge;
         var options   = {
             editable: true,
             format: {
@@ -385,7 +386,7 @@
                 low = parseInt(low);
                 high = parseInt(high);
 
-                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+                if( (low == "") || (low == 0) || (isNaN(low)) || (low &lt; eciLowAge) ){ jQuery("#lowAge").val(""); }
                 if( high !== "" ){
                     if( low &gt;= high ){
                         jQuery(this).val(high);
@@ -401,7 +402,7 @@
                 var high = jQuery("#highAge").val();
                 low = parseInt(low);
                 high = parseInt(high);
-                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+                if( (high == "") || (high == 0) || (isNaN(low)) || (high &gt; eciHighAge) ){ jQuery("#highAge").val("") }
                 if( low !== "" ){
                     if( high &lt;= low ){
                         jQuery(this).val(low);
@@ -651,6 +652,8 @@
                         jQuery(".base-price").each(function(){
                             jQuery(this).text("Base price: $" + eciBasePrice);
                         });
+                        eciLowAge = eci.minAge;
+                        eciHighAge = eci.maxAge;
                         initPage();
                     }else{
                     }
