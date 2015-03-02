@@ -131,13 +131,13 @@
             	//$("#rtype option[value='1']").remove();
             }
         };
-        var one = false; var two = false; var three = false; var four = false;
+        var one = false; var two = false; var three = false; var four = false; var str = "";
         function updatePorts(val){
-            if( val == 1 ){ one = !one; }
-            if( val == 2 ){ two = !two; }
-            if( val == 3 ){ three = !three; }
-            if( val == 4 ){ four = !four; }
-            var str = "";
+            if( val == 1 ){ one = !one; val = one; }
+            if( val == 2 ){ two = !two; val = two; }
+            if( val == 3 ){ three = !three; val = three; }
+            if( val == 4 ){ four = !four; val = four; }
+            str = "";
             if(one){ str += "1," }
             if(two){ str += "2," }
             if(three){ str += "3," }
@@ -145,16 +145,20 @@
             if(str.length > 1){
                 str = str.substr(0, str.length-1);
             }
+
             jQuery("#ports").val(str);
-            console.log(str);
-       }
-       function initPorts(){
+        }
+        function initPorts(){
             jQuery('.ui.button').state();
             var ports = "${timerConfig.ports}";
             ports = ports.split(',');
             for( i=0; i &lt; ports.length; i++ ){
                 if( ports[i] !== "" ){
                     jQuery("#port-"+ports[i]).addClass("active");
+                    if( ports[i] == '1' ){ one = true; str += "1," }
+                    if( ports[i] == '2' ){ two = true; str += "2," }
+                    if( ports[i] == '3' ){ three = true; str += "3," }
+                    if( ports[i] == '4' ){ four = true; str += "4," }
                 }
             }
        }
