@@ -315,6 +315,10 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
                                                 if (alive > 0) {
                                                 	LLRPGetTagReports();
                                                 	alive--;
+                                                	if(status == 1) {
+                                                		// we have an issue
+                                                		throw new InterruptedException("just shrug and walk away");
+                                                	}
                                                 }
                                                 System.out.println("[LLRP][WATCHDOG][TIMER "+timerConfig.getId()+"] wakeup: Alive now = " + alive);                                                
                                                 if (0 >= alive) {
@@ -535,7 +539,11 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 	public void messageReceived(LLRPMessage bibRead) {
 		if (bibRead instanceof KEEPALIVE) {
 			System.out.println("[LLRP][WATCHDOG][TIMER "+timerConfig.getId()+"] Heartbeat Recieved...");
-			alive = timerConfig.getHeartbeats(); //If we have a valid keepalive message, reset the watchdog.
+			if(this.status == 2) {
+				alive = timerConfig.getHeartbeats(); //If we have a valid keepalive message, reset the watchdog.
+			} else {
+				disconnect();
+			}
 		}
         if (bibRead.getTypeNum() == RO_ACCESS_REPORT.TYPENUM) {
             RO_ACCESS_REPORT report = (RO_ACCESS_REPORT) bibRead;
@@ -697,7 +705,9 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
             System.out.println("[LLRP][TIMER "+timerConfig.getId()+"] START_ROSPEC ...");
             START_ROSPEC start = new START_ROSPEC();
             start.setMessageID(getUniqueMessageID());
-            start.setROSpecID(rospec.getROSpecID());
+            if(rospec != null) {
+            	start.setROSpecID(rospec.getROSpecID());
+            }
      
             response =  reader.transact(start, timerConfig.getConnectionTimeout() * 1000);
 
