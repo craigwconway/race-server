@@ -1,8 +1,8 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <h3>Shrugmode engaged:</h3>
-    License applied and runners may be assigned times
+    <h3>License Added:</h3>
+    Runners will receive times normally. Hit activate to add new times to runners.
     <script>
     window.onload = init;
     function init() {

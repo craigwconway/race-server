@@ -41,11 +41,11 @@
                 </div>
             </h2>
             <div style="clear:both"><!--  --></div>
-          	<i class="fa fa-phone" style="margin-right:5px"><!--  --></i> 1-762-233-7443
+          	<i class="fa fa-phone" style="margin-right:5px"><!--  --></i> 1-800-787-9951
           	<br/>
           	<i class="fa fa-envelope" style="margin-right:5px"><!--  --></i> brandon@mybibs.co
             <br/>
-          	We are happy to provide active support between 7AM EST to 11PM EST.
+          	We are happy to provide phone support from 8AM to 8PM PST and through other channels whenever possible.
             <div style="clear:both"><!--  --></div>
           	<div style="margin-top:15px">
               <button type="submit" class="ui green button" onclick="redirectLicense()" id="upload">
