@@ -142,10 +142,9 @@
             if(two){ str += "2," }
             if(three){ str += "3," }
             if(four){ str += "4," }
-            if(str.length > 1){
+            if(str.length > 1 &amp;&amp; str[str.length-1] == ','){
                 str = str.substr(0, str.length-1);
             }
-
             jQuery("#ports").val(str);
         }
         function initPorts(){
@@ -161,6 +160,10 @@
                     if( ports[i] == '4' ){ four = true; str += "4," }
                 }
             }
+            if(str.length > 1 &amp;&amp; str[str.length-1] == ','){
+                str = str.substr(0, str.length-1);
+            }
+            jQuery("#ports").val(str);
        }
     </script>
 </div>
