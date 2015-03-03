@@ -312,10 +312,10 @@ public class TimerConfigController {
 
 	@RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
-        uiModel.addAttribute("timerconfig", TimerConfig.findTimerConfig(id));
-        uiModel.addAttribute("itemId", id);
-        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
-        return "timers/show";
+        //uiModel.addAttribute("timerconfig", TimerConfig.findTimerConfig(id));
+        //uiModel.addAttribute("itemId", id);
+        //uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+        return "redirect:/timers/" + id + "?form";
     }
 
 	@RequestMapping(produces = "text/html")
