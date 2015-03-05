@@ -424,7 +424,17 @@
 
 		function makeReaderRow(n,readerObj){
 			var position = "Starting Line";
-			if(readerObj.position) position = "Finish Line";
+			switch(readerObj.position) {
+			case 0:
+				position = "Starting Line";
+				break;
+			case 1:
+				position = "Finish Line";
+				break;
+			default:
+				var splitpos = readerObj.position - 1;
+				position = "Split Number " + splitpos;
+			}
 			var row = jQuery("#reader-template").html()
 				.replace(/--count--/g,n)
 				.replace(/--id--/g,readerObj.id)

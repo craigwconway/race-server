@@ -208,6 +208,7 @@
                     <field:input field="timemile2" id="c_com_bibsmobile_model_RaceResult_timemile2" z="user-managed"/>
                     <field:input field="timemile3" id="c_com_bibsmobile_model_RaceResult_timemile3" z="user-managed"/>
                     <field:input field="timemile4" id="c_com_bibsmobile_model_RaceResult_timemile4" z="user-managed"/>
+                    <field:input field="licensed" id="c_com_bibsmobile_model_RaceResult_licensed" z="user-managed"></field:input>
                     <field:datetime dateTimePattern="${raceResult_updated_date_format}" field="updated" id="c_com_bibsmobile_model_RaceResult_updated" z="user-managed"/>
                     <field:simple field="raceImage" id="c_com_bibsmobile_model_RaceResult_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
                     <field:select field="userProfile" id="c_com_bibsmobile_model_RaceResult_userProfile" itemValue="id" items="${userprofiles}" path="/userprofiles" z="user-managed"/>
