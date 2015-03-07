@@ -1058,7 +1058,7 @@ public class EventController {
         return "events/show";
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @RequestMapping(value = "{1}/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
         Event event = Event.findEvent(id);
