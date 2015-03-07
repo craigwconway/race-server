@@ -278,7 +278,7 @@ public class ResultsFileMappingController {
             	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");
             }else{
                 if (!json.toString().equals("{")) json.append(",");
-                if(nextLine[j].trim() == "") {
+                if(nextLine[j].trim() == "" || !StringUtils.isNumeric(nextLine[j].trim())) {
                 	json.append(map[j] + ":null");
                 } else {
                 	json.append(map[j] + ":" + nextLine[j].trim());

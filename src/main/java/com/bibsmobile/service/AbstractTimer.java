@@ -202,19 +202,24 @@ public abstract class AbstractTimer implements Timer {
 	
 	public void clearAllTimesByEventAndTimerId(long eventId, int position){
 		Event event = Event.findEvent(eventId);
+		System.out.println("clearing times for event: " + event.getName() + " and position: " + position);
+		System.out.println("Contents of bibTimes (pre-clear):");
+		System.out.println(bibTimes);
 		for(RaceResult runner:event.getRaceResults()){
 			runner.setTimeofficial(0);
+			runner.setTimestart(0);
 			runner.setTimeofficialdisplay("");
 			runner.persist();
-			System.out.println("Contents of bibTimes:");
-			System.out.println(bibTimes);
 			// delete by [bib]-[timer.position]
 			String o = runner.getBib() + "-" + position;
+			System.out.println("removing key: " + o);
 			bibTimes.remove(o);
 			bibCache.remove(o);
 			bibsByReader.remove(o);
 			uniqueBibs.remove(runner.getBib());
 		}
+		System.out.println("Contents of bibTime(post-clear):");
+		System.out.println(bibTimes);
 	}	
 
 }
