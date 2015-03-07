@@ -344,7 +344,7 @@ public class TimerConfigController {
         timerConfig.setConnectionTimeout(10);
         timerConfig.merge();
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
-        return "redirect:/timers/" + encodeUrlPathSegment(timerConfig.getId().toString(), httpServletRequest);
+        return "timers/list";
     }
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")

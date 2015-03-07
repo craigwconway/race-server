@@ -37,7 +37,7 @@
             <h2 class="ui icon header">
                 <i class="fa fa-bolt"><!--  --></i>
                 <div class="content">Licensing
-				    <div class="sub header">Apply license to engage shrugmode</div>
+				    <div class="sub header">Apply license to manage runners</div>
                 </div>
             </h2>
 		    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
