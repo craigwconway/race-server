@@ -167,6 +167,7 @@
                 Embed the code below to generate a bibs registration button:<br/>
                 <c:set var="reghtml" value='&lt;form action="https://bibs-frontend.herokuapp.com/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
                 <pre>${fn:escapeXml(reghtml)}</pre>
+                Link: <br/> <a href="https://bibs-frontend.herokuapp.com/registration/#/${event.id}">https://bibs-frontend.herokuapp.com/registration/#/${event.id}</a>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -59,7 +59,14 @@
                     <div class="sub header">Provide the details for this future event.</div>
                 </div>
             </h2>
+            
             <div class="form-fields">
+                <input  type="text" name="name"
+                        class="form-control"
+                        placeholder="Event name"
+                        value="${event.name}"
+                        data-parsley-error-message="Please enter an event name."
+                        data-parsley-required="required"></input>
                 <input  type="text" name="timeStart"
                         class="form-control"
                         id="eventDatepicker"
@@ -67,22 +74,7 @@
                         placeholder="Event date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"
-                        data-parsley-error-message="Please enter a date for this event."
-                        data-parsley-required="true"></input>
-                <input  type="text" name="name"
-                        class="form-control"
-                        placeholder="Event name"
-                        value="${event.name}"
-                        data-parsley-error-message="Please enter an event name."
-                        data-parsley-required="required"></input>
-                <input  type="url" name="website"
-                        class="form-control"
-                        id="mask-website"
-                        placeholder="Website"
-                        value="${event.website}"
-                        data-parsley-type="url"
-                        data-parsley-error-message="Please enter a valid website starting with http:// or https://"
-                        data-parsley-required="required"></input>
+                        data-parsley-error-message="Please enter a date for this event."></input>
                 <input  type="text" name="organization"
                         class="form-control"
                         placeholder="Organization"
@@ -91,6 +83,15 @@
                         class="form-control"
                         placeholder="Charity Name"
                         value="${event.charity}"></input>
+                <c:if test='${(build.rfid)}'>
+                <input  type="url" name="website"
+                        class="form-control"
+                        id="mask-website"
+                        placeholder="Website"
+                        value="${event.website}"
+                        data-parsley-type="url"
+                        data-parsley-error-message="Please enter a valid website starting with http:// or https://"
+                        data-parsley-required="required"></input>
                 <input  type="text" name="phone"
                         class="form-control"
                         id="#mask-phone"
@@ -99,6 +100,23 @@
                         data-parsley-length="[10,18]"
                         data-parsley-error-message="Please enter a valid phone number."
                         data-parsley-required="required"></input>
+                </c:if>
+                <c:if test='${(!build.rfid)}'>
+                <input  type="url" name="website"
+                        class="form-control"
+                        id="mask-website"
+                        placeholder="Website"
+                        value="${event.website}"
+                        data-parsley-type="url"
+                        data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
+                <input  type="text" name="phone"
+                        class="form-control"
+                        id="#mask-phone"
+                        placeholder="Phone Number"
+                        value="${event.phone}"
+                        data-parsley-length="[10,18]"
+                        data-parsley-error-message="Please enter a valid phone number."></input>
+                </c:if>
             </div>
     		<div id="demo">
                 <input  id="geoaddress"
