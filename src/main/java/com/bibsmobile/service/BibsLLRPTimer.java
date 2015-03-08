@@ -80,6 +80,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
     private long usCurrentOffset;
     private Thread watchdog = null; // watchdog is a null thread
     private int alive = 0; // initialize alive count to zero.
+    private boolean connecting = false;
     
     public BibsLLRPTimer(TimerConfig timerConfig){
     	this.timerConfig = timerConfig;
@@ -539,7 +540,7 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 	public void messageReceived(LLRPMessage bibRead) {
 		if (bibRead instanceof KEEPALIVE) {
 			System.out.println("[LLRP][WATCHDOG][TIMER "+timerConfig.getId()+"] Heartbeat Recieved...");
-			if(this.status == 2) {
+			if(this.connecting || this.status == 2) {
 				alive = timerConfig.getHeartbeats(); //If we have a valid keepalive message, reset the watchdog.
 			} else {
 				disconnect();
@@ -646,14 +647,21 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 	}
 	
 	public void connect() throws Exception {
-		LLRPConnect();
-		LLRPGetTagReports();
-		LLRPDeleteROSPEC();
-		//LLRPFactoryDefault();
-		//LLRPSetReaderConfiguration();
-		LLRPEnableHeartbeat();
-		LLRPAddROSPEC();
-		LLRPEnable();
+		try {
+			this.connecting = true;
+			LLRPConnect();
+			LLRPGetTagReports();
+			LLRPDeleteROSPEC();
+			//LLRPFactoryDefault();
+			//LLRPSetReaderConfiguration();
+			LLRPEnableHeartbeat();
+			LLRPAddROSPEC();
+			LLRPEnable();
+		} catch(Exception e) {
+			this.connecting = false;
+			throw new Exception(e);
+		}
+		this.connecting = false;
 	}
 
 	public void reconnect() throws Exception {
