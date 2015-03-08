@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1294,7 +1295,21 @@ public class EventController {
         }
         System.out.println("setting waiver");
         System.out.println(waiver);
-        event.setWaiver("https://s3.amazonaws.com/galen-shennanigans/theOnlyRealWaiver.txt");
+        
+        // s3 here
+        String fileName = UUID.randomUUID().toString() + ".txt";
+        String s3Url = "https://s3.amazonaws.com/galen-shennanigans/theOnlyRealWaiver.txt";
+        try {
+            EventPhotoController eventPhotoController = new EventPhotoController();
+			eventPhotoController.uploadToS3(waiver, fileName);
+	        s3Url = eventPhotoController.getAwsS3UrlPrefix() + fileName;
+		} catch (Exception e) {
+	        System.out.println("s3 upload failed");
+			e.printStackTrace();
+		}
+        // s3 done
+        
+        event.setWaiver(s3Url);
         event.persist();
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return waiver;

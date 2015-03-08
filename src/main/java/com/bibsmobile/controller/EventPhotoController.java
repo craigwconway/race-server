@@ -2,6 +2,7 @@ package com.bibsmobile.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import com.amazonaws.util.StringInputStream;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventPhoto;
 import com.bibsmobile.model.UploadFile;
@@ -59,6 +61,10 @@ public class EventPhotoController {
     private String awsS3Bucket;
     @Value("${amazon.aws.s3.url-prefix}")
     private String awsS3UrlPrefix;
+    
+    public String getAwsS3UrlPrefix(){
+    	return awsS3UrlPrefix;
+    }
 
     @PostConstruct
     public void init() {
@@ -150,6 +156,13 @@ public class EventPhotoController {
     private PutObjectResult uploadFileToS3(MultipartFile file, String fileName) throws IOException {
         AmazonS3 s3Client = new AmazonS3Client(this.awsS3Credentials);
         ByteArrayInputStream stream = new ByteArrayInputStream(file.getBytes());
+        PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, stream, new ObjectMetadata());
+        return s3Client.putObject(putObjectRequest);
+    }
+
+    protected PutObjectResult uploadToS3(String str, String fileName) throws IOException {
+        AmazonS3 s3Client = new AmazonS3Client(this.awsS3Credentials);
+        InputStream stream = new StringInputStream(str);
         PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3Bucket, fileName, stream, new ObjectMetadata());
         return s3Client.putObject(putObjectRequest);
     }
