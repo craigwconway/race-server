@@ -188,11 +188,9 @@ public class LicenseController {
 				throw new Exception("Empty license token");
 			}
 			License newLicense = new License();
+			License myLicense = License.findLicense(new Long(1));
 			DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
 			newLicense.setToken(tokenBytes);
-			System.out.println(newLicense.getMacAddress().length);
-			System.out.println("get macaddress for system: " +  systemInfo );
-			System.out.println(systemInfo.getMacAddress().length);
 			System.out.println(Hex.encodeHexString(systemInfo.getMacAddress()));
 			
 			byte[] macaddr = systemInfo.getMacAddress();
@@ -204,7 +202,8 @@ public class LicenseController {
 				throw new Exception("Invalid length license");
 			}
 			System.out.println(newLicense);
-			newLicense.persist();
+			myLicense.setToken(newLicense.getToken());
+			myLicense.persist();
             uiModel.addAttribute("build", BuildTypeUtil.getBuild());
 			uiModel.addAttribute("remaining", getRemainingLicenseUnits());
 	    	return "licensing/success";
