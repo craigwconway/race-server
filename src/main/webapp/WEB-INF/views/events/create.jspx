@@ -83,7 +83,7 @@
                         class="form-control"
                         placeholder="Charity Name"
                         value="${event.charity}"></input>
-                <c:if test='${(build.rfid)}'>
+                <c:if test='${(!build.rfid)}'>
                 <input  type="url" name="website"
                         class="form-control"
                         id="mask-website"
@@ -101,7 +101,7 @@
                         data-parsley-error-message="Please enter a valid phone number."
                         data-parsley-required="required"></input>
                 </c:if>
-                <c:if test='${(!build.rfid)}'>
+                <c:if test='${(build.rfid)}'>
                 <input  type="url" name="website"
                         class="form-control"
                         id="mask-website"
