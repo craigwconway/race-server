@@ -83,7 +83,7 @@
                         class="form-control"
                         placeholder="Charity Name"
                         value="${event.charity}"></input>
-                <c:if test='${(build.rfid)}'>
+                <c:if test='${(!build.rfid)}'>
                 <input  type="url" name="website"
                         class="form-control"
                         id="mask-website"
@@ -101,7 +101,7 @@
                         data-parsley-error-message="Please enter a valid phone number."
                         data-parsley-required="required"></input>
                 </c:if>
-                <c:if test='${(!build.rfid)}'>
+                <c:if test='${(build.rfid)}'>
                 <input  type="url" name="website"
                         class="form-control"
                         id="mask-website"
@@ -215,9 +215,11 @@
         </button> -->
     </form:create>
     </div>
-    <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
-    <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
-    <script src="/bibs-server/resources/scripts/jquery.geocomplete.js" type="text/javascript"><jsp:text/></script>
+    <c:if test='${(!build.rfid)}'>
+        <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+        <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
+        <script src="/bibs-server/resources/scripts/jquery.geocomplete.js" type="text/javascript"><jsp:text/></script>
+    </c:if>
     <script>
     window.onload = init;
 
@@ -236,7 +238,7 @@
         });
 
         initDateTimePickers();
-        setGeocomplete();
+        <c:if test='${(!build.rfid)}'>setGeocomplete();</c:if>
         setValidation();
     }
     function initDateTimePickers(){
