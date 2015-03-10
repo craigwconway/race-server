@@ -1,9 +1,11 @@
 package com.bibsmobile.controller;
 
+import com.bibsmobile.model.CustomRegField;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemTypeEnum;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -63,6 +67,7 @@ public class EventCartItemController {
         Event e = Event.findEvent(event);
         uiModel.addAttribute("event", e);
         uiModel.addAttribute("eventcartitems", EventCartItem.findEventCartItemsByEvent(e).getResultList());
+        uiModel.addAttribute("customregfields", CustomRegField.findCustomRegFieldsByEvent(e).getResultList());
         this.addDateTimeFormatPatterns(uiModel);
         return "eventitems/list";
     }
@@ -88,7 +93,7 @@ public class EventCartItemController {
         eventCartItem.persist();
         return eventCartItem.toJson();
     }
-
+    
     @RequestMapping(value = "/search", params = "find=ByNameEquals", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindEventCartItemsByNameEquals(@RequestParam("name") String name) {
