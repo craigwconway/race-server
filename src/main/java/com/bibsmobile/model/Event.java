@@ -40,14 +40,19 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.URL;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Latitude;
+import org.hibernate.search.annotations.Longitude;
+import org.hibernate.search.annotations.Spatial;
+import org.hibernate.search.annotations.SpatialMode;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
+@Indexed
+@Spatial(spatialMode = SpatialMode.HASH)
 public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -87,8 +92,10 @@ public class Event {
     
     private String location;
 
+    @Latitude
     private Double latitude;
 
+    @Longitude
     private Double longitude;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -158,6 +165,8 @@ public class Event {
     private boolean regEnabled;
 
     private boolean ticketTransferEnabled;
+    
+    private Date ticketTransferCutoff;
     
     private boolean live;
 
@@ -1192,7 +1201,22 @@ public class Event {
         this.ticketTransferEnabled = ticketTransferEnabled;
     }
 
-    @Id
+    /**
+     * This is the time that user enabled ticket transfer ends for an event.
+     * Ticket transfer must be set to true for this to work.
+	 * @return Date of ticket transfer cutoff
+	 */
+	public Date getTicketTransferCutoff() {
+		return ticketTransferCutoff;
+	}
+	/**
+	 * @param ticketTransferCutoff Date of ticket transfer cutoff
+	 */
+	public void setTicketTransferCutoff(Date ticketTransferCutoff) {
+		this.ticketTransferCutoff = ticketTransferCutoff;
+	}
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;

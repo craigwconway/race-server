@@ -1151,7 +1151,32 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events";
     }
-    
+
+    @RequestMapping(value="/{id}/tickettransfer",method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<String> manageTicketTransfer(@PathVariable("id") Long id,
+    		@RequestParam(value = "ticketTransferEnabled") boolean ticketTransferEnabled,
+    		@RequestParam(value = "ticketTransferCutoff", required=false) Date ticketTransferCutoff) {
+    	Event event = Event.findEvent(id);
+    	HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+    	if(null == event) {
+    		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+    	}
+    	if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+    	if(ticketTransferCutoff == null) {
+    		event.setTicketTransferEnabled(false);
+    		event.setTicketTransferCutoff(null);
+    		event.merge();
+    		return new ResponseEntity<>("No cutoff specified, disabling ticket transfer", headers, HttpStatus.BAD_REQUEST);
+    	}
+    	event.setTicketTransferEnabled(ticketTransferEnabled);
+    	event.setTicketTransferCutoff(ticketTransferCutoff);
+    	event.merge();
+    	return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "addTypeToEvent/{id}", produces = "text/html") 
     public String createTypeInEvent(Model uiModel,
