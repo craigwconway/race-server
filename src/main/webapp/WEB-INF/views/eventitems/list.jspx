@@ -36,8 +36,6 @@
             margin-left: 0;
             padding-left:0;
         }
-        .ui.segment{
-        }
         .ui.form input[type="text"]{
             width: 250px;
         }
@@ -45,54 +43,79 @@
             font-size: 1em;
             width: 250px;
         }
+        .ui.menu .item{
+            cursor: pointer;
+        }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="white-overlay">
         <div class="info-container">
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
-            <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus"><!--  --></i>product</button></div>
-            <h2 class="ui icon header">
-                <i class="fa fa-gears fa-2x fa-rotate-90"><!--  --></i>
-                <div class="content" style="margin-top:5px">
-                    Manage Products
-                    <div class="sub header">Manage your event cart items for ${ event.name }.</div>
-                </div>
-            </h2>
+            <div style="clear:both"><!--  --></div>
+            <div class="ui top attached tabular menu">
+                <div class="active item" data-tab="eci-menu">Products</div>
+                <div class="item" data-tab="ticket-menu">Transfers</div>
+                <div class="item" data-tab="form-menu">Custom Forms</div>
+            </div>
+            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
+                <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
+                <div style="clear:both"><!--  --></div>
+                <h3 class="ui icon header">
+                    <i class="fa fa-gear fa-2x"><!--  --></i>
+                    <div class="content" style="margin-top:5px">
+                        Manage Products
+                        <div class="sub header">Manage your event cart items for ${ event.name }.</div>
+                    </div>
+                </h3>
 
-            <div class="ui five doubling cards">
-            <c:if test="${not empty eventcartitems}">
-                <c:forEach var="item" items="${eventcartitems}">
-                    <div class="ui fluid card">
-                        <div class="content">
-                            <c:if test="${item.type == 'TICKET'}">
-                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
-                            </c:if>
-                            <c:if test="${item.type == 'T_SHIRT'}">
-                                <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
-                            </c:if>
-                            <c:if test="${item.type == 'DONATION'}">
-                                <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
-                            </c:if>
-                            <div class="description">${item.description}
+                <div class="ui five doubling cards">
+                <c:if test="${not empty eventcartitems}">
+                    <c:forEach var="item" items="${eventcartitems}">
+                        <div class="ui fluid card">
+                            <div class="content">
+                                <c:if test="${item.type == 'TICKET'}">
+                                    <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
+                                </c:if>
+                                <c:if test="${item.type == 'T_SHIRT'}">
+                                    <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
+                                </c:if>
+                                <c:if test="${item.type == 'DONATION'}">
+                                    <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
+                                </c:if>
+                                <div class="description">${item.description}
+                                </div>
+                            </div>
+                            <div class="extra content">
+                                <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
+                                <div class="right floated">$${item.price}</div>
+                            </div>
+                            <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
+                                <i class="fa fa-external-link"><!--  --></i>View Details
                             </div>
                         </div>
-                        <div class="extra content">
-                            <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
-                            <div class="right floated">$${item.price}</div>
+                    </c:forEach>
+                    <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
+                        <div class="content">
+                            <div class="ui header"><span style="visibility:hidden">name</span></div>
+                            <div class="description">add a new product</div>
+                            <div class="extra content">
+                                <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                            </div>
                         </div>
-                        <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
-                            <i class="fa fa-external-link"><!--  --></i>View Details
+                        <div class="ui bottom attached button">
+                            <i class="fa fa-plus"><!--  --></i> product
                         </div>
                     </div>
-                </c:forEach>
-            </c:if>
+                </c:if>
+                </div>
             </div>
-
-            <div class="ui purple segment">
+            <div class="ui bottom attached tab segment" data-tab="ticket-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
                         Ticket Transfer Settings
+                        <div class="sub header">Allow users to transfer tickets to others.</div>
                     </div>
                 </h3>
                 <form class="ui form" id="transferForm">
@@ -118,11 +141,26 @@
                     </div>
                 </form>
             </div>
+            <div class="ui bottom attached tab segment" data-tab="form-menu">
+                <h3 class="ui icon header">
+                    <i class="fa fa-gear fa-2x"><!--  --></i>
+                    <div class="content" style="margin-top:5px">
+                        Custom Form Fields
+                        <div class="sub header">Create custom form questions for user registration.</div>
+                    </div>
+                </h3>
+                <form class="ui form" id="customForm">
+                    <div class="pull-right">
+                        <button class="ui green button" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     </sec:authorize>
     <script>
         window.onload = function(){
+            jQuery('.menu .item').tab();
             jQuery('.ui.checkbox').checkbox();
 
             var transfer = '${event.ticketTransferEnabled}';
