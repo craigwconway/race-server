@@ -125,19 +125,24 @@
         window.onload = function(){
             jQuery('.ui.checkbox').checkbox();
 
-            // if( transferDate !== 'null' || transferDate !== "" ){
-            //     def = Date(transferDate);
-            // }
+            var transfer = '${event.ticketTransferEnabled}';
+            var transferDate = '${event.ticketTransferCutoff}'
+            var def = Date();
+
+            if( transfer == 'true' ){
+                jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
+            }
+            if( transferDate !== 'null' || transferDate !== "" ){
+                def = moment(transferDate);
+            }
             
             jQuery("#cutoff-date")
                 .datetimepicker({
+                    defaultDate: def,
                     useSeconds: false
                 });
 
             jQuery('#cutoff-date').data("DateTimePicker").setMinDate(Date());
-            // if( transfer == 'true' ){
-            //     jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
-            // }
             
             jQuery('#transferForm').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
@@ -156,6 +161,7 @@
                     url: "/bibs-server/events/${event.id}/tickettransfer",
                     type: "PUT",
                     dataType: "text/html",
+                    data: "ticketTransferEnabled="+transfer+"&amp;ticketTransferCutoff="+transferDate,
                     complete: function() {
                         window.location.reload();
                     }
