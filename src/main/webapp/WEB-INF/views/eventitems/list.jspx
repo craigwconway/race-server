@@ -133,6 +133,7 @@
                 .datetimepicker({
                     useSeconds: false
                 });
+
             jQuery('#cutoff-date').data("DateTimePicker").setMinDate(Date());
             // if( transfer == 'true' ){
             //     jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
@@ -154,8 +155,7 @@
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/tickettransfer",
                     type: "PUT",
-                    dataType: "json",
-                    data: obj,
+                    dataType: "text/html",
                     complete: function() {
                         window.location.reload();
                     }
