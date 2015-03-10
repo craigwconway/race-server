@@ -25,11 +25,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomRegFieldResponse {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	Long id;
+	private Long id;
 
 	@ManyToOne
-	CustomRegField customRegField;
+	private CustomRegField customRegField;
 
 	@ManyToOne
-	Cart cart;
+	private Cart cart;
+	
+	private String response;
 }
