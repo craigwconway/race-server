@@ -13,7 +13,6 @@
             width: 102%;
             margin-top: -2%;
             margin-left: -1%;
-            margin-right: -3%;
             padding-top: 2%;
             padding-bottom: 4%;
             padding-left: 5%;
@@ -32,6 +31,19 @@
         }
         .ui.cards > .card > .content > .header{
             text-align: left;
+        }
+        h2,h3{
+            margin-left: 0;
+            padding-left:0;
+        }
+        .ui.segment{
+        }
+        .ui.form input[type="text"]{
+            width: 250px;
+        }
+        .ui.toggle.checkbox label, .ui.form .field > label{
+            font-size: 1em;
+            width: 250px;
         }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -75,10 +87,84 @@
                 </c:forEach>
             </c:if>
             </div>
+
+            <div class="ui purple segment">
+                <h3 class="ui icon header">
+                    <i class="fa fa-gear fa-2x"><!--  --></i>
+                    <div class="content" style="margin-top:5px">
+                        Ticket Transfer Settings
+                    </div>
+                </h3>
+                <form class="ui form" id="transferForm">
+                    <!-- <div class="two fields"> -->
+                        <div class="field">
+                            <div class="ui toggle checkbox">
+                                <input type="radio" name="ticketTransferEnabled"><!--  --></input>
+                                <label><b>Enable</b> ticket transfer</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <input  type="text" name="ticketTransferCutoff"
+                                id="cutoff-date"
+                                placeholder="Transfer cutoff date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-parsley-error-message="Please specify an end date."
+                                data-parsley-required="true"></input>
+                        </div>
+                    <!-- </div> -->
+                    <div class="pull-right">
+                        <button class="ui green button" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     </sec:authorize>
     <script>
+        window.onload = function(){
+            jQuery('.ui.checkbox').checkbox();
+
+            // if( transferDate !== 'null' || transferDate !== "" ){
+            //     def = Date(transferDate);
+            // }
+            
+            jQuery("#cutoff-date")
+                .datetimepicker({
+                    useSeconds: false
+                });
+            jQuery('#cutoff-date').data("DateTimePicker").setMinDate(Date());
+            // if( transfer == 'true' ){
+            //     jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
+            // }
+            
+            jQuery('#transferForm').parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
+            });
+
+            jQuery("#transferForm").submit(function() {
+                var transfer = jQuery('input[name="ticketTransferEnabled"]').prop("checked");
+                var transferDate = jQuery('input[name="ticketTransferCutoff"]').val();
+
+                var obj = {};
+                obj.ticketTransferEnabled = transfer;
+                obj.ticketTransferCutoff = new Date(transferDate);
+
+                jQuery.ajax({
+                    url: "/bibs-server/events/${event.id}/tickettransfer",
+                    type: "PUT",
+                    dataType: "json",
+                    data: obj,
+                    complete: function() {
+                        window.location.reload();
+                    }
+                });
+
+                return false; // avoid to execute the actual submit of the form.
+            });
+        }
+
         function onBack(){
             window.location="/bibs-server/events/${event.id}";
         }
