@@ -238,9 +238,9 @@
                         3. edit   form field
                         4. delete form field
                      -->
-                    <div>Added Questions:</div>
                         <div class="ui three doubling cards">
                         <c:if test="${not empty customregfields}">
+                            <div>Added Questions:</div>
                             <c:forEach var="item" items="${customregfields}">
                                 <div class="ui fluid card">
                                     <div class="content">
@@ -257,20 +257,20 @@
                                     <input style="display:none" name="id" value="${item.id}"></input>
                                 </div>
                             </c:forEach>
-                            <div class="ui fluid card" onclick="addQuestionModal()" style="cursor:pointer">
-                                <div class="content">
-                                    <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                    <div class="description">add a new question</div>
-                                    <div class="extra content">
-                                        <div class="left floated"><span style="visibility:hidden">sold</span></div>
-                                        <div class="right floated"><span style="visibility:hidden">$price</span></div>
-                                    </div>
-                                </div>
-                                <div class="ui bottom attached button">
-                                    <i class="fa fa-plus"><!--  --></i> question
+                        </c:if>
+                        <div class="ui fluid card" onclick="addQuestionModal()" style="cursor:pointer">
+                            <div class="content">
+                                <div class="ui header"><span style="visibility:hidden">name</span></div>
+                                <div class="description">add a new question</div>
+                                <div class="extra content">
+                                    <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                    <div class="right floated"><span style="visibility:hidden">$price</span></div>
                                 </div>
                             </div>
-                        </c:if>
+                            <div class="ui bottom attached button">
+                                <i class="fa fa-plus"><!--  --></i> question
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div style="clear:both"><!--  --></div>
