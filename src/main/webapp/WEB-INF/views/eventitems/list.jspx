@@ -288,7 +288,7 @@
             var eid = '${event.id}';
             var question = jQuery('input[name="question"]').val();
 
-            if( eid.length > 0 ){       obj.event = eid; }
+            if( eid.length > 0 ){       obj.event = parseInt(eid); }
             if( question.length > 0 ){  obj.question = question; }
 
             var type = responseType;
@@ -299,15 +299,18 @@
                 error = true;
             }
             else{
+                // console.log(obj);
                 jQuery.ajax({
                     url: "/bibs-server/regfields",
                     type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
                     dataType: "json",
-                    data: obj,
-                    complete: function() {
+                    complete: function(data) {
+                        console.log(data);
                         window.location.reload();
                     }
-                });
+                })
             }
         }
 
@@ -368,7 +371,7 @@
                 else{
                     responseType = 'input';
                     jQuery("#dropdown-field").hide();
-                    jQuery("#type-dropdown-selected").dropdown('hide');
+                    jQuery("#type-dropdown-selected").hide();
                     jQuery("#type-input-selected").show();
                 }
             });
