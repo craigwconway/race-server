@@ -32,6 +32,7 @@ public class CustomRegFieldController {
     @ResponseBody
     public String createFromJson(@RequestBody String json) {
         CustomRegField customRegField = CustomRegField.fromJsonToCustomRegField(json);
+        customRegField.setEvent(Event.findEvent(customRegField.getEvent().getId()));
         customRegField.persist();
         return customRegField.toJson();
     }
@@ -74,6 +75,7 @@ public class CustomRegFieldController {
         headers.add("Content-Type", "application/json");
         CustomRegField customRegField = CustomRegField.fromJsonToCustomRegField(json);
         customRegField.setId(id);
+        customRegField.setEvent(Event.findEvent(customRegField.getEvent().getId()));
         if (customRegField.merge() == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
