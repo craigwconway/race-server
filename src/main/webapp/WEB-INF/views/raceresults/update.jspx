@@ -107,6 +107,16 @@
                             data-parsley-required="true"></input>
                 </div>
                 <div class="ui labeled input">
+                    <div class="ui blue label">Team</div>
+                        <select class="ui dropdown" id="team-type" name="usergroup"
+                                data-parsley-error-message="Please select a team.">
+                            <option selected="selected" disabled="disabled">Select Team</option>
+                            <c:forEach var="item" items="${usergroup}">
+                                <option value="${item.id}">${item.name}</option>
+                            </c:forEach>
+                        </select>
+                </div>
+                <div class="ui labeled input">
                     <div class="ui blue label">First Name</div>
                         <input  type="text" name="firstname"
                             id="firstname" value="${raceResult.firstname}"
@@ -226,6 +236,7 @@
 
         function initForm(){
             jQuery('#event-type').dropdown('set selected', '${raceResult.event.id}');
+            jQuery('#team-type').dropdown();
             jQuery('#gender-type').dropdown('set selected', '${raceResult.gender}');
         }
 

@@ -28,8 +28,17 @@
         .modal-header .close{
             margin-top: 0;
         }
-        td:hover:not(:last-child) {
+        .ui.table td:hover:not(:last-child) {
             cursor: pointer;
+        }
+        .ui.basic.table td:hover:not(:last-child) {
+            cursor: default;
+        }
+        .parsley-custom-error-message{
+            list-style-type: none;
+        }
+        .modal-body {
+            overflow-y: auto;
         }
     </style>
     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="search-label" aria-hidden="true">
@@ -41,34 +50,80 @@
                 <div class="modal-body">
                     <div style="margin:0 auto;">
                         <div class="pull-left">
-                            <button type="button" class="ui button" style="width:150px">
+                            <button type="button" class="ui button" style="width:150px" onclick="refundHandler()">
                                 <i class="fa fa-cart-arrow-down" style="margin-right:7px"><!--  --></i>Refund
                             </button>
                         </div>
                         <div class="pull-right">
-                            <div class="ui icon yellow button"><i style="margin-right:0" class="fa fa-pencil fa-inverse"><!--  --></i></div>
+                            <div class="ui icon yellow button" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil fa-inverse"><!--  --></i></div>
                             <div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div>
                         </div>
                         <div style="clear:both"><!--  --></div>
-                        <h3 class="ui header">Athlete Name</h3>
+                        <h3 class="ui header">Athlete Info</h3>
                         <span id="modal-athlete"><!--  --></span>
                         <h3 class="ui header">Transaction ID</h3>
                         <span id="modal-transaction"><!--  --></span>
-                        <h3 class="ui header">Purchased Items</h3>
-                        <div id="modal-purchased"><!--  -->
-                        <table class="ui very basic table" id="cartitem-table" style="margin-top:0">
-                            <thead>
-                                <tr>
-                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Item</td>
-                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Quantity</td>
-                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Price</td>
-                                </tr>
-                            </thead>
-                        </table></div>
+                        <div id="cart-details">
+                            <div style="clear:both"><!--  --></div>
+                            <h3 class="ui header">Purchased Items</h3>
+                            <div id="modal-purchased"><!--  -->
+                                <table class="ui very basic table" id="cartitem-table" style="margin-top:0">
+                                    <thead>
+                                        <tr>
+                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Item</td>
+                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Details</td>
+                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Quantity</td>
+                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Price ($)</td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="edit-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title ui header" id="edit-label">Receipt Edit <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button></h2>
+                </div>
+                <div class="modal-body">
+                    <div class="ui form edit-fields" id="edit-athlete" data-parsley-validate="true">
+                        <div class="two fields">
+                            <div class="field">
+                                <input  type="text" placeholder="First Name" class="edit-field" id="edit-firstname"
+                                        data-parsley-error-message="Please enter a first name."
+                                        data-parsley-required="true"><!--  --></input>
+                            </div>
+                            <div class="field">
+                                <input  type="text" placeholder="Last Name" class="edit-field" id="edit-lastname"
+                                        data-parsley-error-message="Please enter a last name."
+                                        data-parsley-required="true"><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="ui small buttons">
+                            <div class="ui button edit-field" id="gender-m" onclick="genderHandler('M')"><span><i class="fa fa-mars"><!--  --></i></span></div>
+                            <div class="or"><!--  --></div>
+                            <div class="ui button edit-field" id="gender-f" onclick="genderHandler('F')"><span><i class="fa fa-venus"><!--  --></i></span></div>
+                            <span style="display:none">
+                                <input  class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-m"
+                                        data-parsley-mincheck="1" data-parsley-error-message="Please select a gender."><!--  --></input>
+                                <input class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-f"><!--  --></input>
+                            </span>
+                        </div>
+                        <div id="edit-cart"><!--  --></div>
+                    </div>
+                </div>    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="footer-save" onclick="editValidate()">Save</button>
                 </div>
             </div>
         </div>
@@ -113,10 +168,12 @@
                             <c:forEach items="${registrations}" var="item">
                                 <tr class="clickable-row" onclick="searchModal()">
                                     <td><c:out value="${item.user.firstname}"/></td>
-                                    <input id="firstname" type="text" style="display:none" value="${item.user.firstname}"></input>
                                     <td><c:out value="${item.user.lastname}"/></td>
-                                    <input id="lastname" type="text" style="display:none" value="${item.user.lastname}"></input>
                                     <td><c:out value="${item.stripeChargeId}"/></td>
+                                    <input id="firstname" type="text" style="display:none" value="${item.user.firstname}"></input>
+                                    <input id="lastname" type="text" style="display:none" value="${item.user.lastname}"></input>
+                                    <input id="gender" type="text" style="display:none" value="${item.user.gender}"></input>
+                                    <input id="email" type="text" style="display:none" value="${item.user.email}"></input>
                                     <input id="stripe" type="text" style="display:none" value="${item.stripeChargeId}"></input>
                                     <c:forEach items="${item.cartItems}" var="cart">
                                         <input  type="text" data-for="name"
@@ -125,6 +182,12 @@
                                         <input  type="text" data-for="type"
                                                 class="cartitem type" style="display:none"
                                                 value="${cart.eventCartItem.type}"></input>
+                                        <input  type="text" data-for="size"
+                                                class="cartitem type" style="display:none"
+                                                value="${cart.size}"></input>
+                                        <input  type="text" data-for="color"
+                                                class="cartitem type" style="display:none"
+                                                value="${cart.color}"></input>
                                         <input  type="text" data-for="price"
                                                 class="cartitem price" style="display:none"
                                                 value="${cart.eventCartItem.price}"></input>
@@ -142,18 +205,20 @@
     </div>
     <script>
         window.onload = function(){
-
         }
+
         function searchModal(){
             jQuery("#searchModal").modal('show');
-            jQuery("#modal-athlete").text(jQuery("#firstname").val() + " " + jQuery("#lastname").val());
+            jQuery("#modal-athlete").text(jQuery("#firstname").val() + " " + jQuery("#lastname").val() + " ");
+            if( jQuery("#gender").val() === 'FEMALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-venus"><!-- --></i>') }
+            else if( jQuery("#gender").val() === 'MALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
             jQuery("#modal-transaction").text(jQuery("#stripe").val());
-            var counter = 0;
-            var typeCount = 0;
-            var type;
-            var name;
-            var quantity;
-            var price;
+            
+            /*  append cart items into list view  */
+            var counter = 0; var typeCount = 0;
+            var type;   var name;   var price;
+            var size;   var color;  var quantity;
+
             jQuery(".cartitem").each(function(){
                 var info = jQuery(this).attr("data-for");
                 if( info == 'type' ){
@@ -162,29 +227,137 @@
                     if( type === 'TICKET' ){ type = "Ticket"; }
                     if( type === 'DONATION' ){ type = "Donation"; }
                 }
-                if( info == 'name' ){
-                    name = jQuery(this).val();
-                }
-                if( info == 'quantity' ){
-                    quantity = jQuery(this).val();
-                }
-                if( info == 'price' ){
-                    price = jQuery(this).val();
-                }
-                if( counter === 3 ){
-                    counter = 0;
-                    var row = jQuery("#cartitem-table").append('<tr id="row' + typeCount + '"></tr>')
+                if( info == 'name' ){       name = jQuery(this).val();      }
+                if( info == 'size' ){       size = jQuery(this).val();      }
+                if( info == 'color' ){      color = jQuery(this).val();     }
+                if( info == 'quantity' ){   quantity = jQuery(this).val();  }
+                if( info == 'price' ){      price = jQuery(this).val();     }
+                if( counter === 4 ){        counter = 0;
+                    var row = jQuery("#cartitem-table").append('<tr id="row' + typeCount + '"></tr>');
                     var rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="name' + typeCount + '"></td>')
-                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="quantity' + typeCount + '"></td>')
+                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="details' + typeCount + '"></td>')
+                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item collapsing" id="quantity' + typeCount + '"></td>')
                         rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="price' + typeCount + '"></td>')
                     
                     jQuery("#name"+typeCount).text(type + ": " + name);
+                    if(type !== 'Ticket'){ jQuery("#details"+typeCount).text(size + " " + color); }
                     jQuery("#quantity"+typeCount).text(quantity);
                     jQuery("#price"+typeCount).text(price);
                     typeCount++;
                 }
                 counter++;
             })
+            jQuery("#cart-details").clone().appendTo("#edit-cart");
+        }
+
+        function refundHandler(){
+            var invoiceId = jQuery("#stripe").val();
+            var firstname = jQuery("#firstname").val();
+            var email = jQuery("#email").val();
+            var request = jQuery.ajax({
+                url: "/stripe/refund?invoice="+invoiceId+"&amp;firstName="+firstname+"&amp;email="+email,
+                type: "POST",
+                dataType: "text/html"
+            })
+            request.done(function(d) {
+                if( d !== null ){
+                    console.log("refunded");
+                }else{
+                    alert("Something went wrong while refunding!");
+                }
+            })
+        }
+
+        function editHandler(){
+            var firstname = jQuery("#firstname").val();
+            var lastname = jQuery("#lastname").val();
+            var gender = jQuery("#gender").val();
+            jQuery("#edit-firstname").val(firstname);
+            jQuery("#edit-lastname").val(lastname);
+            if( jQuery("#gender").val() === 'FEMALE' ){ 
+                genderHandler('F');
+            }
+            else if( jQuery("#gender").val() === 'MALE' ){ 
+                genderHandler('M');
+            }
+
+            /*  allow editable fields in list view  */
+            var counter = 0; var typeCount = 0;
+            var size;   var color;  var quantity;
+
+            jQuery(".cartitem").each(function(){
+                var info = jQuery(this).attr("data-for");
+                if( info == 'type' ){
+                    type = jQuery(this).val();
+                    if( type === 'T_SHIRT' ){ type = "T-Shirt"; }
+                    if( type === 'TICKET' ){ type = "Ticket"; }
+                    if( type === 'DONATION' ){ type = "Donation"; }
+                }
+                if( info == 'size' ){       size = jQuery(this).val();      }
+                if( info == 'color' ){      color = jQuery(this).val();     }
+                if( info == 'quantity' ){   quantity = jQuery(this).val();  }
+                if( counter === 4 ){        counter = 0;
+                    var row = jQuery("#cartitem-table #row" + typeCount);
+                    var rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="details' + typeCount + '"></td>')
+                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item collapsing" id="quantity' + typeCount + '"></td>')
+                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="price' + typeCount + '"></td>')
+                    
+                    jQuery("#name"+typeCount).text(type + ": " + name);
+                    if(type !== 'Ticket'){ jQuery("#details"+typeCount).text(size + " " + color); }
+                    jQuery("#quantity"+typeCount).text(quantity);
+                    jQuery("#price"+typeCount).text(price);
+                    typeCount++;
+                }
+                counter++;
+            })
+
+            jQuery('#edit-athlete').parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
+            });
+        }
+
+        function editValidate(){
+            jQuery("#box-m").attr("data-parsley-required", true);
+
+            var noErrors = jQuery('#edit-athlete').parsley().validate();
+            console.log(noErrors);
+            if( !noErrors ){
+                jQuery("#footer-save").addClass('disabled');
+                jQuery(".edit-field").each(function(){
+                    var errorCount;
+                    jQuery(this).on('change click',function(){
+                        noErrors = jQuery('#edit-athlete').parsley().validate();
+
+                        if(noErrors){
+                            jQuery("#footer-save").removeClass('disabled');
+                        }
+                        else{
+                            jQuery("#footer-save").addClass('disabled');
+                        }
+                    })
+                })
+            }
+            else{
+                jQuery("#footer-save").removeClass('disabled');
+            }
+        }
+
+        function genderHandler(type){
+            if( type === 'M' ){
+                jQuery("#gender-m").addClass('positive');
+                jQuery("#gender-f").removeClass('positive');
+                jQuery("#box-m").prop("checked", true);
+                jQuery("#box-f").prop("checked", false);
+                jQuery("#parsley-id-multiple-gender li:first-child").hide();
+            }
+            if( type === 'F' ){
+                jQuery("#gender-f").addClass('positive');
+                jQuery("#gender-m").removeClass('positive');
+                jQuery("#box-f").prop("checked", true);
+                jQuery("#box-m").prop("checked", false);
+                jQuery("#parsley-id-multiple-gender li:first-child").hide();
+            }
         }
     </script>
 </div>
