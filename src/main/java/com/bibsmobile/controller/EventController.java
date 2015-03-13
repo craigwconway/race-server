@@ -34,8 +34,12 @@ import javax.validation.Valid;
 import javax.ws.rs.PUT;
 
 import com.google.gson.JsonObject;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.S3Util;
 import com.bibsmobile.util.SpringJSONUtil;
 
 import org.apache.commons.io.FilenameUtils;
@@ -44,6 +48,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -1325,9 +1330,9 @@ public class EventController {
         String fileName = UUID.randomUUID().toString() + ".txt";
         String s3Url = "https://s3.amazonaws.com/galen-shennanigans/theOnlyRealWaiver.txt";
         try {
-            EventPhotoController eventPhotoController = new EventPhotoController();
-			eventPhotoController.uploadToS3(waiver, fileName);
-	        s3Url = eventPhotoController.getAwsS3UrlPrefix() + fileName;
+        	S3Util.uploadWaiverToS3(waiver, fileName);
+        	
+	        s3Url = S3Util.getAwsS3WaiverPrefix() + fileName;
 		} catch (Exception e) {
 	        System.out.println("s3 upload failed");
 			e.printStackTrace();
