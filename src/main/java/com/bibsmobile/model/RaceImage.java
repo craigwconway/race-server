@@ -12,8 +12,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
@@ -35,8 +38,11 @@ public class RaceImage {
     @NotNull
     String filePath;
 
-    @ManyToOne
-    RaceResult raceResult;
+    @ManyToMany
+    @JoinTable(name="race_result_race_image",
+    joinColumns={@JoinColumn(name="image_id", referencedColumnName="id")}, 
+    inverseJoinColumns={@JoinColumn(name="result_id", referencedColumnName="id")})
+    Set<RaceResult> raceResults;
 
     @ManyToOne
     Event event;
@@ -47,13 +53,16 @@ public class RaceImage {
     boolean nonPublic;
 
     @ManyToMany
-    Set<PictureType> pictureTypes = new HashSet<>();
+    @JoinTable(name="picture_hashtag_race_image",
+    joinColumns={@JoinColumn(name="image_id", referencedColumnName="id")}, 
+    inverseJoinColumns={@JoinColumn(name="hashtag_id", referencedColumnName="id")})
+    Set<PictureHashtag> pictureHashtags = new HashSet<>();
 
     public RaceImage() {
         super();
     }
 
-    public RaceImage(String filePath, long eventId) {
+ /*   public RaceImage(String filePath, long eventId) {
         super();
         this.filePath = filePath;
         this.event = Event.findEvent(eventId);
@@ -84,22 +93,42 @@ public class RaceImage {
             }
         }
     }
-
-    public RaceImage(String filePath, long eventId, List<Long> bibs, List<String> types) {
-        this(filePath, eventId, bibs);
-        if (CollectionUtils.isNotEmpty(types)) {
-            for (String type : types) {
-                PictureType pictureType;
-                if (PictureType.countFindPictureTypesByPictureTypeEquals(type) > 0) {
-                    pictureType = PictureType.findPictureTypesByPictureTypeEquals(type).getSingleResult();
+*/
+    public RaceImage(String filePath, long eventId, List<Long> bibs, List<String> hashtags) {
+        //this(filePath, eventId, bibs);
+    	// First create a raceImage
+    	Event event = Event.findEvent(eventId);
+    	this.setFilePath(filePath);
+    	this.setEvent(event);
+        if (CollectionUtils.isNotEmpty(hashtags)) {
+            for (String hashtag : hashtags) {
+                PictureHashtag pictureHashtag;
+                if (PictureHashtag.countFindPictureHashtagsByPictureHashtagEquals(hashtag) > 0) {
+                    pictureHashtag = PictureHashtag.findPictureHashtagsByPictureHashtagEquals(hashtag).getSingleResult();
                 } else {
-                    pictureType = new PictureType();
-                    pictureType.setPictureType(type);
-                    pictureType.persist();
+                    pictureHashtag = new PictureHashtag();
+                    pictureHashtag.setPictureHashtag(hashtag);
+                    pictureHashtag.persist();
                 }
-                this.pictureTypes.add(pictureType);
+                this.pictureHashtags.add(pictureHashtag);
             }
         }
+        if (CollectionUtils.isNotEmpty(bibs)) {
+    		Set<RaceResult> taggedRaceResults = new HashSet<RaceResult>();
+        	for(Long bib : bibs) {
+        			try {
+        				RaceResult rr = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
+        				taggedRaceResults.add(rr);
+        			} catch (Exception e) {
+            				RaceResult newResult = new RaceResult();
+            				newResult.setEvent(event);
+            				newResult.setBib(bib);
+            				newResult.persist();
+            				taggedRaceResults.add(newResult);
+        			}
+        		}
+        	this.setRaceResults(taggedRaceResults);
+        	}
         this.persist();
     }
 
@@ -268,12 +297,12 @@ public class RaceImage {
         this.filePath = filePath;
     }
 
-    public RaceResult getRaceResult() {
-        return this.raceResult;
+    public Set<RaceResult> getRaceResults() {
+        return this.raceResults;
     }
 
-    public void setRaceResult(RaceResult raceResult) {
-        this.raceResult = raceResult;
+    public void setRaceResults(Set<RaceResult> raceResults) {
+        this.raceResults = raceResults;
     }
 
     public Event getEvent() {
@@ -300,12 +329,12 @@ public class RaceImage {
         this.nonPublic = nonPublic;
     }
 
-    public Set<PictureType> getPictureTypes() {
-        return this.pictureTypes;
+    public Set<PictureHashtag> getPictureTypes() {
+        return this.pictureHashtags;
     }
 
-    public void setPictureTypes(Set<PictureType> pictureTypes) {
-        this.pictureTypes = pictureTypes;
+    public void setPictureHashtags(Set<PictureHashtag> pictureHashtags) {
+        this.pictureHashtags = pictureHashtags;
     }
 
     public static Long countFindRaceImagesByEvent(Event event) {

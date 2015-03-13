@@ -23,6 +23,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
@@ -61,8 +64,11 @@ public class RaceResult implements Comparable<RaceResult> {
     @ManyToOne
     private UserProfile userProfile;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "raceResult")
-    private Set<RaceImage> raceImage;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "race_result_race_image",
+        joinColumns = {@JoinColumn(name = "result_id", referencedColumnName="id")},
+        inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName="id"))
+    private Set<RaceImage> raceImages;
 
     @NotNull
     @Index(name="bib_index") // search field
@@ -695,7 +701,7 @@ public class RaceResult implements Comparable<RaceResult> {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "userProfile", "raceImage", "bib", "firstname", "lastname", "middlename",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "userProfile", "raceImages", "bib", "firstname", "lastname", "middlename",
             "middlename2", "age", "gender", "type", "time5k", "time10k", "time15k", "timeoverall", "timegun", "timechip", "timesplit", "timestart", "timerun", "timeswim",
             "timetrans1", "timetrans2", "timebike", "timepace", "timeofficial", "timeofficialdisplay", "rankoverall", "rankage", "rankgender", "rankclass", "medal1", "medal2",
             "medal3", "city", "state", "country", "fullname", "lisencenumber", "laps", "award", "timer", "timesplit1", "timesplit2", "timesplit3", "timesplit4", "timemile1",
@@ -857,12 +863,12 @@ public class RaceResult implements Comparable<RaceResult> {
         this.userProfile = userProfile;
     }
 
-    public Set<RaceImage> getRaceImage() {
-        return this.raceImage;
+    public Set<RaceImage> getRaceImages() {
+        return this.raceImages;
     }
 
-    public void setRaceImage(Set<RaceImage> raceImage) {
-        this.raceImage = raceImage;
+    public void setRaceImages(Set<RaceImage> raceImages) {
+        this.raceImages = raceImages;
     }
 
     public long getBib() {

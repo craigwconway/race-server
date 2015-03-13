@@ -48,6 +48,9 @@ public class Cart {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "cart")
     private List<CartItem> cartItems;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "cart")
+    private List<CustomRegFieldResponse> customRegFieldResponses;
+    
     private long shipping;
     private long total;
     private Date created;
@@ -87,6 +90,14 @@ public class Cart {
         this.cartItems = cartItems;
     }
 
+    public List<CustomRegFieldResponse> getCustomRegFieldResponses() {
+        return this.customRegFieldResponses;
+    }
+    
+    public void setCustomRegFieldResponses(List<CustomRegFieldResponse> customRegFieldResponses) {
+        this.customRegFieldResponses = customRegFieldResponses;
+    }
+    
     public long getShipping() {
         return this.shipping;
     }
