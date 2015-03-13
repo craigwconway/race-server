@@ -211,7 +211,12 @@ public class ResultsFileMappingController {
 	// ##############################################
 
 
-    public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
+    public void doImport(final ResultsImport resultsImport) throws IOException, InvalidFormatException {
+    	new Thread(){
+    	@Override
+    	public void run(){
+    	try{	
+    	final ResultsFileMappingController _this = new ResultsFileMappingController();
         System.out.println("Starting import (mapping)...");
         resultsImport.setRunDate(new Date());
         ResultsFileMapping resultsFileMapping = resultsImport.getResultsFileMapping();
@@ -226,7 +231,7 @@ public class ResultsFileMappingController {
             String[] nextLine;
             if(resultsFileMapping.isSkipFirstRow() ) reader.readNext();
             while ((nextLine = reader.readNext()) != null) {
-                saveRaceResult(resultsImport, event, nextLine, map);
+                _this.saveRaceResult(resultsImport, event, nextLine, map);
             }
             reader.close();
         } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls")
@@ -236,10 +241,15 @@ public class ResultsFileMappingController {
             Sheet sheet = wb.getSheetAt(0);
             for (int i = (resultsFileMapping.isSkipFirstRow() ? 1 : 0); i <= sheet.getLastRowNum(); i++) {
                 final String nextLine[] = csv.rowToCSV(sheet.getRow(i)).split(",");
-                saveRaceResult(resultsImport, event, nextLine, map);
+                _this.saveRaceResult(resultsImport, event, nextLine, map);
             }
         }
         System.out.println("Done");
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	}
+    	}.start(); // thread run
     }
 
     public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
