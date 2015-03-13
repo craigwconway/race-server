@@ -83,6 +83,18 @@ public class RaceResultController {
         return rtn;
     }
 
+    /**
+     * @api {get} /raceresults/byevent/:eventname
+     * @apiName getByEvent
+     * @apiPermission none
+     * @apiParam {String} eventName urlencoded name of event
+     * @apiGroup raceresults
+     * @apiSuccess (200) {Object[]} raceResults		Array of all raceResult objects in event.
+     * @param eventName
+     * @param page
+     * @param size
+     * @return
+     */
     @RequestMapping(value = "/byevent/{eventName}", method = RequestMethod.GET)
     @ResponseBody
     public String byEvent(@PathVariable String eventName, @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
@@ -98,6 +110,18 @@ public class RaceResultController {
         return rtn;
     }
 
+    /**
+     * @api {get} /raceresults/byIdAndBib/:eventId/:bib
+     * @apiName getByEventIdAndBib
+     * @apiGroup raceresults
+     * @apiParam {Number} eventId id of event searched
+     * @apiParam {Number} bib bib number of athlete
+     * @apiPermission none
+     * @apiSuccess (200) {Object} raceResult raceResult information
+     * @param eventId long event.id searched
+     * @param bib long raceResult.bib searched
+     * @return JSON object of raceresult. If no raceresult is found, return emptystring.
+     */
     @RequestMapping(value = "/byIdAndBib/{eventId}/{bib}", method = RequestMethod.GET)
     @ResponseBody
     public String byBib(@PathVariable long eventId, @PathVariable long bib) {
@@ -113,6 +137,18 @@ public class RaceResultController {
         return rtn;
     }    
     
+    /**
+     * @api {get} /raceresults/bybib/:eventName/:bib
+     * @apiName getByBibAndEventName
+     * @apiGroup raceresults
+     * @apiParam {Number} bib bib number of runner
+     * @apiParam {String} urlencoded name of event
+     * @apiPermission none
+     * @apiSuccess (200) {Object} raceResult	raceResult information
+     * @param eventName String of event.name
+     * @param bib long bib number to search for
+     * @return JSON object of raceresult. If no raceresult is found, return emptystring.
+     */
     @RequestMapping(value = "/bybib/{eventName}/{bib}", method = RequestMethod.GET)
     @ResponseBody
     public String byBib(@PathVariable String eventName, @PathVariable long bib) {
@@ -126,7 +162,20 @@ public class RaceResultController {
         return rtn;
     }
 
-    
+    /**
+     * @api {get} /raceresults/byname/:eventName/:firstName/:lastName
+     * @apiGroup raceresults
+     * @apiName getByEventNameFirstnameLastname
+     * @apiParam {String} eventName Name of event to query
+     * @apiParam {String} firstName First Name of athlete searched, ANY is wildcard
+     * @apiParam {String} lastName Last Name of athlete searched, ANY is wildcard
+     * @apiSuccess (200) {Object[]} raceResults list of raceresults matching query
+     * @apiPermission none
+     * @param eventName String name of event searched
+     * @param firstName String firstname of athlete searched, ANY matches all
+     * @param lastName String lastname of athlete searched, ANY matches all
+     * @return Json array containing matching raceresults
+     */
     @RequestMapping(value = "/byname/{eventName}/{firstName}/{lastName}", method = RequestMethod.GET)
     @ResponseBody
     public String byName(@PathVariable String eventName, @PathVariable String firstName, @PathVariable String lastName) {
@@ -436,6 +485,16 @@ public class RaceResultController {
         return pathSegment;
     }
 
+    /**
+     * @api {get} /raceresults/:id
+     * @apiGroup raceresults
+     * @apiName getById
+     * @apiParam {Number} id Id of raceresult to get
+     * @apiSuccess (200) {Object} raceResult Race Result JSON Object
+     * @apiPermission none
+     * @param id Long raceResult.id to get
+     * @return JSON object of raceResult with HTTP 200, or HTTP 404 Not found
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
