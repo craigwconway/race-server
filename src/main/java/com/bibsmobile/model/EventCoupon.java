@@ -75,7 +75,15 @@ public class EventCoupon {
     public void setDiscount(int discount) {
         this.discount = discount;
     }
+    
+    public EventCouponTypeEnum getType() {
+    	return type;
+    }
 
+    public void setType(EventCouponTypeEnum type) {
+    	this.type = type;
+    }
+    
     public int getNumberAvailable() {
         return numberAvailable;
     }
