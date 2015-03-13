@@ -10,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -26,12 +28,15 @@ import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
-public class PictureType {
+public class PictureHashtag {
 
     @NotNull
-    private String pictureType;
+    private String pictureHashtag;
 
     @ManyToMany
+    @JoinTable(name="picture_hashtag_race_image",
+    joinColumns={@JoinColumn(name="hashtag_id", referencedColumnName="id")}, 
+    inverseJoinColumns={@JoinColumn(name="image_id", referencedColumnName="id")})
     private List<RaceImage> raceImages;
 
     @Override
@@ -47,53 +52,53 @@ public class PictureType {
         return new JSONSerializer().include(fields).exclude("*.class").serialize(this);
     }
 
-    public static PictureType fromJsonToPictureType(String json) {
-        return new JSONDeserializer<PictureType>().use(null, PictureType.class).deserialize(json);
+    public static PictureHashtag fromJsonToPictureHashtag(String json) {
+        return new JSONDeserializer<PictureHashtag>().use(null, PictureHashtag.class).deserialize(json);
     }
 
-    public static String toJsonArray(Collection<PictureType> collection) {
+    public static String toJsonArray(Collection<PictureHashtag> collection) {
         return new JSONSerializer().exclude("*.class").serialize(collection);
     }
 
-    public static String toJsonArray(Collection<PictureType> collection, String[] fields) {
+    public static String toJsonArray(Collection<PictureHashtag> collection, String[] fields) {
         return new JSONSerializer().include(fields).exclude("*.class").serialize(collection);
     }
 
-    public static Collection<PictureType> fromJsonArrayToPictureTypes(String json) {
-        return new JSONDeserializer<List<PictureType>>().use("values", PictureType.class).deserialize(json);
+    public static Collection<PictureHashtag> fromJsonArrayToPictureHashtags(String json) {
+        return new JSONDeserializer<List<PictureHashtag>>().use("values", PictureHashtag.class).deserialize(json);
     }
 
-    public static Long countFindPictureTypesByPictureTypeEquals(String pictureType) {
-        if (pictureType == null || pictureType.isEmpty())
-            throw new IllegalArgumentException("The pictureType argument is required");
-        EntityManager em = PictureType.entityManager();
-        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM PictureType AS o WHERE o.pictureType = :pictureType", Long.class);
-        q.setParameter("pictureType", pictureType);
+    public static Long countFindPictureHashtagsByPictureHashtagEquals(String pictureHashtag) {
+        if (pictureHashtag == null || pictureHashtag.isEmpty())
+            throw new IllegalArgumentException("The pictureHashtag argument is required");
+        EntityManager em = PictureHashtag.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM PictureHashtag AS o WHERE o.pictureHashtag = :pictureHashtag", Long.class);
+        q.setParameter("pictureHashtag", pictureHashtag);
         return q.getSingleResult();
     }
 
-    public static TypedQuery<PictureType> findPictureTypesByPictureTypeEquals(String pictureType) {
-        if (pictureType == null || pictureType.isEmpty())
-            throw new IllegalArgumentException("The pictureType argument is required");
-        EntityManager em = PictureType.entityManager();
-        TypedQuery<PictureType> q = em.createQuery("SELECT o FROM PictureType AS o WHERE o.pictureType = :pictureType", PictureType.class);
-        q.setParameter("pictureType", pictureType);
+    public static TypedQuery<PictureHashtag> findPictureHashtagsByPictureHashtagEquals(String pictureHashtag) {
+        if (pictureHashtag == null || pictureHashtag.isEmpty())
+            throw new IllegalArgumentException("The pictureHashtag argument is required");
+        EntityManager em = PictureHashtag.entityManager();
+        TypedQuery<PictureHashtag> q = em.createQuery("SELECT o FROM PictureHashtag AS o WHERE o.pictureHashtag = :pictureHashtag", PictureHashtag.class);
+        q.setParameter("pictureHashtag", pictureHashtag);
         return q;
     }
 
-    public static TypedQuery<PictureType> findPictureTypesByPictureTypeEquals(String pictureType, String sortFieldName, String sortOrder) {
-        if (pictureType == null || pictureType.isEmpty())
-            throw new IllegalArgumentException("The pictureType argument is required");
-        EntityManager em = PictureType.entityManager();
-        String jpaQuery = "SELECT o FROM PictureType AS o WHERE o.pictureType = :pictureType";
+    public static TypedQuery<PictureHashtag> findPictureHashtagsByPictureHashtagEquals(String pictureHashtag, String sortFieldName, String sortOrder) {
+        if (pictureHashtag == null || pictureHashtag.isEmpty())
+            throw new IllegalArgumentException("The pictureHashtag argument is required");
+        EntityManager em = PictureHashtag.entityManager();
+        String jpaQuery = "SELECT o FROM PictureHashtag AS o WHERE o.pictureHashtag = :pictureHashtag";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        TypedQuery<PictureType> q = em.createQuery(jpaQuery, PictureType.class);
-        q.setParameter("pictureType", pictureType);
+        TypedQuery<PictureHashtag> q = em.createQuery(jpaQuery, PictureHashtag.class);
+        q.setParameter("pictureHashtag", pictureHashtag);
         return q;
     }
 
@@ -122,12 +127,12 @@ public class PictureType {
         this.version = version;
     }
 
-    public String getPictureType() {
-        return this.pictureType;
+    public String getPictureHashtag() {
+        return this.pictureHashtag;
     }
 
-    public void setPictureType(String pictureType) {
-        this.pictureType = pictureType;
+    public void setPictureHashtag(String pictureHashtag) {
+        this.pictureHashtag = pictureHashtag;
     }
 
     public List<RaceImage> getRaceImages() {
@@ -141,53 +146,53 @@ public class PictureType {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("pictureType", "raceImages");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("pictureHashtag", "raceImages");
 
     public static EntityManager entityManager() {
-        EntityManager em = new PictureType().entityManager;
+        EntityManager em = new PictureHashtag().entityManager;
         if (em == null)
             throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
 
-    public static long countPictureTypes() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM PictureType o", Long.class).getSingleResult();
+    public static long countPictureHashtags() {
+        return entityManager().createQuery("SELECT COUNT(o) FROM PictureHashtag o", Long.class).getSingleResult();
     }
 
-    public static List<PictureType> findAllPictureTypes() {
-        return entityManager().createQuery("SELECT o FROM PictureType o", PictureType.class).getResultList();
+    public static List<PictureHashtag> findAllPictureHashtags() {
+        return entityManager().createQuery("SELECT o FROM PictureHashtag o", PictureHashtag.class).getResultList();
     }
 
-    public static List<PictureType> findAllPictureTypes(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PictureType o";
+    public static List<PictureHashtag> findAllPictureHashtags(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM PictureHashtag o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, PictureType.class).getResultList();
+        return entityManager().createQuery(jpaQuery, PictureHashtag.class).getResultList();
     }
 
-    public static PictureType findPictureType(Long id) {
+    public static PictureHashtag findPictureHashtag(Long id) {
         if (id == null)
             return null;
-        return entityManager().find(PictureType.class, id);
+        return entityManager().find(PictureHashtag.class, id);
     }
 
-    public static List<PictureType> findPictureTypeEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM PictureType o", PictureType.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    public static List<PictureHashtag> findPictureHashtagEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM PictureHashtag o", PictureHashtag.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-    public static List<PictureType> findPictureTypeEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM PictureType o";
+    public static List<PictureHashtag> findPictureHashtagEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM PictureHashtag o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, PictureType.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        return entityManager().createQuery(jpaQuery, PictureHashtag.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
     @Transactional
@@ -204,7 +209,7 @@ public class PictureType {
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            PictureType attached = PictureType.findPictureType(this.id);
+            PictureHashtag attached = PictureHashtag.findPictureHashtag(this.id);
             this.entityManager.remove(attached);
         }
     }
@@ -224,10 +229,10 @@ public class PictureType {
     }
 
     @Transactional
-    public PictureType merge() {
+    public PictureHashtag merge() {
         if (this.entityManager == null)
             this.entityManager = entityManager();
-        PictureType merged = this.entityManager.merge(this);
+        PictureHashtag merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }

@@ -25,7 +25,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.Event;
-import com.bibsmobile.model.PictureType;
+import com.bibsmobile.model.PictureHashtag;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.service.UserProfileService;
@@ -36,12 +36,12 @@ public class RaceImageController {
 
     @RequestMapping(value = "/api", method = RequestMethod.GET)
     public ResponseEntity<String> api(@RequestParam("filePath") String filePath, @RequestParam("raceId") long raceId,
-            @RequestParam(value = "bib", required = false) List<Long> bib, @RequestParam(value = "type", required = false) List<String> types) {
-        RaceImage raceImage = new RaceImage(filePath, raceId, bib, types);
-        if (CollectionUtils.isEmpty(bib)) {
-        	System.out.println("no bib found");
-            raceImage.persist();
-        }
+            @RequestParam(value = "bib", required = false) List<Long> bib, @RequestParam(value = "hashtag", required = false) List<String> hashtags) {
+        RaceImage raceImage = new RaceImage(filePath, raceId, bib, hashtags);
+//        if (CollectionUtils.isEmpty(bib)) {
+//        	System.out.println("no bib found");
+//            raceImage.persist();
+//        }
         HttpHeaders headers = new HttpHeaders();
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
@@ -143,7 +143,7 @@ public class RaceImageController {
     void populateEditForm(Model uiModel, RaceImage raceImage) {
         uiModel.addAttribute("raceImage", raceImage);
         uiModel.addAttribute("events", Event.findAllEvents());
-        uiModel.addAttribute("picturetypes", PictureType.findAllPictureTypes());
+        uiModel.addAttribute("picturetypes", PictureHashtag.findAllPictureHashtags());
         uiModel.addAttribute("raceresults", RaceResult.findAllRaceResults());
         uiModel.addAttribute("userprofiles", this.userProfileService.findAllUserProfiles());
     }
