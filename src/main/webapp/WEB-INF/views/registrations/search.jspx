@@ -166,34 +166,34 @@
                         </thead>
                         <tbody>
                             <c:forEach items="${registrations}" var="item">
-                                <tr class="clickable-row" onclick="searchModal()">
+                                <tr class="clickable-row" onclick="searchModal(${item.id})">
                                     <td><c:out value="${item.user.firstname}"/></td>
                                     <td><c:out value="${item.user.lastname}"/></td>
-                                    <td><c:out value="${item.stripeChargeId}"/></td>
-                                    <input id="cartid" type="text" style="display:none" value="${item.id}"></input>
-                                    <input id="firstname" type="text" style="display:none" value="${item.user.firstname}"></input>
-                                    <input id="lastname" type="text" style="display:none" value="${item.user.lastname}"></input>
-                                    <input id="gender" type="text" style="display:none" value="${item.user.gender}"></input>
-                                    <input id="email" type="text" style="display:none" value="${item.user.email}"></input>
-                                    <input id="stripe" type="text" style="display:none" value="${item.stripeChargeId}"></input>
+                                    <td>B<c:out value="${item.id}"/>T<c:out value="${item.stripeChargeId}"/></td>
+                                    <input class="cartid-${item.id}" type="text" style="display:none" value="${item.id}"></input>
+                                    <input class="firstname-${item.id}" type="text" style="display:none" value="${item.user.firstname}"></input>
+                                    <input class="lastname-${item.id}" type="text" style="display:none" value="${item.user.lastname}"></input>
+                                    <input class="gender-${item.id}" type="text" style="display:none" value="${item.user.gender}"></input>
+                                    <input class="email-${item.id}" type="text" style="display:none" value="${item.user.email}"></input>
+                                    <input class="stripe-${item.id}" type="text" style="display:none" value="${item.stripeChargeId}"></input>
                                     <c:forEach items="${item.cartItems}" var="cart">
                                         <input  type="text" data-for="name"
-                                                class="cartitem name" style="display:none"
+                                                class="cartitem-${item.id} name" style="display:none"
                                                 value="${cart.eventCartItem.name}"></input>
                                         <input  type="text" data-for="type"
-                                                class="cartitem type" style="display:none"
+                                                class="cartitem-${item.id} type" style="display:none"
                                                 value="${cart.eventCartItem.type}"></input>
                                         <input  type="text" data-for="size"
-                                                class="cartitem type" style="display:none"
+                                                class="cartitem-${item.id} size" style="display:none"
                                                 value="${cart.size}"></input>
                                         <input  type="text" data-for="color"
-                                                class="cartitem type" style="display:none"
+                                                class="cartitem-${item.id} color" style="display:none"
                                                 value="${cart.color}"></input>
                                         <input  type="text" data-for="price"
-                                                class="cartitem price" style="display:none"
+                                                class="cartitem-${item.id} price" style="display:none"
                                                 value="${cart.eventCartItem.price}"></input>
                                         <input  type="text" data-for="quantity"
-                                                class="cartitem quantity" style="display:none"
+                                                class="cartitem-${item.id} quantity" style="display:none"
                                                 value="${cart.quantity}"></input>
                                     </c:forEach>
                                 </tr>
@@ -206,26 +206,28 @@
     </div>
     <script>
         window.onload = function(){
-        	console.log('${registrations}')
         }
 
-        function searchModal(){
+        function searchModal(id){
+            console.log(id);
             jQuery("#searchModal").modal('show');
-            jQuery("#modal-athlete").text(jQuery("#firstname").val() + " " + jQuery("#lastname").val() + " ");
-            if( jQuery("#gender").val() === 'FEMALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-venus"><!-- --></i>') }
-            else if( jQuery("#gender").val() === 'MALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
-            jQuery("#modal-transaction").text("B" + jQuery("#cartid").val() + "T" + jQuery("#stripe").val());
+            jQuery("#modal-athlete").text(jQuery(".firstname-"+id).val() + " " + jQuery(".lastname-"+id).val() + " ");
+            if( jQuery(".gender-"+id).val() === 'FEMALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-venus"><!-- --></i>') }
+            else if( jQuery(".gender-"+id).val() === 'MALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
+            jQuery("#modal-transaction").text("B" + jQuery(".cartid-"+id).val() + "T" + jQuery(".stripe-"+id).val());
             
             /*  append cart items into list view  */
-            var counter = 0; var typeCount = 0;
+            var fieldCount = 0;     var cartItemCount = 0;
             var type;   var name;   var price;
             var size;   var color;  var quantity;
 
-            jQuery(".cartitem").each(function(){
+            jQuery("#cartitem-table tbody").html("");
+            jQuery("#cartitem-table").append('<tbody>');
+            jQuery(".cartitem-"+id).each(function(){
                 var info = jQuery(this).attr("data-for");
                 if( info == 'type' ){
                     type = jQuery(this).val();
-                    console.log(type)
+                    console.log(type);
                     if( type === 'T_SHIRT' ){ type = "T-Shirt"; }
                     if( type === 'TICKET' ){ type = "Ticket"; }
                     if( type === 'DONATION' ){ type = "Donation"; }
@@ -235,21 +237,24 @@
                 if( info == 'color' ){      color = jQuery(this).val();     console.log(color)}
                 if( info == 'quantity' ){   quantity = jQuery(this).val();  console.log(quantity)}
                 if( info == 'price' ){      price = jQuery(this).val();     console.log(name)}
-                if( counter === 5 ){        counter = 0;
-                    var row = jQuery("#cartitem-table").append('<tr id="row' + typeCount + '"></tr>');
-                    var rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="name' + typeCount + '"></td>')
-                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="details' + typeCount + '"></td>')
-                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item collapsing" id="quantity' + typeCount + '"></td>')
-                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="price' + typeCount + '"></td>')
+                fieldCount++;
+                if( fieldCount % 6 === 0 ){
+                    cartItemCount++;
+                    var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartItemCount + '"></tr>');
+                    var rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="name' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="details' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="price' + id + '-' + cartItemCount + '"></td>')
                     
-                    jQuery("#name"+typeCount).text(type + ": " + name);
-                    if(type !== 'Ticket'){ jQuery("#details"+typeCount).text(size + " " + color); }
-                    jQuery("#quantity"+typeCount).text(quantity);
-                    jQuery("#price"+typeCount).text(price);
-                    typeCount++;
+                        jQuery('#name'+id+'-'+cartItemCount).text(type + ": " + name);
+                        if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartItemCount).text(size + " " + color); }
+                        jQuery('#quantity'+id+'-'+cartItemCount).text(quantity);
+                        jQuery('#price'+id+'-'+cartItemCount).text(price);
                 }
-                counter++;
             })
+            
+            jQuery("#cartitem-table").append('</tbody>');
+
             jQuery("#cart-details").clone().appendTo("#edit-cart");
         }
 
@@ -288,7 +293,7 @@
             var counter = 0; var typeCount = 0;
             var size;   var color;  var quantity;
 
-            jQuery(".cartitem").each(function(){
+            jQuery(".cartitem-"+typeCount).each(function(){
                 var info = jQuery(this).attr("data-for");
                 if( info == 'type' ){
                     type = jQuery(this).val();
