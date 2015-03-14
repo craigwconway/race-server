@@ -54,15 +54,7 @@ public class EventCartItem {
 
     private int purchased;
 
-    private String coupon;
-
     private String eventType;
-
-    private long couponPrice;
-
-    private int couponsAvailable;
-
-    private int couponsUsed;
 
     private boolean timeLimit;
 
@@ -210,8 +202,7 @@ public class EventCartItem {
         if (obj.getClass() != this.getClass()) return false;
         EventCartItem rhs = (EventCartItem) obj;
         return new EqualsBuilder().append(this.addressLine1, rhs.addressLine1).append(this.addressLine2, rhs.addressLine2).append(this.available, rhs.available)
-                .append(this.birthDate, rhs.birthDate).append(this.charityName, rhs.charityName).append(this.coupon, rhs.coupon).append(this.couponPrice, rhs.couponPrice)
-                .append(this.couponsAvailable, rhs.couponsAvailable).append(this.couponsUsed, rhs.couponsUsed).append(this.description, rhs.description)
+                .append(this.birthDate, rhs.birthDate).append(this.charityName, rhs.charityName).append(this.description, rhs.description)
                 .append(this.donationAmount, rhs.donationAmount).append(this.email, rhs.email).append(this.emergencyContactName, rhs.emergencyContactName)
                 .append(this.emergencyContactPhone, rhs.emergencyContactPhone).append(this.event, rhs.event).append(this.eventType, rhs.eventType).append(this.gender, rhs.gender)
                 .append(this.hearFrom, rhs.hearFrom).append(this.id, rhs.id).append(this.maxAge, rhs.maxAge).append(this.minAge, rhs.minAge).append(this.name, rhs.name)
@@ -223,8 +214,7 @@ public class EventCartItem {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.addressLine1).append(this.addressLine2).append(this.available).append(this.birthDate).append(this.charityName).append(this.coupon)
-                .append(this.couponPrice).append(this.couponsAvailable).append(this.couponsUsed).append(this.description).append(this.donationAmount).append(this.email)
+        return new HashCodeBuilder().append(this.addressLine1).append(this.addressLine2).append(this.available).append(this.birthDate).append(this.charityName).append(this.description).append(this.donationAmount).append(this.email)
                 .append(this.emergencyContactName).append(this.emergencyContactPhone).append(this.event).append(this.eventType).append(this.gender).append(this.hearFrom)
                 .append(this.id).append(this.maxAge).append(this.minAge).append(this.name).append(this.phone).append(this.price).append(this.purchased).append(this.timeEnd)
                 .append(this.timeLimit).append(this.timeStart).append(this.tshirtColors).append(this.tshirtImageUrls).append(this.tshirtSizes).append(this.type)
@@ -309,44 +299,12 @@ public class EventCartItem {
         this.purchased = purchased;
     }
 
-    public String getCoupon() {
-        return this.coupon;
-    }
-
-    public void setCoupon(String coupon) {
-        this.coupon = coupon;
-    }
-
     public String getEventType() {
         return this.eventType;
     }
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
-    }
-
-    public long getCouponPrice() {
-        return this.couponPrice;
-    }
-
-    public void setCouponPrice(long couponPrice) {
-        this.couponPrice = couponPrice;
-    }
-
-    public int getCouponsAvailable() {
-        return this.couponsAvailable;
-    }
-
-    public void setCouponsAvailable(int couponsAvailable) {
-        this.couponsAvailable = couponsAvailable;
-    }
-
-    public int getCouponsUsed() {
-        return this.couponsUsed;
-    }
-
-    public void setCouponsUsed(int couponsUsed) {
-        this.couponsUsed = couponsUsed;
     }
 
     public boolean isTimeLimit() {
@@ -528,8 +486,8 @@ public class EventCartItem {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "name", "description", "price", "available", "purchased", "coupon",
-            "eventType", "couponPrice", "couponsAvailable", "couponsUsed", "timeLimit", "timeStart", "timeEnd", "type", "donationAmount", "charityName", "tshirtSizes",
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("event", "name", "description", "price", "available", "purchased",
+            "eventType", "timeLimit", "timeStart", "timeEnd", "type", "donationAmount", "charityName", "tshirtSizes",
             "tshirtColors", "tshirtImageUrls", "minAge", "priceChanges", "maxAge", "gender", "birthDate", "email", "phone", "addressLine1", "addressLine2", "zipCode",
             "emergencyContactName", "emergencyContactPhone", "hearFrom");
 
