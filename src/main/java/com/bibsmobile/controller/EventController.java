@@ -49,6 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -1190,9 +1192,10 @@ public class EventController {
     		@RequestParam(value = "typeName", required = false) String typeName,
     		@RequestParam("distance") String distance,
     		@RequestParam("racetype") String racetype,
-    		@RequestParam(value = "startTime") Date startTime) {
+    		@RequestParam(value = "startTime", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) Date startTime) {
     	// Try to create an event:
     	Event event = Event.findEvent(id);
+    	System.out.println("Set eventtype: eventid: " + id + ", typename: " + typeName +", distance: " + distance + "startTime: " + startTime );
     	if(null == event) {
     		System.out.println("no event found");
     		return "/";
@@ -1202,8 +1205,9 @@ public class EventController {
     	// Set parameters:
     	if(typeName == null) {
     		formType.setTypeName(racetype + " - " + distance);
+    	} else if(!typeName.isEmpty()) {
+    		formType.setTypeName(typeName);
     	}
-    	formType.setTypeName(typeName);
     	formType.setEvent(event);
     	formType.setDistance(distance);
     	formType.setRacetype(racetype);

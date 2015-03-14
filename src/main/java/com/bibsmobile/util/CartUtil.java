@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import com.bibsmobile.model.UserGroup;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -18,9 +19,12 @@ import com.bibsmobile.job.BaseJob;
 import com.bibsmobile.job.CartExpiration;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.EventCartItemPriceChange;
+import com.bibsmobile.model.EventCoupon;
+import com.bibsmobile.model.EventCouponTypeEnum;
 import com.bibsmobile.model.UserProfile;
 
 public final class CartUtil {
@@ -149,6 +153,18 @@ public final class CartUtil {
         long total = 0;
         for (CartItem ci : cart.getCartItems()) {
             total += (ci.getQuantity() * ci.getPrice() * 100);
+        }
+        // Check for coupons in cart before updating total:
+        if(!cart.getCartItems().isEmpty() && !cart.getCoupon().isEmpty()) {
+        	Event e = cart.getCartItems().get(0).getEventCartItem().getEvent();
+        	EventCoupon coupon = EventCoupon.findEventCouponByCodeAndEventEquals(cart.getCoupon(), e);
+        	if(coupon.getType() == EventCouponTypeEnum.PERCENT) {
+        		total = total * ((100 - coupon.getDiscount())/100);
+        		if(total < 0) total = 0;
+        	} else if(coupon.getType() == EventCouponTypeEnum.ABSOLUTE) {
+        		total = total - coupon.getDiscount();
+        		if (total < 0) total = 0;
+        	}
         }
         total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
         cart.setTotal(total);

@@ -34,6 +34,24 @@ import com.bibsmobile.service.UserProfileService;
 @Controller
 public class RaceImageController {
 
+	/**
+	 * @api {get} /raceimages/api
+	 * @apiGroup raceimages
+	 * @apiName raceimagesapi
+	 * @apiParam {Number} raceId Id of event tagged in race image
+	 * @apiParam {String} filePath Location of image in online datastore
+	 * @apiParam {Number[]} [bib] Bib Numbers to tag in image
+	 * @apiParam {String[]} [hashtag] Hashtags to add to this image
+	 * @apiParamExample Sample-Image-Upload:
+	 * 	https://bibslabs.co/bibs-server/raceimages/api?filePath=http://bibstest.s3.amazonaws.com/path/1420874330.png&raceId=1&bib=777&bib=1&bib=2&bib=3&hashtag=face&hashtag=punch 
+	 * @apiSuccess (201)
+	 * @apiPermission none
+	 * @param filePath String url containing location of uploaded file
+	 * @param raceId Long event.id of tagged event
+	 * @param bib list of Longs delimited by &bib=1&bib=2 to tag in raceimage
+	 * @param hashtags list of strings delimited by &hashtag=face&hashtag=punch to tag in image
+	 * @return HTTP 201 with empty object
+	 */
     @RequestMapping(value = "/api", method = RequestMethod.GET)
     public ResponseEntity<String> api(@RequestParam("filePath") String filePath, @RequestParam("raceId") long raceId,
             @RequestParam(value = "bib", required = false) List<Long> bib, @RequestParam(value = "hashtag", required = false) List<String> hashtags) {
@@ -46,6 +64,22 @@ public class RaceImageController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * @api {get} /raceimages/search
+     * @apiGroup raceimages
+     * @apiName raceimagesSearch
+     * @apiParam {Number} eventId Id of event to search
+     * @apiParam {Number} [bib] bib number of athlete to search
+     * @apiParam {Number} [page=1] Page number for result pagination
+     * @apiParam {Number} [size=20] Page size for result pagination
+     * @apiSuccess (200) {Object[]} raceImage objects returned
+     * @apiPermission none
+     * @param eventId Long id of event queried
+     * @param bib Long bib number of athlete to search for
+     * @param page int page number used in search pagination, default 1
+     * @param size in page size used in search pagination, default 20
+     * @return A JSON array raceImage objects with HTTP statuscode 200
+     */
     @RequestMapping(value = "/search", headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindRaceImagesByEventId(@RequestParam Long eventId, @RequestParam(required = false) Long bib, @RequestParam(defaultValue = "1") int page,

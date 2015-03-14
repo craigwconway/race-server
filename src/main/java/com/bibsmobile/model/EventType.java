@@ -42,9 +42,7 @@ public class EventType {
     
     private Long meters;
     
-    @NotNull
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
     private Date startTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
