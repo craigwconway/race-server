@@ -438,6 +438,9 @@
                 <c:if test="${not empty eventTypes}">
                     <h3 class="ui header">events taking place on <div class="event-date">${event.timeStart}</div></h3>
                     <div style="clear:both"><!--  --></div>
+                    <c:forEach var="item" items="${eventTypes}">
+                        <div>${item}</div>
+                    </c:forEach>
                 </c:if>
                 <c:if test="${lastImport != null}">
                     <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
@@ -494,7 +497,7 @@
                 })
             })
 
-            var momentRRTime = moment().startOf('day');
+            var momentRRTime = moment('${event.timeStart}').startOf('hour');
             jQuery("#timedisp")
                 .datetimepicker({
                     defaultDate: momentRRTime,
@@ -514,42 +517,47 @@
         function saveEventType(put){
             var error = true;
 
-            var eventTypeUrl = "/bibs-server/addTypeToEvent/${event.id}";
+            var eventTypeUrl = "/bibs-server/events/addTypeToEvent/${event.id}";
             var ajaxType = 'POST';
             if( put ){
                 // update logic
             }
 
-            var obj = {};
+            var dat = "";
             var typeName  = jQuery('input[name="typeName"]').val();
             var distance  = jQuery('input[name="distance"]').val();
             var startTime = jQuery('input[name="startTime"]').val();
-            var hour = jQuery('#timedisp').datetimepicker();
-            startTime = moment('${event.timeStart}');
-            startTime.set('hour', )
             var raceType  = jQuery('input[name="raceType"]').val();
-            if( typeName  !== "" ){ obj.typeName  = typeName; }
-            if( distance  !== "" ){ obj.distance  = distance; }
-            if( startTime !== "" ){ obj.startTime = startTime; }
-            if( raceType  !== "" ){ obj.raceType  = raceType; }
-            console.log(obj);
 
-            if( obj.hasOwnProperty('distance') === false || obj.hasOwnProperty('startTime') === false || obj.hasOwnProperty('raceType') === false ){
+            var parseDate = moment('${event.timeStart}');
+            var hour   = moment(startTime, "h:mm a").hour();
+            var minute = moment(startTime, "h:mm a").minute();
+            parseDate.set('hour', hour);
+            parseDate.set('minute', minute);
+            parseDate.format('YYYY-MM-DD hh:mm:ss a')
+
+            if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;
                 console.log(error);
             }
             else{
-                console.log(obj);
-                // jQuery.ajax({
-                //     url: eventTypeUrl,
-                //     type: ajaxType,
-                //     contentType: "application/json",
-                //     data: JSON.stringify(obj),
-                //     dataType: "json",
-                //     complete: function(data) {
-                //         window.location.reload();
-                //     }
-                // })
+                if( typeName  !== "" ){ dat += '&amp;typeName='  + typeName  }
+                if( distance  !== "" ){ dat += '&amp;distance='  + distance  }
+                if( startTime !== "" ){ dat += '&amp;startTime=' + parseDate }
+                if( raceType  !== "" ){ dat += '&amp;raceType='  + raceType  }
+                if( dat.substring(0,1) === "&amp;" ){
+                    dat = dat.substring(1, dat.length);
+                }
+
+                jQuery.ajax({
+                    url: eventTypeUrl,
+                    type: ajaxType,
+                    contentType: "text/html",
+                    data: dat,
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })
             }
         }
 
