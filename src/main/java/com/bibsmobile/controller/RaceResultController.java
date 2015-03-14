@@ -195,7 +195,21 @@ public class RaceResultController {
         }
         return rtn;
     }
-    
+
+    /**
+     * @api {get} /raceresults/byIdAndName/:eventName/:firstName/:lastName
+     * @apiGroup raceresults
+     * @apiName getByEventIdFirstnameLastname
+     * @apiParam {Number} eventId Name of event to query
+     * @apiParam {String} [firstName] First Name of athlete searched, ANY is wildcard
+     * @apiParam {String} [lastName] Last Name of athlete searched, ANY is wildcard
+     * @apiSuccess (200) {Object[]} raceResults list of raceresults matching query
+     * @apiPermission none
+     * @param eventName String name of event searched
+     * @param firstName String firstname of athlete searched, ANY matches all
+     * @param lastName String lastname of athlete searched, ANY matches all
+     * @return Json array containing matching raceresults
+     */
     @RequestMapping(value = "/byIdAndName/{eventId}/{firstName}/{lastName}", method = RequestMethod.GET)
     @ResponseBody
     public String byIdAndName(@PathVariable Long eventId, @PathVariable String firstName, @PathVariable String lastName) {
