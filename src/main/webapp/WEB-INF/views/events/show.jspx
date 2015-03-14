@@ -84,9 +84,7 @@
         .ui.form .fields .wide.field{
             padding-left: 0em;
         }
-        .button-container{
-            padding-top: 3%;
-        }
+        .button-container{ padding-top: 2%; text-align: right; }
         .event-navbar-inverse { background-color: rgba(50,50,50,1); z-index: 1000; }
         .event-navbar-inverse .navbar-nav>li { z-index: 1000; }
         .event-navbar-inverse .navbar-nav>.active>a:hover,.event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC }
@@ -110,6 +108,11 @@
         .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF }
         .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999 }
         .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF }
+
+        .bootstrap-datetimepicker-widget.dropdown-menu {
+            background-color: #FFF !important;
+        }
+
         @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
             .event-navbar-inverse .navbar-collapse {
                 background-color: rgba(80,80,80,0.9);
@@ -158,7 +161,7 @@
             .event-name{ font-size: 1.7em; }
             #event-time{ width: auto; }
             .event-date, #time{ margin-left: 0; padding-left: 0; text-align: left; }
-            .button-container{ padding-top: 3%; }
+            .button-container{ padding-top: 2%; text-align: right; }
         }
     </style>
     
@@ -266,17 +269,6 @@
                             </div>
                         </div>
                         <div class="fields">
-                            <label id="distance">Distance</label>
-                            <div class="twelve wide inline field">
-                                <input type="text" name="distance" placeholder="Distance"><!--  --></input>
-                                <div class="ui icon buttons">
-                                    <div class="ui button dist-btn" id="dist-mi"><b>mi</b></div>
-                                    <div class="ui button dist-btn" id="dist-km"><b>km</b></div>
-                                    <div class="ui button dist-btn" id="dist-m"><b>m</b></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="fields">
                             <div class="twelve wide field">
                                 <label style="width:100%">Race Types</label>
                                 <div class="ui fluid search selection dropdown">
@@ -299,13 +291,39 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="fields">
+                            <label id="distance">Distance</label>
+                            <div class="twelve wide inline field">
+                                <input type="text" name="distance" placeholder="Distance"><!--  --></input>
+                                <div class="ui icon buttons">
+                                    <div class="ui active button dist-btn" id="dist-mi"><b>mi</b></div>
+                                    <div class="ui button dist-btn" id="dist-km"><b>km</b></div>
+                                    <div class="ui button dist-btn" id="dist-m"><b>m</b></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label id="starttime">Start Time</label>
+                                <div class="ui action input">
+                                    <input  type="text" name="startTime"
+                                            class="form-control"
+                                            id="timedisp"
+                                            placeholder="Official Time (hh:mm)"
+                                            data-provide="datepicker"
+                                            data-date-format="h:mm a"
+                                            data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
+                                    <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ui button" data-dismiss="modal">Close</button>
-                    <button type="button" class="ui green button post-question" onclick="saveQuestion(false)">Submit</button>
-                    <button type="button" class="ui red button put-question" style="display:none" onclick="deleteQuestion()">Remove</button>
-                    <button type="button" class="ui green button put-question" style="display:none" onclick="saveQuestion(true)">Save</button>
+                    <button type="button" class="ui green button post-question" onclick="saveEventType(false)">Submit</button>
+                    <button type="button" class="ui red button put-question" style="display:none" onclick="deleteEventType()">Remove</button>
+                    <button type="button" class="ui green button put-question" style="display:none" onclick="saveEventType(true)">Save</button>
                 </div>
             </div>
         </div>
@@ -412,20 +430,20 @@
             </div>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div style="clear:both"><!--  --></div>
-                <div class="pull-right"><button class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button></div>
-                <div style="clear:both"><!--  --></div>
+                <div class="button-container">
+                    <button type="button" class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
+                </div>
                 <c:if test="${not empty eventTypes}">
                     <h3 class="ui header">events taking place on <div class="event-date">${event.timeStart}</div></h3>
+                    <div style="clear:both"><!--  --></div>
                 </c:if>
                 <c:if test="${lastImport != null}">
                     <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
                     <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
                 </c:if>
             </sec:authorize>
-            <div class="button-container">
-                <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
-                <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
-            </div>
         </div>
     </div>
     </page>
@@ -439,6 +457,7 @@
             </c:if>
         }
 
+        var distType;
         function initInfo(){
             var str = jQuery("#event-time").text()
             str = str.substring(0,str.length-2);
@@ -466,8 +485,72 @@
                 }
             })
 
+            jQuery('.dist-btn').each(function(){
+                jQuery(this).click(function(){
+                    var id = jQuery(this).attr("id");
+                    jQuery(this).addClass('active');
+                    jQuery(this).siblings().removeClass('active');
+                    distType = id;
+                })
+            })
+
+            var momentRRTime = moment().startOf('day');
+            jQuery("#timedisp")
+                .datetimepicker({
+                    defaultDate: momentRRTime,
+                    pickDate: false,
+                    dateFormat: 'h:mm:ss a'
+                });
+
+            jQuery("#removetime").click(function(){
+                jQuery("#timedisp").val("");
+            });
+
             getWebappId();
             getWaiver();
+        }
+
+
+        function saveEventType(put){
+            var error = true;
+
+            var eventTypeUrl = "/bibs-server/addTypeToEvent/${event.id}";
+            var ajaxType = 'POST';
+            if( put ){
+                // update logic
+            }
+
+            var obj = {};
+            var typeName  = jQuery('input[name="typeName"]').val();
+            var distance  = jQuery('input[name="distance"]').val();
+            var startTime = jQuery('input[name="startTime"]').val();
+            var hour = jQuery('#timedisp').datetimepicker();
+            startTime = moment('${event.timeStart}');
+            startTime.set('hour', )
+            var raceType  = jQuery('input[name="raceType"]').val();
+            if( typeName  !== "" ){ obj.typeName  = typeName; }
+            if( distance  !== "" ){ obj.distance  = distance; }
+            if( startTime !== "" ){ obj.startTime = startTime; }
+            if( raceType  !== "" ){ obj.raceType  = raceType; }
+            console.log(obj);
+
+            if( obj.hasOwnProperty('distance') === false || obj.hasOwnProperty('startTime') === false || obj.hasOwnProperty('raceType') === false ){
+                error = true;
+                console.log(error);
+            }
+            else{
+                console.log(obj);
+                // jQuery.ajax({
+                //     url: eventTypeUrl,
+                //     type: ajaxType,
+                //     contentType: "application/json",
+                //     data: JSON.stringify(obj),
+                //     dataType: "json",
+                //     complete: function(data) {
+                //         window.location.reload();
+                //     }
+                // })
+            }
         }
 
         /*
