@@ -3,8 +3,8 @@ package com.bibsmobile.util;
 public final class BuildType {
 	private static final BuildTypeName typeName = BuildTypeName.MASTER;
 	private static final boolean licensing = false;
-	private static final boolean registration = true;
-	private static final boolean rfid = false;
+	private static final boolean registration = false;
+	private static final boolean rfid = true;
 	
 	public BuildTypeName getTypeName() {
 		return typeName;
