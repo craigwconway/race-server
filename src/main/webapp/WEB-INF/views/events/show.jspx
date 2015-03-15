@@ -532,9 +532,10 @@
             var parseDate = moment('${event.timeStart}');
             var hour   = moment(startTime, "h:mm a").hour();
             var minute = moment(startTime, "h:mm a").minute();
+            
             parseDate.set('hour', hour);
             parseDate.set('minute', minute);
-            parseDate.format('YYYY-MM-DD hh:mm:ss a')
+            parseDate = new Date(parseDate).toISOString();
 
             if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;

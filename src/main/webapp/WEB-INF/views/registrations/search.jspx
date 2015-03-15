@@ -209,7 +209,6 @@
         }
 
         function searchModal(id){
-            console.log(id);
             jQuery("#searchModal").modal('show');
             jQuery("#modal-athlete").text(jQuery(".firstname-"+id).val() + " " + jQuery(".lastname-"+id).val() + " ");
             if( jQuery(".gender-"+id).val() === 'FEMALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-venus"><!-- --></i>') }
@@ -227,7 +226,6 @@
                 var info = jQuery(this).attr("data-for");
                 if( info == 'type' ){
                     type = jQuery(this).val();
-                    console.log(type);
                     if( type === 'T_SHIRT' ){ type = "T-Shirt"; }
                     if( type === 'TICKET' ){ type = "Ticket"; }
                     if( type === 'DONATION' ){ type = "Donation"; }
