@@ -159,7 +159,7 @@
                         <div class="ui action input">
                             <input  type="text" name="timeofficialdisplay"
                                     class="form-control" style="margin-top: 0; margin-bottom:0"
-                                    id="timedisp" value="${raceResult.timeofficialdisplay}"
+                                    id="timedisp" value=""
                                     placeholder="Official Time (hh:mm:ss)"
                                     data-provide="datepicker"
                                     data-date-format="HH:mm:ss"
