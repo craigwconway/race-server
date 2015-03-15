@@ -124,12 +124,15 @@ public class EventCartItemController {
         headers.add("Content-Type", "application/json; charset=utf-8");
         Event event = Event.findEvent(eventId);
         List<EventCartItem> resultList;
+        List<CustomRegField> customRegFields;
         if (event == null) {
             resultList = Collections.emptyList();
+            customRegFields = Collections.emptyList();
         } else {
             resultList = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+            customRegFields = CustomRegField.findCustomRegFieldsByEvent(event).getResultList();
         }
-        return new ResponseEntity<>(EventCartItem.toDeepJsonArray(resultList), headers, HttpStatus.OK);
+        return new ResponseEntity<>("{\"eventitems\":" + EventCartItem.toDeepJsonArray(resultList) + ", \"regfields\":" + CustomRegField.toJsonArray(customRegFields) + "}", headers, HttpStatus.OK);
     }    
     /*
      * Model attributes
