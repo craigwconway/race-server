@@ -74,7 +74,7 @@ public abstract class AbstractTimer implements Timer {
 					System.out.println(slog+" RUNNER: "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
 					result.setTimed(true);
 					// timeout by previous time official
-					if(bibtime > result.getTimeofficial() + (timerConfig.getReadTimeout() * 1000)){
+					if(result.getTimeofficial() > 0 && (bibtime > result.getTimeofficial() + (timerConfig.getReadTimeout() * 1000))){
 						return;
 					}
 					// calculate start, finish, split times
@@ -209,6 +209,7 @@ public abstract class AbstractTimer implements Timer {
 		System.out.println("clearing times for event: " + event.getName() + " and position: " + position);
 		System.out.println("Contents of bibTimes (pre-clear):");
 		System.out.println(bibTimes);
+		System.out.println("Clearing " + event.getRaceResults());
 		for(RaceResult runner:event.getRaceResults()){
 			runner.setTimeofficial(0);
 			runner.setTimestart(0);
@@ -218,9 +219,9 @@ public abstract class AbstractTimer implements Timer {
 			String o = runner.getBib() + "-" + position;
 			System.out.println("removing key: " + o);
 			bibTimes.remove(o);
-			bibCache.remove(o);
-			bibsByReader.remove(o);
-			uniqueBibs.remove(runner.getBib());
+			//bibCache.remove(o);
+			//bibsByReader.remove(o);
+			//uniqueBibs.remove(runner.getBib());
 		}
 		System.out.println("Contents of bibTime(post-clear):");
 		System.out.println(bibTimes);
