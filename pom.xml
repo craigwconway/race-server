@@ -33,6 +33,10 @@
 			<name>Spring Maven Milestone Repository</name>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
+		<repository>
+			<id>sonatype-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -397,8 +401,14 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
-
+<!-- NEW LTK -->
 		<dependency>
+			<groupId>org.llrp</groupId>
+			<artifactId>ltkjava</artifactId>
+			<version>1.0.0.7</version>
+		</dependency>
+<!-- OLD IMPINJ-MAINTAINED LTK -->
+<!--		<dependency>
 			<groupId>ltkjava2</groupId>
 			<artifactId>ltkjava2</artifactId>
 			<version>10.16.0.240</version>
@@ -413,6 +423,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+-->
 		<!-- forcing newer version of xerces because of bug on first request -->
 		<dependency>
 			<groupId>xerces</groupId>
