@@ -321,13 +321,14 @@ public class ResultsFileMappingController {
             exists.merge(result);
             exists.merge();
         } else {
-            result.persist();
             if(BuildTypeUtil.usesLicensing()) {
             	DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
                 result.setLicensed(License.isUnitAvailible());
                 result.persist();
                 systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
                 systemInfo.persist();
+            } else {
+            	result.persist();
             }
         }
         resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);

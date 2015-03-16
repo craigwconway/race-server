@@ -116,16 +116,18 @@ public abstract class AbstractTimer implements Timer {
 			result.setTimestart( bibtime );
 		// splits
 		}else{
-			String[] splits = (null==result.getTimesplit() || result.getTimesplit().isEmpty()) 
-					? new String[]{} : result.getTimesplit().split(",");
-			if(timerConfig.getPosition() > splits.length) splits = Arrays.copyOf(splits, timerConfig.getPosition());
-			splits[timerConfig.getPosition()-1] = bibtime+"";
-			StringBuffer s = new StringBuffer();
-			for(int i=0;i<splits.length;i++){
-				if(i>0) s.append(",");
-				s.append(splits[i]);
+			if(timerConfig.getPosition() > 1) {
+				String[] splits = (null==result.getTimesplit() || result.getTimesplit().isEmpty()) 
+						? new String[]{} : result.getTimesplit().split(",");
+				if(timerConfig.getPosition() > (splits.length + 1)) splits = Arrays.copyOf(splits, timerConfig.getPosition() - 1);
+				splits[timerConfig.getPosition()-2] = bibtime+"";
+				StringBuffer s = new StringBuffer();
+				for(int i=0;i<splits.length;i++){
+					if(i>0) s.append(",");
+					s.append(splits[i]);
+				}
+				result.setTimesplit(s.toString());				
 			}
-			result.setTimesplit(s.toString());
 			long starttime = (result.getTimestart()==0 && null!=result.getEvent().getGunTime()) 
 					? result.getEvent().getGunTime().getTime() : result.getTimestart(); 
 			result.setTimestart( starttime );

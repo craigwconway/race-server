@@ -727,20 +727,29 @@ public class EventController {
         List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
         for (RaceResult r : runners) {
         	String splits = "0,0,0,0,0,0,0,0,0";
-        	if(null!=r.getTimesplit() && r.getTimesplit().contains(",")){
-        		splits = "";
-        		boolean fielderr = false;
-        		System.out.println("processing split: "+ r.getTimesplit());
-        		for(String s : r.getTimesplit().split(",")){
-        			System.out.println(s);
-        			if(fielderr || splits.length() > 0) splits += ",";
-        			if(s == null || s.equals("null") || s.isEmpty()) {
-        				fielderr = true;
-        			} else {
-        				splits += RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s));
-        				System.out.println("human time "+_event.getGunTime().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s)));
+        	if(null!=r.getTimesplit() && !r.getTimesplit().isEmpty()){
+        		if(r.getTimesplit().contains(",")) {
+            		splits = "";
+            		boolean fielderr = false;
+            		System.out.println("processing split: "+ r.getTimesplit());
+            		for(String s : r.getTimesplit().split(",")){
+            			System.out.println(s);
+            			if(fielderr || splits.length() > 0) splits += ",";
+            			if(s == null || s.equals("null") || s.isEmpty()) {
+            				fielderr = true;
+            			} else {
+            				splits += RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s));
+            				System.out.println("human time "+_event.getGunTime().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s)));
+            			}
+            		}      			
+        		} else {
+        			if(StringUtils.isNumeric(r.getTimesplit())) {
+        				splits = RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(r.getTimesplit()));
+        				System.out.println("human time "+_event.getGunTime().getTime()+", "+r.getTimesplit()+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(r.getTimesplit())));
+        				splits += ",0,0,0,0,0,0,0,0";
         			}
         		}
+
         	}
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
                     + r.getGender() + "," + r.getAge() + "," + splits + "\r\n");
