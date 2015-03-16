@@ -74,44 +74,43 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-    	
-    	if(Event.findAllEvents().isEmpty()){
-    	    
-            Event foo = new Event();
-            foo.setName("Kings Canyon Critical Mass");
-            foo.setCity("Kings Canyon");
-            foo.setState("Colordo");
-            foo.setGunTime(new DateTime().toDate());
-            foo.setTimeStart(new DateTime().toDate());
-            foo.setTimeEnd(new DateTime().plusHours(1).toDate());
-            foo.persist();
-            
-            for(long i = 1; i < 300; i++){
-            	RaceResult user = new RaceResult();
-            	user.setBib(i);
-            	user.setEvent(foo);
-            	user.setAge(generateRandomAge());
-            	user.setGender( (i%2==0) ? "M" : "F");
-            	user.setTimeofficial(Math.abs(
-            			(int) new DateTime().plusMinutes(r.nextInt(60)).toDate().getTime()));
-            	user.setTimeofficialdisplay(
-            			RaceResult.toHumanTime(foo.getGunTime().getTime(), user.getTimeofficial()));
-            	user.setFirstname(generateRandomName());
-            	user.setLastname(generateRandomName());
-            	user.setCity("San Francisco");
-            	user.setState("CA");
-            	user.persist();
-            }
-            
-
-            // default awards categories
-            AwardCategory.createDefaultMedals(foo);
-            AwardCategory.createAgeGenderRankings(foo, 
-            		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
-            		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
-            
-        }
-
+    	if(BuildTypeUtil.usesLicensing() == false) {
+	    	if(Event.findAllEvents().isEmpty()){
+	            Event foo = new Event();
+	            foo.setName("Kings Canyon Critical Mass");
+	            foo.setCity("Kings Canyon");
+	            foo.setState("Colordo");
+	            foo.setGunTime(new DateTime().toDate());
+	            foo.setTimeStart(new DateTime().toDate());
+	            foo.setTimeEnd(new DateTime().plusHours(1).toDate());
+	            foo.persist();
+	            
+	            for(long i = 1; i < 300; i++){
+	            	RaceResult user = new RaceResult();
+	            	user.setBib(i);
+	            	user.setEvent(foo);
+	            	user.setAge(generateRandomAge());
+	            	user.setGender( (i%2==0) ? "M" : "F");
+	            	user.setTimeofficial(Math.abs(
+	            			(int) new DateTime().plusMinutes(r.nextInt(60)).toDate().getTime()));
+	            	user.setTimeofficialdisplay(
+	            			RaceResult.toHumanTime(foo.getGunTime().getTime(), user.getTimeofficial()));
+	            	user.setFirstname(generateRandomName());
+	            	user.setLastname(generateRandomName());
+	            	user.setCity("San Francisco");
+	            	user.setState("CA");
+	            	user.persist();
+	            }
+	            
+	
+	            // default awards categories
+	            AwardCategory.createDefaultMedals(foo);
+	            AwardCategory.createAgeGenderRankings(foo, 
+	            		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+	            		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
+	            
+	        }
+    	}
         // expire leftover carts at startup
         try {
             BaseJob.scheduleNow(CartExpiration.class);

@@ -268,7 +268,7 @@ public class ResultsFileMappingController {
             }else if(map[j].startsWith("split")){
             	try{
 	            	int index = Integer.valueOf(map[j].replaceAll("split", ""))-1;
-	            	splits[index] = RaceResult.fromHumanTime(event.getTimeStart().getTime(), nextLine[j]);
+	            	splits[index] = RaceResult.fromHumanTime(event.getGunTime().getTime(), nextLine[j]);
 	            	hasSplits = true;
             	}catch(Exception e){
             		System.out.println("split error "+e.getMessage());
