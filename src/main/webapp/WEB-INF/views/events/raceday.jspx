@@ -283,8 +283,10 @@
 				// call the timerUpdate function on a loop
 				// Make the timerupdate only update the status portion of the
 				// box so it doesn't flicker
-					timerUpdate(0);
-					timerUpdate(1);
+					// timerUpdate(0);
+					// timerUpdate(1);
+					timerStatus(0);
+					timerStatus(1);
 				}
 			}, REFRESH_TIMER );
 			// refresh uncat on interval
@@ -293,6 +295,7 @@
 					findUncategorized();
 				}
 			}, REFRESH_UNCAT );
+			isReloading = true;
 		}
 
 		function findUncategorized(){
@@ -320,7 +323,6 @@
 		}
 
 		function timerStatus(id){
-			jQuery("#reader-progress-"+id).show();
 			var r = jQuery.ajax({
 				url: "/bibs-server/timers/status/"+id,
 				type: "GET",
@@ -329,6 +331,8 @@
 			r.done(function( data ) {
 		    	readerStatus = Math.max(0,data); 
 		    	var rtn = "Not Connected";
+		    	var currStatus = jQuery("#reader-status-"+id).text();
+
 		    	if(readerStatus == 0){
 		    		rtn = "Disconnected";
 		    		jQuery("#btn-start-"+id).show();
