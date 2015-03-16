@@ -737,8 +737,8 @@ public class EventController {
         			if(s == null || s.equals("null") || s.isEmpty()) {
         				fielderr = true;
         			} else {
-        				splits += RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s));
-        				System.out.println("human time "+_event.getTimeStart().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s)));
+        				splits += RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s));
+        				System.out.println("human time "+_event.getGunTime().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s)));
         			}
         		}
         	}
