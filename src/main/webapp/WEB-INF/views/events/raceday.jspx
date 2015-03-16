@@ -278,6 +278,11 @@
 			// refresh timer on interval
 			setInterval(function(){
 				if(isReloading){ // not on first load
+				// sos0 TODO here:
+				// For each reader id in the readeron object
+				// call the timerUpdate function on a loop
+				// Make the timerupdate only update the status portion of the
+				// box so it doesn't flicker
 					timerUpdate(0);
 					timerUpdate(1);
 				}
