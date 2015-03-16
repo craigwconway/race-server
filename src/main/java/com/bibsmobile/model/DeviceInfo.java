@@ -2,6 +2,7 @@ package com.bibsmobile.model;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -68,7 +69,27 @@ public class DeviceInfo {
 		} catch (Exception e) {
 			System.out.println("Couldn't find macaddress");
 			System.out.println(e);
-			return null;
+			try {
+				System.out.println("getting all network addresses");
+				Enumeration <NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
+				byte[] mac;
+				while(nis.hasMoreElements()) {
+					System.out.println("getting next element");
+					NetworkInterface ni = nis.nextElement();
+					try {
+						System.out.println(ni.getName());
+						mac = ni.getHardwareAddress();
+						return mac;
+					} catch (Exception ex) {
+						System.out.println(ex);
+					}
+				}
+				return null;
+			}
+			catch (Exception ex) {
+				System.out.println(ex);
+				return null;
+			}
 		}
 	}
 
