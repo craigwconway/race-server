@@ -283,10 +283,12 @@
 				// call the timerUpdate function on a loop
 				// Make the timerupdate only update the status portion of the
 				// box so it doesn't flicker
-					// timerUpdate(0);
-					// timerUpdate(1);
-					timerStatus(0);
-					timerStatus(1);
+					console.log(readerOn);
+					for (var key in readerOn) {
+						console.log(key);
+						timerStatus(key);
+					}
+
 				}
 			}, REFRESH_TIMER );
 			// refresh uncat on interval
