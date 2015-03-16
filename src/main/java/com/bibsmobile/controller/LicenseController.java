@@ -139,7 +139,6 @@ public class LicenseController {
 			System.out.println("get macaddress for system: " +  systemInfo );
 			System.out.println(systemInfo.getMacAddress().length);
 			System.out.println(Hex.encodeHexString(systemInfo.getMacAddress()));
-			
 			byte[] macaddr = systemInfo.getMacAddress();
 			System.out.println(macaddr);
 			if (!Arrays.equals(newLicense.getMacAddress(), systemInfo.getMacAddress())) {
@@ -203,7 +202,11 @@ public class LicenseController {
 			}
 			System.out.println(newLicense);
 			myLicense.setToken(newLicense.getToken());
-			myLicense.persist();
+			myLicense.merge();
+			if(newLicense.getIssueunits() > systemInfo.getRunnersUsed()) {
+				systemInfo.setRunnersUsed(newLicense.getIssueunits());
+				systemInfo.merge();
+			}
             uiModel.addAttribute("build", BuildTypeUtil.getBuild());
 			uiModel.addAttribute("remaining", getRemainingLicenseUnits());
 	    	return "licensing/success";
