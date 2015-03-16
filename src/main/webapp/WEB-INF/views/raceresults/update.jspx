@@ -169,7 +169,7 @@
                         <div class="ui action input">
                             <input  type="text" name="timeofficialdisplay"
                                     class="form-control" style="margin-top: 0; margin-bottom:0"
-                                    id="timedisp" value=""
+                                    id="timedisp" value="${raceResult.timeofficialdisplay}"
                                     placeholder="Official Time (hh:mm:ss)"
                                     data-provide="datepicker"
                                     data-date-format="HH:mm:ss"
@@ -265,6 +265,10 @@
                     useSeconds: true,
                     format: 'LTS'
                 });
+
+            if( rrTime === "00:00:00" || rrTime === "" ){
+                jQuery("#timedisp").val("");
+            }
 
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").val("");
