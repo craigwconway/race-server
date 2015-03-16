@@ -729,10 +729,17 @@ public class EventController {
         	String splits = "0,0,0,0,0,0,0,0,0";
         	if(null!=r.getTimesplit() && r.getTimesplit().contains(",")){
         		splits = "";
+        		boolean fielderr = false;
+        		System.out.println("processing split: "+ r.getTimesplit());
         		for(String s : r.getTimesplit().split(",")){
-        			if(splits.length() > 0) splits += ",";
-        			splits += RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s));
-        			System.out.println("human time "+_event.getTimeStart().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s)));
+        			System.out.println(s);
+        			if(fielderr || splits.length() > 0) splits += ",";
+        			if(s == null || s.equals("null") || s.isEmpty()) {
+        				fielderr = true;
+        			} else {
+        				splits += RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s));
+        				System.out.println("human time "+_event.getTimeStart().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s)));
+        			}
         		}
         	}
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
