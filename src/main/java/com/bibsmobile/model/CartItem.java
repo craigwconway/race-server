@@ -57,6 +57,8 @@ public class CartItem {
 
     private String comment;
 
+    private String coupon;
+
     private Boolean exported;
 
     private String color;
@@ -192,6 +194,14 @@ public class CartItem {
         this.comment = comment;
     }
 
+    public String getCoupon() {
+        return this.coupon;
+    }
+
+    public void setCoupon(String coupon) {
+        this.coupon = coupon;
+    }
+
     public Boolean getExported() {
         return this.exported;
     }
@@ -229,8 +239,8 @@ public class CartItem {
     @PersistenceContext
     transient EntityManager entityManager;
 
-    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("cart", "eventCartItem", "userProfile", "quantity", "created", "updated", "comment", 
-    		"exported", "color", "size", "price");
+    public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("cart", "eventCartItem", "userProfile", "quantity", "created", "updated", "comment",
+            "coupon", "exported", "color", "size", "price");
 
     public static EntityManager entityManager() {
         EntityManager em = new CartItem().entityManager;
@@ -327,7 +337,7 @@ public class CartItem {
         if (this == obj) return true;
         if (obj.getClass() != this.getClass()) return false;
         CartItem rhs = (CartItem) obj;
-        return new EqualsBuilder().append(this.cart, rhs.cart).append(this.color, rhs.color).append(this.comment, rhs.comment)
+        return new EqualsBuilder().append(this.cart, rhs.cart).append(this.color, rhs.color).append(this.comment, rhs.comment).append(this.coupon, rhs.coupon)
                 .append(this.created, rhs.created).append(this.eventCartItem, rhs.eventCartItem).append(this.exported, rhs.exported).append(this.id, rhs.id)
                 .append(this.price, rhs.price).append(this.quantity, rhs.quantity).append(this.size, rhs.size).append(this.updated, rhs.updated)
                 .append(this.userProfile, rhs.userProfile).isEquals();
@@ -335,7 +345,7 @@ public class CartItem {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.cart).append(this.color).append(this.comment).append(this.created).append(this.eventCartItem)
+        return new HashCodeBuilder().append(this.cart).append(this.color).append(this.comment).append(this.coupon).append(this.created).append(this.eventCartItem)
                 .append(this.exported).append(this.id).append(this.price).append(this.quantity).append(this.size).append(this.updated).append(this.userProfile).toHashCode();
     }
 
