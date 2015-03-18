@@ -73,20 +73,34 @@
                         data-parsley-error-message="Please enter a bib number."
                         data-parsley-required="true"></input>
             </div>
-            <div class="form-fields">
-                <input  type="text" name="firstname"
-                    id="firstname"
-                    placeholder="First name"
-                    data-parsley-error-message="Please provide a first name."
-                    data-parsley-required="true"></input>
-            </div>
-            <div class="form-fields">
-                <input  type="text" name="lastname"
-                    id="lastname"
-                    placeholder="Last name"
-                    data-parsley-error-message="Please provide a last name."
-                    data-parsley-required="true"></input>
-            </div>
+            <c:if test='${(!build.rfid)}'>
+                <div class="form-fields">
+                    <input  type="text" name="firstname"
+                        id="firstname"
+                        placeholder="First name"
+                        data-parsley-error-message="Please provide a first name."
+                        data-parsley-required="true"></input>
+                </div>
+                <div class="form-fields">
+                    <input  type="text" name="lastname"
+                        id="lastname"
+                        placeholder="Last name"
+                        data-parsley-error-message="Please provide a last name."
+                        data-parsley-required="true"></input>
+                </div>
+            </c:if>
+            <c:if test='${(build.rfid)}'>
+                <div class="form-fields">
+                    <input  type="text" name="firstname"
+                        id="firstname"
+                        placeholder="First name"></input>
+                </div>
+                <div class="form-fields">
+                    <input  type="text" name="lastname"
+                        id="lastname"
+                        placeholder="Last name"></input>
+                </div>
+            </c:if>
             <select name="gender" id="gender-type"
                     data-parsley-error-message="Please select a gender.">
                 <option selected="selected" disabled="disabled">Gender</option>
@@ -132,7 +146,6 @@
 
             <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
             <div style="display:none;">
-                <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
                 <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" render="false" z="user-managed"/>
                 <field:input field="timeoverall" id="c_com_bibsmobile_model_RaceResult_timeoverall" render="false" z="user-managed"/>
                 <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" render="false" z="user-managed"/>
