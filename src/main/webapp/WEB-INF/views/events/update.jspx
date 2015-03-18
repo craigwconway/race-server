@@ -203,7 +203,7 @@
             initInfo();
             initDateTimePickers();
             setValidation();
-            <c:if test='${(build.rfid)}'>
+            <c:if test='${(!build.rfid)}'>
                 setGeocomplete();
             </c:if>
         }
@@ -243,13 +243,15 @@
             var gunTime = "${event.gunTime}";
             var momentGunTime = moment(gunTime).format('MM/DD/YYYY h:mm:ss a');
             jQuery('input[name="gunTime"]').val("");
-            jQuery('input[name="gunTime"]')
-                .datetimepicker({
-                    defaultDate: momentEventTime,
-                    dateFormat: 'MM/DD/YYYY h:mm:ss a',
-                    useSeconds: true,
-                    sideBySide: true
-                });
+            if( gunTime !== "" ){
+                jQuery('input[name="gunTime"]')
+                    .datetimepicker({
+                        defaultDate: momentGunTime,
+                        dateFormat: 'MM/DD/YYYY h:mm:ss a',
+                        useSeconds: true,
+                        sideBySide: true
+                    });
+            }
 
             jQuery("#removetime").click(function(){
                 jQuery('input[name="gunTime"]').val("");
@@ -346,7 +348,7 @@
         }
 	</script>
 
-    <c:if test='${(build.rfid)}'>
+    <c:if test='${(!build.rfid)}'>
         <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
         <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
         <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
