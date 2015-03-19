@@ -545,16 +545,15 @@
                 if( typeName  !== "" ){ dat += '&amp;typeName='  + typeName  }
                 if( distance  !== "" ){ dat += '&amp;distance='  + distance  }
                 if( startTime !== "" ){ dat += '&amp;startTime=' + parseDate }
-                if( raceType  !== "" ){ dat += '&amp;raceType='  + raceType  }
+                if( raceType  !== "" ){ dat += '&amp;racetype='  + raceType  }
                 if( dat.substring(0,1) === "&amp;" ){
                     dat = dat.substring(1, dat.length);
                 }
 
                 jQuery.ajax({
-                    url: eventTypeUrl,
+                    url: eventTypeUrl + "?" + dat,
                     type: ajaxType,
                     contentType: "text/html",
-                    data: dat,
                     complete: function(data) {
                         window.location.reload();
                     }

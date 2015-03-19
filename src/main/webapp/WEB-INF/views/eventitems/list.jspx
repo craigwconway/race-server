@@ -133,11 +133,11 @@
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="item" data-tab="eci-menu">Products</div>
+                <div class="active item" data-tab="eci-menu">Products</div>
                 <div class="item" data-tab="ticket-menu">Transfers</div>
-                <div class="active item" data-tab="form-menu">Custom Forms</div>
+                <div class="item" data-tab="form-menu">Custom Forms</div>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="eci-menu">
+            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
                 <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
                 <div style="clear:both"><!--  --></div>
                 <h3 class="ui icon header">
@@ -223,7 +223,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="form-menu">
+            <div class="ui bottom attached tab segment" data-tab="form-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
