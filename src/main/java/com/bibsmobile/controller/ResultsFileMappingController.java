@@ -279,10 +279,12 @@ public class ResultsFileMappingController {
             	}
             }else if(map[j].startsWith("split")){
             	try{
+            		System.out.println("Import mapping: " + map[j] + " value: " + nextLine[j]);
 	            	int index = Integer.valueOf(map[j].replaceAll("split", ""))-1;
 	            	splits[index] = RaceResult.fromHumanTime(event.getGunTime().getTime(), nextLine[j]);
 	            	hasSplits = true;
             	}catch(Exception e){
+            		e.printStackTrace();
             		System.out.println("split error "+e.getMessage());
             	}
             }else if(map[j].equals("offset")) {
@@ -342,6 +344,11 @@ public class ResultsFileMappingController {
         		result.setTimeofficial(exists.getTimeofficial());
         		result.setTimeofficialdisplay(exists.getTimeofficialdisplay());
         	}
+        	//Update merged result to reflect existing results licensing status
+    		if(BuildTypeUtil.usesLicensing()) {
+    			result.setLicensed(exists.isLicensed());
+    			result.setTimed(exists.isTimed());
+    		}
         	if(exists.getTimesplit() != null && !exists.getTimesplit().isEmpty()) {
         		// merge splits
         		String strSplits2 = "";
