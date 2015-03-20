@@ -260,6 +260,8 @@ public class ResultsFileMappingController {
         }
         
         long[] splits = new long[9];
+        long offset = 0;
+        boolean hasOffset = false;
     	boolean hasSplits = false;
     	
         StringBuffer json = new StringBuffer("{");
@@ -283,6 +285,15 @@ public class ResultsFileMappingController {
             	}catch(Exception e){
             		System.out.println("split error "+e.getMessage());
             	}
+            }else if(map[j].equals("offset")) {
+            	if(StringUtils.isNumeric(nextLine[j])) {
+            		try {
+            			offset = event.getGunTime().getTime() - Long.valueOf(nextLine[j]);
+            			hasOffset = true;
+            		} catch(Exception e) {
+            			System.out.println("offset error " + e.getMessage());
+            		}
+            	}
             }else if(!map[j].equals("age")) {
                 if (!json.toString().equals("{")) json.append(",");
             	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");
@@ -301,6 +312,9 @@ public class ResultsFileMappingController {
 		        for(long split:splits){
 		        	if(strSplits.length() > 0){
 		        		strSplits += ",";
+		        	}
+		        	if(hasOffset) {
+		        		split += offset;
 		        	}
 		        	strSplits += split+"";
 		        }
@@ -328,6 +342,36 @@ public class ResultsFileMappingController {
         		result.setTimeofficial(exists.getTimeofficial());
         		result.setTimeofficialdisplay(exists.getTimeofficialdisplay());
         	}
+        	if(exists.getTimesplit() != null && !exists.getTimesplit().isEmpty()) {
+        		// merge splits
+        		String strSplits2 = "";
+        		String[] existingSplits = exists.getTimesplit().split(",");
+                if(hasSplits){
+                	try{
+        		        for(int i = 0; i < splits.length; i++){
+        		        	long split = splits[i];
+        		        	if(strSplits2.length() > 0){
+        		        		strSplits2 += ",";
+        		        	}
+        		        	if(split !=0) {
+        		        		if(hasOffset) split += offset;
+        		        		strSplits2 += split+"";
+        		        	} else if(i < existingSplits.length && existingSplits[i] != null && !existingSplits[i].isEmpty()) {
+        		        		strSplits2 += existingSplits[i];
+        		        	} else {
+        		        		strSplits2 += split+"";
+        		        	}
+        		        }
+        		        result.setTimesplit(strSplits2);
+        		        System.out.println("ResultsFileMappingController splits "+strSplits);
+                	}catch(Exception e){
+                		e.printStackTrace();
+                	}
+                } else {
+        			result.setTimesplit(exists.getTimesplit());
+        		}
+        		
+        	}
             exists.merge(result);
             exists.merge();
         } else {
@@ -336,7 +380,7 @@ public class ResultsFileMappingController {
                 result.setLicensed(License.isUnitAvailible());
                 result.persist();
                 systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
-                systemInfo.persist();
+                systemInfo.merge();
             } else {
             	result.persist();
             }

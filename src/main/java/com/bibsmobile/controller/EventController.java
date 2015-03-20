@@ -688,7 +688,18 @@ public class EventController {
         uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
     }
-
+    
+	@RequestMapping(value = "/systemdetails", method = RequestMethod.GET)
+	@ResponseBody
+	public static String getRacedayDetails() {
+		JsonObject json = new JsonObject();
+		long systime = new Date().getTime();
+		json.addProperty("time", systime);
+		json.addProperty("allocatefacepunch", "patrick");
+		json.addProperty("buildcode", "1.2.0");
+		return json.toString();
+	} 
+	
     @RequestMapping(value = "/megaexport", method = RequestMethod.GET)
     public static void megaexport(
             HttpServletResponse response) throws IOException {
@@ -723,7 +734,7 @@ public class EventController {
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
-        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,split1,split2,split3,split4,split5,split6,split7,split8,split9\r\n");
+        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,offset,split1,split2,split3,split4,split5,split6,split7,split8,split9\r\n");
         List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
         for (RaceResult r : runners) {
         	String splits = "0,0,0,0,0,0,0,0,0";
@@ -751,8 +762,9 @@ public class EventController {
         		}
 
         	}
+        	long offset = _event.getGunTime() != null ? _event.getGunTime().getTime() : 0;
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
-                    + r.getGender() + "," + r.getAge() + "," + splits + "\r\n");
+                    + r.getGender() + "," + r.getAge() + "," + offset +"," + splits + "\r\n");
         }
         outputwriter.flush();
         outputwriter.close();
@@ -1081,7 +1093,23 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/show";
     }
-
+    
+    @RequestMapping(value = "rest/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJsonRest(@PathVariable("id") Long id) {
+        Event event = Event.findEvent(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (event == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "{1}/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
