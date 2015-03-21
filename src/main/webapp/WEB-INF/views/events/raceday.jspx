@@ -249,6 +249,7 @@
 		
 	<script>
 		var readerOn={}; // Create a hashmap to represent whether reader is running
+		var gotTimeAlready = false;
 		var sysdetails = {};
 		var runningEventCount = 0;
 		var readerStatus = 0;
@@ -314,7 +315,10 @@
 				dataType: "json"
 				});
 			r.done(function( data ) {
-				sysdetails = data;
+				if(!gotTimeAlready) {
+					sysdetails = data;
+				}
+				gotTimeAlready = true;
 				console.log(data)
 			});
 			r.fail(function( jqXHR, textStatus ) {
@@ -525,7 +529,7 @@
 			req.done(function( data ) {
 			console.log(data);
 			console.log("gunfired: " + data.gunFired);
-				if(!eval(data.gunFired)){
+				if(!eval(data.gunFired || data.name == "Unassigned Results")){
 				console.log("no gun fired");
 					jQuery("#event-timer-str-"+eventId).hide();
 					return true;

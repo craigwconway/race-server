@@ -53,8 +53,8 @@ import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
-@Indexed
-@Spatial(spatialMode = SpatialMode.HASH)
+//@Indexed
+//@Spatial(spatialMode = SpatialMode.HASH)
 public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -69,7 +69,7 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private List<AwardCategory> awardCategorys;
 
-    @Field
+    //@Field
     @NotNull
     private String name;
 
@@ -95,10 +95,10 @@ public class Event {
     
     private String location;
 
-    @Latitude
+    //@Latitude
     private Double latitude;
 
-    @Longitude
+    //@Longitude
     private Double longitude;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -164,7 +164,7 @@ public class Event {
 
     private String syncId;
     
-    @Field
+    //@Field
     private String charity;
 
     private boolean regEnabled;

@@ -734,7 +734,7 @@ public class EventController {
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
-        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,offset,split1,split2,split3,split4,split5,split6,split7,split8,split9\r\n");
+        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,split1,split2,split3,split4,split5,split6,split7,split8,split9,offset\r\n");
         List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
         for (RaceResult r : runners) {
         	String splits = "0,0,0,0,0,0,0,0,0";
@@ -763,8 +763,11 @@ public class EventController {
 
         	}
         	long offset = _event.getGunTime() != null ? _event.getGunTime().getTime() : 0;
+        	if(BuildTypeUtil.usesLicensing()) {
+        		splits = r.isLicensed()? splits : "0,0,0,0,0,0,0,0,0";
+        	}
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
-                    + r.getGender() + "," + r.getAge() + "," + offset +"," + splits + "\r\n");
+                    + r.getGender() + "," + r.getAge()  +"," + splits+ "," + offset + "\r\n");
         }
         outputwriter.flush();
         outputwriter.close();

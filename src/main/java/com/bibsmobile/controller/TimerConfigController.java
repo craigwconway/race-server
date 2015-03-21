@@ -346,7 +346,7 @@ public class TimerConfigController {
         timerConfig.setConnectionTimeout(10);
         timerConfig.merge();
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
-        return "redirect:/timers/";
+        return "redirect:/events/raceday";
     }
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
