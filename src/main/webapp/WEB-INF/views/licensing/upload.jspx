@@ -65,6 +65,7 @@
 		    <div id="unlicstatus" style="display:none;" role="alert">
 		    No Unlicensed Runners Found
 			</div>
+			Build 1.2.0_513L1
 		</sec:authorize>
 		</div>
 	</div>
