@@ -64,8 +64,6 @@ public abstract class AbstractTimer implements Timer {
 			for(Event event:events){
 				try{
 					// if event started
-					if(null==event.getGunTime() )
-						continue;
 
 					System.out.println(slog+" EVENT: "+event.getId() +" start:"+event.getTimeStart() +" gun:"+event.getGunTimeStart());
 					RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum).getSingleResult(); // throws exception

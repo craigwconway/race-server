@@ -760,6 +760,11 @@ public class EventController {
         				splits += ",0,0,0,0,0,0,0,0";
         			}
         		}
+        		String append = "";
+        		for(int i = splits.split(",").length; i < 9; i++) {
+        			append += ",00:00:00";
+        		}
+        		splits +=append;
 
         	}
         	long offset = _event.getGunTime() != null ? _event.getGunTime().getTime() : 0;
