@@ -287,36 +287,6 @@
                 genderHandler('M');
             }
 
-            /*  allow editable fields in list view  */
-            var counter = 0; var typeCount = 0;
-            var size;   var color;  var quantity;
-
-            jQuery(".cartitem-"+typeCount).each(function(){
-                var info = jQuery(this).attr("data-for");
-                if( info == 'type' ){
-                    type = jQuery(this).val();
-                    if( type === 'T_SHIRT' ){ type = "T-Shirt"; }
-                    if( type === 'TICKET' ){ type = "Ticket"; }
-                    if( type === 'DONATION' ){ type = "Donation"; }
-                }
-                if( info == 'size' ){       size = jQuery(this).val();      }
-                if( info == 'color' ){      color = jQuery(this).val();     }
-                if( info == 'quantity' ){   quantity = jQuery(this).val();  }
-                if( counter === 4 ){        counter = 0;
-                    var row = jQuery("#cartitem-table #row" + typeCount);
-                    var rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="details' + typeCount + '"></td>')
-                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item collapsing" id="quantity' + typeCount + '"></td>')
-                        rowItem = jQuery("#row" + typeCount).append('<td class=".receipt-item" id="price' + typeCount + '"></td>')
-                    
-                    jQuery("#name"+typeCount).text(type + ": " + name);
-                    if(type !== 'Ticket'){ jQuery("#details"+typeCount).text(size + " " + color); }
-                    jQuery("#quantity"+typeCount).text(quantity);
-                    jQuery("#price"+typeCount).text(price);
-                    typeCount++;
-                }
-                counter++;
-            })
-
             jQuery('#edit-athlete').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
