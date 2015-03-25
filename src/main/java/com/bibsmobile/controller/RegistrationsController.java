@@ -1,13 +1,11 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
-import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.RegistrationsUtil;
 import com.bibsmobile.util.UserProfileUtil;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,13 +64,7 @@ public class RegistrationsController {
         uiModel.addAttribute("invoiceId", invoiceId);
         uiModel.addAttribute("registrations", registrations.subList(start, Math.min(start + count, registrations.size())));
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-        for(Cart c : registrations.subList(start, Math.min(start + count, registrations.size()))) {
-        	System.out.println("found new cart: " + c.getId());
-        	for(CartItem ci : c.getCartItems()) {
-        		System.out.println("Found Cart Item: " + ci.getEventCartItem().getName() +", quantity: " + ci.getQuantity() + " color: " + ci.getColor() );
-        		
-        	}
-        }
+
         return "registrations/search";
     }
     
