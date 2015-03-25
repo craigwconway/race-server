@@ -24,7 +24,7 @@ public class CartItemReqWrapper {
     private String size;
     private String color;
     private long priceChangeId;
-    private String couponCodes;
+    private String couponCode;
 
     public UserProfile getUserProfile() {
         return this.userProfile;
@@ -78,12 +78,12 @@ public class CartItemReqWrapper {
         return this.priceChangeId;
     }
 
-    public String getCouponCodes() {
-        return couponCodes;
+    public String getCouponCode() {
+        return couponCode;
     }
 
-    public void setCouponCodes(String couponCodes) {
-        this.couponCodes = couponCodes;
+    public void setCouponCode(String couponCode) {
+        this.couponCode = couponCode;
     }
 
     @Override

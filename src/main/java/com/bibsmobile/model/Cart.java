@@ -54,8 +54,7 @@ public class Cart {
     private Date updated;
     private int status;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<EventCartItemCoupon> coupons;
+    private EventCartItemCoupon coupon;
 
     private int timeout;
 
@@ -136,12 +135,12 @@ public class Cart {
         this.status = status;
     }
 
-    public List<EventCartItemCoupon> getCoupons() {
-        return this.coupons;
+    public EventCartItemCoupon getCoupon() {
+        return this.coupon;
     }
 
-    public void setCoupons(List<EventCartItemCoupon> coupons) {
-        this.coupons = coupons;
+    public void setCoupon(EventCartItemCoupon coupon) {
+        this.coupon = coupon;
     }
 
     public int getTimeout() {
@@ -174,14 +173,14 @@ public class Cart {
         if (this == obj) return true;
         if (obj.getClass() != this.getClass()) return false;
         Cart rhs = (Cart) obj;
-        return new EqualsBuilder().append(this.coupons, rhs.coupons).append(this.created, rhs.created).append(this.id, rhs.id).append(this.shipping, rhs.shipping)
+        return new EqualsBuilder().append(this.coupon, rhs.coupon).append(this.created, rhs.created).append(this.id, rhs.id).append(this.shipping, rhs.shipping)
                 .append(this.status, rhs.status).append(this.stripeChargeId, rhs.stripeChargeId).append(this.timeout, rhs.timeout).append(this.total, rhs.total)
                 .append(this.updated, rhs.updated).append(this.user, rhs.user).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.coupons).append(this.created).append(this.id).append(this.shipping).append(this.status).append(this.stripeChargeId)
+        return new HashCodeBuilder().append(this.coupon).append(this.created).append(this.id).append(this.shipping).append(this.status).append(this.stripeChargeId)
                 .append(this.timeout).append(this.total).append(this.updated).append(this.user).toHashCode();
     }
 

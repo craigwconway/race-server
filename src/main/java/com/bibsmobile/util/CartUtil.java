@@ -1,14 +1,15 @@
 package com.bibsmobile.util;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
+import com.bibsmobile.job.BaseJob;
+import com.bibsmobile.job.CartExpiration;
+import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemCoupon;
+import com.bibsmobile.model.EventCartItemPriceChange;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserProfile;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -16,14 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.bibsmobile.job.BaseJob;
-import com.bibsmobile.job.CartExpiration;
-import com.bibsmobile.model.Cart;
-import com.bibsmobile.model.CartItem;
-import com.bibsmobile.model.EventCartItem;
-import com.bibsmobile.model.EventCartItemTypeEnum;
-import com.bibsmobile.model.EventCartItemPriceChange;
-import com.bibsmobile.model.UserProfile;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public final class CartUtil {
     private static final Logger log = LoggerFactory.getLogger(CartUtil.class);
@@ -35,7 +32,7 @@ public final class CartUtil {
         super();
     }
 
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String coupons, boolean forceNewItem) {
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem) {
          // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());
 
@@ -149,29 +146,24 @@ public final class CartUtil {
         }
 
         // add coupons to cart
-        List<EventCartItemCoupon> couponList = new LinkedList<>();
-        if (coupons != null) {
-            for (String couponCode : coupons.split(",")) {
-                EventCartItemCoupon coupon = EventCartItemCoupon.findCouponByCode(cart.getEvent(), couponCode);
-                if (coupon != null) {
-                    couponList.add(coupon);
-                }
-            }
+        EventCartItemCoupon coupon = null;
+        if (couponCode != null) {
+            coupon = EventCartItemCoupon.findCouponByCode(cart.getEvent(), couponCode);
         }
-        cart.setCoupons(couponList);
+        cart.setCoupon(coupon);
 
-        long total = 0, discounts = 0;
+        long total = 0;
         // calculate prics of cart without coupons
         for (CartItem ci : cart.getCartItems()) {
             total += (ci.getQuantity() * ci.getPrice() * 100);
         }
         total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
         // calculate discounts of total price based on coupons
-        for (EventCartItemCoupon coupon : cart.getCoupons()) {
-            discounts += coupon.getDiscount(total);
+        if(cart.getCoupon() != null) {
+            total -= cart.getCoupon().getDiscount(total);
         }
         // set total price which is at least 0
-        cart.setTotal(Math.max(0, total - discounts));
+        cart.setTotal(Math.max(0, total));
         cart.merge();
 
         // schedule expiration of new cart
