@@ -10,10 +10,13 @@ import com.bibsmobile.util.RegistrationsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -60,7 +63,91 @@ public class RegistrationsRestController {
             return SpringJSONUtil.returnException(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @RequestMapping(value = "edit/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@RequestBody Cart cart, @PathVariable("id") Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        //Cart cart = Cart.fromJsonToCart(json);
+        Cart trueCart = Cart.findCart(id);
+        if(trueCart == null) {
+        	return new ResponseEntity<> (headers, HttpStatus.NOT_FOUND);
+        }
+     
+        
+        List<CartItem> cartItems = cart.getCartItems();
+        List<CartItem> trueCartItems = trueCart.getCartItems();
+        
+        System.out.println("Incoming cart:");
+        System.out.println(cart);
+        System.out.println("True Cart:");
+        System.out.println(trueCart);
+        
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), trueCart.getCartItems().get(0).getEventCartItem().getEvent())) {
+            return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
+        }
+        //Check incoming userprofile, if it is edited create a new regularuser:
+        UserProfile newUserProfile = new UserProfile();
+        newUserProfile.setFirstname(cart.getUser().getFirstname());
+        newUserProfile.setLastname(cart.getUser().getLastname());
+        newUserProfile.setEmail(cart.getUser().getEmail());
+        newUserProfile.setPhone(cart.getUser().getPhone());
+        newUserProfile.setEmergencyContactName(cart.getUser().getEmergencyContactName());
+        newUserProfile.setEmergencyContactPhone(cart.getUser().getEmergencyContactPhone());
+        newUserProfile.setBirthdate(cart.getUser().getBirthdate());
 
+        UserProfile currentUserProfile = trueCart.getUser();
+        
+        if(currentUserProfile.getFirstname() != newUserProfile.getFirstname()
+        		|| currentUserProfile.getLastname() != newUserProfile.getLastname()
+        		|| currentUserProfile.getEmail() != newUserProfile.getEmail()
+        		|| currentUserProfile.getPhone() != newUserProfile.getPhone()
+        		|| currentUserProfile.getEmergencyContactName() != newUserProfile.getEmergencyContactName()
+        		|| currentUserProfile.getEmergencyContactPhone() != newUserProfile.getEmergencyContactPhone()
+        		|| currentUserProfile.getBirthdate() != newUserProfile.getBirthdate()
+        		) {
+	        newUserProfile.persist();
+	        trueCart.setUser(newUserProfile);
+	        trueCart.merge();	
+        }
+        
+
+        System.out.println("Incoming Cart Items:");
+        System.out.println(cart.getCartItems());
+        for(CartItem tci : trueCartItems) {
+        	for(CartItem ci : trueCartItems) {
+        		if(tci.getId() == ci.getId()) {
+                	System.out.println("ID: " + ci.getId() + " Color:" + ci.getColor());
+        			// Only allow safe edits for now, color/size.
+        			// In the future, we will change the event type mapping from cartItem -> eventType for export purposes
+        			tci.setColor(ci.getColor());
+        			tci.setSize(ci.getSize());
+        		}
+        	}
+			tci.setUserProfile(trueCart.getUser());
+			tci.merge();
+        }
+        System.out.println("True Cart Items:");
+        for(CartItem ci : trueCartItems) {
+        	System.out.println("ID: " + ci.getId() + " type: " + ci.getEventCartItem().getType() + " Color:" + ci.getColor());
+        }
+        /*
+        if(null != cartItems) {
+	        for(CartItem cartItem: cartItems) {
+	        	System.out.println("updatingcartitem: " + cartItem);
+	        	cartItem.setUserProfile(cart.getUser());
+	        	cartItem.persist();
+	        }
+        }
+        if (cart.merge() == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        */
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    
     // TODO remove
     @RequestMapping(value = "/transfer", method = RequestMethod.GET)
     public String transferForm(@RequestParam("invoice") String invoiceId,
