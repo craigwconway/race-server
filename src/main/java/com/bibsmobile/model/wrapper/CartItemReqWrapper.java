@@ -24,7 +24,7 @@ public class CartItemReqWrapper {
     private String size;
     private String color;
     private long priceChangeId;
-    
+    private String couponCodes;
 
     public UserProfile getUserProfile() {
         return this.userProfile;
@@ -67,15 +67,23 @@ public class CartItemReqWrapper {
     }
     
     public EventCartItemPriceChange getEventCartItemPriceChange() {
-    	return EventCartItemPriceChange.findEventCartItemPriceChange(this.priceChangeId);
+        return EventCartItemPriceChange.findEventCartItemPriceChange(this.priceChangeId);
     }
     
     public void setPriceChangeId(long priceChangeId) {
-    	this.priceChangeId = priceChangeId;
+        this.priceChangeId = priceChangeId;
     }
     
-    public long getPriceChangeId(long priceChangeId) {
-    	return this.priceChangeId;
+    public long getPriceChangeId() {
+        return this.priceChangeId;
+    }
+
+    public String getCouponCodes() {
+        return couponCodes;
+    }
+
+    public void setCouponCodes(String couponCodes) {
+        this.couponCodes = couponCodes;
     }
 
     @Override

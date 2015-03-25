@@ -2,10 +2,12 @@ package com.bibsmobile.util;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.bibsmobile.model.EventCartItemCoupon;
 import com.bibsmobile.model.UserGroup;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
@@ -33,7 +35,7 @@ public final class CartUtil {
         super();
     }
 
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, boolean forceNewItem) {
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String coupons, boolean forceNewItem) {
          // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());
 
@@ -146,12 +148,30 @@ public final class CartUtil {
 
         }
 
-        long total = 0;
+        // add coupons to cart
+        List<EventCartItemCoupon> couponList = new LinkedList<>();
+        if (coupons != null) {
+            for (String couponCode : coupons.split(",")) {
+                EventCartItemCoupon coupon = EventCartItemCoupon.findCouponByCode(cart.getEvent(), couponCode);
+                if (coupon != null) {
+                    couponList.add(coupon);
+                }
+            }
+        }
+        cart.setCoupons(couponList);
+
+        long total = 0, discounts = 0;
+        // calculate prics of cart without coupons
         for (CartItem ci : cart.getCartItems()) {
             total += (ci.getQuantity() * ci.getPrice() * 100);
         }
         total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
-        cart.setTotal(total);
+        // calculate discounts of total price based on coupons
+        for (EventCartItemCoupon coupon : cart.getCoupons()) {
+            discounts += coupon.getDiscount(total);
+        }
+        // set total price which is at least 0
+        cart.setTotal(Math.max(0, total - discounts));
         cart.merge();
 
         // schedule expiration of new cart

@@ -45,7 +45,7 @@ public class Cart {
     @ManyToOne
     private UserProfile user;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "cart")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cart")
     private List<CartItem> cartItems;
 
     private long shipping;
@@ -53,7 +53,9 @@ public class Cart {
     private Date created;
     private Date updated;
     private int status;
-    private String coupons;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<EventCartItemCoupon> coupons;
 
     private int timeout;
 
@@ -64,9 +66,16 @@ public class Cart {
         return new JSONDeserializer<Cart>().use(null, Cart.class).use("user", UserProfile.class).deserialize(json);
     }
 
+    public Event getEvent() {
+        if (!this.getCartItems().isEmpty()) {
+            return this.getCartItems().get(0).getEventCartItem().getEvent();
+        }
+        return null;
+    }
+
     public String getEventType() {
-        for (CartItem ci : this.getCartItems()) {
-            return ci.getEventCartItem().getEventType();
+        if (!this.getCartItems().isEmpty()) {
+            return this.getCartItems().get(0).getEventCartItem().getEventType();
         }
         return null;
     }
@@ -127,11 +136,11 @@ public class Cart {
         this.status = status;
     }
 
-    public String getCoupons() {
+    public List<EventCartItemCoupon> getCoupons() {
         return this.coupons;
     }
 
-    public void setCoupons(String coupons) {
+    public void setCoupons(List<EventCartItemCoupon> coupons) {
         this.coupons = coupons;
     }
 
