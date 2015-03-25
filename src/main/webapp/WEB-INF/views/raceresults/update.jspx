@@ -271,6 +271,10 @@
                     });
             }
 
+            if( rrTime === "00:00:00" || rrTime === "" ){
+                jQuery("#timedisp").val("");
+            }
+
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").val("");
             });

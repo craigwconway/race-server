@@ -45,7 +45,7 @@ public class Cart {
     @ManyToOne
     private UserProfile user;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "cart")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cart")
     private List<CartItem> cartItems;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "cart")
@@ -56,7 +56,8 @@ public class Cart {
     private Date created;
     private Date updated;
     private int status;
-    private String coupons;
+
+    private EventCartItemCoupon coupon;
 
     private int timeout;
 
@@ -67,9 +68,16 @@ public class Cart {
         return new JSONDeserializer<Cart>().use(null, Cart.class).use("user", UserProfile.class).deserialize(json);
     }
 
+    public Event getEvent() {
+        if (!this.getCartItems().isEmpty()) {
+            return this.getCartItems().get(0).getEventCartItem().getEvent();
+        }
+        return null;
+    }
+
     public String getEventType() {
-        for (CartItem ci : this.getCartItems()) {
-            return ci.getEventCartItem().getEventType();
+        if (!this.getCartItems().isEmpty()) {
+            return this.getCartItems().get(0).getEventCartItem().getEventType();
         }
         return null;
     }
@@ -138,12 +146,12 @@ public class Cart {
         this.status = status;
     }
 
-    public String getCoupons() {
-        return this.coupons;
+    public EventCartItemCoupon getCoupon() {
+        return this.coupon;
     }
 
-    public void setCoupons(String coupons) {
-        this.coupons = coupons;
+    public void setCoupon(EventCartItemCoupon coupon) {
+        this.coupon = coupon;
     }
 
     public int getTimeout() {
@@ -176,14 +184,14 @@ public class Cart {
         if (this == obj) return true;
         if (obj.getClass() != this.getClass()) return false;
         Cart rhs = (Cart) obj;
-        return new EqualsBuilder().append(this.coupons, rhs.coupons).append(this.created, rhs.created).append(this.id, rhs.id).append(this.shipping, rhs.shipping)
+        return new EqualsBuilder().append(this.coupon, rhs.coupon).append(this.created, rhs.created).append(this.id, rhs.id).append(this.shipping, rhs.shipping)
                 .append(this.status, rhs.status).append(this.stripeChargeId, rhs.stripeChargeId).append(this.timeout, rhs.timeout).append(this.total, rhs.total)
                 .append(this.updated, rhs.updated).append(this.user, rhs.user).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.coupons).append(this.created).append(this.id).append(this.shipping).append(this.status).append(this.stripeChargeId)
+        return new HashCodeBuilder().append(this.coupon).append(this.created).append(this.id).append(this.shipping).append(this.status).append(this.stripeChargeId)
                 .append(this.timeout).append(this.total).append(this.updated).append(this.user).toHashCode();
     }
 
