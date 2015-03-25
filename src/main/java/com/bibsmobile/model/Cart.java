@@ -57,6 +57,7 @@ public class Cart {
     private Date updated;
     private int status;
 
+    @ManyToOne
     private EventCartItemCoupon coupon;
 
     private int timeout;
