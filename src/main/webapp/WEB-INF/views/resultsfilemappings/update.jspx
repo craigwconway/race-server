@@ -69,7 +69,7 @@
 			console.log('i='+1);
 			for(var j=1;j&lt;10;j++){
 				console.log('j='+j);
-				jQuery("#label-"+i).append('<option value="split'+j+'">Split '+j+'</option>');
+				jQuery("#label-"+i).append('&lt;option value="split'+j+'"&gt;Split '+j+'&lt;/option&gt;');
 			}
 		}
 	});

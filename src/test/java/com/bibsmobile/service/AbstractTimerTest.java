@@ -56,7 +56,7 @@ public class AbstractTimerTest {
 		result = timer.calculateOfficialTime(result, bibtime, timerConfig);
 		// then
 		assertTrue(result.getTimestart() == 0);
-		assertTrue(result.getTimesplit().equals(bibtime+""));
+		assertTrue(result.getTimesplit() == null);
 		assertTrue(result.getTimeofficial() == bibtime);
 	}
 
@@ -74,8 +74,8 @@ public class AbstractTimerTest {
 		result = timer.calculateOfficialTime(result, bibtime, timerConfig);
 		// then
 		assertTrue(result.getTimestart() == 0);
-		assertTrue(result.getTimesplit().split(",")[timerConfig.getPosition()-1].equals(bibtime+""));
-		assertTrue(result.getTimesplit().split(",").length == timerConfig.getPosition());
+		assertTrue(result.getTimesplit().split(",")[timerConfig.getPosition()-2].equals(bibtime+""));
+		assertTrue(result.getTimesplit().split(",").length == timerConfig.getPosition() - 1);
 		assertTrue(result.getTimeofficial() == bibtime);
 	}
 
@@ -97,8 +97,8 @@ public class AbstractTimerTest {
 		// then
 		assertTrue(result.getTimestart() == 0);
 		assertFalse(result.getTimesplit().equals(splits));
-		assertTrue(result.getTimesplit().split(",")[position-1].equals(bibtime+""));
-		assertTrue(result.getTimesplit().split(",").length == position);
+		assertTrue(result.getTimesplit().split(",")[position-2].equals(bibtime+""));
+		assertTrue(result.getTimesplit().split(",").length == splits.split(",").length);
 		assertTrue(result.getTimeofficial() == bibtime);
 	}
 

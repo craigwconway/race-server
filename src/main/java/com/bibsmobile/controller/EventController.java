@@ -688,7 +688,18 @@ public class EventController {
         uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
     }
-
+    
+	@RequestMapping(value = "/systemdetails", method = RequestMethod.GET)
+	@ResponseBody
+	public static String getRacedayDetails() {
+		JsonObject json = new JsonObject();
+		long systime = new Date().getTime();
+		json.addProperty("time", systime);
+		json.addProperty("allocatefacepunch", "patrick");
+		json.addProperty("buildcode", "1.2.0");
+		return json.toString();
+	} 
+	
     @RequestMapping(value = "/megaexport", method = RequestMethod.GET)
     public static void megaexport(
             HttpServletResponse response) throws IOException {
@@ -723,20 +734,45 @@ public class EventController {
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
-
+        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,split1,split2,split3,split4,split5,split6,split7,split8,split9,offset\r\n");
         List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
         for (RaceResult r : runners) {
         	String splits = "0,0,0,0,0,0,0,0,0";
-        	if(null!=r.getTimesplit() && r.getTimesplit().contains(",")){
-        		splits = "";
-        		for(String s : r.getTimesplit().split(",")){
-        			if(splits.length() > 0) splits += ",";
-        			splits += RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s));
-        			System.out.println("human time "+_event.getTimeStart().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s)));
+        	if(null!=r.getTimesplit() && !r.getTimesplit().isEmpty()){
+        		if(r.getTimesplit().contains(",")) {
+            		splits = "";
+            		boolean fielderr = false;
+            		System.out.println("processing split: "+ r.getTimesplit());
+            		for(String s : r.getTimesplit().split(",")){
+            			System.out.println(s);
+            			if(fielderr || splits.length() > 0) splits += ",";
+            			if(s == null || s.equals("null") || s.isEmpty()) {
+            				fielderr = true;
+            			} else {
+            				splits += RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s));
+            				System.out.println("human time "+_event.getGunTime().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s)));
+            			}
+            		}      			
+        		} else {
+        			if(StringUtils.isNumeric(r.getTimesplit())) {
+        				splits = RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(r.getTimesplit()));
+        				System.out.println("human time "+_event.getGunTime().getTime()+", "+r.getTimesplit()+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(r.getTimesplit())));
+        				splits += ",0,0,0,0,0,0,0,0";
+        			}
         		}
+        		String append = "";
+        		for(int i = splits.split(",").length; i < 9; i++) {
+        			append += ",00:00:00";
+        		}
+        		splits +=append;
+
+        	}
+        	long offset = _event.getGunTime() != null ? _event.getGunTime().getTime() : 0;
+        	if(BuildTypeUtil.usesLicensing()) {
+        		splits = r.isLicensed()? splits : "0,0,0,0,0,0,0,0,0";
         	}
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
-                    + r.getGender() + "," + r.getAge() + "," + splits + "\r\n");
+                    + r.getGender() + "," + r.getAge()  +"," + splits+ "," + offset + "\r\n");
         }
         outputwriter.flush();
         outputwriter.close();
@@ -1065,7 +1101,23 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/show";
     }
-
+    
+    @RequestMapping(value = "rest/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJsonRest(@PathVariable("id") Long id) {
+        Event event = Event.findEvent(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (event == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "{1}/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {

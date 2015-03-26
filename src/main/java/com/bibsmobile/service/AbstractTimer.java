@@ -64,8 +64,6 @@ public abstract class AbstractTimer implements Timer {
 			for(Event event:events){
 				try{
 					// if event started
-					if(null==event.getGunTime() )
-						continue;
 
 					System.out.println(slog+" EVENT: "+event.getId() +" start:"+event.getTimeStart() +" gun:"+event.getGunTimeStart());
 					RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum).getSingleResult(); // throws exception
@@ -74,7 +72,7 @@ public abstract class AbstractTimer implements Timer {
 					System.out.println(slog+" RUNNER: "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
 					result.setTimed(true);
 					// timeout by previous time official
-					if(bibtime > result.getTimeofficial() + (timerConfig.getReadTimeout() * 1000)){
+					if(result.getTimeofficial() > 0 && (bibtime > result.getTimeofficial() + (timerConfig.getReadTimeout() * 1000))){
 						return;
 					}
 					// calculate start, finish, split times
@@ -116,16 +114,18 @@ public abstract class AbstractTimer implements Timer {
 			result.setTimestart( bibtime );
 		// splits
 		}else{
-			String[] splits = (null==result.getTimesplit() || result.getTimesplit().isEmpty()) 
-					? new String[]{} : result.getTimesplit().split(",");
-			if(timerConfig.getPosition() > splits.length) splits = Arrays.copyOf(splits, timerConfig.getPosition());
-			splits[timerConfig.getPosition()-1] = bibtime+"";
-			StringBuffer s = new StringBuffer();
-			for(int i=0;i<splits.length;i++){
-				if(i>0) s.append(",");
-				s.append(splits[i]);
+			if(timerConfig.getPosition() > 1) {
+				String[] splits = (null==result.getTimesplit() || result.getTimesplit().isEmpty()) 
+						? new String[]{} : result.getTimesplit().split(",");
+				if(timerConfig.getPosition() > (splits.length + 1)) splits = Arrays.copyOf(splits, timerConfig.getPosition() - 1);
+				splits[timerConfig.getPosition()-2] = bibtime+"";
+				StringBuffer s = new StringBuffer();
+				for(int i=0;i<splits.length;i++){
+					if(i>0) s.append(",");
+					s.append(splits[i]);
+				}
+				result.setTimesplit(s.toString());				
 			}
-			result.setTimesplit(s.toString());
 			long starttime = (result.getTimestart()==0 && null!=result.getEvent().getGunTime()) 
 					? result.getEvent().getGunTime().getTime() : result.getTimestart(); 
 			result.setTimestart( starttime );
@@ -209,6 +209,7 @@ public abstract class AbstractTimer implements Timer {
 		System.out.println("clearing times for event: " + event.getName() + " and position: " + position);
 		System.out.println("Contents of bibTimes (pre-clear):");
 		System.out.println(bibTimes);
+		System.out.println("Clearing " + event.getRaceResults());
 		for(RaceResult runner:event.getRaceResults()){
 			runner.setTimeofficial(0);
 			runner.setTimestart(0);
@@ -218,9 +219,9 @@ public abstract class AbstractTimer implements Timer {
 			String o = runner.getBib() + "-" + position;
 			System.out.println("removing key: " + o);
 			bibTimes.remove(o);
-			bibCache.remove(o);
-			bibsByReader.remove(o);
-			uniqueBibs.remove(runner.getBib());
+			//bibCache.remove(o);
+			//bibsByReader.remove(o);
+			//uniqueBibs.remove(runner.getBib());
 		}
 		System.out.println("Contents of bibTime(post-clear):");
 		System.out.println(bibTimes);
