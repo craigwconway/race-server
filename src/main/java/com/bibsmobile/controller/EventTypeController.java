@@ -144,9 +144,9 @@ public class EventTypeController {
         Long meters;
         try {
             if(StringUtils.endsWith(eventType.getDistance(), "k")) {
-            	meters = (Long) (1000 * Float.valueOf(eventType.getDistance().replace("k", "")));
+            	meters = (Long) (1000 * Float.valueOf(eventType.getDistance().replace("k", "")).longValue());
             } else if(StringUtils.endsWith(eventType.getDistance(), "mi")) {
-            	meters = (Long) (1760 * Float.valueOf(eventType.getDistance().replace("mi", "")));
+            	meters = (Long) (1760 * Float.valueOf(eventType.getDistance().replace("mi", "")).longValue());
             } else if(StringUtils.endsWith(eventType.getDistance(), "m")) {
             	meters = Long.valueOf(eventType.getDistance());
             } else {
