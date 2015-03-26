@@ -272,13 +272,9 @@
             var request = jQuery.ajax({
                 url: "/bibs-server/stripe/refund?invoice="+invoiceId+"&amp;firstName="+firstname+"&amp;email="+email,
                 type: "POST",
-                dataType: "text/html"
-            })
-            request.done(function(d) {
-                if( d !== null ){
-                    console.log("refunded");
-                }else{
-                    alert("Something went wrong while refunding!");
+                dataType: "text/html",
+                complete: function(data) {
+                    window.location.reload();
                 }
             })
         }
