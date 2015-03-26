@@ -2,11 +2,21 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
+import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.SpringJSONUtil;
+import com.bibsmobile.util.UserProfileUtil;
+
 import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +24,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
@@ -101,6 +112,33 @@ public class EventTypeController {
         uiModel.addAttribute("events", Event.findAllEvents());
     }
 
+    @RequestMapping(method = RequestMethod.POST, headers="Accept=application/json")
+    public ResponseEntity<String> createFromJson(@RequestBody EventType eventType) {
+    	Event event = Event.findEvent(eventType.getEvent().getId());
+    	HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
+        }
+        eventType.setEvent(event); // Map to true event
+        // Compute meters:
+        if(StringUtils.endsWith(eventType.getDistance(), "k")) {
+
+        } else if(StringUtils.endsWith(eventType.getDistance(), "mi")) {
+        	
+        } else if(StringUtils.endsWith(eventType.getDistance(), "meters")) {
+        	
+        } else {
+        	eventType.setMeters(null);
+        }
+        if(eventType.getTypeName() != null) {
+        	eventType.setTypeName(eventType.getRacetype() + " - " + eventType.getDistance());
+        }
+        eventType.persist();
+        return new ResponseEntity<>(eventType.toJson(), headers, HttpStatus.OK);
+    }
+    
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();
         if (enc == null) {
