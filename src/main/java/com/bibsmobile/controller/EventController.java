@@ -95,6 +95,8 @@ import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
 
+import flexjson.JSON;
+import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 @RequestMapping("/events")
@@ -108,7 +110,8 @@ public class EventController {
 
     @Autowired
     private SimpleMailMessage eventMessage;
-
+    
+    private final static Map cache = new HashMap();
 
     @RequestMapping(value = "/uncat", method = RequestMethod.GET)
     @ResponseBody
@@ -553,15 +556,39 @@ public class EventController {
     public static String awards(
     		@RequestParam(value = "event", required = true) Long eventId,
     		Model uiModel) {
-    	Event event = Event.findEvent(eventId);
-    	List<AwardCategoryResults> list = event.calculateMedals(event);
-    	for(AwardCategoryResults c:list){
-    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
-    	}
     	uiModel.asMap().clear();
-        uiModel.addAttribute("event", event);
-        uiModel.addAttribute("awardCategoryResults", list);
+        uiModel.addAttribute("event", Event.findEvent(eventId));
+        uiModel.addAttribute("awardCategoryResults", getAwards(eventId));
         return "events/awards";
+    }
+    
+    public static List<AwardCategoryResults> getAwards(long eventId){
+    	List<AwardCategoryResults> list = new ArrayList<AwardCategoryResults>();
+    	Event event = Event.findEvent(eventId);
+    	String key = StringUtils.join("awards",eventId,event.getAwardsConfig().isAllowMedalsInAgeGenderRankings());
+    	// check cached value
+    	if(cache.containsKey(key)){
+    		System.out.println("cahce hit");
+    		list = (List<AwardCategoryResults>) cache.get(key);
+    	}else{
+    		System.out.println("cache miss");
+    		list = event.calculateMedals(event);
+	    	for(AwardCategoryResults c:list){
+	    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
+	    	}
+	    	cache.put(key, list);
+    	}
+    	return list;
+    }
+    
+    public static int getAward(long eventId, long bib){
+    	for(AwardCategoryResults a:getAwards(eventId)){
+    		for(int i=0;i<a.getResults().size();i++){
+    			if(a.getResults().get(i).getBib()==bib) return i+1;
+    		}
+    	}
+    	System.out.println("No award found for bib "+bib);
+    	return 0;
     }
 
     @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
@@ -569,33 +596,56 @@ public class EventController {
     		@RequestParam(value = "event", required = true) Long eventId,
     		@RequestParam(value = "gender", required = false, defaultValue = "M") String gender,
     		Model uiModel) {
-    	Event event = Event.findEvent(eventId);
+        uiModel.asMap().clear();
+        uiModel.addAttribute("event", Event.findEvent(eventId));
+        uiModel.addAttribute("awardCategoryResults", getAgeGenderRankings(eventId, gender));
+        return "events/ageGenderRankings";
+    }
+    
+    public static List<AwardCategoryResults> getAgeGenderRankings(long eventId, String gender){
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	List<AwardCategory> list = event.getAwardCategorys();
-    	List<Long> medalsBibs = new ArrayList<Long>();
-
-    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
-    	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
-        	for(AwardCategoryResults c:event.calculateMedals(event)){
-        		for(RaceResult r:c.getResults()){
-        			medalsBibs.add(r.getBib());
-        		}
-        	}
-    	}
-    	
-		// filter age/gender
-    	for(AwardCategory c:event.getAwardCategorys()){
-    		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
-    			results.add(new AwardCategoryResults(c,
-    					event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
-    		}
+    	Event event = Event.findEvent(eventId);
+    	String key = StringUtils.join("age_gender",eventId,gender);
+    	// check cached value
+    	if(cache.containsKey(key)){
+    		System.out.println("cache hit");
+    		results = (List<AwardCategoryResults>) cache.get(key); 
+    	}else{
+    		System.out.println("cache miss");
+    		
+	    	List<AwardCategory> list = event.getAwardCategorys();
+	    	List<Long> medalsBibs = new ArrayList<Long>();
+	
+	    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
+	    	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
+	        	for(AwardCategoryResults c:event.calculateMedals(event)){
+	        		for(RaceResult r:c.getResults()){
+	        			medalsBibs.add(r.getBib());
+	        		}
+	        	}
+	    	}
+	    	
+			// filter age/gender
+	    	for(AwardCategory c:event.getAwardCategorys()){
+	    		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
+	    			results.add(new AwardCategoryResults(c,
+	    					event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
+	    		}
+	    	}
+	    	cache.put(key, results);
     	}
     	
     	Collections.sort(results);
-        uiModel.asMap().clear();
-        uiModel.addAttribute("event", event);
-        uiModel.addAttribute("awardCategoryResults", results);
-        return "events/ageGenderRankings";
+    	return results;
+    }
+    
+    public static int getAgeGenderRanking(long eventId, String gender, long bib){
+    	for(AwardCategoryResults a : getAgeGenderRankings(eventId, gender)){
+    		for(int i=0;i<a.getResults().size();i++){
+    			if(a.getResults().get(i).getBib()==i) return i+1;
+    		}
+    	}
+    	return 0;
     }
 
     @RequestMapping(value = "/ageGenderRankings/update", method = RequestMethod.GET)
@@ -1333,13 +1383,34 @@ public class EventController {
     public String overallResults(
     		@RequestParam(value = "event") long eventId,
     		Model uiModel){
-    	Event event = Event.findEvent(eventId);
-    	List<RaceResult> results = event.getAwards(StringUtils.EMPTY, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
     	uiModel.asMap().clear();
-        uiModel.addAttribute("event", event);
-        uiModel.addAttribute("results", results);
+        uiModel.addAttribute("event", Event.findEvent(eventId));
+        uiModel.addAttribute("results", getResultsOverall(eventId));
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/overall";
+    }
+    
+    public static List<RaceResult> getResultsOverall(long eventId){
+    	Event event = Event.findEvent(eventId);
+    	List<RaceResult> results = new ArrayList<RaceResult>();
+    	String key = StringUtils.join("overall",eventId);
+    	// check cached value
+    	if(cache.containsKey(key)){
+    		System.out.println("cache hit");
+    		results = (ArrayList<RaceResult>) cache.get(key);   
+    	}else{
+    		System.out.println("cache miss");
+        	results = event.getAwards(StringUtils.EMPTY, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
+        	cache.put(key, results);
+    	}
+    	return results;
+    }
+    
+    public static int getResultOverall(long eventId, long bib){
+    	for(int i=0;i<getResultsOverall(eventId).size();i++){
+    		if(getResultsOverall(eventId).get(i).getBib()==bib) return i+1;
+    	}
+    	return 0;
     }
 
     class OfficialtimeComparator implements Comparator<RaceResult> {
