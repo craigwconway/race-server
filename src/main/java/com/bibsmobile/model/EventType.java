@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
+import flexjson.JSONSerializer;
+
 @Configurable
 @Entity
 public class EventType {
@@ -98,6 +100,10 @@ public class EventType {
             }
         }
         return entityManager().createQuery(jpaQuery, EventType.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+    public String toJson() {
+        return new JSONSerializer().exclude("*.class").serialize(this);
     }
 
     @Transactional

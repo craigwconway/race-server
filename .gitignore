@@ -16,3 +16,4 @@ target/
 *.iml
 /bin/
 com.bibsmobile.model.Event/
+apidoc

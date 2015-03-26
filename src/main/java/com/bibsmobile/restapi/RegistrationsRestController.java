@@ -91,6 +91,7 @@ public class RegistrationsRestController {
         UserProfile newUserProfile = new UserProfile();
         newUserProfile.setFirstname(cart.getUser().getFirstname());
         newUserProfile.setLastname(cart.getUser().getLastname());
+        newUserProfile.setGender(cart.getUser().getGender());
         newUserProfile.setEmail(cart.getUser().getEmail());
         newUserProfile.setPhone(cart.getUser().getPhone());
         newUserProfile.setEmergencyContactName(cart.getUser().getEmergencyContactName());
@@ -106,6 +107,7 @@ public class RegistrationsRestController {
         		|| currentUserProfile.getEmergencyContactName() != newUserProfile.getEmergencyContactName()
         		|| currentUserProfile.getEmergencyContactPhone() != newUserProfile.getEmergencyContactPhone()
         		|| currentUserProfile.getBirthdate() != newUserProfile.getBirthdate()
+        		|| currentUserProfile.getGender() != newUserProfile.getGender()
         		) {
 	        newUserProfile.persist();
 	        trueCart.setUser(newUserProfile);
