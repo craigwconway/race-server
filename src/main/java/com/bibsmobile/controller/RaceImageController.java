@@ -44,13 +44,8 @@ public class RaceImageController {
 	 * @apiParam {String[]} [hashtag] Hashtags to add to this image
 	 * @apiParamExample Sample-Image-Upload:
 	 * 	https://bibslabs.co/bibs-server/raceimages/api?filePath=http://bibstest.s3.amazonaws.com/path/1420874330.png&raceId=1&bib=777&bib=1&bib=2&bib=3&hashtag=face&hashtag=punch 
-	 * @apiSuccess (201)
+	 * @apiSuccess (201) No Response
 	 * @apiPermission none
-	 * @param filePath String url containing location of uploaded file
-	 * @param raceId Long event.id of tagged event
-	 * @param bib list of Longs delimited by &bib=1&bib=2 to tag in raceimage
-	 * @param hashtags list of strings delimited by &hashtag=face&hashtag=punch to tag in image
-	 * @return HTTP 201 with empty object
 	 */
     @RequestMapping(value = "/api", method = RequestMethod.GET)
     public ResponseEntity<String> api(@RequestParam("filePath") String filePath, @RequestParam("raceId") long raceId,

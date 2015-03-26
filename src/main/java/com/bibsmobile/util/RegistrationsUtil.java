@@ -18,8 +18,8 @@ public final class RegistrationsUtil {
 
     public static CartItem findCartItemFromInvoice(String invoiceId, String firstName, String email) {
         // parse invoice ID
-        Tuple<Event, String> tmpInvoiceIdParsed = parseInvoiceId(invoiceId);
-        Event event = tmpInvoiceIdParsed.getU();
+        Tuple<Cart, String> tmpInvoiceIdParsed = parseInvoiceId(invoiceId);
+        Event event = tmpInvoiceIdParsed.getU().getEvent();
         String stripeToken = tmpInvoiceIdParsed.getV();
 
         // get carts by event and filter by stripe token, first name and email
@@ -62,11 +62,11 @@ public final class RegistrationsUtil {
         // invoice ID parsing
         String stripeToken = null;
         if (invoiceIdGiven) {
-            Tuple<Event, String> tmpInvoiceIdParsed = parseInvoiceId(invoiceId);
+            Tuple<Cart, String> tmpInvoiceIdParsed = parseInvoiceId(invoiceId);
             if (tmpInvoiceIdParsed == null)
                 invoiceIdGiven = false;
             else {
-                if (!event.getId().equals(tmpInvoiceIdParsed.getU().getId())) invoiceIdGiven = false;
+                if (!event.getId().equals(tmpInvoiceIdParsed.getU().getEvent().getId())) invoiceIdGiven = false;
                 stripeToken = tmpInvoiceIdParsed.getV();
             }
         }
@@ -123,15 +123,17 @@ public final class RegistrationsUtil {
         return registrations;
     }
 
-    private static Tuple<Event, String> parseInvoiceId(String invoiceId) {
+    private static Tuple<Cart, String> parseInvoiceId(String invoiceId) {
         // invoiceID schema: "B" + eventID + "T" + stripeToken
         int splitter = invoiceId.indexOf('T');
         if (splitter == -1) return null;
-        Long eventId = Long.valueOf(invoiceId.substring(1, splitter));
+        Long cartId = Long.valueOf(invoiceId.substring(1, splitter));
+        System.out.println("Cart ID: " + cartId);
         String stripeToken = invoiceId.substring(splitter + 1);
-        Event event = Event.findEvent(eventId);
-        if (event == null) return null;
-        return new Tuple<>(event, stripeToken);
+        Cart cart = Cart.findCart(cartId);
+        if (cart == null) return null;
+        if (cart.getStatus() == Cart.REFUNDED) return null;
+        return new Tuple<>(cart, stripeToken);
     }
 
     private static class Tuple<U, V> {

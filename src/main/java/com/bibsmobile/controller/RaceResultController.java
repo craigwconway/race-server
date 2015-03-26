@@ -85,15 +85,11 @@ public class RaceResultController {
 
     /**
      * @api {get} /raceresults/byevent/:eventname
-     * @apiName getByEvent
+     * @apiName getRaceResultByEvent
      * @apiPermission none
      * @apiParam {String} eventName urlencoded name of event
      * @apiGroup raceresults
      * @apiSuccess (200) {Object[]} raceResults		Array of all raceResult objects in event.
-     * @param eventName
-     * @param page
-     * @param size
-     * @return
      */
     @RequestMapping(value = "/byevent/{eventName}", method = RequestMethod.GET)
     @ResponseBody
@@ -112,7 +108,7 @@ public class RaceResultController {
 
     /**
      * @api {get} /raceresults/byIdAndBib/:eventId/:bib
-     * @apiName getByEventIdAndBib
+     * @apiName getRaceResultByEventIdAndBib
      * @apiGroup raceresults
      * @apiParam {Number} eventId id of event searched
      * @apiParam {Number} bib bib number of athlete
@@ -139,7 +135,7 @@ public class RaceResultController {
     
     /**
      * @api {get} /raceresults/bybib/:eventName/:bib
-     * @apiName getByBibAndEventName
+     * @apiName getRaceResultByBibAndEventName
      * @apiGroup raceresults
      * @apiParam {Number} bib bib number of runner
      * @apiParam {String} urlencoded name of event
@@ -165,7 +161,7 @@ public class RaceResultController {
     /**
      * @api {get} /raceresults/byname/:eventName/:firstName/:lastName
      * @apiGroup raceresults
-     * @apiName getByEventNameFirstnameLastname
+     * @apiName getRaceResultByEventNameFirstnameLastname
      * @apiParam {String} eventName Name of event to query
      * @apiParam {String} firstName First Name of athlete searched, ANY is wildcard
      * @apiParam {String} lastName Last Name of athlete searched, ANY is wildcard
@@ -199,7 +195,7 @@ public class RaceResultController {
     /**
      * @api {get} /raceresults/byIdAndName/:eventName/:firstName/:lastName
      * @apiGroup raceresults
-     * @apiName getByEventIdFirstnameLastname
+     * @apiName getRaceResultByEventIdFirstnameLastname
      * @apiParam {Number} eventId Name of event to query
      * @apiParam {String} [firstName] First Name of athlete searched, ANY is wildcard
      * @apiParam {String} [lastName] Last Name of athlete searched, ANY is wildcard
@@ -502,7 +498,7 @@ public class RaceResultController {
     /**
      * @api {get} /raceresults/:id
      * @apiGroup raceresults
-     * @apiName getById
+     * @apiName getRaceResultById
      * @apiParam {Number} id Id of raceresult to get
      * @apiSuccess (200) {Object} raceResult Race Result JSON Object
      * @apiPermission none

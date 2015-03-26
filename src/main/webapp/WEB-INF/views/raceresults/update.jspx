@@ -108,13 +108,16 @@
                 </div>
                 <div class="ui labeled input">
                     <div class="ui blue label">Team</div>
-                        <select class="ui dropdown" id="team-type" name="usergroup"
-                                data-parsley-error-message="Please select a team.">
-                            <option selected="selected" disabled="disabled">Select Team</option>
-                            <c:forEach var="item" items="${usergroup}">
-                                <option value="${item.id}">${item.name}</option>
-                            </c:forEach>
-                        </select>
+                        <div class="ui fluid search selection dropdown" id="team-type">
+                            <input type="hidden" name="usergroup"><!--  --></input>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Select Team</div>
+                            <div class="menu">
+                                <c:forEach var="item" items="${usergroup}">
+                                    <div class="item" data-value="${item.id}">${item.name}</div>
+                                </c:forEach>
+                            </div>
+                        </div>
                 </div>
                 <c:if test='${(!build.rfid)}'>
                     <div class="ui labeled input">
@@ -271,15 +274,21 @@
 
         function initDateTimePickers(){
             var rrTime = "${raceResult.timeofficialdisplay}";
-            var momentRRTime = moment.duration(rrTime);
-            jQuery("#timedisp")
-                .datetimepicker({
-                    defaultDate: momentRRTime,
-                    pickDate: false,
-                    pickTime: true,
-                    useSeconds: true,
-                    format: 'LTS'
-                });
+            if( rrTime !== "" ){
+                var momentRRTime = moment.duration(rrTime);
+                jQuery("#timedisp")
+                    .datetimepicker({
+                        defaultDate: momentRRTime,
+                        pickDate: false,
+                        pickTime: true,
+                        useSeconds: true,
+                        format: 'LTS'
+                    });
+            }
+
+            if( rrTime === "00:00:00" || rrTime === "" ){
+                jQuery("#timedisp").val("");
+            }
 
             if( rrTime === "00:00:00" || rrTime === "" ){
                 jQuery("#timedisp").val("");

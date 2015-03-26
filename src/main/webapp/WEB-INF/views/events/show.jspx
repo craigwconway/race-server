@@ -57,7 +57,7 @@
             font-family: Quicksand;
             font-weight: bold;
         }
-        #date{
+        .event-date{
             margin-left: 0;
             padding-left: 0;
             text-align: left;
@@ -74,9 +74,17 @@
             margin-left:0;
             padding-left:0
         }
-        .button-container{
-            padding-top: 150px;
+        .ui.form .field > label, label{
+            font-size: 1em;
+            margin: 1em 0em 0.25em;
         }
+        .ui.form .inline.field > input{
+            font-size: 1em;
+        }
+        .ui.form .fields .wide.field{
+            padding-left: 0em;
+        }
+        .button-container{ padding-top: 2%; text-align: right; }
         .event-navbar-inverse { background-color: rgba(50,50,50,1); z-index: 1000; }
         .event-navbar-inverse .navbar-nav>li { z-index: 1000; }
         .event-navbar-inverse .navbar-nav>.active>a:hover,.event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC }
@@ -100,6 +108,11 @@
         .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF }
         .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999 }
         .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF }
+
+        .bootstrap-datetimepicker-widget.dropdown-menu {
+            background-color: #FFF !important;
+        }
+
         @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
             .event-navbar-inverse .navbar-collapse {
                 background-color: rgba(80,80,80,0.9);
@@ -147,8 +160,8 @@
             }
             .event-name{ font-size: 1.7em; }
             #event-time{ width: auto; }
-            #date, #time{ margin-left: 0; padding-left: 0; text-align: left; }
-            .button-container{ padding-top: 3%; }
+            .event-date, #time{ margin-left: 0; padding-left: 0; text-align: left; }
+            .button-container{ padding-top: 2%; text-align: right; }
         }
     </style>
     
@@ -235,6 +248,82 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addType" tabindex="-1" role="dialog" aria-labelledby="addTypeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="addTypeLabel">Add Event Type</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui form" id="putFieldForm">
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label style="width:100%">Event Type Name</label>
+                                <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label style="width:100%">Race Types</label>
+                                <div class="ui fluid search selection dropdown">
+                                    <input type="hidden" name="raceType"><!--  --></input>
+                                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                    <div class="default text">Select Race Type</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="Running">Running</div>
+                                        <div class="item" data-value="Swimming">Swimming</div>
+                                        <div class="item" data-value="Cycling">Cycling</div>
+                                        <div class="item" data-value="Mountain Biking">Mountain Biking</div>
+                                        <div class="item" data-value="Trail Run">Trail Run</div>
+                                        <div class="item" data-value="Mud Run">Mud Run</div>
+                                        <div class="item" data-value="Track and Field">Track and Field</div>
+                                        <div class="item" data-value="Triathlon">Triathlon</div>
+                                        <div class="item" data-value="Duathlon">Duathlon</div>
+                                        <div class="item" data-value="Ironman">Ironman</div>
+                                        <div class="item" data-value="Fun Run">Fun Run</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <label id="distance">Distance</label>
+                            <div class="twelve wide inline field">
+                                <input type="text" name="distance" placeholder="Distance"><!--  --></input>
+                                <div class="ui icon buttons">
+                                    <div class="ui active button dist-btn" id="dist-mi"><b>mi</b></div>
+                                    <div class="ui button dist-btn" id="dist-km"><b>km</b></div>
+                                    <div class="ui button dist-btn" id="dist-m"><b>m</b></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label id="starttime">Start Time</label>
+                                <div class="ui action input">
+                                    <input  type="text" name="startTime"
+                                            class="form-control"
+                                            id="timedisp"
+                                            placeholder="Official Time (hh:mm)"
+                                            data-provide="datepicker"
+                                            data-date-format="h:mm a"
+                                            data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
+                                    <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" data-dismiss="modal">Close</button>
+                    <button type="button" class="ui green button post-question" onclick="saveEventType(false)">Submit</button>
+                    <button type="button" class="ui red button put-question" style="display:none" onclick="deleteEventType()">Remove</button>
+                    <button type="button" class="ui green button put-question" style="display:none" onclick="saveEventType(true)">Save</button>
                 </div>
             </div>
         </div>
@@ -329,7 +418,7 @@
         <div class="info-container">
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
-            <div id="event-time"><div class="col-sm-6" id="date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
+            <div id="event-time"><div class="col-sm-6 event-date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
 
             <div id="event-details">
                 <c:if test='${(build.registration)}'>
@@ -338,68 +427,27 @@
                     <div class="col-sm-6 reglive-label">Live</div>
                     <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="live">${event.live}</span></div></div>
                 </c:if>
-                <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                    <c:if test="${lastImport != null}">
-                        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
-                        <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
-                    </c:if>
-                </sec:authorize>
             </div>
-            <div class="button-container">
-                <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
-                <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
-            </div>
+            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                <div style="clear:both"><!--  --></div>
+                <div class="button-container">
+                    <button type="button" class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
+                </div>
+                <c:if test="${not empty eventTypes}">
+                    <h3 class="ui header">events taking place on <div class="event-date">${event.timeStart}</div></h3>
+                    <div style="clear:both"><!--  --></div>
+                    <c:forEach var="item" items="${eventTypes}">
+                        <div>${item}</div>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${lastImport != null}">
+                    <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                    <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+                </c:if>
+            </sec:authorize>
         </div>
-        <div style="display:none;">
-            <field:display field="name" id="s_com_bibsmobile_model_Event_name" object="${event}" z="user-managed"/>
-            <field:display field="city" id="s_com_bibsmobile_model_Event_city" object="${event}" z="user-managed"/>
-            <field:display field="state" id="s_com_bibsmobile_model_Event_state" object="${event}" z="user-managed"/>
-            <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="timeStart" id="s_com_bibsmobile_model_Event_timeStart" object="${event}" z="user-managed"/>
-            <field:display date="true" dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="s_com_bibsmobile_model_Event_timeEnd" object="${event}" z="user-managed"/>
-            <field:display field="featured" id="s_com_bibsmobile_model_Event_featured" object="${event}" z="user-managed"/>
-            <field:display field="latitude" id="s_com_bibsmobile_model_Event_latitude" object="${event}" z="user-managed"/>
-            <field:display field="longitude" id="s_com_bibsmobile_model_Event_longitude" object="${event}" z="user-managed"/>
-            <field:display field="website" id="s_com_bibsmobile_model_Event_website" object="${event}" z="user-managed"/>
-            <field:display field="phone" id="s_com_bibsmobile_model_Event_phone" object="${event}" z="user-managed"/>
-            <field:display field="email" id="s_com_bibsmobile_model_Event_email" object="${event}" z="user-managed"/>
-            <field:display field="registration" id="s_com_bibsmobile_model_Event_registration" object="${event}" z="user-managed"/>
-            <field:display field="parking" id="s_com_bibsmobile_model_Event_parking" object="${event}" z="user-managed"/>
-            <field:display field="general" id="s_com_bibsmobile_model_Event_general" object="${event}" z="user-managed"/>
-            <field:display field="description" id="s_com_bibsmobile_model_Event_description" object="${event}" z="user-managed"/>
-            <field:display field="organization" id="s_com_bibsmobile_model_Event_organization" object="${event}" z="user-managed"/>
-            <field:display field="photo" id="s_com_bibsmobile_model_Event_photo" object="${event}" z="user-managed"/>
-            <field:display field="photo2" id="s_com_bibsmobile_model_Event_photo2" object="${event}" z="user-managed"/>
-            <field:display field="photo3" id="s_com_bibsmobile_model_Event_photo3" object="${event}" z="user-managed"/>
-            <field:display field="results1" id="s_com_bibsmobile_model_Event_results1" object="${event}" z="user-managed"/>
-            <field:display field="results2" id="s_com_bibsmobile_model_Event_results2" object="${event}" z="user-managed"/>
-            <field:display field="results3" id="s_com_bibsmobile_model_Event_results3" object="${event}" z="user-managed"/>
-            <field:display field="donateUrl" id="s_com_bibsmobile_model_Event_donateUrl" object="${event}" z="user-managed"/>
-            <field:display field="facebookUrl1" id="s_com_bibsmobile_model_Event_facebookUrl1" object="${event}" z="user-managed"/>
-            <field:display field="photoUploadUrl" id="s_com_bibsmobile_model_Event_photoUploadUrl" object="${event}" z="user-managed"/>
-            <field:display field="courseRules" id="s_com_bibsmobile_model_Event_courseRules" object="${event}" z="user-managed"/>
-            <field:display date="true" dateTimePattern="${event_updated_date_format}" field="updated" id="s_com_bibsmobile_model_Event_updated" object="${event}" z="user-managed"/>
-            <field:display field="running" id="s_com_bibsmobile_model_Event_running" object="${event}" z="user-managed"/>
-            <field:display field="gunFired" id="s_com_bibsmobile_model_Event_gunFired" object="${event}" z="user-managed"/>
-            <field:display field="gunTimeStart" id="s_com_bibsmobile_model_Event_gunTimeStart" object="${event}" z="user-managed"/>
-            <field:display field="sync" id="s_com_bibsmobile_model_Event_sync" object="${event}" z="user-managed"/>
-            <field:display field="syncId" id="s_com_bibsmobile_model_Event_syncId" object="${event}" z="user-managed"/>
-            <field:display field="country" id="s_com_bibsmobile_model_Event_country" object="${event}" z="Qv0Plvijr5HbvB1q+ZGx2JyZ01E="/>
-            <field:display field="regEnabled" id="s_com_bibsmobile_model_Event_regEnabled" object="${event}" z="5ZHzTNt6g8XNaCI9F07G/pCqVY8="/>
-	        <field:display date="true" dateTimePattern="${event_regstart_date_format}" field="regStart" id="s_com_bibsmobile_model_Event_regStart" object="${event}" z="bBscU1kAsStFikpX5tLH0AVKNkk="/>
-	        <field:display date="true" dateTimePattern="${event_regend_date_format}" field="regEnd" id="s_com_bibsmobile_model_Event_regEnd" object="${event}" z="0OBWojydktrp1m6c6oQ+jq6jmKM="/>
-	        <field:display field="raceImages" id="s_com_bibsmobile_model_Event_raceImages" object="${event}" render="false" z="user-managed"/>
-	        <field:display field="raceResults" id="s_com_bibsmobile_model_Event_raceResults" object="${event}" render="false" z="user-managed"/>
-	        <field:display field="resultsFiles" id="s_com_bibsmobile_model_Event_resultsFiles" object="${event}" render="false" z="user-managed"/>
-	        <field:display field="awardCategorys" id="s_com_bibsmobile_model_Event_awardCategorys" object="${event}" render="false" z="user-managed"/>
-	        <field:display field="photos" id="s_com_bibsmobile_model_Event_photos" object="${event}" render="false" z="user-managed"/>
-	        <field:display field="alerts" id="s_com_bibsmobile_model_Event_alerts" object="${event}" render="false" z="user-managed"/>
-	        <field:display field="maps" id="s_com_bibsmobile_model_Event_maps" object="${event}" render="false" z="user-managed"/>
-	        <field:display field="results" id="s_com_bibsmobile_model_Event_results" object="${event}" render="false" z="user-managed"/>
-	        <field:display field="eventUserGroup" id="s_com_bibsmobile_model_Event_eventUserGroup" object="${event}" z="user-managed" render="false"/>
-	        <field:display field="eventUserGroups" id="s_com_bibsmobile_model_Event_eventUserGroups" object="${event}" z="user-managed" render="false"/>
-	        <field:display field="eventTypes" id="s_com_bibsmobile_model_Event_eventTypes" object="${event}" z="QBmCDtlB6jw4pnkJ2Gd/X3faD4Y="/>
-	        <field:display field="waiver" id="s_com_bibsmobile_model_Event_waiver" object="${event}" z="JwDuTcFRV2YXCm7lUFHe9AXx1cw="/>
-	    </div>
     </div>
     </page>
     <script>
@@ -412,12 +460,13 @@
             </c:if>
         }
 
+        var distType;
         function initInfo(){
             var str = jQuery("#event-time").text()
             str = str.substring(0,str.length-2);
             var momdate = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
             var momtime = moment(str, "YYYY-MM-DD HH:mm:ss").format('h:mm a');
-            jQuery("#date").text(momdate);
+            jQuery(".event-date").text(momdate);
             jQuery("#time").text("first start " + momtime);
 
             jQuery(".reg").each(function(){
@@ -439,8 +488,77 @@
                 }
             })
 
+            jQuery('.dist-btn').each(function(){
+                jQuery(this).click(function(){
+                    var id = jQuery(this).attr("id");
+                    jQuery(this).addClass('active');
+                    jQuery(this).siblings().removeClass('active');
+                    distType = id;
+                })
+            })
+
+            var momentRRTime = moment('${event.timeStart}').startOf('hour');
+            jQuery("#timedisp")
+                .datetimepicker({
+                    defaultDate: momentRRTime,
+                    pickDate: false,
+                    dateFormat: 'h:mm:ss a'
+                });
+
+            jQuery("#removetime").click(function(){
+                jQuery("#timedisp").val("");
+            });
+
             getWebappId();
             getWaiver();
+        }
+
+
+        function saveEventType(put){
+            var error = true;
+
+            var eventTypeUrl = "/bibs-server/events/addTypeToEvent/${event.id}";
+            var ajaxType = 'POST';
+            if( put ){
+                // update logic
+            }
+
+            var dat = "";
+            var typeName  = jQuery('input[name="typeName"]').val();
+            var distance  = jQuery('input[name="distance"]').val();
+            var startTime = jQuery('input[name="startTime"]').val();
+            var raceType  = jQuery('input[name="raceType"]').val();
+
+            var parseDate = moment('${event.timeStart}');
+            var hour   = moment(startTime, "h:mm a").hour();
+            var minute = moment(startTime, "h:mm a").minute();
+            
+            parseDate.set('hour', hour);
+            parseDate.set('minute', minute);
+            parseDate = new Date(parseDate).toISOString();
+
+            if( distance === "" || parseDate === "" || raceType === "" ){
+                error = true;
+                console.log(error);
+            }
+            else{
+                if( typeName  !== "" ){ dat += '&amp;typeName='  + typeName  }
+                if( distance  !== "" ){ dat += '&amp;distance='  + distance  }
+                if( startTime !== "" ){ dat += '&amp;startTime=' + parseDate }
+                if( raceType  !== "" ){ dat += '&amp;racetype='  + raceType  }
+                if( dat.substring(0,1) === "&amp;" ){
+                    dat = dat.substring(1, dat.length);
+                }
+
+                jQuery.ajax({
+                    url: eventTypeUrl + "?" + dat,
+                    type: ajaxType,
+                    contentType: "text/html",
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })
+            }
         }
 
         /*
@@ -545,6 +663,11 @@
         }
 
         var initModal = false;
+
+        function addEventType(){
+            jQuery("#addType").modal('show');
+            jQuery(".ui.form .field > .selection.dropdown").dropdown();
+        }
         function regUrl(){
             jQuery("#regButton").modal('show');
         }
