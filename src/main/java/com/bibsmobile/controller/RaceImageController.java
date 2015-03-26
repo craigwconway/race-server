@@ -44,7 +44,7 @@ public class RaceImageController {
 	 * @apiParam {String[]} [hashtag] Hashtags to add to this image
 	 * @apiParamExample Sample-Image-Upload:
 	 * 	https://bibslabs.co/bibs-server/raceimages/api?filePath=http://bibstest.s3.amazonaws.com/path/1420874330.png&raceId=1&bib=777&bib=1&bib=2&bib=3&hashtag=face&hashtag=punch 
-	 * @apiSuccess (201)
+	 * @apiSuccess (201) No Response
 	 * @apiPermission none
 	 * @param filePath String url containing location of uploaded file
 	 * @param raceId Long event.id of tagged event
