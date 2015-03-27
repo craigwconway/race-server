@@ -88,6 +88,9 @@ public class TimerConfigController {
     		System.out.println("Clearing time for timer: " + timerEntry.getKey().getId() + ", Position: "+ timerEntry.getKey().getPosition());
     		if(timerEntry.getKey().getPosition() != 0)
     		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
+    		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
+    			timerEntry.getValue().emptyBuffer();
+    		}
     	}
     	return StringUtils.EMPTY;
     }    
