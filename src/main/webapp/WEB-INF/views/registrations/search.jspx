@@ -127,9 +127,9 @@
                                         <div class="or"><!--  --></div>
                                         <div class="ui button edit-field" id="gender-f" onclick="genderHandler('F')"><span><i class="fa fa-venus"><!--  --></i></span></div>
                                         <span style="display:none">
-                                            <input  class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-m"
+                                            <input  class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-m" value="Male"
                                                     data-parsley-mincheck="1" data-parsley-error-message="Please select a gender."><!--  --></input>
-                                            <input class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-f"><!--  --></input>
+                                            <input class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-f" value="Female"><!--  --></input>
                                         </span>
                                     </div>
                                 </div>
@@ -174,7 +174,7 @@
                             <div id="edit-cart"><!--  --></div>
                         </div>
                     </div>
-                </div>    
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-success" id="footer-save" onclick="editValidate()">Save</button>
@@ -266,11 +266,11 @@
         window.onload = function(){
         }
 
-        var currId;         var currGender;
+        var currCartId;     var currStripeId;
         var currFirstName;  var currLastName;
+        var currBirth;      var currGender;
         var currEmail;      var currPhone;
         var currEmName;     var currEmPhone;
-        var currBirth;
         function searchModal(id){
             jQuery("#searchModal").modal('show');
             jQuery("#modal-athlete").text(jQuery(".firstname-"+id).val() + " " + jQuery(".lastname-"+id).val() + " ");
@@ -278,7 +278,8 @@
             else if( jQuery(".gender-"+id).val() === 'Male' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
             jQuery("#modal-transaction").text("B" + jQuery(".cartid-"+id).val() + "T" + jQuery(".stripe-"+id).val());
             
-            currId = id;
+            currCartId = jQuery(".cartid-"+id).val();
+            currStripeId = jQuery(".stripe-"+id).val();
             currFirstName = jQuery(".firstname-"+id).val();
             currLastName = jQuery(".lastname-"+id).val();
             currGender = jQuery(".gender-"+id).val(); 
@@ -360,24 +361,16 @@
             var birthMoment = moment(currBirth, 'YYYY-MM-DD');
             console.log(birthMoment);
             jQuery("#edit-birthdate").datetimepicker({
-                    defaultDate: birthMoment,
-                    dateFormat: 'MM/DD/YYYY',
-                    pickTime: false
-                });
+                defaultDate: birthMoment,
+                dateFormat: 'MM/DD/YYYY',
+                pickTime: false
+            });
             if( currGender === 'Female' ){ 
                 genderHandler('F');
             }
             else if( currGender === 'Male' ){ 
                 genderHandler('M');
             }
-        }
-
-        function editHandler(){
-
-            jQuery('#edit-athlete').parsley({
-                errorsWrapper: '<div class="has-error"></div>',
-                errorTemplate: '<span></span>'
-            });
         }
 
         function editValidate(){
@@ -402,8 +395,33 @@
                 })
             }
             else{
+                var obj = {};
+                obj.user = {};
+                obj.user.firstname = jQuery("#edit-firstname").val();
+                obj.user.lastname = jQuery("#edit-lastname").val();
+                obj.user.email = jQuery("#edit-email").val();
+                obj.user.phone = jQuery("#edit-phone").val();
+                obj.user.birthdate = jQuery("#edit-birthdate").val();
+                obj.user.gender = jQuery('input[name="gender"]').val();
+                obj.user.emergencyContactName = jQuery("#edit-em-name").val();
+                obj.user.emergencyContactPhone = jQuery("#edit-em-phone").val();
+                obj.cartItems = [];
+                editHandler(obj);
                 jQuery("#footer-save").removeClass('disabled');
             }
+        }
+
+        function editHandler(obj){
+            var request = jQuery.ajax({
+                url: "/bibs-server/rest/registrations/edit/"+currCartId,
+                type: "PUT",
+                contentType:"application/json",
+                dataType: "JSON",
+                data: JSON.stringify(obj),
+                complete: function(data) {
+                    window.location.reload();
+                }
+            })
         }
 
         function genderHandler(type){
