@@ -37,9 +37,6 @@
         .parsley-custom-error-message{
             list-style-type: none;
         }
-        .modal-body {
-            overflow-y: auto;
-        }
     </style>
     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="search-label" aria-hidden="true">
         <div class="modal-dialog">
@@ -89,7 +86,7 @@
     </div>
 
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="edit-label" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title ui header" id="edit-label">Receipt Edit <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button></h2>
@@ -253,6 +250,14 @@
                                         <input  type="text" data-for="quantity"
                                                 class="cartitem-${item.id} quantity" style="display:none"
                                                 value="${cart.quantity}"></input>
+                                        <c:if test="${cart.eventCartItem.type == 'T_SHIRT'}">
+                                            <input  type="text" data-for="sizeOptions"
+                                                    class="size-options-${item.id}" style="display:none"
+                                                    value="${cart.eventCartItem.tshirtSizes}"></input>
+                                            <input  type="text" data-for="colorOptions"
+                                                    class="color-options-${item.id}" style="display:none"
+                                                    value="${cart.eventCartItem.tshirtColors}"></input>
+                                        </c:if>
                                     </c:forEach>
                                 </tr>
                             </c:forEach>
@@ -264,6 +269,21 @@
     </div>
     <script>
         window.onload = function(){
+            initModalContent();
+        }
+
+        function initModalContent(){
+            // edit info
+            jQuery("#edit-cart").append('<div id="edit-cartitem-table">');
+            jQuery("#cartitem-table").clone().appendTo("#edit-cartitem-table");
+            jQuery("#edit-cartitem-table > #cartitem-table").removeAttr("id");
+            jQuery("#edit-cartitem-table > table > thead > tr > td:nth-child(2)").text('Size');
+            jQuery("#edit-cartitem-table > table > thead > tr > td:nth-child(3)").text('Color');
+            jQuery("#edit-cartitem-table > table > thead > tr > td:nth-child(4)").text('Quantity');
+            jQuery("#edit-cartitem-table > table").append('<tbody>');
+
+            // purchase info
+            jQuery("#cartitem-table").append('<tbody>');
         }
 
         var currCartId;     var currStripeId;
@@ -293,16 +313,15 @@
             var fieldCount = 0;     var cartItemCount = 0;
             var type;   var name;   var price;
             var size;   var color;  var quantity;
+            var editable = false;
 
-            jQuery("#cartitem-table tbody").html("");
-            jQuery("#cartitem-table").append('<tbody>');
             jQuery(".cartitem-"+id).each(function(){
                 var info = jQuery(this).attr("data-for");
                 if( info == 'type' ){
                     type = jQuery(this).val();
-                    if( type === 'T_SHIRT' ){ type = "T-Shirt"; }
-                    if( type === 'TICKET' ){ type = "Ticket"; }
-                    if( type === 'DONATION' ){ type = "Donation"; }
+                    if( type === 'T_SHIRT' ){   type = "T-Shirt";     editable = true;  }
+                    if( type === 'TICKET' ){    type = "Ticket";      editable = false; }
+                    if( type === 'DONATION' ){  type = "Donation";    editable = false; }
                 }
                 if( info == 'name' ){       name = jQuery(this).val();     }
                 if( info == 'size' ){       size = jQuery(this).val();     }
@@ -312,22 +331,58 @@
                 fieldCount++;
                 if( fieldCount % 6 === 0 ){
                     cartItemCount++;
+
+                    // purchase info
                     var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartItemCount + '"></tr>');
-                    var rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="name' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="details' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="price' + id + '-' + cartItemCount + '"></td>')
+                    var rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="name' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="details' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="price' + id + '-' + cartItemCount + '"></td>')
                     
                         jQuery('#name'+id+'-'+cartItemCount).text(type + ": " + name);
                         if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartItemCount).text(size + " " + color); }
                         jQuery('#quantity'+id+'-'+cartItemCount).text(quantity);
                         jQuery('#price'+id+'-'+cartItemCount).text(price);
+
+                    // edit info
+                    if( editable ){
+                        var row = jQuery("#edit-cartitem-table > table > tbody").append('<tr id="edit-row' + id + '-' + cartItemCount + '"></tr>');
+                        var rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-name' + id + '-' + cartItemCount + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartItemCount + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartItemCount + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartItemCount + '"></td>')
+                        jQuery('#edit-name'+id+'-'+cartItemCount).text(type + ": " + name);
+
+                        var sizeOpt = jQuery('.size-options-'+id).val();
+                        sizeOpt = sizeOpt.split(',');
+                        var colorOpt = jQuery('.color-options-'+id).val();
+                        colorOpt = colorOpt.split(',');
+
+                        var sizeHtmlStr = '<div class="ui selection dropdown" id="sizeOpt-' + id + '-' + cartItemCount + '"><input id="new-size-' + id +'-'+cartItemCount  + '" name="new-size" type="hidden"></input><div class="default text">Size</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
+                        var colorHtmlStr = '<div class="ui selection dropdown" id="colorOpt-' + id + '-' + cartItemCount + '"><input id="new-color-' + id +'-'+cartItemCount  + '" name="new-color" type="hidden"></input><div class="default text">Color</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
+                        for( var i = 0; i &lt; sizeOpt.length; i++ ){
+                            sizeHtmlStr += '<div class="item" data-value="' + sizeOpt[i] + '">' + sizeOpt[i] + '</div>';
+                        }
+                        for( var i = 0; i &lt; colorOpt.length; i++ ){
+                            colorHtmlStr += '<div class="item" data-value="' + colorOpt[i] + '">' + colorOpt[i] + '</div>';
+                        }
+                        sizeHtmlStr += '</div></div>';
+                        colorHtmlStr += '</div></div>';
+                        jQuery('#edit-size'+id+'-'+cartItemCount).html(sizeHtmlStr);
+                        jQuery('#edit-color'+id+'-'+cartItemCount).html(colorHtmlStr);
+                        jQuery('#sizeOpt-'+id+'-'+cartItemCount).dropdown('set selected', size);
+                        jQuery('#colorOpt-'+id+'-'+cartItemCount).dropdown('set selected', color);
+
+                        var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-quantity-' + id + '-' + cartItemCount + '" name="new-quantity" placeholder="Quantity" value="' + quantity + '"></input></div></div>'
+
+                        jQuery('#edit-quantity'+id+'-'+cartItemCount).html(quantHtmlStr);
+                    }
                 }
             })
             
             jQuery("#cartitem-table").append('</tbody>');
-
-            jQuery("#cart-details").clone().appendTo("#edit-cart");
+            jQuery("#edit-cartitem-table > table").append('</tbody>');
+            jQuery("#edit-cartitem-table").append('</div>');
         }
 
         function refundHandler(){
@@ -359,7 +414,7 @@
             jQuery("#edit-em-name").val(currEmName);
             jQuery("#edit-em-phone").val(currEmPhone);
             var birthMoment = moment(currBirth, 'YYYY-MM-DD');
-            console.log(birthMoment);
+
             jQuery("#edit-birthdate").datetimepicker({
                 defaultDate: birthMoment,
                 dateFormat: 'MM/DD/YYYY',
@@ -406,7 +461,16 @@
                 obj.user.emergencyContactName = jQuery("#edit-em-name").val();
                 obj.user.emergencyContactPhone = jQuery("#edit-em-phone").val();
                 obj.cartItems = [];
-                editHandler(obj);
+
+                jQuery("#edit-cartitem-table > table > tbody > tr").each(function(){
+                    var cartId = jQuery(this).attr("id");
+                    cartId = cartId.substring(cartId.indexOf('-') + 1, cartId.lastIndexOf('-'));
+                    cartId = cartId.replace( /^\D+/g, '');
+                    console.log(cartId);
+                });
+
+                // var cartObj = {};
+                // editHandler(obj);
                 jQuery("#footer-save").removeClass('disabled');
             }
         }
