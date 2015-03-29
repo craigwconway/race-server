@@ -167,8 +167,8 @@
                     <div style="clear:both;height:15px;width:100%;"><!--  --></div>
                     <div class="ui purchase-menu accordion">
                         <div class="ui tertiary attached segment title">Edit Purchases <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
-                        <div class="ui attached segment content">
-                            <div id="edit-cart"><!--  --></div>
+                        <div class="ui form edit-fields attached raised segment content">
+                            <div id="edit-cart" data-parsley-validate="true"><!--  --></div>
                         </div>
                     </div>
                 </div>
@@ -463,14 +463,21 @@
                 obj.cartItems = [];
 
                 jQuery("#edit-cartitem-table > table > tbody > tr").each(function(){
+                    var cartObj = {};
                     var cartId = jQuery(this).attr("id");
-                    cartId = cartId.substring(cartId.indexOf('-') + 1, cartId.lastIndexOf('-'));
+                    cartId = cartId.substring(cartId.indexOf('-') + 1, cartId.length);
                     cartId = cartId.replace( /^\D+/g, '');
-                    console.log(cartId);
+                    cartObj.size  = jQuery('#new-size-'+cartId).val();
+                    cartObj.color = jQuery('#new-color-'+cartId).val();
+                    cartObj.quantity = jQuery('#new-quantity-'+cartId).val();
+                    
+                    cartId = cartId.substring(0, cartId.indexOf('-'));
+                    cartObj.id = cartId;
+                    
+                    obj.cartItems.push(cartObj);
                 });
 
-                // var cartObj = {};
-                // editHandler(obj);
+                editHandler(obj);
                 jQuery("#footer-save").removeClass('disabled');
             }
         }
