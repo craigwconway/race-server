@@ -64,6 +64,39 @@ public class RegistrationsRestController {
         }
     }
     
+    /**
+     * @api {put} /rest/registrations/edit/:id
+     * @apiName editRegistration
+     * @apiParam {Object} user UserProfile object in cart
+     * @apiParam {Object[]} [cartitems] Array of CartItem objects to change
+     * @apiGroup registrations
+     * @apiParamExample {json} Request-Example:
+     * 		{
+     * 			"user": {
+     * 				"id": 7,
+     * 				"firstname": "bob",
+     * 				"lastname": "dylan",
+     * 				"email": "lsdkfj@sdklj.dsf",
+     * 				"phone": "2390480248",
+     * 				"emergencyContactName": "someone",
+     * 				"emergencyContactPhone": "9119119111",
+     * 				"birthdate": "1990-01-01"
+     * 			},
+     * 			"cartItems": [
+     * 				{
+     * 					"id": 1,
+     * 					"color": null,
+     * 					"size": null
+     * 				},
+     * 				{
+     * 					"id": 2,
+     * 					"color": "Yellow",
+     * 					"size": "M"
+     * 				}
+     * 			]
+     * 		}
+     * @apiSuccess (200) No Response.
+     */
     @RequestMapping(value = "edit/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody Cart cart, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
