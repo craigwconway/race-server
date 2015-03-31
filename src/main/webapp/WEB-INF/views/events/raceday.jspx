@@ -109,7 +109,7 @@
 						var proceed = false;
 						if (confirm("Clear ALL runner times for this Event?")) {
 							if (!confirm("Caution: Are your sure? This cannot be undone.")) {
-								location.reload(true);
+								setTimeout(function() { location.reload(true); }, 1000);
 							} else {
 								// empty table
 								jQuery("#results"+eventId).html("<tr><td></td></tr>");
@@ -117,10 +117,10 @@
 								var request = jQuery.ajax({
 								url: "/bibs-server/timers/clear-all-times?eventId="+eventId
 							});
-							location.reload(true);				
+							setTimeout(function() { location.reload(true); }, 1000);				
 							}
 						} else {
-							location.reload(true);
+							setTimeout(function() { location.reload(true); }, 1000);
 						}
 
 					}
@@ -129,7 +129,7 @@
 						var proceed = false;
 						if (confirm("Clear ALL runner times for this Event?")) {
 							if (!confirm("Caution: Are your sure? This cannot be undone.")) {
-								location.reload(true);
+								setTimeout(function() { location.reload(true); }, 1000);
 							} else {
 								// empty table
 								jQuery("#results"+eventId).html("<tr><td></td></tr>");
@@ -137,10 +137,10 @@
 								var request = jQuery.ajax({
 								url: "/bibs-server/timers/clear-finish-times?eventId="+eventId
 								});
-								location.reload(true);		
+								setTimeout(function() { location.reload(true); }, 1000);		
 							}
 						} else {
-							location.reload(true);
+							setTimeout(function() { location.reload(true); }, 1000);
 						}
 
 					}
