@@ -253,7 +253,7 @@ public class ResultsFileMappingController {
     }
 
     public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
-        if (nextLine.length != map.length || nextLine.length == 0) {
+        if (/*nextLine.length != map.length ||*/ nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
             return;
