@@ -26,6 +26,8 @@ public class AwardCategoryController {
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid AwardCategory awardCategory, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
+        	System.out.println("caught errors");
+        	System.out.println(bindingResult.getAllErrors());
             populateEditForm(uiModel, awardCategory);
             return "awardcategorys/create";
         }
@@ -35,6 +37,8 @@ public class AwardCategoryController {
         if(httpServletRequest.getParameterMap().containsKey("medal")){
         	awardCategory.setName(AwardCategory.MEDAL_PREFIX + awardCategory.getName());
         }
+        
+        awardCategory.setSortOrder(AwardCategory.findByEvent(awardCategory.getEvent()).size());
         
         awardCategory.persist();
         return (!awardCategory.isMedal()) 

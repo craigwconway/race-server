@@ -300,6 +300,7 @@ public class Event {
 
     public List<RaceResult> getAwards(String gender, int min, int max, int size, List<Long> excludeBibs) { 
     	List<RaceResult> results = Event.findRaceResultsByAwardCategory(id,gender,min,max,1,999);
+    	Collections.sort(results);
     	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
     	for(RaceResult r : results){
     		if(!excludeBibs.contains(r.getBib())){
