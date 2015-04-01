@@ -332,7 +332,7 @@
                 <div class="modal-footer">
                     <button type="button" class="ui button" data-dismiss="modal">Close</button>
                     <button type="button" class="ui green button post-event-type" onclick="saveEventType(false)">Submit</button>
-                    <button type="button" class="ui red button put-event-type" style="display:none" onclick="deleteEventType()">Remove</button>
+                    <button type="button" class="ui red button put-event-type" style="display:none" onclick="saveEventType(null)">Remove</button>
                     <button type="button" class="ui green button put-event-type" style="display:none" onclick="saveEventType(true)">Save</button>
                 </div>
             </div>
@@ -539,34 +539,13 @@
             getWaiver();
         }
 
-        function deleteEventType(){
-            if( currEventTypeId === null ){
-                alert("There was an error trying to delete this event type!");
-            }
-            else{
-                var eventTypeUrl = "/bibs-server/events/addTypeToEvent/${event.id}";
-                var ajaxType = 'DELETE';
-                jQuery.ajax({
-                    url: eventTypeUrl + "?" + dat,
-                    type: ajaxType,
-                    contentType: "text/html",
-                    complete: function(data) {
-                        window.location.reload();
-                    }
-                })
-            }
-        }
-
         function saveEventType(put){
+            var dat = {};
             var error = true;
 
-            var eventTypeUrl = "/bibs-server/events/addTypeToEvent/${event.id}";
+            var eventTypeUrl = "/bibs-server/eventtypes/";
             var ajaxType = 'POST';
-            if( put ){
-                ajaxType = 'PUT';
-            }
 
-            var dat = "";
             var typeName  = jQuery('input[name="typeName"]').val();
             var distance  = jQuery('input[name="distance"]').val();
             var distType  = null;
@@ -582,25 +561,36 @@
             
             parseDate.set('hour', hour);
             parseDate.set('minute', minute);
-            parseDate = new Date(parseDate).toISOString();
+            parseDate = new Date(parseDate);
 
             if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;
                 console.log(error);
             }
             else{
-                if( typeName  !== "" ){ dat += '&amp;typeName='  + typeName  }
-                if( distance  !== "" ){ dat += '&amp;distance='  + distance + distType  }
-                if( startTime !== "" ){ dat += '&amp;startTime=' + parseDate }
-                if( raceType  !== "" ){ dat += '&amp;racetype='  + raceType  }
-                if( dat.substring(0,1) === "&amp;" ){
-                    dat = dat.substring(1, dat.length);
+                dat.event = {};
+                dat.event.id = parseInt('${event.id}');
+
+                if( put || put === null){
+                    eventTypeUrl = "/bibs-server/eventtypes/" + currEventTypeId;
+                    ajaxType = 'PUT';
+                    if( put === null ){
+                        dat.event = null;
+                    }
                 }
 
+                dat.typeName = typeName;
+                dat.distance = distance + distType;
+                dat.startTime = parseDate;
+                dat.racetype = raceType;
+
+                console.log(dat);
+
                 jQuery.ajax({
-                    url: eventTypeUrl + "?" + dat,
+                    url: eventTypeUrl,
                     type: ajaxType,
-                    contentType: "text/html",
+                    contentType: "application/json",
+                    data: JSON.stringify(dat),
                     complete: function(data) {
                         window.location.reload();
                     }
@@ -637,6 +627,7 @@
             jQuery('#timedisp').data('DateTimePicker').setDate(moment(raceTime));
             jQuery("#addType").modal('show');
         }
+
         function getWaiver(){
             var request = jQuery.ajax({
                 url: '${event.waiver}',
