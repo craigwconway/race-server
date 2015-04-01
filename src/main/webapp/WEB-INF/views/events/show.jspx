@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
@@ -36,6 +36,13 @@
         .map-canvas{
             width: 300px; 
             height: 300px;
+        }
+        .button-container{
+            float: right;
+        }
+        h3.ui.header.event-type-header{
+            font-family: Quicksand;
+            font-weight: bold;
         }
     	.event-name{
             font-family: Quicksand;
@@ -83,6 +90,9 @@
         }
         .ui.form .fields .wide.field{
             padding-left: 0em;
+        }
+        .eventtype-item:hover{
+            cursor: pointer;
         }
         .button-container{ padding-top: 2%; text-align: right; }
         .event-navbar-inverse { background-color: rgba(50,50,50,1); z-index: 1000; }
@@ -271,7 +281,7 @@
                         <div class="fields">
                             <div class="twelve wide field">
                                 <label style="width:100%">Race Types</label>
-                                <div class="ui fluid search selection dropdown">
+                                <div class="ui fluid search selection dropdown" id="racetype-dropdown">
                                     <input type="hidden" name="raceType"><!--  --></input>
                                     <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                                     <div class="default text">Select Race Type</div>
@@ -321,9 +331,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ui button" data-dismiss="modal">Close</button>
-                    <button type="button" class="ui green button post-question" onclick="saveEventType(false)">Submit</button>
-                    <button type="button" class="ui red button put-question" style="display:none" onclick="deleteEventType()">Remove</button>
-                    <button type="button" class="ui green button put-question" style="display:none" onclick="saveEventType(true)">Save</button>
+                    <button type="button" class="ui green button post-event-type" onclick="saveEventType(false)">Submit</button>
+                    <button type="button" class="ui red button put-event-type" style="display:none" onclick="deleteEventType()">Remove</button>
+                    <button type="button" class="ui green button put-event-type" style="display:none" onclick="saveEventType(true)">Save</button>
                 </div>
             </div>
         </div>
@@ -416,6 +426,10 @@
             <div class="map-container"><!--  --></div>
         </c:if>
         <div class="info-container">
+            <div class="button-container">
+                <button type="button" class="btn btn-warning" onclick="editForm(); return false;"><i class="fa fa-edit"><!--  --></i></button>
+                <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;"><i class="fa fa-trash"><!--  --></i></button>
+            </div>
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
             <div id="event-time"><div class="col-sm-6 event-date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
@@ -432,15 +446,27 @@
                 <div style="clear:both"><!--  --></div>
                 <div class="button-container">
                     <button type="button" class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
-                    <button type="button" class="btn btn-info" onclick="editForm(); return false;">Edit</button>
-                    <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;">Delete</button>
                 </div>
                 <c:if test="${not empty eventTypes}">
-                    <h3 class="ui header">events taking place on <div class="event-date">${event.timeStart}</div></h3>
+                    <h3 class="ui header event-type-header">events taking place on <div class="event-date">${event.timeStart}</div></h3>
                     <div style="clear:both"><!--  --></div>
-                    <c:forEach var="item" items="${eventTypes}">
-                        <div>${item}</div>
-                    </c:forEach>
+                    <table class="ui small table">
+                        <thead><tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Distance</th>
+                            <th>Start Time</th>
+                        </tr></thead>
+                        <tbody>
+                            <c:forEach var="item" items="${eventTypes}"><tr class="eventtype-item" onclick="editEventType('${item.typeName}', '${item.racetype}', '${item.distance}', '${item.startTime}', '${item.id}')">
+                                <td>${item.typeName}</td>
+                                <td>${item.racetype}</td>
+                                <td>${item.distance}</td>
+                                <c:set var="time" value="${item.startTime}" />
+                                <td><fmt:formatDate type="time" value="${time}" /></td>
+                            </tr></c:forEach>
+                        </tbody>
+                    </table>
                 </c:if>
                 <c:if test="${lastImport != null}">
                     <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
@@ -498,21 +524,36 @@
             })
 
             var momentRRTime = moment('${event.timeStart}').startOf('hour');
-            jQuery("#timedisp")
-                .datetimepicker({
+            jQuery("#timedisp").datetimepicker({
                     defaultDate: momentRRTime,
-                    pickDate: false,
-                    dateFormat: 'h:mm:ss a'
+                    format: 'hh:mm'
                 });
-
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").val("");
             });
 
+            jQuery(".ui.form .field > .selection.dropdown").dropdown();
             getWebappId();
             getWaiver();
         }
 
+        function deleteEventType(){
+            if( currEventTypeId === null ){
+                alert("There was an error trying to delete this event type!");
+            }
+            else{
+                var eventTypeUrl = "/bibs-server/events/addTypeToEvent/${event.id}";
+                var ajaxType = 'DELETE';
+                jQuery.ajax({
+                    url: eventTypeUrl + "?" + dat,
+                    type: ajaxType,
+                    contentType: "text/html",
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })
+            }
+        }
 
         function saveEventType(put){
             var error = true;
@@ -520,12 +561,16 @@
             var eventTypeUrl = "/bibs-server/events/addTypeToEvent/${event.id}";
             var ajaxType = 'POST';
             if( put ){
-                // update logic
+                ajaxType = 'PUT';
             }
 
             var dat = "";
             var typeName  = jQuery('input[name="typeName"]').val();
             var distance  = jQuery('input[name="distance"]').val();
+            var distType  = null;
+            if( jQuery('#dist-m').hasClass('active')  ){ distType = ' m';  }
+            if( jQuery('#dist-km').hasClass('active') ){ distType = ' km'; }
+            if( jQuery('#dist-mi').hasClass('active') ){ distType = ' mi'; }
             var startTime = jQuery('input[name="startTime"]').val();
             var raceType  = jQuery('input[name="raceType"]').val();
 
@@ -543,7 +588,7 @@
             }
             else{
                 if( typeName  !== "" ){ dat += '&amp;typeName='  + typeName  }
-                if( distance  !== "" ){ dat += '&amp;distance='  + distance  }
+                if( distance  !== "" ){ dat += '&amp;distance='  + distance + distType  }
                 if( startTime !== "" ){ dat += '&amp;startTime=' + parseDate }
                 if( raceType  !== "" ){ dat += '&amp;racetype='  + raceType  }
                 if( dat.substring(0,1) === "&amp;" ){
@@ -561,13 +606,36 @@
             }
         }
 
-        /*
-            - typeName (optional, string) - optional custom name from racedirector
-            - distance (string,list) - list of common race types. Regex populates fields
-            - startTime (time of specific event)
-            - raceType (string, from list) - denotes running/triathlon/etc
-        */
+        var initModal = false;
 
+        function addEventType(){
+            jQuery("#addType").modal('show');
+            jQuery(".post-event-type").show();
+            jQuery(".put-event-type").hide();
+            jQuery(".ui.form .field > .selection.dropdown").dropdown();
+            jQuery('#putFieldForm input').val('');
+
+            jQuery('#racetype-dropdown').dropdown('clear');
+        }
+
+        var currEventTypeId;
+        function editEventType(typeName, type, dist, raceTime, id){
+            currEventTypeId = id;
+            jQuery(".post-event-type").hide();
+            jQuery(".put-event-type").show();
+
+            jQuery('#putFieldForm input[name="typeName"]').val(typeName);
+            jQuery('#putFieldForm input[name="raceType"]').val(type);
+            jQuery('#racetype-dropdown').dropdown("set selected", type);
+            var parseDist = dist.split(' ');
+            jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+            if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('active'); }
+            if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('active'); }
+            if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('active'); }
+            var dt = moment(raceTime);
+            jQuery('#timedisp').data().DateTimePicker.date(dt);
+            jQuery("#addType").modal('show');
+        }
         function getWaiver(){
             var request = jQuery.ajax({
                 url: '${event.waiver}',
@@ -660,13 +728,6 @@
         }
         function redirectImport(){
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
-        }
-
-        var initModal = false;
-
-        function addEventType(){
-            jQuery("#addType").modal('show');
-            jQuery(".ui.form .field > .selection.dropdown").dropdown();
         }
         function regUrl(){
             jQuery("#regButton").modal('show');
