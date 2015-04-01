@@ -524,9 +524,11 @@
             })
 
             var momentRRTime = moment('${event.timeStart}').startOf('hour');
-            jQuery("#timedisp").datetimepicker({
+            jQuery("#timedisp")
+                .datetimepicker({
                     defaultDate: momentRRTime,
-                    format: 'hh:mm'
+                    pickDate: false,
+                    dateFormat: 'h:mm:ss a'
                 });
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").val("");
@@ -632,8 +634,7 @@
             if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('active'); }
             if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('active'); }
             if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('active'); }
-            var dt = moment(raceTime);
-            jQuery('#timedisp').data().DateTimePicker.date(dt);
+            jQuery('#timedisp').data('DateTimePicker').setDate(moment(raceTime));
             jQuery("#addType").modal('show');
         }
         function getWaiver(){

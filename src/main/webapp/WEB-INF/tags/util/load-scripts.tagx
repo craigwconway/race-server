@@ -7,7 +7,7 @@
 
 <!-- other utils   -->
 <spring:url value="/resources/scripts/bootstrap.min.js" var="bootjs_url" />
-<spring:url value="/resources/scripts/bootstrap-datetimepicker-v4.min.js" var="datepicker_url" />
+<spring:url value="/resources/scripts/bootstrap-datetimepicker.min.js" var="datepicker_url" />
 <!-- <spring:url value="/resources/scripts/jquery.geocomplete.js" var="geocomplete_url" /> -->
 <spring:url value="/resources/scripts/jquery.mask.min.js" var="mask_url" />
 <spring:url value="/resources/scripts/jquery-ui.js" var="jquery_ui_url" />
