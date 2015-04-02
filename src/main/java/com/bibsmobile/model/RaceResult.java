@@ -396,7 +396,7 @@ public class RaceResult implements Comparable<RaceResult> {
     }
 
     public static long fromHumanTime(long startTime, String humanReadable) {
-        return startTime + fromHumanTime(humanReadable);
+        return fromHumanTime(humanReadable) > 0 ? startTime + fromHumanTime(humanReadable) : 0;
     }
 
     public static String toHumanTime(long start, long finish) {

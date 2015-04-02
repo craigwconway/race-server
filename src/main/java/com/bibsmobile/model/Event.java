@@ -53,8 +53,8 @@ import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
-//@Indexed
-//@Spatial(spatialMode = SpatialMode.HASH)
+@Indexed
+@Spatial(spatialMode = SpatialMode.HASH)
 public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -69,7 +69,7 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private List<AwardCategory> awardCategorys;
 
-    //@Field
+    @Field
     @NotNull
     private String name;
 
@@ -95,10 +95,10 @@ public class Event {
     
     private String location;
 
-    //@Latitude
+    @Latitude
     private Double latitude;
 
-    //@Longitude
+    @Longitude
     private Double longitude;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -164,7 +164,7 @@ public class Event {
 
     private String syncId;
     
-    //@Field
+    @Field
     private String charity;
 
     private boolean regEnabled;
@@ -300,6 +300,7 @@ public class Event {
 
     public List<RaceResult> getAwards(String gender, int min, int max, int size, List<Long> excludeBibs) { 
     	List<RaceResult> results = Event.findRaceResultsByAwardCategory(id,gender,min,max,1,999);
+    	Collections.sort(results);
     	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
     	for(RaceResult r : results){
     		if(!excludeBibs.contains(r.getBib())){
@@ -312,6 +313,28 @@ public class Event {
     	Collections.sort(resultsFiltered);
     	return resultsFiltered;
     }
+
+    
+    public List<AwardCategoryResults> calculateRank(Event event){
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	
+		// filter medals
+		List<Long> awarded = new ArrayList<Long>();
+    	for(AwardCategory c:event.getAwardCategorys()){
+    		if(!c.isMedal()){
+    			List<RaceResult> rr = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), 9999, awarded);
+    			results.add(new AwardCategoryResults(c,rr));
+    			// track mdals, only 1 medal ppn
+    			for(RaceResult r:rr){
+        			awarded.add(r.getBib());
+    			}
+    		}
+    	}
+    	
+    	Collections.sort(results);
+    	return results;
+    }
+    
     
     public List<AwardCategoryResults> calculateMedals(Event event){
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
