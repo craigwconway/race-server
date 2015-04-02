@@ -37,9 +37,6 @@
         .parsley-custom-error-message{
             list-style-type: none;
         }
-        .modal-body {
-            overflow-y: auto;
-        }
     </style>
     <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="search-label" aria-hidden="true">
         <div class="modal-dialog">
@@ -55,7 +52,7 @@
                             </button>
                         </div>
                         <div class="pull-right">
-                            <div class="ui icon yellow button" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil fa-inverse"><!--  --></i></div>
+                            <div class="ui icon yellow button" onclick="editModal()"><i class="fa fa-pencil fa-inverse"><!--  --></i></div>
                             <div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div>
                         </div>
                         <div style="clear:both"><!--  --></div>
@@ -89,38 +86,92 @@
     </div>
 
     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="edit-label" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title ui header" id="edit-label">Receipt Edit <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button></h2>
                 </div>
                 <div class="modal-body">
-                    <div class="ui form edit-fields" id="edit-athlete" data-parsley-validate="true">
-                        <div class="two fields">
-                            <div class="field">
-                                <input  type="text" placeholder="First Name" class="edit-field" id="edit-firstname"
-                                        data-parsley-error-message="Please enter a first name."
-                                        data-parsley-required="true"><!--  --></input>
+                    <h3 class="ui header">Transaction: <span id="edit-title-detail"><!--  --></span></h3>
+                    <div class="ui athlete-menu accordion">
+                        <div class="ui tertiary attached raised segment title">Edit Athlete <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
+                        <div class="ui form edit-fields attached raised segment content" id="edit-athlete" data-parsley-validate="true">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>First Name</label>
+                                    <input  type="text" placeholder="First Name" class="edit-field" id="edit-firstname"
+                                            data-parsley-error-message="Please enter a first name."
+                                            data-parsley-required="true"><!--  --></input>
+                                </div>
+                                <div class="field">
+                                    <label>Last Name</label>
+                                    <input  type="text" placeholder="Last Name" class="edit-field" id="edit-lastname"
+                                            data-parsley-error-message="Please enter a last name."
+                                            data-parsley-required="true"><!--  --></input>
+                                </div>
                             </div>
-                            <div class="field">
-                                <input  type="text" placeholder="Last Name" class="edit-field" id="edit-lastname"
-                                        data-parsley-error-message="Please enter a last name."
-                                        data-parsley-required="true"><!--  --></input>
+                            <div class="two fields">
+                                <div class="twelve wide field">
+                                    <label>Email</label>
+                                    <input  type="email" placeholder="Email" class="edit-field" id="edit-email"
+                                            data-parsley-error-message="Please enter a valid email address."
+                                            data-parsley-required="true"><!--  --></input>
+                                </div>
+                                <div class="four wide field">
+                                    <label>Gender</label>
+                                    <div class="ui small buttons">
+                                        <div class="ui button edit-field" id="gender-m" onclick="genderHandler('M')"><span><i class="fa fa-mars"><!--  --></i></span></div>
+                                        <div class="or"><!--  --></div>
+                                        <div class="ui button edit-field" id="gender-f" onclick="genderHandler('F')"><span><i class="fa fa-venus"><!--  --></i></span></div>
+                                        <span style="display:none">
+                                            <input  class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-m" value="Male"
+                                                    data-parsley-mincheck="1" data-parsley-error-message="Please select a gender."><!--  --></input>
+                                            <input class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-f" value="Female"><!--  --></input>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Birthdate</label>
+                                    <input  type="text" class="edit-field" id="edit-birthdate"
+                                            placeholder="Birthdate"
+                                            data-provide="datepicker"
+                                            data-date-format="MM/DD/YYYY"
+                                            data-parsley-error-message="Please enter a birthdate."
+                                            data-parsley-required="true"></input>
+                                </div>
+                                <div class="field">
+                                    <label>Phone</label>
+                                    <input  type="text" placeholder="Phone Number" class="edit-field" id="edit-phone"
+                                            data-parsley-error-message="Please enter a valid phone number."
+                                            data-parsley-required="true"><!--  --></input>
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label style="width:100%">Emergency Contact Name</label>
+                                    <input  type="text" placeholder="Emergency Contact Name" class="edit-field" id="edit-em-name"
+                                            data-parsley-error-message="Please enter an emergency contact name."
+                                            data-parsley-required="true"><!--  --></input>
+                                </div>
+                                <div class="field">
+                                    <label style="width:100%">Emergency Contact Phone</label>
+                                    <input  type="text" placeholder="Emergency Contact Phone Number" class="edit-field" id="edit-em-phone"
+                                            data-parsley-error-message="Please enter a valid phone number."
+                                            data-parsley-required="true"><!--  --></input>
+                                </div>
                             </div>
                         </div>
-                        <div class="ui small buttons">
-                            <div class="ui button edit-field" id="gender-m" onclick="genderHandler('M')"><span><i class="fa fa-mars"><!--  --></i></span></div>
-                            <div class="or"><!--  --></div>
-                            <div class="ui button edit-field" id="gender-f" onclick="genderHandler('F')"><span><i class="fa fa-venus"><!--  --></i></span></div>
-                            <span style="display:none">
-                                <input  class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-m"
-                                        data-parsley-mincheck="1" data-parsley-error-message="Please select a gender."><!--  --></input>
-                                <input class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-f"><!--  --></input>
-                            </span>
-                        </div>
-                        <div id="edit-cart"><!--  --></div>
                     </div>
-                </div>    
+                    <div style="clear:both;height:15px;width:100%;"><!--  --></div>
+                    <div class="ui purchase-menu accordion">
+                        <div class="ui tertiary attached segment title">Edit Purchases <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
+                        <div class="ui form edit-fields attached raised segment content">
+                            <div id="edit-cart" data-parsley-validate="true"><!--  --></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-success" id="footer-save" onclick="editValidate()">Save</button>
@@ -173,8 +224,12 @@
                                     <input class="cartid-${item.id}" type="text" style="display:none" value="${item.id}"></input>
                                     <input class="firstname-${item.id}" type="text" style="display:none" value="${item.user.firstname}"></input>
                                     <input class="lastname-${item.id}" type="text" style="display:none" value="${item.user.lastname}"></input>
+                                    <input class="bday-${item.id}" type="text" style="display:none" value="${item.user.birthdate}"></input>
                                     <input class="gender-${item.id}" type="text" style="display:none" value="${item.user.gender}"></input>
                                     <input class="email-${item.id}" type="text" style="display:none" value="${item.user.email}"></input>
+                                    <input class="phone-${item.id}" type="text" style="display:none" value="${item.user.phone}"></input>
+                                    <input class="emergencyname-${item.id}" type="text" style="display:none" value="${item.user.emergencyContactName}"></input>
+                                    <input class="emergencyphone-${item.id}" type="text" style="display:none" value="${item.user.emergencyContactPhone}"></input>
                                     <input class="stripe-${item.id}" type="text" style="display:none" value="${item.stripeChargeId}"></input>
                                     <c:forEach items="${item.cartItems}" var="cart">
                                         <input  type="text" data-for="name"
@@ -195,6 +250,14 @@
                                         <input  type="text" data-for="quantity"
                                                 class="cartitem-${item.id} quantity" style="display:none"
                                                 value="${cart.quantity}"></input>
+                                        <c:if test="${cart.eventCartItem.type == 'T_SHIRT'}">
+                                            <input  type="text" data-for="sizeOptions"
+                                                    class="size-options-${item.id}" style="display:none"
+                                                    value="${cart.eventCartItem.tshirtSizes}"></input>
+                                            <input  type="text" data-for="colorOptions"
+                                                    class="color-options-${item.id}" style="display:none"
+                                                    value="${cart.eventCartItem.tshirtColors}"></input>
+                                        </c:if>
                                     </c:forEach>
                                 </tr>
                             </c:forEach>
@@ -206,61 +269,120 @@
     </div>
     <script>
         window.onload = function(){
+            initModalContent();
         }
 
-        var currId;
-        var currFirstName;
-        var currEmail;
+        function initModalContent(){
+            // edit info
+            jQuery("#edit-cart").append('<div id="edit-cartitem-table">');
+            jQuery("#cartitem-table").clone().appendTo("#edit-cartitem-table");
+            jQuery("#edit-cartitem-table > #cartitem-table").removeAttr("id");
+            jQuery("#edit-cartitem-table > table > thead > tr > td:nth-child(2)").text('Size');
+            jQuery("#edit-cartitem-table > table > thead > tr > td:nth-child(3)").text('Color');
+            jQuery("#edit-cartitem-table > table > thead > tr > td:nth-child(4)").text('Quantity');
+            jQuery("#edit-cartitem-table > table").append('<tbody>');
+
+            // purchase info
+            jQuery("#cartitem-table").append('<tbody>');
+        }
+
+        var currCartId;     var currStripeId;
+        var currFirstName;  var currLastName;
+        var currBirth;      var currGender;
+        var currEmail;      var currPhone;
+        var currEmName;     var currEmPhone;
         function searchModal(id){
             jQuery("#searchModal").modal('show');
             jQuery("#modal-athlete").text(jQuery(".firstname-"+id).val() + " " + jQuery(".lastname-"+id).val() + " ");
-            if( jQuery(".gender-"+id).val() === 'FEMALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-venus"><!-- --></i>') }
-            else if( jQuery(".gender-"+id).val() === 'MALE' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
+            if( jQuery(".gender-"+id).val() === 'Female' ){ jQuery("#modal-athlete").append('<i class="fa fa-venus"><!-- --></i>') }
+            else if( jQuery(".gender-"+id).val() === 'Male' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
             jQuery("#modal-transaction").text("B" + jQuery(".cartid-"+id).val() + "T" + jQuery(".stripe-"+id).val());
             
-            currId = id;
+            currCartId = jQuery(".cartid-"+id).val();
+            currStripeId = jQuery(".stripe-"+id).val();
             currFirstName = jQuery(".firstname-"+id).val();
+            currLastName = jQuery(".lastname-"+id).val();
+            currGender = jQuery(".gender-"+id).val(); 
+            currBirth = jQuery(".bday-"+id).val();
             currEmail = jQuery(".email-"+id).val();
-            
+            currPhone = jQuery(".phone-"+id).val();
+            currEmName = jQuery(".emergencyname-"+id).val();
+            currEmPhone = jQuery(".emergencyphone-"+id).val();
+
             /*  append cart items into list view  */
             var fieldCount = 0;     var cartItemCount = 0;
             var type;   var name;   var price;
             var size;   var color;  var quantity;
+            var editable = false;
 
-            jQuery("#cartitem-table tbody").html("");
-            jQuery("#cartitem-table").append('<tbody>');
             jQuery(".cartitem-"+id).each(function(){
                 var info = jQuery(this).attr("data-for");
                 if( info == 'type' ){
                     type = jQuery(this).val();
-                    if( type === 'T_SHIRT' ){ type = "T-Shirt"; }
-                    if( type === 'TICKET' ){ type = "Ticket"; }
-                    if( type === 'DONATION' ){ type = "Donation"; }
+                    if( type === 'T_SHIRT' ){   type = "T-Shirt";     editable = true;  }
+                    if( type === 'TICKET' ){    type = "Ticket";      editable = false; }
+                    if( type === 'DONATION' ){  type = "Donation";    editable = false; }
                 }
-                if( info == 'name' ){       name = jQuery(this).val();      console.log(name)}
-                if( info == 'size' ){       size = jQuery(this).val();      console.log(size)}
-                if( info == 'color' ){      color = jQuery(this).val();     console.log(color)}
-                if( info == 'quantity' ){   quantity = jQuery(this).val();  console.log(quantity)}
-                if( info == 'price' ){      price = jQuery(this).val();     console.log(name)}
+                if( info == 'name' ){       name = jQuery(this).val();     }
+                if( info == 'size' ){       size = jQuery(this).val();     }
+                if( info == 'color' ){      color = jQuery(this).val();    }
+                if( info == 'quantity' ){   quantity = jQuery(this).val(); }
+                if( info == 'price' ){      price = jQuery(this).val();    }
                 fieldCount++;
                 if( fieldCount % 6 === 0 ){
                     cartItemCount++;
+
+                    // purchase info
                     var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartItemCount + '"></tr>');
-                    var rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="name' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="details' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class=".receipt-item' + id + '" id="price' + id + '-' + cartItemCount + '"></td>')
+                    var rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="name' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="details' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartItemCount + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="price' + id + '-' + cartItemCount + '"></td>')
                     
                         jQuery('#name'+id+'-'+cartItemCount).text(type + ": " + name);
                         if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartItemCount).text(size + " " + color); }
                         jQuery('#quantity'+id+'-'+cartItemCount).text(quantity);
                         jQuery('#price'+id+'-'+cartItemCount).text(price);
+
+                    // edit info
+                    if( editable ){
+                        var row = jQuery("#edit-cartitem-table > table > tbody").append('<tr id="edit-row' + id + '-' + cartItemCount + '"></tr>');
+                        var rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-name' + id + '-' + cartItemCount + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartItemCount + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartItemCount + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartItemCount + '"></td>')
+                        jQuery('#edit-name'+id+'-'+cartItemCount).text(type + ": " + name);
+
+                        var sizeOpt = jQuery('.size-options-'+id).val();
+                        sizeOpt = sizeOpt.split(',');
+                        var colorOpt = jQuery('.color-options-'+id).val();
+                        colorOpt = colorOpt.split(',');
+
+                        var sizeHtmlStr = '<div class="ui selection dropdown" id="sizeOpt-' + id + '-' + cartItemCount + '"><input id="new-size-' + id +'-'+cartItemCount  + '" name="new-size" type="hidden"></input><div class="default text">Size</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
+                        var colorHtmlStr = '<div class="ui selection dropdown" id="colorOpt-' + id + '-' + cartItemCount + '"><input id="new-color-' + id +'-'+cartItemCount  + '" name="new-color" type="hidden"></input><div class="default text">Color</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
+                        for( var i = 0; i &lt; sizeOpt.length; i++ ){
+                            sizeHtmlStr += '<div class="item" data-value="' + sizeOpt[i] + '">' + sizeOpt[i] + '</div>';
+                        }
+                        for( var i = 0; i &lt; colorOpt.length; i++ ){
+                            colorHtmlStr += '<div class="item" data-value="' + colorOpt[i] + '">' + colorOpt[i] + '</div>';
+                        }
+                        sizeHtmlStr += '</div></div>';
+                        colorHtmlStr += '</div></div>';
+                        jQuery('#edit-size'+id+'-'+cartItemCount).html(sizeHtmlStr);
+                        jQuery('#edit-color'+id+'-'+cartItemCount).html(colorHtmlStr);
+                        jQuery('#sizeOpt-'+id+'-'+cartItemCount).dropdown('set selected', size);
+                        jQuery('#colorOpt-'+id+'-'+cartItemCount).dropdown('set selected', color);
+
+                        var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-quantity-' + id + '-' + cartItemCount + '" name="new-quantity" placeholder="Quantity" value="' + quantity + '"></input></div></div>'
+
+                        jQuery('#edit-quantity'+id+'-'+cartItemCount).html(quantHtmlStr);
+                    }
                 }
             })
             
             jQuery("#cartitem-table").append('</tbody>');
-
-            jQuery("#cart-details").clone().appendTo("#edit-cart");
+            jQuery("#edit-cartitem-table > table").append('</tbody>');
+            jQuery("#edit-cartitem-table").append('</div>');
         }
 
         function refundHandler(){
@@ -279,23 +401,31 @@
             })
         }
 
-        function editHandler(){
-            var firstname = jQuery("#firstname").val();
-            var lastname = jQuery("#lastname").val();
-            var gender = jQuery("#gender").val();
-            jQuery("#edit-firstname").val(firstname);
-            jQuery("#edit-lastname").val(lastname);
-            if( jQuery("#gender").val() === 'FEMALE' ){ 
+        function editModal(){
+            jQuery('.ui.accordion').accordion();
+            jQuery('#edit-title-detail').text(jQuery("#modal-transaction").text());
+
+            jQuery("#editModal").modal('show');
+
+            jQuery("#edit-firstname").val(currFirstName);
+            jQuery("#edit-lastname").val(currLastName);
+            jQuery("#edit-email").val(currEmail);
+            jQuery("#edit-phone").val(currPhone);
+            jQuery("#edit-em-name").val(currEmName);
+            jQuery("#edit-em-phone").val(currEmPhone);
+            var birthMoment = moment(currBirth, 'YYYY-MM-DD');
+
+            jQuery("#edit-birthdate").datetimepicker({
+                defaultDate: birthMoment,
+                dateFormat: 'MM/DD/YYYY',
+                pickTime: false
+            });
+            if( currGender === 'Female' ){ 
                 genderHandler('F');
             }
-            else if( jQuery("#gender").val() === 'MALE' ){ 
+            else if( currGender === 'Male' ){ 
                 genderHandler('M');
             }
-
-            jQuery('#edit-athlete').parsley({
-                errorsWrapper: '<div class="has-error"></div>',
-                errorTemplate: '<span></span>'
-            });
         }
 
         function editValidate(){
@@ -320,8 +450,49 @@
                 })
             }
             else{
+                var obj = {};
+                obj.user = {};
+                obj.user.firstname = jQuery("#edit-firstname").val();
+                obj.user.lastname = jQuery("#edit-lastname").val();
+                obj.user.email = jQuery("#edit-email").val();
+                obj.user.phone = jQuery("#edit-phone").val();
+                obj.user.birthdate = jQuery("#edit-birthdate").val();
+                obj.user.gender = jQuery('input[name="gender"]').val();
+                obj.user.emergencyContactName = jQuery("#edit-em-name").val();
+                obj.user.emergencyContactPhone = jQuery("#edit-em-phone").val();
+                obj.cartItems = [];
+
+                jQuery("#edit-cartitem-table > table > tbody > tr").each(function(){
+                    var cartObj = {};
+                    var cartId = jQuery(this).attr("id");
+                    cartId = cartId.substring(cartId.indexOf('-') + 1, cartId.length);
+                    cartId = cartId.replace( /^\D+/g, '');
+                    cartObj.size  = jQuery('#new-size-'+cartId).val();
+                    cartObj.color = jQuery('#new-color-'+cartId).val();
+                    cartObj.quantity = jQuery('#new-quantity-'+cartId).val();
+                    
+                    cartId = cartId.substring(0, cartId.indexOf('-'));
+                    cartObj.id = cartId;
+                    
+                    obj.cartItems.push(cartObj);
+                });
+
+                editHandler(obj);
                 jQuery("#footer-save").removeClass('disabled');
             }
+        }
+
+        function editHandler(obj){
+            var request = jQuery.ajax({
+                url: "/bibs-server/rest/registrations/edit/"+currCartId,
+                type: "PUT",
+                contentType:"application/json",
+                dataType: "JSON",
+                data: JSON.stringify(obj),
+                complete: function(data) {
+                    window.location.reload();
+                }
+            })
         }
 
         function genderHandler(type){

@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.CustomRegField;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemCoupon;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 
@@ -68,6 +69,7 @@ public class EventCartItemController {
         uiModel.addAttribute("event", e);
         uiModel.addAttribute("eventcartitems", EventCartItem.findEventCartItemsByEvent(e).getResultList());
         uiModel.addAttribute("customregfields", CustomRegField.findCustomRegFieldsByEvent(e).getResultList());
+        uiModel.addAttribute("eventcoupons", EventCartItemCoupon.findEventCartItemsByEvent(e).getResultList());
         this.addDateTimeFormatPatterns(uiModel);
         return "eventitems/list";
     }

@@ -1,6 +1,9 @@
 package com.bibsmobile.model;
 
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.annotation.Transactional;
+
+import flexjson.JSONSerializer;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+
+import java.util.Collection;
 import java.util.List;
 
 @Configurable
@@ -26,7 +32,8 @@ public class EventCartItemCoupon {
     private String code;
     private Long discountAbsolute; // is an object to allow for null
     private Double discountRelative; // is an object to allow for null
-    private int numberAvailable;
+    private int available;
+    private int used;
 
     public Long getId() {
         return id;
@@ -52,31 +59,45 @@ public class EventCartItemCoupon {
         this.code = code;
     }
 
-    public long getDiscountAbsolute() {
+    public Long getDiscountAbsolute() {
         return discountAbsolute;
     }
 
-    public void setDiscountAbsolute(long discount) {
+    public void setDiscountAbsolute(Long discount) {
         this.discountAbsolute = discount;
     }
 
-    public double getDiscountRelative() {
+    public Double getDiscountRelative() {
         return discountRelative;
     }
 
-    public void setDiscountRelative(double discount) {
+    public void setDiscountRelative(Double discount) {
         this.discountRelative = discount;
     }
 
-    public int getNumberAvailable() {
-        return numberAvailable;
+    public int getAvailable() {
+        return available;
     }
 
-    public void setNumberAvailable(int numberAvailable) {
-        this.numberAvailable = numberAvailable;
+    public void setAvailable(int available) {
+        this.available = available;
     }
 
-    public long getDiscount(long originalPrice) {
+    /**
+	 * @return the used
+	 */
+	public int getUsed() {
+		return used;
+	}
+
+	/**
+	 * @param used the used to set
+	 */
+	public void setUsed(int used) {
+		this.used = used;
+	}
+
+	public long getDiscount(long originalPrice) {
         // check that this is valid
         if (this.discountAbsolute == null && this.discountRelative == null)
             throw new IllegalStateException("No discount set");
@@ -105,5 +126,80 @@ public class EventCartItemCoupon {
             return null;
         else
             return resultList.get(0);
+    }
+
+    public static EventCartItemCoupon findEventCartItemCoupon(Long id) {
+        if (id == null)
+            return null;
+        return entityManager().find(EventCartItemCoupon.class, id);
+    }    
+
+    public static TypedQuery<EventCartItem> findEventCartItemsByEvent(Event event) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event", EventCartItem.class);
+        q.setParameter("event", event);
+        return q;
+    }    
+    
+    @PersistenceContext
+    transient EntityManager entityManager;    
+
+    public static EntityManager entityManager() {
+        EntityManager em = new EventCartItem().entityManager;
+        if (em == null)
+            throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+        return em;
+    }    
+    
+    @Transactional
+    public void persist() {
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
+        this.entityManager.persist(this);
+    }
+
+    @Transactional
+    public void remove() {
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
+        if (this.entityManager.contains(this)) {
+            this.entityManager.remove(this);
+        } else {
+            EventCartItem attached = EventCartItem.findEventCartItem(this.id);
+            this.entityManager.remove(attached);
+        }
+    }
+
+    @Transactional
+    public void flush() {
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
+        this.entityManager.flush();
+    }
+
+    @Transactional
+    public void clear() {
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
+        this.entityManager.clear();
+    }
+
+    @Transactional
+    public EventCartItemCoupon merge() {
+        if (this.entityManager == null)
+            this.entityManager = entityManager();
+        EventCartItemCoupon merged = this.entityManager.merge(this);
+        this.entityManager.flush();
+        return merged;
+    }    
+    
+    public String toJson() {
+        return new JSONSerializer().exclude("*.class").serialize(this);
+    }
+    
+    public static String toJsonArray(Collection<EventCartItem> collection) {
+        return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
     }
 }

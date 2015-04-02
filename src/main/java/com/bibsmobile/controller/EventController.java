@@ -1177,6 +1177,7 @@ public class EventController {
         ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());
         ResultsFileMapping latestMapping = ((latestImport == null) ? null : latestImport.getResultsFileMapping());
         uiModel.addAttribute("event", e);
+        uiModel.addAttribute("eventTypes", e.getEventTypes());
         uiModel.addAttribute("dropboxUnlink", (UserProfileUtil.getLoggedInDropboxAccessToken() != null));
         uiModel.addAttribute("lastImport", latestImport);
         uiModel.addAttribute("lastMapping", latestMapping);
