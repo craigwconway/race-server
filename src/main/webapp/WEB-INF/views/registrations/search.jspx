@@ -231,32 +231,35 @@
                                     <input class="emergencyname-${item.id}" type="text" style="display:none" value="${item.user.emergencyContactName}"></input>
                                     <input class="emergencyphone-${item.id}" type="text" style="display:none" value="${item.user.emergencyContactPhone}"></input>
                                     <input class="stripe-${item.id}" type="text" style="display:none" value="${item.stripeChargeId}"></input>
-                                    <c:forEach items="${item.cartItems}" var="cart">
+                                    <c:forEach items="${item.cartItems}" var="cartItem">
+                                        <input  type="text" data-for="id"
+                                                class="cartitem-${item.id} id" style="display:none"
+                                                value="${cartItem.id}"></input>
                                         <input  type="text" data-for="name"
                                                 class="cartitem-${item.id} name" style="display:none"
-                                                value="${cart.eventCartItem.name}"></input>
+                                                value="${cartItem.eventCartItem.name}"></input>
                                         <input  type="text" data-for="type"
                                                 class="cartitem-${item.id} type" style="display:none"
-                                                value="${cart.eventCartItem.type}"></input>
+                                                value="${cartItem.eventCartItem.type}"></input>
                                         <input  type="text" data-for="size"
                                                 class="cartitem-${item.id} size" style="display:none"
-                                                value="${cart.size}"></input>
+                                                value="${cartItem.size}"></input>
                                         <input  type="text" data-for="color"
                                                 class="cartitem-${item.id} color" style="display:none"
-                                                value="${cart.color}"></input>
+                                                value="${cartItem.color}"></input>
                                         <input  type="text" data-for="price"
                                                 class="cartitem-${item.id} price" style="display:none"
-                                                value="${cart.eventCartItem.price}"></input>
+                                                value="${cartItem.eventCartItem.price}"></input>
                                         <input  type="text" data-for="quantity"
                                                 class="cartitem-${item.id} quantity" style="display:none"
-                                                value="${cart.quantity}"></input>
-                                        <c:if test="${cart.eventCartItem.type == 'T_SHIRT'}">
+                                                value="${cartItem.quantity}"></input>
+                                        <c:if test="${cartItem.eventCartItem.type == 'T_SHIRT'}">
                                             <input  type="text" data-for="sizeOptions"
                                                     class="size-options-${item.id}" style="display:none"
-                                                    value="${cart.eventCartItem.tshirtSizes}"></input>
+                                                    value="${cartItem.eventCartItem.tshirtSizes}"></input>
                                             <input  type="text" data-for="colorOptions"
                                                     class="color-options-${item.id}" style="display:none"
-                                                    value="${cart.eventCartItem.tshirtColors}"></input>
+                                                    value="${cartItem.eventCartItem.tshirtColors}"></input>
                                         </c:if>
                                     </c:forEach>
                                 </tr>
@@ -286,6 +289,7 @@
             jQuery("#cartitem-table").append('<tbody>');
         }
 
+        var initIds = [];
         var currCartId;     var currStripeId;
         var currFirstName;  var currLastName;
         var currBirth;      var currGender;
@@ -293,96 +297,97 @@
         var currEmName;     var currEmPhone;
         function searchModal(id){
             jQuery("#searchModal").modal('show');
+            currCartId = jQuery(".cartid-"+id).val();           currStripeId = jQuery(".stripe-"+id).val();
+            currFirstName = jQuery(".firstname-"+id).val();     currLastName = jQuery(".lastname-"+id).val();
+            currGender = jQuery(".gender-"+id).val();           currBirth = jQuery(".bday-"+id).val();
+            currEmail = jQuery(".email-"+id).val();             currPhone = jQuery(".phone-"+id).val();
+            currEmName = jQuery(".emergencyname-"+id).val();    currEmPhone = jQuery(".emergencyphone-"+id).val();
+
             jQuery("#modal-athlete").text(jQuery(".firstname-"+id).val() + " " + jQuery(".lastname-"+id).val() + " ");
             if( jQuery(".gender-"+id).val() === 'Female' ){ jQuery("#modal-athlete").append('<i class="fa fa-venus"><!-- --></i>') }
             else if( jQuery(".gender-"+id).val() === 'Male' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
             jQuery("#modal-transaction").text("B" + jQuery(".cartid-"+id).val() + "T" + jQuery(".stripe-"+id).val());
-            
-            currCartId = jQuery(".cartid-"+id).val();
-            currStripeId = jQuery(".stripe-"+id).val();
-            currFirstName = jQuery(".firstname-"+id).val();
-            currLastName = jQuery(".lastname-"+id).val();
-            currGender = jQuery(".gender-"+id).val(); 
-            currBirth = jQuery(".bday-"+id).val();
-            currEmail = jQuery(".email-"+id).val();
-            currPhone = jQuery(".phone-"+id).val();
-            currEmName = jQuery(".emergencyname-"+id).val();
-            currEmPhone = jQuery(".emergencyphone-"+id).val();
 
-            /*  append cart items into list view  */
-            var fieldCount = 0;     var cartItemCount = 0;
-            var type;   var name;   var price;
-            var size;   var color;  var quantity;
-            var editable = false;
+            // check if table already initialized
+            if(initIds.indexOf(id) > -1){
+                // already initialized.. don't append to table
+            }
+            else{
+                initIds.push(id);
+                /*  append cart items into list view  */
+                var fieldCount = 0;     var cartId;
+                var type;   var name;   var price;
+                var size;   var color;  var quantity;
+                var editable = false;   
 
-            jQuery(".cartitem-"+id).each(function(){
-                var info = jQuery(this).attr("data-for");
-                if( info == 'type' ){
-                    type = jQuery(this).val();
-                    if( type === 'T_SHIRT' ){   type = "T-Shirt";     editable = true;  }
-                    if( type === 'TICKET' ){    type = "Ticket";      editable = false; }
-                    if( type === 'DONATION' ){  type = "Donation";    editable = false; }
-                }
-                if( info == 'name' ){       name = jQuery(this).val();     }
-                if( info == 'size' ){       size = jQuery(this).val();     }
-                if( info == 'color' ){      color = jQuery(this).val();    }
-                if( info == 'quantity' ){   quantity = jQuery(this).val(); }
-                if( info == 'price' ){      price = jQuery(this).val();    }
-                fieldCount++;
-                if( fieldCount % 6 === 0 ){
-                    cartItemCount++;
-
-                    // purchase info
-                    var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartItemCount + '"></tr>');
-                    var rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="name' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="details' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartItemCount + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="price' + id + '-' + cartItemCount + '"></td>')
-                    
-                        jQuery('#name'+id+'-'+cartItemCount).text(type + ": " + name);
-                        if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartItemCount).text(size + " " + color); }
-                        jQuery('#quantity'+id+'-'+cartItemCount).text(quantity);
-                        jQuery('#price'+id+'-'+cartItemCount).text(price);
-
-                    // edit info
-                    if( editable ){
-                        var row = jQuery("#edit-cartitem-table > table > tbody").append('<tr id="edit-row' + id + '-' + cartItemCount + '"></tr>');
-                        var rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-name' + id + '-' + cartItemCount + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartItemCount + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartItemCount + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartItemCount).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartItemCount + '"></td>')
-                        jQuery('#edit-name'+id+'-'+cartItemCount).text(type + ": " + name);
-
-                        var sizeOpt = jQuery('.size-options-'+id).val();
-                        sizeOpt = sizeOpt.split(',');
-                        var colorOpt = jQuery('.color-options-'+id).val();
-                        colorOpt = colorOpt.split(',');
-
-                        var sizeHtmlStr = '<div class="ui selection dropdown" id="sizeOpt-' + id + '-' + cartItemCount + '"><input id="new-size-' + id +'-'+cartItemCount  + '" name="new-size" type="hidden"></input><div class="default text">Size</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
-                        var colorHtmlStr = '<div class="ui selection dropdown" id="colorOpt-' + id + '-' + cartItemCount + '"><input id="new-color-' + id +'-'+cartItemCount  + '" name="new-color" type="hidden"></input><div class="default text">Color</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
-                        for( var i = 0; i &lt; sizeOpt.length; i++ ){
-                            sizeHtmlStr += '<div class="item" data-value="' + sizeOpt[i] + '">' + sizeOpt[i] + '</div>';
-                        }
-                        for( var i = 0; i &lt; colorOpt.length; i++ ){
-                            colorHtmlStr += '<div class="item" data-value="' + colorOpt[i] + '">' + colorOpt[i] + '</div>';
-                        }
-                        sizeHtmlStr += '</div></div>';
-                        colorHtmlStr += '</div></div>';
-                        jQuery('#edit-size'+id+'-'+cartItemCount).html(sizeHtmlStr);
-                        jQuery('#edit-color'+id+'-'+cartItemCount).html(colorHtmlStr);
-                        jQuery('#sizeOpt-'+id+'-'+cartItemCount).dropdown('set selected', size);
-                        jQuery('#colorOpt-'+id+'-'+cartItemCount).dropdown('set selected', color);
-
-                        var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-quantity-' + id + '-' + cartItemCount + '" name="new-quantity" placeholder="Quantity" value="' + quantity + '"></input></div></div>'
-
-                        jQuery('#edit-quantity'+id+'-'+cartItemCount).html(quantHtmlStr);
+                jQuery(".cartitem-"+id).each(function(){
+                    var info = jQuery(this).attr("data-for");
+                    if( info == 'type' ){
+                        type = jQuery(this).val();
+                        if( type === 'T_SHIRT' ){   type = "T-Shirt";     editable = true;  }
+                        if( type === 'TICKET' ){    type = "Ticket";      editable = false; }
+                        if( type === 'DONATION' ){  type = "Donation";    editable = false; }
                     }
-                }
-            })
-            
-            jQuery("#cartitem-table").append('</tbody>');
-            jQuery("#edit-cartitem-table > table").append('</tbody>');
-            jQuery("#edit-cartitem-table").append('</div>');
+                    if( info == 'id' ){         cartId = jQuery(this).val();     }
+                    if( info == 'name' ){       name = jQuery(this).val();     }
+                    if( info == 'size' ){       size = jQuery(this).val();     }
+                    if( info == 'color' ){      color = jQuery(this).val();    }
+                    if( info == 'quantity' ){   quantity = jQuery(this).val(); }
+                    if( info == 'price' ){      price = jQuery(this).val();    }
+                    fieldCount++;
+                    if( fieldCount % 6 === 0 ){
+                        // purchase info
+                        var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartId + '"></tr>');
+                        var rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="name' + id + '-' + cartId + '"></td>')
+                            rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="details' + id + '-' + cartId + '"></td>')
+                            rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartId + '"></td>')
+                            rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="price' + id + '-' + cartId + '"></td>')
+                        
+                            jQuery('#name'+id+'-'+cartId).text(type + ": " + name);
+                            if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartId).text(size + " " + color); }
+                            jQuery('#quantity'+id+'-'+cartId).text(quantity);
+                            jQuery('#price'+id+'-'+cartId).text(price);
+
+                        // edit info
+                        if( editable ){
+                            var row = jQuery("#edit-cartitem-table > table > tbody").append('<tr id="edit-row' + id + '-' + cartId + '"></tr>');
+                            var rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-name' + id + '-' + cartId + '"></td>')
+                                rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartId + '"></td>')
+                                rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartId + '"></td>')
+                                rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartId + '"></td>')
+                            jQuery('#edit-name'+id+'-'+cartId).text(type + ": " + name);
+
+                            var sizeOpt = jQuery('.size-options-'+id).val();
+                            sizeOpt = sizeOpt.split(',');
+                            var colorOpt = jQuery('.color-options-'+id).val();
+                            colorOpt = colorOpt.split(',');
+
+                            var sizeHtmlStr = '<div class="ui selection dropdown" id="sizeOpt-' + id + '-' + cartId + '"><input id="new-size-' + id +'-'+cartId  + '" name="new-size" type="hidden"></input><div class="default text">Size</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
+                            var colorHtmlStr = '<div class="ui selection dropdown" id="colorOpt-' + id + '-' + cartId + '"><input id="new-color-' + id +'-'+cartId  + '" name="new-color" type="hidden"></input><div class="default text">Color</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
+                            for( var i = 0; i &lt; sizeOpt.length; i++ ){
+                                sizeHtmlStr += '<div class="item" data-value="' + sizeOpt[i] + '">' + sizeOpt[i] + '</div>';
+                            }
+                            for( var i = 0; i &lt; colorOpt.length; i++ ){
+                                colorHtmlStr += '<div class="item" data-value="' + colorOpt[i] + '">' + colorOpt[i] + '</div>';
+                            }
+                            sizeHtmlStr += '</div></div>';
+                            colorHtmlStr += '</div></div>';
+                            jQuery('#edit-size'+id+'-'+cartId).html(sizeHtmlStr);
+                            jQuery('#edit-color'+id+'-'+cartId).html(colorHtmlStr);
+                            jQuery('#sizeOpt-'+id+'-'+cartId).dropdown('set selected', size);
+                            jQuery('#colorOpt-'+id+'-'+cartId).dropdown('set selected', color);
+
+                            var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-quantity-' + id + '-' + cartId + '" name="new-quantity" placeholder="Quantity" value="' + quantity + '"></input></div></div>'
+
+                            jQuery('#edit-quantity'+id+'-'+cartId).html(quantHtmlStr);
+                        }
+                    }
+                })
+                
+                jQuery("#cartitem-table").append('</tbody>');
+                jQuery("#edit-cartitem-table > table").append('</tbody>');
+                jQuery("#edit-cartitem-table").append('</div>');
+            }
         }
 
         function refundHandler(){
@@ -464,20 +469,20 @@
 
                 jQuery("#edit-cartitem-table > table > tbody > tr").each(function(){
                     var cartObj = {};
+                    var cartItemId = cartId.substring(cartId.lastIndexOf('-')+1, cartId.length);
+                    cartObj.id = cartItemId;
+
                     var cartId = jQuery(this).attr("id");
-                    cartId = cartId.substring(cartId.indexOf('-') + 1, cartId.length);
-                    cartId = cartId.replace( /^\D+/g, '');
-                    cartObj.size  = jQuery('#new-size-'+cartId).val();
-                    cartObj.color = jQuery('#new-color-'+cartId).val();
-                    cartObj.quantity = jQuery('#new-quantity-'+cartId).val();
-                    
-                    cartId = cartId.substring(0, cartId.indexOf('-'));
-                    cartObj.id = cartId;
+                    var cart = (cartId.substring(cartId.indexOf('-') + 1, cartId.length)).replace( /^\D+/g, '');
+                    cartObj.size  = jQuery('#new-size-'+cart).val();
+                    cartObj.color = jQuery('#new-color-'+cart).val();
+                    cartObj.quantity = jQuery('#new-quantity-'+cart).val();
                     
                     obj.cartItems.push(cartObj);
                 });
 
-                editHandler(obj);
+                // editHandler(obj);
+                console.log(obj);
                 jQuery("#footer-save").removeClass('disabled');
             }
         }
