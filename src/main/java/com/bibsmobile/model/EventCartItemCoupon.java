@@ -134,11 +134,11 @@ public class EventCartItemCoupon {
         return entityManager().find(EventCartItemCoupon.class, id);
     }    
 
-    public static TypedQuery<EventCartItem> findEventCartItemsByEvent(Event event) {
+    public static TypedQuery<EventCartItemCoupon> findEventCartItemCouponsByEvent(Event event) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
         EntityManager em = EventCartItem.entityManager();
-        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event", EventCartItem.class);
+        TypedQuery<EventCartItemCoupon> q = em.createQuery("SELECT o FROM EventCartItemCoupon AS o WHERE o.event = :event", EventCartItemCoupon.class);
         q.setParameter("event", event);
         return q;
     }    
