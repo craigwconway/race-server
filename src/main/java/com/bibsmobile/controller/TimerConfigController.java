@@ -384,4 +384,16 @@ public class TimerConfigController {
         } catch (UnsupportedEncodingException uee) {}
         return pathSegment;
     }
+	
+	void internalClear(long eventId) {
+    	for(Entry<TimerConfig, Timer> timerEntry : timers.entrySet()) {
+    		System.out.println("Clearing time for timer: " + timerEntry.getKey().getId() + ", Position: "+ timerEntry.getKey().getPosition());
+    		// if timer is connected and a bibs timer, we need to poll it for all remaining tags:
+    		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
+    			timerEntry.getValue().emptyBuffer();
+    		}
+    		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
+    	}
+		
+	}
 }

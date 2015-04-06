@@ -87,6 +87,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UploadFile;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
@@ -1203,7 +1204,12 @@ public class EventController {
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return null;
         }
-
+        // Clear unassigned so it doesn't detach
+        if(BuildTypeUtil.usesRfid()) {
+        	TimerConfigController tcc = new TimerConfigController();
+        	tcc.internalClear(event.getId());
+        }
+        
         event.remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
