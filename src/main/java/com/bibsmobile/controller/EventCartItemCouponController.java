@@ -67,7 +67,35 @@ public class EventCartItemCouponController {
 		eventCoupon.persist();
 		return new ResponseEntity<>(eventCoupon.toJson(), headers, HttpStatus.OK);
 	}
+
 	
+	/**
+     * @api {put} /eventcoupons
+     * @apiGroup eventcoupons
+	 * @apiName postEventCoupon
+	 * @apiParam {Object} event Event object this event type belongs to, must contain id
+     * @apiParam {String} code String containing coupon code. Entered by customers on checkout.
+     * @apiParam {Number} discountAbsolute Absolute amount of currency discounted. discountRelative cannot also be set.
+     * @apiParam {Number} discountRelative Percentage of normal price discounted. discountAbsolute cannot also be set.
+     * @apiParam {Number} available Total number of coupons of this type currently available for use (decrements as used).
+     * @apiParamExample {json} Sample Edit
+     * 		{
+     * 			"id": 1,
+     * 			"event": {"id": 1},
+     * 			"code": "nodejs",
+     * 			"discountRelative":7.5,
+     * 			"available":100
+     * 		}
+     * @apiParamExample {json} Sample Delete
+     * 		{
+     * 			"id": 4,
+     * 			"event": null,
+     * 			"code": "devlanguage",
+     * 			"discountAbsolute": 20,
+     * 			"available":5
+     * 		}
+     * @apiSuccess (200) {Object} eventCoupon created EventCartItemCoupon object
+     */	
 	@RequestMapping(method = RequestMethod.PUT, headers="Accept=application/json")
 	public ResponseEntity<String> updateFromJson(@RequestBody EventCartItemCoupon eventCoupon) {
 		EventCartItemCoupon existing = EventCartItemCoupon.findEventCartItemCoupon(eventCoupon.getId());
