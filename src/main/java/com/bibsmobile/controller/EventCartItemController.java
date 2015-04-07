@@ -44,6 +44,7 @@ public class EventCartItemController {
         List<Event> l = new ArrayList<>();
         l.add(e);
         uiModel.addAttribute("events", l);
+        uiModel.addAttribute("eventTypes", e.getEventTypes());
         this.populateEditForm(uiModel, i);
         return "eventitems/create";
     }
@@ -54,6 +55,7 @@ public class EventCartItemController {
         List<Event> l = new ArrayList<>();
         l.add(i.getEvent());
         uiModel.addAttribute("events", l);
+        uiModel.addAttribute("eventTypes", i.getEvent().getEventTypes());
         this.populateEditForm(uiModel, i);
         return "eventitems/update";
     }
