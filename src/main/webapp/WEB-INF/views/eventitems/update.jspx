@@ -73,13 +73,26 @@
             <div class="form-horizontal">
                 <div class="ui labeled input">
                     <div class="ui blue label">Event</div>
-                    <select class="ui dropdown" id="event-type" name="event"
+                    <select class="ui dropdown" id="event-selection" name="event"
                             data-parsley-error-message="Please select an event.">
                         <option value="">Select Event</option>
                         <c:forEach var="item" items="${events}">
                             <option value="${item.id}">${item}</option>
                         </c:forEach>
                     </select>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Event Type</div>
+                    <div class="ui fluid selection dropdown" id="event-type">
+                        <input type="hidden" name="eventType"><!--  --></input>
+                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                        <div class="default text">Select Event Type</div>
+                        <div class="menu">
+                            <c:forEach var="item" items="${eventTypes}">
+                                <div class="item" data-value="${item.id}">${item.typeName}</div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
                 <div class="ui labeled input">
                     <div class="ui blue label">Name</div>
@@ -215,7 +228,6 @@
                 </div>
             </div>
         </div>
-        <div style="display:none"><field:select field="gender" id="c_com_bibsmobile_model_EventCartItem_gender" items="${eventcartitemgenderenums}" path="eventcartitemgenderenums" z="+Jg/WI19uo3scDKsAgDOwlnJVVA="/><field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/></div>
         </form:update>
     </div>
 
@@ -240,9 +252,10 @@
         }
 
         function initDropdowns(){
-            jQuery('#event-type').dropdown('set selected', '${eventCartItem.event.id}');
+            jQuery('#event-selection').dropdown('set selected', '${eventCartItem.event.id}');
             jQuery('#gender-type').dropdown('set selected', '${eventCartItem.gender}');
             jQuery('#ticket-type').dropdown('set selected', '${eventCartItem.type}');
+            jQuery('#event-type').dropdown('set selected', '${eventCartItem.eventType.typeName}');
         }
 
         var xs = false; var sm = false; var md = false; var lg = false; var xl = false;
