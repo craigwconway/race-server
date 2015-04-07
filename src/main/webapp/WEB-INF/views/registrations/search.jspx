@@ -222,6 +222,7 @@
                                     <td><c:out value="${item.user.lastname}"/></td>
                                     <td>B<c:out value="${item.id}"/>T<c:out value="${item.stripeChargeId}"/></td>
                                     <input class="cartid-${item.id}" type="text" style="display:none" value="${item.id}"></input>
+                                    <input class="user-${item.id}" type="text" style="display:none" value="${item.user.id}"></input>
                                     <input class="firstname-${item.id}" type="text" style="display:none" value="${item.user.firstname}"></input>
                                     <input class="lastname-${item.id}" type="text" style="display:none" value="${item.user.lastname}"></input>
                                     <input class="bday-${item.id}" type="text" style="display:none" value="${item.user.birthdate}"></input>
@@ -290,14 +291,15 @@
         }
 
         var initIds = [];
-        var currCartId;     var currStripeId;
+        var currCartId;     var currStripeId;   var currUserId;
         var currFirstName;  var currLastName;
         var currBirth;      var currGender;
         var currEmail;      var currPhone;
         var currEmName;     var currEmPhone;
         function searchModal(id){
             jQuery("#searchModal").modal('show');
-            currCartId = jQuery(".cartid-"+id).val();           currStripeId = jQuery(".stripe-"+id).val();
+            currCartId = jQuery(".cartid-"+id).val();           
+            currUserId = jQuery(".user-"+id).val();             currStripeId = jQuery(".stripe-"+id).val();
             currFirstName = jQuery(".firstname-"+id).val();     currLastName = jQuery(".lastname-"+id).val();
             currGender = jQuery(".gender-"+id).val();           currBirth = jQuery(".bday-"+id).val();
             currEmail = jQuery(".email-"+id).val();             currPhone = jQuery(".phone-"+id).val();
@@ -457,6 +459,7 @@
             else{
                 var obj = {};
                 obj.user = {};
+                obj.user.id = parseInt(currUserId);
                 obj.user.firstname = jQuery("#edit-firstname").val();
                 obj.user.lastname = jQuery("#edit-lastname").val();
                 obj.user.email = jQuery("#edit-email").val();
@@ -469,20 +472,20 @@
 
                 jQuery("#edit-cartitem-table > table > tbody > tr").each(function(){
                     var cartObj = {};
-                    var cartItemId = cartId.substring(cartId.lastIndexOf('-')+1, cartId.length);
-                    cartObj.id = cartItemId;
-
                     var cartId = jQuery(this).attr("id");
+                    var cartItemId = cartId.substring(cartId.lastIndexOf('-')+1, cartId.length);
+                    cartObj.id = parseInt(cartItemId);
+
                     var cart = (cartId.substring(cartId.indexOf('-') + 1, cartId.length)).replace( /^\D+/g, '');
                     cartObj.size  = jQuery('#new-size-'+cart).val();
                     cartObj.color = jQuery('#new-color-'+cart).val();
-                    cartObj.quantity = jQuery('#new-quantity-'+cart).val();
+                    cartObj.quantity = parseInt(jQuery('#new-quantity-'+cart).val());
                     
                     obj.cartItems.push(cartObj);
                 });
 
-                // editHandler(obj);
                 console.log(obj);
+                editHandler(obj);
                 jQuery("#footer-save").removeClass('disabled');
             }
         }
