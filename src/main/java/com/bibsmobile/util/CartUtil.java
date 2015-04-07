@@ -5,6 +5,7 @@ import com.bibsmobile.job.CartExpiration;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemCoupon;
 import com.bibsmobile.model.EventCartItemPriceChange;
