@@ -309,87 +309,83 @@
             if( jQuery(".gender-"+id).val() === 'Female' ){ jQuery("#modal-athlete").append('<i class="fa fa-venus"><!-- --></i>') }
             else if( jQuery(".gender-"+id).val() === 'Male' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
             jQuery("#modal-transaction").text("B" + jQuery(".cartid-"+id).val() + "T" + jQuery(".stripe-"+id).val());
+            jQuery("#cartitem-table > tbody").text("");
+            jQuery("#edit-cartitem-table > table > tbody").text("");
 
-            // check if table already initialized
-            if(initIds.indexOf(id) > -1){
-                // already initialized.. don't append to table
-            }
-            else{
-                initIds.push(id);
-                /*  append cart items into list view  */
-                var fieldCount = 0;     var cartId;
-                var type;   var name;   var price;
-                var size;   var color;  var quantity;
-                var editable = false;   
+            /*  append cart items into list view  */
+            var fieldCount = 0;     var cartId;
+            var type;   var name;   var price;
+            var size;   var color;  var quantity;
+            var editable = false;   
 
-                jQuery(".cartitem-"+id).each(function(){
-                    var info = jQuery(this).attr("data-for");
-                    if( info == 'type' ){
-                        type = jQuery(this).val();
-                        if( type === 'T_SHIRT' ){   type = "T-Shirt";     editable = true;  }
-                        if( type === 'TICKET' ){    type = "Ticket";      editable = false; }
-                        if( type === 'DONATION' ){  type = "Donation";    editable = false; }
-                    }
-                    if( info == 'id' ){         cartId = jQuery(this).val();     }
-                    if( info == 'name' ){       name = jQuery(this).val();     }
-                    if( info == 'size' ){       size = jQuery(this).val();     }
-                    if( info == 'color' ){      color = jQuery(this).val();    }
-                    if( info == 'quantity' ){   quantity = jQuery(this).val(); }
-                    if( info == 'price' ){      price = jQuery(this).val();    }
-                    fieldCount++;
-                    if( fieldCount % 6 === 0 ){
-                        // purchase info
-                        var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartId + '"></tr>');
-                        var rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="name' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="details' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="price' + id + '-' + cartId + '"></td>')
-                        
-                            jQuery('#name'+id+'-'+cartId).text(type + ": " + name);
-                            if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartId).text(size + " " + color); }
-                            jQuery('#quantity'+id+'-'+cartId).text(quantity);
-                            jQuery('#price'+id+'-'+cartId).text(price);
+            jQuery(".cartitem-"+id).each(function(){
+                var info = jQuery(this).attr("data-for");
+                if( info == 'type' ){
+                    type = jQuery(this).val();
+                    if( type === 'T_SHIRT' ){   type = "T-Shirt";     editable = true;  }
+                    if( type === 'TICKET' ){    type = "Ticket";      editable = false; }
+                    if( type === 'DONATION' ){  type = "Donation";    editable = false; }
+                }
+                console.log(jQuery(this).val());
+                if( info == 'id' ){         cartId = jQuery(this).val();     }
+                if( info == 'name' ){       name = jQuery(this).val();     }
+                if( info == 'size' ){       size = jQuery(this).val();     }
+                if( info == 'color' ){      color = jQuery(this).val();    }
+                if( info == 'quantity' ){   quantity = jQuery(this).val(); }
+                if( info == 'price' ){      price = jQuery(this).val();    }
+                fieldCount++;
+                if( fieldCount % 7 === 0 ){
+                    // purchase info
+                    var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartId + '"></tr>');
+                    var rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="name' + id + '-' + cartId + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="details' + id + '-' + cartId + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartId + '"></td>')
+                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="price' + id + '-' + cartId + '"></td>')
+                    
+                        jQuery('#name'+id+'-'+cartId).text(type + ": " + name);
+                        if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartId).text(size + " " + color); }
+                        jQuery('#quantity'+id+'-'+cartId).text(quantity);
+                        jQuery('#price'+id+'-'+cartId).text(price);
 
-                        // edit info
-                        if( editable ){
-                            var row = jQuery("#edit-cartitem-table > table > tbody").append('<tr id="edit-row' + id + '-' + cartId + '"></tr>');
-                            var rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-name' + id + '-' + cartId + '"></td>')
-                                rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartId + '"></td>')
-                                rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartId + '"></td>')
-                                rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartId + '"></td>')
-                            jQuery('#edit-name'+id+'-'+cartId).text(type + ": " + name);
+                    // edit info
+                    if( editable ){
+                        var row = jQuery("#edit-cartitem-table > table > tbody").append('<tr id="edit-row' + id + '-' + cartId + '"></tr>');
+                        var rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-name' + id + '-' + cartId + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartId + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartId + '"></td>')
+                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartId + '"></td>')
+                        jQuery('#edit-name'+id+'-'+cartId).text(type + ": " + name);
 
-                            var sizeOpt = jQuery('.size-options-'+id).val();
-                            sizeOpt = sizeOpt.split(',');
-                            var colorOpt = jQuery('.color-options-'+id).val();
-                            colorOpt = colorOpt.split(',');
+                        var sizeOpt = jQuery('.size-options-'+id).val();
+                        sizeOpt = sizeOpt.split(',');
+                        var colorOpt = jQuery('.color-options-'+id).val();
+                        colorOpt = colorOpt.split(',');
 
-                            var sizeHtmlStr = '<div class="ui selection dropdown" id="sizeOpt-' + id + '-' + cartId + '"><input id="new-size-' + id +'-'+cartId  + '" name="new-size" type="hidden"></input><div class="default text">Size</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
-                            var colorHtmlStr = '<div class="ui selection dropdown" id="colorOpt-' + id + '-' + cartId + '"><input id="new-color-' + id +'-'+cartId  + '" name="new-color" type="hidden"></input><div class="default text">Color</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
-                            for( var i = 0; i &lt; sizeOpt.length; i++ ){
-                                sizeHtmlStr += '<div class="item" data-value="' + sizeOpt[i] + '">' + sizeOpt[i] + '</div>';
-                            }
-                            for( var i = 0; i &lt; colorOpt.length; i++ ){
-                                colorHtmlStr += '<div class="item" data-value="' + colorOpt[i] + '">' + colorOpt[i] + '</div>';
-                            }
-                            sizeHtmlStr += '</div></div>';
-                            colorHtmlStr += '</div></div>';
-                            jQuery('#edit-size'+id+'-'+cartId).html(sizeHtmlStr);
-                            jQuery('#edit-color'+id+'-'+cartId).html(colorHtmlStr);
-                            jQuery('#sizeOpt-'+id+'-'+cartId).dropdown('set selected', size);
-                            jQuery('#colorOpt-'+id+'-'+cartId).dropdown('set selected', color);
-
-                            var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-quantity-' + id + '-' + cartId + '" name="new-quantity" placeholder="Quantity" value="' + quantity + '"></input></div></div>'
-
-                            jQuery('#edit-quantity'+id+'-'+cartId).html(quantHtmlStr);
+                        var sizeHtmlStr = '<div class="ui selection dropdown" id="sizeOpt-' + id + '-' + cartId + '"><input id="new-size-' + id +'-'+cartId  + '" name="new-size" type="hidden"></input><div class="default text">Size</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
+                        var colorHtmlStr = '<div class="ui selection dropdown" id="colorOpt-' + id + '-' + cartId + '"><input id="new-color-' + id +'-'+cartId  + '" name="new-color" type="hidden"></input><div class="default text">Color</div><i class="fa fa-caret-down" style="float:right"><!-- --></i><div class="menu">';
+                        for( var i = 0; i &lt; sizeOpt.length; i++ ){
+                            sizeHtmlStr += '<div class="item" data-value="' + sizeOpt[i] + '">' + sizeOpt[i] + '</div>';
                         }
+                        for( var i = 0; i &lt; colorOpt.length; i++ ){
+                            colorHtmlStr += '<div class="item" data-value="' + colorOpt[i] + '">' + colorOpt[i] + '</div>';
+                        }
+                        sizeHtmlStr += '</div></div>';
+                        colorHtmlStr += '</div></div>';
+                        jQuery('#edit-size'+id+'-'+cartId).html(sizeHtmlStr);
+                        jQuery('#edit-color'+id+'-'+cartId).html(colorHtmlStr);
+                        jQuery('#sizeOpt-'+id+'-'+cartId).dropdown('set selected', size);
+                        jQuery('#colorOpt-'+id+'-'+cartId).dropdown('set selected', color);
+
+                        var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-quantity-' + id + '-' + cartId + '" name="new-quantity" placeholder="Quantity" value="' + quantity + '"></input></div></div>'
+
+                        jQuery('#edit-quantity'+id+'-'+cartId).html(quantHtmlStr);
                     }
-                })
-                
-                jQuery("#cartitem-table").append('</tbody>');
-                jQuery("#edit-cartitem-table > table").append('</tbody>');
-                jQuery("#edit-cartitem-table").append('</div>');
-            }
+                }
+            })
+            
+            jQuery("#cartitem-table").append('</tbody>');
+            jQuery("#edit-cartitem-table > table").append('</tbody>');
+            jQuery("#edit-cartitem-table").append('</div>');
         }
 
         function refundHandler(){
@@ -465,6 +461,7 @@
                 obj.user.email = jQuery("#edit-email").val();
                 obj.user.phone = jQuery("#edit-phone").val();
                 obj.user.birthdate = jQuery("#edit-birthdate").val();
+                obj.user.birthdate = moment(obj.user.birthdate).format("YYYY-MM-DD")
                 obj.user.gender = jQuery('input[name="gender"]').val();
                 obj.user.emergencyContactName = jQuery("#edit-em-name").val();
                 obj.user.emergencyContactPhone = jQuery("#edit-em-phone").val();
