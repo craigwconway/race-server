@@ -20,9 +20,11 @@ public class PDFUtil {
 		try {
 			float yPos = 700;
 			boolean started = false;
+			boolean awardsExist = false;
 			PDPageContentStream contentStream = null;
 			for(AwardCategoryResults ac: list) {
 				if(!ac.getResults().isEmpty()) {
+					awardsExist=true;
 					//WE GOTTA RENDER A NEW PAGE YO
 					if(yPos - (ac.getResults().size()*22) < 130 || !started) {
 						if(started) {
@@ -66,7 +68,9 @@ public class PDFUtil {
 					yPos -=34;
 				}
 			}
-			contentStream.close();
+			if(awardsExist) {
+				contentStream.close();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

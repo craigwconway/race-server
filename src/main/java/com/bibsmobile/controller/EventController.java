@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -38,6 +39,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.bibsmobile.util.BuildTypeUtil;
+import com.bibsmobile.util.PDFUtil;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.S3Util;
 import com.bibsmobile.util.SpringJSONUtil;
@@ -45,6 +47,9 @@ import com.bibsmobile.util.SpringJSONUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.http.HttpResponse;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -563,8 +568,77 @@ public class EventController {
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("awardCategoryResults", list);
         return "events/awards";
+    }   
+    
+    // Print awards
+    @RequestMapping(value = "/printawards", method = RequestMethod.GET)
+    public static void printAwards(@RequestParam(value = "event", required = true) Long eventId, HttpServletResponse response) {
+    	Event event = Event.findEvent(eventId);
+    	PDDocument doc = PDFUtil.createColorMedalsPDF(event, event.calculateMedals(event));
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	try {
+    		doc.save(baos);
+    		doc.close();
+    		response.setContentType("application/pdf");
+    		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "") +".pdf\"");
+    		OutputStream os = response.getOutputStream();
+    		baos.writeTo(os);
+    		os.flush();
+    		os.close();
+    	} catch (COSVisitorException | IOException e) {
+    		e.printStackTrace();
+    	}
     }
 
+    @RequestMapping(value = "/printclass", method = RequestMethod.GET)
+    public static void printClass(@RequestParam(value = "event", required = true) Long eventId, 
+    				@RequestParam(value = "gender", required = false, defaultValue = "M") String gender, 
+    				HttpServletResponse response) {
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = event.getAwardCategorys();
+    	List<Long> medalsBibs = new ArrayList<Long>();
+
+    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
+    	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
+        	for(AwardCategoryResults c:event.calculateMedals(event)){
+        		for(RaceResult r:c.getResults()){
+        			medalsBibs.add(r.getBib());
+        		}
+        	}
+    	}
+    	
+		// filter age/gender
+    	for(AwardCategory c:event.getAwardCategorys()){
+    		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
+    			results.add(new AwardCategoryResults(c,
+    					event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
+    		}
+    	}
+    	
+    	Collections.sort(results);
+    	PDDocument doc = PDFUtil.createColorMedalsPDF(event, results);
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	try {
+    		doc.save(baos);
+    		doc.close();
+    		response.setContentType("application/pdf");
+    		if(gender.equals("F")) {
+        		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "")+"ladyscore" +".pdf\"");
+    		} else if(gender.equals("M")) {
+        		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "")+"manscore" +".pdf\"");
+    		} else {
+        		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "")+"score" +".pdf\"");
+    		}
+    		OutputStream os = response.getOutputStream();
+    		baos.writeTo(os);
+    		os.flush();
+    		os.close();
+    	} catch (COSVisitorException | IOException e) {
+    		e.printStackTrace();
+    	}
+    }    
+    
     @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
     public static String ageGenderRankings(
     		@RequestParam(value = "event", required = true) Long eventId,
