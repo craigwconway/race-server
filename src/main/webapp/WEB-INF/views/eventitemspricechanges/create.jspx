@@ -174,19 +174,6 @@
                                         data-parsley-error-message="Please specify a category name."></input>
                             </div>
                             <div class="ui labeled input">
-                                <div class="ui blue label">Event Type</div>
-                                    <div class="ui fluid search selection dropdown" id="event-type">
-                                        <input type="hidden" name="usergroup"><!--  --></input>
-                                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                        <div class="default text">Select Event Type</div>
-                                        <div class="menu">
-                                            <c:forEach var="item" items="${eventTypes}">
-                                                <div class="item" data-value="${item.id}">${item.typeName}</div>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-                            </div>
-                            <div class="ui labeled input">
                                 <div class="ui blue label">Min Age</div>
                                     <input  type="text" name="lowAgeThreshold"
                                             data-for="lowAgeThreshold" id="lowAge"
@@ -387,7 +374,6 @@
             // init form elements
             jQuery('.ui.accordion').accordion();
             jQuery('.ui.checkbox').checkbox();
-            jQuery('#event-type').dropdown();
             
             var pcform = jQuery("#add-pc-category").parsley({
                 errorsWrapper: '<div class="has-error"></div>',

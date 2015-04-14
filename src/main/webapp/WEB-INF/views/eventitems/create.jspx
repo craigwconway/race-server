@@ -29,7 +29,7 @@
         .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
             margin-bottom: 5px;
         }
-        .ui.form input, .ui.form textarea, .ui.form select, #demo>input{
+        .ui.form input, .ui.form textarea, .ui.form select, .ui.fluid.dropdown, #demo>input{
             width: 400px;
             margin: 5px auto; 
         }
@@ -68,14 +68,32 @@
                         <div class="sub header">Provide the details for this product.</div>
                     </div>
                 </h2>
-                <select name="type" class="form-control" id="ticket-type"
-                        data-parsley-error-message="Please select a product type."
-                        data-parsley-required="true">
-                    <option selected="selected" disabled="disabled">Product Type</option>
-                    <option value="TICKET">Ticket</option>
-                    <option value="T_SHIRT">T-shirt</option>
-                    <option value="DONATION">Donation</option>
-                </select>
+                <div class="form-fields">
+                    <div class="ui fluid selection dropdown" id="ticket-type">
+                        <input type="hidden" name="type" 
+                            data-parsley-error-message="Please select a product type."
+                            data-parsley-required="true"><!--  --></input>
+                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                        <div class="default text">Product Type</div>
+                        <div class="menu">
+                            <div class="item" data-value="TICKET">Ticket</div>
+                            <div class="item" data-value="T_SHIRT">T-shirt</div>
+                            <div class="item" data-value="DONATION">Donation</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-fields">
+                    <div class="ui fluid selection dropdown" id="event-type">
+                        <input type="hidden" name="eventType"><!--  --></input>
+                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                        <div class="default text">Select Event Type</div>
+                        <div class="menu">
+                            <c:forEach var="item" items="${eventTypes}">
+                                <div class="item" data-value="${item.id}">${item.typeName}</div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-fields">
                     <input  type="text" name="name"
                             class="form-control"
@@ -156,13 +174,20 @@
                         </div>
                     </div>
                     <div style="display:none"><input type="text" name="tshirtColors"></input></div>
-                    <select id="gender-type" name="gender"
-                            data-parsley-error-message="Please select a gender.">
-                        <option value="">Gender</option>
-                        <option value="MALE_AND_FEMALE">Both</option>
-                        <option value="MALE">Male</option>
-                        <option value="FEMALE">Female</option>
-                    </select>
+                    <div class="form-fields">
+                        <div class="ui fluid selection dropdown" id="gender-type">
+                            <input type="hidden" name="gender" 
+                                data-parsley-error-message="Please select a gender."
+                                data-parsley-required="true"><!--  --></input>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Gender</div>
+                            <div class="menu">
+                                <div class="item" data-value="MALE_AND_FEMALE">Both</div>
+                                <div class="item" data-value="MALE">Male</div>
+                                <div class="item" data-value="FEMALE">Female</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="two fields">
                         <div class="field">
                             <label><!--  --></label>
@@ -209,10 +234,8 @@
             <div style="display:none">
                 <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
                 <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
-                <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
                 <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
             </div>
-            
         </form:create>
     
         <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
@@ -223,6 +246,9 @@
             setValidation();
             initDateTimePickers();
             jQuery('.ui.button').state();
+            jQuery('#ticket-type').dropdown();
+            jQuery('#event-type').dropdown();
+            jQuery('#gender-type').dropdown();
             jQuery("#ticket-type").change(function() {
                 var selected = jQuery(this).val();
                 if( selected == 'T_SHIRT' ){
