@@ -49,6 +49,42 @@ public class CartRestController {
         return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);
     }
     
+    /**
+     * @api {post} /rest/carts/questions
+     * @apiGroup restcarts
+     * @apiName postQuestions
+     * @apiParam {Object} cart Cart object containing questions
+     * @apiParam {Number} cart.id Id of posted cart
+     * @apiParam {Object[]} cart.customRegFieldResponses An array of custom reg field responses selected by the user.
+     * @apiParam {Number} [cart.customRegFieldResponses.id] Id of customregfieldresponse to post. Include this to update an answer
+     * @apiParam {String} [cart.customRegFieldResponses.response] String containing the response to the question
+     * @apiParam {Object} cart.customRegFieldResponses.customRegField Regfield answered. Must contain id.
+     * @apiParam {Number} cart.customRegFieldResponses.customRegField.id id of linked CustomRegField
+     * @apiParamExample {json} Sample Create
+     * 		{
+     * 			"id": 1,
+     * 			"customRegFieldResponses": 
+     * 				[
+     * 					{
+     * 						"customRegField": {"id":2},
+     * 						"response": "nodejs"
+     * 					}
+     * 				]
+     * 		}
+     * @apiParamExample {json} Sample Update
+     * 		{
+     * 			"id": 1,
+     * 			"customRegFieldResponses": 
+     * 				[
+     * 					{
+     * 						"id": 1,
+     * 						"customRegField": {"id":2},
+     * 						"response": "nodejs"
+     * 					}
+     * 				]
+     * 		}
+     * @apiSuccess (200) {Object} cart Modified cart object
+     */
     @RequestMapping(value = "/questions", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> updateOrCreateResponses(@RequestBody Cart cart) {
