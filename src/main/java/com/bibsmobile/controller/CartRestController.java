@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.wrapper.CartItemReqWrapper;
 import com.bibsmobile.service.UserProfileService;
@@ -46,5 +47,30 @@ public class CartRestController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/questions", method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> updateOrCreateResponses(@RequestBody Cart cart) {
+    	Cart trueCart = Cart.findCart(cart.getId());
+    	for(CustomRegFieldResponse crfr : cart.getCustomRegFieldResponses()) {
+    		if(crfr.getId() != null) {
+    			// check for a match
+    			try {
+    				CustomRegFieldResponse match = CustomRegFieldResponse.findCustomRegFieldResponse(crfr.getId());
+    				match.setResponse(crfr.getResponse());
+    				match.merge();
+    			} catch(Exception e) {
+    				crfr.persist();
+    				crfr.setCart(trueCart);
+    			}
+    		} else {
+    			crfr.setCart(trueCart);
+    			crfr.persist();
+    		}
+    	}
+    	HttpHeaders headers = new HttpHeaders();
+    	headers.add("Content-Type", "application/json; charset=utf-8");
+    	return new ResponseEntity<>(trueCart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user", "customRegFieldResponses")), headers, HttpStatus.OK);
     }
 }
