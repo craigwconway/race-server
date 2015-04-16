@@ -68,9 +68,15 @@ public class RegistrationsRestController {
      * @api {put} /rest/registrations/edit/:id
      * @apiName editRegistration
      * @apiParam {Object} user UserProfile object in cart
+     * @apiParam {String} user.firstname First Name of user in cart
+     * @apiParam {String} user.lastname Last Name of user in cart
+     * @apiParam {String} user.email Email of user in cart
+     * @apiParam {String} user.emergencyContactName Name of emergency contact
+     * @apiParam {String} user.emergencyContactPhone Phone number of emergency contact
+     * @apiParam {String} user.birthdate Birthdate of user
      * @apiParam {Object[]} [cartitems] Array of CartItem objects to change
      * @apiGroup registrations
-     * @apiParamExample {json} Request-Example:
+     * @apiParamExample {json} Request-Example
      * 		{
      * 			"user": {
      * 				"id": 7,
@@ -95,6 +101,19 @@ public class RegistrationsRestController {
      * 				}
      * 			]
      * 		}
+     * @apiParamExample {json} Request Example 2
+     * 		{ 
+     * 		"user": 
+     * 			{ 
+     * 			  "firstname":"galen",
+     * 			  "lastname":"danziger",
+     * 			  "emergencyContactName":"nathan",
+     * 			  "emergencyContactPhone":"1231231231",
+     *			  "gender":"M", 
+     *			  "email":"gedanziger@gmail.com"
+     *			},
+     *		"cartItems": [{"id":2, "color":"yellow", "size":"M"}]
+     *		}
      * @apiSuccess (200) No Response.
      */
     @RequestMapping(value = "edit/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
@@ -151,7 +170,7 @@ public class RegistrationsRestController {
         System.out.println("Incoming Cart Items:");
         System.out.println(cart.getCartItems());
         for(CartItem tci : trueCartItems) {
-        	for(CartItem ci : trueCartItems) {
+        	for(CartItem ci : cart.getCartItems()) {
         		if(tci.getId() == ci.getId()) {
                 	System.out.println("ID: " + ci.getId() + " Color:" + ci.getColor());
         			// Only allow safe edits for now, color/size.
