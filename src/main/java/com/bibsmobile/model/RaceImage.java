@@ -136,7 +136,7 @@ public class RaceImage {
         if (raceResults == null)
             throw new IllegalArgumentException("The raceResults argument is required");
         EntityManager em = RaceImage.entityManager();
-        TypedQuery<RaceImage> q = em.createQuery("SELECT o FROM RaceImage AS o WHERE o.raceResult IN (:raceResults)", RaceImage.class);
+        TypedQuery<RaceImage> q = em.createQuery("SELECT o FROM RaceImage o join o.raceResults r WHERE r IN (:raceResults)", RaceImage.class);
         q.setParameter("raceResults", raceResults);
         return q;
     }
