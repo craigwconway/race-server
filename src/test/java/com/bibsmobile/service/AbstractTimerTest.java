@@ -76,7 +76,7 @@ public class AbstractTimerTest {
 		assertTrue(result.getTimestart() == 0);
 		assertTrue(result.getTimesplit().split(",")[timerConfig.getPosition()-2].equals(bibtime+""));
 		assertTrue(result.getTimesplit().split(",").length == timerConfig.getPosition() - 1);
-		assertTrue(result.getTimeofficial() == bibtime);
+		assertTrue(result.getTimeofficial() == 0);
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class AbstractTimerTest {
 		assertFalse(result.getTimesplit().equals(splits));
 		assertTrue(result.getTimesplit().split(",")[position-2].equals(bibtime+""));
 		assertTrue(result.getTimesplit().split(",").length == splits.split(",").length);
-		assertTrue(result.getTimeofficial() == bibtime);
+		assertTrue(result.getTimeofficial() == 0);
 	}
 
 
