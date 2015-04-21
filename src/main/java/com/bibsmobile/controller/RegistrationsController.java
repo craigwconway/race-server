@@ -1,11 +1,13 @@
 package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.RegistrationsUtil;
 import com.bibsmobile.util.UserProfileUtil;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @RequestMapping("/registrations")
@@ -52,6 +55,7 @@ public class RegistrationsController {
         if (count == null) count = 25;
 
         List<Cart> registrations = RegistrationsUtil.search(event, firstName, lastName, email, invoiceId);
+        Collections.sort(registrations, new Comparator<Cart>() { public int compare(Cart c1, Cart c2) { return c1.getId().compareTo(c2.getId());}});
         if (registrations == null)
             return null;
         float nrOfPages = (float) registrations.size() / count;
@@ -64,7 +68,7 @@ public class RegistrationsController {
         uiModel.addAttribute("invoiceId", invoiceId);
         uiModel.addAttribute("registrations", registrations.subList(start, Math.min(start + count, registrations.size())));
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
-
+        
         return "registrations/search";
     }
     
