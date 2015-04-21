@@ -461,7 +461,7 @@
                 obj.user.email = jQuery("#edit-email").val();
                 obj.user.phone = jQuery("#edit-phone").val();
                 obj.user.birthdate = jQuery("#edit-birthdate").val();
-                obj.user.birthdate = moment(obj.user.birthdate).format("YYYY-MM-DD")
+                obj.user.birthdate = moment(obj.user.birthdate).format("YYYY-MM-DD");
                 obj.user.gender = jQuery('input[name="gender"]').val();
                 obj.user.emergencyContactName = jQuery("#edit-em-name").val();
                 obj.user.emergencyContactPhone = jQuery("#edit-em-phone").val();
