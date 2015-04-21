@@ -439,6 +439,17 @@ public class EventController {
         return "false";
     }
 
+    @RequestMapping(value = "/splitresults", method = RequestMethod.GET)
+    @ResponseBody
+    public static String resultsRecentQuery(@RequestParam(value = "event", required = true) long event_id) {
+        try {
+            return RaceResult.toJsonArray(Event.findRecentRaceResultsForAnnouncer(event_id, 1, 15));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return "false";
+    }
+    
     @RequestMapping(value = "/manual", method = RequestMethod.GET)
     @ResponseBody
     public static String setTimeManual(@RequestParam(value = "event", required = true) long event_id, @RequestParam(value = "bib", required = true) long bib) {

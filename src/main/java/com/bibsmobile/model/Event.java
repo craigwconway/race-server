@@ -380,6 +380,17 @@ public class Event {
         return q.getResultList();
     }
 
+    public static List<RaceResult> findRecentRaceResultsForAnnouncer(long event, int page, int size) {
+        String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND (o.timeofficial > 0 OR length(o.timesplit) > 0)";
+        HQL += " order by o.updated desc";
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
+        q.setParameter("event", Event.findEvent(event));
+        q.setFirstResult((page - 1) * size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }    
+    
     public static long countRaceResults(long event) {
         EntityManager em = RaceResult.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event", Long.class);

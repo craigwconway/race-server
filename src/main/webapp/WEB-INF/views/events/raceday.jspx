@@ -232,16 +232,18 @@
 				</div>
 			</td></tr><tr><td>
 
-			<div id="mgmt-view" >
-				 <div id="events-dropdown" >
-			        <select class="form-control" id="event" name="event"
-			        	onchange="addEvent()">
+			<div id="mgmt-view">
+				 <div id="events-dropdown">
+			        <select class="form-control" id="event" name="event" 
+			        	onchange="addEvent()" style="float:left">
 			            <option value="0" selected="true">Manage an Event...</option>
 			            <c:forEach items="${events}" var="event" varStatus="i">
 			                <option value="${event.id}">${ event.name }</option>
 			            </c:forEach> 
 			        </select>
+			        <button type="button" class="btn btn-default" style="float:left" onclick="toggleSplits()">css sucks</button>
 			    </div>
+			    <div style="clear:both"> </div>
 				<div id="events"> </div>
 			</div>
 
@@ -260,6 +262,7 @@
 		var REFRESH_UNCAT = 1000 * 5; 	// 5 sec
 		var isReloading = false;
 		var isUncat = false;
+		var isSplits = true;
 
 		window.onload = racedayInit;
 		// window.onunload = racedayEnd;
@@ -452,7 +455,12 @@
 			setRunning(eventId,runningEventCount);
 			readerQuery(eventId);
 		}
-
+		
+		function toggleSplits() {
+			isSplits = !isSplits;
+			getReaderResults();
+		}
+		
 		function addUncat(eventId, eventName){
 			if(null==eventId || !(eventId>0)) return false;
 			runningEventCount++;
@@ -576,21 +584,39 @@
 
 		function readerQuery(eventId){
 			// console.log("readerQuery "+eventId);
-			var request = jQuery.ajax({
-				url: "/bibs-server/events/results?event="+eventId,
-				type: "GET",
-				dataType: "json"
-				});
-			request.done(function( data ) {
+			if(isSplits) {
+				var request = jQuery.ajax({
+					url: "/bibs-server/events/splitresults?event="+eventId,
+					type: "GET",
+					dataType: "json"
+					});
+				request.done(function( data ) {
 					jQuery("#results"+eventId).html( 
-							makeRunnersTable(data, "", eventId ) );
+							makeRunnersTable(data, "", eventId, true) );
 					jQuery("#results"+eventId).show();
 					if(data.length > 0)
 						refreshMetrics(eventId);
 					});
-			request.fail(function( jqXHR, textStatus ) {
-				// error?
+				request.fail(function( jqXHR, textStatus ) {
+					// error?
 				});
+			} else {
+				var request = jQuery.ajax({
+					url: "/bibs-server/events/results?event="+eventId,
+					type: "GET",
+					dataType: "json"
+					});
+				request.done(function( data ) {
+					jQuery("#results"+eventId).html( 
+							makeRunnersTable(data, "", eventId, false) );
+					jQuery("#results"+eventId).show();
+					if(data.length > 0)
+						refreshMetrics(eventId);
+					});
+				request.fail(function( jqXHR, textStatus ) {
+					// error?
+				});
+			}
 		}
 
 		function stopReader(id){

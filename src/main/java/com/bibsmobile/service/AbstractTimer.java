@@ -129,8 +129,10 @@ public abstract class AbstractTimer implements Timer {
 			long starttime = (result.getTimestart()==0 && null!=result.getEvent().getGunTime()) 
 					? result.getEvent().getGunTime().getTime() : result.getTimestart(); 
 			result.setTimestart( starttime );
-			result.setTimeofficial( bibtime );
-			result.setTimeofficialdisplay( RaceResult.toHumanTime(starttime, bibtime) );
+			if(timerConfig.getPosition() == 1) {
+				result.setTimeofficial( bibtime );
+				result.setTimeofficialdisplay( RaceResult.toHumanTime(starttime, bibtime) );
+			}
 		}
 		return result;
 	}
@@ -214,7 +216,8 @@ public abstract class AbstractTimer implements Timer {
 			runner.setTimeofficial(0);
 			runner.setTimestart(0);
 			runner.setTimeofficialdisplay("");
-			runner.persist();
+			runner.setTimesplit("");
+			runner.merge();
 			// delete by [bib]-[timer.position]
 			String o = runner.getBib() + "-" + position;
 			System.out.println("removing key: " + o);
