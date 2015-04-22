@@ -217,15 +217,17 @@
                 else if(content === "false"){
                     jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
                 }
-            })
+            });
+            console.log(${event.gunFired});
+            jQuery("#checkgun").prop("checked", ${event.gunFired});
+			console.log(jQuery("#checkgun").prop("checked"));
         }
 
         function gunToggle(){
-            jQuery("#checkgun").prop("checked", function(i, val) {
-                var str = val ? 'glyphicon-ok' : 'glyphicon-remove';
-                jQuery(".reg").html('<span class="glyphicon ' + str + '"></span>')
-                return !val;
-            });
+        	jQuery("#checkgun").prop("checked", !jQuery("#checkgun").prop("checked"));
+            var str = jQuery("#checkgun").prop("checked") ? 'glyphicon-ok' : 'glyphicon-remove';
+            jQuery(".reg").html('<span class="glyphicon ' + str + '"></span>')
+            console.log(jQuery("#checkgun").prop("checked"));
         }
 
         function initDateTimePickers(){
