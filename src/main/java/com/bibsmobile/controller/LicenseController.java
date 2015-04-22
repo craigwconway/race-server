@@ -203,10 +203,6 @@ public class LicenseController {
 			System.out.println(newLicense);
 			myLicense.setToken(newLicense.getToken());
 			myLicense.merge();
-			if(newLicense.getIssueunits() > systemInfo.getRunnersUsed()) {
-				systemInfo.setRunnersUsed(newLicense.getIssueunits());
-				systemInfo.merge();
-			}
             uiModel.addAttribute("build", BuildTypeUtil.getBuild());
 			uiModel.addAttribute("remaining", getRemainingLicenseUnits());
 	    	return "licensing/success";

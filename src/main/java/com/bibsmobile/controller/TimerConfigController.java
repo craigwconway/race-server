@@ -71,6 +71,8 @@ public class TimerConfigController {
     public String clearAllReports(
     		@RequestParam(value = "eventId", required = true) Long eventId ) {
     	for(Entry<TimerConfig, Timer> timerEntry : timers.entrySet()) {
+    		TimerConfig tc = timerEntry.getKey();
+    		System.out.println("timerconfig: " + tc.getId() + " pos: " + tc.getPosition() + " ip:" + tc.getUrl());
     		System.out.println("Clearing time for timer: " + timerEntry.getKey().getId() + ", Position: "+ timerEntry.getKey().getPosition());
     		// if timer is connected and a bibs timer, we need to poll it for all remaining tags:
     		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
@@ -86,11 +88,12 @@ public class TimerConfigController {
     		@RequestParam(value = "eventId", required = true) Long eventId ) {
     	for(Entry<TimerConfig, Timer> timerEntry : timers.entrySet()) {
     		System.out.println("Clearing time for timer: " + timerEntry.getKey().getId() + ", Position: "+ timerEntry.getKey().getPosition());
-    		if(timerEntry.getKey().getPosition() != 0)
-    		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
-    			timerEntry.getValue().emptyBuffer();
+    		if(timerEntry.getKey().getPosition() != 0) {
+        		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
+        			timerEntry.getValue().emptyBuffer();
+        		}
+        		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());    			
     		}
-    		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
     	}
     	return StringUtils.EMPTY;
     }    
