@@ -241,7 +241,7 @@
 			                <option value="${event.id}">${ event.name }</option>
 			            </c:forEach> 
 			        </select>
-			        <button type="button" class="btn btn-default" style="float:left" onclick="toggleSplits()">css sucks</button>
+			        <button type="button" class="btn btn-default" style="float:left" onclick="toggleSplits()">splitmode</button>
 			    </div>
 			    <div style="clear:both"> </div>
 				<div id="events"> </div>

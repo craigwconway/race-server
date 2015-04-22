@@ -312,10 +312,19 @@ public class TimerConfigController {
     }
 
 	@RequestMapping(params = "form", produces = "text/html")
-    public String createForm(Model uiModel) {
+    public String createForm(Model uiModel, HttpServletRequest httpServletRequest) {
+		TimerConfig tc = new TimerConfig();
+		tc.setFilename("/properties/ThingMagic/ADD_ROSPEC.xml");
+		tc.setType(1);
+		tc.setPorts("1");
+		tc.setPosition(1);
+		tc.setReadTimeout(20);
+		tc.setConnectionTimeout(10);
+		tc.persist();
+		tc.flush();
         populateEditForm(uiModel, new TimerConfig());
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
-        return "timers/create";
+        return "redirect:/timers/" + encodeUrlPathSegment(tc.getId().toString(), httpServletRequest);
     }
 
 	@RequestMapping(value = "/{id}", produces = "text/html")
@@ -350,9 +359,12 @@ public class TimerConfigController {
         }
         uiModel.asMap().clear();
         Timer t = timers.remove(TimerConfig.findTimerConfig(timerConfig.getId()));
+        TimerConfig old = TimerConfig.findTimerConfig(timerConfig.getId());
         timerConfig.setConnectionTimeout(10);
         timerConfig.merge();
-        timers.put(timerConfig, t);
+        if(old.getType() == timerConfig.getType() && t != null) {
+            timers.put(timerConfig, t);
+        }
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/raceday";
     }

@@ -54,6 +54,8 @@
     <div class="white-overlay">
         <form:update id="fu_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" versionField="Version" z="gHW4sjp6C91L58dzI5umszglaCQ=">
         <div class="ui form info-container">
+        <div class="pull-right"><button onclick="deleteReader()" class="ui red button" type="button"><i class="fa fa-trash"><!--  --></i> delete</button></div>
+        <div style="clear:both"><!--  --></div>
             <h2 class="ui icon header">
                 <i class="fa fa-cog"><!--  --></i>
                 <div class="content">Edit Reader
@@ -165,5 +167,17 @@
             }
             jQuery("#ports").val(str);
        }
+       function deleteReader(){
+            if( confirm('Are you sure you want to delete this item? This cannot be undone.') ){
+                jQuery.ajax({
+                    url: "/bibs-server/timers/${timerConfig.id}",
+                    type: "DELETE",
+                    dataType: "json",
+                    complete: function() {
+                        window.location="/bibs-server/timers";
+                    }
+                });
+            }
+        }
     </script>
 </div>
