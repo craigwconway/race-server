@@ -349,8 +349,10 @@ public class TimerConfigController {
             return "timers/update";
         }
         uiModel.asMap().clear();
+        Timer t = timers.remove(TimerConfig.findTimerConfig(timerConfig.getId()));
         timerConfig.setConnectionTimeout(10);
         timerConfig.merge();
+        timers.put(timerConfig, t);
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/raceday";
     }
