@@ -197,32 +197,32 @@
                 </h3>
 
                 <div class="ui five doubling cards">
-                <c:if test="${not empty eventcartitems}">
-                    <c:forEach var="item" items="${eventcartitems}">
-                        <div class="ui fluid card">
-                            <div class="content">
-                                <c:if test="${item.type == 'TICKET'}">
-                                    <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
-                                </c:if>
-                                <c:if test="${item.type == 'T_SHIRT'}">
-                                    <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
-                                </c:if>
-                                <c:if test="${item.type == 'DONATION'}">
-                                    <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
-                                </c:if>
-                                <div class="description">${item.description}
+                    <c:if test="${not empty eventcartitems}">
+                        <c:forEach var="item" items="${eventcartitems}">
+                            <div class="ui fluid card">
+                                <div class="content">
+                                    <c:if test="${item.type == 'TICKET'}">
+                                        <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
+                                    </c:if>
+                                    <c:if test="${item.type == 'T_SHIRT'}">
+                                        <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
+                                    </c:if>
+                                    <c:if test="${item.type == 'DONATION'}">
+                                        <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
+                                    </c:if>
+                                    <div class="description">${item.description}
+                                    </div>
+                                </div>
+                                <div class="extra content">
+                                    <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
+                                    <div class="right floated">$${item.price}</div>
+                                </div>
+                                <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
+                                    <i class="fa fa-external-link"><!--  --></i>View Details
                                 </div>
                             </div>
-                            <div class="extra content">
-                                <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
-                                <div class="right floated">$${item.price}</div>
-                            </div>
-                            <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
-                                <i class="fa fa-external-link"><!--  --></i>View Details
-                            </div>
-                        </div>
-                    </c:forEach>
-                </c:if>
+                        </c:forEach>
+                    </c:if>
                     <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
                         <div class="content">
                             <div class="ui header"><span style="visibility:hidden">name</span></div>
@@ -280,13 +280,7 @@
                     </div>
                 </h3>
                 <div class="content">
-                    <!-- 
-                        1. display current custom questions
-                        2. create form field
-                        3. edit   form field
-                        4. delete form field
-                     -->
-                        <div class="ui three doubling cards">
+                    <div class="ui three doubling cards">
                         <c:if test="${not empty customregfields}">
                             <div>Added Questions:</div>
                             <c:forEach var="item" items="${customregfields}">
@@ -334,13 +328,7 @@
                     </div>
                 </h3>
                 <div class="content">
-                    <!-- 
-                        1. display current custom questions
-                        2. create form field
-                        3. edit   form field
-                        4. delete form field
-                     -->
-                        <div class="ui three doubling cards">
+                    <div class="ui three doubling cards">
                         <c:if test="${not empty eventcoupons}">
                             <div>Added Coupons:</div>
                             <c:forEach var="item" items="${eventcoupons}">
@@ -437,12 +425,16 @@
 
         function deleteCoupon(){
             var id = currCouponId;
+            var obj = {};
+            obj.id = id;
+            obj.event = null;
             if( id !== "" &amp;&amp; id !== null ){
                 if( confirm('Are you sure you want to delete this coupon? This cannot be undone.') ){
                     jQuery.ajax({
                         url: "/bibs-server/eventcoupons/" + id,
                         type: "DELETE",
                         dataType: "json",
+                        data: obj,
                         complete: function() {
                             window.location.reload();
                         }
@@ -450,7 +442,7 @@
                 }
             }
             else{
-                alert("Something went wrong while trying to delete this question.");
+                alert("Something went wrong while trying to delete this coupon.");
                 window.location.reload();
             }
         }
@@ -492,9 +484,8 @@
                     discount = parseFloat(discount) * 100;
                 }
                 obj.discountAbsolute = discount;
-                obj.discountRelative = discountRelative;
             }
-            if( jQuery('#disc-perc').hasClass('active') ){ obj.discountRelative = parseFloat(discount); obj.discountAbsolute = discountAbsolute; }
+            if( jQuery('#disc-perc').hasClass('active') ){ obj.discountRelative = parseFloat(discount); }
 
             if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
                 error = true;
