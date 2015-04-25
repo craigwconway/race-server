@@ -23686,12 +23686,12 @@ select.ui.dropdown {
 
 .ui.dropdown > .default.text,
 .ui.default.dropdown > .text {
-  color: rgba(179, 179, 179, 0.7);
+  color: rgba(140, 140, 140, 0.7);
 }
 
 .ui.dropdown:hover > .default.text,
 .ui.default.dropdown:hover > .text {
-  color: rgba(140, 140, 140, 0.7);
+  color: #767676;
 }
 
 /*--------------------
