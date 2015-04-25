@@ -262,22 +262,8 @@
             setValidation();
             initDateTimePickers();
             jQuery('.ui.button').state();
-            jQuery('#ticket-type').dropdown();
             jQuery('#event-type').dropdown();
             jQuery('#gender-type').dropdown();
-            jQuery("#ticket-type").change(function() {
-                var selected = jQuery(this).val();
-                if( selected == 'T_SHIRT' ){
-                    jQuery(".shirt-settings").show();
-                    jQuery("#box-black").attr("data-parsley-required", true);
-                    jQuery("#box-xs").attr("data-parsley-required", true);
-                }
-                else{
-                    jQuery(".shirt-settings").hide();
-                    jQuery("#box-black").removeAttr("data-parsley-required");
-                    jQuery("#box-xs").removeAttr("data-parsley-required");
-                }
-            })
         }
 
         function cardHandler(val){
@@ -287,16 +273,25 @@
                     jQuery('#card-ticket > .content').attr('style', 'background:#F0F0F0');
                     jQuery('#card-tshirt > .content').attr('style', 'background:none');
                     jQuery('#card-donation > .content').attr('style', 'background:none');
+                    jQuery(".shirt-settings").hide();
+                    jQuery("#box-black").removeAttr("data-parsley-required");
+                    jQuery("#box-xs").removeAttr("data-parsley-required");
                     break;
                 case 'T_SHIRT':
                     jQuery('#card-ticket > .content').attr('style', 'background:none');
                     jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
                     jQuery('#card-donation > .content').attr('style', 'background:none');
+                    jQuery(".shirt-settings").show();
+                    jQuery("#box-black").attr("data-parsley-required", true);
+                    jQuery("#box-xs").attr("data-parsley-required", true);
                     break;
                 case 'DONATION':
                     jQuery('#card-ticket > .content').attr('style', 'background:none');
                     jQuery('#card-tshirt > .content').attr('style', 'background:none');
                     jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
+                    jQuery(".shirt-settings").hide();
+                    jQuery("#box-black").removeAttr("data-parsley-required");
+                    jQuery("#box-xs").removeAttr("data-parsley-required");
                     break;
                 default:
                     break;
