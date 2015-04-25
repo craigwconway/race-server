@@ -2,11 +2,13 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.CartUtil;
 import com.bibsmobile.util.UserProfileUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,8 +29,10 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Set;
 
 @RequestMapping("/carts")
 @Controller
@@ -95,6 +99,44 @@ public class CartController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    /**
+     * @api {put} /carts/{id}
+     * @apiGroup carts
+     * @apiName putCart
+     * @apiParam {Object} cart Cart object containing questions
+     * @apiParam {Number} cart.id Id of posted cart
+     * @apiParam {Object} cart.user Userprofile object inside of cart
+     * @apiParam {Object[]} cart.cartItems Array of items inside of cart
+     * @apiParam {Object[]} cart.customRegFieldResponses An array of custom reg field responses selected by the user.
+     * @apiParam {Number} [cart.customRegFieldResponses.id] Id of customregfieldresponse to post. Include this to update an answer
+     * @apiParam {String} [cart.customRegFieldResponses.response] String containing the response to the question
+     * @apiParam {Object} cart.customRegFieldResponses.customRegField Regfield answered. Must contain id.
+     * @apiParam {Number} cart.customRegFieldResponses.customRegField.id id of linked CustomRegField
+     * @apiParamExample {json} Sample Create
+     * 		{
+     * 			"id": 1,
+     * 			"customRegFieldResponses": 
+     * 				[
+     * 					{
+     * 						"customRegField": {"id":2},
+     * 						"response": "nodejs"
+     * 					}
+     * 				]
+     * 		}
+     * @apiParamExample {json} Sample Update
+     * 		{
+     * 			"id": 1,
+     * 			"customRegFieldResponses": 
+     * 				[
+     * 					{
+     * 						"id": 1,
+     * 						"customRegField": {"id":2},
+     * 						"response": "nodejs"
+     * 					}
+     * 				]
+     * 		}
+     * @apiSuccess (200) {Object} cart Modified cart object
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
         HttpHeaders headers = new HttpHeaders();
@@ -102,12 +144,31 @@ public class CartController {
         Cart cart = Cart.fromJsonToCart(json);
         cart.setId(id);
         List<CartItem> cartItems = cart.getCartItems();
+        List <CustomRegFieldResponse> regFieldResponses = cart.getCustomRegFieldResponses();
         if(null != cartItems) {
 	        for(CartItem cartItem: cartItems) {
 	        	System.out.println("updatingcartitem: " + cartItem);
 	        	cartItem.setUserProfile(cart.getUser());
 	        	cartItem.persist();
 	        }
+        }
+        if (null != regFieldResponses) {
+        	for(CustomRegFieldResponse crfr : regFieldResponses) {
+        		if(crfr.getId() != null) {
+        			// check for a match
+        			try {
+        				CustomRegFieldResponse match = CustomRegFieldResponse.findCustomRegFieldResponse(crfr.getId());
+        				match.setResponse(crfr.getResponse());
+        				match.merge();
+        			} catch(Exception e) {
+        				crfr.setCart(cart);
+        				crfr.persist();
+        				}
+        		} else {
+        			crfr.setCart(cart);
+        			crfr.persist();
+        		}
+        	}
         }
         if (cart.merge() == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);

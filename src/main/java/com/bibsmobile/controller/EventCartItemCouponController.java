@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,10 +68,42 @@ public class EventCartItemCouponController {
 		eventCoupon.persist();
 		return new ResponseEntity<>(eventCoupon.toJson(), headers, HttpStatus.OK);
 	}
+
 	
-	@RequestMapping(method = RequestMethod.PUT, headers="Accept=application/json")
-	public ResponseEntity<String> updateFromJson(@RequestBody EventCartItemCoupon eventCoupon) {
-		EventCartItemCoupon existing = EventCartItemCoupon.findEventCartItemCoupon(eventCoupon.getId());
+	/**
+     * @api {put} /eventcoupons
+     * @apiGroup eventcoupons
+	 * @apiName putEventCoupon
+	 * @apiDescription Edit or delete an event coupon
+	 * Enabling coupons on your event is a way to provide an incentive for early registrants.
+	 * See who would register using your coupon for better sales tracking.
+	 * Keeping coupons shorter in length (12 character max) allows you to easily develop
+	 * a shorthand system for your coupons.ex: fall2016snr
+	 * @apiParam {Number} id URL param id of event coupon to modify or delete
+	 * @apiParam {Object} event Event object this event type belongs to, must contain id
+     * @apiParam {String} code String containing coupon code. Entered by customers on checkout.
+     * @apiParam {Number} discountAbsolute Absolute amount of currency discounted. discountRelative cannot also be set.
+     * @apiParam {Number} discountRelative Percentage of normal price discounted. discountAbsolute cannot also be set.
+     * @apiParam {Number} available Total number of coupons of this type currently available for use (decrements as used).
+     * @apiParamExample {json} Sample Edit
+     * 		{
+     * 			"event": {"id": 1},
+     * 			"code": "nodejs",
+     * 			"discountRelative":7.5,
+     * 			"available":100
+     * 		}
+     * @apiParamExample {json} Sample Delete
+     * 		{
+     * 			"event": null,
+     * 			"code": "devlanguage",
+     * 			"discountAbsolute": 20,
+     * 			"available":5
+     * 		}
+     * @apiSuccess (200) {Object} eventCoupon created EventCartItemCoupon object
+     */	
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers="Accept=application/json")
+	public ResponseEntity<String> updateFromJson(@PathVariable("id") Long id, @RequestBody EventCartItemCoupon eventCoupon) {
+		EventCartItemCoupon existing = EventCartItemCoupon.findEventCartItemCoupon(id);
 		Event event = Event.findEvent(existing.getEvent().getId());
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json; charset=utf-8");

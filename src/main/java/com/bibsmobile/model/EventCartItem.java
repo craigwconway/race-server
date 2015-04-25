@@ -34,6 +34,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
+
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
@@ -56,7 +59,8 @@ public class EventCartItem {
 
     private String coupon;
 
-    private String eventType;
+    @ManyToOne
+    private EventType eventType;
 
     private long couponPrice;
 
@@ -317,11 +321,11 @@ public class EventCartItem {
         this.coupon = coupon;
     }
 
-    public String getEventType() {
+    public EventType getEventType() {
         return this.eventType;
     }
 
-    public void setEventType(String eventType) {
+    public void setEventType(EventType eventType) {
         this.eventType = eventType;
     }
 

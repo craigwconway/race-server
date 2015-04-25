@@ -76,7 +76,7 @@ public class Cart {
         return null;
     }
 
-    public String getEventType() {
+    public EventType getEventType() {
         if (!this.getCartItems().isEmpty()) {
             return this.getCartItems().get(0).getEventCartItem().getEventType();
         }
