@@ -163,7 +163,7 @@
                             <div class="twelve wide inline field" style="margin-left:0;padding-left:0;">
                                 <input type="text" name="discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
                                 <div class="ui icon buttons">
-                                    <div class="ui active button disc-btn" id="disc-perc"><b>%</b></div>
+                                    <div class="ui positive button disc-btn" id="disc-perc"><b>%</b></div>
                                     <div class="ui button disc-btn" id="disc-curr"><b><i class="fa fa-usd"><!--  --></i></b></div>
                                 </div>
                             </div>
@@ -391,8 +391,8 @@
             jQuery('.disc-btn').each(function(){
                 jQuery(this).click(function(){
                     var id = jQuery(this).attr("id");
-                    jQuery(this).addClass('active');
-                    jQuery(this).siblings().removeClass('active');
+                    jQuery(this).addClass('positive');
+                    jQuery(this).siblings().removeClass('positive');
                     distType = id;
                 })
             })
@@ -425,13 +425,13 @@
             jQuery('input[name="couponcode"]').val(code);
             if( discountRel === null || discountRel === "" ){
                 jQuery('input[name="discount"]').val(discountAbs);
-                jQuery('#disc-curr').addClass('active');
-                jQuery('#disc-perc').removeClass('active');
+                jQuery('#disc-curr').addClass('positive');
+                jQuery('#disc-perc').removeClass('positive');
             }
             else if( discountAbs === null || discountAbs === "" ){
                 jQuery('input[name="discount"]').val(discountRel);
-                jQuery('#disc-perc').addClass('active');
-                jQuery('#disc-curr').removeClass('active');
+                jQuery('#disc-perc').addClass('positive');
+                jQuery('#disc-curr').removeClass('positive');
             }
             jQuery('input[name="available"]').val(avail);
         }
@@ -491,14 +491,14 @@
 
             var discountAbsolute = null;
             var discountRelative = null;
-            if( jQuery('#disc-curr').hasClass('active') ){
+            if( jQuery('#disc-curr').hasClass('positive') ){
                 if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
                     // convert to cents
                     discount = parseFloat(discount) * 100;
                 }
                 obj.discountAbsolute = discount;
             }
-            if( jQuery('#disc-perc').hasClass('active') ){ obj.discountRelative = parseFloat(discount); }
+            if( jQuery('#disc-perc').hasClass('positive') ){ obj.discountRelative = parseFloat(discount); }
 
             if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
                 error = true;
