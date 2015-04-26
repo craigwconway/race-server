@@ -369,7 +369,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                    <c:if test='${(build.registration)}'>
+                    <c:if test='${(!build.registration)}'>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
@@ -523,17 +523,6 @@
                 })
             })
 
-            var momentRRTime = moment('${event.timeStart}').startOf('hour');
-            jQuery("#timedisp")
-                .datetimepicker({
-                    defaultDate: momentRRTime,
-                    pickDate: false,
-                    dateFormat: 'h:mm:ss a'
-                });
-            jQuery("#removetime").click(function(){
-                jQuery("#timedisp").val("");
-            });
-
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             getWebappId();
             getWaiver();
@@ -606,6 +595,17 @@
             jQuery(".put-event-type").hide();
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             jQuery('#putFieldForm input').val('');
+
+            var momentRRTime = moment('${event.timeStart}').startOf('hour');
+            jQuery("#timedisp")
+                .datetimepicker({
+                    defaultDate: momentRRTime,
+                    pickDate: false
+                });
+                console.log(jQuery('#timedisp').data('DateTimePicker'));
+            jQuery("#removetime").click(function(){
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').startOf('hour'));
+            });
 
             jQuery('#racetype-dropdown').dropdown('clear');
         }
