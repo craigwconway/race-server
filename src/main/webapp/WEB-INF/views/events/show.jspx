@@ -299,7 +299,7 @@
                                 <label id="distance" style="width:100%">Distance</label>
                                 <input type="text" name="distance" placeholder="Distance"><!--  --></input>
                                 <div class="ui icon buttons" style="margin-left:3px">
-                                    <div class="ui active button dist-btn" id="dist-mi"><b>mi</b></div>
+                                    <div class="ui positive button dist-btn" id="dist-mi"><b>mi</b></div>
                                     <div class="ui button dist-btn" id="dist-km"><b>km</b></div>
                                     <div class="ui button dist-btn" id="dist-m"><b>m</b></div>
                                 </div>
@@ -522,8 +522,8 @@
             jQuery('.dist-btn').each(function(){
                 jQuery(this).click(function(){
                     var id = jQuery(this).attr("id");
-                    jQuery(this).addClass('active');
-                    jQuery(this).siblings().removeClass('active');
+                    jQuery(this).addClass('positive');
+                    jQuery(this).siblings().removeClass('positive');
                     distType = id;
                 })
             })
@@ -543,9 +543,9 @@
             var typeName  = jQuery('input[name="typeName"]').val();
             var distance  = jQuery('input[name="distance"]').val();
             var distType  = null;
-            if( jQuery('#dist-m').hasClass('active')  ){ distType = ' m';  }
-            if( jQuery('#dist-km').hasClass('active') ){ distType = ' km'; }
-            if( jQuery('#dist-mi').hasClass('active') ){ distType = ' mi'; }
+            if( jQuery('#dist-m').hasClass('positive')  ){ distType = ' m';  }
+            if( jQuery('#dist-km').hasClass('positive') ){ distType = ' km'; }
+            if( jQuery('#dist-mi').hasClass('positive') ){ distType = ' mi'; }
             var startTime = jQuery('input[name="startTime"]').val();
             var raceType  = jQuery('input[name="raceType"]').val();
 
@@ -645,9 +645,9 @@
             jQuery('#racetype-dropdown').dropdown("set selected", type);
             var parseDist = dist.split(' ');
             jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
-            if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('active'); }
-            if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('active'); }
-            if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('active'); }
+            if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
+            if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
+            if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
 
             var raceTime = moment(raceTime);
             jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
