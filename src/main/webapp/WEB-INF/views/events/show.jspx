@@ -82,7 +82,6 @@
             padding-left:0
         }
         .ui.form .field > label, label{
-            font-size: 1em;
             margin: 1em 0em 0.25em;
         }
         .ui.form .inline.field > input{
@@ -273,14 +272,8 @@
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
                         <div class="fields">
-                            <div class="twelve wide field">
-                                <label style="width:100%">Event Type Name</label>
-                                <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
-                            </div>
-                        </div>
-                        <div class="fields">
-                            <div class="twelve wide field">
-                                <label style="width:100%">Race Types</label>
+                            <div class="twelve wide required field">
+                                <label style="width:100%" id="racetypes">Race Types</label>
                                 <div class="ui fluid search selection dropdown" id="racetype-dropdown">
                                     <input type="hidden" name="raceType"><!--  --></input>
                                     <i class="fa fa-caret-down" style="float:right"><!--  --></i>
@@ -302,10 +295,10 @@
                             </div>
                         </div>
                         <div class="fields">
-                            <label id="distance">Distance</label>
-                            <div class="twelve wide inline field">
+                            <div class="twelve wide inline required field" style="margin: 0.5em 0em 0em">
+                                <label id="distance" style="width:100%">Distance</label>
                                 <input type="text" name="distance" placeholder="Distance"><!--  --></input>
-                                <div class="ui icon buttons">
+                                <div class="ui icon buttons" style="margin-left:3px">
                                     <div class="ui active button dist-btn" id="dist-mi"><b>mi</b></div>
                                     <div class="ui button dist-btn" id="dist-km"><b>km</b></div>
                                     <div class="ui button dist-btn" id="dist-m"><b>m</b></div>
@@ -313,7 +306,7 @@
                             </div>
                         </div>
                         <div class="fields">
-                            <div class="twelve wide field">
+                            <div class="twelve wide required field">
                                 <label id="starttime">Start Time</label>
                                 <div class="ui action input">
                                     <input  type="text" name="startTime"
@@ -325,6 +318,12 @@
                                             data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
                                     <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label style="width:100%">Event Type Name</label>
+                                <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
                             </div>
                         </div>
                     </div>
@@ -514,6 +513,12 @@
                 }
             })
 
+            var momentRRTime = moment('${event.timeStart}').startOf('hour');
+            jQuery("#timedisp").datetimepicker({
+                    defaultDate: momentRRTime,
+                    pickDate: false
+                });
+
             jQuery('.dist-btn').each(function(){
                 jQuery(this).click(function(){
                     var id = jQuery(this).attr("id");
@@ -554,6 +559,30 @@
 
             if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;
+                if( distance === "" ){
+                    jQuery('#distance').parent().addClass('error');
+                    jQuery('input[name="distance"]').on('keypress', function(){
+                        if(jQuery('input[name="distance"]').val().length > 0){
+                            jQuery('#distance').parent().removeClass('error');
+                        }
+                    })
+                }
+                if( parseDate === "" ){
+                    jQuery('#starttime').parent().addClass('error');
+                    jQuery('input[name="startTime"]').on('keypress', function(){
+                        if(jQuery('input[name="startTime"]').val().length > 0){
+                            jQuery('#starttime').parent().removeClass('error');
+                        }
+                    })
+                }
+                if( raceType === "" ){
+                    jQuery('#racetypes').parent().addClass('error');
+                    jQuery('input[name="raceType"]').on('change', function(){
+                        if(jQuery('input[name="raceType"]').val().length > 0){
+                            jQuery('#racetypes').parent().removeClass('error');
+                        }
+                    })
+                }
                 console.log(error);
             }
             else{
@@ -596,13 +625,8 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             jQuery('#putFieldForm input').val('');
 
-            var momentRRTime = moment('${event.timeStart}').startOf('hour');
-            jQuery("#timedisp")
-                .datetimepicker({
-                    defaultDate: momentRRTime,
-                    pickDate: false
-                });
-                console.log(jQuery('#timedisp').data('DateTimePicker'));
+            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').startOf('hour'));
+            
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').startOf('hour'));
             });
@@ -624,7 +648,13 @@
             if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('active'); }
             if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('active'); }
             if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('active'); }
-            jQuery('#timedisp').data('DateTimePicker').setDate(moment(raceTime));
+
+            var raceTime = moment(raceTime);
+            jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
+            jQuery("#removetime").click(function(){
+                jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
+            });
+
             jQuery("#addType").modal('show');
         }
 
