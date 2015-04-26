@@ -60,6 +60,7 @@
                 </div>
             </h2>
             <select class="form-control" id="event-type" name="event"
+                    data-parsley-required="true"
                     data-parsley-error-message="Please select an event.">
                 <option selected="selected" disabled="disabled">Select Event</option>
                 <c:forEach var="item" items="${events}">
