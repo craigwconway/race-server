@@ -20078,16 +20078,16 @@ ol.ui.horizontal.list li:before,
   padding: 0.75em 1em;
   top: 0em;
   left: 0em;
-  color: rgba(0, 0, 0, 0.4);
+  color: #767676;
   box-shadow: none;
   -webkit-transition: color 0.2s ease;
   transition: color 0.2s ease;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .ui.cards > .card > .extra a:not(.ui),
 .ui.card > .extra a:not(.ui) {
-  color: rgba(0, 0, 0, 0.4);
+  color: #767676;
 }
 
 .ui.cards > .card > .extra a:not(.ui):hover,
