@@ -29,6 +29,13 @@
         i{
             margin-right: 5px;
         }
+        .x-btn{
+            margin-left: 5px;
+            margin-right: 0px;
+        }
+        .x-btn:hover{
+            cursor: pointer;
+        }
         .ui.cards > .card > .content > .header{
             text-align: left;
         }
@@ -50,6 +57,10 @@
         }
         label#question-label{
             width:100%;
+        }
+        .ui.labels .label, .ui.label{
+            cursor: pointer;
+            margin-bottom: 2px;
         }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -94,22 +105,24 @@
                                 <label style="width:100%">Dropdown Options (separated by comma)</label>
                                 <div class="ui action input">
                                     <input  type="text" id="drop-option" placeholder="Add dropdown option"></input>
-                                    <div class="ui icon button" id="addOption"><i class="fa fa-plus"><!--  --></i></div>
+                                    <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
                                 </div>
                             </div>
+                            <div style="clear:both"><!--  --></div>
+                            <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
                         </div>
                         <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
                         </h4>
                         <span id="placeholder-text">Please enter details for the custom question to see a preview.</span>
                         <div id="question-preview" style="display:none">
                             <div class="fields">
-                                <div class="field">
+                                <div class="field" style="width: 375px">
                                     <label id="question-label" style="display:none"><!--  --></label>
                                     <input id="type-input-selected" type="text" style="display:none"><!--  --></input>
                                     <div class="ui selection dropdown" id="type-dropdown-selected" style="display:none">
                                         <input type="hidden"><!--  --></input>
                                         <div class="default text">Select one</div>
-                                        <i class="fa fa-caret-down"><!--  --></i>
+                                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                                         <div class="menu" id="dropdown-options"><!--  -->
                                         </div>
                                     </div>
@@ -182,8 +195,8 @@
             <div class="ui top attached tabular menu">
                 <div class="item" data-tab="eci-menu">Products</div>
                 <div class="item" data-tab="ticket-menu">Transfers</div>
-                <div class="item" data-tab="form-menu">Custom Forms</div>
-                <div class="active item" data-tab="coupon-menu">Coupons</div>
+                <div class="active item" data-tab="form-menu">Custom Forms</div>
+                <div class="item" data-tab="coupon-menu">Coupons</div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="eci-menu">
                 <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
@@ -271,7 +284,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="form-menu">
+            <div class="ui bottom attached active tab segment" data-tab="form-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -319,7 +332,7 @@
                     <button class="ui green button" type="button">Save</button>
                 </div>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="coupon-menu">
+            <div class="ui bottom attached tab segment" data-tab="coupon-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -513,6 +526,45 @@
             jQuery(".post-question").show();
         }
 
+        var currOptions = '';
+        function addDropdownOption(){
+            jQuery('#type-dropdown-selected').dropdown();
+            var opt = jQuery("#drop-option").val();
+            if( opt.length > 0 ){
+                currOptions += opt + ',';
+                jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
+                jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                jQuery('#type-dropdown-selected').dropdown('refresh');
+                jQuery('#drop-option').val("");
+            }
+        }
+
+        function removeDropdownOption(o){
+            var parsed = currOptions;
+            if( parsed.slice(-1) == ',' ){
+                parsed = parsed.substring(0, parsed.length-1);
+            }
+
+            parsed = parsed.split(',');
+            var opt = jQuery(o).text();
+            if( parsed.indexOf(opt) > -1 ){
+                parsed.splice(parsed.indexOf(opt), 1);
+                currOptions = parsed;
+            }
+            jQuery(".dropdown .menu").html("");
+            jQuery('#drop-option').val("");
+            jQuery('#option-list').html("");
+            parsed.forEach(function(el, i, ary){
+                jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + el + '<i class="x-btn fa fa-remove"></i></div></li>');
+                jQuery(".dropdown .menu").append('<div class="item">' + el + '</div>');
+            })
+            jQuery('#type-dropdown-selected').dropdown('refresh');
+
+            if( currOptions.slice(-1) !== ',' ){
+                currOptions += ',';
+            }
+        }
+
         var currQuestionId;
         function questionDetail(id, eid, question, responseSet){
             currQuestionId = id;
@@ -528,13 +580,14 @@
                                         obj.event = eobj;        }
             jQuery('input[name="id"]').val(id);
             jQuery('input[name="question"]').val(question);
+
             if( responseSet !== "" ){
                 jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
                 jQuery("#dropdown-field").show();
                 jQuery('#type-dropdown-selected').dropdown();
                 
-                jQuery('#drop-option').val(responseSet);
-                var opt = jQuery("#drop-option").val();
+                jQuery('#drop-option').val("");
+                var opt = responseSet;
                 if( opt.length > 0 ){
                     // remove last comma if string ends with comma
                     if( opt.slice(-1) == ',' ){
@@ -570,32 +623,6 @@
                 jQuery("#question-label").show();
                 jQuery("#placeholder-text").hide();
             }
-            
-            jQuery("#addOption").click(function(){
-                jQuery('#type-dropdown-selected').dropdown();
-                var opt = jQuery("#drop-option").val();
-                if( opt.length > 0 ){
-                    // remove last comma if string ends with comma
-                    if( opt.slice(-1) == ',' ){
-                        opt = opt.substring(0, opt.length-1);
-                    }
-                    var split = opt.split(',');
-                    jQuery(".dropdown .menu").html("");
-                    var parsedOptions = "";
-                    for( i = 0; i &lt; split.length; i++ ){
-                        opt = split[i];
-                        if( opt !== "" &amp;&amp; opt !== " " ){
-                            jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
-                            parsedOptions += opt + ",";
-                        }
-                    }
-                    if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
-                        parsedOptions = parsedOptions.substring(0, parsedOptions.length-1);
-                        responseType = parsedOptions;
-                    }
-                    jQuery('#type-dropdown-selected').dropdown('refresh');
-                }
-            })
         }
 
         function deleteQuestion(){
@@ -644,6 +671,10 @@
                                         obj.event = eobj;        }
             if( question.length > 0 ){  obj.question = question; }
 
+            // remove last comma if string ends with comma
+            if( currOptions.slice(-1) == ',' ){
+                responseType = currOptions.substring(0, currOptions.length-1);
+            }
             var type = responseType;
             if( type !== 'input' ){     obj.responseSet = responseType; }
             else{ obj.responseSet = ""; }
