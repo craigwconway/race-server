@@ -122,10 +122,16 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         if (TimerConfig.countTimerConfigs() < 1) {
             TimerConfig timerConfig = new TimerConfig();
             timerConfig.setUrl("tmr://bibs001.bibsmobile.com");
+            if(BuildTypeUtil.usesRfid()) {
+                timerConfig.setType(1);
+            }
             timerConfig.persist(); // reader 1
             timerConfig = new TimerConfig();
             timerConfig.setUrl("tmr://bibs002.bibsmobile.com");
             timerConfig.setPosition(1);
+            if(BuildTypeUtil.usesRfid()) {
+                timerConfig.setType(1);
+            }
             timerConfig.persist(); // reader 2
         }
 
