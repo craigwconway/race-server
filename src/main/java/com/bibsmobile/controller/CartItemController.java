@@ -2,6 +2,7 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.UserProfile;
@@ -112,11 +113,14 @@ public class CartItemController {
                 cartItem.setExported(Boolean.TRUE);
                 cartItem.persist();
             }
+            Cart cart = cartItem.getCart();
             EventCartItem eventCartItem = cartItem.getEventCartItem();
             UserProfile userProfile = cartItem.getUserProfile();
             String str = cartItem.getCreated() + ", " + cartItem.getQuantity() + ", " + cartItem.getCoupon() + ", " + cartItem.getPrice() + ", " + cartItem.getSize() + ", "
                     + cartItem.getColor() + ", " + eventCartItem.getType() + ", " + eventCartItem.getName() + ", " + eventCartItem.getPrice() + ", ";
-
+            for (CustomRegFieldResponse r : cart.getCustomRegFieldResponses()) {
+                str += r.getCustomRegField().getQuestion() + ", " + r.getResponse() + ", ";
+            }
             if (userProfile != null) {
                 str += userProfile.getBirthdate() + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", " + userProfile.getAddressLine1() + ", "
                         + userProfile.getAddressLine2() + ", " + userProfile.getZipCode() + ", " + userProfile.getEmergencyContactName() + ", "
