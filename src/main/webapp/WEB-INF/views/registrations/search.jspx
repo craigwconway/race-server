@@ -507,6 +507,7 @@
                 jQuery("#box-m").prop("checked", true);
                 jQuery("#box-f").prop("checked", false);
                 jQuery("#parsley-id-multiple-gender li:first-child").hide();
+                jQuery('input[name="gender"]').val('Male');
             }
             if( type === 'F' ){
                 jQuery("#gender-f").addClass('positive');
@@ -514,6 +515,7 @@
                 jQuery("#box-f").prop("checked", true);
                 jQuery("#box-m").prop("checked", false);
                 jQuery("#parsley-id-multiple-gender li:first-child").hide();
+                jQuery('input[name="gender"]').val('Female');
             }
         }
     </script>
