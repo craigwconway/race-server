@@ -362,7 +362,7 @@ public class TimerConfigController {
         TimerConfig old = TimerConfig.findTimerConfig(timerConfig.getId());
         timerConfig.setConnectionTimeout(10);
         timerConfig.merge();
-        if(old.getType() == timerConfig.getType() && t != null) {
+        if(old.getType() == timerConfig.getType() && old.getPosition() == timerConfig.getPosition() && t != null) {
             timers.put(timerConfig, t);
         }
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
