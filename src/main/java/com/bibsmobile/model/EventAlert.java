@@ -2,6 +2,7 @@ package com.bibsmobile.model;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -12,12 +13,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
 import flexjson.JSON;
@@ -35,6 +41,16 @@ public class EventAlert {
     @ManyToOne
     private Event event;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
+
+    @PrePersist
+    protected void onPersist() {
+        if (this.created == null)
+            this.created = new Date();
+        this.created = new Date();
+    }    
+    
     public static TypedQuery<EventAlert> findEventAlertsByEventId(Long eventId) {
         EntityManager em = Event.entityManager();
         TypedQuery<EventAlert> q = em.createQuery("SELECT ea FROM EventAlert AS ea WHERE ea.event.id = :eventId", EventAlert.class);
@@ -42,6 +58,14 @@ public class EventAlert {
         return q;
     }
 
+    public static TypedQuery<EventAlert> findLatestEventAlertByEventId(Long eventId) {
+        EntityManager em = Event.entityManager();
+        TypedQuery<EventAlert> q = em.createQuery("SELECT ea FROM EventAlert AS ea WHERE ea.event.id = :eventId order by ea.created DESC", EventAlert.class);
+        q.setParameter("eventId", eventId);
+        q.setMaxResults(1);
+        return q;
+    }    
+    
     @JSON(include = false)
     public Event getEvent() {
         return this.event;
@@ -65,6 +89,16 @@ public class EventAlert {
         return q;
     }
 
+    public static TypedQuery<EventAlert> findLatestEventAlertByEvent(Event event) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = EventAlert.entityManager();
+        TypedQuery<EventAlert> q = em.createQuery("SELECT o FROM EventAlert AS o WHERE o.event = :event ORDER BY created DESC", EventAlert.class);
+        q.setParameter("event", event);
+        q.setMaxResults(1);
+        return q;
+    }    
+    
     public static TypedQuery<EventAlert> findEventAlertsByEvent(Event event, String sortFieldName, String sortOrder) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
@@ -118,7 +152,21 @@ public class EventAlert {
         this.event = event;
     }
 
-    @PersistenceContext
+    /**
+	 * @return the created
+	 */
+	public Date getCreated() {
+		return created;
+	}
+
+	/**
+	 * @param created the created to set
+	 */
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	@PersistenceContext
     transient EntityManager entityManager;
 
     public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("text", "event");

@@ -75,12 +75,62 @@ public class EventAlertController {
         uiModel.addAttribute("eventAlert", eventAlert);
     }
 
+    /**
+     * @api {get} /eventalerts/search Search
+     * @apiName Search
+     * @apiGroup eventalerts
+     * @apiDescription Get all alerts from an event
+     * @apiParam {Number} event Id of event to search
+     * @param eventId
+     * @return
+     */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public String findEventsAlerts(@RequestParam(value = "event", required = false) Long eventId) {
         return EventAlert.toJsonArray(EventAlert.findEventAlertsByEventId(eventId).getResultList());
     }
-
+    
+    /**
+     * @api {get} /eventalerts/searchone Search Latest
+     * @apiName Search Latest
+     * @apiGroup eventalerts
+     * @apiDescription Get latest alert from an event
+     * @apiParam {Number} event Id of event to search
+     * @apiParamExample {lua} CoronaSDK
+     * local bibsAPI = "http://localhost:8080/bibs-server"
+     * local json = require "json"
+     * alerts = {}
+     * -- Listener to handle interactions with events
+     * function eventAlertListener(event)
+     * 	if (event.isError) then
+     * 		print ("cave out")
+     * 	else 
+     * 		print ( "cave in: " .. event.response )
+     * 		alerts = json.decode(event.response)
+     * 		for k, v in pairs(alerts) do
+     * 			print ("ALERT: "  .. v.text .. " on: " .. v.created);
+     * 		end
+     * 	end
+     * end
+     * -- Pass in the event ID you want to search to this function
+     * function GetLatestAlert(eventID)
+     * 	network.request(bibsAPI .. "/eventalerts/searchone?event=" .. eventID, "GET", eventAlertListener)
+     * end
+     * GetLatestAlert(1)
+     * local function getAlertsTest()
+     * 	print("checking alerts...")
+     * 	print(#alerts)
+     * end
+     * timer.performWithDelay(3000, getAlertsTest)
+     * @param eventId
+     * @return
+     */
+    @RequestMapping(value = "/searchone", method = RequestMethod.GET)
+    @ResponseBody
+    public String findOneEventAlert(@RequestParam(value = "event", required = false) Long eventId) {
+        return EventAlert.toJsonArray(EventAlert.findLatestEventAlertByEventId(eventId).getResultList());
+    }
+    
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventAlert eventAlert, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -188,11 +238,20 @@ public class EventAlertController {
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-    @RequestMapping(params = "find=ByEvent", headers = "Accept=application/json")
+    
+    @RequestMapping(params = "latest", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> LatestByEvent (@RequestParam(value = "eventId") long eventId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<>(EventAlert.toJsonArray(EventAlert.findEventAlertsByEvent(Event.findEvent(eventId)).getResultList()), headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(params = "find=ByEvent", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> jsonFindEventAlertsByEvent(@RequestParam("event") Event event) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         return new ResponseEntity<>(EventAlert.toJsonArray(EventAlert.findEventAlertsByEvent(event).getResultList()), headers, HttpStatus.OK);
-    }
+    }   
 }
