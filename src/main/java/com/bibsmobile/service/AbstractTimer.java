@@ -10,12 +10,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.util.BuildTypeUtil;
 
 public abstract class AbstractTimer implements Timer {
+	
+	@Autowired
+	BibTimeout bibTimeout;
 	
 	public static final String UNASSIGNED_BIB_EVENT_NAME = "Unassigned Results";
 
@@ -47,11 +52,15 @@ public abstract class AbstractTimer implements Timer {
 		final String cacheKey = bibnum+"-"+timerConfig.getPosition();
 		System.out.println(slog+" logging '"+bibnum + "' @ "+bibtime+ ", position "+timerConfig.getPosition());
 		logTimerRead(String.valueOf(bibnum),timerConfig.getUrl());// test logging
-		if (!bibTimes.containsKey(cacheKey)) 
-			bibTimes.put(cacheKey, bibtime);
+		
+		if(bibTimeout.getTimeout(timerConfig.getPosition(), bibnum) == null) {
+			bibTimeout.setTimeout(timerConfig.getPosition(), bibnum, bibtime);
+		}
+		//if (!bibTimes.containsKey(cacheKey)) 
+		//	bibTimes.put(cacheKey, bibtime);
 
 		// timeout by timer config
-		if(bibtime < (bibTimes.get(cacheKey) + (timerConfig.getReadTimeout() * 1000)) ){
+		if(bibtime < (bibTimeout.getTimeout(timerConfig.getPosition(), bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
 			// match bib to running events
 			List <Event> events;
 			if(BuildTypeUtil.usesRfid()) {
@@ -221,7 +230,7 @@ public abstract class AbstractTimer implements Timer {
 			// delete by [bib]-[timer.position]
 			String o = runner.getBib() + "-" + position;
 			System.out.println("removing key: " + o);
-			bibTimes.remove(o);
+			bibTimeout.clearBib(runner.getBib());;
 			//bibCache.remove(o);
 			//bibsByReader.remove(o);
 			//uniqueBibs.remove(runner.getBib());
