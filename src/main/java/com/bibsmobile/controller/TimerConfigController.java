@@ -358,13 +358,9 @@ public class TimerConfigController {
             return "timers/update";
         }
         uiModel.asMap().clear();
-        Timer t = timers.remove(TimerConfig.findTimerConfig(timerConfig.getId()));
-        TimerConfig old = TimerConfig.findTimerConfig(timerConfig.getId());
         timerConfig.setConnectionTimeout(10);
         timerConfig.merge();
-        if(old.getType() == timerConfig.getType() && old.getPosition() == timerConfig.getPosition() && t != null) {
-            timers.put(timerConfig, t);
-        }
+        timers.put(timerConfig, new BibsLLRPTimer(timerConfig));
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/raceday";
     }
