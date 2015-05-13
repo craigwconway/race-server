@@ -1,12 +1,16 @@
 package com.bibsmobile.model;
 
+import javax.persistence.Embeddable;
+
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
+
+@Embeddable
 public class EventAwardsConfig {
 
-    private boolean allowMedalsInAgeGenderRankings;
-    private boolean allowMastersInNonMasters;
+    private boolean allowMedalsInAgeGenderRankings=false;
+    private boolean allowMastersInNonMasters=true;
     
 	public boolean isAllowMedalsInAgeGenderRankings() {
 		return allowMedalsInAgeGenderRankings;
@@ -24,18 +28,4 @@ public class EventAwardsConfig {
 	public void setAllowMastersInNonMasters(boolean allowMastersInNonMasters) {
 		this.allowMastersInNonMasters = allowMastersInNonMasters;
 	}
-	
-	public String toJson() {
-        return new JSONSerializer()
-        .exclude("*.class").serialize(this);
-    }
-
-	public String toJson(String[] fields) {
-        return new JSONSerializer().serialize(this);
-    }
-
-	public static EventAwardsConfig fromJson(String json) {
-        return new JSONDeserializer<EventAwardsConfig>().use(null, EventAwardsConfig.class).deserialize(json);
-    }
-
 }

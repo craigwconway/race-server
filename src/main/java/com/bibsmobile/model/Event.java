@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -134,17 +135,11 @@ public class Event {
 
     private String results3;
     
-    // hack for awards - JI-42
-    @Transient
+    /**
+     * Embedded object containing the EventAwardsConfig.
+     */
+    @Embedded
     private EventAwardsConfig awardsConfig;
-    // use results 3 for json EventAwardsConfig
-    public EventAwardsConfig getAwardsConfig(){
-    	return (null == getResults3() || getResults3().isEmpty()) ? new EventAwardsConfig() : EventAwardsConfig.fromJson(getResults3());
-    }
-    public void setAwardsConfig(EventAwardsConfig awardsConfig){
-    	this.awardsConfig = awardsConfig;
-    	setResults3(awardsConfig.toJson());
-    }
 
     private String donateUrl;
 
@@ -1219,7 +1214,7 @@ public class Event {
     /**
      * Get waiver URL. When a waiver is posted as plaintext, it is uploaded to s3.
      * The bucket url is returned here. 
-     * @return
+     * @return String containing bucket URL of waiver on S3.
      */
     public String getWaiver() {
         return this.waiver;
@@ -1339,5 +1334,21 @@ public class Event {
 	}
 	public void setParking(String parking) {
 		this.parking = parking;
+	}
+
+	/**
+	 * This is an embedded entity inside of Event and can only be selected from its context.
+	 * @return the awardsConfig
+	 */
+	public EventAwardsConfig getAwardsConfig() {
+		return awardsConfig;
+	}
+
+	/**
+	 * This is an embedded entity inside of event and can only be set from its context.
+	 * @param awardsConfig the awardsConfig to set
+	 */
+	public void setAwardsConfig(EventAwardsConfig awardsConfig) {
+		this.awardsConfig = awardsConfig;
 	}
 }

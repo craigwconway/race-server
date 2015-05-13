@@ -7,6 +7,7 @@ import java.util.Set;
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventAwardsConfig;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
@@ -84,6 +85,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             foo.setGunTime(new DateTime().toDate());
             foo.setTimeStart(new DateTime().toDate());
             foo.setTimeEnd(new DateTime().plusHours(1).toDate());
+            foo.setAwardsConfig(new EventAwardsConfig());
             foo.persist();
             
             for(long i = 1; i < 300; i++){

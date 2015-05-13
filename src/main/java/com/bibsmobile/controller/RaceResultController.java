@@ -390,8 +390,8 @@ public class RaceResultController {
         uiModel.asMap().clear();
         // New race result stuff here //
         System.out.println("[RESULTS] Updating Chip Time");
-        System.out.println("[RESULTS] Timechip: " + raceResult.getTimechip() + " Timestart:" + raceResult.getTimestart());
-    	System.out.println("[RESULTS] Null get timechip, proceeding");
+        System.out.println(" Timestart:" + raceResult.getTimestart());
+    	System.out.println("[RESULTS] Null get timestart, proceeding");
     	// We have a result without a chip time, we can compute the timeofficialdisplay
     	if(null != raceResult.getEvent().getGunTime() && 0 < raceResult.getTimeofficial()) {
     		System.out.println("[RESULTS] Event details:");
