@@ -31,32 +31,78 @@ function makeAwardsTable(data,title){
 		return results;
 	}
 
-function makeRunnersTable(data,results,eventId){
-	results = "";
-	results += "<tr>";
-	results += "<th>Time</th>";
-	results += "<th>Bib</th>";
-	results += "<th>Name</th>";
-	results += "<th>City</th>";
-	results += "<th>State</th>";
-	results += "</tr>";
-	for(var i in data){
-		var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
-		var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
-		var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
-		var bib = (null!=data[i].bib) ? data[i].bib : "";
-		var city = (null!=data[i].city) ? data[i].city : "";
-		var state = (null!=data[i].state) ? data[i].state : "";
-		
+function makeRunnersTable(data,results,eventId, splits){
+	if(splits != true) {
+		results = "";
 		results += "<tr>";
-		results += "<td>"+timeofficialdisplay+"</td>";
-		results += "<td>"+bib+"</td>";
-		results += "<td>"+firstname+" "+lastname+"</td>";
-		results += "<td>"+city+"</td>";
-		results += "<td>"+state+"</td>";
+		results += "<th>Time</th>";
+		results += "<th>Bib</th>";
+		results += "<th>Name</th>";
+		results += "<th>City</th>";
+		results += "<th>State</th>";
 		results += "</tr>";
+		for(var i in data){
+			var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
+			var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
+			var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
+			var bib = (null!=data[i].bib) ? data[i].bib : "";
+			var city = (null!=data[i].city) ? data[i].city : "";
+			var state = (null!=data[i].state) ? data[i].state : "";
+			var splits = (null!=data[i].timesplit) ? data[i].timesplit : "";
+			
+			results += "<tr>";
+			results += "<td>"+timeofficialdisplay+"</td>";
+			results += "<td>"+bib+"</td>";
+			results += "<td>"+firstname+" "+lastname+"</td>";
+			results += "<td>"+city+"</td>";
+			results += "<td>"+state+"</td>";
+			results += "</tr>";
+		}
+		return results;		
+	} else {
+		results = "";
+		results += "<tr>";
+		results += "<th>Bib</th>";
+		results += "<th>Name</th>";
+		results += "<th>Finish</th>";
+		results += "<th>Split 1</th>";
+		results += "<th>Split 2</th>";
+		results += "<th>Split 3</th>";
+		results += "<th>Split 4</th>";
+		
+		results += "</tr>";
+		for(var i in data){
+			var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
+			var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
+			var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
+			var bib = (null!=data[i].bib) ? data[i].bib : "";
+			var city = (null!=data[i].city) ? data[i].city : "";
+			var state = (null!=data[i].state) ? data[i].state : "";
+			var splits = (null!=data[i].timesplit) ? data[i].timesplit : "";
+			var splitarr = splits.split(",");
+			var humansplits = Array(5).join(".").split(".");
+			console.log("humansplits");
+			console.log(humansplits);
+			console.log("Splitarr:");
+			console.log(splitarr);
+			for(ts = 0; ts < splitarr.length; ts++) {
+				humansplits[ts] = getHoursMinutesSecondsRaw(data[i].timestart, splitarr[ts]);
+			}
+			console.log("humansplits2");
+			console.log(humansplits)
+			results += "<tr>";
+			results += "<td>"+bib+"</td>";
+			results += "<td>"+firstname+" "+lastname+"</td>";
+			results += "<td>"+timeofficialdisplay+"</td>";
+			results += "<td>"+humansplits[0]+"</td>";
+			results += "<td>"+humansplits[1]+"</td>";
+			results += "<td>"+humansplits[2]+"</td>";
+			results += "<td>"+humansplits[3]+"</td>";
+			results += "</tr>";
+		}
+		return results;				
 	}
-	return results;
+
 }
 
 function runnerSearchResultsTable(data){
@@ -118,6 +164,28 @@ function createMap(){
 //		return false;
 //	}
 	return true;
+}
+
+function getHoursMinutesSecondsRaw(rawstart, rawtime) {
+	if(rawtime < rawstart || rawstart == 0 || rawtime == 0) {
+		return "";
+	}
+	l = rawtime - rawstart;
+	seconds = Math.floor(l/1000);
+	var numyears = Math.floor(seconds / 31536000);
+	var numdays = Math.floor((seconds % 31536000) / 86400); 
+	var numhours = Math.floor(((seconds % 31536000) % 86400) / 3600);
+	var numminutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60);
+	var numseconds = (((seconds % 31536000) % 86400) % 3600) % 60;
+	if(numminutes<10) numminutes = "0"+numminutes;
+	if(numseconds<10) numseconds = "0"+numseconds;
+	rtn =  numminutes + ":" + numseconds;
+	if(numhours == 0) rtn = "00:" + rtn;
+	else if(numhours<=9) rtn = "0"+numhours + ":" + rtn;
+	else if(numhours>9) rtn = numhours + ":" + rtn;
+	if(numdays==1) rtn = numdays + " day "+rtn;
+	else if(numdays>0) rtn = numdays + " days "+rtn;
+	return rtn;
 }
 
 function getHoursMinutesSeconds(e,l) {

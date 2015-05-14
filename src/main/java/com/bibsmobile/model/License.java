@@ -128,19 +128,19 @@ public class License {
 		byte[] tt = dc();
 		long tmpissueunits = tt[24] & 0xff;
 		tmpissueunits <<= 8;
-		tmpissueunits = tt[25] & 0xff;
+		tmpissueunits |= tt[25] & 0xff;
 		tmpissueunits <<= 8;
-		tmpissueunits = tt[26] & 0xff;
+		tmpissueunits |= tt[26] & 0xff;
 		tmpissueunits <<= 8;
-		tmpissueunits = tt[27] & 0xff;
+		tmpissueunits |= tt[27] & 0xff;
 		tmpissueunits <<= 8;
-		tmpissueunits = tt[28] & 0xff;
+		tmpissueunits |= tt[28] & 0xff;
 		tmpissueunits <<= 8;
-		tmpissueunits = tt[29] & 0xff;
+		tmpissueunits |= tt[29] & 0xff;
 		tmpissueunits <<= 8;
-		tmpissueunits = tt[30] & 0xff;
+		tmpissueunits |= tt[30] & 0xff;
 		tmpissueunits <<= 8;
-		tmpissueunits = tt[31] & 0xff;
+		tmpissueunits |= tt[31] & 0xff;
 		return tmpissueunits;
 	}
 
@@ -152,19 +152,19 @@ public class License {
 		byte[] tt = dc();
 		long tmpendunits = tt[32] & 0xff;
 		tmpendunits <<= 8;
-		tmpendunits = tt[33] & 0xff;
+		tmpendunits |= tt[33] & 0xff;
 		tmpendunits <<= 8;
-		tmpendunits = tt[34] & 0xff;
+		tmpendunits |= tt[34] & 0xff;
 		tmpendunits <<= 8;
-		tmpendunits = tt[35] & 0xff;
+		tmpendunits |= tt[35] & 0xff;
 		tmpendunits <<= 8;
-		tmpendunits = tt[36] & 0xff;
+		tmpendunits |= tt[36] & 0xff;
 		tmpendunits <<= 8;
-		tmpendunits = tt[37] & 0xff;
+		tmpendunits |= tt[37] & 0xff;
 		tmpendunits <<= 8;
-		tmpendunits = tt[38] & 0xff;
+		tmpendunits |= tt[38] & 0xff;
 		tmpendunits <<= 8;
-		tmpendunits = tt[39] & 0xff;
+		tmpendunits |= tt[39] & 0xff;
 		return tmpendunits;
 	}
 	

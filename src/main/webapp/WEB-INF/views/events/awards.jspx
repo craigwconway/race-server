@@ -60,7 +60,7 @@
 				</sec:authorize>
 					
 				<button class="btn btn-success btn-top" 
-					onclick="printAwards()"
+					onclick="printawards()"
 					type="button">Print</button>
 			</div>
         </div>
@@ -190,6 +190,10 @@
 			window.location = "/bibs-server/events/overall?event="+eventid;
 		}
 
+		function printawards(){
+			window.location = "/bibs-server/events/printawards?event="+eventid;
+		}		
+		
 		function deleteAwardCategory(id){
 			if(confirm("Delete Award Category?")){
 				jQuery(".cat-"+id).remove();

@@ -100,7 +100,8 @@ public class ResultsImportController {
     	}catch(Exception e){
     		e.printStackTrace();
     	}
-    	}}; // thread run
+    	}
+    	}.start(); // thread run
     }
 
     public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {

@@ -122,18 +122,18 @@
                 </div>
             </div>
 
-            <div style="display:none">
+            <div style="display:true">
                 <div class="ui labeled input">
                     <div class="ui orange label">Medal Category</div>
                     <div class="btn btn-default btn-sm med-button" onclick="medalToggle()"><!--  --></div>
                     <input style="display:none" id="checkmedal" type="checkbox" name="medal"></input>
                 </div>
-                <input  type="text" name="sortOrder"
+                <!-- <input  type="text" name="sortOrder"
                         class="form-control"
                         placeholder="Sort Order"
                         data-parsley-error-message="Invalid sort order."
-                        data-parsley-required="required"></input>
-        		<field:select field="event" id="c_com_bibsmobile_model_AwardCategory_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/>
+                        data-parsley-required="required"></input> -->
+        		<!--<field:select field="event" id="c_com_bibsmobile_model_AwardCategory_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/> -->
             </div>
             </form:create>
         </div>
@@ -151,11 +151,18 @@
 
     		// medal hack
     		var name = jQuery('#cat-name').val();
-    		var index = Math.round(name.indexOf('Medal: '));
-    		if(index > -1){
-    			jQuery('#cat-name').val( name.substring( 7, name.length) );
-    			jQuery('#checkmedal').prop('checked', true);
-    		}
+            if(name.length != 0) {
+	    		var index = Math.round(name.indexOf('Medal: '));
+	    		if(index > -1){
+	    			jQuery('#cat-name').val( name.substring( 7, name.length) );
+	    			jQuery('#checkmedal').prop('checked', true);
+	    		}          	
+            } else {
+            	console.log("category name length 0")
+            	jQuery('#checkmedal').prop('checked', false);
+            	jQuery(".med-button").html('<span class="glyphicon glyphicon-remove"></span>')
+            }
+
 
             jQuery('select.dropdown').dropdown();
         };

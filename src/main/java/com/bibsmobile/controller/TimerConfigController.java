@@ -71,11 +71,14 @@ public class TimerConfigController {
     public String clearAllReports(
     		@RequestParam(value = "eventId", required = true) Long eventId ) {
     	for(Entry<TimerConfig, Timer> timerEntry : timers.entrySet()) {
-    		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
+    		TimerConfig tc = timerEntry.getKey();
+    		System.out.println("timerconfig: " + tc.getId() + " pos: " + tc.getPosition() + " ip:" + tc.getUrl());
+    		System.out.println("Clearing time for timer: " + timerEntry.getKey().getId() + ", Position: "+ timerEntry.getKey().getPosition());
     		// if timer is connected and a bibs timer, we need to poll it for all remaining tags:
     		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
     			timerEntry.getValue().emptyBuffer();
     		}
+    		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
     	}
     	return StringUtils.EMPTY;
     }
@@ -84,8 +87,13 @@ public class TimerConfigController {
     public String clearFinishReports(
     		@RequestParam(value = "eventId", required = true) Long eventId ) {
     	for(Entry<TimerConfig, Timer> timerEntry : timers.entrySet()) {
-    		if(timerEntry.getKey().getPosition() != 0)
-    		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
+    		System.out.println("Clearing time for timer: " + timerEntry.getKey().getId() + ", Position: "+ timerEntry.getKey().getPosition());
+    		if(timerEntry.getKey().getPosition() != 0) {
+        		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
+        			timerEntry.getValue().emptyBuffer();
+        		}
+        		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());    			
+    		}
     	}
     	return StringUtils.EMPTY;
     }    
@@ -304,10 +312,19 @@ public class TimerConfigController {
     }
 
 	@RequestMapping(params = "form", produces = "text/html")
-    public String createForm(Model uiModel) {
+    public String createForm(Model uiModel, HttpServletRequest httpServletRequest) {
+		TimerConfig tc = new TimerConfig();
+		tc.setFilename("/properties/ThingMagic/ADD_ROSPEC.xml");
+		tc.setType(1);
+		tc.setPorts("1");
+		tc.setPosition(1);
+		tc.setReadTimeout(20);
+		tc.setConnectionTimeout(10);
+		tc.persist();
+		tc.flush();
         populateEditForm(uiModel, new TimerConfig());
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
-        return "timers/create";
+        return "redirect:/timers/" + encodeUrlPathSegment(tc.getId().toString(), httpServletRequest);
     }
 
 	@RequestMapping(value = "/{id}", produces = "text/html")
@@ -343,8 +360,9 @@ public class TimerConfigController {
         uiModel.asMap().clear();
         timerConfig.setConnectionTimeout(10);
         timerConfig.merge();
+        timers.put(timerConfig, new BibsLLRPTimer(timerConfig));
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
-        return "redirect:/timers/";
+        return "redirect:/events/raceday";
     }
 
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
@@ -379,4 +397,16 @@ public class TimerConfigController {
         } catch (UnsupportedEncodingException uee) {}
         return pathSegment;
     }
+	
+	void internalClear(long eventId) {
+    	for(Entry<TimerConfig, Timer> timerEntry : timers.entrySet()) {
+    		System.out.println("Clearing time for timer: " + timerEntry.getKey().getId() + ", Position: "+ timerEntry.getKey().getPosition());
+    		// if timer is connected and a bibs timer, we need to poll it for all remaining tags:
+    		if ((2 == timerEntry.getValue().getStatus()) && (1 == timerEntry.getKey().getType())) {
+    			timerEntry.getValue().emptyBuffer();
+    		}
+    		timerEntry.getValue().clearAllTimesByEventAndTimerId(eventId, timerEntry.getKey().getPosition());
+    	}
+		
+	}
 }

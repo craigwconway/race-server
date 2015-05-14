@@ -54,8 +54,8 @@ import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
-@Indexed
-@Spatial(spatialMode = SpatialMode.HASH)
+//@Indexed
+//@Spatial(spatialMode = SpatialMode.HASH)
 public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -70,7 +70,7 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private List<AwardCategory> awardCategorys;
 
-    @Field
+    //@Field
     @NotNull
     private String name;
 
@@ -96,10 +96,10 @@ public class Event {
     
     private String location;
 
-    @Latitude
+    //@Latitude
     private Double latitude;
 
-    @Longitude
+    //@Longitude
     private Double longitude;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -159,7 +159,7 @@ public class Event {
 
     private String syncId;
     
-    @Field
+    //@Field
     private String charity;
 
     private boolean regEnabled;
@@ -295,6 +295,7 @@ public class Event {
 
     public List<RaceResult> getAwards(String gender, int min, int max, int size, List<Long> excludeBibs) { 
     	List<RaceResult> results = Event.findRaceResultsByAwardCategory(id,gender,min,max,1,999);
+    	Collections.sort(results);
     	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
     	for(RaceResult r : results){
     		if(!excludeBibs.contains(r.getBib())){
@@ -374,6 +375,17 @@ public class Event {
         return q.getResultList();
     }
 
+    public static List<RaceResult> findRecentRaceResultsForAnnouncer(long event, int page, int size) {
+        String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND (o.timeofficial > 0 OR length(o.timesplit) > 0)";
+        HQL += " order by o.updated desc";
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
+        q.setParameter("event", Event.findEvent(event));
+        q.setFirstResult((page - 1) * size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }    
+    
     public static long countRaceResults(long event) {
         EntityManager em = RaceResult.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event", Long.class);

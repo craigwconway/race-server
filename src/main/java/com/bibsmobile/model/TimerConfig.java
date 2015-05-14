@@ -30,8 +30,8 @@ public class TimerConfig {
 	private String ports; // comma seperated list of ints 
 	private int connectionTimeout;
 	private String filename;
-	static private int heartbeatTimeout = 5000;
-	static private int heartbeats = 3;
+	static private int heartbeatTimeout = 2000;
+	static private int heartbeats = 8;
 	
 	private enum Manufacturer {
 		DEFAULT, THINGMAGIC

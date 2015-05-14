@@ -119,22 +119,38 @@
                             </div>
                         </div>
                 </div>
-                <div class="ui labeled input">
-                    <div class="ui blue label">First Name</div>
-                        <input  type="text" name="firstname"
-                            id="firstname" value="${raceResult.firstname}"
-                            placeholder="First name"
-                            data-parsley-error-message="Please provide a first name."
-                            data-parsley-required="true"></input>
-                </div>
-                <div class="ui labeled input">
-                    <div class="ui blue label">Last Name</div>
-                        <input  type="text" name="lastname"
-                            id="lastname" value="${raceResult.lastname}"
-                            placeholder="Last name"
-                            data-parsley-error-message="Please provide a last name."
-                            data-parsley-required="true"></input>
-                </div>
+                <c:if test='${(!build.rfid)}'>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">First Name</div>
+                            <input  type="text" name="firstname"
+                                id="firstname" value="${raceResult.firstname}"
+                                placeholder="First name"
+                                data-parsley-error-message="Please provide a first name."
+                                data-parsley-required="true"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Last Name</div>
+                            <input  type="text" name="lastname"
+                                id="lastname" value="${raceResult.lastname}"
+                                placeholder="Last name"
+                                data-parsley-error-message="Please provide a last name."
+                                data-parsley-required="true"></input>
+                    </div>
+                </c:if>
+                <c:if test='${(build.rfid)}'>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">First Name</div>
+                            <input  type="text" name="firstname"
+                                id="firstname" value="${raceResult.firstname}"
+                                placeholder="First name"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Last Name</div>
+                            <input  type="text" name="lastname"
+                                id="lastname" value="${raceResult.lastname}"
+                                placeholder="Last name"></input>
+                    </div>
+                </c:if>
                 <div class="ui labeled input">
                     <div class="ui blue label">Gender</div>
                         <select name="gender" id="gender-type" class="ui-dropdown"
@@ -181,7 +197,6 @@
                         </div>
                 </div>
                 <div style="display:none;">
-                    <field:input field="gender" id="c_com_bibsmobile_model_RaceResult_gender" z="K3ZsU6b47sd4or2ijr3AsyNt+OU="/>
                     <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed"/>
                     <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" z="user-managed"/>
                     <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" z="user-managed"/>
@@ -269,6 +284,10 @@
                         useSeconds: true,
                         format: 'LTS'
                     });
+            }
+
+            if( rrTime === "00:00:00" || rrTime === "" ){
+                jQuery("#timedisp").val("");
             }
 
             if( rrTime === "00:00:00" || rrTime === "" ){

@@ -622,6 +622,12 @@ public class BibsLLRPTimer extends AbstractTimer implements LLRPEndpoint, Timer 
 	
 	public void emptyBuffer() {
 		if(this.status == 2) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			LLRPGetTagReports();
 		}
 	}

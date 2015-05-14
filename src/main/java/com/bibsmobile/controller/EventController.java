@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -38,6 +39,7 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.bibsmobile.util.BuildTypeUtil;
+import com.bibsmobile.util.PDFUtil;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.S3Util;
 import com.bibsmobile.util.SpringJSONUtil;
@@ -45,6 +47,9 @@ import com.bibsmobile.util.SpringJSONUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.http.HttpResponse;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +92,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UploadFile;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
@@ -433,6 +439,17 @@ public class EventController {
         return "false";
     }
 
+    @RequestMapping(value = "/splitresults", method = RequestMethod.GET)
+    @ResponseBody
+    public static String resultsRecentQuery(@RequestParam(value = "event", required = true) long event_id) {
+        try {
+            return RaceResult.toJsonArray(Event.findRecentRaceResultsForAnnouncer(event_id, 1, 15));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return "false";
+    }
+    
     @RequestMapping(value = "/manual", method = RequestMethod.GET)
     @ResponseBody
     public static String setTimeManual(@RequestParam(value = "event", required = true) long event_id, @RequestParam(value = "bib", required = true) long bib) {
@@ -562,8 +579,77 @@ public class EventController {
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("awardCategoryResults", list);
         return "events/awards";
+    }   
+    
+    // Print awards
+    @RequestMapping(value = "/printawards", method = RequestMethod.GET)
+    public static void printAwards(@RequestParam(value = "event", required = true) Long eventId, HttpServletResponse response) {
+    	Event event = Event.findEvent(eventId);
+    	PDDocument doc = PDFUtil.createColorMedalsPDF(event, event.calculateMedals(event));
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	try {
+    		doc.save(baos);
+    		doc.close();
+    		response.setContentType("application/pdf");
+    		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "") +".pdf\"");
+    		OutputStream os = response.getOutputStream();
+    		baos.writeTo(os);
+    		os.flush();
+    		os.close();
+    	} catch (COSVisitorException | IOException e) {
+    		e.printStackTrace();
+    	}
     }
 
+    @RequestMapping(value = "/printclass", method = RequestMethod.GET)
+    public static void printClass(@RequestParam(value = "event", required = true) Long eventId, 
+    				@RequestParam(value = "gender", required = false, defaultValue = "M") String gender, 
+    				HttpServletResponse response) {
+    	Event event = Event.findEvent(eventId);
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<AwardCategory> list = event.getAwardCategorys();
+    	List<Long> medalsBibs = new ArrayList<Long>();
+
+    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
+    	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
+        	for(AwardCategoryResults c:event.calculateMedals(event)){
+        		for(RaceResult r:c.getResults()){
+        			medalsBibs.add(r.getBib());
+        		}
+        	}
+    	}
+    	
+		// filter age/gender
+    	for(AwardCategory c:event.getAwardCategorys()){
+    		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
+    			results.add(new AwardCategoryResults(c,
+    					event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
+    		}
+    	}
+    	
+    	Collections.sort(results);
+    	PDDocument doc = PDFUtil.createColorMedalsPDF(event, results);
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	try {
+    		doc.save(baos);
+    		doc.close();
+    		response.setContentType("application/pdf");
+    		if(gender.equals("F")) {
+        		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "")+"ladyscore" +".pdf\"");
+    		} else if(gender.equals("M")) {
+        		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "")+"manscore" +".pdf\"");
+    		} else {
+        		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "")+"score" +".pdf\"");
+    		}
+    		OutputStream os = response.getOutputStream();
+    		baos.writeTo(os);
+    		os.flush();
+    		os.close();
+    	} catch (COSVisitorException | IOException e) {
+    		e.printStackTrace();
+    	}
+    }    
+    
     @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
     public static String ageGenderRankings(
     		@RequestParam(value = "event", required = true) Long eventId,
@@ -688,7 +774,18 @@ public class EventController {
         uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
     }
-
+    
+	@RequestMapping(value = "/systemdetails", method = RequestMethod.GET)
+	@ResponseBody
+	public static String getRacedayDetails() {
+		JsonObject json = new JsonObject();
+		long systime = new Date().getTime();
+		json.addProperty("time", systime);
+		json.addProperty("allocatefacepunch", "patrick");
+		json.addProperty("buildcode", "1.2.0");
+		return json.toString();
+	} 
+	
     @RequestMapping(value = "/megaexport", method = RequestMethod.GET)
     public static void megaexport(
             HttpServletResponse response) throws IOException {
@@ -723,20 +820,45 @@ public class EventController {
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
-
+        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,split1,split2,split3,split4,split5,split6,split7,split8,split9,offset\r\n");
         List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
         for (RaceResult r : runners) {
         	String splits = "0,0,0,0,0,0,0,0,0";
-        	if(null!=r.getTimesplit() && r.getTimesplit().contains(",")){
-        		splits = "";
-        		for(String s : r.getTimesplit().split(",")){
-        			if(splits.length() > 0) splits += ",";
-        			splits += RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s));
-        			System.out.println("human time "+_event.getTimeStart().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getTimeStart().getTime(), Long.valueOf(s)));
+        	if(null!=r.getTimesplit() && !r.getTimesplit().isEmpty()){
+        		if(r.getTimesplit().contains(",")) {
+            		splits = "";
+            		boolean fielderr = false;
+            		System.out.println("processing split: "+ r.getTimesplit());
+            		for(String s : r.getTimesplit().split(",")){
+            			System.out.println(s);
+            			if(fielderr || splits.length() > 0) splits += ",";
+            			if(s == null || s.equals("null") || s.isEmpty()) {
+            				fielderr = true;
+            			} else {
+            				splits += RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s));
+            				System.out.println("human time "+_event.getGunTime().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s)));
+            			}
+            		}      			
+        		} else {
+        			if(StringUtils.isNumeric(r.getTimesplit())) {
+        				splits = RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(r.getTimesplit()));
+        				System.out.println("human time "+_event.getGunTime().getTime()+", "+r.getTimesplit()+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(r.getTimesplit())));
+        				splits += ",0,0,0,0,0,0,0,0";
+        			}
         		}
+        		String append = "";
+        		for(int i = splits.split(",").length; i < 9; i++) {
+        			append += ",00:00:00";
+        		}
+        		splits +=append;
+
+        	}
+        	long offset = _event.getGunTime() != null ? _event.getGunTime().getTime() : 0;
+        	if(BuildTypeUtil.usesLicensing()) {
+        		splits = r.isLicensed()? splits : "0,0,0,0,0,0,0,0,0";
         	}
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
-                    + r.getGender() + "," + r.getAge() + "," + splits + "\r\n");
+                    + r.getGender() + "," + r.getAge()  +"," + splits+ "," + offset + "\r\n");
         }
         outputwriter.flush();
         outputwriter.close();
@@ -1066,7 +1188,23 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/show";
     }
-
+    
+    @RequestMapping(value = "rest/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJsonRest(@PathVariable("id") Long id) {
+        Event event = Event.findEvent(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (event == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "{1}/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
@@ -1152,7 +1290,12 @@ public class EventController {
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return null;
         }
-
+        // Clear unassigned so it doesn't detach
+        if(BuildTypeUtil.usesRfid()) {
+        	TimerConfigController tcc = new TimerConfigController();
+        	tcc.internalClear(event.getId());
+        }
+        
         event.remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());

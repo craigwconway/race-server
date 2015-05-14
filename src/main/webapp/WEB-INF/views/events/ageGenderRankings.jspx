@@ -220,15 +220,7 @@
 		}
 		
 		function printAwards(){
-			jQuery('table').css('max-width','500px');
-			jQuery('#search-box').hide();
-			jQuery('#header-nav').hide();
-			jQuery('#awards-nav').hide();
-			window.print();
-			alert("Print Complete!");
-			jQuery('table').css('max-width','none');
-			jQuery('#header-nav').show();
-			jQuery('#awards-nav').show();
+			window.location = "/bibs-server/events/printclass?event="+eventid+"&amp;gender="+getParameterByName("gender");
 		}
 		
 		function byGender(g){
@@ -241,6 +233,13 @@
 		
 		function overall(){
 			window.location = "/bibs-server/events/overall?event="+eventid;
+		}
+		
+		function getParameterByName(name) {
+		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		    var regex = new RegExp("[\\?&amp;]" + name + "=([^&amp;#]*)"),
+		        results = regex.exec(location.search);
+		    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 		}
 		
 		function createAwardCategories(){
