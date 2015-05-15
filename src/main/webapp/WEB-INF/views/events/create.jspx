@@ -186,7 +186,6 @@
             <field:input field="running" id="c_com_bibsmobile_model_Event_running" z="user-managed"/>
             <field:checkbox field="sync" id="c_com_bibsmobile_model_Event_sync" z="user-managed"/>
             <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
-            <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
             <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Event" render="${not empty dependencies}" z="97PxZzAnMjrQHEYGI+GbAcLkB+8="/>
             <field:input field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" z="3DmdaoAlr4tuRBA+G/h/8/CKxFw="/>
             <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="user-managed"/>
