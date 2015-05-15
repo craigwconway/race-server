@@ -94,7 +94,7 @@
                         data-parsley-required="required"></input>
                 <input  type="text" name="phone"
                         class="form-control"
-                        id="#mask-phone"
+                        id="mask-phone"
                         placeholder="Phone Number"
                         value="${event.phone}"
                         data-parsley-length="[10,18]"
@@ -111,7 +111,7 @@
                         data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
                 <input  type="text" name="phone"
                         class="form-control"
-                        id="#mask-phone"
+                        id="mask-phone"
                         placeholder="Phone Number"
                         value="${event.phone}"
                         data-parsley-length="[10,18]"
@@ -160,14 +160,11 @@
             <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
             <field:input field="latitude" id="c_com_bibsmobile_model_Event_latitude" z="user-managed"/>
             <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed"/>
-            <field:input field="website" id="c_com_bibsmobile_model_Event_website" z="user-managed"/>
-            <field:input field="phone" id="c_com_bibsmobile_model_Event_phone" z="user-managed"/>
             <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/>
             <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="user-managed"/>
             <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="user-managed"/>
             <field:input field="general" id="c_com_bibsmobile_model_Event_general" z="user-managed"/>
             <field:input field="description" id="c_com_bibsmobile_model_Event_description" z="user-managed"/>
-            <field:input field="organization" id="c_com_bibsmobile_model_Event_organization" z="user-managed"/>
             <field:input field="photo" id="c_com_bibsmobile_model_Event_photo" z="user-managed"/>
             <field:input field="photo2" id="c_com_bibsmobile_model_Event_photo2" z="user-managed"/>
             <field:input field="photo3" id="c_com_bibsmobile_model_Event_photo3" z="user-managed"/>
@@ -187,9 +184,6 @@
             <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
             <field:simple field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
             <field:input field="running" id="c_com_bibsmobile_model_Event_running" z="user-managed"/>
-            <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="user-managed"/>
-            <field:datetime dateTimePattern="${event_guntime_date_format}" field="gunTime" id="c_com_bibsmobile_model_Event_gunTime" z="user-managed"/>
-            <field:input field="gunTimeStart" id="c_com_bibsmobile_model_Event_gunTimeStart" z="user-managed"/>
             <field:checkbox field="sync" id="c_com_bibsmobile_model_Event_sync" z="user-managed"/>
             <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
             <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
