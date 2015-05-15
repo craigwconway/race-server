@@ -186,7 +186,7 @@
                     <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
                         <div class="ui labeled input">
                             <div class="ui blue label">Gun Fired</div>
-                            <div class="btn btn-default btn-sm reg" onclick="gunToggle()">${event.gunFired}</div>
+                            <div class="btn btn-default btn-sm" id="reg" onclick="gunToggle()">${event.gunFired}</div>
                             <input style="display:none" id="checkgun" type="checkbox" name="gunFired"></input>
                         </div>
 
@@ -263,23 +263,25 @@
         }
 
         function initInfo(){
-            jQuery(".reg").each(function(){
-                var content = jQuery(this).html();
-                if(content === "true"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
-                }
-                else if(content === "false"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
-                }
-            })
+            var status = '${event.gunFired}'
+            if( status === 'true' ){
+                jQuery("#reg").html('<span class="glyphicon glyphicon-ok"></span>');
+                jQuery('input[name="gunFired"]').prop('checked', true);
+            }
+            else if( status === 'false' ){
+                jQuery("#reg").html('<span class="glyphicon glyphicon-remove"></span>');
+                jQuery('input[name="gunFired"]').prop('checked', false);
+            }
         }
 
         function gunToggle(){
-            jQuery("#checkgun").prop("checked", function(i, val) {
-                var str = val ? 'glyphicon-ok' : 'glyphicon-remove';
-                jQuery(".reg").html('<span class="glyphicon ' + str + '"></span>')
-                return !val;
-            });
+            var status = jQuery('input[name="gunFired"]').prop('checked');
+            if( status === false ){
+                jQuery("#reg").html('<span class="glyphicon glyphicon-ok"></span>');
+            }else if( status === true){
+                jQuery("#reg").html('<span class="glyphicon glyphicon-remove"></span>');
+            }
+            jQuery('input[name="gunFired"]').prop('checked', !status);
         }
 
         function initDateTimePickers(){
