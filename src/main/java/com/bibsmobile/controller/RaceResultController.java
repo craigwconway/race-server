@@ -9,6 +9,7 @@ import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.License;
+import com.bibsmobile.model.Split;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
@@ -52,6 +53,15 @@ public class RaceResultController {
     @ResponseBody
     public String createFromJson(@RequestBody String json) {
         RaceResult raceResult = RaceResult.fromJsonToRaceResult(json);
+        if(raceResult.getEvent() != null) {
+        	raceResult.setEvent(Event.findEvent(raceResult.getEvent().getId()));
+        }
+        System.out.println("Splits:");
+        if(raceResult.getSplits() != null) {
+        	for(Split split : raceResult.getSplits()) {
+        		System.out.println(split);
+        	}
+        }
         raceResult.persist();
         return raceResult.toJson();
     }

@@ -102,4 +102,12 @@ public class Split {
 	public void setRaceResult(RaceResult raceResult) {
 		this.raceResult = raceResult;
 	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Split [position=" + position + ", time=" + time
+				+ ", timedisplay=" + timedisplay + "]";
+	}
 }

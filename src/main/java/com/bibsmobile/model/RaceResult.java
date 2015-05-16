@@ -444,7 +444,7 @@ public class RaceResult implements Comparable<RaceResult> {
     public String toJson(boolean full) {
         return new JSONSerializer().serialize(this);
     }
-
+    
     public static RaceResult fromJsonToRaceResult(String json) {
         return new JSONDeserializer<RaceResult>().use(null, RaceResult.class).deserialize(json);
     }
@@ -1233,5 +1233,33 @@ public class RaceResult implements Comparable<RaceResult> {
 	 */
 	public void setCheckedin(boolean checkedin) {
 		this.checkedin = checkedin;
+	}
+
+	/**
+	 * @return the splits
+	 */
+	public Set<Split> getSplits() {
+		return splits;
+	}
+
+	/**
+	 * @param splits the splits to set
+	 */
+	public void setSplits(Set<Split> splits) {
+		this.splits = splits;
+	}
+
+	/**
+	 * @return the customFields
+	 */
+	public Set<CustomResultField> getCustomFields() {
+		return customFields;
+	}
+
+	/**
+	 * @param customFields the customFields to set
+	 */
+	public void setCustomFields(Set<CustomResultField> customFields) {
+		this.customFields = customFields;
 	}
 }
