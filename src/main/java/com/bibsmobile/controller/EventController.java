@@ -948,9 +948,11 @@ public class EventController {
 
         if (bindingResult.hasErrors()) {
             this.populateEditForm(uiModel, event);
+            System.out.println(bindingResult.getAllErrors());
             uiModel.addAttribute("build", BuildTypeUtil.getBuild());
             return "events/update";
         }
+        Event trueEvent = Event.findEvent(event.getId());
 
         Date time0 = new Date(event.getGunTimeStart());
         Date time1 = event.getGunTime();
@@ -963,7 +965,8 @@ public class EventController {
             }
             event.setGunTimeStart(event.getGunTime().getTime());
         }
-
+        event.setAwardsConfig(trueEvent.getAwardsConfig());
+        System.out.println(event.getAwardsConfig());
         uiModel.asMap().clear();
         event.merge();
         return "redirect:/events/" + this.encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
