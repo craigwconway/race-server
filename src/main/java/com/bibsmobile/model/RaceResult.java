@@ -190,10 +190,6 @@ public class RaceResult implements Comparable<RaceResult> {
      * Runner's medal (if recieved). This is populated on import.
      */
     private String medal;
-
-    /**
-     * Runner's city of origin. This is an import field.
-     */
  
     /**
      * Embedded set of split objects containing times and positions for splits.
@@ -207,6 +203,9 @@ public class RaceResult implements Comparable<RaceResult> {
     @ElementCollection
     private Set<CustomResultField> customFields = new HashSet<CustomResultField>();
     
+    /**
+     * Runner's City of origin
+     */
     private String city;
 
     /**
@@ -233,6 +232,11 @@ public class RaceResult implements Comparable<RaceResult> {
      * Boolean to indicate whether or not a runner has been checked in to the event.
      */
     private boolean checkedin;
+    
+    /**
+     * Flag to indicate whether the runner has been disqualified. Keep False
+     */
+    private boolean disqualified=false;
     /**
      * The time the raceresult was created, generated through a pre-update hook. This is not an import field.
      */
@@ -1233,6 +1237,20 @@ public class RaceResult implements Comparable<RaceResult> {
 	 */
 	public void setCheckedin(boolean checkedin) {
 		this.checkedin = checkedin;
+	}
+
+	/**
+	 * @return the whether a runner is disqualified. Default false.
+	 */
+	public boolean isDisqualified() {
+		return disqualified;
+	}
+
+	/**
+	 * @param disqualified set a runner as disqualified.
+	 */
+	public void setDisqualified(boolean disqualified) {
+		this.disqualified = disqualified;
 	}
 
 	/**
