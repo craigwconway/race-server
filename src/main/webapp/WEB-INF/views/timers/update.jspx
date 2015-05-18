@@ -119,6 +119,13 @@
             			class="form-control"
             			value="${timerConfig.laps}"></input>
             </div>
+            <div class="ui labeled input">
+            	<div class="ui blue label">Minimum Finish</div>
+            	<input type="number" name="minFinish"
+            			class="form-control"
+            			placeholder="Minimum Finish Time (seconds)"
+            			value="${timerConfig.minFinish}"></input>
+            </div>
             <div style="display:none"><input name="ports" id="ports"><!--  --></input></div>
         </div>
         </form:update>

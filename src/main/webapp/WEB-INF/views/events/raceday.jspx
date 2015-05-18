@@ -241,7 +241,17 @@
 			                <option value="${event.id}">${ event.name }</option>
 			            </c:forEach> 
 			        </select>
-			        <button type="button" class="btn btn-default" style="float:left" onclick="toggleSplits()">splitmode</button>
+			        <div class="btn-group" role="group" aria-label="announcermode">
+						<button type="button" style="float:left" class="btn btn-default" onclick="setSplits('detailed')">
+						<span class="glyphicon glyphicon-user" style="vertical-align:middle">
+						Details</span></button>
+						<button type="button" style="float:left" class="btn btn-default" onclick="setSplits('splits')">
+						<span class="glyphicon glyphicon-random" style="vertical-align:middle">
+						Splits</span></button>
+						<button type="button" style="float:left" class="btn btn-default" onclick="setSplits('laps')">
+						<span class="glyphicon glyphicon-road" style="vertical-align:middle">
+						Laps</span></button>
+					</div>
 			    </div>
 			    <div style="clear:both"> </div>
 				<div id="events"> </div>
@@ -263,6 +273,7 @@
 		var isReloading = false;
 		var isUncat = false;
 		var isSplits = true;
+		var announcerType = "details";
 
 		window.onload = racedayInit;
 		// window.onunload = racedayEnd;
@@ -456,8 +467,10 @@
 			readerQuery(eventId);
 		}
 		
-		function toggleSplits() {
+		function setSplits(type) {
+			console.log("setting splits to " + type);
 			isSplits = !isSplits;
+			announcerType=type;
 			getReaderResults();
 		}
 		
@@ -584,7 +597,7 @@
 
 		function readerQuery(eventId){
 			// console.log("readerQuery "+eventId);
-			if(isSplits) {
+			if(announcerType === "splits") {
 				var request = jQuery.ajax({
 					url: "/bibs-server/events/splitresults?event="+eventId,
 					type: "GET",
@@ -592,7 +605,23 @@
 					});
 				request.done(function( data ) {
 					jQuery("#results"+eventId).html( 
-							makeRunnersTable(data, "", eventId, true) );
+							makeRunnersTable(data, "", eventId, announcerType) );
+					jQuery("#results"+eventId).show();
+					if(data.length > 0)
+						refreshMetrics(eventId);
+					});
+				request.fail(function( jqXHR, textStatus ) {
+					// error?
+				});
+			} else if(announcerType === "laps") {
+				var request = jQuery.ajax({
+					url: "/bibs-server/events/results?event="+eventId,
+					type: "GET",
+					dataType: "json"
+					});
+				request.done(function( data ) {
+					jQuery("#results"+eventId).html( 
+							makeRunnersTable(data, "", eventId, announcerType) );
 					jQuery("#results"+eventId).show();
 					if(data.length > 0)
 						refreshMetrics(eventId);
@@ -608,7 +637,7 @@
 					});
 				request.done(function( data ) {
 					jQuery("#results"+eventId).html( 
-							makeRunnersTable(data, "", eventId, false) );
+							makeRunnersTable(data, "", eventId, "") );
 					jQuery("#results"+eventId).show();
 					if(data.length > 0)
 						refreshMetrics(eventId);

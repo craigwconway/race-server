@@ -32,14 +32,12 @@ function makeAwardsTable(data,title){
 	}
 
 function makeRunnersTable(data,results,eventId, splits){
-	if(splits != true) {
+	if(splits == "") {
 		results = "";
 		results += "<tr>";
 		results += "<th>Time</th>";
 		results += "<th>Bib</th>";
-		results += "<th>Name</th>";
-		results += "<th>City</th>";
-		results += "<th>State</th>";
+		results += "<th>Athlete Info</th>";
 		results += "</tr>";
 		for(var i in data){
 			var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
@@ -48,18 +46,61 @@ function makeRunnersTable(data,results,eventId, splits){
 			var bib = (null!=data[i].bib) ? data[i].bib : "";
 			var city = (null!=data[i].city) ? data[i].city : "";
 			var state = (null!=data[i].state) ? data[i].state : "";
+			var age = (null!=data[i].age) ? data[i].age : "";
+			var gender = (null!=data[i].gender) ? data[i].gender : "";
 			var splits = (null!=data[i].timesplit) ? data[i].timesplit : "";
-			
+			// punch brandon in the face
+			var fill =  "<b>" + firstname + " " + lastname + "</b>";
+			var location = "";
+			if(city != "" && state != "") {
+				location = city + ", " + state;
+			} else {
+				location = city + "" + state;
+			}
+			if(location != "") {
+				fill += "<br>" + location;
+			}
+			var deets = "";
+			if(gender != "" && age != "") {
+				deets = age + " " + gender;
+			} else {
+				deets = age + "" + gender;
+			}
+			if(deets != "") {
+				fill += "<br>" + deets;
+			}
+						
 			results += "<tr>";
 			results += "<td>"+timeofficialdisplay+"</td>";
 			results += "<td>"+bib+"</td>";
-			results += "<td>"+firstname+" "+lastname+"</td>";
-			results += "<td>"+city+"</td>";
-			results += "<td>"+state+"</td>";
+			results += "<td>"+fill+"</td>";
 			results += "</tr>";
 		}
 		return results;		
-	} else {
+	} else if(splits === "laps") {
+		results = "";
+		results += "<tr>";
+		results += "<th>Bib</th>";
+		results += "<th>Name</th>";
+		results += "<th>Finish</th>";
+		results += "<th>Laps</th>";
+		
+		results += "</tr>";
+		for(var i in data){
+			var timeofficialdisplay = (null!=data[i].timeofficialdisplay) ? data[i].timeofficialdisplay : "";
+			var firstname = (null!=data[i].firstname) ? data[i].firstname : "";
+			var lastname = (null!=data[i].lastname) ? data[i].lastname : "";
+			var bib = (null!=data[i].bib) ? data[i].bib : "";
+			var laps = (null!=data[i].laps) ? data[i].laps : "";
+			results += "<tr>";
+			results += "<td>"+bib+"</td>";
+			results += "<td>"+firstname+" "+lastname+"</td>";
+			results += "<td>"+timeofficialdisplay+"</td>";
+			results += "<td>"+laps+"</td>";
+			results += "</tr>";
+		}
+		return results;				
+	}else {
 		results = "";
 		results += "<tr>";
 		results += "<th>Bib</th>";

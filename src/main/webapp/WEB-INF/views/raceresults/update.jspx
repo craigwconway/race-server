@@ -196,6 +196,13 @@
                             <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
                         </div>
                 </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Laps</div>
+                    	<input  type="number" name="laps"
+								class="form-control" style="margin-top: 0; margin-bottom:0"
+								id="timedisp" value="${raceResult.laps}"
+								placeholder="laps"></input>
+                </div>                
                 <div style="display:none;">
                     <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed"/>
                     <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" z="user-managed"/>
