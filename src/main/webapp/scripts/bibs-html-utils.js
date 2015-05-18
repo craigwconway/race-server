@@ -69,7 +69,10 @@ function makeRunnersTable(data,results,eventId, splits){
 			if(deets != "") {
 				fill += "<br>" + deets;
 			}
-						
+			if(fill == "") {
+				fill = "Unknown Athlete";
+			}
+			fill = "<a href='/bibs-server/raceresults/"+data[i].id+"'>" + fill + "</a>";
 			results += "<tr>";
 			results += "<td>"+timeofficialdisplay+"</td>";
 			results += "<td>"+bib+"</td>";

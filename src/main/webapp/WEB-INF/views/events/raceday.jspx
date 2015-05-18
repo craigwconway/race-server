@@ -504,9 +504,10 @@
 		}
 
 		function makeEventRow(eventId,eventName){
+			var eventstring = '<a href="/bibs-server/events/' + eventId + '">' + eventName + '</a>';
 			var eventRow = jQuery("#eventTemplate").html()
 				.replace(/--event_id--/g,eventId)
-				.replace(/--event_name--/g,eventName);
+				.replace(/--event_name--/g, eventstring);
 			jQuery("#events").append(eventRow);
 			jQuery("#event-"+eventId).slideDown();
 			jQuery("#event option[value='"+eventId+"']").remove();
