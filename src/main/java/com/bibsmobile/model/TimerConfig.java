@@ -30,8 +30,8 @@ public class TimerConfig {
 	private String ports; // comma seperated list of ints 
 	private int connectionTimeout;
 	private String filename;
-	private boolean laps = false;
-	private int minFinish = 1;
+	private boolean laps = true;
+	private int minFinish = 60;
 	static private int heartbeatTimeout = 2000;
 	static private int heartbeats = 8;
 	

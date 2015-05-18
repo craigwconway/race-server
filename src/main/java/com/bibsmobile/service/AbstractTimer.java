@@ -58,8 +58,14 @@ public abstract class AbstractTimer implements Timer {
 		}
 		//if (!bibTimes.containsKey(cacheKey)) 
 		//	bibTimes.put(cacheKey, bibtime);
-
+		boolean newlap=false;
 		// timeout by timer config
+		if(timerConfig.isLaps()==true) {
+			if(bibtime >= (bibTimeout.getTimeout(timerConfig.getPosition(), bibnum) + (timerConfig.getMinFinish() * 1000))) {
+				newlap = true;
+				bibTimeout.setTimeout(timerConfig.getPosition(), bibnum, bibtime);
+			}
+		}
 		if(bibtime < (bibTimeout.getTimeout(timerConfig.getPosition(), bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
 			// match bib to running events
 			List <Event> events;
@@ -86,7 +92,9 @@ public abstract class AbstractTimer implements Timer {
 					}
 					// calculate start, finish, split times
 					result = calculateOfficialTime(result, bibtime, timerConfig);
-					
+					if(newlap) {
+						result.setLaps(result.getLaps() == null ? 0 : result.getLaps() + 1);
+					}
 					System.out.println(slog+" UPDATE "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
 					result.merge();
 					

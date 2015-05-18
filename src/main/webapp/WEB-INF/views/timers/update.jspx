@@ -113,6 +113,12 @@
                         data-parsley-error-message="Invalid filename."
                         value="${timerConfig.filename}"></input>
             </div>
+            <div class="ui labeled input">
+            	<div class="ui blue label">Laps</div>
+            	<input type="checkbox" name="laps"
+            			class="form-control"
+            			value="${timerConfig.laps}"></input>
+            </div>
             <div style="display:none"><input name="ports" id="ports"><!--  --></input></div>
         </div>
         </form:update>
