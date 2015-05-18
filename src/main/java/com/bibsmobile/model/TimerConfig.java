@@ -30,6 +30,8 @@ public class TimerConfig {
 	private String ports; // comma seperated list of ints 
 	private int connectionTimeout;
 	private String filename;
+	private boolean laps = false;
+	private int minFinish = 1;
 	static private int heartbeatTimeout = 2000;
 	static private int heartbeats = 8;
 	
@@ -219,6 +221,34 @@ public class TimerConfig {
 	public void setFilename(String filename) {
         this.filename = filename;
     }
+
+	/**
+	 * @return the laps
+	 */
+	public boolean isLaps() {
+		return laps;
+	}
+
+	/**
+	 * @param laps the laps to set
+	 */
+	public void setLaps(boolean laps) {
+		this.laps = laps;
+	}
+
+	/**
+	 * @return the minFinish
+	 */
+	public int getMinFinish() {
+		return minFinish;
+	}
+
+	/**
+	 * @param minFinish the minFinish to set
+	 */
+	public void setMinFinish(int minFinish) {
+		this.minFinish = minFinish;
+	}
 
 	@PersistenceContext
     transient EntityManager entityManager;
