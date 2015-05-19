@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,6 +101,7 @@ import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
+import com.bibsmobile.service.BibTimeout;
 
 import flexjson.JSONSerializer;
 
@@ -1295,8 +1297,11 @@ public class EventController {
         }
         // Clear unassigned so it doesn't detach
         if(BuildTypeUtil.usesRfid()) {
-        	TimerConfigController tcc = new TimerConfigController();
-        	tcc.internalClear(event.getId());
+        	List <Long> clearBibs = new LinkedList <Long>();
+        	for(RaceResult r : RaceResult.findRaceResultsByEvent(event).getResultList()) {
+        		clearBibs.add(r.getBib());
+        	}
+        	//bibTimeout.clearMultiBibs(clearBibs); TODO: Figure out how to autowire this
         }
         
         event.remove();

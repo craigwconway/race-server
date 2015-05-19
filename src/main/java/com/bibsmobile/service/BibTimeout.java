@@ -3,6 +3,10 @@
  */
 package com.bibsmobile.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -17,13 +21,14 @@ import net.sf.ehcache.config.Configuration;
  * @author galen
  *
  */
+@Service
 public class BibTimeout {
 	/**
 	 * Internal cache creation method with ehcache.
 	 * @param position
 	 * @return
 	 */
-	private Cache createCacheForPosition(int position) {
+	private static Cache createCacheForPosition(int position) {
 		CacheConfiguration cacheConfiguration = new CacheConfiguration("timeout" + String.valueOf(position), 0)
 		.eternal(true);
 		Cache cache = new Cache(cacheConfiguration);
@@ -38,7 +43,10 @@ public class BibTimeout {
 	 * @param bib Bib number
 	 * @return Timeout if exists, null if not yet present in cache.
 	 */
-	public Long getTimeout(int position, long bib) {
+	public static Long getTimeout(int position, long bib) {
+		if(CacheManager.getInstance() == null) {
+			CacheManager.create();
+		}
 		Cache timerCache = CacheManager.getInstance().getCache("timeout"+String.valueOf(position));
 		if(timerCache == null) {
 			return null;
@@ -53,7 +61,10 @@ public class BibTimeout {
 	 * @param bib
 	 * @param time
 	 */
-	public void setTimeout(int position, long bib, long time) {
+	public static void setTimeout(int position, long bib, long time) {
+		if(CacheManager.getInstance() == null) {
+			CacheManager.create();
+		}
 		Cache timerCache = CacheManager.getInstance().getCache("timeout" + String.valueOf(position));
 		if(timerCache == null) {
 			timerCache = createCacheForPosition(position);
@@ -67,6 +78,9 @@ public class BibTimeout {
 	 * @param position
 	 */
 	public void clearBib(long bib, int position) {
+		if(CacheManager.getInstance() == null) {
+			CacheManager.create();
+		}
 		Cache timerCache = CacheManager.getInstance().getCache("timeout" + String.valueOf(position));
 		if(timerCache != null) {
 			timerCache.remove(bib);
@@ -76,10 +90,24 @@ public class BibTimeout {
 	 * Clear the timeout cache for a bib in all split/start positions.
 	 * @param bib
 	 */
-	public void clearBib(long bib) {
+	public static void clearBib(long bib) {
+		System.out.println("ehcache clearing bib: " + bib);
+		System.out.println(CacheManager.getInstance().getCacheNames());
 		for(String name : CacheManager.getInstance().getCacheNames()) {
 			if(name.contains("timeout")) {
+				System.out.println("clearing bib"+ bib +"from cache:" + name);
 				CacheManager.getInstance().getCache(name).remove(bib);
+			}
+		}
+	}
+	/**
+	 * Clear the timeout cache for all bibs in a list.
+	 * @param bibs List <Long> of bib numbers you want to clear.
+	 */
+	public void clearMultiBibs(List<Long> bibs) {
+		for(String name : CacheManager.getInstance().getCacheNames()) {
+			if(name.contains("timeout")) {
+				CacheManager.getInstance().getCache(name).remove(bibs);
 			}
 		}
 	}

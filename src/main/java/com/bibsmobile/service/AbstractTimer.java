@@ -19,9 +19,6 @@ import com.bibsmobile.util.BuildTypeUtil;
 
 public abstract class AbstractTimer implements Timer {
 	
-	@Autowired
-	BibTimeout bibTimeout;
-	
 	public static final String UNASSIGNED_BIB_EVENT_NAME = "Unassigned Results";
 
 	private Map<String, Integer> bibsByReader = new HashMap<String, Integer>(); // position, count
@@ -53,20 +50,24 @@ public abstract class AbstractTimer implements Timer {
 		System.out.println(slog+" logging '"+bibnum + "' @ "+bibtime+ ", position "+timerConfig.getPosition());
 		logTimerRead(String.valueOf(bibnum),timerConfig.getUrl());// test logging
 		
-		if(bibTimeout.getTimeout(timerConfig.getPosition(), bibnum) == null) {
-			bibTimeout.setTimeout(timerConfig.getPosition(), bibnum, bibtime);
+		if(BibTimeout.getTimeout(timerConfig.getPosition(), bibnum) == null) {
+			BibTimeout.setTimeout(timerConfig.getPosition(), bibnum, bibtime);
 		}
 		//if (!bibTimes.containsKey(cacheKey)) 
 		//	bibTimes.put(cacheKey, bibtime);
 		boolean newlap=false;
 		// timeout by timer config
 		if(timerConfig.isLaps()==true) {
-			if(bibtime >= (bibTimeout.getTimeout(timerConfig.getPosition(), bibnum) + (timerConfig.getMinFinish() * 1000))) {
+			System.out.println("bibnum: "+bibnum +" bibtime: "+ bibtime + " timeout: " +BibTimeout.getTimeout(timerConfig.getPosition(), bibnum));
+			Long valid = BibTimeout.getTimeout(timerConfig.getPosition(), bibnum) + (timerConfig.getMinFinish() * 1000);
+			System.out.println("valid at: " + valid);
+			if(bibtime >= (BibTimeout.getTimeout(timerConfig.getPosition(), bibnum) + (timerConfig.getMinFinish() * 1000))) {
 				newlap = true;
-				bibTimeout.setTimeout(timerConfig.getPosition(), bibnum, bibtime);
+				System.out.println("[TIMER] Setting new lap for bib: " + bibnum + " at time " + bibtime);
+				BibTimeout.setTimeout(timerConfig.getPosition(), bibnum, bibtime);
 			}
 		}
-		if(bibtime < (bibTimeout.getTimeout(timerConfig.getPosition(), bibnum) + (timerConfig.getReadTimeout() * 1000)) ){
+		if((bibtime < (BibTimeout.getTimeout(timerConfig.getPosition(), bibnum) + (timerConfig.getReadTimeout() * 1000))) || newlap){
 			// match bib to running events
 			List <Event> events;
 			if(BuildTypeUtil.usesRfid()) {
@@ -87,13 +88,16 @@ public abstract class AbstractTimer implements Timer {
 					System.out.println(slog+" RUNNER: "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
 					result.setTimed(true);
 					// timeout by previous time official
-					if(result.getTimeofficial() > 0 && (bibtime > result.getTimeofficial() + (timerConfig.getReadTimeout() * 1000))){
+					if((result.getTimeofficial() > 0 && (bibtime > result.getTimeofficial() + (timerConfig.getReadTimeout() * 1000))) && !newlap){
 						return;
 					}
 					// calculate start, finish, split times
 					result = calculateOfficialTime(result, bibtime, timerConfig);
 					if(newlap) {
 						result.setLaps(result.getLaps() == null ? 0 : result.getLaps() + 1);
+					}
+					if(result.getLaps()  == null) {
+						result.setLaps(1);
 					}
 					System.out.println(slog+" UPDATE "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
 					result.merge();
@@ -209,6 +213,7 @@ public abstract class AbstractTimer implements Timer {
 		for(RaceResult runner:event.getRaceResults()){
 			runner.setTimeofficial(0);
 			runner.setTimeofficialdisplay("");
+			runner.setLaps(null);
 			runner.persist();
 			System.out.println("Contents of bibTimes:");
 			System.out.println(bibTimes);
@@ -238,7 +243,7 @@ public abstract class AbstractTimer implements Timer {
 			// delete by [bib]-[timer.position]
 			String o = runner.getBib() + "-" + position;
 			System.out.println("removing key: " + o);
-			bibTimeout.clearBib(runner.getBib());;
+			BibTimeout.clearBib(runner.getBib());
 			//bibCache.remove(o);
 			//bibsByReader.remove(o);
 			//uniqueBibs.remove(runner.getBib());
