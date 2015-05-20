@@ -412,7 +412,7 @@
         <c:if test='${(build.registration)}'>
             <div class="map-container">
                 <div id="map"><!--  --></div>
-                <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
+                <div class="map-canvas-warning"><small>If you can't see the map, please check your event settings!</small></div>
             </div>
         </c:if>
         <c:if test='${(!build.registration)}'>
