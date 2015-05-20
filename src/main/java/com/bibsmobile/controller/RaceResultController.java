@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -58,9 +59,11 @@ public class RaceResultController {
         }
         System.out.println("Splits:");
         if(raceResult.getSplits() != null) {
-        	for(Split split : raceResult.getSplits()) {
-        		System.out.println(split);
+        	//for( raceResult.getSplits()) {
+        	for(Entry<Integer, Split> splitEntry :raceResult.getSplits().entrySet()) {
+        		System.out.println(splitEntry);        		
         	}
+        	//}
         }
         raceResult.persist();
         return raceResult.toJson();

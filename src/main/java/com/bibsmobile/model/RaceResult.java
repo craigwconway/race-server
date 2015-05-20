@@ -8,15 +8,18 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
@@ -30,6 +33,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PrePersist;
@@ -43,6 +47,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
@@ -195,13 +200,17 @@ public class RaceResult implements Comparable<RaceResult> {
      * Embedded set of split objects containing times and positions for splits.
      */
     @ElementCollection
-    private Set<Split> splits = new HashSet<Split>();
+    @MapKeyColumn(name = "position")
+    private Map<Integer, Split> splits = new HashMap<Integer, Split>();
     
     /**
      * Embedded set of custom field objects containing a key-value pair of fields and responses.
      */
     @ElementCollection
-    private Set<CustomResultField> customFields = new HashSet<CustomResultField>();
+    @CollectionTable
+    @Column(name = "value")
+    @MapKeyColumn(name = "field")
+    private Map<String,String> customFields = new HashMap<String, String> ();
     
     /**
      * Runner's City of origin
@@ -442,7 +451,7 @@ public class RaceResult implements Comparable<RaceResult> {
     }
 
     public String toJson() {
-        return new JSONSerializer().exclude("*.class", "event").serialize(this);
+        return new JSONSerializer().exclude("*.class", "event").include("customFields", "splits").serialize(this);
     }
 
     public String toJson(boolean full) {
@@ -804,6 +813,15 @@ public class RaceResult implements Comparable<RaceResult> {
             }
         }
         return entityManager().createQuery(jpaQuery, RaceResult.class).getResultList();
+    }
+    
+    public static RaceResult findFullRaceResult(Long id) {
+    	if (id == null)
+    		return null;
+    	RaceResult result = entityManager().createQuery("Select o FROM RaceResult o where o.id = :id", RaceResult.class).getSingleResult();
+    	Hibernate.initialize(result.getCustomFields());
+    	Hibernate.initialize(result.getSplits());
+    	return result;
     }
 
     public static RaceResult findRaceResult(Long id) {
@@ -1256,28 +1274,28 @@ public class RaceResult implements Comparable<RaceResult> {
 	/**
 	 * @return the splits
 	 */
-	public Set<Split> getSplits() {
+	public Map<Integer, Split> getSplits() {
 		return splits;
 	}
 
 	/**
 	 * @param splits the splits to set
 	 */
-	public void setSplits(Set<Split> splits) {
+	public void setSplits(Map <Integer, Split> splits) {
 		this.splits = splits;
 	}
 
 	/**
 	 * @return the customFields
 	 */
-	public Set<CustomResultField> getCustomFields() {
+	public Map<String,String> getCustomFields() {
 		return customFields;
 	}
 
 	/**
 	 * @param customFields the customFields to set
 	 */
-	public void setCustomFields(Set<CustomResultField> customFields) {
+	public void setCustomFields(Map <String, String> customFields) {
 		this.customFields = customFields;
 	}
 }

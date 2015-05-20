@@ -17,27 +17,12 @@ import org.hibernate.annotations.Parent;
  */
 @Embeddable
 public class Split {
-	private int position;
 	private long time;
 	private String timedisplay;
 	private String name;
 	private Integer distance;
 	@Parent
 	private RaceResult raceResult;
-	
-	
-	/**
-	 * @return an integer containing the split position
-	 */
-	public int getPosition() {
-		return position;
-	}
-	/**
-	 * @param integer containing the split position
-	 */
-	public void setPosition(int position) {
-		this.position = position;
-	}
 	/**
 	 * @return long containing the unix timestamp of the runner's time
 	 */
@@ -107,7 +92,6 @@ public class Split {
 	 */
 	@Override
 	public String toString() {
-		return "Split [position=" + position + ", time=" + time
-				+ ", timedisplay=" + timedisplay + "]";
+		return "Split [time=" + time + ", timedisplay=" + timedisplay + "]";
 	}
 }

@@ -54,8 +54,8 @@ import flexjson.JSONSerializer;
 
 @Configurable
 @Entity
-//@Indexed
-//@Spatial(spatialMode = SpatialMode.HASH)
+@Indexed
+@Spatial(spatialMode = SpatialMode.HASH)
 public class Event {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -70,8 +70,7 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private List<AwardCategory> awardCategorys;
 
-    //@Field
-    @NotNull
+    @Field
     private String name;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -96,10 +95,10 @@ public class Event {
     
     private String location;
 
-    //@Latitude
+    @Latitude
     private Double latitude;
 
-    //@Longitude
+    @Longitude
     private Double longitude;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
@@ -127,13 +126,6 @@ public class Event {
     private String photo2;
 
     private String photo3;
-
-    @Column(name = "results")
-    private String results1;
-
-    private String results2;
-
-    private String results3;
     
     /**
      * Embedded object containing the EventAwardsConfig.
@@ -159,7 +151,7 @@ public class Event {
 
     private String syncId;
     
-    //@Field
+    @Field
     private String charity;
 
     private boolean regEnabled;
@@ -543,7 +535,7 @@ public class Event {
                 .append(this.longitude, rhs.longitude).append(this.name, rhs.name).append(this.organization, rhs.organization).append(this.parking, rhs.parking).append(this.phone, rhs.phone)
                 .append(this.photo, rhs.photo).append(this.photo2, rhs.photo2).append(this.photo3, rhs.photo3).append(this.photoUploadUrl, rhs.photoUploadUrl)
                 .append(this.regEnabled, rhs.regEnabled).append(this.regEnd, rhs.regEnd).append(this.regStart, rhs.regStart).append(this.registration, rhs.registration)
-                .append(this.results1, rhs.results1).append(this.results2, rhs.results2).append(this.results3, rhs.results3).append(this.running, rhs.running)
+                .append(this.running, rhs.running)
                 .append(this.sync, rhs.sync).append(this.syncId, rhs.syncId).append(this.timeEnd, rhs.timeEnd)
                 .append(this.timeStart, rhs.timeStart).append(this.updated, rhs.updated).append(this.waiver, rhs.waiver)
                 .append(this.website, rhs.website).isEquals();
@@ -554,8 +546,7 @@ public class Event {
         return new HashCodeBuilder().append(this.address).append(this.city).append(this.state).append(this.country).append(this.location).append(this.zip).append(this.courseRules).append(this.hashtag).append(this.created).append(this.description)
                 .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.featured).append(this.general).append(this.gunFired)
                 .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.latitude).append(this.longitude).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
-                .append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.results1)
-                .append(this.results2).append(this.results3).append(this.running).append(this.sync).append(this.syncId)
+                .append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.running).append(this.sync).append(this.syncId)
                 .append(this.timeEnd).append(this.timeStart).append(this.updated).append(this.waiver).append(this.website).toHashCode();
     }
 
@@ -1001,30 +992,6 @@ public class Event {
 
     public void setPhoto3(String photo3) {
         this.photo3 = photo3;
-    }
-
-    public String getResults1() {
-        return this.results1;
-    }
-
-    public void setResults1(String results1) {
-        this.results1 = results1;
-    }
-
-    public String getResults2() {
-        return this.results2;
-    }
-
-    public void setResults2(String results2) {
-        this.results2 = results2;
-    }
-
-    public String getResults3() {
-        return this.results3;
-    }
-
-    public void setResults3(String results3) {
-        this.results3 = results3;
     }
 
     public String getDonateUrl() {
