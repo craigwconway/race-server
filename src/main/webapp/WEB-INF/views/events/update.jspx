@@ -31,7 +31,7 @@
                 width: 500px;
             }
             .ui.labeled.input > .label {
-                width: 22%;
+                width: 26%;
             }
             .ui.button, .ui.button:hover{
                 width: 8%;
@@ -67,6 +67,15 @@
 
                 <div class="form-horizontal">
                     <div class="ui labeled input">
+                        <div class="ui blue label">Event Name</div>
+                        <input  type="text" name="name"
+                                class="form-control"
+                                placeholder="Event name"
+                                value="${event.name}"
+                                data-parsley-error-message="Please enter an event name."
+                                data-parsley-required="required"></input>
+                    </div>
+                    <div class="ui labeled input">
                         <div class="ui blue label">Event Date</div>
                         <input  type="text" name="timeStart"
                                 class="form-control"
@@ -79,14 +88,65 @@
                                 data-parsley-required="true"></input>
                     </div>
                     <div class="ui labeled input">
-                        <div class="ui blue label">Event Name</div>
-                        <input  type="text" name="name"
+                        <div class="ui blue label">Organization</div>
+                        <input  type="text" name="organization"
                                 class="form-control"
-                                placeholder="Event name"
-                                value="${event.name}"
-                                data-parsley-error-message="Please enter an event name."
-                                data-parsley-required="required"></input>
+                                placeholder="Organization"
+                                value="${event.organization}"></input>
                     </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Charity</div>
+                        <input  type="text" name="charity"
+                                class="form-control"
+                                placeholder="Charity Name"
+                                value="${event.charity}"></input>
+                    </div>
+                    <c:if test='${(!build.rfid)}'>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Website</div>
+                        <input  type="url" name="website"
+                            class="form-control"
+                            id="mask-website"
+                            placeholder="Website"
+                            value="${event.website}"
+                            data-parsley-type="url"
+                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"
+                            data-parsley-required="required"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Phone Number</div>
+                        <input  type="text" name="phone"
+                            class="form-control"
+                            id="mask-phone"
+                            placeholder="Phone Number"
+                            value="${event.phone}"
+                            data-parsley-length="[10,18]"
+                            data-parsley-error-message="Please enter a valid phone number."
+                            data-parsley-required="required"></input>
+                    </div>
+                    </c:if>
+                    <c:if test='${(build.rfid)}'>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Website</div>
+                        <input  type="url" name="website"
+                            class="form-control"
+                            id="mask-website"
+                            placeholder="Website"
+                            value="${event.website}"
+                            data-parsley-type="url"
+                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Phone Number</div>
+                        <input  type="text" name="phone"
+                            class="form-control"
+                            id="mask-phone"
+                            placeholder="Phone Number"
+                            value="${event.phone}"
+                            data-parsley-length="[10,18]"
+                            data-parsley-error-message="Please enter a valid phone number."></input>
+                    </div>
+                    </c:if>
                     <div id="demo">
                         <div class="ui labeled input">
                             <div class="ui blue label">Address</div>
@@ -126,7 +186,7 @@
                     <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
                         <div class="ui labeled input">
                             <div class="ui blue label">Gun Fired</div>
-                            <div class="btn btn-default btn-sm reg" onclick="gunToggle()">${event.gunFired}</div>
+                            <div class="btn btn-default btn-sm" id="reg" onclick="gunToggle()">${event.gunFired}</div>
                             <input style="display:none" id="checkgun" type="checkbox" name="gunFired"></input>
                         </div>
 
@@ -145,18 +205,13 @@
                 </div>
                 <div style="display:none">
                     <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
-                    <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
-                    <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="user-managed"/>
                     <field:input field="latitude" id="c_com_bibsmobile_model_Event_latitude" z="user-managed"/>
                     <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed"/>
-                    <field:input field="website" id="c_com_bibsmobile_model_Event_website" z="user-managed"/>
-                    <field:input field="phone" id="c_com_bibsmobile_model_Event_phone" z="user-managed"/>
                     <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/>
                     <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="user-managed"/>
                     <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="user-managed"/>
                     <field:input field="general" id="c_com_bibsmobile_model_Event_general" z="user-managed"/>
                     <field:input field="description" id="c_com_bibsmobile_model_Event_description" z="user-managed"/>
-                    <field:input field="organization" id="c_com_bibsmobile_model_Event_organization" z="user-managed"/>
                     <field:input field="photo" id="c_com_bibsmobile_model_Event_photo" z="user-managed"/>
                     <field:input field="photo2" id="c_com_bibsmobile_model_Event_photo2" z="user-managed"/>
                     <field:input field="photo3" id="c_com_bibsmobile_model_Event_photo3" z="user-managed"/>
@@ -179,7 +234,6 @@
                     <field:input field="gunTimeStart" id="c_com_bibsmobile_model_Event_gunTimeStart" z="user-managed"/>
                     <field:checkbox field="sync" id="c_com_bibsmobile_model_Event_sync" z="user-managed"/>
                     <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
-                    <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="user-managed"/>
                     <field:input render="false" field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" z="user-managed"/>
                     <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="user-managed"/>
                     <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="user-managed"/>
@@ -209,23 +263,25 @@
         }
 
         function initInfo(){
-            jQuery(".reg").each(function(){
-                var content = jQuery(this).html();
-                if(content === "true"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
-                }
-                else if(content === "false"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
-                }
-            })
+            var status = '${event.gunFired}'
+            if( status === 'true' ){
+                jQuery("#reg").html('<span class="glyphicon glyphicon-ok"></span>');
+                jQuery('input[name="gunFired"]').prop('checked', true);
+            }
+            else if( status === 'false' ){
+                jQuery("#reg").html('<span class="glyphicon glyphicon-remove"></span>');
+                jQuery('input[name="gunFired"]').prop('checked', false);
+            }
         }
 
         function gunToggle(){
-            jQuery("#checkgun").prop("checked", function(i, val) {
-                var str = val ? 'glyphicon-ok' : 'glyphicon-remove';
-                jQuery(".reg").html('<span class="glyphicon ' + str + '"></span>')
-                return !val;
-            });
+            var status = jQuery('input[name="gunFired"]').prop('checked');
+            if( status === false ){
+                jQuery("#reg").html('<span class="glyphicon glyphicon-ok"></span>');
+            }else if( status === true){
+                jQuery("#reg").html('<span class="glyphicon glyphicon-remove"></span>');
+            }
+            jQuery('input[name="gunFired"]').prop('checked', !status);
         }
 
         function initDateTimePickers(){
