@@ -205,8 +205,6 @@
                 </div>
                 <div style="display:none">
                     <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
-                    <field:input field="latitude" id="c_com_bibsmobile_model_Event_latitude" z="user-managed"/>
-                    <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed"/>
                     <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/>
                     <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="user-managed"/>
                     <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="user-managed"/>
@@ -250,6 +248,12 @@
             </div>
             </form:update>
         </div>
+    <c:if test='${(!build.rfid)}'>
+        <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+        <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
+        <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
+        <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
+    </c:if>
     <script>
         window.onload = init;
 
@@ -403,11 +407,4 @@
             jQuery("#geolat").val("");
         }
 	</script>
-
-    <c:if test='${(!build.rfid)}'>
-        <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
-        <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
-        <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
-        <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
-    </c:if>
 </div>
