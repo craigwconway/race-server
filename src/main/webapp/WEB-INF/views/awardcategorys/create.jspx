@@ -29,7 +29,7 @@
             width: 500px;
         }
         .ui.labeled.input > .label {
-            width: 25%;
+            width: 26%;
         }
         .ui.button, .ui.button:hover{
             width: 8%;
@@ -86,8 +86,6 @@
                     <input  type="number" name="ageMin"
                             class="form-control" id="lowAge"
                             placeholder="1"
-                            min="1"
-                            max="120"
                             data-parsley-error-message="Invalid age."
                             data-parsley-required="true"
                             value=""></input>
@@ -95,10 +93,8 @@
                 <div class="ui labeled input">
                     <div class="ui orange label">Max Age</div>
                     <input  type="number" name="ageMax"
-                            class="form-control"
+                            class="form-control" id="highAge"
                             placeholder="120"
-                            min="1"
-                            max="120"
                             data-parsley-error-message="Invalid Age."
                             data-parsley-required="required"></input>
                 </div>
@@ -172,6 +168,44 @@
             jQuery('#awardCategory').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
+            });
+
+            jQuery('#eventCartItem').parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
+            });
+
+            jQuery("#lowAge").on('input', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+                if( high !== "" ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highAge").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery("#highAge").on('change', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+                if( low !== "" ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowAge").attr("max", jQuery(this).val());
+                    }
+                }
             });
         }
         
