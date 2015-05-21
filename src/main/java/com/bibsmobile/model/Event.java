@@ -300,6 +300,28 @@ public class Event {
     	Collections.sort(resultsFiltered);
     	return resultsFiltered;
     }
+
+    
+    public List<AwardCategoryResults> calculateRank(Event event){
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	
+		// filter medals
+		List<Long> awarded = new ArrayList<Long>();
+    	for(AwardCategory c:event.getAwardCategorys()){
+    		if(!c.isMedal()){
+    			List<RaceResult> rr = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), 9999, awarded);
+    			results.add(new AwardCategoryResults(c,rr));
+    			// track mdals, only 1 medal ppn
+    			for(RaceResult r:rr){
+        			awarded.add(r.getBib());
+    			}
+    		}
+    	}
+    	
+    	Collections.sort(results);
+    	return results;
+    }
+    
     
     public List<AwardCategoryResults> calculateMedals(Event event){
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();

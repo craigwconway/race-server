@@ -69,11 +69,6 @@ public class RaceImageController {
      * @apiParam {Number} [size=20] Page size for result pagination
      * @apiSuccess (200) {Object[]} raceImage objects returned
      * @apiPermission none
-     * @param eventId Long id of event queried
-     * @param bib Long bib number of athlete to search for
-     * @param page int page number used in search pagination, default 1
-     * @param size in page size used in search pagination, default 20
-     * @return A JSON array raceImage objects with HTTP statuscode 200
      */
     @RequestMapping(value = "/search", headers = "Accept=application/json")
     @ResponseBody
