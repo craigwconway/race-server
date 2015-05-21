@@ -28,6 +28,9 @@
         table{
         	margin: 0 auto;
         }
+        th{
+        	text-align: center;
+        }
 		.corners{
 			margin: 16px;
 			padding: 16px;

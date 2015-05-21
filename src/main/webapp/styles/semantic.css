@@ -23686,7 +23686,7 @@ select.ui.dropdown {
 
 .ui.dropdown > .default.text,
 .ui.default.dropdown > .text {
-  color: rgba(140, 140, 140, 0.7);
+  color: rgba(140, 140, 140, 0.8);
 }
 
 .ui.dropdown:hover > .default.text,

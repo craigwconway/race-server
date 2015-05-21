@@ -15,7 +15,7 @@
             margin-left: -1%;
             padding-top: 2%;
             padding-bottom: 4%;
-            padding-left: 5%;
+            padding-left: 2%;
         }
         .info-container{
             margin: 0 auto;
@@ -200,7 +200,6 @@
             </div>
             <div class="ui bottom attached tab segment" data-tab="eci-menu">
                 <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
-                <div style="clear:both"><!--  --></div>
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -208,45 +207,46 @@
                         <div class="sub header">Manage your event cart items for ${ event.name }.</div>
                     </div>
                 </h3>
-
-                <div class="ui four doubling cards">
-                    <c:if test="${not empty eventcartitems}">
-                        <c:forEach var="item" items="${eventcartitems}">
-                            <div class="ui fluid card">
-                                <div class="content">
-                                    <c:if test="${item.type == 'TICKET'}">
-                                        <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
-                                    </c:if>
-                                    <c:if test="${item.type == 'T_SHIRT'}">
-                                        <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
-                                    </c:if>
-                                    <c:if test="${item.type == 'DONATION'}">
-                                        <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
-                                    </c:if>
-                                    <div class="description">${item.description}
+                <div class="content">
+                    <div class="ui four doubling cards">
+                        <c:if test="${not empty eventcartitems}">
+                            <c:forEach var="item" items="${eventcartitems}">
+                                <div class="ui fluid card">
+                                    <div class="content">
+                                        <c:if test="${item.type == 'TICKET'}">
+                                            <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
+                                        </c:if>
+                                        <c:if test="${item.type == 'T_SHIRT'}">
+                                            <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
+                                        </c:if>
+                                        <c:if test="${item.type == 'DONATION'}">
+                                            <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
+                                        </c:if>
+                                        <div class="description">${item.description}
+                                        </div>
+                                    </div>
+                                    <div class="extra content">
+                                        <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
+                                        <div class="right floated">$${item.price}</div>
+                                    </div>
+                                    <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
+                                        <i class="fa fa-external-link"><!--  --></i>View Details
                                     </div>
                                 </div>
+                            </c:forEach>
+                        </c:if>
+                        <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
+                            <div class="content">
+                                <div class="ui header"><span style="visibility:hidden">name</span></div>
+                                <div class="description">add a new product</div>
                                 <div class="extra content">
-                                    <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
-                                    <div class="right floated">$${item.price}</div>
-                                </div>
-                                <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
-                                    <i class="fa fa-external-link"><!--  --></i>View Details
+                                    <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                    <div class="right floated"><span style="visibility:hidden">$price</span></div>
                                 </div>
                             </div>
-                        </c:forEach>
-                    </c:if>
-                    <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
-                        <div class="content">
-                            <div class="ui header"><span style="visibility:hidden">name</span></div>
-                            <div class="description">add a new product</div>
-                            <div class="extra content">
-                                <div class="left floated"><span style="visibility:hidden">sold</span></div>
-                                <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                            <div class="ui bottom attached button">
+                                <i class="fa fa-plus"><!--  --></i> product
                             </div>
-                        </div>
-                        <div class="ui bottom attached button">
-                            <i class="fa fa-plus"><!--  --></i> product
                         </div>
                     </div>
                 </div>
