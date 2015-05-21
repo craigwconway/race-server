@@ -359,8 +359,13 @@ public class TimerConfigController {
         }
         uiModel.asMap().clear();
         timerConfig.setConnectionTimeout(10);
+        Integer oldType = TimerConfig.findTimerConfig(timerConfig.getId()).getType();
         timerConfig.merge();
-        timers.put(timerConfig, new BibsLLRPTimer(timerConfig));
+        if(timerConfig.getType() == 0) {
+            timers.put(timerConfig, new DummyTimer());
+        } else if(timerConfig.getType() == 1) {
+        	timers.put(timerConfig, new BibsLLRPTimer(timerConfig));
+        }
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/raceday";
     }
