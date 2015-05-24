@@ -60,6 +60,10 @@
             width: 400px;
             text-align: right;
         }
+        label{
+            width: 100%;
+            padding-top: 15px;
+        }
     </style>
     <div class="white-overlay">
         <form action="transfer" method="POST" id="transfer-form">
