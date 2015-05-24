@@ -9,6 +9,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.Split;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.XlsToCsv;
 
@@ -20,6 +21,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -31,6 +33,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -263,6 +266,8 @@ public class ResultsFileMappingController {
         long offset = 0;
         boolean hasOffset = false;
     	boolean hasSplits = false;
+    	HashMap <String,String> customFields = new HashMap<String,String>();
+    	HashMap <Integer, Split> splitMap = new HashMap<Integer,Split>();
     	
         StringBuffer json = new StringBuffer("{");
         for (int j = 0; j < nextLine.length; j++) {
@@ -277,7 +282,20 @@ public class ResultsFileMappingController {
             	}else{
             		json.append(map[j] + ":" + nextLine[j].trim() ); 
             	}
-            }else if(map[j].startsWith("split")){
+            }else if(map[j].startsWith("custom")) {
+            	// We have a custom mapping. Import into a custom field with a name given after the text custom:
+            	String field = map[j].split("custom-",2)[1];
+            }else if(map[j].startsWith("timesplit-")) {
+            	String[] splitmapping = map[j].split("-");
+            	Split incomingSplit = new Split();
+            	if(splitmapping.length > 2) {
+                	if(splitmapping.length == 3) {
+                		incomingSplit.setName(splitmapping[2]);
+                	}
+                	incomingSplit.setTime(RaceResult.fromHumanTime(event.getGunTime().getTime(), nextLine[j]));
+                	splitMap.put(Integer.valueOf(splitmapping[1]), incomingSplit);           		
+            	}
+            } else if(map[j].startsWith("split")){
             	try{
             		System.out.println("Import mapping: " + map[j] + " value: " + nextLine[j]);
 	            	int index = Integer.valueOf(map[j].replaceAll("split", ""))-1;
@@ -314,7 +332,7 @@ public class ResultsFileMappingController {
             			System.out.println(e);
             		}
             	}
-            }else if(!map[j].equals("age")) {
+            }else if(!(map[j].equals("age") || map[j].equals("laps"))) {
                 if (!json.toString().equals("{")) json.append(",");
             	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");
             }else{
@@ -353,6 +371,8 @@ public class ResultsFileMappingController {
         RaceResult exists = null;
         try {
             exists = RaceResult.findRaceResultsByEventAndBibEquals(event, result.getBib()).getSingleResult();
+            Hibernate.initialize(exists.getCustomFields());
+            Hibernate.initialize(exists.getSplits());
         } catch (Exception e) {
             System.out.println("ResultsFileMappingController error "+e.getMessage());
         }
@@ -367,6 +387,9 @@ public class ResultsFileMappingController {
     			result.setLicensed(exists.isLicensed());
     			result.setTimed(exists.isTimed());
     		}
+    		
+    		exists.getCustomFields().putAll(customFields);
+    		
         	if(exists.getTimesplit() != null && !exists.getTimesplit().isEmpty()) {
         		// merge splits
         		String strSplits2 = "";
