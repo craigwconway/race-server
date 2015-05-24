@@ -99,7 +99,7 @@
                         </div>
                     </div>
                 <div class="form-fields">
-                    <div class="ui fluid selection dropdown" id="event-type">
+                    <div class="ui fluid selection dropdown ticket-settings" id="event-type">
                         <input type="hidden" name="eventType"><!--  --></input>
                         <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                         <div class="default text">Select Event Type</div>
@@ -190,7 +190,7 @@
                         </div>
                     </div>
                     <div style="display:none"><input type="text" name="tshirtColors"></input></div>
-                    <div class="form-fields">
+                    <div class="form-fields not-donation not-shirt">
                         <div class="ui fluid selection dropdown" id="gender-type">
                             <input type="hidden" name="gender" 
                                 data-parsley-error-message="Please select a gender."
@@ -204,7 +204,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="two fields">
+                    <div class="two fields not-donation not-shirt">
                         <div class="field">
                             <label><!--  --></label>
                             <input  type="number" name="minAge"
@@ -228,7 +228,7 @@
                                     value=""></input>
                         </div>
                     </div>
-                    <div class="ui labeled input">
+                    <div class="ui labeled input not-donation">
                         <div class="ui label">$</div>
                         <input  type="number" name="price"
                                 class="form-control"
@@ -238,7 +238,7 @@
                                 data-parsley-required="true"></input>
                     </div>
                     <input  type="number" name="available"
-                            class="form-control" style="margin-top:5px"
+                            class="form-control not-donation" style="margin-top:5px"
                             placeholder="Quantity"
                             min="1"
                             data-parsley-error-message="Invalid maximum quantity."
@@ -262,6 +262,7 @@
             setValidation();
             initDateTimePickers();
             jQuery('.ui.button').state();
+            jQuery('#card-ticket > .content').attr('style', 'background: #F0F0F0');
             jQuery('#event-type').dropdown();
             jQuery('#gender-type').dropdown();
         }
@@ -273,25 +274,45 @@
                     jQuery('#card-ticket > .content').attr('style', 'background:#F0F0F0');
                     jQuery('#card-tshirt > .content').attr('style', 'background:none');
                     jQuery('#card-donation > .content').attr('style', 'background:none');
+                    jQuery(".ticket-settings").show();
                     jQuery(".shirt-settings").hide();
+                    jQuery('.not-shirt').show();
+                    jQuery('.not-donation').show();
                     jQuery("#box-black").removeAttr("data-parsley-required");
                     jQuery("#box-xs").removeAttr("data-parsley-required");
+                    jQuery('input[name="minAge"]').val("");
+                    jQuery('input[name="maxAge"]').val("");
+                    jQuery('input[name="price"]').val("");
+                    jQuery('input[name="available"]').val("");
                     break;
                 case 'T_SHIRT':
                     jQuery('#card-ticket > .content').attr('style', 'background:none');
                     jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
                     jQuery('#card-donation > .content').attr('style', 'background:none');
+                    jQuery(".ticket-settings").hide();
                     jQuery(".shirt-settings").show();
+                    jQuery('.not-donation').show();
+                    jQuery('.not-shirt').hide();
                     jQuery("#box-black").attr("data-parsley-required", true);
                     jQuery("#box-xs").attr("data-parsley-required", true);
+                    jQuery('input[name="minAge"]').val(1);
+                    jQuery('input[name="maxAge"]').val(120);
+                    jQuery('input[name="price"]').val("");
+                    jQuery('input[name="available"]').val("");
                     break;
                 case 'DONATION':
                     jQuery('#card-ticket > .content').attr('style', 'background:none');
                     jQuery('#card-tshirt > .content').attr('style', 'background:none');
                     jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
+                    jQuery(".ticket-settings").hide();
                     jQuery(".shirt-settings").hide();
+                    jQuery(".not-donation").hide();
                     jQuery("#box-black").removeAttr("data-parsley-required");
                     jQuery("#box-xs").removeAttr("data-parsley-required");
+                    jQuery('input[name="minAge"]').val(1);
+                    jQuery('input[name="maxAge"]').val(120);
+                    jQuery('input[name="price"]').val(1);
+                    jQuery('input[name="available"]').val(1000000000);
                     break;
                 default:
                     break;

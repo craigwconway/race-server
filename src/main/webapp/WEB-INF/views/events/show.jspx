@@ -15,8 +15,8 @@
             margin-left: -1%;
             margin-right: -3%;
             padding-top: 4%;
-            padding-bottom: 6%;
-            padding-left: 5%;
+            padding-bottom: 8%;
+            padding-left: 6%;
         }
         .info-container{
             width: 60%;
@@ -27,15 +27,18 @@
         }
         .map-container{
             float: right;
-            width: 300px;
+            width: 350px;
             height: auto;
-            margin-right: 6%;
+            margin-right: 7%;
             margin-top: 1%;
             text-align: right;
         }
-        .map-canvas{
-            width: 300px; 
-            height: 300px;
+        #map{
+            width: 350px; 
+            height: 350px;
+        }
+        .leaflet-top{
+            z-index: 1;
         }
         .button-container{
             float: right;
@@ -63,14 +66,6 @@
             margin-top: 5px;
             font-family: Quicksand;
             font-weight: bold;
-        }
-        .event-date{
-            margin-left: 0;
-            padding-left: 0;
-            text-align: left;
-        }
-        #time{
-            text-align: right;
         }
         #event-details{
             width: 60%;
@@ -169,11 +164,10 @@
             }
             .event-name{ font-size: 1.7em; }
             #event-time{ width: auto; }
-            .event-date, #time{ margin-left: 0; padding-left: 0; text-align: left; }
             .button-container{ padding-top: 2%; text-align: right; }
         }
     </style>
-    
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
     <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -417,8 +411,8 @@
     <div class="white-overlay">
         <c:if test='${(build.registration)}'>
             <div class="map-container">
-                <div class="map-canvas"><!--  --></div><input id="geocomplete" style="display:none" type="text"></input>
-                <div class="map-canvas-warning"><small>Can't see the map, please check your event settings!</small></div>
+                <div id="map"><!--  --></div>
+                <div class="map-canvas-warning"><small>If you can't see the map, please check your event settings!</small></div>
             </div>
         </c:if>
         <c:if test='${(!build.registration)}'>
@@ -426,29 +420,30 @@
         </c:if>
         <div class="info-container">
             <div class="button-container">
-                <button type="button" class="btn btn-warning" onclick="editForm(); return false;"><i class="fa fa-edit"><!--  --></i></button>
-                <button type="button" class="btn btn-danger" onclick="deleteEvent(); return false;"><i class="fa fa-trash"><!--  --></i></button>
+                <c:if test='${(build.registration)}'>
+                    <div class="btn btn-default btn-sm" style="margin-right: 5px;"><span class="reg">${event.regEnabled}</span></div>
+                    <div class="btn btn-default btn-sm" style="margin-right: 5px;"><span class="live">${event.live}</span></div>
+                </c:if>
+                <div class="btn btn-warning btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
+                    <i class="fa fa-edit"><!--  --></i>
+                </div>
+                <div class="btn btn-danger btn-sm" onclick="deleteEvent(); return false;">
+                    <i class="fa fa-trash"><!--  --></i>
+                </div>
             </div>
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
-            <div id="event-time"><div class="col-sm-6 event-date">${event.timeStart}</div><div class="col-sm-6" id="time"><!--  --></div></div>
-
-            <div id="event-details">
-                <c:if test='${(build.registration)}'>
-                    <div class="col-sm-6 reglive-label" style="margin-bottom:5px">Registration</div>
-                    <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0;margin-bottom:5px"><div class="btn btn-default btn-sm"><span class="reg">${event.regEnabled}</span></div></div>
-                    <div class="col-sm-6 reglive-label">Live</div>
-                    <div class="col-sm-6" style="text-align:right;margin-left:0;padding-left:0"><div class="btn btn-default btn-sm"><span class="live">${event.live}</span></div></div>
-                </c:if>
-            </div>
+            <c:set var="start" value="${event.timeStart}" />
+            <div id="event-time"><fmt:formatDate type="date" value="${start}" />
+            <br/>
+            first start <fmt:formatDate type="time" value="${start}" /></div>
+            <br/>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                <div style="clear:both"><!--  --></div>
                 <div class="button-container">
                     <button type="button" class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
                 </div>
                 <c:if test="${not empty eventTypes}">
-                    <h3 class="ui header event-type-header">events taking place on <div class="event-date">${event.timeStart}</div></h3>
-                    <div style="clear:both"><!--  --></div>
+                    <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${start}" /></h3>
                     <table class="ui small table">
                         <thead><tr>
                             <th>Name</th>
@@ -480,7 +475,7 @@
 
         function init(){
             initInfo();
-            <c:if test='${(build.registration)}'>
+            <c:if test='${(!build.rfid)}'>
                 initMap();
             </c:if>
         }
@@ -489,30 +484,26 @@
         function initInfo(){
             var str = jQuery("#event-time").text()
             str = str.substring(0,str.length-2);
-            var momdate = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
-            var momtime = moment(str, "YYYY-MM-DD HH:mm:ss").format('h:mm a');
-            jQuery(".event-date").text(momdate);
-            jQuery("#time").text("first start " + momtime);
 
             jQuery(".reg").each(function(){
                 var outer_html = jQuery(this).html();
                 if(outer_html === "true"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+                    jQuery(this).html('reg <span class="glyphicon glyphicon-ok" style="margin-left:5px;"></span>')
                     jQuery(this).parent().attr('onclick', 'redirectDisableReg()');
                 }
                 else if(outer_html === "false"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
+                    jQuery(this).html('reg <span class="glyphicon glyphicon-remove" style="margin-left:5px;"></span>')
                     jQuery(this).parent().attr('onclick', 'redirectEnableReg()');
                 }
             })
             jQuery(".live").each(function(){
                 var outer_html = jQuery(this).html();
                 if(outer_html === "true"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-ok"></span>')
+                    jQuery(this).html('live <span class="glyphicon glyphicon-ok" style="margin-left:5px;"></span>')
                     jQuery(this).parent().attr('onclick', 'redirectDisableLive()')
                 }
                 else if(outer_html === "false"){
-                    jQuery(this).html('<span class="glyphicon glyphicon-remove"></span>')
+                    jQuery(this).html('live <span class="glyphicon glyphicon-remove" style="margin-left:5px;"></span>')
                     jQuery(this).parent().attr('onclick', 'redirectEnableLive()')
                 }
             })
@@ -716,19 +707,46 @@
         }
 
         function initMap(){
-            var addy = '${event.latitude}' + "," + '${event.longitude}';
-            var options = {
-                map: ".map-canvas",
-                mapOptions: {
-                    draggable: false
-                },
-                markerOptions: {
-                    clickable: false
-                },
-                location: addy
+            var latitude  = parseFloat('${event.latitude}');
+            var longitude = parseFloat('${event.longitude}');
+
+            L.mapbox.accessToken = 'pk.eyJ1IjoiYmlicyIsImEiOiJRcUxlU0ZFIn0.O_WdutmlIabHGa508B7Hlg';
+            var map = L.mapbox.map('map', 'mapbox.streets', {
+                zoomControl: true
+            }).setView([longitude, latitude], 14);
+
+            // add a marker:
+            var myLayer = L.mapbox.featureLayer().addTo(map);
+            var geojson = {
+                type: 'FeatureCollection',
+                features: [{
+                    type: 'Feature',
+                    properties: {
+                        title: '${event.address}',
+                        'marker-color': '#00dffc',
+                        'marker-symbol': 'star'
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [latitude, longitude]
+                    }
+                }]
             };
 
-            jQuery("#geocomplete").geocomplete(options);
+            myLayer.setGeoJSON(geojson);
+
+            // Disable drag and zoom handlers.
+            map.dragging.disable();
+            map.touchZoom.disable();
+            map.doubleClickZoom.disable();
+            map.scrollWheelZoom.disable();
+
+            // Disable tap handler, if present.
+            if (map.tap) map.tap.disable();
+
+            // fix map control UI bug
+            jQuery('.leaflet-control-zoom-in').text('');
+            jQuery('.leaflet-control-zoom-out').text('');
         }
 
         function editForm(){
@@ -854,10 +872,11 @@
             });
         }
     </script>
-    <c:if test='${(build.registration)}'>
-        <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
-        <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
-        <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
-        <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
+    <c:if test='${(!build.rfid)}'>
+        <!-- <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" /> -->
+        <!-- <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" /> -->
+        <!-- <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script> -->
+        <c:set var="mapbox" value="https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js" />
+        <script src="${mapbox}" type="text/javascript"><jsp:text/></script>
     </c:if>
 </div>
