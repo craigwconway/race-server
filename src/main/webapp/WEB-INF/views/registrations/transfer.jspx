@@ -107,6 +107,20 @@
                         <input  type="text" name="birthdate" value="${birthdate}"
                                 placeholder="YYYY-MM-DD"></input>
                     </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>City</label>
+                            <input  type="text" size="20"
+                                    name="city" value="${city}"
+                                    placeholder="First Name"/>
+                        </div>
+                        <div class="field">
+                            <label>State</label>
+                            <input  type="text" size="20"
+                                    name="state" value="${state}"
+                                    placeholder="Last Name"/>
+                        </div>
+                    </div>
                 </div>
                 <div style="clear:both"><!--  --></div>
                 <div class="form-fields">
@@ -149,6 +163,8 @@
                             lastName: f.elements['lastname'].value,
                             email: f.elements['email'].value,
                             phone: f.elements['phone'].value,
+                            city: f.elements['city'].value,
+                            state: f.elements['state'].value,
                             emergencyContactName: f.elements['emergencycontactname'].value,
                             emergencyContactPhone: f.elements['emergencycontactphone'].value,
                             birthDate: f.elements['birthdate'].value
