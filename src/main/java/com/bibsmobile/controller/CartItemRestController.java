@@ -82,12 +82,22 @@ public class CartItemRestController {
                     		currentPrice = ci.getPrice() * ci.getQuantity();
                     		totalMoney.put(type, currentPrice);
                     	}
-                    	if (currentQuantity != null) {
-                    		currentQuantity += ci.getQuantity();
-                    		totalQuantity.put(type, currentQuantity);
+                    	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                        	if (currentQuantity != null) {
+                        		currentQuantity += ci.getQuantity();
+                        		totalQuantity.put(type, currentQuantity);
+                        	} else {
+                        		currentQuantity = (long) ci.getQuantity();
+                        		totalQuantity.put(type, currentQuantity);
+                        	}                   		
                     	} else {
-                    		currentQuantity = (long) ci.getQuantity();
-                    		totalQuantity.put(type, currentQuantity);
+                        	if (currentQuantity != null) {
+                        		currentQuantity += 1;
+                        		totalQuantity.put(type, currentQuantity);
+                        	} else {
+                        		currentQuantity = (long) 1;
+                        		totalQuantity.put(type, currentQuantity);
+                        	}                    		
                     	}
                     	// Now update Daily section, get time at midnight:
                     	DateTime checkoutTime = new DateTime(ci.getCreated());
