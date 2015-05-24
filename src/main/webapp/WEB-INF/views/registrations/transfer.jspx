@@ -107,19 +107,15 @@
                         <input  type="text" name="birthdate" value="${birthdate}"
                                 placeholder="YYYY-MM-DD"></input>
                     </div>
-                    <div class="two fields">
-                        <div class="field">
-                            <label>City</label>
-                            <input  type="text" size="20"
-                                    name="city" value="${city}"
-                                    placeholder="First Name"/>
-                        </div>
-                        <div class="field">
-                            <label>State</label>
-                            <input  type="text" size="20"
-                                    name="state" value="${state}"
-                                    placeholder="Last Name"/>
-                        </div>
+                    <div class="ui labeled input">
+                        <div class="ui label">City</div>
+                        <input  type="text" name="city" value="${city}"
+                                placeholder="City"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui label">State</div>
+                        <input  type="text" name="state" value="${state}"
+                                placeholder="State"></input>
                     </div>
                 </div>
                 <div style="clear:both"><!--  --></div>
