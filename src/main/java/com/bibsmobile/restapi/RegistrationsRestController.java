@@ -214,6 +214,8 @@ public class RegistrationsRestController {
             uiModel.addAttribute("firstname", cartItem.getUserProfile().getFirstname());
             uiModel.addAttribute("lastname", cartItem.getUserProfile().getLastname());
             uiModel.addAttribute("email", cartItem.getUserProfile().getEmail());
+            uiModel.addAttribute("city", cartItem.getUserProfile().getCity());
+            uiModel.addAttribute("state", cartItem.getUserProfile().getState());
             uiModel.addAttribute("phone", cartItem.getUserProfile().getPhone());
             uiModel.addAttribute("emergencycontactname", cartItem.getUserProfile().getEmergencyContactName());
             uiModel.addAttribute("emergencycontactphone", cartItem.getUserProfile().getEmergencyContactPhone());
@@ -235,11 +237,6 @@ public class RegistrationsRestController {
         if (cartItem == null) return SpringJSONUtil.returnErrorMessage("unknown cart", HttpStatus.BAD_REQUEST);
         if (!cartItem.getEventCartItem().getEvent().isTicketTransferEnabled())
             return SpringJSONUtil.returnErrorMessage("ticket transfer disabled", HttpStatus.FORBIDDEN);
-
-        // check the rights the user has for event
-        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), cartItem.getEventCartItem().getEvent())) {
-            return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
-        }
 
            // create or get user profile
         ShortUser newUser = null;
