@@ -69,6 +69,9 @@
 			width: 100px;
 			min-width: 80px;
 		}
+		#events-dropdown i{
+			margin-right: 10px;
+		}
         .submit{
         	width: inherit;
         	margin: 0 auto;
@@ -244,16 +247,13 @@
 			                <option value="${event.id}">${ event.name }</option>
 			            </c:forEach> 
 			        </select>
-			        <div class="btn-group" role="group" aria-label="announcermode">
-						<button type="button" style="float:left" class="btn btn-default" onclick="setSplits('detailed')">
-						<span class="glyphicon glyphicon-user" style="vertical-align:middle">
-						Details</span></button>
-						<button type="button" style="float:left" class="btn btn-default" onclick="setSplits('splits')">
-						<span class="glyphicon glyphicon-random" style="vertical-align:middle">
-						Splits</span></button>
-						<button type="button" style="float:left" class="btn btn-default" onclick="setSplits('laps')">
-						<span class="glyphicon glyphicon-road" style="vertical-align:middle">
-						Laps</span></button>
+			        <div class="btn-group" role="group" aria-label="announcermode" style="margin:10px;float:left">
+						<button type="button" style="float:left;margin:0" class="btn btn-default" onclick="setSplits('detailed')">
+						<i class="glyphicon glyphicon-user"><!--  --></i>Details</button>
+						<button type="button" style="float:left;margin:0;margin-left:-1px;" class="btn btn-default" onclick="setSplits('splits')">
+						<i class="glyphicon glyphicon-random"><!--  --></i>Splits</button>
+						<button type="button" style="float:left;margin:0;margin-left:-1px;" class="btn btn-default" onclick="setSplits('laps')">
+						<i class="glyphicon glyphicon-road"><!--  --></i>Laps</button>
 					</div>
 			    </div>
 			    <div style="clear:both"> </div>
