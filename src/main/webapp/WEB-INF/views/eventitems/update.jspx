@@ -64,10 +64,19 @@
         <form:update id="fu_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" versionField="Version" z="PdYR4Rq85GJZ0+pKtpmrAP5I3PY=">
         <div class="info-container">
             <h2 class="ui icon header">
-                <i class="fa fa-cog"><!--  --></i>
-                <div class="content">Edit Product
+                <c:if test="${eventCartItem.type == 'TICKET'}">
+                    <i class="fa fa-ticket"><!--  --></i>
+                    <div class="content">Edit Ticket</div>
+                </c:if>
+                <c:if test="${eventCartItem.type == 'T_SHIRT'}">
+                    <i class="fa fa-shirtsinbulk"><!--  --></i>
+                    <div class="content">Edit T-shirt</div>
+                </c:if>
+                <c:if test="${eventCartItem.type == 'DONATION'}">
+                    <i class="fa fa-heart-o"><!--  --></i>
+                    <div class="content">Edit Donation</div>
+                </c:if>
                     <div class="sub header">Edit the details for ${eventCartItem.name}.</div>
-                </div>
             </h2>
 
             <div class="form-horizontal">
@@ -81,19 +90,21 @@
                         </c:forEach>
                     </select>
                 </div>
-                <div class="ui labeled input">
-                    <div class="ui blue label">Event Type</div>
-                    <div class="ui fluid selection dropdown" id="event-type">
-                        <input type="hidden" name="eventType"><!--  --></input>
-                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                        <div class="default text">Select Event Type</div>
-                        <div class="menu">
-                            <c:forEach var="item" items="${eventTypes}">
-                                <div class="item" data-value="${item.id}">${item.typeName}</div>
-                            </c:forEach>
+                <c:if test="${eventCartItem.type == 'TICKET'}">
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Event Type</div>
+                        <div class="ui fluid selection dropdown" id="event-type">
+                            <input type="hidden" name="eventType"><!--  --></input>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Select Event Type</div>
+                            <div class="menu">
+                                <c:forEach var="item" items="${eventTypes}">
+                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                </c:forEach>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </c:if>
                 <div class="ui labeled input">
                     <div class="ui blue label">Name</div>
                     <input  type="text" name="name"
@@ -159,39 +170,41 @@
                     <div style="display:none"><input type="text" name="tshirtSizes"></input></div>
                     <div style="display:none"><input type="text" name="tshirtColors"></input></div>
                 </c:if>
-                <div class="ui labeled input">
-                    <div class="ui blue label">Gender</div>
-                        <select class="ui dropdown" id="gender-type" name="gender"
-                                data-parsley-error-message="Please select a gender.">
-                            <option value="">Gender</option>
-                            <option id="gender-x" value="MALE_AND_FEMALE">Any</option>
-                            <option id="gender-f" value="MALE">Male</option>
-                            <option id="gender-m" value="FEMALE">Female</option>
-                        </select>
-                </div>
-                <div class="ui labeled input">
-                    <div class="ui blue label">Min Age</div>
-                        <input  type="number" name="minAge"
-                                id="lowAge"
-                                placeholder="Min Age"
-                                min="1"
-                                max="120"
-                                value="${eventCartItem.minAge}"
-                                data-parsley-error-message="Invalid age."
-                                data-parsley-required="true"></input>
-                </div>
-                <div class="ui labeled input">
-                    <div class="ui blue label">Max Age</div>
-                        <input  type="number" name="maxAge"
-                                id="highAge"
-                                placeholder="Max Age"
-                                min="1"
-                                max="120"
-                                value="${eventCartItem.maxAge}"
-                                data-parsley-error-message="Invalid age."
-                                data-parsley-required="true"></input>
-                </div>
-                <div class="ui labeled input">
+                <c:if test="${eventCartItem.type == 'TICKET'}">
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Gender</div>
+                            <select class="ui dropdown" id="gender-type" name="gender"
+                                    data-parsley-error-message="Please select a gender.">
+                                <option value="">Gender</option>
+                                <option id="gender-x" value="MALE_AND_FEMALE">Any</option>
+                                <option id="gender-f" value="MALE">Male</option>
+                                <option id="gender-m" value="FEMALE">Female</option>
+                            </select>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Min Age</div>
+                            <input  type="number" name="minAge"
+                                    id="lowAge"
+                                    placeholder="Min Age"
+                                    min="1"
+                                    max="120"
+                                    value="${eventCartItem.minAge}"
+                                    data-parsley-error-message="Invalid age."
+                                    data-parsley-required="true"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Max Age</div>
+                            <input  type="number" name="maxAge"
+                                    id="highAge"
+                                    placeholder="Max Age"
+                                    min="1"
+                                    max="120"
+                                    value="${eventCartItem.maxAge}"
+                                    data-parsley-error-message="Invalid age."
+                                    data-parsley-required="true"></input>
+                    </div>
+                </c:if>
+                <div class="ui labeled input" style="display:none">
                     <div class="ui blue label">Type</div>
                     <select name="type" class="ui dropdown" id="ticket-type"
                             data-parsley-error-message="Please select a product type."
@@ -202,6 +215,7 @@
                         <option value="DONATION">Donation</option>
                     </select>
                 </div>
+                <c:if test="${eventCartItem.type == 'TICKET' || eventCartItem.type == 'T_SHIRT'}">
                     <div class="ui labeled input">
                         <div class="ui blue label">Price ($)</div>
                         <input  type="number" name="price"
@@ -211,17 +225,24 @@
                                 value="${eventCartItem.price}"
                                 data-parsley-error-message="Invalid base price."
                                 data-parsley-required="true"></input>
-                </div>
-                <div class="ui labeled input">
-                    <div class="ui blue label">Quantity</div>
-                    <input  type="number" name="available"
-                            placeholder="Quantity"
-                            min="1" value="${eventCartItem.available}"
-                            data-parsley-error-message="Invalid maximum quantity."
-                            data-parsley-required="true"></input>
-                </div>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Quantity</div>
+                        <input  type="number" name="available"
+                                placeholder="Quantity"
+                                min="1" value="${eventCartItem.available}"
+                                data-parsley-error-message="Invalid maximum quantity."
+                                data-parsley-required="true"></input>
+                    </div>
+                </c:if>
+                <c:if test="${eventCartItem.type == 'DONATION'}">
+                    <div style="display:none">
+                        <input type="number" name="price" value="1"/>
+                        <input type="number" name="available" value="${eventCartItem.available}" />
+                    </div>
+                </c:if>
 
-                <div class="ui labeled input">
+                <div class="ui labeled input" style="display:none">
                     <div class="ui blue label">Time Limit</div>
                     <div class="btn btn-default btn-sm time-limit" onclick="limitToggle()">${eventCartItem.timeLimit}</div>
                     <input style="display:none" id="checklimit" type="checkbox" name="timeLimit"></input>
@@ -233,6 +254,7 @@
 
     <script>
         window.onload=function(){
+            jQuery('textarea[name="description"]').val('${eventCartItem.description}');
             jQuery(".time-limit").each(function(){
                 var content = jQuery(this).html();
                 if(content === "true"){
