@@ -32,6 +32,67 @@ public final class CartUtil {
     private CartUtil() {
         super();
     }
+    
+    public static Cart checkCoupon(HttpSession session, String couponCode) {
+        Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
+        Cart cart = null;
+        UserProfile user = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String username = authentication.getName();
+            if (!username.equals("anonymousUser")) {
+                user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            }
+        }
+        
+        if (cartIdFromSession != null) {
+            cart = Cart.findCart(cartIdFromSession);
+        } else if (user != null) {
+            try {
+                List<Cart> carts = Cart.findCartsByUser(user).getResultList();
+                for (Cart c : carts) {
+                    if (c.getStatus() == Cart.NEW) {
+                        cart = c;
+                        session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR ADDING TO CART");
+                return null;
+            }
+        }
+        if (cart == null) {
+        	return null;
+        }
+        // add coupons to cart
+        EventCartItemCoupon coupon = null;
+        if (couponCode != null) {
+            coupon = EventCartItemCoupon.findCouponByCode(cart.getEvent(), couponCode);
+        }
+        if(coupon == null || coupon.getAvailable() <= 0) {
+        	return cart;
+        }
+        coupon.setAvailable(coupon.getAvailable() - 1);
+        coupon.setUsed(coupon.getUsed() - 1);
+        coupon.merge();
+        cart.setCoupon(coupon);
+
+        long total = 0;
+        // calculate prics of cart without coupons
+        for (CartItem ci : cart.getCartItems()) {
+            total += (ci.getQuantity() * ci.getPrice() * 100);
+        }
+        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
+        // calculate discounts of total price based on coupons
+        if(cart.getCoupon() != null) {
+            total -= cart.getCoupon().getDiscount(total);
+        }
+        // set total price which is at least 0
+        cart.setTotal(Math.max(0, total));
+        cart.merge();
+        return cart;
+    }
 
     public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem) {
          // make sure our UserProfile is attached

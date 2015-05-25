@@ -50,6 +50,34 @@ public class CartRestController {
         System.out.println(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")));
         return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);
     }
+
+    /**
+     * @api {post} /rest/carts/checkcoupon/:couponCode Check Coupon
+     * @apiName Check Coupon Code
+     * @apiGroup restcarts
+     * @apiDescription Check a coupon code to see if it is valid. If the coupon is valid, insert it into the cart.
+     * If the coupon code is not valid, return the original cart. If no cart is found or a coupon is attempted add before it is found, return
+     * error.
+     * @apiParam {String} couponCode URL Param of string containing coupon code. The coupon will be added to the cart if it is valid.
+     * @param couponCode
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/checkcoupon/{couponCode}", method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> checkCoupon(@PathVariable("couponCode") String couponCode,
+            HttpServletRequest request) {
+        Cart cart = CartUtil.checkCoupon(request.getSession(), couponCode);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        System.out.println("-----Cart:-----");
+        if(cart.getCoupon().equals(couponCode)) {
+            System.out.println(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")));
+            return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);	
+        } else {
+        	return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.NOT_ACCEPTABLE);
+        }
+    }    
     
     /**
      * @api {post} /rest/carts/questions
