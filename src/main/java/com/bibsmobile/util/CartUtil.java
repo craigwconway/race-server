@@ -35,6 +35,7 @@ public final class CartUtil {
     
     public static Cart checkCoupon(HttpSession session, String couponCode) {
         Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
+        System.out.println("Cartid in session: " + cartIdFromSession);
         Cart cart = null;
         UserProfile user = null;
 
@@ -63,6 +64,7 @@ public final class CartUtil {
             }
         }
         if (cart == null) {
+        	System.out.println("null cart found");
         	return null;
         }
         // add coupons to cart
