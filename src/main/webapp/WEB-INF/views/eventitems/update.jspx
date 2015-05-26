@@ -235,6 +235,12 @@
                                 data-parsley-required="true"></input>
                     </div>
                 </c:if>
+                <c:if test="${eventCartItem.type == 'DONATION'}">
+                    <div style="display:none">
+                        <input type="number" name="price" value="1"/>
+                        <input type="number" name="available" value="1000000000" />
+                    </div>
+                </c:if>
 
                 <div class="ui labeled input" style="display:none">
                     <div class="ui blue label">Time Limit</div>
@@ -248,6 +254,7 @@
 
     <script>
         window.onload=function(){
+            jQuery('textarea[name="description"]').val('${eventCartItem.description}');
             jQuery(".time-limit").each(function(){
                 var content = jQuery(this).html();
                 if(content === "true"){

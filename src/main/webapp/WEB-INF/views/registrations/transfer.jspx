@@ -147,24 +147,23 @@
 
                     // Disable the submit button to prevent repeated clicks
                     $form.find('button').prop('disabled', true);
+                    var obj = {};
+                    obj.firstName = $('input[name="firstname"]').val();
+                    obj.lastName = $('input[name="lastname"]').val();
+                    obj.email = $('input[name="email"]').val();
+                    obj.phone = $('input[name="phone"]').val();
+                    // obj.city = $('input[name="city"]').val();
+                    // obj.state = $('input[name="state"]').val();
+                    obj.emergencyContactName = $('input[name="emergencycontactname"]').val();
+                    obj.emergencyContactPhone = $('input[name="emergencycontactphone"]').val();
+                    obj.birthDate = $('input[name="birthdate"]').val();
 
-                    var f = $('#transfer-form').get(0);
                     var total = jQuery.ajax({
                         url: "/bibs-server/rest/registrations/transfer" + window.location.search,
                         type: "POST",
                         dataType: "json",
                         contentType: "application/json",
-                        data: JSON.stringify({
-                            firstName: f.elements['firstname'].value,
-                            lastName: f.elements['lastname'].value,
-                            email: f.elements['email'].value,
-                            phone: f.elements['phone'].value,
-                            city: f.elements['city'].value,
-                            state: f.elements['state'].value,
-                            emergencyContactName: f.elements['emergencycontactname'].value,
-                            emergencyContactPhone: f.elements['emergencycontactphone'].value,
-                            birthDate: f.elements['birthdate'].value
-                        })
+                        data: JSON.stringify(obj)
                     });
                     total.done(function (data) {
                         alert("Successfully transfered!");
