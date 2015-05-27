@@ -238,7 +238,7 @@
                 <c:if test="${eventCartItem.type == 'DONATION'}">
                     <div style="display:none">
                         <input type="number" name="price" value="1"/>
-                        <input type="number" name="available" value="${eventCartItem.available}" />
+                        <input type="number" name="available" value="1000000000" />
                     </div>
                 </c:if>
 

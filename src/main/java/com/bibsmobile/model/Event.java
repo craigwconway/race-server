@@ -207,7 +207,7 @@ public class Event {
 
     /**
      */
-    private String waiver;  //TODO: Replace this with S3 HTML object
+    private String waiver = "https://s3-us-west-2.amazonaws.com/galen-shennanigans-2/standard-waiver.txt";  
 
     @PrePersist
     protected void onCreate() {

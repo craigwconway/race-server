@@ -67,14 +67,19 @@ public class CartRestController {
     @ResponseBody
     public ResponseEntity<String> checkCoupon(@PathVariable("couponCode") String couponCode,
             HttpServletRequest request) {
+    	System.out.println("Checking coupon with code: " + couponCode);
         Cart cart = CartUtil.checkCoupon(request.getSession(), couponCode);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         System.out.println("-----Cart:-----");
-        if(cart.getCoupon().equals(couponCode)) {
+        System.out.println("cart: " + cart.getId());
+        System.out.println("coupon: " + cart.getCoupon());
+        if(cart.getCoupon() != null && cart.getCoupon().getCode().equals(couponCode)) {
+        	System.out.println("coupon match");
             System.out.println(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")));
             return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);	
         } else {
+        	System.out.println("coupon miss");
         	return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.NOT_ACCEPTABLE);
         }
     }    
