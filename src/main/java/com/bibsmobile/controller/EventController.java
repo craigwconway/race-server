@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.PUT;
 
+import com.bibsmobile.util.MailgunUtil;
 import com.google.gson.JsonObject;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -1708,6 +1709,20 @@ public class EventController {
         } catch (UnsupportedEncodingException uee) {
         }
         return pathSegment;
+    }
+
+    @RequestMapping(value = "/{id}/email", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<String> email(@PathVariable("id") Long id, @RequestParam String subject, @RequestBody String mailBody) {
+        Event e = Event.findEvent(id);
+        if (e == null)
+            return SpringJSONUtil.returnErrorMessage("not found", HttpStatus.NOT_FOUND);
+        List<CartItem> cartItems = CartItem.findCartItemsByEventCartItem(EventCartItem.findEventCartItemsByEvent(e).getSingleResult()).getResultList();
+        List<String> recipients = new LinkedList<>();
+        for (CartItem ci : cartItems) {
+            recipients.add(ci.getUserProfile().getEmail());
+        }
+        MailgunUtil.send(recipients, subject, mailBody);
+        return SpringJSONUtil.returnStatusMessage("", HttpStatus.OK);
     }
 
 }
