@@ -217,15 +217,27 @@ public final class CartUtil {
         cart.setCoupon(coupon);
 
         long total = 0;
-        // calculate prics of cart without coupons
+        
+        // First, add up price of all cart items without donations:
         for (CartItem ci : cart.getCartItems()) {
-            total += (ci.getQuantity() * ci.getPrice() * 100);
+        	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
         }
-        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
-        // calculate discounts of total price based on coupons
+        // Then apply coupon:
         if(cart.getCoupon() != null) {
             total -= cart.getCoupon().getDiscount(total);
         }
+        // Then add in donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        // Finally, apply bibs processing fee. TODO: put this at level of event.
+        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
+        // calculate discounts of total price based on coupons
+
         // set total price which is at least 0
         cart.setTotal(Math.max(0, total));
         cart.merge();
