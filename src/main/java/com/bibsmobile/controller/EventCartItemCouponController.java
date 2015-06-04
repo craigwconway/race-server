@@ -16,6 +16,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItemCoupon;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.SlackUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
@@ -66,6 +67,7 @@ public class EventCartItemCouponController {
 		}
 		eventCoupon.setEvent(event);
 		eventCoupon.persist();
+		SlackUtil.logRegAddCoupon(eventCoupon, event.getName(), UserProfileUtil.getLoggedInUserProfile().getUsername());
 		return new ResponseEntity<>(eventCoupon.toJson(), headers, HttpStatus.OK);
 	}
 

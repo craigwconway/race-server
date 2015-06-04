@@ -3,19 +3,27 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.RegistrationsUtil;
+import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @RequestMapping("/registrations")
@@ -70,6 +78,34 @@ public class RegistrationsController {
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         
         return "registrations/search";
+    }
+    
+    @RequestMapping(value = "associate", method = RequestMethod.GET)
+    public ResponseEntity<String> associateCarts(
+    		@RequestParam("event") Long eventId,
+    		@RequestParam(value = "lowbib", defaultValue = "1") long lowbib,
+    		@RequestParam(value = "highbib", defaultValue = "3000000") long highbib,
+    		@RequestParam(value = "type") Long eventTypeId) {
+    	Event event = Event.findEvent(eventId);
+        UserProfile user = UserProfileUtil.getLoggedInUserProfile();
+        if (eventId != null && !PermissionsUtil.isEventAdmin(user, Event.findEvent(eventId))) {
+        	return SpringJSONUtil.returnErrorMessage("unauthorized", HttpStatus.FORBIDDEN);
+        }
+        //Find Event type ID we are exporting to:
+        EventType eventType = EventType.findEventType(eventTypeId);
+        HashSet <Long> bibsUsed = new HashSet<Long>(RaceResult.findBibsUsedInEvent(event));
+        Long currentbib = lowbib;
+        //TODO: optimize this
+        for(CartItem ci : CartItem.findCartItemsByEventType(eventType).getResultList()) {
+        	if(ci.getBib() == null) {
+        		// This is not yet exported, allow user to export the bib to another event type
+        		while(!bibsUsed.contains(currentbib) && currentbib < highbib) {
+        			currentbib++;
+        		}
+        	} 
+        }
+        // Create post in Slack reports channel to say what happened:
+        return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @RequestMapping(value = "reports", method = RequestMethod.GET)

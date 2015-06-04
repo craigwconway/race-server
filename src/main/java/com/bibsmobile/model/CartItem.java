@@ -38,6 +38,9 @@ public class CartItem {
 
     @ManyToOne
     private EventCartItem eventCartItem;
+
+    @OneToOne
+    private EventType eventType;
     
     @ManyToOne
     private EventCartItemPriceChange priceChange;
@@ -67,6 +70,8 @@ public class CartItem {
 
     private long price;
 
+    private Long bib;
+    
     public static TypedQuery<CartItem> findCartItemsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
         if (eventCartItems == null)
             throw new IllegalArgumentException("The eventCartItems argument is required");
@@ -236,7 +241,35 @@ public class CartItem {
         this.price = price * 100;
     }
 
-    @PersistenceContext
+    /**
+	 * @return the eventType
+	 */
+	public EventType getEventType() {
+		return eventType;
+	}
+
+	/**
+	 * @param eventType the eventType to set
+	 */
+	public void setEventType(EventType eventType) {
+		this.eventType = eventType;
+	}
+
+	/**
+	 * @return the bib
+	 */
+	public Long getBib() {
+		return bib;
+	}
+
+	/**
+	 * @param bib the bib to set
+	 */
+	public void setBib(Long bib) {
+		this.bib = bib;
+	}
+
+	@PersistenceContext
     transient EntityManager entityManager;
 
     public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("cart", "eventCartItem", "userProfile", "quantity", "created", "updated", "comment",
@@ -375,7 +408,17 @@ public class CartItem {
         q.setParameter("created", created);
         return q;
     }
-
+    
+    public static TypedQuery<CartItem> findCartItemsByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The created argument is required");
+        
+        EntityManager em = CartItem.entityManager();
+        TypedQuery<CartItem> q = em.createQuery("SELECT o FROM CartItem AS o WHERE o.eventType = :created", CartItem.class);
+        q.setParameter("eventType", eventType);
+        return q;
+    }
+    
     public static TypedQuery<CartItem> findCartItemsByCreatedGreaterThan(Date created, String sortFieldName, String sortOrder) {
         if (created == null)
             throw new IllegalArgumentException("The created argument is required");

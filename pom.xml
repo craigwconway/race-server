@@ -121,7 +121,11 @@
   			<artifactId>commons-lang3</artifactId>
   			<version>3.3.2</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.ning</groupId>
+			<artifactId>async-http-client</artifactId>
+			<version>1.9.26</version>
+		</dependency>
 		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework</groupId>

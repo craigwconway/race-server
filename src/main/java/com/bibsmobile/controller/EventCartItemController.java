@@ -6,6 +6,9 @@ import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemCoupon;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemTypeEnum;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.SlackUtil;
+import com.bibsmobile.util.UserProfileUtil;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -231,6 +234,7 @@ public class EventCartItemController {
         }
         uiModel.asMap().clear();
         eventCartItem.persist();
+        SlackUtil.logRegAddECI(eventCartItem, eventCartItem.getEvent().getName(), UserProfileUtil.getLoggedInUserProfile().getUsername());
         return "redirect:/eventitems/" + this.encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
     }
 

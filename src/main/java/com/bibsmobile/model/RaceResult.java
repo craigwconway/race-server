@@ -539,6 +539,13 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getSingleResult();
     }
     
+    public static List <Long> findBibsUsedInEvent(Event event) {
+    	if (event == null)
+    		throw new IllegalArgumentException("The event argument is required.");
+    	EntityManager em = RaceResult.entityManager();
+    	return em.createQuery("select o.bib from RaceResult o where o.event = :event", Long.class).setParameter("event", event).getResultList();
+    }
+    
     public static Long countFindRaceResultsByBibEquals(long bib) {
         EntityManager em = RaceResult.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.bib = :bib", Long.class);
