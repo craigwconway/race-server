@@ -265,6 +265,7 @@
             jQuery('#card-ticket > .content').attr('style', 'background: #F0F0F0');
             jQuery('#event-type').dropdown();
             jQuery('#gender-type').dropdown();
+            jQuery('input[name="type"]').val('TICKET');
         }
 
         function cardHandler(val){
