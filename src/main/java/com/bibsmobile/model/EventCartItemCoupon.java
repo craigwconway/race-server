@@ -107,7 +107,7 @@ public class EventCartItemCoupon {
         if (this.discountAbsolute != null) {
             return this.discountAbsolute;
         } else if (this.discountRelative != null) {
-            return (int)Math.floor(originalPrice * this.discountRelative);
+            return (int)Math.floor(originalPrice * this.discountRelative/100);
         } else {
             throw new IllegalStateException("How did I get here?");
         }
