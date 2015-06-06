@@ -59,6 +59,11 @@
             width: 400px;
             text-align: right;
         }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
     </style>
     <div class="white-overlay">
         <form:update id="fu_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" versionField="Version" z="PdYR4Rq85GJZ0+pKtpmrAP5I3PY=">

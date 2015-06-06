@@ -68,6 +68,11 @@
         .ui.cards > .card > .content, .ui.card > .content:hover{
             cursor: pointer;
         }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
     </style>
     <div class="white-overlay">
         <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
