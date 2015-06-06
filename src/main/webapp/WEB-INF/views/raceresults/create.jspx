@@ -45,6 +45,11 @@
         .ui.form input[type="number"]{
             height: 38px;
         }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
         .ui.action.input:not([class*="left action"]) > .button, .ui.action.input:not([class*="left action"]) > .buttons > .button{
             width:10%;
         }
