@@ -19,7 +19,7 @@
         }
         .info-container{
             margin: 0 auto;
-            font-weight: 100;
+            font-weight: 400;
             color: #292929;
         }
         .ui.labeled.input {
@@ -58,6 +58,9 @@
             margin: 0 auto;
             width: 400px;
             text-align: right;
+        }
+        #event-type > .text:not(.default) {
+          font-weight: bold;
         }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
@@ -108,6 +111,10 @@
                                 </c:forEach>
                             </div>
                         </div>
+                    </div>
+                    <div    style="display:none;margin-bottom:5px;" id="etype-error"
+                            class="has-error filled">
+                        <span class="parsley-custom-error-message">Please select an event type.</span>
                     </div>
                 </c:if>
                 <div class="ui labeled input">
@@ -358,6 +365,35 @@
         }
 
         function setValidation(){
+            var test = false;
+
+            // parsley.js hack
+            jQuery('#proceed').click(function(){
+                var etype = jQuery('input[name="eventType"]').val();
+                if( etype == "" || etype == null ){
+                    jQuery('#etype-error').show();
+                }
+                jQuery('input[name="eventType"]').on('change', function(){
+                    if(etype !== null){
+                        jQuery('#etype-error').hide();
+                    }
+                })
+
+                if( etype !== null ){
+                    jQuery("#eventCartItem").submit(function(e) {
+                        e.preventDefault();
+                        jQuery('.size-boxes').each(function(){
+                            jQuery('.size-boxes').removeAttr('name');
+                        });
+                        jQuery('.color-boxes').each(function(){
+                            jQuery('.size-boxes').removeAttr('name');
+                        });
+
+                        this.submit();
+                    });
+                }
+            })
+
             jQuery('#eventCartItem').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
