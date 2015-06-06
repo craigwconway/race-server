@@ -17,6 +17,7 @@
             padding-top: 4%;
             padding-bottom: 8%;
             padding-left: 6%;
+            min-height: 480px;
         }
         .info-container{
             width: 60%;
