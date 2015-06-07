@@ -172,9 +172,13 @@
                                     placeholder="State"
                                     value="${event.state}"></input>
                         </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Country</div>
+                            <input  id="geocountry" type="text" name="country"
+                                    class="form-control" placeholder="Country"
+                                    value="${event.country}"></input>
+                        </div>
                         <div style="display:none">
-                            <!-- <input  id="geocountry" type="text" name="country"
-                                    value="${event.country}"></input> -->
                             <input  id="geozip" type="text" name="zip"
                                     value="${event.zip}"></input>
                             <input  id="geolat" type="text" name="latitude"
@@ -264,7 +268,7 @@
         }
 
         function initInfo(){
-            var status = '${event.gunFired}'
+            var status = '${event.gunFired}';
             if( status === 'true' ){
                 jQuery("#reg").html('<span class="glyphicon glyphicon-ok"></span>');
                 jQuery('input[name="gunFired"]').prop('checked', true);
@@ -330,6 +334,7 @@
                 blur: true
             }).bind("geocode:result", function(event, result){
                 var components = result.address_components;
+                console.log(components);
                 var addr = "";
                 jQuery.each(components, function(i, d){
                     switch(d.types[0]){
@@ -340,20 +345,45 @@
                             if( d.long_name !== null ){
                                 jQuery("#geocity").val(d.long_name);
                             }
+                            else{
+                                jQuery("#geocity").val("");
+                            }
                             break;
                         case 'administrative_area_level_1':
                             if( d.short_name !== null ){
                                 jQuery("#geostate").val(d.short_name);
+                            }
+                            else{
+                                jQuery("#geostate").val("");
+                            }
+                            break;
+                        case 'sublocality_level_1':
+                            // handle out of country situations. this value might not directly translate to state.
+                            if( jQuery('#geostate').val() !== "" ){
+                                if( d.short_name !== null ){
+                                    jQuery('#geostate').val(d.short_name);
+                                }
+                                else{
+                                    jQuery('#geostate').val('');
+                                }
+                            }else{
+                                jQuery('#geostate').val('');
                             }
                             break;
                         case 'country':
                             if( d.long_name !== null ){
                                 jQuery("#geocountry").val(d.long_name);
                             }
+                            else{
+                                jQuery("#geocountry").val("");
+                            }
                             break;
                         case 'postal_code':
                             if( d.long_name !== null ){
                                 jQuery("#geozip").val(d.long_name);
+                            }
+                            else{
+                                jQuery("#geozip").val("");
                             }
                             break;
                     }
