@@ -139,6 +139,9 @@ public class Event {
     @Embedded
     private EventAwardsConfig awardsConfig;
 
+    @Embedded
+    private EventPricing pricing = new EventPricing();
+    
     private String donateUrl;
 
     private String facebookUrl1;
@@ -1371,5 +1374,19 @@ public class Event {
 	 */
 	public void setAwardsConfig(EventAwardsConfig awardsConfig) {
 		this.awardsConfig = awardsConfig;
+	}
+
+	/**
+	 * @return the pricing
+	 */
+	public EventPricing getPricing() {
+		return pricing;
+	}
+
+	/**
+	 * @param pricing the pricing to set
+	 */
+	public void setPricing(EventPricing pricing) {
+		this.pricing = pricing;
 	}
 }
