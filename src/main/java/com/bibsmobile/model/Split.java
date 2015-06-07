@@ -19,8 +19,9 @@ import org.hibernate.annotations.Parent;
 public class Split {
 	private long time;
 	private String timedisplay;
+	private long timediscrete;
+	private String timediscretedisplay;
 	private String name;
-	private Integer distance;
 	@Parent
 	private RaceResult raceResult;
 	/**
@@ -50,6 +51,30 @@ public class Split {
 		this.timedisplay = timedisplay;
 	}
 	/**
+	 * @return the timediscrete
+	 */
+	public long getTimediscrete() {
+		return timediscrete;
+	}
+	/**
+	 * @param timediscrete the timediscrete to set
+	 */
+	public void setTimediscrete(long timediscrete) {
+		this.timediscrete = timediscrete;
+	}
+	/**
+	 * @return the timediscretedisplay
+	 */
+	public String getTimediscretedisplay() {
+		return timediscretedisplay;
+	}
+	/**
+	 * @param timediscretedisplay the timediscretedisplay to set
+	 */
+	public void setTimediscretedisplay(String timediscretedisplay) {
+		this.timediscretedisplay = timediscretedisplay;
+	}	
+	/**
 	 * Custom name for the split point.
 	 * @return the name
 	 */
@@ -62,18 +87,6 @@ public class Split {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-	/**
-	 * @return the distance at the split point
-	 */
-	public Integer getDistance() {
-		return distance;
-	}
-	/**
-	 * @param distance the distance to set
-	 */
-	public void setDistance(Integer distance) {
-		this.distance = distance;
 	}
 	/**
 	 * @return the raceResult
