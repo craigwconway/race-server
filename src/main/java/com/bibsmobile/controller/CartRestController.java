@@ -68,7 +68,7 @@ public class CartRestController {
     @ResponseBody
     public ResponseEntity<String> checkCoupon(@PathVariable("couponCode") String couponCode,
             HttpServletRequest request) {
-    	couponCode = StringUtils.lowerCase(couponCode);
+    	couponCode = StringUtils.upperCase(couponCode);
     	System.out.println("Checking coupon with code: " + couponCode);
         Cart cart = CartUtil.checkCoupon(request.getSession(), couponCode);
         HttpHeaders headers = new HttpHeaders();
