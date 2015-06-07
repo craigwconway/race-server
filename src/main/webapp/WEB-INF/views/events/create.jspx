@@ -134,11 +134,11 @@
                         class="form-control"
                         placeholder="State"
                         value="${event.state}"></input>
+                <input  id="geocountry" type="text" name="country"
+                        class="form-control"
+                        placeholder="Country"
+                        value="${event.country}"></input>
                 <div style="display:none">
-                    <label for="eventCountry">
-                    <input  id="geocountry" type="text" name="country" placeholder="country"
-                            value="${event.country}"></input>
-                    </label>
                     <label for="eventZip">
                     <input  id="geozip" type="text" name="zip" placeholder="zip"
                             value="${event.zip}"></input>
