@@ -402,9 +402,7 @@ public class StripeController {
                     resultString += "<br>";
                     resultString += dateFormat.format(cartEvent.getTimeStart());
                     resultString += MailgunUtil.REG_RECEIPT_NINE_B;
-                    resultString += MailgunUtil.REG_RECEIPT_TEN_A;
-                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId();
-                    resultString += MailgunUtil.REG_RECEIPT_TEN_B;
+                    // Move Part ten to end of email
                     resultString += MailgunUtil.REG_RECEIPT_ELEVEN_A;
                     if(cartEvent.getAddress() != null) {
                         resultString += cartEvent.getAddress();
@@ -429,8 +427,14 @@ public class StripeController {
                     	resultString += cartEvent.getPhone();
                     }
                     resultString += MailgunUtil.REG_RECEIPT_THIRTEEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_A;
+                    resultString += "https://overmind.bibs.io/bibs-server/rest/registrations/transfer?invoice=";
+                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId() + "&firstName=" + loggedInUser.getFirstname() + "&email=" + loggedInUser.getEmail();
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_B;
+                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId();
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_C;                    
                     resultString += MailgunUtil.REG_RECEIPT_FOURTEEN;
-                    
+                    resultString += MailgunUtil.googleEventReservationCard(cartEvent, c.getId(), loggedInUser.getFirstname(), loggedInUser.getLastname());
                     /*
                     resultString = "Hey " + loggedInUser.getFirstname() + ",\n";
                     resultString += "Thank you for registering for ";

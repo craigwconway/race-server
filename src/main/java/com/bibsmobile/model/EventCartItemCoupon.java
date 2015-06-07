@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +57,7 @@ public class EventCartItemCoupon {
     }
 
     public void setCode(String code) {
-        this.code = code;
+        this.code = StringUtils.upperCase(code);
     }
 
     public Long getDiscountAbsolute() {

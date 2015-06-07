@@ -1,18 +1,28 @@
 package com.bibsmobile.util;
 
+import com.bibsmobile.model.Event;
+import com.bibsmobile.service.AbstractTimer;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.core.MediaType;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public final class MailgunUtil {
     private static final int maxRecipients = 1000;
@@ -49,10 +59,11 @@ public final class MailgunUtil {
     public static final String REG_RECEIPT_NINE_A = "<tr>\r\n<td class=\"h4\" style=\"color:#b2b2b2;font-family:'Open Sans',sans-serif;font-weight:normal;padding:25px 0 0 0;font-size:18px;line-height:22px\">\r\nStart time\r\n</td>\r\n</tr>\r\n<tr>\r\n<td class=\"info1\" style=\"color:#423f3f;font-family:'Open Sans',sans-serif;padding:0 0 25px 0;font-size:16px;line-height:22px\">\r\nThis event starts at ";
     // followed by event starttime
     public static final String REG_RECEIPT_NINE_B = "</td></tr>";
-    // Event date section:
-    public static final String REG_RECEIPT_TEN_A = "<tr>\r\n<td class=\"h4\" style=\"color:#b2b2b2;font-family:'Open Sans',sans-serif;font-weight:normal;padding:25px 0 0 0;font-size:18px;line-height:22px\">\r\nReceipt:\r\n</td>\r\n</tr>\r\n<tr>\r\n<td class=\"info1\" style=\"color:#423f3f;font-family:'Open Sans',sans-serif;padding:0 0 25px 0;font-size:16px;line-height:22px\">";
-    // followed by event date
-    public static final String REG_RECEIPT_TEN_B = "</td></tr>";
+    // Event Receipt section
+    public static final String REG_RECEIPT_TEN_A = "<tr>\r\n<td class=\"h4\" style=\"color:#b2b2b2;font-family:'Open Sans',sans-serif;font-weight:normal;padding:25px 0 0 0;font-size:18px;line-height:22px\">\r\nReceipt:\r\n</td>\r\n</tr>\r\n<tr>\r\n<td class=\"info1\" style=\"color:#423f3f;font-family:'Open Sans',sans-serif;padding:0 0 25px 0;font-size:16px;line-height:22px\"><a href=\"";
+    // End of event receipt section
+    public static final String REG_RECEIPT_TEN_B = "\">";
+    public static final String REG_RECEIPT_TEN_C = "</a></td></tr>";
     // end event date section
     public static final String REG_RECEIPT_ELEVEN_A = "<tr>\r\n<td class=\"h4\" style=\"color:#b2b2b2;font-family:'Open Sans',sans-serif;font-weight:normal;padding:25px 0 0 0;font-size:18px;line-height:22px\">\r\nLocation of event\r\n</td>\r\n</tr>\r\n<tr>\r\n<td class=\"info1\" style=\"color:#423f3f;font-family:'Open Sans',sans-serif;padding:0 0 25px 0;font-size:16px;line-height:22px\">";
     // followed by address, city, state with a <br> separating them
@@ -117,6 +128,45 @@ public final class MailgunUtil {
             }
         }
         return success;
+    }
+    
+    public static String googleEventReservationCard(Event event, Long cartId, String firstname, String lastname ) {
+    	if(StringUtils.isEmpty(firstname) || StringUtils.isEmpty(lastname) || cartId == null || event == null) {
+    		return "";
+    	}
+        Gson gson = new Gson();
+        JsonObject responseObj = new JsonObject();
+        responseObj.addProperty("@context", "http://schema.org");
+        responseObj.addProperty("@type", "EventReservation");
+        responseObj.addProperty("reservationStatus", "http://schema.org/Confirmed");
+        JsonObject underName = new JsonObject();
+        underName.addProperty("@type", "Person");
+        underName.addProperty("name", firstname + " " + lastname);
+        responseObj.add("underName", underName);
+        JsonObject reservationFor = new JsonObject();
+        reservationFor.addProperty("@type", "Event");
+        reservationFor.addProperty("name", event.getName());
+        // Get Local time:
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+        if(event.getTimezone() != null) {
+        	df.setTimeZone(event.getTimezone());
+        } else {
+        	df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        }
+        reservationFor.addProperty("startDate", df.format(event.getTimeStart()));
+        JsonObject location = new JsonObject();
+        location.addProperty("@type", "Place");
+        location.addProperty("name", event.getAddress());
+        JsonObject postalAddress = new JsonObject();
+        postalAddress.addProperty("@type", "PostalAddress");
+        postalAddress.addProperty("streetAddress", event.getAddress());
+        postalAddress.addProperty("addressLocality", event.getCity());
+        postalAddress.addProperty("addressRegion", event.getState());
+        postalAddress.addProperty("postalCode", event.getZip());
+        postalAddress.addProperty("addressCountry", event.getCountry());
+        location.add("address", postalAddress);
+        reservationFor.add("location", location);
+        return "<script type=\"application/ld+json\">" + gson.toJson(reservationFor) + "</script>";
     }
 
     public static List<List<String>> partitionRecipients(List<String> tos) {
