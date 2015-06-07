@@ -116,7 +116,7 @@ public class CartItemController {
             Cart cart = cartItem.getCart();
             EventCartItem eventCartItem = cartItem.getEventCartItem();
             UserProfile userProfile = cartItem.getUserProfile();
-            String str = cartItem.getCreated() + ", " + cartItem.getQuantity() + ", " + cartItem.getCoupon() + ", " + cartItem.getPrice() + ", " + cartItem.getSize() + ", "
+            String str = cartItem.getCreated() + ", " + cartItem.getQuantity() + ", " + cartItem.getPrice() + ", " + cartItem.getSize() + ", "
                     + cartItem.getColor() + ", " + eventCartItem.getType() + ", " + eventCartItem.getName() + ", " + eventCartItem.getPrice() + ", ";
             for (CustomRegFieldResponse r : cart.getCustomRegFieldResponses()) {
                 str += r.getCustomRegField().getQuestion() + ", " + r.getResponse() + ", ";
