@@ -282,6 +282,9 @@
 
         function cardHandler(val){
             jQuery('input[name="type"]').val(val);
+            jQuery('.has-error').each(function(i,e){
+                jQuery(e).text("");
+            })
             switch(val){
                 case 'TICKET':
                     jQuery('#card-ticket > .content').attr('style', 'background:#F0F0F0');
@@ -312,6 +315,7 @@
                     jQuery('input[name="maxAge"]').val(120);
                     jQuery('input[name="price"]').val("");
                     jQuery('input[name="available"]').val("");
+                    jQuery('#etype-error').hide();
                     break;
                 case 'DONATION':
                     jQuery('#card-ticket > .content').attr('style', 'background:none');
@@ -326,6 +330,7 @@
                     jQuery('input[name="maxAge"]').val(120);
                     jQuery('input[name="price"]').val(1);
                     jQuery('input[name="available"]').val(1000000000);
+                    jQuery('#etype-error').hide();
                     break;
                 default:
                     break;
@@ -345,28 +350,30 @@
 
             // parsley.js hack
             jQuery('#proceed').click(function(){
-                var etype = jQuery('input[name="eventType"]').val();
-                if( etype == "" || etype == null ){
-                    jQuery('#etype-error').show();
-                }
-                jQuery('input[name="eventType"]').on('change', function(){
-                    if(etype !== null){
-                        jQuery('#etype-error').hide();
+                if( jQuery('input[name="type"]').val() == 'TICKET' ){
+                    var etype = jQuery('input[name="eventType"]').val();
+                    if( etype == "" || etype == null ){
+                        jQuery('#etype-error').show();
                     }
-                })
+                    jQuery('input[name="eventType"]').on('change', function(){
+                        if(etype !== null){
+                            jQuery('#etype-error').hide();
+                        }
+                    })
 
-                if( etype !== null ){
-                    jQuery("#eventCartItem").submit(function(e) {
-                        e.preventDefault();
-                        jQuery('.size-boxes').each(function(){
-                            jQuery('.size-boxes').removeAttr('name');
-                        });
-                        jQuery('.color-boxes').each(function(){
-                            jQuery('.size-boxes').removeAttr('name');
-                        });
+                    if( etype !== null ){
+                        jQuery("#eventCartItem").submit(function(e) {
+                            e.preventDefault();
+                            jQuery('.size-boxes').each(function(){
+                                jQuery('.size-boxes').removeAttr('name');
+                            });
+                            jQuery('.color-boxes').each(function(){
+                                jQuery('.size-boxes').removeAttr('name');
+                            });
 
-                        this.submit();
-                    });
+                            this.submit();
+                        });
+                    }
                 }
             })
 

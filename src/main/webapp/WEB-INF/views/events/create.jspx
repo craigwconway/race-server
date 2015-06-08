@@ -20,13 +20,44 @@
         .info-container{
             margin: 0 auto;
             font-size: 1.2em;
-            font-weight: 100;
+            font-weight: 400;
             line-height: 27px;
             color: #292929;
         }
         .form-fields>input, #demo>input{
             width: 400px;
             margin: 5px auto; 
+        }
+        #timezone-search{
+            margin: 0 auto;
+            width: 400px;
+        }
+        .ui.search .prompt{
+            width: 400px;
+            height: 34px;
+            padding: 6px 12px;
+            line-height: 1.4;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -moz-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            font-size: 0.85em;
+            font-family: inherit;
+        }
+        .ui.search > .results{
+            width: 400px;
+        }
+        .ui.search > .results .result{
+            font-size: 0.9em;
+            line-height: 1.1em;
+            color: #555;
+        }
+        .ui.search > .results .result .title{
+            font-family: inherit;
+            font-weight: normal;
         }
         .submit{
             margin: 0 auto;
@@ -75,6 +106,10 @@
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"
                         data-parsley-error-message="Please enter a date for this event."></input>
+                <div class="ui search" id="timezone-search">
+                    <input class="prompt" type="text" name="timezone" placeholder="Timezone"><!--  --></input>
+                    <div class="results"><!--  --></div>
+                </div>
                 <input  type="text" name="organization"
                         class="form-control"
                         placeholder="Organization"
@@ -84,15 +119,15 @@
                         placeholder="Charity Name"
                         value="${event.charity}"></input>
                 <c:if test='${(!build.rfid)}'>
-                <input  type="url" name="website"
-                        class="form-control"
-                        id="mask-website"
-                        placeholder="Website"
-                        value="${event.website}"
-                        data-parsley-type="url"
-                        data-parsley-error-message="Please enter a valid website starting with http:// or https://"
-                        data-parsley-required="required"></input>
-                <input  type="text" name="phone"
+                    <input  type="url" name="website"
+                            class="form-control"
+                            id="mask-website"
+                            placeholder="Website"
+                            value="${event.website}"
+                            data-parsley-type="url"
+                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"
+                            data-parsley-required="required"></input>
+                    <input  type="text" name="phone"
                         class="form-control"
                         id="mask-phone"
                         placeholder="Phone Number"
@@ -102,14 +137,14 @@
                         data-parsley-required="required"></input>
                 </c:if>
                 <c:if test='${(build.rfid)}'>
-                <input  type="url" name="website"
-                        class="form-control"
-                        id="mask-website"
-                        placeholder="Website"
-                        value="${event.website}"
-                        data-parsley-type="url"
-                        data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
-                <input  type="text" name="phone"
+                    <input  type="url" name="website"
+                            class="form-control"
+                            id="mask-website"
+                            placeholder="Website"
+                            value="${event.website}"
+                            data-parsley-type="url"
+                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
+                    <input  type="text" name="phone"
                         class="form-control"
                         id="mask-phone"
                         placeholder="Phone Number"
@@ -205,10 +240,12 @@
         </button> -->
     </form:create>
     </div>
+    <script src="/bibs-server/resources/scripts/tzid.js" type="text/javascript"><jsp:text/></script>
     <c:if test='${(!build.rfid)}'>
         <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
         <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
         <script src="/bibs-server/resources/scripts/jquery.geocomplete.js" type="text/javascript"><jsp:text/></script>
+        <script src="https://timezonedb.googlecode.com/files/timezonedb.js" type="text/javascript"><jsp:text/></script>
     </c:if>
     <script>
     window.onload = init;
@@ -228,8 +265,36 @@
         });
 
         initDateTimePickers();
-        <c:if test='${(!build.rfid)}'>setGeocomplete();</c:if>
+        <c:if test='${(!build.rfid)}'>
+            setGeocomplete();
+            jQuery('#timezone-search').search({
+                source: timezoneId,
+                searchFields: ['title'],
+                searchFullText: true
+            });
+        </c:if>
         setValidation();
+    }
+    function getCurrentTimezone(lat, lng){
+        var tz = new TimeZoneDB;
+        tz.getJSON({
+            key: "9LX7B46RBTP0",
+            lat: lat,
+            lng: lng
+        }, function(data){
+            if(data.zoneName !== ""){
+                var userInputTz = jQuery('input[name="timezone"]').val();
+                if( data.zoneName !== userInputTz ){
+                    if( userInputTz !== "" ){
+                        if( confirm('This address is not within the timezone you specified. The timezone you input will be replaced with the one corresponding to this address.') ){
+                        }
+                    }
+                    jQuery('input[name="timezone"]').val(data.zoneName);
+                    jQuery('input[name="timezone"]').prop('disabled', true);
+                    jQuery('input[name="timezone"]').css('background-color', 'rgba(0,0,0,0.03)');
+                }
+            }
+        });
     }
     function initDateTimePickers(){
         var todayDate = moment().startOf('day');
@@ -302,14 +367,16 @@
                 jQuery("#geoaddress").val(addr);
             }
 
-            var longitude = result.geometry.location.lat();
-            var lat =  result.geometry.location.lng();
+            var longitude = result.geometry.location.lng();
+            var lat =  result.geometry.location.lat();
             if( longitude !== null ){
                 jQuery("#geolong").val(longitude);
             }
             if( lat !== null ){
                 jQuery("#geolat").val(lat);
             }
+
+            getCurrentTimezone(lat, longitude);
 
             if( jQuery("#geocity").val() == "" ){
                 jQuery("#geocity").focus();

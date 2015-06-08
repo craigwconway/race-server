@@ -14,12 +14,14 @@
 <spring:url value="/resources/scripts/semantic.js" var="semantic_url" />
 <spring:url value="/resources/scripts/vis.min.js" var="vis_url" />
 <spring:url value="/resources/scripts/moment.min.js" var="moment_url" />
+<spring:url value="/resources/scripts/moment-timezone.min.js" var="moment_timezone_url" />
 <spring:url value="/resources/scripts/d3.min.js" var="d3_url" />
 <spring:url value="/resources/scripts/nv.d3.min.js" var="nvd3_url" />
 <spring:url value="/resources/scripts/parsley.min.js" var="parsley_url" />
 
 <!-- <script src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false">;//?</script> -->
 <script src="${moment_url}" type="text/javascript">;//?</script>
+<script src="${moment_timezone_url}" type="text/javascript">;//?</script>
 <script src="${bootjs_url}" type="text/javascript">;//?</script>
 <script src="${semantic_url}" type="text/javascript">;//?</script>
 <script src="${d3_url}" type="text/javascript">;//?</script>
