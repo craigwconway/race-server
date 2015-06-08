@@ -422,8 +422,30 @@
         <div class="info-container">
             <div class="button-container">
                 <c:if test='${(build.registration)}'>
-                    <div class="btn btn-default btn-sm" style="margin-right: 5px;"><span class="reg">${event.regEnabled}</span></div>
-                    <div class="btn btn-default btn-sm" style="margin-right: 5px;"><span class="live">${event.live}</span></div>
+                    <c:if test='${event.regEnabled}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectDisableReg()">
+                             reg <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${(!event.regEnabled)}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectEnableReg()">
+                             reg <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${event.live}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectDisableLive()">
+                             live <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${(!event.live)}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectEnableLive()">
+                             live <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
                 </c:if>
                 <div class="btn btn-warning btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
                     <i class="fa fa-edit"><!--  --></i>
@@ -485,29 +507,6 @@
         function initInfo(){
             var str = jQuery("#event-time").text()
             str = str.substring(0,str.length-2);
-
-            jQuery(".reg").each(function(){
-                var outer_html = jQuery(this).html();
-                if(outer_html === "true"){
-                    jQuery(this).html('reg <span class="glyphicon glyphicon-ok" style="margin-left:5px;"></span>')
-                    jQuery(this).parent().attr('onclick', 'redirectDisableReg()');
-                }
-                else if(outer_html === "false"){
-                    jQuery(this).html('reg <span class="glyphicon glyphicon-remove" style="margin-left:5px;"></span>')
-                    jQuery(this).parent().attr('onclick', 'redirectEnableReg()');
-                }
-            })
-            jQuery(".live").each(function(){
-                var outer_html = jQuery(this).html();
-                if(outer_html === "true"){
-                    jQuery(this).html('live <span class="glyphicon glyphicon-ok" style="margin-left:5px;"></span>')
-                    jQuery(this).parent().attr('onclick', 'redirectDisableLive()')
-                }
-                else if(outer_html === "false"){
-                    jQuery(this).html('live <span class="glyphicon glyphicon-remove" style="margin-left:5px;"></span>')
-                    jQuery(this).parent().attr('onclick', 'redirectEnableLive()')
-                }
-            })
 
             var momentRRTime = moment('${event.timeStart}').startOf('hour');
             jQuery("#timedisp").datetimepicker({
