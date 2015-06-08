@@ -80,11 +80,20 @@ public class RegistrationsController {
         return "registrations/search";
     }
     
+    /**
+     * @api {get} /registrations/associate Associate Registrations
+     * @apiName Associate Registrations
+     * @apiGroup registrations
+     * @apiParam {Number} event Id of event to associate as queryString
+     * @apiParam {Number} type Id of event type to associate
+     * @apiParam {Number} [lowbib=1] low bib number to map to
+     * @apiParam {Number} [highbib=100000] high bib number to map to
+     */
     @RequestMapping(value = "associate", method = RequestMethod.GET)
     public ResponseEntity<String> associateCarts(
     		@RequestParam("event") Long eventId,
     		@RequestParam(value = "lowbib", defaultValue = "1") long lowbib,
-    		@RequestParam(value = "highbib", defaultValue = "3000000") long highbib,
+    		@RequestParam(value = "highbib", defaultValue = "100000") long highbib,
     		@RequestParam(value = "type") Long eventTypeId) {
     	Event event = Event.findEvent(eventId);
         UserProfile user = UserProfileUtil.getLoggedInUserProfile();

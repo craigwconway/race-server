@@ -1711,6 +1711,18 @@ public class EventController {
         return pathSegment;
     }
 
+    /**
+     * @api {post} /events/:id/email Email Registrants
+     * @apiName Email Registrants
+     * @apiGroup events
+     * @apiParam {Number} id URL Param containing event ID
+     * @apiParam {String} subject querystring containing subject line of email.
+     * @apiParam {String} body Payload containing plaintext body of message to send
+     * @param id
+     * @param subject
+     * @param mailBody
+     * @return
+     */
     @RequestMapping(value = "/{id}/email", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<String> email(@PathVariable("id") Long id, @RequestParam String subject, @RequestBody String mailBody) {
         Event e = Event.findEvent(id);
