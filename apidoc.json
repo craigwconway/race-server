@@ -1,0 +1,7 @@
+{
+	"name": "bibs",
+	"version": "0.1.0",
+	"description": "Bibs Core API - calls for registering runners, importing atletes, managing events and interacting with RFID",
+	"title": "Bibs Core API",
+	"url" : "https://overmind.bibs.io/bibs-server"
+}

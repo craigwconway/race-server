@@ -848,17 +848,38 @@ public class EventController {
         outputwriter.close();
     }
 
-    
+    /**
+     * @api {get} /events/export Export
+     * @apiName Export
+     * @apiGroup events
+     * @apiDescription Export a csv file containing all of the raceresults in an event. If no event type is set,
+     * this will contain every event type and race results not mapped to a type.
+     * @apiParam {Number} event ID of event to export as querystring
+     * @apiParam {Number} [type] ID of event type to export
+     */
     @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public static void export(@RequestParam(value = "event", required = true) Long event, HttpServletResponse response) throws IOException {
+    public static void export(@RequestParam(value = "event", required = true) Long event,
+    		@RequestParam(value = "type", required = false) Long type,
+    		HttpServletResponse response) throws IOException {
         Event _event = Event.findEvent(event);
+        EventType _eventType = EventType.findEventType(type);
         response.setContentType("text/csv;charset=utf-8");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + _event.getName() + ".csv\"");
+        if(_eventType != null) {
+        	response.setHeader("Content-Disposition", "attachment; filename=\"" + _event.getName() + "_" + _eventType.getTypeName() + ".csv\"");
+        } else {
+        	response.setHeader("Content-Disposition", "attachment; filename=\"" + _event.getName() + ".csv\"");
+        }
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
         outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,split1,split2,split3,split4,split5,split6,split7,split8,split9,offset,rankoverall,rankgender,rankclass\r\n");
-        List<RaceResult> runners = Event.findRaceResults(event, 0, 99999);
+        
+        List<RaceResult> runners;
+        if (type == null) {
+        	runners = Event.findRaceResults(event, 0, 99999);
+        } else {
+        	runners = Event.findRaceResults(event, type, 0, 99999);
+        }
         clearAwardsCache(event);
         for (RaceResult r : runners) {
         	String splits = "0,0,0,0,0,0,0,0,0";
@@ -1711,6 +1732,18 @@ public class EventController {
         return pathSegment;
     }
 
+    /**
+     * @api {post} /events/:id/email Email Registrants
+     * @apiName Email Registrants
+     * @apiGroup events
+     * @apiParam {Number} id URL Param containing event ID
+     * @apiParam {String} subject querystring containing subject line of email.
+     * @apiParam {String} body Payload containing plaintext body of message to send
+     * @param id
+     * @param subject
+     * @param mailBody
+     * @return
+     */
     @RequestMapping(value = "/{id}/email", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<String> email(@PathVariable("id") Long id, @RequestParam String subject, @RequestBody String mailBody) {
         Event e = Event.findEvent(id);

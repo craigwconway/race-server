@@ -1,6 +1,7 @@
 package com.bibsmobile.model;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -91,6 +92,10 @@ public class EventType {
         return entityManager().createQuery("SELECT o FROM EventType o", EventType.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
+    public static List<EventType> findEventTypesByEvent(Event event) {
+        return entityManager().createQuery("SELECT o FROM EventType AS o WHERE o.event = :event", EventType.class).setParameter("event", event).getResultList();
+    }    
+    
     public static List<EventType> findEventTypeEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM EventType o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
@@ -105,6 +110,10 @@ public class EventType {
     public String toJson() {
         return new JSONSerializer().exclude("*.class").serialize(this);
     }
+    
+    public static String toJsonArray(Collection<EventType> collection) {
+        return new JSONSerializer().exclude("*.class").serialize(collection);
+    }   
 
     @Transactional
     public void persist() {
