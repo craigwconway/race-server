@@ -7,6 +7,7 @@ import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -243,6 +244,22 @@ public class EventTypeController {
         
         existing.merge();
         return new ResponseEntity<>(eventType.toJson(), headers, HttpStatus.OK);
+    }
+    
+    /**
+     * @api {get} /eventtypes/byevent/:eventId Get By Event
+     * @apiName Get By Event
+     * @apiDescription Get a list of event types belonging to an event by that event's ID.
+     * @param eventId
+     * @return
+     */
+    @RequestMapping(value = "/byevent/{eventId}", method = RequestMethod.GET, headers="Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@PathVariable("eventId") Long eventId) {
+    	HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+    	Event event = Event.findEvent(eventId);
+    	List <EventType> eventTypes = EventType.findEventTypesByEvent(event);
+    	return new ResponseEntity<>(EventType.toJsonArray(eventTypes), headers, HttpStatus.OK); 
     }
     
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
