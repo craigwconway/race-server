@@ -187,25 +187,27 @@
                                     value="${event.longitude}"></input>
                         </div>
                     </div>
-                    <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                        <div class="ui labeled input">
-                            <div class="ui blue label">Gun Fired</div>
-                            <div class="btn btn-default btn-sm" id="reg" onclick="gunToggle()">${event.gunFired}</div>
-                            <input style="display:none" id="checkgun" type="checkbox" name="gunFired"></input>
-                        </div>
+                    <c:if test='${(!build.rfid)}'>
+                        <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+                            <div class="ui labeled input">
+                                <div class="ui blue label">Gun Fired</div>
+                                <div class="btn btn-default btn-sm" id="reg" onclick="gunToggle()">${event.gunFired}</div>
+                                <input style="display:none" id="checkgun" type="checkbox" name="gunFired"></input>
+                            </div>
 
-                        <div class="ui labeled action input">
-                            <div class="ui blue label">Gun Time</div>
-                            <input  type="text" name="gunTime"
-                                        class="form-control" style="margin-top: 0; margin-bottom:0"
-                                        id="guntime" value="${event.gunTime}"
-                                        placeholder="Gun Time"
-                                        data-provide="datepicker"
-                                        data-date-format="MM/DD/YYYY h:mm:ss a"
-                                        data-parsley-error-message="Invalid time format."></input>
-                            <div class="ui icon button" id="removetime"><i class="fa fa-remove"><!--  --></i></div>
-                        </div>
-                    </sec:authorize>
+                            <div class="ui labeled action input">
+                                <div class="ui blue label">Gun Time</div>
+                                <input  type="text" name="gunTime"
+                                            class="form-control" style="margin-top: 0; margin-bottom:0"
+                                            id="guntime" value="${event.gunTime}"
+                                            placeholder="Gun Time"
+                                            data-provide="datepicker"
+                                            data-date-format="MM/DD/YYYY h:mm:ss a"
+                                            data-parsley-error-message="Invalid time format."></input>
+                                <div class="ui icon button" id="removetime"><i class="fa fa-remove"><!--  --></i></div>
+                            </div>
+                        </sec:authorize>
+                    </c:if>
                 </div>
                 <div style="display:none">
                     <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
