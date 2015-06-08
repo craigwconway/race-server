@@ -103,7 +103,7 @@
                     <div class="ui labeled input">
                         <div class="ui blue label">Timezone</div>
                         <div class="ui search" id="timezone-search">
-                            <input class="prompt" type="text" name="timezone" placeholder="Timezone"><!--  --></input>
+                            <input class="prompt" type="text" name="timezone" placeholder="Timezone" value="${event.timezone}"><!--  --></input>
                             <div class="results"><!--  --></div>
                         </div>
                     </div>
