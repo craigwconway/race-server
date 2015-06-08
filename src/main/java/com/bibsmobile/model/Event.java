@@ -439,6 +439,16 @@ public class Event {
         return q.getResultList();
     }
 
+    public static List<RaceResult> findRaceResults(long event, long eventType, int firstResult, int maxResults) {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event and o.eventType = :eventType", RaceResult.class);
+        q.setParameter("event", Event.findEvent(event));
+        q.setParameter("eventType", EventType.findEventType(eventType));
+        q.setFirstResult(firstResult);
+        q.setMaxResults(maxResults);
+        return q.getResultList();
+    }    
+    
     public static List<Event> findEventsByRunning() {
         EntityManager em = Event.entityManager();
         TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.running > 0 order by o.running asc", Event.class);
