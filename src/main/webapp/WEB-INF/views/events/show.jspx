@@ -714,7 +714,7 @@
             L.mapbox.accessToken = 'pk.eyJ1IjoiYmlicyIsImEiOiJRcUxlU0ZFIn0.O_WdutmlIabHGa508B7Hlg';
             var map = L.mapbox.map('map', 'mapbox.streets', {
                 zoomControl: true
-            }).setView([longitude, latitude], 14);
+            }).setView([latitude, longitude], 14);
 
             // add a marker:
             var myLayer = L.mapbox.featureLayer().addTo(map);
@@ -729,7 +729,7 @@
                     },
                     geometry: {
                         type: 'Point',
-                        coordinates: [latitude, longitude]
+                        coordinates: [longitude, latitude]
                     }
                 }]
             };

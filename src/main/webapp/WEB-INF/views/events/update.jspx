@@ -42,6 +42,19 @@
                 width: 500px;
                 text-align: right;
             }
+            .ui.search .prompt{
+                border-radius: 4px;
+            }
+            .ui.search > .results{
+                width: 100%;
+            }
+            .ui.search > .results .result{
+                color: #555;
+            }
+            .ui.search > .results .result .title{
+                font-family: inherit;
+                font-weight: normal;
+            }
             @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
                 .ui.labeled.input {
                     width: 90%;
@@ -88,6 +101,13 @@
                                 data-parsley-required="true"></input>
                     </div>
                     <div class="ui labeled input">
+                        <div class="ui blue label">Timezone</div>
+                        <div class="ui search" id="timezone-search">
+                            <input class="prompt" type="text" name="timezone" placeholder="Timezone"><!--  --></input>
+                            <div class="results"><!--  --></div>
+                        </div>
+                    </div>
+                    <div class="ui labeled input">
                         <div class="ui blue label">Organization</div>
                         <input  type="text" name="organization"
                                 class="form-control"
@@ -102,50 +122,50 @@
                                 value="${event.charity}"></input>
                     </div>
                     <c:if test='${(!build.rfid)}'>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Website</div>
-                        <input  type="url" name="website"
-                            class="form-control"
-                            id="mask-website"
-                            placeholder="Website"
-                            value="${event.website}"
-                            data-parsley-type="url"
-                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"
-                            data-parsley-required="required"></input>
-                    </div>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Phone Number</div>
-                        <input  type="text" name="phone"
-                            class="form-control"
-                            id="mask-phone"
-                            placeholder="Phone Number"
-                            value="${event.phone}"
-                            data-parsley-length="[10,18]"
-                            data-parsley-error-message="Please enter a valid phone number."
-                            data-parsley-required="required"></input>
-                    </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Website</div>
+                            <input  type="url" name="website"
+                                class="form-control"
+                                id="mask-website"
+                                placeholder="Website"
+                                value="${event.website}"
+                                data-parsley-type="url"
+                                data-parsley-error-message="Please enter a valid website starting with http:// or https://"
+                                data-parsley-required="required"></input>
+                        </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Phone Number</div>
+                            <input  type="text" name="phone"
+                                class="form-control"
+                                id="mask-phone"
+                                placeholder="Phone Number"
+                                value="${event.phone}"
+                                data-parsley-length="[10,18]"
+                                data-parsley-error-message="Please enter a valid phone number."
+                                data-parsley-required="required"></input>
+                        </div>
                     </c:if>
                     <c:if test='${(build.rfid)}'>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Website</div>
-                        <input  type="url" name="website"
-                            class="form-control"
-                            id="mask-website"
-                            placeholder="Website"
-                            value="${event.website}"
-                            data-parsley-type="url"
-                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
-                    </div>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Phone Number</div>
-                        <input  type="text" name="phone"
-                            class="form-control"
-                            id="mask-phone"
-                            placeholder="Phone Number"
-                            value="${event.phone}"
-                            data-parsley-length="[10,18]"
-                            data-parsley-error-message="Please enter a valid phone number."></input>
-                    </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Website</div>
+                            <input  type="url" name="website"
+                                class="form-control"
+                                id="mask-website"
+                                placeholder="Website"
+                                value="${event.website}"
+                                data-parsley-type="url"
+                                data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
+                        </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Phone Number</div>
+                            <input  type="text" name="phone"
+                                class="form-control"
+                                id="mask-phone"
+                                placeholder="Phone Number"
+                                value="${event.phone}"
+                                data-parsley-length="[10,18]"
+                                data-parsley-error-message="Please enter a valid phone number."></input>
+                        </div>
                     </c:if>
                     <div id="demo">
                         <div class="ui labeled input">
@@ -249,11 +269,13 @@
             </div>
             </form:update>
         </div>
+    <script src="/bibs-server/resources/scripts/tzid.js" type="text/javascript"><jsp:text/></script>
     <c:if test='${(!build.rfid)}'>
         <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
         <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
         <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
         <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
+        <script src="https://timezonedb.googlecode.com/files/timezonedb.js" type="text/javascript"><jsp:text/></script>
     </c:if>
     <script>
         window.onload = init;
@@ -264,6 +286,11 @@
             setValidation();
             <c:if test='${(!build.rfid)}'>
                 setGeocomplete();
+                jQuery('#timezone-search').search({
+                    source: timezoneId,
+                    searchFields: ['title'],
+                    searchFullText: true
+                });
             </c:if>
         }
 
@@ -287,6 +314,28 @@
                 jQuery("#reg").html('<span class="glyphicon glyphicon-remove"></span>');
             }
             jQuery('input[name="gunFired"]').prop('checked', !status);
+        }
+
+        function getCurrentTimezone(lat, lng){
+            var tz = new TimeZoneDB;
+            tz.getJSON({
+                key: "9LX7B46RBTP0",
+                lat: lat,
+                lng: lng
+            }, function(data){
+                if(data.zoneName !== ""){
+                    var userInputTz = jQuery('input[name="timezone"]').val();
+                    if( data.zoneName !== userInputTz ){
+                        if( userInputTz !== "" ){
+                            if( confirm('This address is not within the timezone you specified. The timezone you input will be replaced with the one corresponding to this address.') ){
+                            }
+                        }
+                        jQuery('input[name="timezone"]').val(data.zoneName);
+                        jQuery('input[name="timezone"]').prop('disabled', true);
+                        jQuery('input[name="timezone"]').css('background-color', 'rgba(0,0,0,0.03)');
+                    }
+                }
+            });
         }
 
         function initDateTimePickers(){
@@ -393,14 +442,16 @@
                     jQuery("#geoaddress").val(addr);
                 }
 
-                var longitude = result.geometry.location.lat();
-                var lat =  result.geometry.location.lng();
+                var longitude = result.geometry.location.lng();
+                var lat =  result.geometry.location.lat();
                 if( longitude !== null ){
                     jQuery("#geolong").val(longitude);
                 }
                 if( lat !== null ){
                     jQuery("#geolat").val(lat);
                 }
+
+                getCurrentTimezone(lat, longitude);
 
                 if( jQuery("#geocity").val() == "" ){
                     jQuery("#geocity").focus();
