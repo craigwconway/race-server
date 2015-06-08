@@ -211,7 +211,14 @@
                         <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
                             <div class="ui labeled input">
                                 <div class="ui blue label">Gun Fired</div>
-                                <div class="btn btn-default btn-sm" id="reg" onclick="gunToggle()">${event.gunFired}</div>
+                                <div class="btn btn-default btn-sm" id="reg" onclick="gunToggle()">
+                                    <c:if test='${event.gunFired}'>
+                                        <span class="glyphicon glyphicon-ok"></span>
+                                    </c:if>
+                                    <c:if test='${!(event.gunFired)}'>
+                                        <span class="glyphicon glyphicon-remove"></span>
+                                    </c:if>
+                                </div>
                                 <input style="display:none" id="checkgun" type="checkbox" name="gunFired"></input>
                             </div>
 
@@ -299,11 +306,9 @@
         function initInfo(){
             var status = '${event.gunFired}';
             if( status === 'true' ){
-                jQuery("#reg").html('<span class="glyphicon glyphicon-ok"></span>');
                 jQuery('input[name="gunFired"]').prop('checked', true);
             }
             else if( status === 'false' ){
-                jQuery("#reg").html('<span class="glyphicon glyphicon-remove"></span>');
                 jQuery('input[name="gunFired"]').prop('checked', false);
             }
         }
@@ -382,15 +387,23 @@
                 details: ".details",
                 detailsAttribute: "data-geo",
                 types: ["geocode"],
-                blur: true
+                blur: false
             }).bind("geocode:result", function(event, result){
+                var formatted_addr = result.formatted_address;
                 var components = result.address_components;
-                console.log(components);
                 var addr = "";
                 jQuery.each(components, function(i, d){
                     switch(d.types[0]){
                         case 'street_addr':
                             addr = 'street_addr';
+                            break;
+                        case 'route':
+                            if( d.long_name !== null ){
+                                jQuery('#geoaddress').val(d.long_name);
+                            }
+                            else{
+                                jQuery('#geoaddress').val("")
+                            }
                             break;
                         case 'locality':
                             if( d.long_name !== null ){
@@ -440,8 +453,9 @@
                     }
                 })
 
-                if( addr.length > 0 ){
-                    jQuery("#geoaddress").val(addr);
+                if( formatted_addr !== "" ){
+                    var trunc_addr = formatted_addr.split(',')[0];
+                    jQuery("#geoaddress").val(trunc_addr);
                 }
 
                 var longitude = result.geometry.location.lng();
@@ -465,7 +479,7 @@
 
             }).bind("geocode:error", function(results, status){
                 if( status == 'google.maps.GeocoderStatus.ZERO_STATUS'){
-                    console.log("zero status")
+                    console.log("zero status");
                 }
 
                 if( jQuery("#geocity").val() == "" ){
