@@ -1,5 +1,6 @@
 package com.bibsmobile.model;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,7 +57,7 @@ public class EventCartItemCoupon {
     }
 
     public void setCode(String code) {
-        this.code = code;
+        this.code = StringUtils.upperCase(code);
     }
 
     public Long getDiscountAbsolute() {
@@ -107,7 +108,7 @@ public class EventCartItemCoupon {
         if (this.discountAbsolute != null) {
             return this.discountAbsolute;
         } else if (this.discountRelative != null) {
-            return (int)Math.floor(originalPrice * this.discountRelative);
+            return (int)Math.floor(originalPrice * this.discountRelative/100);
         } else {
             throw new IllegalStateException("How did I get here?");
         }

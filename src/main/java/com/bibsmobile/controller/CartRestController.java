@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -67,6 +68,7 @@ public class CartRestController {
     @ResponseBody
     public ResponseEntity<String> checkCoupon(@PathVariable("couponCode") String couponCode,
             HttpServletRequest request) {
+    	couponCode = StringUtils.upperCase(couponCode);
     	System.out.println("Checking coupon with code: " + couponCode);
         Cart cart = CartUtil.checkCoupon(request.getSession(), couponCode);
         HttpHeaders headers = new HttpHeaders();

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,6 +49,7 @@ import org.hibernate.search.annotations.Latitude;
 import org.hibernate.search.annotations.Longitude;
 import org.hibernate.search.annotations.Spatial;
 import org.hibernate.search.annotations.SpatialMode;
+import org.joda.time.DateTimeZone;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
@@ -81,6 +83,10 @@ public class Event {
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date timeEnd;
 
+    //@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
+    //@Temporal
+    private TimeZone timezone;
+    
     private int featured;
 
     private String address;
@@ -133,6 +139,9 @@ public class Event {
     @Embedded
     private EventAwardsConfig awardsConfig;
 
+    @Embedded
+    private EventPricing pricing = new EventPricing();
+    
     private String donateUrl;
 
     private String facebookUrl1;
@@ -872,7 +881,21 @@ public class Event {
         this.timeEnd = timeEnd;
     }
 
-    public int getFeatured() {
+    /**
+	 * @return the timezone
+	 */
+	public TimeZone getTimezone() {
+		return timezone;
+	}
+
+	/**
+	 * @param timezone the timezone to set
+	 */
+	public void setTimezone(TimeZone timezone) {
+		this.timezone = timezone;
+	}
+
+	public int getFeatured() {
         return this.featured;
     }
 
@@ -1351,5 +1374,19 @@ public class Event {
 	 */
 	public void setAwardsConfig(EventAwardsConfig awardsConfig) {
 		this.awardsConfig = awardsConfig;
+	}
+
+	/**
+	 * @return the pricing
+	 */
+	public EventPricing getPricing() {
+		return pricing;
+	}
+
+	/**
+	 * @param pricing the pricing to set
+	 */
+	public void setPricing(EventPricing pricing) {
+		this.pricing = pricing;
 	}
 }

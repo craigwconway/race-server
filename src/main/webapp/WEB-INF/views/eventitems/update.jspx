@@ -258,6 +258,7 @@
                     <div class="ui blue label">Time Limit</div>
                     <div class="btn btn-default btn-sm time-limit" onclick="limitToggle()">${eventCartItem.timeLimit}</div>
                     <input style="display:none" id="checklimit" type="checkbox" name="timeLimit"></input>
+                    <input style="display:none" id="purchased" type="number" name="purchased" value="${eventCartItem.purchased}"></input>                    
                 </div>
             </div>
         </div>

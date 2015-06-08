@@ -76,20 +76,31 @@ public final class CartUtil {
         	return cart;
         }
         coupon.setAvailable(coupon.getAvailable() - 1);
-        coupon.setUsed(coupon.getUsed() - 1);
+        coupon.setUsed(coupon.getUsed() + 1);
         coupon.merge();
         cart.setCoupon(coupon);
 
         long total = 0;
-        // calculate prics of cart without coupons
+        // First, add up price of all cart items without donations:
         for (CartItem ci : cart.getCartItems()) {
-            total += (ci.getQuantity() * ci.getPrice() * 100);
+        	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
         }
-        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
-        // calculate discounts of total price based on coupons
+        System.out.println("[Coupons] Pre coupon total: " + total);
+        // Then apply coupon:
         if(cart.getCoupon() != null) {
             total -= cart.getCoupon().getDiscount(total);
         }
+        System.out.println("[Coupons] Post coupon total: " + total);
+        // Then add in donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        // Finally, apply bibs processing fee. TODO: put this at level of event.
+        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
         // set total price which is at least 0
         cart.setTotal(Math.max(0, total));
         cart.merge();
@@ -224,10 +235,12 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
+        System.out.println("[Coupons] Pre coupon total: " + total);
         // Then apply coupon:
         if(cart.getCoupon() != null) {
             total -= cart.getCoupon().getDiscount(total);
         }
+        System.out.println("[Coupons] Post coupon total: " + total);
         // Then add in donations:
         for (CartItem ci : cart.getCartItems()) {
         	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {

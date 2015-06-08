@@ -329,6 +329,9 @@ public class StripeController {
                     resultString += loggedInUser.getFirstname() + " " + loggedInUser.getLastname();
                     resultString += MailgunUtil.REG_RECEIPT_FIVE;
                     long cartprice = 0;
+                    long nondonation = 0;
+                    long donation = 0;
+                    long couponprice = 0;
                     for (CartItem ci : c.getCartItems()) {
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
                     	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.T_SHIRT) {
@@ -348,14 +351,33 @@ public class StripeController {
                     	resultString += "$" + ci.getPrice();
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_D;
                     	cartprice += (ci.getPrice() * ci.getQuantity());
+                    	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                    		nondonation += ci.getPrice() * ci.getQuantity();
+                    	}
                     	System.out.println("cartprice: " + cartprice);
                     }
+                    if (c.getCoupon() != null) {
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    	resultString += " Coupon - " + c.getCoupon().getCode();
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                    	donation = cartprice - nondonation;
+                    	couponprice = c.getCoupon().getDiscount(nondonation*100);
+                        resultString += "$" + couponprice/100 + ".";
+                        if(donation % 100 > 9) {
+                        	resultString += couponprice % 100;
+                        } else {
+                        	resultString += "0" + couponprice % 10;
+                        }
+                        resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    }
+
                     resultString += MailgunUtil.REG_RECEIPT_SIX_A;
                     resultString += "Bibs Fee";
                     resultString += MailgunUtil.REG_RECEIPT_SIX_B;
                     resultString += " ";
                     resultString += MailgunUtil.REG_RECEIPT_SIX_C;
-                    long bibsfee = c.getTotal() - cartprice * 100;
+                    long bibsfee = c.getTotal() - (cartprice * 100 - couponprice);
                     resultString += "$" + bibsfee/100 + ".";
                     if(bibsfee % 100 > 9) {
                     	resultString += bibsfee % 100;
@@ -380,9 +402,7 @@ public class StripeController {
                     resultString += "<br>";
                     resultString += dateFormat.format(cartEvent.getTimeStart());
                     resultString += MailgunUtil.REG_RECEIPT_NINE_B;
-                    resultString += MailgunUtil.REG_RECEIPT_TEN_A;
-                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId();
-                    resultString += MailgunUtil.REG_RECEIPT_TEN_B;
+                    // Move Part ten to end of email
                     resultString += MailgunUtil.REG_RECEIPT_ELEVEN_A;
                     if(cartEvent.getAddress() != null) {
                         resultString += cartEvent.getAddress();
@@ -407,8 +427,14 @@ public class StripeController {
                     	resultString += cartEvent.getPhone();
                     }
                     resultString += MailgunUtil.REG_RECEIPT_THIRTEEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_A;
+                    resultString += "https://overmind.bibs.io/bibs-server/rest/registrations/transfer?invoice=";
+                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId() + "&firstName=" + loggedInUser.getFirstname() + "&email=" + loggedInUser.getEmail();
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_B;
+                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId();
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_C;                    
                     resultString += MailgunUtil.REG_RECEIPT_FOURTEEN;
-                    
+                    resultString += MailgunUtil.googleEventReservationCard(cartEvent, c.getId(), loggedInUser.getFirstname(), loggedInUser.getLastname());
                     /*
                     resultString = "Hey " + loggedInUser.getFirstname() + ",\n";
                     resultString += "Thank you for registering for ";
