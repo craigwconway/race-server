@@ -60,6 +60,7 @@ public class EventCartItemController {
         l.add(i.getEvent());
         uiModel.addAttribute("events", l);
         uiModel.addAttribute("eventTypes", i.getEvent().getEventTypes());
+        uiModel.addAttribute("event", i.getEvent());
         this.populateEditForm(uiModel, i);
         return "eventitems/update";
     }
