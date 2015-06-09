@@ -34,6 +34,14 @@ public class SlackUtil {
 		json.addProperty("text", message);
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
 	}
+
+	public static void logEmailSend(String username, String eventname, String subject) {
+		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+		JsonObject json = new JsonObject();
+		String message = username + " has sent a message to registrants in event " + eventname + ": " + subject;
+		json.addProperty("text", message);
+		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
+	}	
 	
 	public static void logRegAddECI(EventCartItem eci, String Eventname, String username) {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();

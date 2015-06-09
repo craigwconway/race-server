@@ -622,6 +622,15 @@ public class EventCartItem {
         return q;
     }
 
+    public static TypedQuery<EventCartItem> findEventCartItemsByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The type argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.eventType = :eventType", EventCartItem.class);
+        q.setParameter("eventType", eventType);
+        return q;
+    }    
+    
     public static TypedQuery<EventCartItem> findEventCartItemsByNameEquals(String name, String sortFieldName, String sortOrder) {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("The name argument is required");
@@ -647,6 +656,16 @@ public class EventCartItem {
         return q;
     }
 
+    public static TypedQuery<EventCartItem> findEventCartItemsByEventAndType(Event event, EventCartItemTypeEnum type) {
+        if (type == null || event == null)
+            throw new IllegalArgumentException("The type argument is required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event AND o.type = :type", EventCartItem.class);
+        q.setParameter("event", event);
+        q.setParameter("type", type);
+        return q;
+    }    
+    
     public static TypedQuery<EventCartItem> findEventCartItemsByType(EventCartItemTypeEnum type, String sortFieldName, String sortOrder) {
         if (type == null)
             throw new IllegalArgumentException("The type argument is required");
