@@ -1249,8 +1249,10 @@ public class EventController {
         ResultsFile latestImportFile = e.getLatestImportFile();
         ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());
         ResultsFileMapping latestMapping = ((latestImport == null) ? null : latestImport.getResultsFileMapping());
+        List <EventType> eventTypes = EventType.findEventTypesByEvent(e);
+        Collections.sort(eventTypes, new Comparator<EventType>() { public int compare(EventType t1, EventType t2) { return t1.getStartTime().compareTo(t2.getStartTime());}});
         uiModel.addAttribute("event", e);
-        uiModel.addAttribute("eventTypes", e.getEventTypes());
+        uiModel.addAttribute("eventTypes", eventTypes);
         uiModel.addAttribute("dropboxUnlink", (UserProfileUtil.getLoggedInDropboxAccessToken() != null));
         uiModel.addAttribute("lastImport", latestImport);
         uiModel.addAttribute("lastMapping", latestMapping);
