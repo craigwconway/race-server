@@ -44,6 +44,15 @@
         .button-container{
             float: right;
         }
+        .modal-divider{
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e5e5;
+            width: 105%;
+            height: 20px;
+            margin: 0 auto;
+            margin-left: -2.5%;
+        }
         h3.ui.header.event-type-header{
             font-family: Quicksand;
             font-weight: bold;
@@ -319,6 +328,18 @@
                             <div class="twelve wide field">
                                 <label style="width:100%">Event Type Name</label>
                                 <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="modal-divider"><!--  --></div>
+                        <label>Assign Bib Numbers</label>
+                        <div class="two fields">
+                            <div class="field">
+                                <label style="width:100%">Lowest Bib Number</label>
+                                <input type="number" name="lowBib" min="1" placeholder="> 0"><!--  --></input>
+                            </div>
+                            <div class="field">
+                                <label style="width:100%">Highest Bib Number</label>
+                                <input type="number" name="highBib" min="1" placeholder="> 0"><!--  --></input>
                             </div>
                         </div>
                     </div>
