@@ -44,6 +44,7 @@ import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.PDFUtil;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.S3Util;
+import com.bibsmobile.util.SlackUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 
 import org.apache.commons.io.FilenameUtils;
@@ -1747,25 +1748,38 @@ public class EventController {
      * @api {post} /events/:id/email Email Registrants
      * @apiName Email Registrants
      * @apiGroup events
+     * @apiDescription Email Registrants of an event. If an specific event type is set, email participants of that
+     * event type. If this is null, email all participants.
      * @apiParam {Number} id URL Param containing event ID
      * @apiParam {String} subject querystring containing subject line of email.
      * @apiParam {String} body Payload containing plaintext body of message to send
-     * @param id
-     * @param subject
-     * @param mailBody
+     * @apiParam {Number} [type] Id of specific event type to send message to as querystring
+     * @apiParamExample {plain} Sample Post
+     * HTTP 1.1 POST http://localhost:8080/bibs-server/events/2/email?subject=shrugs%20all%20day&type=6
+     * punch in the face
      * @return
      */
     @RequestMapping(value = "/{id}/email", method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<String> email(@PathVariable("id") Long id, @RequestParam String subject, @RequestBody String mailBody) {
+    public ResponseEntity<String> email(@PathVariable("id") Long id, @RequestParam String subject, @RequestParam(value ="type", required = false) Long type, @RequestBody String mailBody) {
         Event e = Event.findEvent(id);
         if (e == null)
             return SpringJSONUtil.returnErrorMessage("not found", HttpStatus.NOT_FOUND);
-        List<CartItem> cartItems = CartItem.findCartItemsByEventCartItem(EventCartItem.findEventCartItemsByEvent(e).getSingleResult()).getResultList();
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+        List<CartItem> cartItems;
+        if(type == null) {
+            cartItems = CartItem.findCartItemsByEventCartItems(EventCartItem.findEventCartItemsByEventAndType(e,EventCartItemTypeEnum.TICKET).getResultList(), null, null).getResultList();
+        } else {
+        	EventType eventType = EventType.findEventType(type);
+        	cartItems = CartItem.findCartItemsByEventCartItems(EventCartItem.findEventCartItemsByEventType(eventType).getResultList(), null, null).getResultList();
+        }
         List<String> recipients = new LinkedList<>();
         for (CartItem ci : cartItems) {
             recipients.add(ci.getUserProfile().getEmail());
         }
         MailgunUtil.send(recipients, subject, mailBody);
+        SlackUtil.logEmailSend(UserProfileUtil.getLoggedInUserProfile().getUsername(),e.getName(), subject);
         return SpringJSONUtil.returnStatusMessage("", HttpStatus.OK);
     }
 
