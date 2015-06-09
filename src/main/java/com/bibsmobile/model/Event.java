@@ -930,7 +930,7 @@ public class Event {
     }
 
 	public String getState() {
-        return WordUtils.capitalizeFully(this.state);
+        return this.state;
     }
 
     public void setState(String state) {
