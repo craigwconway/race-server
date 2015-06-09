@@ -80,42 +80,6 @@ public class RegistrationsController {
         return "registrations/search";
     }
     
-    /**
-     * @api {get} /registrations/associate Associate Registrations
-     * @apiName Associate Registrations
-     * @apiGroup registrations
-     * @apiParam {Number} event Id of event to associate as queryString
-     * @apiParam {Number} type Id of event type to associate
-     * @apiParam {Number} [lowbib=1] low bib number to map to
-     * @apiParam {Number} [highbib=100000] high bib number to map to
-     */
-    @RequestMapping(value = "associate", method = RequestMethod.GET)
-    public ResponseEntity<String> associateCarts(
-    		@RequestParam("event") Long eventId,
-    		@RequestParam(value = "lowbib", defaultValue = "1") long lowbib,
-    		@RequestParam(value = "highbib", defaultValue = "100000") long highbib,
-    		@RequestParam(value = "type") Long eventTypeId) {
-    	Event event = Event.findEvent(eventId);
-        UserProfile user = UserProfileUtil.getLoggedInUserProfile();
-        if (eventId != null && !PermissionsUtil.isEventAdmin(user, Event.findEvent(eventId))) {
-        	return SpringJSONUtil.returnErrorMessage("unauthorized", HttpStatus.FORBIDDEN);
-        }
-        //Find Event type ID we are exporting to:
-        EventType eventType = EventType.findEventType(eventTypeId);
-        HashSet <Long> bibsUsed = new HashSet<Long>(RaceResult.findBibsUsedInEvent(event));
-        Long currentbib = lowbib;
-        //TODO: optimize this
-        for(CartItem ci : CartItem.findCartItemsByEventType(eventType).getResultList()) {
-        	if(ci.getBib() == null) {
-        		// This is not yet exported, allow user to export the bib to another event type
-        		while(!bibsUsed.contains(currentbib) && currentbib < highbib) {
-        			currentbib++;
-        		}
-        	} 
-        }
-        // Create post in Slack reports channel to say what happened:
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
     
     @RequestMapping(value = "reports", method = RequestMethod.GET)
     public String reportsForm(@RequestParam(value="event", required=false) Long eventId, Model uiModel) {

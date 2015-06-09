@@ -1,12 +1,16 @@
 package com.bibsmobile.controller;
 
+import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -278,6 +282,74 @@ public class EventTypeController {
     	List <EventType> eventTypes = EventType.findEventTypesByEvent(event);
     	return new ResponseEntity<>(EventType.toJsonArray(eventTypes), headers, HttpStatus.OK); 
     }
+
+    /**
+     * @api {get} /eventtypes/associate/:id Associate Registrations
+     * @apiName Associate Registrations
+     * @apiGroup eventtypes
+     * @apiParam {Number} id Id of event type to associate as URL Param
+     * @apiParam {Number} [lowbib=1] low bib number to map to
+     * @apiParam {Number} [highbib=100000] high bib number to map to
+     * @apiParam {Boolean} [force=false] force re-map of all athletes with this event type
+     */
+    @RequestMapping(value = "associate/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> associateCarts(
+    		@RequestParam(value = "lowbib", defaultValue = "1") long lowbib,
+    		@RequestParam(value = "highbib", defaultValue = "100000") long highbib,
+    		@RequestParam(value = "force", defaultValue = "false") boolean force,
+    		@PathVariable(value = "id") Long id) {
+    	System.out.println("entered controller");
+    	EventType eventType = EventType.findEventType(id);
+    	Event event = eventType.getEvent();
+        UserProfile user = UserProfileUtil.getLoggedInUserProfile();
+        if (id != null && !PermissionsUtil.isEventAdmin(user, event)) {
+        	return SpringJSONUtil.returnErrorMessage("unauthorized", HttpStatus.FORBIDDEN);
+        }
+        HashSet <Long> bibsUsed = new HashSet<Long>(RaceResult.findBibsUsedInEvent(event));
+        Long currentbib = lowbib;
+        //TODO: optimize this
+        List<CartItem> cartItems;
+        if(!force) {
+        	cartItems = CartItem.findUnmappedCompletedCartItemsByEventType(eventType).getResultList();
+        } else {
+        	cartItems = CartItem.findCompletedCartItemsByEventType(eventType).getResultList();
+        	if(cartItems.size() > (1+highbib-lowbib)) {
+        		return SpringJSONUtil.returnErrorMessage("Range Insufficient", HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        	}
+        }
+        System.out.println("found " + cartItems.size() + "cart items");
+        for(CartItem ci : cartItems) {
+        	System.out.println("Found item: " + ci.getId() + " bib: " + ci.getBib());
+        	if(ci.getBib() == null) {
+        		// This is not yet exported, allow user to export the bib to another event type
+        		while(bibsUsed.contains(currentbib) && currentbib <= highbib) {
+        			System.out.println("collision at bib: " + currentbib);
+        			currentbib++;
+        		}
+        		if(currentbib > highbib) {
+        			SpringJSONUtil.returnErrorMessage("Range Insufficient", HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        		}
+        		RaceResult rr = new RaceResult();
+        		UserProfile mapUser = ci.getUserProfile();
+        		rr.setAge(mapUser.getAge());
+        		rr.setBib(currentbib);
+        		rr.setCity(mapUser.getCity());
+        		rr.setState(mapUser.getState());
+        		rr.setFirstname(mapUser.getFirstname());
+        		rr.setLastname(mapUser.getLastname());
+        		rr.setGender(mapUser.getGender());
+        		rr.setEvent(event);
+        		rr.setEventType(eventType);
+        		rr.setUserProfile(mapUser);
+        		rr.persist();
+        		bibsUsed.add(rr.getBib());
+        		currentbib++;
+        		System.out.println(rr);
+        	} 
+        }
+        // Create post in Slack reports channel to say what happened:
+        return new ResponseEntity<>(HttpStatus.OK);
+    }    
     
     String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
         String enc = httpServletRequest.getCharacterEncoding();

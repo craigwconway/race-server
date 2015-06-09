@@ -292,6 +292,7 @@ public final class CartUtil {
         cartItem.setUserProfile(userProfile);
         cartItem.setTeam(team);
         cartItem.setEventCartItemPriceChange(priceChange);
+        cartItem.setEventType(eventCartItem.getEventType());
         if (priceChange == null) {
         	cartItem.setPrice(eventCartItem.getPrice());
         } else {
