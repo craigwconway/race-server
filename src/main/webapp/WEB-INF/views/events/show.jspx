@@ -640,6 +640,9 @@
             jQuery('#racetype-dropdown').dropdown("set selected", type);
             var parseDist = dist.split(' ');
             jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+            jQuery('#dist-m').removeClass('positive');
+            jQuery('#dist-mi').removeClass('positive');
+            jQuery('#dist-km').removeClass('positive');
             if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
             if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
             if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
