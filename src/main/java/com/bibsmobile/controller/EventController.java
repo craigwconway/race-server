@@ -1013,6 +1013,15 @@ public class EventController {
         }
         Event trueEvent = Event.findEvent(event.getId());
 
+        long offset = 0;
+        // Timezone logic: If a user enters changes a timezone, we should update all of the times by the difference between the two
+        if(trueEvent.getTimezone() != null && event.getTimezone() != null && trueEvent.getTimezone() != event.getTimezone()) {
+        	offset = trueEvent.getTimezone().getOffset(event.getTimeStart().getTime()) - event.getTimezone().getOffset(event.getTimeStart().getTime());
+        }
+        if(offset != 0) {
+        	event.setTimeStart(new Date(event.getTimeStart().getTime() + offset));
+        }
+        
         Date time0 = new Date(event.getGunTimeStart());
         Date time1 = event.getGunTime();
         log.info("update2 " + (time0 == time1) + " " + time0 + " " + time1);
