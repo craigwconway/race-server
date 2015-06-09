@@ -338,7 +338,7 @@
                             }
                         }
                         jQuery('input[name="timezone"]').val(data.zoneName);
-                        jQuery('input[name="timezone"]').prop('disabled', true);
+                        jQuery('input[name="timezone"]').prop('readonly', 'readonly');
                         jQuery('input[name="timezone"]').css('background-color', 'rgba(0,0,0,0.03)');
                     }
                 }
