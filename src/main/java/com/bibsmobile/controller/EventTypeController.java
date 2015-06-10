@@ -6,6 +6,7 @@ import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.SlackUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
@@ -305,7 +306,6 @@ public class EventTypeController {
         if (id != null && !PermissionsUtil.isEventAdmin(user, event)) {
         	return SpringJSONUtil.returnErrorMessage("unauthorized", HttpStatus.FORBIDDEN);
         }
-        HashSet <Long> bibsUsed = new HashSet<Long>(RaceResult.findBibsUsedInEvent(event));
         Long currentbib = lowbib;
         //TODO: optimize this
         List<CartItem> cartItems;
@@ -316,7 +316,12 @@ public class EventTypeController {
         	if(cartItems.size() > (1+highbib-lowbib)) {
         		return SpringJSONUtil.returnErrorMessage("Range Insufficient", HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         	}
+        	List <RaceResult> replaceList = RaceResult.findRaceResultsByEventType(eventType).getResultList();
+        	for (RaceResult replace : replaceList) {
+        		replace.remove();
+        	}
         }
+        HashSet <Long> bibsUsed = new HashSet<Long>(RaceResult.findBibsUsedInEvent(event));
         int needsMapping = cartItems.size();
         int mapped = 0;
         System.out.println("found " + cartItems.size() + "cart items");
@@ -350,6 +355,7 @@ public class EventTypeController {
         		System.out.println(rr);
         	} 
         }
+        SlackUtil.logRegExportAsync(event.getName(), eventType.getTypeName(), (int) lowbib, (int) highbib, user.getUsername());
         // Create post in Slack reports channel to say what happened:
         return new ResponseEntity<>(HttpStatus.OK);
     }    
