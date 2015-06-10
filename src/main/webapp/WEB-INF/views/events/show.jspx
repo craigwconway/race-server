@@ -456,6 +456,7 @@
             </div>
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
+            <fmt:setTimeZone value="${event.timezone.ID}" />
             <c:set var="start" value="${event.timeStart}" />
             <div id="event-time"><fmt:formatDate type="date" value="${start}" />
             <br/>
@@ -526,6 +527,8 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             getWebappId();
             getWaiver();
+
+            moment.tz.add('America/Los_Angeles|PST PDT|80 70|0101|1Lzm0 1zb0 Op0');
         }
 
         function saveEventType(put){
@@ -544,13 +547,15 @@
             var startTime = jQuery('input[name="startTime"]').val();
             var raceType  = jQuery('input[name="raceType"]').val();
 
-            var parseDate = moment('${event.timeStart}');
+            // var parseDate = moment('${event.timeStart}').utc().format();
             var hour   = moment(startTime, "h:mm a").hour();
             var minute = moment(startTime, "h:mm a").minute();
+            var a = moment.tz("${event.timeStart}", "${event.timezone.ID}");
+            parseDate = a.format();
             
-            parseDate.set('hour', hour);
-            parseDate.set('minute', minute);
-            parseDate = new Date(parseDate);
+            // parseDate.set('hour', hour);
+            // parseDate.set('minute', minute);
+            // parseDate = new Date(parseDate);
 
             if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;

@@ -290,7 +290,7 @@
                         }
                     }
                     jQuery('input[name="timezone"]').val(data.zoneName);
-                    jQuery('input[name="timezone"]').prop('disabled', true);
+                    jQuery('input[name="timezone"]').prop('readonly', 'readonly');
                     jQuery('input[name="timezone"]').css('background-color', 'rgba(0,0,0,0.03)');
                 }
             }
@@ -333,12 +333,21 @@
             types: ["geocode"],
             blur: true
         }).bind("geocode:result", function(event, result){
+            var formatted_addr = result.formatted_address;
             var components = result.address_components;
             var addr = "";
             jQuery.each(components, function(i, d){
                 switch(d.types[0]){
                     case 'street_addr':
                         addr = 'street_addr';
+                        break;
+                    case 'route':
+                        if( d.long_name !== null ){
+                            jQuery('#geoaddress').val(d.long_name);
+                        }
+                        else{
+                            jQuery('#geoaddress').val("")
+                        }
                         break;
                     case 'locality':
                         if( d.long_name !== null ){
@@ -363,8 +372,9 @@
                 }
             })
 
-            if( addr.length > 0 ){
-                jQuery("#geoaddress").val(addr);
+            if( formatted_addr !== "" ){
+                var trunc_addr = formatted_addr.split(',')[0];
+                jQuery("#geoaddress").val(trunc_addr);
             }
 
             var longitude = result.geometry.location.lng();
@@ -388,7 +398,7 @@
 
         }).bind("geocode:error", function(results, status){
             if( status == 'google.maps.GeocoderStatus.ZERO_STATUS'){
-                console.log("zero status")
+                console.log("zero status");
             }
 
             if( jQuery("#geocity").val() == "" ){
