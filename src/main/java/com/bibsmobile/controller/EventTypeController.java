@@ -317,18 +317,21 @@ public class EventTypeController {
         		return SpringJSONUtil.returnErrorMessage("Range Insufficient", HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         	}
         }
+        int needsMapping = cartItems.size();
+        int mapped = 0;
         System.out.println("found " + cartItems.size() + "cart items");
         for(CartItem ci : cartItems) {
         	System.out.println("Found item: " + ci.getId() + " bib: " + ci.getBib());
         	if(ci.getBib() == null) {
         		// This is not yet exported, allow user to export the bib to another event type
         		while(bibsUsed.contains(currentbib) && currentbib <= highbib) {
-        			System.out.println("collision at bib: " + currentbib);
+        			System.out.println("collision at bib: " + currentbib + ", mapping up to" + highbib);
         			currentbib++;
         		}
         		if(currentbib > highbib) {
-        			SpringJSONUtil.returnErrorMessage("Range Insufficient", HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+        			return SpringJSONUtil.returnErrorMessage(mapped + " of " + needsMapping + " bibs mapped", HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         		}
+        		System.out.println("current bib:" + currentbib + " high bib: " + highbib);
         		RaceResult rr = new RaceResult();
         		UserProfile mapUser = ci.getUserProfile();
         		rr.setAge(mapUser.getAge());
