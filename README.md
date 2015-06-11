@@ -27,20 +27,29 @@ Live Servers:
 ====
 
 Requirements (Running):
-1) JRE 1.7
-2) Tomcat v7.0.49 or greater. Currently versions up to 7.0.61 are verified.
-3) /data directory set with read/write permission to tomcat user
-4) MySQL version 5.5+
+ - JRE 1.7
+ - Tomcat v7.0.49 or greater. Currently versions up to 7.0.61 are verified.
+ - /data directory set with read/write permission to tomcat user
+ - MySQL version 5.5+
 
 Requirements (Development):
-1) JDK 1.7
-2) Tomcat v7.0.49+
-3) Maven 3.2
-4) MySQL 5.5+
-5) /data directory set with read/write permissions to tomcat user
+ - JDK 1.7
+ - Tomcat v7.0.49+
+ - Maven 3.2
+ - MySQL 5.5+
+ - /data directory set with read/write permissions to tomcat user
 
 ====
+
 Deploying a server build (tomcat):
-1) With tomcat stopped, remove the old bibs-server.war and exploded bibs-server directories (rm -rf path/to/webapps/bibs-server*)
-2) Make sure the war file is named bibs-server.war, move to the webapps directory of the project
-3) Start tomcat
+ - With tomcat stopped, remove the old bibs-server.war and exploded bibs-server directories (rm -rf path/to/webapps/bibs-server*)
+ - Make sure the war file is named bibs-server.war, move to the webapps directory of the project
+ - Start tomcat. After server deploys, it should be accessible at hostname:8080/bibs-server/ (e.g. http://localhost:8080/bibs-server/)
+
+====
+Building the documentation:
+Documentation for this project is held in a javadoc and in an apidoc. To build the apidoc, you will need npm (https://nodejs.org/) and to download and install apidoc (npm install apidoc -g). To generate documentation for the project, use the following command from the base directory of the project:
+
+apidoc -i src -o apidoc
+
+Generated documentation will appear in the apidoc folder, and can be opened by viewing index.html in a browser.
