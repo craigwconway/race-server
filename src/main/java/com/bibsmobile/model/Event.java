@@ -51,6 +51,7 @@ import org.hibernate.search.annotations.Spatial;
 import org.hibernate.search.annotations.SpatialMode;
 import org.joda.time.DateTimeZone;
 
+import flexjson.JSON;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
@@ -891,9 +892,18 @@ public class Event {
         this.timeEnd = timeEnd;
     }
 
+    @JSON(include = true, name = "timezone")
+    public String getTimezoneID() {
+    	if(timezone != null) {
+    		return this.timezone.getID();
+    	} else {
+    		return null;
+    	}
+    }
     /**
 	 * @return the timezone
 	 */
+    @JSON(include = false)
 	public TimeZone getTimezone() {
 		return timezone;
 	}
