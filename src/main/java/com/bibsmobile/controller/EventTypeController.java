@@ -285,15 +285,15 @@ public class EventTypeController {
     }
 
     /**
-     * @api {get} /eventtypes/associate/:id Associate Registrations
+     * @api {post} /eventtypes/associate/:id Associate Registrations
      * @apiName Associate Registrations
      * @apiGroup eventtypes
      * @apiParam {Number} id Id of event type to associate as URL Param
-     * @apiParam {Number} [lowbib=1] low bib number to map to
-     * @apiParam {Number} [highbib=100000] high bib number to map to
-     * @apiParam {Boolean} [force=false] force re-map of all athletes with this event type
+     * @apiParam {Number} [lowbib=1] low bib number to map to as querystring
+     * @apiParam {Number} [highbib=100000] high bib number to map to as querystring
+     * @apiParam {Boolean} [force=false] force re-map of all athletes with this event type as querystring
      */
-    @RequestMapping(value = "associate/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "associate/{id}", method = RequestMethod.POST)
     public ResponseEntity<String> associateCarts(
     		@RequestParam(value = "lowbib", defaultValue = "1") long lowbib,
     		@RequestParam(value = "highbib", defaultValue = "100000") long highbib,
