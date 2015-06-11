@@ -507,9 +507,9 @@
             var ready = false;
 
             if( etype == "" || etype == null ){
-                etype = null;
+                etype = "";
             }else{
-                etype = parseInt(etype);
+                etype = '&amp;type=' + parseInt(etype);
             }
             if( subj.length &lt; 5 || body.length &lt; 5 ){
                 jQuery('#emailError').show();
@@ -522,7 +522,7 @@
             
             if(ready){
                 var request = jQuery.ajax({
-                    url: '${event.id}/email?subject=' + subj + '&amp;type=' + etype,
+                    url: '${event.id}/email?subject=' + subj + etype,
                     type: 'POST',
                     contentType: 'text/plain',
                     data: body,
