@@ -111,6 +111,55 @@
         </div>
     </div>
 
+    <div class="modal fade" id="bibsModal" tabindex="-1" role="dialog" aria-labelledby="bibs-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="bibs-label">Manage Bib Numbers</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui negative message" id="bibsError" style="display:none">
+                        <i class="fa fa-times close" style="float:right"><!--  --></i>
+                        <div class="header">Error</div>
+                        <p><!--  --></p>
+                    </div>
+                    <div class="ui form" id="bibsForm">
+                        <div class="required field">
+                            <label>Select Event Type</label>
+                            <div class="ui fluid selection dropdown" id="event-type">
+                                <input type="hidden" name="type"><!--  --></input>
+                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                <div class="default text">Event Type</div>
+                                <div class="menu">
+                                    <c:forEach var="item" items="${eventTypes}">
+                                        <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <label>Bib Ranges (optional)</label>
+                            <div style="clear:both"><!--  --></div>
+                            <div class="field" style="padding-left:0">
+                                <label>Lowest Bib Number</label>
+                                <input class="form-control" type="number" min="1" id="lowbib" name="lowbib"></input>
+                            </div>
+                            <div class="field">
+                                <label>Highest Bib Number</label>
+                                <input class="form-control" type="number" min="2" id="highbib" name="highbib"><!--  --></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui green button" onclick="sendEmail();return false;">Assign Bib Numbers</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -137,12 +186,12 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addType" tabindex="-1" role="dialog" aria-labelledby="addTypeLabel" aria-hidden="true">
+    <div class="modal fade" id="addType" tabindex="-1" role="dialog" aria-labelledby="eventtype-label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
-                    <h4 class="modal-title" id="addTypeLabel">Add Event Type</h4>
+                    <h4 class="modal-title" id="eventtype-label">Add Event Type</h4>
                 </div>
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
@@ -204,7 +253,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Close</button>
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
                     <button type="button" class="ui green button post-event-type" onclick="saveEventType(false)">Submit</button>
                     <button type="button" class="ui red button put-event-type" style="display:none" onclick="saveEventType(null)">Remove</button>
                     <button type="button" class="ui green button put-event-type" style="display:none" onclick="saveEventType(true)">Save</button>
@@ -255,6 +304,10 @@
                                     <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                     <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                     <li><a href="#" onclick="exportModal(); return false;">Export Registrations</a></li>
+                                </c:if>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                <c:if test="${not empty eventTypes}">
+                                    <li><a href="#" onclick="bibsModal(); return false;">Manage Bib Numbers</a></li>
                                 </c:if>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -398,6 +451,39 @@
             jQuery("#timedisp").datetimepicker({
                 defaultDate: momentRRTime,
                 pickDate: false
+            });
+
+            jQuery('input[name="lowbib"]').on('input', function(){
+                var low = jQuery("#lowbib").val();
+                var high = jQuery("#highbib").val();
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowbib").val(""); }
+                if( high !== "" ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highbib").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery('input[name="highbib"]').on('change', function(){
+                var low = jQuery("#lowbib").val();
+                var high = jQuery("#highbib").val();
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highbib").val("") }
+                if( low !== "" ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowbib").attr("max", jQuery(this).val());
+                    }
+                }
             });
 
             jQuery('.dist-btn').each(function(){
@@ -733,6 +819,9 @@
         }
         function emailModal(){
             jQuery('#emailModal').modal('show');
+        }
+        function bibsModal(){
+            jQuery('#bibsModal').modal('show');
         }
         function closeModal(){
             jQuery('.modal').modal('hide');
