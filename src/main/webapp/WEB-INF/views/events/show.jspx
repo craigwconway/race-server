@@ -2,188 +2,14 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <style>
-        body{
-            background-image: url('../images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 102%;
-            margin-top: 3%;
-            margin-left: -1%;
-            margin-right: -3%;
-            padding-top: 4%;
-            padding-bottom: 8%;
-            padding-left: 6%;
-            min-height: 480px;
-        }
-        .info-container{
-            width: 60%;
-            font-size: 1.2em;
-            font-weight: 100;
-            line-height: 27px;
-            color: #292929;
-        }
-        .map-container{
-            float: right;
-            width: 350px;
-            height: auto;
-            margin-right: 7%;
-            margin-top: 1%;
-            text-align: right;
-        }
-        #map{
-            width: 350px; 
-            height: 350px;
-        }
-        .leaflet-top{
-            z-index: 1 !important;
-        }
-        .button-container{
-            float: right;
-        }
-        .modal-divider{
-            margin-top: 15px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #e5e5e5;
-            width: 105%;
-            height: 20px;
-            margin: 0 auto;
-            margin-left: -2.5%;
-        }
-        h3.ui.header.event-type-header{
-            font-family: Quicksand;
-            font-weight: bold;
-        }
-    	.event-name{
-            font-family: Quicksand;
-    		font-size: 2em;
-    		font-weight: bold;
-            line-height: 1.5em;
-    	}
-    	.event-location{
-    		font-size: 1.2em;
-    	}
-        .waiver-content{
-            width: 95%;
-            height: 200px;
-            overflow-y:scroll
-        }
-        #event-time{
-            width: 60%;
-            margin-top: 5px;
-            font-family: Quicksand;
-            font-weight: bold;
-        }
-        #event-details{
-            width: 60%;
-            margin-top: 50px;
-        }
-        .reglive-label{
-            text-align:left;
-            margin-left:0;
-            padding-left:0
-        }
-        .ui.form .field > label, label{
-            margin: 1em 0em 0.25em;
-        }
-        .ui.form .inline.field > input{
-            font-size: 1em;
-        }
-        .ui.form .fields .wide.field{
-            padding-left: 0em;
-        }
-        .eventtype-item:hover{
-            cursor: pointer;
-        }
-        .button-container{ padding-top: 2%; text-align: right; }
-        .event-navbar-inverse { background-color: rgba(50,50,50,1); z-index: 1000; }
-        .event-navbar-inverse .navbar-nav>li { z-index: 1000; }
-        .event-navbar-inverse .navbar-nav>.active>a:hover,.event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC }
-        .event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6 }
-        .dropdown-menu { background-color: rgba(50,50,50,1) }
-        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #00DFF6 }
-        .event-navbar-inverse { background-image: none; }
-        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-image: none; }
-        .event-navbar-inverse { border-color: #FFFFFF}
-        .event-navbar-inverse .event-navbar-brand { color: #DFE0D9 }
-        .event-navbar-inverse .event-navbar-brand:hover { color: #DFE0D9 }
-        .event-navbar-inverse .navbar-nav>li>a { color: #DFE0D9 }
-        .event-navbar-inverse .navbar-nav>.disabled>a { color: #878179 }
-        .event-navbar-inverse .navbar-nav>.disabled>a:hover { background-color: rgba(50,50,50,1); color: #878179; }
-        .event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { color: #FFFFFF }
-        .event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { color: #002F4C }
-        .event-navbar-inverse .navbar-nav>.active>a:hover, .event-navbar-inverse .navbar-nav>.active>a:focus { color: #FFFFFF }
-        .dropdown-menu>li>a { color: #DFE0D9 }
-        .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #333333 }
-        .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-top-color: #999999 }
-        .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF }
-        .event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999 }
-        .event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF }
-
-        .bootstrap-datetimepicker-widget.dropdown-menu {
-            background-color: #FFF !important;
-        }
-
-        @media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
-            .event-navbar-inverse .navbar-collapse {
-                background-color: rgba(80,80,80,0.9);
-            }
-            .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
-            .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
-            .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
-            .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
-            .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
-            .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
-            .event-navbar-inverse .navbar-form{
-                border: none;
-            }
-            .event-navbar-nav{ text-align: center; }
-            .navbar-brand{ color: white; display: block; }
-        }
-        @media (max-width: 767px) {
-            .event-navbar-inverse .navbar-collapse {
-                background-color: rgba(80,80,80,0.9);
-            }
-            .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
-            .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
-            .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
-            .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
-            .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
-            .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
-            .event-navbar-inverse .navbar-form{
-                border: none;
-            }
-            .event-navbar-nav{ text-align: center; }
-            .navbar-brand{ color: white; display: block; }
-        }
-        @media (min-width:768px ){
-            .navbar-brand{ display: none; }
-        }
-        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
-            .map-container {
-                width: 95%;
-                margin-top: 15%;
-            }
-            .map-canvas { width: 90%; height: 250px; margin: 0 auto; }
-            .info-container{
-                width: 90%;
-                margin: 0 auto;
-            }
-            .event-name{ font-size: 1.7em; }
-            #event-time{ width: auto; }
-            .button-container{ padding-top: 2%; text-align: right; }
-        }
-    </style>
+    <link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
     <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                     <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
                 </div>
                 <div class="modal-body">
@@ -196,7 +22,7 @@
                 Link: <br/> <a href="https://bibs-frontend.herokuapp.com/registration/#/${event.id}">https://bibs-frontend.herokuapp.com/registration/#/${event.id}</a>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
                 </div>
             </div>
         </div>
@@ -206,7 +32,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                     <h4 class="modal-title" id="live-label">Live Results Snippet</h4>
                 </div>
                 <div class="modal-body">
@@ -216,7 +42,7 @@
                 <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
                 </div>
             </div>
         </div>
@@ -226,15 +52,60 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                     <h4 class="modal-title" id="waiver-label">Waiver</h4>
                 </div>
                 <div class="modal-body">
                     <textarea class="waiver-content" name="waiver">Paste your waiver here.</textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="ui button" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
                     <button type="button" class="ui green button" onclick="postWaiver()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="email-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="email-label">Email</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui negative message" id="emailError" style="display:none">
+                        <i class="fa fa-times close" style="float:right"><!--  --></i>
+                        <div class="header">Error</div>
+                        <p><!--  --></p>
+                    </div>
+                    <div class="ui form" id="emailForm">
+                        <div class="field">
+                            <label>Email by event type</label>
+                            <div class="ui fluid selection dropdown" id="event-type">
+                                <input type="hidden" name="type"><!--  --></input>
+                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                <div class="default text">Event Type (optional)</div>
+                                <div class="menu">
+                                    <c:forEach var="item" items="${eventTypes}">
+                                        <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="required field">
+                            <label>Subject</label>
+                            <input class="form-control" name="subject" placeholder="Subject"></input>
+                        </div>
+                        <div class="required field">
+                            <label>Body</label>
+                            <textarea class="form-control" name="body"><!--  --></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui green button" onclick="sendEmail();return false;">Send</button>
                 </div>
             </div>
         </div>
@@ -244,7 +115,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                     <h4 class="modal-title" id="export-label">Export Registration</h4>
                 </div>
                 <div class="modal-body">
@@ -260,7 +131,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
                 </div>
             </div>
         </div>
@@ -270,7 +141,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
                     <h4 class="modal-title" id="addTypeLabel">Add Event Type</h4>
                 </div>
                 <div class="modal-body">
@@ -330,22 +201,10 @@
                                 <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
                             </div>
                         </div>
-                        <div class="modal-divider"><!--  --></div>
-                        <label>Assign Bib Numbers</label>
-                        <div class="two fields">
-                            <div class="field">
-                                <label style="width:100%">Lowest Bib Number</label>
-                                <input type="number" name="lowBib" min="1" placeholder="> 0"><!--  --></input>
-                            </div>
-                            <div class="field">
-                                <label style="width:100%">Highest Bib Number</label>
-                                <input type="number" name="highBib" min="1" placeholder="> 0"><!--  --></input>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="ui button" data-dismiss="modal">Close</button>
+                    <button type="button" class="ui button" onclick="closeModal()">Close</button>
                     <button type="button" class="ui green button post-event-type" onclick="saveEventType(false)">Submit</button>
                     <button type="button" class="ui red button put-event-type" style="display:none" onclick="saveEventType(null)">Remove</button>
                     <button type="button" class="ui green button put-event-type" style="display:none" onclick="saveEventType(true)">Save</button>
@@ -397,6 +256,12 @@
                                     <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                     <li><a href="#" onclick="exportModal(); return false;">Export Registrations</a></li>
                                 </c:if>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                                <c:if test='${(event.regEnabled)}'>
+                                    <li><a href="#" onclick="emailModal(); return false;">Send Email Announcement</a></li>
+                                </c:if>
+                                </sec:authorize>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
                                 <li><a href="#" onclick="waiverModal();return false;">Waiver</a></li>
@@ -477,7 +342,6 @@
             </div>
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
-            <fmt:setTimeZone value="${event.timezone.ID}" />
             <c:set var="start" value="${event.timeStart}" />
             <div id="event-time"><fmt:formatDate type="date" value="${start}" />
             <br/>
@@ -532,9 +396,9 @@
 
             var momentRRTime = moment('${event.timeStart}').startOf('hour');
             jQuery("#timedisp").datetimepicker({
-                    defaultDate: momentRRTime,
-                    pickDate: false
-                });
+                defaultDate: momentRRTime,
+                pickDate: false
+            });
 
             jQuery('.dist-btn').each(function(){
                 jQuery(this).click(function(){
@@ -545,11 +409,12 @@
                 })
             })
 
+            jQuery('.message .close').on('click', function() {
+                jQuery(this).closest('.message').fadeOut();
+            });
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             getWebappId();
             getWaiver();
-
-            moment.tz.add('America/Los_Angeles|PST PDT|80 70|0101|1Lzm0 1zb0 Op0');
         }
 
         function saveEventType(put){
@@ -568,15 +433,13 @@
             var startTime = jQuery('input[name="startTime"]').val();
             var raceType  = jQuery('input[name="raceType"]').val();
 
-            // var parseDate = moment('${event.timeStart}').utc().format();
+            var parseDate = moment('${event.timeStart}');
             var hour   = moment(startTime, "h:mm a").hour();
             var minute = moment(startTime, "h:mm a").minute();
-            var a = moment.tz("${event.timeStart}", "${event.timezone.ID}");
-            parseDate = a.format();
             
-            // parseDate.set('hour', hour);
-            // parseDate.set('minute', minute);
-            // parseDate = new Date(parseDate);
+            parseDate.set('hour', hour);
+            parseDate.set('minute', minute);
+            parseDate = new Date(parseDate);
 
             if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;
@@ -634,6 +497,45 @@
                         window.location.reload();
                     }
                 })
+            }
+        }
+
+        function sendEmail(){
+            var subj  = jQuery('#emailForm input[name="subject"]').val();
+            var body  = jQuery('#emailForm textarea[name="body"]').val();
+            var etype = jQuery('#emailForm input[name="type"]').val();
+            var ready = false;
+
+            if( etype == "" || etype == null ){
+                etype = null;
+            }else{
+                etype = parseInt(etype);
+            }
+            if( subj.length &lt; 5 || body.length &lt; 5 ){
+                jQuery('#emailError').show();
+                jQuery('#emailError > p').text("Your subject and body are required fields and must be longer than 5 characters.");
+                ready = false;
+            }else{
+                subj = encodeURIComponent(subj);
+                ready = true;
+            }
+            
+            if(ready){
+                var request = jQuery.ajax({
+                    url: '${event.id}/email?subject=' + subj + '&amp;type=' + etype,
+                    type: 'POST',
+                    contentType: 'text/plain',
+                    data: body,
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })   
+                request.done(function( d ) {
+                    jQuery("#emailModal").modal('hide');
+                    alert("Your email has been sent!");
+                });
+                request.fail(function( jqXHR, textStatus ) {
+                });
             }
         }
 
@@ -828,6 +730,12 @@
         }
         function exportModal(){
             jQuery("#exportReg").modal('show');
+        }
+        function emailModal(){
+            jQuery('#emailModal').modal('show');
+        }
+        function closeModal(){
+            jQuery('.modal').modal('hide');
         }
         function exportRegHandler(all){
             var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false";
