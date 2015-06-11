@@ -1,0 +1,164 @@
+body{
+    background-image: url('../images/auth.jpg');
+    background-size: cover; background-repeat: no-repeat;
+}
+.white-overlay{
+    display: block;
+    background: rgba(255,255,255,.8);
+    width: 102%;
+    margin-top: 3%;
+    margin-left: -1%;
+    margin-right: -3%;
+    padding-top: 4%;
+    padding-bottom: 8%;
+    padding-left: 6%;
+    min-height: 480px;
+}
+.info-container{
+    width: 60%;
+    font-size: 1.2em;
+    font-weight: 100;
+    line-height: 27px;
+    color: #292929;
+}
+.map-container{
+    float: right;
+    width: 350px;
+    height: auto;
+    margin-right: 7%;
+    margin-top: 1%;
+    text-align: right;
+}
+#map{
+    width: 350px; 
+    height: 350px;
+}
+.leaflet-top{
+    z-index: 1 !important;
+}
+.button-container{
+    float: right;
+}
+h3.ui.header.event-type-header{
+    font-family: Quicksand;
+    font-weight: bold;
+}
+.event-name{
+    font-family: Quicksand;
+	font-size: 2em;
+	font-weight: bold;
+    line-height: 1.5em;
+}
+.event-location{
+	font-size: 1.2em;
+}
+.waiver-content{
+    width: 95%;
+    height: 200px;
+    overflow-y:scroll
+}
+#event-time{
+    width: 60%;
+    margin-top: 5px;
+    font-family: Quicksand;
+    font-weight: bold;
+}
+#event-details{
+    width: 60%;
+    margin-top: 50px;
+}
+.reglive-label{
+    text-align:left;
+    margin-left:0;
+    padding-left:0
+}
+.ui.form .field > label, label{
+    margin: 1em 0em 0.25em;
+}
+.ui.form .inline.field > input{
+    font-size: 1em;
+}
+.ui.form .fields .wide.field{
+    padding-left: 0em;
+}
+.eventtype-item:hover{
+    cursor: pointer;
+}
+.button-container{ padding-top: 2%; text-align: right; }
+.event-navbar-inverse { background-color: rgba(50,50,50,1); z-index: 1000; }
+.event-navbar-inverse .navbar-nav>li { z-index: 1000; }
+.event-navbar-inverse .navbar-nav>.active>a:hover,.event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC }
+.event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { background-color: #00DFF6 }
+.dropdown-menu { background-color: rgba(50,50,50,1) }
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #00DFF6 }
+.event-navbar-inverse { background-image: none; }
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-image: none; }
+.event-navbar-inverse { border-color: #FFFFFF}
+.event-navbar-inverse .event-navbar-brand { color: #DFE0D9 }
+.event-navbar-inverse .event-navbar-brand:hover { color: #DFE0D9 }
+.event-navbar-inverse .navbar-nav>li>a { color: #DFE0D9 }
+.event-navbar-inverse .navbar-nav>.disabled>a { color: #878179 }
+.event-navbar-inverse .navbar-nav>.disabled>a:hover { background-color: rgba(50,50,50,1); color: #878179; }
+.event-navbar-inverse .navbar-nav>li>a:hover, .event-navbar-inverse .navbar-nav>li>a:focus { color: #FFFFFF }
+.event-navbar-inverse .navbar-nav>.active>a,.event-navbar-inverse .navbar-nav>.open>a, .event-navbar-inverse .navbar-nav>.open>a:hover, .event-navbar-inverse .navbar-nav>.open>a:focus { color: #002F4C }
+.event-navbar-inverse .navbar-nav>.active>a:hover, .event-navbar-inverse .navbar-nav>.active>a:focus { color: #FFFFFF }
+.dropdown-menu>li>a { color: #DFE0D9 }
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { color: #333333 }
+.event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-top-color: #999999 }
+.event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-top-color: #FFFFFF }
+.event-navbar-inverse .navbar-nav>.dropdown>a .caret { border-bottom-color: #999999 }
+.event-navbar-inverse .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #FFFFFF }
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+    background-color: #FFF !important;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
+    .event-navbar-inverse .navbar-collapse {
+        background-color: rgba(80,80,80,0.9);
+    }
+    .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
+    .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
+    .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
+    .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
+    .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
+    .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
+    .event-navbar-inverse .navbar-form{
+        border: none;
+    }
+    .event-navbar-nav{ text-align: center; }
+    .navbar-brand{ color: white; display: block; }
+}
+@media (max-width: 767px) {
+    .event-navbar-inverse .navbar-collapse {
+        background-color: rgba(80,80,80,0.9);
+    }
+    .event-navbar-inverse .navbar-toggle{ border-color: rgba(255,255,255,0.8); background-color: rgba(255,255,255,0.1) }
+    .event-navbar-inverse .navbar-toggle .icon-bar{ background-color: rgba(255,255,255,0.8); }
+    .event-navbar-inverse .navbar-toggle:focus{ background-color: #00DFF6 }
+    .event-navbar-inverse .navbar-toggle:focus .icon-bar{ background-color: #002F4C; }
+    .event-navbar-inverse .navbar-toggle:hover{ background-color: #00DFF6; }
+    .event-navbar-inverse .navbar-toggle:hover .icon-bar{ background-color: #002F4C; }
+    .event-navbar-inverse .navbar-form{
+        border: none;
+    }
+    .event-navbar-nav{ text-align: center; }
+    .navbar-brand{ color: white; display: block; }
+}
+@media (min-width:768px ){
+    .navbar-brand{ display: none; }
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+    .map-container {
+        width: 95%;
+        margin-top: 15%;
+    }
+    .map-canvas { width: 90%; height: 250px; margin: 0 auto; }
+    .info-container{
+        width: 90%;
+        margin: 0 auto;
+    }
+    .event-name{ font-size: 1.7em; }
+    #event-time{ width: auto; }
+    .button-container{ padding-top: 2%; text-align: right; }
+}
