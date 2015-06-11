@@ -522,7 +522,7 @@
             
             if(ready){
                 var request = jQuery.ajax({
-                    url: 'bibs-server/events/${event.id}/email?subject=' + subj + '&amp;type=' + etype,
+                    url: '${event.id}/email?subject=' + subj + '&amp;type=' + etype,
                     type: 'POST',
                     contentType: 'text/plain',
                     data: body,
