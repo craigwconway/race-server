@@ -67,6 +67,9 @@ h3.ui.header.event-type-header{
     width: 60%;
     margin-top: 50px;
 }
+#removetime{
+    padding: 0.2em;
+}
 .reglive-label{
     text-align:left;
     margin-left:0;
