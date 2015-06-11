@@ -453,6 +453,8 @@
                     sideBySide: true
                 });
             jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+            var eventStart = moment('${event.timeStart}').startOf('hour').format('MM/DD/YYYY h:mm:ss a');
+            jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
 
             <!-- on change-ui -->
             jQuery("#ECIStart").on("dp.change",function (e) {

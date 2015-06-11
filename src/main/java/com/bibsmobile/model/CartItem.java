@@ -398,6 +398,36 @@ public class CartItem {
         q.setParameter("created", created);
         return q;
     }
+ 
+    public static TypedQuery<CartItem> findUnmappedCompletedCartItemsByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The created argument is required");
+        
+        EntityManager em = CartItem.entityManager();
+        TypedQuery<CartItem> q = em.createQuery("SELECT o FROM CartItem AS o join o.cart c WHERE o.bib is null and o.eventType = :eventType and c.status = 3", CartItem.class);
+        q.setParameter("eventType", eventType);
+        return q;
+    }       
+
+    public static TypedQuery<CartItem> findCompletedCartItemsByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The created argument is required");
+        
+        EntityManager em = CartItem.entityManager();
+        TypedQuery<CartItem> q = em.createQuery("SELECT o FROM CartItem AS o join o.cart c WHERE o.eventType = :eventType and c.status = 3", CartItem.class);
+        q.setParameter("eventType", eventType);
+        return q;
+    }    
+    
+    public static TypedQuery<CartItem> findUnmappedCartItemsByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The created argument is required");
+        
+        EntityManager em = CartItem.entityManager();
+        TypedQuery<CartItem> q = em.createQuery("SELECT o FROM CartItem AS o WHERE o.bib is null and o.eventType = :eventType", CartItem.class);
+        q.setParameter("eventType", eventType);
+        return q;
+    }    
     
     public static TypedQuery<CartItem> findCartItemsByEventType(EventType eventType) {
         if (eventType == null)

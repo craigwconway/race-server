@@ -631,6 +631,15 @@ public class RaceResult implements Comparable<RaceResult> {
         return q;
     }
 
+    public static TypedQuery<RaceResult> findRaceResultsByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The event type argument is required");
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.eventType = :eventType", RaceResult.class);
+        q.setParameter("eventType", eventType);
+        return q;
+    }    
+    
     public static TypedQuery<RaceResult> findRaceResultsByEvent(Event event, String sortFieldName, String sortOrder) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
