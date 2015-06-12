@@ -398,6 +398,8 @@ public class StripeController {
                     resultString += MailgunUtil.REG_RECEIPT_NINE_A;
                     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                    timeFormat.setTimeZone(cartEvent.getTimezone());
+                    dateFormat.setTimeZone(cartEvent.getTimezone());
                     resultString += timeFormat.format(cartEvent.getTimeStart());
                     resultString += "<br>";
                     resultString += dateFormat.format(cartEvent.getTimeStart());
