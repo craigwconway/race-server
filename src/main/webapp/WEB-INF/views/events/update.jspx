@@ -300,6 +300,7 @@
                     searchFields: ['title'],
                     searchFullText: true
                 });
+                preventGeocompleteBlur();
             </c:if>
         }
 
@@ -382,76 +383,120 @@
             });
         }
 
+        function preventGeocompleteBlur(){
+            jQuery('#submit').click(function(){
+                e.preventDefault();
+                if( addr == "" ){
+                    jQuery('#geoaddress').val(misc);
+                }else{
+                    jQuery('#geoaddress').val(addr);
+                }
+                jQuery('#geocity').val(city);
+                jQuery('#geostate').val(state);
+                jQuery('#geocountry').val(country);
+                this.submit();
+            })
+        }
+
+        // creating new variables to prevent full control given to autocomplete feature
+        var addr = ""; var city = ""; var state = ""; var country = ""; var misc = "";
         function setGeocomplete(){
             jQuery("#demo input").geocomplete({
                 details: ".details",
                 detailsAttribute: "data-geo",
-                types: ["geocode"],
+                types: ["geocode", "establishment"],
                 blur: false
             }).bind("geocode:result", function(event, result){
+                addr = ""; city = ""; state = ""; country = ""; misc = "";
+                console.log(result);
                 var formatted_addr = result.formatted_address;
                 var components = result.address_components;
-                var addr = "";
                 jQuery.each(components, function(i, d){
                     switch(d.types[0]){
-                    case 'street_addr':
-                        if( d.long_name !== null ){
-                            addr = d.long_name + " ";
-                        }
-                        break;
-                    case 'route':
-                        if( d.long_name !== null ){
-                            jQuery('#geoaddress').val(addr + d.long_name);
-                            addr = addr + d.long_name;
-                        }
-                        else{
-                            jQuery('#geoaddress').val("")
-                        }
-                        break;
-                    case 'locality':
-                        if( d.long_name !== null ){
-                            jQuery("#geocity").val(d.long_name);
-                        }
-                        break;
-                    case 'administrative_area_level_4':
-                        if( d.short_name !== null ){
-                            jQuery("#geocity").val(d.short_name);
-                            console.log('level 4 detected: ' + jQuery('#geocity').val());
-                        }
-                        break;
-                    case 'administrative_area_level_3':
-                        if( d.short_name !== null ){
-                            var currCity = jQuery("#geocity").val();
-                            console.log(currCity);
-                            if( currCity !== "" ){
-                                jQuery("#geocity").val(currCity + ", " + d.short_name);
+                        case 'natural_feature':
+                            if( d.long_name !== null ){
+                                misc = d.long_name;
                             }
-                            else{
-                                jQuery("#geocity").val(d.short_name);
+                            break;
+                        case 'street_number':
+                            if( d.long_name !== null ){
+                                addr = d.long_name + " ";
                             }
-                        }
-                        break;
-                    case 'administrative_area_level_1':
-                        if( d.short_name !== null ){
-                            jQuery("#geostate").val(d.short_name);
-                        }
-                        break;
-                    case 'country':
-                        if( d.long_name !== null ){
-                            jQuery("#geocountry").val(d.long_name);
-                        }
-                        break;
-                    case 'postal_code':
-                        if( d.long_name !== null ){
-                            jQuery("#geozip").val(d.long_name);
-                        }
-                        break;
+                            break;
+                        case 'premise':
+                            if( d.long_name !== null ){
+                                if( addr == "" ){
+                                    addr = d.long_name + " ";
+                                }
+                            }
+                            break;
+                        case 'route':
+                            if( d.long_name !== null ){
+                                jQuery('#geoaddress').val(addr + d.long_name);
+                                addr = addr + d.long_name;
+                            }
+                            break;
+                        case 'sublocality_level_4':
+                            if( d.long_name !== null ){
+                                jQuery('#geoaddress').val(addr + d.long_name);
+                                addr = addr + " " + d.long_name;
+                            }
+                            break;
+                        case 'locality':
+                            if( d.long_name !== null ){
+                                jQuery("#geocity").val(d.long_name);
+                                city = d.long_name;
+                            }
+                            break;
+                        case 'administrative_area_level_4':
+                            if( d.short_name !== null ){
+                                if( city !== d.short_name ){
+                                    jQuery("#geocity").val(d.short_name);
+                                    city = city + ", " + d.short_name;
+                                }
+                            }
+                            break;
+                        case 'administrative_area_level_3':
+                            if( d.short_name !== null ){
+                                var currCity = jQuery("#geocity").val();
+                                if( currCity !== "" ){
+                                    jQuery("#geocity").val(currCity + ", " + d.short_name);
+                                    city = city + ", " + d.short_name;
+                                }
+                                else{
+                                    jQuery("#geocity").val(d.short_name);
+                                }
+                            }
+                            break;
+                        case 'administrative_area_level_1':
+                            if( d.short_name !== null ){
+                                state = d.short_name;
+                                jQuery("#geostate").val(d.short_name);
+                            }
+                            break;
+                        case 'country':
+                            if( d.long_name !== null ){
+                                country = d.long_name;
+                                jQuery("#geocountry").val(d.long_name);
+                            }
+                            break;
+                        case 'postal_code':
+                            if( d.long_name !== null ){
+                                jQuery("#geozip").val(d.long_name);
+                            }
+                            break;
                     }
                 })
 
-                if( formatted_addr !== "" ){
-                    jQuery("#geoaddress").val(addr);
+                if( addr == "" ){
+                    jQuery('#geoaddress').val(misc);
+                }else{
+                    jQuery('#geoaddress').val(addr);
+                    console.log('address should be: ' + addr);
                 }
+                jQuery('#geocity').val(city);
+                jQuery('#geostate').val(state);
+                jQuery('#geocountry').val(country);
 
                 var longitude = result.geometry.location.lng();
                 var lat =  result.geometry.location.lat();
