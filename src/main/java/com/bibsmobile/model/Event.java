@@ -77,11 +77,11 @@ public class Event {
     private String name;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date timeStart;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date timeEnd;
 
     //@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
@@ -173,25 +173,25 @@ public class Event {
     private boolean live;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date regStart;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date regEnd;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date gunTime;
 
     private long gunTimeStart;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date updated;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")

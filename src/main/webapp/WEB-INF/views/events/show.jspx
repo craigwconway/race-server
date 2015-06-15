@@ -417,6 +417,9 @@
             <div class="event-location">${event.city}, ${event.state}</div>
             <fmt:setTimeZone value="${event.timezone}" />
             <c:set var="start" value="${event.timeStart}" />
+            <c:if test="${not empty event.timezone}">
+                <fmt:setTimeZone value="${event.timezone.ID}" />
+            </c:if>
             <div id="event-time"><fmt:formatDate type="date" value="${start}" />
             <br/>
             first start <fmt:formatDate type="time" value="${start}" /></div>
@@ -439,6 +442,9 @@
                                 <td>${item.typeName}</td>
                                 <td>${item.racetype}</td>
                                 <td>${item.distance}</td>
+                                <c:if test="${not empty event.timezone}">
+                                    <fmt:setTimeZone value="${event.timezone}" />
+                                </c:if>
                                 <c:set var="time" value="${item.startTime}" />
                                 <td><fmt:formatDate type="time" value="${time}" /></td>
                             </tr></c:forEach>
@@ -575,13 +581,15 @@
             var lowbib = jQuery('#etype-lowbib').val();
             var highbib = jQuery('#etype-highbib').val();
 
-            var parseDate = moment('${event.timeStart}');
-            var hour   = moment(startTime, "h:mm a").hour();
-            var minute = moment(startTime, "h:mm a").minute();
+            var parseDate = moment('${event.timeStart}').local();
+            var hour   = moment(startTime, "h:mm a").local().hour();
+            var minute = moment(startTime, "h:mm a").local().minute();
             
+            parseDate.utc();
             parseDate.set('hour', hour);
             parseDate.set('minute', minute);
             parseDate = new Date(parseDate);
+            console.log(parseDate);
 
             if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;
@@ -734,10 +742,10 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             jQuery('#putFieldForm input').val('');
 
-            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').startOf('hour'));
+            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').local().startOf('hour'));
             
             jQuery("#removetime").click(function(){
-                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').startOf('hour'));
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').local().startOf('hour'));
             });
 
             jQuery('#racetype-dropdown').dropdown('clear');
@@ -761,7 +769,7 @@
             if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
             if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
 
-            var raceTime = moment(raceTime);
+            var raceTime = moment(raceTime).local();
             jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);

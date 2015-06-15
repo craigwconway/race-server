@@ -804,13 +804,13 @@ public class EventController {
     }
 
     void addDateTimeFormatPatterns1(Model uiModel) {
-        uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss aZ");
     }
     
 	@RequestMapping(value = "/systemdetails", method = RequestMethod.GET)
