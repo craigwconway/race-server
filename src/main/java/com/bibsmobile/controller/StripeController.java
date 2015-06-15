@@ -398,6 +398,8 @@ public class StripeController {
                     resultString += MailgunUtil.REG_RECEIPT_NINE_A;
                     SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                    timeFormat.setTimeZone(cartEvent.getTimezone());
+                    dateFormat.setTimeZone(cartEvent.getTimezone());
                     resultString += timeFormat.format(cartEvent.getTimeStart());
                     resultString += "<br>";
                     resultString += dateFormat.format(cartEvent.getTimeStart());
@@ -496,6 +498,18 @@ public class StripeController {
             // refund successful
             cart.setStatus(Cart.REFUNDED);
             cart.persist();
+            for(CartItem cartItem : cart.getCartItems()) {
+            	EventCartItem eventCartItem = cartItem.getEventCartItem();
+            	eventCartItem.setPurchased(eventCartItem.getPurchased() - 1);
+            	eventCartItem.setAvailable(eventCartItem.getAvailable() + 1);
+            	eventCartItem.persist();
+            }
+            if(cart.getUser() != null) {
+            	MailgunUtil.send(cart.getUser().getEmail(), "Your order for " + cart.getEvent() + " was refunded", 
+            			"Hey " + cart.getUser().getFirstname() + ",\n It's too bad you couldn't make it to " + cart.getEvent().getName() +
+            			". We refunded you for your order, and we hope to see you at the next one!\n -the bibs team"
+            			);
+            }
         }
         return SpringJSONUtil.returnStatusMessage("refund successful", HttpStatus.OK);
     }
