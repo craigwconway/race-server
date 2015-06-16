@@ -17,8 +17,12 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AccessControlList;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.Grantee;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.Permission;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.util.StringInputStream;
@@ -26,12 +30,12 @@ import com.amazonaws.util.StringInputStream;
 public class S3Util {
 
     private static AWSCredentials awsS3Credentials;
-    private static String awsS3AccessKey="AKIAJGFZDMCYWJZZAL2Q";
-    private static String awsS3SecretKey="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";
-    private static String awsS3Bucket="bibstest";
-    private static String awsS3UrlPrefix="http://bibstest.s3.amazonaws.com/";
-    private static String awsS3WaiverBucket="galen-shennanigans";
-    private static String awsS3WaiverPrefix="http://galen-shennanigans.s3.amazonaws.com/";
+    private static String awsS3AccessKey="AKIAJ3V5VRUDYTIIU2GQ";
+    private static String awsS3SecretKey="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";
+    private static String awsS3Bucket="bibs-events";
+    private static String awsS3UrlPrefix="https://bibs-events.s3.amazonaws.com/";
+    private static String awsS3WaiverBucket="bibs-events";
+    private static String awsS3WaiverPrefix="https://bibs-events.s3.amazonaws.com/";
     
     public String getAwsS3UrlPrefix(){
     	return awsS3UrlPrefix;
@@ -58,6 +62,7 @@ public class S3Util {
         InputStream stream = new StringInputStream(str);
         System.out.println("uploading to: " + awsS3WaiverBucket);
         PutObjectRequest putObjectRequest = new PutObjectRequest(awsS3WaiverBucket, fileName, stream, new ObjectMetadata());
+        //putObjectRequest.setCannedAcl(CannedAccessControlList.PublicRead);
         return s3Client.putObject(putObjectRequest);
     }
     

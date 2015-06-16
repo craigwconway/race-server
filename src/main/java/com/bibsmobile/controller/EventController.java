@@ -1260,6 +1260,8 @@ public class EventController {
         uiModel.addAttribute("eventadmin", PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e));
         uiModel.addAttribute("itemId", id);
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+        uiModel.addAttribute("gmtoffset", e.getGmtOffset());
+        uiModel.addAttribute("localtimestart", e.getTimeString());
         return "events/show";
     }
     
@@ -1621,8 +1623,8 @@ public class EventController {
         System.out.println(waiver);
         
         // s3 here
-        String fileName = UUID.randomUUID().toString() + ".txt";
-        String s3Url = "https://s3.amazonaws.com/galen-shennanigans/theOnlyRealWaiver.txt";
+        String fileName = "waivers/" + UUID.randomUUID().toString() + ".txt";
+        String s3Url = "https://s3.amazonaws.com/bibs-events/waivers/theOnlyRealWaiver.txt";
         try {
         	S3Util.uploadWaiverToS3(waiver, fileName);
         	

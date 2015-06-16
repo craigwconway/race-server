@@ -49,6 +49,8 @@ public class EventCartItemController {
         uiModel.addAttribute("events", l);
         uiModel.addAttribute("eventTypes", e.getEventTypes());
         uiModel.addAttribute("event", e);
+        uiModel.addAttribute("gmtoffset", e.getGmtOffset());
+        uiModel.addAttribute("localtimestart", e.getTimeString());
         this.populateEditForm(uiModel, i);
         return "eventitems/create";
     }
@@ -61,6 +63,8 @@ public class EventCartItemController {
         uiModel.addAttribute("events", l);
         uiModel.addAttribute("eventTypes", i.getEvent().getEventTypes());
         uiModel.addAttribute("event", i.getEvent());
+        uiModel.addAttribute("gmtoffset", i.getEvent().getGmtOffset());
+        uiModel.addAttribute("localtimestart", i.getEvent().getTimeString());
         this.populateEditForm(uiModel, i);
         return "eventitems/update";
     }
@@ -74,6 +78,8 @@ public class EventCartItemController {
     public String list(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
         Event e = Event.findEvent(event);
         uiModel.addAttribute("event", e);
+        uiModel.addAttribute("gmtoffset", e.getGmtOffset());
+        uiModel.addAttribute("localtimestart", e.getTimeString());
         uiModel.addAttribute("eventcartitems", EventCartItem.findEventCartItemsByEvent(e).getResultList());
         uiModel.addAttribute("customregfields", CustomRegField.findCustomRegFieldsByEvent(e).getResultList());
         uiModel.addAttribute("eventcoupons", EventCartItemCoupon.findEventCartItemCouponsByEvent(e).getResultList());
