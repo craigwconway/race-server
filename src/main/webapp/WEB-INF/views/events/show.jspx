@@ -415,9 +415,8 @@
             </div>
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
-            <c:set var="tz" value="<%=new java.util.Date().getTimezoneOffset()%>" />
             <c:if test="${not empty event.timezone}">
-                <fmt:setTimeZone value="${tz}" />
+                <fmt:setTimeZone value="${event.timezone.ID}" />
             </c:if>
             <c:set var="start" value="${event.timeStart}" />
             <div id="event-time"><fmt:formatDate type="date" value="${start}" />
