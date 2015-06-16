@@ -1,7 +1,11 @@
 package com.bibsmobile;
 
+import java.util.TimeZone;
+
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+
+import com.bibsmobile.util.BuildTypeUtil;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -9,6 +13,15 @@ import javax.servlet.ServletContextListener;
 public class QuartzSafeShutdownListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+    	try {
+    		// If this is a registration build, the JVM should always be set to UTC time.
+    		if(BuildTypeUtil.usesRegistration()) {
+    			System.out.println("Setting timezone to UTC time");
+    			TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    			}
+    		} catch (Exception e) {
+    			System.out.println("Error setting timezone to UTC time");
+    		}
     }
 
     @Override
