@@ -20,6 +20,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PrePersist;
@@ -87,7 +88,10 @@ public class Event {
     //@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
     //@Temporal
     private TimeZone timezone;
-    
+  
+	@ManyToOne
+	private Series series;
+	
     private int featured;
 
     private String address;
