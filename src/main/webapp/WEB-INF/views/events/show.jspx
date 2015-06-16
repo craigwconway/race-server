@@ -414,11 +414,15 @@
                 </div>
             </div>
             <div class="event-name">${event.name}</div>
-            <div class="event-location">${event.city}, ${event.state}</div>
+            <div class="event-location">
+            <c:if test="${not empty event.city} &amp;&amp; ${not empty event.state}">${event.city}, ${event.state}</c:if>
+            <c:if test="${empty event.state}">${event.city}</c:if>
+            <c:if test="${empty event.city}">${event.state}</c:if></div>
+            <c:if test="${not empty event.country &amp;&amp; event.country != 'United States'}"><div class="event-location">${event.country}</div></c:if>
             <c:set var="start" value="${event.timeStart}" />
             <div id="event-time"><fmt:formatDate type="date" value="${start}" />
-            <br/>
-            first start <fmt:formatDate type="time" value="${start}" /></div>
+            <br/>first start <fmt:formatDate type="time" value="${start}" /><br/>
+            <c:if test="${not empty event.timezone}">${event.timezone.ID}</c:if></div>
             <br/>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
