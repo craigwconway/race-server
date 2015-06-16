@@ -1,10 +1,14 @@
 package com.bibsmobile.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -892,6 +896,28 @@ public class Event {
         this.timeEnd = timeEnd;
     }
 
+    @JSON(include = true, name = "gmtOffset")
+    public String getGmtOffset() {
+    	if(timezone != null && timeStart != null) {
+    	    DateFormat df = new SimpleDateFormat("Z");
+    	    df.setTimeZone(timezone);
+    	    return "GMT" + df.format(this.getTimeStart());
+    	} else {
+    	    return null;
+    	}
+    }    
+    
+    @JSON(include = true, name = "localTimeStart")
+    public String getTimeString() {
+    	if(timezone != null && timeStart != null) {
+    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
+    	    df.setTimeZone(timezone);
+    	    return df.format(this.getTimeStart());
+    	} else {
+    	    return null;
+    	}
+    }
+    
     @JSON(include = true, name = "timezone")
     public String getTimezoneID() {
     	if(timezone != null) {
