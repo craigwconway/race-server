@@ -174,7 +174,18 @@ public class EventController {
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
         }*/
-
+        System.out.println("start" + event.getTimeStart());
+        long offset = 0;
+        // Timezone logic: If user has entered a timezone that does not line up with their machine local time, adjust timestamp to preserve local time
+        if(event.getTimezone() != null && event.getLocalTimeOffset() != null ) {
+        	System.out.println("Event offset: " + event.getTimezone().getOffset(event.getTimeStart().getTime()) + ", Local time offset: " + event.getLocalTimeOffset());
+        	offset = event.getTimezone().getOffset(event.getTimeStart().getTime()) - event.getLocalTimeOffset() * 60000;
+        }
+        if(offset != 0) {
+        	System.out.println("setting new value with offset: " + offset);
+        	event.setTimeStart(new Date(event.getTimeStart().getTime() + offset));
+        }
+        System.out.println("start" + event.getTimeStart());
         // Generate a hashtag based on event name
         event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));        
         event.setAwardsConfig(new EventAwardsConfig());
@@ -1246,6 +1257,7 @@ public class EventController {
     public String show(@PathVariable("id") Long id, Model uiModel) {
         this.addDateTimeFormatPatterns(uiModel);
         Event e = Event.findEvent(id);
+        System.out.println("showing event id: " + e.getId() + " name: " + e.getName() + " starting at: " + e.getTimeStart());
 
         ResultsFile latestImportFile = e.getLatestImportFile();
         ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());

@@ -17,11 +17,12 @@ public class QuartzSafeShutdownListener implements ServletContextListener {
     		// If this is a registration build, the JVM should always be set to UTC time.
     		if(BuildTypeUtil.usesRegistration()) {
     			System.out.println("Setting timezone to UTC time");
-    			TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    			//TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     			}
     		} catch (Exception e) {
     			System.out.println("Error setting timezone to UTC time");
     		}
+    	System.out.println("timezone: " + TimeZone.getDefault().getID());
     }
 
     @Override
