@@ -307,7 +307,11 @@ public class StripeController {
                 //Review this plz
                 for(CartItem ci : c.getCartItems()) {
                 	EventCartItem eciUpdate = ci.getEventCartItem();
-                	eciUpdate.setPurchased(eciUpdate.getPurchased() + ci.getQuantity());
+                	if (eciUpdate.getType() == EventCartItemTypeEnum.DONATION) {
+                		eciUpdate.setPurchased(eciUpdate.getPurchased() + 1);
+                	} else {
+                    	eciUpdate.setPurchased(eciUpdate.getPurchased() + ci.getQuantity());
+                	}
                 	eciUpdate.merge();
                 }
 
@@ -363,12 +367,13 @@ public class StripeController {
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
                     	donation = cartprice - nondonation;
                     	couponprice = c.getCoupon().getDiscount(nondonation*100);
-                        resultString += "$" + couponprice/100 + ".";
+                        resultString += "(" + "$" + couponprice/100 + ".";
                         if(donation % 100 > 9) {
                         	resultString += couponprice % 100;
                         } else {
                         	resultString += "0" + couponprice % 10;
                         }
+                        resultString += ")";
                         resultString += MailgunUtil.REG_RECEIPT_SIX_D;
                     }
 
@@ -500,14 +505,14 @@ public class StripeController {
             cart.persist();
             for(CartItem cartItem : cart.getCartItems()) {
             	EventCartItem eventCartItem = cartItem.getEventCartItem();
-            	eventCartItem.setPurchased(eventCartItem.getPurchased() - 1);
-            	eventCartItem.setAvailable(eventCartItem.getAvailable() + 1);
+            	eventCartItem.setPurchased(eventCartItem.getPurchased() - cartItem.getQuantity());
+            	eventCartItem.setAvailable(eventCartItem.getAvailable() + cartItem.getQuantity());
             	eventCartItem.persist();
             }
             if(cart.getUser() != null) {
             	MailgunUtil.send(cart.getUser().getEmail(), "Your order for " + cart.getEvent() + " was refunded", 
-            			"Hey " + cart.getUser().getFirstname() + ",\n It's too bad you couldn't make it to " + cart.getEvent().getName() +
-            			". We refunded you for your order, and we hope to see you at the next one!\n -the bibs team"
+            			"Hey " + cart.getUser().getFirstname() + ",\nIt's too bad you couldn't make it to " + cart.getEvent().getName() +
+            			". We refunded you for your order, and we hope to see you at the next one!\n-the bibs team"
             			);
             }
         }
