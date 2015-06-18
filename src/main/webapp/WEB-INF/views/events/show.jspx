@@ -324,14 +324,14 @@
                                     <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                     <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                     <li><a href="#" onclick="exportModal(); return false;">Export Registrations</a></li>
-                                </c:if>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                </c:if>
                                 <c:if test="${not empty eventTypes}">
                                     <li><a href="#" onclick="bibsModal(); return false;">Manage Bib Numbers</a></li>
                                 </c:if>
-                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                                 <c:if test='${(event.regEnabled)}'>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                     <li><a href="#" onclick="emailModal(); return false;">Send Email Announcement</a></li>
                                 </c:if>
                                 </sec:authorize>
@@ -415,13 +415,10 @@
             </div>
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
-            <c:if test="${not empty event.timezone}">
-                <fmt:setTimeZone value="${event.timezone.ID}" />
-            </c:if>
-            <c:set var="start" value="${event.timeStart}" />
+            <c:set var="start" value="${event.timeStartLocal}" />
             <div id="event-time"><fmt:formatDate type="date" value="${start}" />
             <br/>
-            first start <fmt:formatDate type="time" value="${start}" /></div>
+            first start <span id="displayLocal"><fmt:formatDate type="time" value="${start}" /></span></div>
             <br/>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
@@ -441,9 +438,6 @@
                                 <td>${item.typeName}</td>
                                 <td>${item.racetype}</td>
                                 <td>${item.distance}</td>
-                                <c:if test="${not empty event.timezone}">
-                                    <fmt:setTimeZone value="${event.timezone}" />
-                                </c:if>
                                 <c:set var="time" value="${item.startTime}" />
                                 <td><fmt:formatDate type="time" value="${time}" /></td>
                             </tr></c:forEach>
@@ -468,10 +462,13 @@
             </c:if>
         }
 
+        var localTime = '${event.timeStart}';
         var distType;
         function initInfo(){
-            var str = jQuery("#event-time").text()
-            str = str.substring(0,str.length-2);
+            var offset = moment(localTime).utcOffset()*-1;
+            localtime = moment(localTime).local().format('hh:mm:ss a');
+            console.log(localtime);
+            jQuery('#displayLocal').text(localtime);
 
             var momentRRTime = moment('${event.timeStart}').startOf('hour');
             jQuery("#timedisp").datetimepicker({

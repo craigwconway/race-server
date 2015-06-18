@@ -98,14 +98,13 @@
                         value="${event.name}"
                         data-parsley-error-message="Please enter an event name."
                         data-parsley-required="required"></input>
-                <input  type="text" name="timeStartDisplay"
+                <input  type="text" name="timeStartLocal"
                         class="form-control"
                         id="eventDatepicker"
                         placeholder="Event date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY h:mm:ss a"
                         data-parsley-error-message="Please enter a date for this event."></input>
-                <input name="timeStart" style="display:none"></input>
                 <div class="ui search" id="timezone-search">
                     <input class="prompt" type="text" name="timezone" placeholder="Timezone"><!--  --></input>
                     <div class="results"><!--  --></div>
@@ -189,9 +188,6 @@
                 </div>
             </div>
         </div>
-		<div style="display:none;">
-			<input id="localTimeOffset" name="localTimeOffset" type="number" value="-420"></input>
-		</div>		
     	<div style="display:none;">
             <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="user-managed"/>
             <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
@@ -252,20 +248,8 @@
     <script>
     window.onload = init;
 
+    var test = true;
     function init(){
-        jQuery("#_name_id").focus();
-        var myRegEnabled = jQuery("#_regEnabled_id");
-        var myRegDates = jQuery("#regDates");
-        if(myRegEnabled.attr("checked")){
-            myRegDates.show();
-        }else{
-            myRegDates.hide();
-        }
-        // add toggle to myRegEnabled
-        myRegEnabled.click(function(){
-            myRegDates.toggle('slow');
-        });
-
         initDateTimePickers();
         <c:if test='${(!build.rfid)}'>
             setGeocomplete();
@@ -277,7 +261,18 @@
             preventGeocompleteBlur();
         </c:if>
         setValidation();
+        if(test){
+            initTesting();
+        }
     }
+
+    function initTesting(){
+        jQuery('input[name="name"]').val('Timezone Test Event');
+        jQuery('input[name="timezone"]').val('America/New_York');
+        jQuery('input[name="website"]').val('http://www.ny.com');
+        jQuery('input[name="phone"]').val('1231231234');
+    }
+
     function getCurrentTimezone(lat, lng){
         var tz = new TimeZoneDB;
         tz.getJSON({
@@ -299,9 +294,10 @@
             }
         });
     }
+
     function initDateTimePickers(){
         var todayDate = moment().startOf('day');
-        jQuery("input[name='timeStartDisplay']")
+        jQuery("input[name='timeStartLocal']")
             .datetimepicker({
                 defaultDate: todayDate,
                 useSeconds: true,
@@ -334,14 +330,7 @@
         jQuery('#proceed').click(function(){
             jQuery("#event").submit(function(e) {
                 e.preventDefault();
-                var localdate = jQuery('input[name="timeStartDisplay"]').val();
-                localdate = moment(localdate).local().format();
-                console.log(localdate);
-                var utcdate = moment(localdate).utc().format('MM/DD/YYYY h:mm:ss aZ');
-                jQuery('input[name="timeStart"]').val(utcdate);
-                console.log(utcdate);
 
-                jQuery('input[name="timeStartDisplay"]').removeAttr('name');
                 if( addr == "" ){
                     jQuery('#geoaddress').val(misc);
                 }else{
