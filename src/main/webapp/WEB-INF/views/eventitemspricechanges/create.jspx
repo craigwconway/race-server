@@ -125,14 +125,14 @@
                         </div>
                         <div class="vis-right">
                             <div class="row">
-                            Start Date: <input  type="text" name="startDate"
-                                    class="form-control priceStartDate"
+                            Start Date: <input  type="text" name="dateStartLocal"
+                                    class="form-control pricedateStartLocal"
                                     placeholder="Price start date"
                                     data-provide="datepicker"
                                     data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
                             <div class="row">
-                            <input  type="text" name="endDate"
-                                    class="form-control priceEndDate"
+                            <input  type="text" name="dateEndLocal"
+                                    class="form-control pricedateEndLocal"
                                     style="display:none"
                                     placeholder="Price end date"
                                     data-provide="datepicker"
@@ -245,8 +245,8 @@
                         <span class="field-price">${item.price}</span>
                         <span class="field-gender">${item.gender}</span>
                         <span class="field-team">${item.team}</span>
-                        <span class="field-start">${item.startDate}</span>
-                        <span class="field-end">${item.endDate}</span>
+                        <span class="field-start">${item.dateStartLocal}</span>
+                        <span class="field-end">${item.dateEndLocal}</span>
                     </div>
                 </c:forEach>
             </c:if>
@@ -289,15 +289,15 @@
             },
             onAdd: function (item, callback) {
                 item.content = prompt('Price at this date:', item.content);
-                var startDate = moment(item.start);
-                if( startDate.isBefore(eciStart) == false &amp;&amp; startDate.isAfter(eciEnd) == false ){
+                var dateStartLocal = moment(item.start);
+                if( dateStartLocal.isBefore(eciStart) == false &amp;&amp; dateStartLocal.isAfter(eciEnd) == false ){
                     if( isNaN(item.content) ){
                         alert("Please enter a $ value for this price change.");
                         callback(null);
                     }
                     else{
                         if( item.content !== null ){
-                            alert("$"+item.content + " added for " + startDate.format("MM/DD/YYYY hh:mm:ss") + ".");
+                            alert("$"+item.content + " added for " + dateStartLocal.format("MM/DD/YYYY hh:mm:ss") + ".");
                             callback(item);
                         }
                     }
@@ -308,8 +308,8 @@
                 }
             },
             onMove: function (item, callback) {
-                var startDate = moment(item.start);
-                if( startDate.isBefore(eciStart) == false &amp;&amp; startDate.isAfter(eciEnd) == false ){
+                var dateStartLocal = moment(item.start);
+                if( dateStartLocal.isBefore(eciStart) == false &amp;&amp; dateStartLocal.isAfter(eciEnd) == false ){
                     if (confirm('Do you really want to move the item to\n' +
                         'start: ' + item.start + '?')) {
                         callback(item); // send back item as confirmation (can be changed)
@@ -331,7 +331,7 @@
                 }
                 else{
                     if( item.content !== null ){
-                        alert("Changed to $"+item.content + " for " + startDate.format("MM/DD/YYYY hh:mm:ss") + ".");
+                        alert("Changed to $"+item.content + " for " + dateStartLocal.format("MM/DD/YYYY hh:mm:ss") + ".");
                         callback(item);
                     }
                 }
@@ -428,8 +428,8 @@
 
                 obj.id = jQuery(this).find('.field-id').text();             obj.id = parseInt(obj.id);
                 obj.price = jQuery(this).find('.field-price').text();       obj.price = parseInt(obj.price);
-                obj.startDate = jQuery(this).find('.field-start').text();   obj.startDate = moment(obj.startDate);
-                obj.endDate = jQuery(this).find('.field-end').text();       obj.endDate = moment(obj.endDate);
+                obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal);
+                obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal);
 
                 // check if category exists already. if it exists, do not call addGroup.
                 if( categoryNameList.length > 0 &amp;&amp; categoryNameList.indexOf(cat) !== -1 ){
@@ -464,7 +464,7 @@
 
                 var item = {};
                     item["id"] = obj.id;
-                    item["start"] = obj.startDate;
+                    item["start"] = obj.dateStartLocal;
                     item["content"] = obj.price;
                     if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
                         itemList[index].add(item);
@@ -593,7 +593,7 @@
             var timelineIndex = jQuery(caller).closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
 
-            var dateVal = moment(jQuery("#"+timelineIndex).find(".priceStartDate").val()).format('MM/DD/YYYY h:mm:ss.SSS a');
+            var dateVal = moment(jQuery("#"+timelineIndex).find(".pricedateStartLocal").val()).format('MM/DD/YYYY h:mm:ss.SSS a');
             var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
             dateVal = moment(dateVal);
             price   = parseInt(price);
@@ -664,7 +664,7 @@
         }
 
         function initDateTimePickers(){
-            jQuery(".priceStartDate").each(function(){
+            jQuery(".pricedateStartLocal").each(function(){
                 jQuery(this).datetimepicker({
                     defaultDate: moment(eciStart),
                     minDate: moment(eciStart),
@@ -703,25 +703,25 @@
                 });
                 for( var j = 0; j &lt; sortAry.length; j++ ){
                     var value = sortAry[j];
-                    var objStartDate;
-                    var objEndDate;
+                    var objdateStartLocal;
+                    var objdateEndLocal;
                     if( j == sortAry.length-1 ){
                         // last item:
                         // start date = start date, end date = eci end date
-                        objStartDate = value.start;
-                        objEndDate = eciEnd;
+                        objdateStartLocal = value.start;
+                        objdateEndLocal = eciEnd;
                     }
                     else{
                         // all except last item:
                         // start date = start date, end date = next item's start date
-                        objStartDate = value.start;
-                        objEndDate = moment(sortAry[j+1].start).subtract(1, 'ms');
+                        objdateStartLocal = value.start;
+                        objdateEndLocal = moment(sortAry[j+1].start).subtract(1, 'ms');
                     }
-                    if( objStartDate !== null ){
-                        objStartDate = moment(objStartDate).format("MM/DD/YYYY HH:mm:ss.SSS a");
+                    if( objdateStartLocal !== null ){
+                        objdateStartLocal = moment(objdateStartLocal).format("MM/DD/YYYY HH:mm:ss.SSS a");
                     }
-                    if( objEndDate !== null ){
-                        objEndDate = moment(objEndDate).format("MM/DD/YYYY HH:mm:ss.SSS a");
+                    if( objdateEndLocal !== null ){
+                        objdateEndLocal = moment(objdateEndLocal).format("MM/DD/YYYY HH:mm:ss.SSS a");
                     }
 
                     var pc = {};
@@ -729,8 +729,8 @@
                         pc = jQuery.extend({
                             price: parseInt(value.content),
                             eventCartItem: {'id':parseInt(eciId)},
-                            startDate: objStartDate,
-                            endDate: objEndDate
+                            dateStartLocal: objdateStartLocal,
+                            dateEndLocal: objdateEndLocal
                         }, pcList[i].obj);
                     }
                     else{
@@ -738,8 +738,8 @@
                             id: value.id,
                             price: parseInt(value.content),
                             eventCartItem: {'id':parseInt(eciId)},
-                            startDate: objStartDate,
-                            endDate: objEndDate
+                            dateStartLocal: objdateStartLocal,
+                            dateEndLocal: objdateEndLocal
                         }, pcList[i].obj);
                     }
 
