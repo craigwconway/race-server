@@ -84,7 +84,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             foo.setState("Colordo");
             foo.setGunTime(new DateTime().toDate());
             foo.setTimeStart(new DateTime().toDate());
-            foo.setTimeEnd(new DateTime().plusHours(1).toDate());
             foo.setAwardsConfig(new EventAwardsConfig());
             foo.persist();
             
