@@ -1423,24 +1423,37 @@ public class EventController {
     @ResponseBody
     public ResponseEntity<String> manageTicketTransfer(@PathVariable("id") Long id,
     		@RequestParam(value = "tickettransferenabled") boolean ticketTransferEnabled,
-    		@RequestParam(value = "tickettransfercutoff", required=false) Date ticketTransferCutoff) {
+    		@RequestParam(value = "tickettransfercutoff", required=false) String ticketTransferCutoff) {
     	Event event = Event.findEvent(id);
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        System.out.println("ENtered Ticket transfer endpoint, incoming cutoff: " + ticketTransferCutoff);
     	if(null == event) {
     		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
     	}
     	if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
         }
+
     	if(ticketTransferCutoff == null) {
     		event.setTicketTransferEnabled(false);
     		event.setTicketTransferCutoff(null);
     		event.merge();
     		return new ResponseEntity<>("No cutoff specified, disabling ticket transfer", headers, HttpStatus.BAD_REQUEST);
     	}
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar ticketTransfer = new GregorianCalendar();
+			ticketTransfer.setTime(format.parse(ticketTransferCutoff));
+			event.setTicketTransferCutoff(ticketTransfer.getTime());
+			event.setTicketTransferCutoffLocal(ticketTransferCutoff);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+    		return new ResponseEntity<>("Malformed time string", headers, HttpStatus.BAD_REQUEST);
+		}
     	event.setTicketTransferEnabled(ticketTransferEnabled);
-    	event.setTicketTransferCutoff(ticketTransferCutoff);
     	event.merge();
     	return new ResponseEntity<>(headers, HttpStatus.OK);
     }
