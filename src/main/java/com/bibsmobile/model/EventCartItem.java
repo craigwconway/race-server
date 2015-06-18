@@ -63,13 +63,11 @@ public class EventCartItem {
     private boolean timeLimit;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date timeStart;
 
     private String timeStartLocal;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date timeEnd;
     
     private String timeEndLocal;

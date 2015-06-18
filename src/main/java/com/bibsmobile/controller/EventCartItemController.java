@@ -27,9 +27,13 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -235,6 +239,22 @@ public class EventCartItemController {
             return "eventitems/create";
         }
         uiModel.asMap().clear();
+        Event event = eventCartItem.getEvent();
+        try {
+
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar timeStart = new GregorianCalendar();
+            Calendar timeEnd = new GregorianCalendar();
+			timeStart.setTime(format.parse(eventCartItem.getTimeStartLocal()));
+			timeEnd.setTime(format.parse(eventCartItem.getTimeEndLocal()));
+			eventCartItem.setTimeStart(timeStart.getTime());
+			eventCartItem.setTimeEnd(timeEnd.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "redirect:/eventitems?event="+event.getId();
+		}
         eventCartItem.persist();
         SlackUtil.logRegAddECI(eventCartItem, eventCartItem.getEvent().getName(), UserProfileUtil.getLoggedInUserProfile().getUsername());
         return "redirect:/eventitems/" + this.encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
@@ -254,6 +274,23 @@ public class EventCartItemController {
             this.populateEditForm(uiModel, eventCartItem);
             return "eventitems/update";
         }
+        Event event = eventCartItem.getEvent();
+        System.out.println("Incoming timeStart: " + eventCartItem.getTimeStartLocal());
+        System.out.println("Incoming timeEnd: "  + eventCartItem.getTimeEndLocal());
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar timeStart = new GregorianCalendar();
+            Calendar timeEnd = new GregorianCalendar();
+			timeStart.setTime(format.parse(eventCartItem.getTimeStartLocal()));
+			timeEnd.setTime(format.parse(eventCartItem.getTimeEndLocal()));
+			eventCartItem.setTimeStart(timeStart.getTime());
+			eventCartItem.setTimeEnd(timeEnd.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "redirect:/eventitems?event="+event.getId();
+		}        
         uiModel.asMap().clear();
         eventCartItem.merge();
         return "redirect:/eventitems/" + this.encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
