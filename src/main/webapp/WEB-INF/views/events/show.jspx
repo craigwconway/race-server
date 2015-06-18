@@ -416,10 +416,7 @@
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
             <c:set var="start" value="${event.timeStartLocal}" />
-            <div id="event-time"><fmt:formatDate type="date" value="${start}" />
-            <br/>
-            first start <span id="displayLocal"><fmt:formatDate type="time" value="${start}" /></span></div>
-            <br/>
+            <div id="event-time">${event.timeStartLocal}</div>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
                     <button type="button" class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
@@ -462,7 +459,7 @@
             </c:if>
         }
 
-        var localTime = '${event.timeStart}';
+        var localTime = '${event.timeStartLocal}';
         var distType;
         function initInfo(){
             var offset = moment(localTime).utcOffset()*-1;
@@ -470,7 +467,7 @@
             console.log(localtime);
             jQuery('#displayLocal').text(localtime);
 
-            var momentRRTime = moment('${event.timeStart}').startOf('hour');
+            var momentRRTime = moment('${event.timeStartLocal}').startOf('hour');
             jQuery("#timedisp").datetimepicker({
                 defaultDate: momentRRTime,
                 pickDate: false
@@ -577,7 +574,7 @@
             var lowbib = jQuery('#etype-lowbib').val();
             var highbib = jQuery('#etype-highbib').val();
 
-            var parseDate = moment('${event.timeStart}').local();
+            var parseDate = moment('${event.timeStartLocal}').local();
             var hour   = moment(startTime, "h:mm a").local().hour();
             var minute = moment(startTime, "h:mm a").local().minute();
             
@@ -738,10 +735,10 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             jQuery('#putFieldForm input').val('');
 
-            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').local().startOf('hour'));
+            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').local().startOf('hour'));
             
             jQuery("#removetime").click(function(){
-                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').local().startOf('hour'));
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').local().startOf('hour'));
             });
 
             jQuery('#racetype-dropdown').dropdown('clear');
