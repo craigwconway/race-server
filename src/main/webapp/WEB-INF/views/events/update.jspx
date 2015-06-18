@@ -90,7 +90,7 @@
                     </div>
                     <div class="ui labeled input">
                         <div class="ui blue label">Event Date</div>
-                        <input  type="text" name="timeStartDisplay"
+                        <input  type="text" name="timeStartLocal"
                                 class="form-control"
                                 id="eventDatepicker"
                                 value="${event.timeStartLocal}"
@@ -99,7 +99,6 @@
                                 data-date-format="MM/DD/YYYY h:mm:ss a"
                                 data-parsley-error-message="Please enter a date for this event."
                                 data-parsley-required="true"></input>
-                        <input name="timeStartLocal" style="display:none"></input>
                     </div>
                     <div class="ui labeled input">
                         <div class="ui blue label">Timezone</div>
@@ -349,7 +348,7 @@
 
         function initDateTimePickers(){
             var eventTime = "${event.timeStartLocal}";
-            var momentEventTime = moment(eventTime).format('MM/DD/YYYY hh:mm:ss a');
+            var momentEventTime = moment(eventTime).format('MM/DD/YYYY h:mm:ss a');
             console.log(momentEventTime);
             jQuery("#eventDatepicker").val(momentEventTime);
             jQuery("#eventDatepicker")
@@ -390,10 +389,8 @@
                 jQuery("#event").submit(function(e) {
                     e.preventDefault();
                     var localdate = jQuery('input[name="timeStartDisplay"]').val();
-                    localdate = moment(localdate).format();
-                    var utcdate = moment(localdate).format('MM/DD/YYYY hh:mm:ss a');
-                    jQuery('input[name="timeStartLocal"]').val(utcdate);
-                    jQuery('input[name="timeStartDisplay"]').removeAttr('name');
+                    localdate = moment(localdate).format('MM/DD/YYYY hh:mm:ss a');
+                    jQuery('input[name="timeStartLocal"]').val(localdate);
                     if( addr == "" ){
                         jQuery('#geoaddress').val(misc);
                     }else{
