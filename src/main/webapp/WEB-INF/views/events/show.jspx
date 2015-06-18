@@ -328,10 +328,10 @@
                                 </c:if>
                                 <c:if test="${not empty eventTypes}">
                                     <li><a href="#" onclick="bibsModal(); return false;">Manage Bib Numbers</a></li>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                                 <c:if test='${(event.regEnabled)}'>
-                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                     <li><a href="#" onclick="emailModal(); return false;">Send Email Announcement</a></li>
                                 </c:if>
                                 </sec:authorize>
