@@ -431,11 +431,11 @@
                             <th>Start Time</th>
                         </tr></thead>
                         <tbody>
-                            <c:forEach var="item" items="${eventTypes}"><tr class="eventtype-item" onclick="editEventType('${item.typeName}', '${item.racetype}', '${item.distance}', '${item.startTime}', '${item.id}')">
+                            <c:forEach var="item" items="${eventTypes}"><tr class="eventtype-item" onclick="editEventType('${item.typeName}', '${item.racetype}', '${item.distance}', '${item.timeStartLocal}', '${item.id}')">
                                 <td>${item.typeName}</td>
                                 <td>${item.racetype}</td>
                                 <td>${item.distance}</td>
-                                <c:set var="time" value="${item.startTime}" />
+                                <c:set var="time" value="${item.timeStartLocal}" />
                                 <td><fmt:formatDate type="time" value="${time}" /></td>
                             </tr></c:forEach>
                         </tbody>
@@ -569,7 +569,7 @@
             if( jQuery('#dist-m').hasClass('positive')  ){ distType = ' m';  }
             if( jQuery('#dist-km').hasClass('positive') ){ distType = ' km'; }
             if( jQuery('#dist-mi').hasClass('positive') ){ distType = ' mi'; }
-            var startTime = jQuery('input[name="startTime"]').val();
+            var startTime = jQuery('input[name="timeStartLocal"]').val();
             var raceType  = jQuery('input[name="raceType"]').val();
             var lowbib = jQuery('#etype-lowbib').val();
             var highbib = jQuery('#etype-highbib').val();
@@ -596,8 +596,8 @@
                 }
                 if( parseDate === "" ){
                     jQuery('#starttime').parent().addClass('error');
-                    jQuery('input[name="startTime"]').on('keypress', function(){
-                        if(jQuery('input[name="startTime"]').val().length > 0){
+                    jQuery('input[name="timeStartLocal"]').on('keypress', function(){
+                        if(jQuery('input[name="timeStartLocal"]').val().length > 0){
                             jQuery('#starttime').parent().removeClass('error');
                         }
                     })
@@ -626,7 +626,7 @@
 
                 dat.typeName = typeName;
                 dat.distance = distance + distType;
-                dat.startTime = parseDate;
+                dat.timeStartLocal = parseDate;
                 dat.racetype = raceType;
                 if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
                 if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
