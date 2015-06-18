@@ -1422,8 +1422,8 @@ public class EventController {
     @RequestMapping(value="/{id}/tickettransfer",method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<String> manageTicketTransfer(@PathVariable("id") Long id,
-    		@RequestParam(value = "ticketTransferEnabled") boolean ticketTransferEnabled,
-    		@RequestParam(value = "ticketTransferCutoff", required=false) Date ticketTransferCutoff) {
+    		@RequestParam(value = "tickettransferenabled") boolean ticketTransferEnabled,
+    		@RequestParam(value = "tickettransfercutoff", required=false) Date ticketTransferCutoff) {
     	Event event = Event.findEvent(id);
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");

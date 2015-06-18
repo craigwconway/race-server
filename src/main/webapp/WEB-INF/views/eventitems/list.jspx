@@ -799,7 +799,7 @@
                     url: "/bibs-server/events/${event.id}/tickettransfer",
                     type: "PUT",
                     dataType: "text/html",
-                    data: "ticketTransferEnabled="+transfer+"&amp;ticketTransferCutoff="+encodeURIComponent(transferDate),
+                    data: "tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
                     complete: function() {
                         window.location.reload();
                     }
