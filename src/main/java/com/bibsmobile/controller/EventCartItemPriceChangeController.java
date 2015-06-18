@@ -4,6 +4,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemPriceChange;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +14,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
+
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -123,12 +130,32 @@ public class EventCartItemPriceChangeController {
         for (EventCartItemPriceChange eventCartItemPriceChange : EventCartItemPriceChange.fromJsonArrayToEventCartItemPriceChanges(json)) {
             long id = eventCartItemPriceChange.getEventCartItem().getId();
             EventCartItem eci = EventCartItem.findEventCartItem(id);
+            Event event = eci.getEvent();
             if (eci != null) {
                 eventCartItemPriceChange.setEventCartItem(eci);
                 eventCartItemPriceChange.persist();
             } else {
                 return new ResponseEntity<>(headers, HttpStatus.UNPROCESSABLE_ENTITY);
             }
+            try {
+            	//MM/DD/YYYY HH:mm:ss.SSS a
+            	System.out.println("incoming date: " + eventCartItemPriceChange.getDateStartLocal());
+            	System.out.println("incoming end date: " + eventCartItemPriceChange.getDateEndLocal());
+                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss.SSS a");
+                format.setTimeZone(event.getTimezone());
+                Calendar timeStart = new GregorianCalendar();
+                Calendar timeEnd = new GregorianCalendar();
+    			timeStart.setTime(format.parse(eventCartItemPriceChange.getDateStartLocal()));
+    			timeEnd.setTime(format.parse(eventCartItemPriceChange.getDateEndLocal()));
+    			eventCartItemPriceChange.setStartDate(timeStart.getTime());
+    			eventCartItemPriceChange.setEndDate(timeEnd.getTime());
+    			System.out.println("Saved date: " + eventCartItemPriceChange.getStartDate());
+    			System.out.println("Saved end date: " + eventCartItemPriceChange.getEndDate());
+    		} catch (ParseException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    			return new ResponseEntity<> (headers, HttpStatus.UNPROCESSABLE_ENTITY);
+    		}
             eventCartItemPriceChange.persist();
         }
         return new ResponseEntity<>(headers, HttpStatus.CREATED);

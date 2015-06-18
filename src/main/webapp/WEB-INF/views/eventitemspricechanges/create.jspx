@@ -718,10 +718,10 @@
                         objdateEndLocal = moment(sortAry[j+1].start).subtract(1, 'ms');
                     }
                     if( objdateStartLocal !== null ){
-                        objdateStartLocal = moment(objdateStartLocal).format("MM/DD/YYYY HH:mm:ss.SSS a");
+                        objdateStartLocal = moment(objdateStartLocal).format("MM/DD/YYYY hh:mm:ss.SSS a");
                     }
                     if( objdateEndLocal !== null ){
-                        objdateEndLocal = moment(objdateEndLocal).format("MM/DD/YYYY HH:mm:ss.SSS a");
+                        objdateEndLocal = moment(objdateEndLocal).format("MM/DD/YYYY hh:mm:ss.SSS a");
                     }
 
                     var pc = {};
