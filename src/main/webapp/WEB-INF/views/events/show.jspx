@@ -422,7 +422,7 @@
                     <button type="button" class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
                 </div>
                 <c:if test="${not empty eventTypes}">
-                    <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${start}" /></h3>
+                    <h3 class="ui header event-type-header">events taking place on ${event.timeStartLocal}</h3>
                     <table class="ui small table">
                         <thead><tr>
                             <th>Name</th>
@@ -435,8 +435,7 @@
                                 <td>${item.typeName}</td>
                                 <td>${item.racetype}</td>
                                 <td>${item.distance}</td>
-                                <c:set var="time" value="${item.timeStartLocal}" />
-                                <td><fmt:formatDate type="time" value="${time}" /></td>
+                                <td>${item.timeStartLocal}</td>
                             </tr></c:forEach>
                         </tbody>
                     </table>
@@ -462,9 +461,7 @@
         var localTime = '${event.timeStartLocal}';
         var distType;
         function initInfo(){
-            var offset = moment(localTime).utcOffset()*-1;
-            localtime = moment(localTime).local().format('hh:mm:ss a');
-            console.log(localtime);
+            localtime = moment(localTime).format('hh:mm:ss a');
             jQuery('#displayLocal').text(localtime);
 
             var momentRRTime = moment('${event.timeStartLocal}').startOf('hour');
@@ -574,14 +571,13 @@
             var lowbib = jQuery('#etype-lowbib').val();
             var highbib = jQuery('#etype-highbib').val();
 
-            var parseDate = moment('${event.timeStartLocal}').local();
-            var hour   = moment(startTime, "h:mm a").local().hour();
-            var minute = moment(startTime, "h:mm a").local().minute();
+            var parseDate = moment('${event.timeStartLocal}');
+            var hour   = moment(startTime, "h:mm a").hour();
+            var minute = moment(startTime, "h:mm a").minute();
             
-            parseDate.utc();
             parseDate.set('hour', hour);
             parseDate.set('minute', minute);
-            parseDate = new Date(parseDate);
+            parseDate = parseDate.format('MM/DD/YYYY hh:mm:ss a');
             console.log(parseDate);
 
             if( distance === "" || parseDate === "" || raceType === "" ){
@@ -735,10 +731,10 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             jQuery('#putFieldForm input').val('');
 
-            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').local().startOf('hour'));
+            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
             
             jQuery("#removetime").click(function(){
-                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').local().startOf('hour'));
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
             });
 
             jQuery('#racetype-dropdown').dropdown('clear');
@@ -762,7 +758,7 @@
             if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
             if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
 
-            var raceTime = moment(raceTime).local();
+            var raceTime = moment(raceTime);
             jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);

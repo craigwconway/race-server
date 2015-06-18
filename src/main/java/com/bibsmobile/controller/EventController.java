@@ -1044,19 +1044,19 @@ public class EventController {
             return "events/update";
         }
         Event trueEvent = Event.findEvent(event.getId());
+        System.out.println("incoming localdate: " + event.getTimeStartLocal());
+        try {
 
-        long offset = 0;
-        // Timezone logic: If a user enters changes a timezone, we should update all of the times by the difference between the two
-        if(trueEvent.getTimezone() != null && event.getTimezone() != null && trueEvent.getTimezone() != event.getTimezone()) {
-        	offset = trueEvent.getTimezone().getOffset(event.getTimeStart().getTime()) - event.getTimezone().getOffset(event.getTimeStart().getTime());
-        }
-        if(event.getTimezone() != null && event.getLocalTimeOffset() != null ) {
-        	System.out.println("Event offset: " + event.getTimezone().getOffset(event.getTimeStart().getTime()) + ", Local time offset: " + event.getLocalTimeOffset());
-        	offset += event.getTimezone().getOffset(event.getTimeStart().getTime()) - event.getLocalTimeOffset() * 60000;
-        }     
-        if(offset != 0) {
-        	event.setTimeStart(new Date(event.getTimeStart().getTime() + offset));
-        }
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar timeStart = new GregorianCalendar();
+			timeStart.setTime(format.parse(event.getTimeStartLocal()));
+			event.setTimeStart(timeStart.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "events/create";
+		}
         
         Date time0 = new Date(event.getGunTimeStart());
         Date time1 = event.getGunTime();

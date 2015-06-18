@@ -86,9 +86,6 @@ public class Event {
     private String timeStartLocal;
 
     private TimeZone timezone;
-
-    @Transient
-    private Integer localTimeOffset;
     
     private int featured;
 
@@ -939,22 +936,6 @@ public class Event {
 	 */
 	public void setTimezone(TimeZone timezone) {
 		this.timezone = timezone;
-	}
-
-	/**
-	 * Transient value, used in handling local time context in event create/update.
-	 * @return the localTimeOffset
-	 */
-	public Integer getLocalTimeOffset() {
-		return localTimeOffset;
-	}
-
-	/**
-	 * Transient value, used in handling local time context in event create/update.
-	 * @param localTimeOffset the localTimeOffset to set
-	 */
-	public void setLocalTimeOffset(Integer localTimeOffset) {
-		this.localTimeOffset = localTimeOffset;
 	}
 
 	public int getFeatured() {

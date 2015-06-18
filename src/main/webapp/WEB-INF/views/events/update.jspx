@@ -93,13 +93,13 @@
                         <input  type="text" name="timeStartDisplay"
                                 class="form-control"
                                 id="eventDatepicker"
-                                value="${event.timeStart}"
+                                value="${event.timeStartLocal}"
                                 placeholder="Event date"
                                 data-provide="datepicker"
                                 data-date-format="MM/DD/YYYY h:mm:ss a"
                                 data-parsley-error-message="Please enter a date for this event."
                                 data-parsley-required="true"></input>
-                        <input name="timeStart" style="display:none"></input>
+                        <input name="timeStartLocal" style="display:none"></input>
                     </div>
                     <div class="ui labeled input">
                         <div class="ui blue label">Timezone</div>
@@ -348,8 +348,8 @@
         }
 
         function initDateTimePickers(){
-            var eventTime = "${event.timeStart}";
-            var momentEventTime = moment(eventTime).utc().format('MM/DD/YYYY h:mm:ss a');
+            var eventTime = "${event.timeStartLocal}";
+            var momentEventTime = moment(eventTime).format('MM/DD/YYYY hh:mm:ss a');
             console.log(momentEventTime);
             jQuery("#eventDatepicker").val(momentEventTime);
             jQuery("#eventDatepicker")
@@ -391,8 +391,8 @@
                     e.preventDefault();
                     var localdate = jQuery('input[name="timeStartDisplay"]').val();
                     localdate = moment(localdate).format();
-                    var utcdate = moment(localdate).utc().format('MM/DD/YYYY h:mm:ss aZ');
-                    jQuery('input[name="timeStart"]').val(utcdate);
+                    var utcdate = moment(localdate).format('MM/DD/YYYY hh:mm:ss a');
+                    jQuery('input[name="timeStartLocal"]').val(utcdate);
                     jQuery('input[name="timeStartDisplay"]').removeAttr('name');
                     if( addr == "" ){
                         jQuery('#geoaddress').val(misc);
