@@ -81,15 +81,10 @@ public class Event {
     private String name;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date timeStart;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
-    private Date timeEnd;
+    private String timeStartLocal;
 
-    //@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
-    //@Temporal
     private TimeZone timezone;
 
     @Transient
@@ -174,6 +169,8 @@ public class Event {
     private boolean regEnabled;
 
     private boolean ticketTransferEnabled;
+
+    private String ticketTransferCutoffLocal;
     
     private Date ticketTransferCutoff;
     
@@ -585,7 +582,7 @@ public class Event {
                 .append(this.photo, rhs.photo).append(this.photo2, rhs.photo2).append(this.photo3, rhs.photo3).append(this.photoUploadUrl, rhs.photoUploadUrl)
                 .append(this.regEnabled, rhs.regEnabled).append(this.regEnd, rhs.regEnd).append(this.regStart, rhs.regStart).append(this.registration, rhs.registration)
                 .append(this.running, rhs.running)
-                .append(this.sync, rhs.sync).append(this.syncId, rhs.syncId).append(this.timeEnd, rhs.timeEnd)
+                .append(this.sync, rhs.sync).append(this.syncId, rhs.syncId).append(this.timeStartLocal, rhs.timeStartLocal)
                 .append(this.timeStart, rhs.timeStart).append(this.updated, rhs.updated).append(this.waiver, rhs.waiver)
                 .append(this.website, rhs.website).isEquals();
     }
@@ -596,7 +593,7 @@ public class Event {
                 .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.featured).append(this.general).append(this.gunFired)
                 .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.latitude).append(this.longitude).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
                 .append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.running).append(this.sync).append(this.syncId)
-                .append(this.timeEnd).append(this.timeStart).append(this.updated).append(this.waiver).append(this.website).toHashCode();
+                .append(this.timeStartLocal).append(this.timeStart).append(this.updated).append(this.waiver).append(this.website).toHashCode();
     }
 
     public static Long countFindEventsByStateEquals(String state) {
@@ -891,12 +888,12 @@ public class Event {
         this.timeStart = timeStart;
     }
 
-    public Date getTimeEnd() {
-        return this.timeEnd;
+    public String getTimeStartLocal() {
+        return this.timeStartLocal;
     }
 
-    public void setTimeEnd(Date timeEnd) {
-        this.timeEnd = timeEnd;
+    public void setTimeStartLocal(String timeStartLocal) {
+        this.timeStartLocal = timeStartLocal;
     }
 
     @JSON(include = true, name = "gmtOffset")
@@ -1337,6 +1334,20 @@ public class Event {
     }
 
     /**
+	 * @return the ticketTransferCutoffLocal
+	 */
+	public String getTicketTransferCutoffLocal() {
+		return ticketTransferCutoffLocal;
+	}
+
+	/**
+	 * @param ticketTransferCutoffLocal the ticketTransferCutoffLocal to set
+	 */
+	public void setTicketTransferCutoffLocal(String ticketTransferCutoffLocal) {
+		this.ticketTransferCutoffLocal = ticketTransferCutoffLocal;
+	}
+
+	/**
      * This is the time that user enabled ticket transfer ends for an event.
      * Ticket transfer must be set to true for this to work.
 	 * @return Date of ticket transfer cutoff

@@ -17,12 +17,15 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -147,6 +150,8 @@ public class EventController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
+        	System.out.println("errors detected in uimodel");
+        	System.out.println(bindingResult.getFieldErrors());
             this.populateEditForm(uiModel, event);
             uiModel.addAttribute("build", BuildTypeUtil.getBuild());
             return "events/create";
@@ -174,6 +179,20 @@ public class EventController {
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
         }*/
+        System.out.println("incoming localdate: " + event.getTimeStartLocal());
+        try {
+
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar timeStart = new GregorianCalendar();
+			timeStart.setTime(format.parse(event.getTimeStartLocal()));
+			event.setTimeStart(timeStart.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "events/create";
+		}
+        /**
         System.out.println("start" + event.getTimeStart());
         long offset = 0;
         // Timezone logic: If user has entered a timezone that does not line up with their machine local time, adjust timestamp to preserve local time
@@ -185,7 +204,8 @@ public class EventController {
         	System.out.println("setting new value with offset: " + offset);
         	event.setTimeStart(new Date(event.getTimeStart().getTime() + offset));
         }
-        System.out.println("start" + event.getTimeStart());
+        */
+        System.out.println("localstart" + event.getTimeStartLocal() + ", start" + event.getTimeStart());
         // Generate a hashtag based on event name
         event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));        
         event.setAwardsConfig(new EventAwardsConfig());
@@ -1030,6 +1050,10 @@ public class EventController {
         if(trueEvent.getTimezone() != null && event.getTimezone() != null && trueEvent.getTimezone() != event.getTimezone()) {
         	offset = trueEvent.getTimezone().getOffset(event.getTimeStart().getTime()) - event.getTimezone().getOffset(event.getTimeStart().getTime());
         }
+        if(event.getTimezone() != null && event.getLocalTimeOffset() != null ) {
+        	System.out.println("Event offset: " + event.getTimezone().getOffset(event.getTimeStart().getTime()) + ", Local time offset: " + event.getLocalTimeOffset());
+        	offset += event.getTimezone().getOffset(event.getTimeStart().getTime()) - event.getLocalTimeOffset() * 60000;
+        }     
         if(offset != 0) {
         	event.setTimeStart(new Date(event.getTimeStart().getTime() + offset));
         }

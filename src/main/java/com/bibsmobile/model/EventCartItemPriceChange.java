@@ -41,15 +41,17 @@ public class EventCartItemPriceChange {
 	/**
      */
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date startDate;
 
+    private String dateStartLocal;
+    
     /**
      */
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date endDate;
 
+    private String dateEndLocal;
+    
     private String categoryName;
     private int lowAgeThreshold = 1;
     private int highAgeThreshold = 120;
@@ -73,7 +75,21 @@ public class EventCartItemPriceChange {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    /**
+	 * @return the dateStartLocal
+	 */
+	public String getDateStartLocal() {
+		return dateStartLocal;
+	}
+
+	/**
+	 * @param dateStartLocal the dateStartLocal to set
+	 */
+	public void setDateStartLocal(String dateStartLocal) {
+		this.dateStartLocal = dateStartLocal;
+	}
+
+	public Date getEndDate() {
         return this.endDate;
     }
 
@@ -81,7 +97,21 @@ public class EventCartItemPriceChange {
         this.endDate = endDate;
     }
 
-    public EventCartItem getEventCartItem() {
+    /**
+	 * @return the dateEndLocal
+	 */
+	public String getDateEndLocal() {
+		return dateEndLocal;
+	}
+
+	/**
+	 * @param dateEndLocal the dateEndLocal to set
+	 */
+	public void setDateEndLocal(String dateEndLocal) {
+		this.dateEndLocal = dateEndLocal;
+	}
+
+	public EventCartItem getEventCartItem() {
         return this.eventCartItem;
     }
 

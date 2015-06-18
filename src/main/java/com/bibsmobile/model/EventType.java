@@ -43,6 +43,8 @@ public class EventType {
     @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
 
+    private String timeStartLocal;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     private Event event;
     
@@ -224,6 +226,22 @@ public class EventType {
     }
 
     /**
+     * String containing the local starting time of the event type.
+	 * @return the timeStartLocal
+	 */
+	public String getTimeStartLocal() {
+		return timeStartLocal;
+	}
+
+	/**
+	 * String containing the local starting time of the event type.
+	 * @param timeStartLocal the timeStartLocal to set
+	 */
+	public void setTimeStartLocal(String timeStartLocal) {
+		this.timeStartLocal = timeStartLocal;
+	}
+
+	/**
      * Event containing this event type. Relationship cascades to eventtype.
      * @param event The parent event to get
      */
