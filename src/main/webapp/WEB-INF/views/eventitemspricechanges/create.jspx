@@ -508,7 +508,7 @@
                 addGroup(obj, index, false);
 
                 var price = newBasePrice;
-                var dateVal = moment(eciStart).format('MM/DD/YYYY h:mm:SSS a');
+                var dateVal = moment(eciStart).format('MM/DD/YYYY h:mm:ss.SSS a');
                 if( price !== null &amp;&amp; dateVal !== null ){
                     var item = {};
                         item["id"] = index + "-" + price;
@@ -593,7 +593,7 @@
             var timelineIndex = jQuery(caller).closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
 
-            var dateVal = moment(jQuery("#"+timelineIndex).find(".priceStartDate").val()).format('MM/DD/YYYY h:mm:SSS a');
+            var dateVal = moment(jQuery("#"+timelineIndex).find(".priceStartDate").val()).format('MM/DD/YYYY h:mm:ss.SSS a');
             var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
             dateVal = moment(dateVal);
             price   = parseInt(price);
@@ -645,8 +645,8 @@
                 request.done(function( data ) {
                     if( data !== null ){
                         eci = data;
-                        eciStart = moment(data.timeStart).format('MM/DD/YYYY h:mm:SSS a');
-                        eciEnd = moment(data.timeEnd).format('MM/DD/YYYY h:mm:SSS a');
+                        eciStart = moment(data.timeStart).format('MM/DD/YYYY h:mm:ss.SSS a');
+                        eciEnd = moment(data.timeEnd).format('MM/DD/YYYY h:mm:ss.SSS a');
                         eciBasePrice = eci.price;
                         jQuery("#event-name").text(eci.name);
                         jQuery(".base-price").each(function(){
@@ -718,10 +718,10 @@
                         objEndDate = moment(sortAry[j+1].start).subtract(1, 'ms');
                     }
                     if( objStartDate !== null ){
-                        objStartDate = moment(objStartDate).format("MM/DD/YYYY HH:mm:SSS");
+                        objStartDate = moment(objStartDate).format("MM/DD/YYYY HH:mm:ss.SSS a");
                     }
                     if( objEndDate !== null ){
-                        objEndDate = moment(objEndDate).format("MM/DD/YYYY HH:mm:SSS");
+                        objEndDate = moment(objEndDate).format("MM/DD/YYYY HH:mm:ss.SSS a");
                     }
 
                     var pc = {};
