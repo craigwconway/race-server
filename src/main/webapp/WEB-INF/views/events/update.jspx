@@ -388,7 +388,7 @@
             jQuery('#proceed').click(function(){
                 jQuery("#event").submit(function(e) {
                     e.preventDefault();
-                    var localdate = jQuery('input[name="timeStartDisplay"]').val();
+                    var localdate = jQuery('input[name="timeStartLocal"]').val();
                     localdate = moment(localdate).format('MM/DD/YYYY hh:mm:ss a');
                     jQuery('input[name="timeStartLocal"]').val(localdate);
                     if( addr == "" ){
