@@ -241,7 +241,7 @@
                             <div class="twelve wide required field">
                                 <label id="starttime">Start Time</label>
                                 <div class="ui action input">
-                                    <input  type="text" name="startTime"
+                                    <input  type="text" name="timeStartLocal"
                                             class="form-control"
                                             id="timedisp"
                                             placeholder="Official Time (hh:mm)"
@@ -574,11 +574,10 @@
             var parseDate = moment('${event.timeStartLocal}');
             var hour   = moment(startTime, "h:mm a").hour();
             var minute = moment(startTime, "h:mm a").minute();
-            
+
             parseDate.set('hour', hour);
             parseDate.set('minute', minute);
             parseDate = parseDate.format('MM/DD/YYYY hh:mm:ss a');
-            console.log(parseDate);
 
             if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;
