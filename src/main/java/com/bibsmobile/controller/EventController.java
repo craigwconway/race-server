@@ -1296,8 +1296,6 @@ public class EventController {
         uiModel.addAttribute("eventadmin", PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e));
         uiModel.addAttribute("itemId", id);
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
-        uiModel.addAttribute("gmtoffset", e.getGmtOffset());
-        uiModel.addAttribute("localtimestart", e.getTimeString());
         return "events/show";
     }
     

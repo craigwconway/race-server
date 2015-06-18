@@ -892,28 +892,6 @@ public class Event {
     public void setTimeStartLocal(String timeStartLocal) {
         this.timeStartLocal = timeStartLocal;
     }
-
-    @JSON(include = true, name = "gmtOffset")
-    public String getGmtOffset() {
-    	if(timezone != null && timeStart != null) {
-    	    DateFormat df = new SimpleDateFormat("Z");
-    	    df.setTimeZone(timezone);
-    	    return "GMT" + df.format(this.getTimeStart());
-    	} else {
-    	    return null;
-    	}
-    }    
-    
-    @JSON(include = true, name = "localTimeStart")
-    public String getTimeString() {
-    	if(timezone != null && timeStart != null) {
-    	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
-    	    df.setTimeZone(timezone);
-    	    return df.format(this.getTimeStart());
-    	} else {
-    	    return null;
-    	}
-    }
     
     @JSON(include = true, name = "timezone")
     public String getTimezoneID() {
