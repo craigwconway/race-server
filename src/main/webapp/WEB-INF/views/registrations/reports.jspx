@@ -65,10 +65,10 @@
     <div class="white-overlay">
         <div class="info-container">
             <div class="pull-left">
-               <button class="btn btn-warning" onclick="onBack()" type="submit">Back</button>
+               <button class="ui orange button" onclick="onBack()" type="submit">Back</button>
             </div>
             <div style="clear:both"><!--  --></div>
-            <div class="ui statistics four column grid">
+            <div class="ui statistics five column grid">
                 <div class="four column centered row">
                     <div class="column">
                         <div class="red large statistic">
@@ -106,10 +106,21 @@
                         <div class="label">
                             Donations
                         </div>
-                        <div class="value"><i class="fa fa-heart-o"><!--  --></i>
+                        <div class="value"><i class="fa fa-gift"><!--  --></i>
                             <span id="total-donations" style="margin-left:10px;">0</span>
                         </div>
                         <div class="meta"><span class="price" id="total-money-donations"><!--  --></span></div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="purple small statistic">
+                        <div class="label">
+                            Coupons
+                        </div>
+                        <div class="value"><i class="fa fa-cut"><!--  --></i>
+                            <span id="total-coupons" style="margin-left:10px;">0</span>
+                        </div>
+                        <div class="meta"><span class="price" id="total-money-coupons"><!--  --></span></div>
                     </div>
                 </div>
                 <div class="column">
@@ -124,7 +135,7 @@
                     </div>
                 </div>
             </div>
-            <div class="ui five centered column grid" id="cartitems">
+            <div class="ui four centered column grid" id="cartitems">
                 <div class="cartitem-card" style="display:none">
                     <div class="four wide column">
                         <div class="ui card">
@@ -195,7 +206,7 @@
             var chart = nv.models.stackedAreaChart()
             .x(function(d) { return d[0]; })
             .y(function(d) { return d[1]; })
-            .color(['#f2c61f','#00b5ad','#3b83c0'])
+            .color(['#f2c61f','#00b5ad','#3b83c0', '#564f8a'])
             .clipEdge(true)
             .useInteractiveGuideline(true);
 
@@ -248,6 +259,15 @@
             jQuery("#total-donations").text(initValue);
             jQuery("#total-money-donations").text("$0");
         }
+        if('COUPON' in quantity){
+            totalSales += money.COUPON;
+            jQuery("#total-coupons").text(quantity.COUPON);
+            jQuery("#total-money-coupons").text("$" + money.COUPON/100);
+        }
+        else{
+            jQuery("#total-coupons").text(initValue);
+            jQuery("#total-money-coupons").text("$0");
+        }
         if('REFUND' in quantity){
             jQuery("#total-refund").text(quantity.REFUND);
             jQuery("#total-money-refund").text("$" + money.REFUND/100);
@@ -275,9 +295,11 @@
         var ticketObj = { "key": "Tickets", "values": [] };
         var shirtObj = { "key": "T-shirts", "values": [] };
         var donationObj = { "key": "Donations", "values": [] };
+        var couponObj = { "key": "Coupons", "values": [] };
         var ticketAry = [];
         var shirtAry = [];
         var donationAry = [];
+        var couponAry = [];
         var allAry = [];
         dates.forEach(function(item, i){
             // fillValues(dates[i], d[item], item);
@@ -299,6 +321,11 @@
                 donationAry.push(ary);
                 allAry.push(ary);
             }
+            if('COUPON' in val){
+                ary = [day, val.COUPON*-1];
+                couponAry.push(ary);
+                allAry.push(ary);
+            }
         })
         ticketAry.sort(function(a, b) {
             return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
@@ -309,10 +336,14 @@
         donationAry.sort(function(a, b) {
             return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
         });
+        couponAry.sort(function(a, b) {
+            return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
+        });
         ticketObj.values = ticketAry;
         shirtObj.values = shirtAry;
         donationObj.values = donationAry;
-        nvdata.push(ticketObj, shirtObj, donationObj);
+        couponObj.values = couponAry;
+        nvdata.push(ticketObj, shirtObj, donationObj, couponObj);
     }
 
     function fillDates(){
