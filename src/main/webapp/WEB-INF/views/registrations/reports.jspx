@@ -260,9 +260,19 @@
             jQuery("#total-money-donations").text("$0");
         }
         if('COUPON' in quantity){
-            totalSales += money.COUPON;
+            totalSales -= money.COUPON;
             jQuery("#total-coupons").text(quantity.COUPON);
-            jQuery("#total-money-coupons").text("$" + money.COUPON/100);
+            console.log(money.COUPON);
+            console.log(Math.floor(money.COUPON/100));
+            var dollarConversion = '$';
+            if(Math.floor(money.COUPON/100) == 0){
+                dollarConversion = dollarConversion + "0.";
+            }else{
+                dollarConversion = dollarConversion + Math.floor(money.COUPON/100).toString();
+            }
+            dollarConversion = dollarConversion + (money.COUPON % 100).toString();
+            console.log(dollarConversion)
+            jQuery("#total-money-coupons").text("$" + dollarConversion);
         }
         else{
             jQuery("#total-coupons").text(initValue);
@@ -322,7 +332,8 @@
                 allAry.push(ary);
             }
             if('COUPON' in val){
-                ary = [day, val.COUPON*-1];
+                console.log(val.COUPON*-1/100);
+                ary = [day, val.COUPON*-1/100];
                 couponAry.push(ary);
                 allAry.push(ary);
             }
@@ -362,36 +373,6 @@
             curr = moment(curr).add(1, 'd').format("YYYY-MM-DD");
         }
         // console.log(dates);
-    }
-
-    function fillValues(day, d, item){
-        // var refundObj = { "key": "Tickets", "values": [] };
-
-        var ary = [];
-        if('TICKET' in d){
-            ary.push(Number(day), d.TICKET);
-            ticketObj.values.push(ary);
-        }
-        else{
-            ary.push(Number(day), 0);
-            ticketObj.values.push(ary);
-        }
-        if('T_SHIRT' in d){
-            ary.push(Number(day), d.T_SHIRT);
-            shirtObj.values.push(ary);
-        }
-        else{
-            ary.push(Number(day), 0);
-            shirtObj.values.push(ary);
-        }
-        if('DONATION' in d){
-            ary.push(Number(day), d.DONATION);
-            donationObj.values.push(ary);
-        }
-        else{
-            ary.push(Number(day), 0);
-            donationObj.values.push(ary);
-        }
     }
 
     function getEventCartItems(){
