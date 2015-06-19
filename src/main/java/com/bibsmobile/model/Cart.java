@@ -29,6 +29,13 @@ import org.springframework.transaction.annotation.Transactional;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
+/**
+ * Record of a transaction at an event. This contains a collection of Cart Items,
+ * Responses to custom questions, a total (pre and post application of a bibs fee).
+ * As carts are created, they get timed out if not completed after 10 minutes.
+ * @author tobi
+ *
+ */
 @Configurable
 @Entity
 public class Cart {
@@ -51,7 +58,7 @@ public class Cart {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "cart")
     private List<CustomRegFieldResponse> customRegFieldResponses;
     
-    private long shipping;
+    private long totalPreFee;
     private long total;
     private Date created;
     private Date updated;
@@ -107,12 +114,12 @@ public class Cart {
         this.customRegFieldResponses = customRegFieldResponses;
     }
     
-    public long getShipping() {
-        return this.shipping;
+    public long getTotalPreFee() {
+        return this.totalPreFee;
     }
 
-    public void setShipping(long shipping) {
-        this.shipping = shipping;
+    public void setTotalPreFee(long totalPreFee) {
+        this.totalPreFee = totalPreFee;
     }
 
     public long getTotal() {
@@ -185,14 +192,14 @@ public class Cart {
         if (this == obj) return true;
         if (obj.getClass() != this.getClass()) return false;
         Cart rhs = (Cart) obj;
-        return new EqualsBuilder().append(this.coupon, rhs.coupon).append(this.created, rhs.created).append(this.id, rhs.id).append(this.shipping, rhs.shipping)
+        return new EqualsBuilder().append(this.coupon, rhs.coupon).append(this.created, rhs.created).append(this.id, rhs.id).append(this.totalPreFee, rhs.totalPreFee)
                 .append(this.status, rhs.status).append(this.stripeChargeId, rhs.stripeChargeId).append(this.timeout, rhs.timeout).append(this.total, rhs.total)
                 .append(this.updated, rhs.updated).append(this.user, rhs.user).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(this.coupon).append(this.created).append(this.id).append(this.shipping).append(this.status).append(this.stripeChargeId)
+        return new HashCodeBuilder().append(this.coupon).append(this.created).append(this.id).append(this.totalPreFee).append(this.status).append(this.stripeChargeId)
                 .append(this.timeout).append(this.total).append(this.updated).append(this.user).toHashCode();
     }
 
@@ -205,7 +212,7 @@ public class Cart {
     transient EntityManager entityManager;
 
     public static final List<String> fieldNames4OrderClauseFilter = Arrays.asList("NEW", "SAVED", "PROCESSING", "COMPLETE", "REFUND_REQUEST", "REFUNDED",
-            "DEFAULT_TIMEOUT", "user", "cartItems", "shipping", "total", "created", "updated", "status", "coupons", "timeout", "stripeChargeId");
+            "DEFAULT_TIMEOUT", "user", "cartItems", "totalPreFee", "total", "created", "updated", "status", "coupons", "timeout", "stripeChargeId");
 
     public static EntityManager entityManager() {
         EntityManager em = new Cart().entityManager;

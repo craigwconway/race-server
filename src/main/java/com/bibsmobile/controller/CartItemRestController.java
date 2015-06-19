@@ -6,6 +6,7 @@ import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.util.SpringJSONUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,11 +22,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Map;
 import java.util.Date;
 import java.util.List;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 @RequestMapping("/rest/cartitems")
@@ -61,25 +65,26 @@ public class CartItemRestController {
                     List<CartItem> cartItems = CartItem.findCartItemsByEventCartItems(eventCartItems, fromDate, toDate).getResultList();
                     Map <String, Long> totalMoney = new HashMap();
                     Map <String, Long> totalQuantity = new HashMap();
-                    Map <Long, Map<String, Long>> dailyQuantity = new HashMap();
-                    Map <Long, Map<String, Long>> dailyMoney = new HashMap();
+                    Map <String, Map<String, Long>> dailyQuantity = new HashMap();
+                    Map <String, Map<String, Long>> dailyMoney = new HashMap();
                     // now lets fill up dailyMoney
             		//Fill this with zeroes
             		HashMap <String, Long> fillMap = new HashMap <String, Long> ();
             		for (EventCartItemTypeEnum type : EventCartItemTypeEnum.values()) {
             			fillMap.put(type.toString(), new Long(0));
             		}
-                    SimpleDateFormat fmt = new SimpleDateFormat("YYYY-MM-dd");
+                    SimpleDateFormat fmt = new SimpleDateFormat("MM-dd-yyyy");
+                    fmt.setTimeZone(event.getTimezone());
                     for(CartItem ci : cartItems) {
                     	// First get type. Store as a string instead of a enum to support refunds
                     	String type = ci.getEventCartItem().getType().toString();
                     	Long currentPrice = totalMoney.get(type);
                     	Long currentQuantity = totalQuantity.get(type);
                     	if (currentPrice != null) {
-                    		currentPrice += ci.getPrice() * ci.getQuantity();
+                    		currentPrice += ci.getPrice() * ci.getQuantity() * 100;
                     		totalMoney.put(type, currentPrice);
                     	} else {
-                    		currentPrice = ci.getPrice() * ci.getQuantity();
+                    		currentPrice = ci.getPrice() * ci.getQuantity() * 100;
                     		totalMoney.put(type, currentPrice);
                     	}
                     	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
@@ -100,9 +105,7 @@ public class CartItemRestController {
                         	}                    		
                     	}
                     	// Now update Daily section, get time at midnight:
-                    	DateTime checkoutTime = new DateTime(ci.getCreated());
-                    	checkoutTime = checkoutTime.withTimeAtStartOfDay();
-                    	Map<String, Long> dailyPrices = dailyMoney.get(checkoutTime.getMillis());
+                    	Map<String, Long> dailyPrices = dailyMoney.get(fmt.format(ci.getCreated()));
                     	if ( dailyPrices == null) {
                     		dailyPrices = new HashMap <String, Long>();
                     		for (EventCartItemTypeEnum ecit : EventCartItemTypeEnum.values()) {
@@ -115,13 +118,13 @@ public class CartItemRestController {
                     	// Check if the type has existing entries:
                     	Long currentDailyPrice = dailyPrices.get(type);
                     	if(currentDailyPrice != null) {
-                    		currentDailyPrice += ci.getPrice() * ci.getQuantity();
+                    		currentDailyPrice += ci.getPrice() * ci.getQuantity() * 100;
                     		dailyPrices.put(type, currentDailyPrice);
                     	} else {
-                    		currentDailyPrice = ci.getPrice() * ci.getQuantity();
+                    		currentDailyPrice = ci.getPrice() * ci.getQuantity() * 100;
                     		dailyPrices.put(type, currentDailyPrice);
                     	}
-                    	dailyMoney.put(checkoutTime.getMillis(), dailyPrices);
+                    	dailyMoney.put(fmt.format(ci.getCreated()), dailyPrices);
                     	
                     }
                     
@@ -129,8 +132,18 @@ public class CartItemRestController {
                         // filling the data for sos0:
                         DateTime minDate = null;
                         DateTime maxDate = null;
-                        for(Long dateLong : dailyMoney.keySet()) {
-                        	DateTime dt = new DateTime(dateLong);
+                        for(String dateString : dailyMoney.keySet()) {
+                        	Date date;
+							try {
+								date = fmt.parse(dateString);
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								return SpringJSONUtil.returnErrorMessage("Server Date Parse Error", HttpStatus.INTERNAL_SERVER_ERROR);
+							}
+                        	Calendar cal = new GregorianCalendar();
+                        	
+                        	DateTime dt = new DateTime(date);
                         	if(null == minDate || null == maxDate) {
                         		minDate = dt;
                         		maxDate = dt;
@@ -143,7 +156,7 @@ public class CartItemRestController {
                         for(DateTime dateIterator = minDate; dateIterator.isBefore(maxDate); dateIterator = dateIterator.plusDays(1)) {
                         	Long fillLong = dateIterator.getMillis();
                         	if(!dailyMoney.containsKey(fillLong)) {
-                        		dailyMoney.put(fillLong, fillMap);
+                        		dailyMoney.put(fmt.format(dateIterator), fillMap);
                         	}
                         }
                     }

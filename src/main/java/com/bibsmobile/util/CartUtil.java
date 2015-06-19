@@ -248,6 +248,7 @@ public final class CartUtil {
         	}
         }
         // Finally, apply bibs processing fee. TODO: put this at level of event.
+        cart.setTotalPreFee(total);
         total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
         // calculate discounts of total price based on coupons
 
