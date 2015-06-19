@@ -1,5 +1,6 @@
 package com.bibsmobile.controller;
 
+import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
@@ -62,7 +63,7 @@ public class CartItemRestController {
             if (event != null) {
                 List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
                 if (!eventCartItems.isEmpty()) {
-                    List<CartItem> cartItems = CartItem.findCartItemsByEventCartItems(eventCartItems, fromDate, toDate).getResultList();
+                    List<Cart> carts = Cart.findCompletedCartsByEventCartItems(eventCartItems, fromDate, toDate).getResultList();
                     Map <String, Long> totalMoney = new HashMap();
                     Map <String, Long> totalQuantity = new HashMap();
                     Map <String, Map<String, Long>> dailyQuantity = new HashMap();
@@ -73,59 +74,90 @@ public class CartItemRestController {
             		for (EventCartItemTypeEnum type : EventCartItemTypeEnum.values()) {
             			fillMap.put(type.toString(), new Long(0));
             		}
+            		fillMap.put("COUPON", new Long(0));
                     SimpleDateFormat fmt = new SimpleDateFormat("MM-dd-yyyy");
                     fmt.setTimeZone(event.getTimezone());
-                    for(CartItem ci : cartItems) {
-                    	// First get type. Store as a string instead of a enum to support refunds
-                    	String type = ci.getEventCartItem().getType().toString();
-                    	Long currentPrice = totalMoney.get(type);
-                    	Long currentQuantity = totalQuantity.get(type);
-                    	if (currentPrice != null) {
-                    		currentPrice += ci.getPrice() * ci.getQuantity() * 100;
-                    		totalMoney.put(type, currentPrice);
-                    	} else {
-                    		currentPrice = ci.getPrice() * ci.getQuantity() * 100;
-                    		totalMoney.put(type, currentPrice);
-                    	}
-                    	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
-                        	if (currentQuantity != null) {
-                        		currentQuantity += ci.getQuantity();
-                        		totalQuantity.put(type, currentQuantity);
+                    for(Cart c : carts) {
+                    	long noncoupon = 0;
+                        for(CartItem ci : c.getCartItems()) {
+                    		noncoupon += ci.getPrice() * ci.getQuantity() * 100;
+                        	// First get type. Store as a string instead of a enum to support refunds
+                        	String type = ci.getEventCartItem().getType().toString();
+                        	Long currentPrice = totalMoney.get(type);
+                        	Long currentQuantity = totalQuantity.get(type);
+                        	if (currentPrice != null) {
+                        		currentPrice += ci.getPrice() * ci.getQuantity() * 100;
+                        		totalMoney.put(type, currentPrice);
                         	} else {
-                        		currentQuantity = (long) ci.getQuantity();
-                        		totalQuantity.put(type, currentQuantity);
-                        	}                   		
-                    	} else {
-                        	if (currentQuantity != null) {
-                        		currentQuantity += 1;
-                        		totalQuantity.put(type, currentQuantity);
+                        		currentPrice = ci.getPrice() * ci.getQuantity() * 100;
+                        		totalMoney.put(type, currentPrice);
+                        	}
+                        	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                            	if (currentQuantity != null) {
+                            		currentQuantity += ci.getQuantity();
+                            		totalQuantity.put(type, currentQuantity);
+                            	} else {
+                            		currentQuantity = (long) ci.getQuantity();
+                            		totalQuantity.put(type, currentQuantity);
+                            	}                   		
                         	} else {
-                        		currentQuantity = (long) 1;
-                        		totalQuantity.put(type, currentQuantity);
-                        	}                    		
-                    	}
-                    	// Now update Daily section, get time at midnight:
-                    	Map<String, Long> dailyPrices = dailyMoney.get(fmt.format(ci.getCreated()));
-                    	if ( dailyPrices == null) {
-                    		dailyPrices = new HashMap <String, Long>();
-                    		for (EventCartItemTypeEnum ecit : EventCartItemTypeEnum.values()) {
-                    			dailyPrices.put(ecit.toString(), new Long(0));
-                    		}
-                    		System.out.println("new daily prices");
-                    		System.out.println(dailyPrices);
-                    		
-                    	}
-                    	// Check if the type has existing entries:
-                    	Long currentDailyPrice = dailyPrices.get(type);
-                    	if(currentDailyPrice != null) {
-                    		currentDailyPrice += ci.getPrice() * ci.getQuantity() * 100;
-                    		dailyPrices.put(type, currentDailyPrice);
-                    	} else {
-                    		currentDailyPrice = ci.getPrice() * ci.getQuantity() * 100;
-                    		dailyPrices.put(type, currentDailyPrice);
-                    	}
-                    	dailyMoney.put(fmt.format(ci.getCreated()), dailyPrices);
-                    	
+                            	if (currentQuantity != null) {
+                            		currentQuantity += 1;
+                            		totalQuantity.put(type, currentQuantity);
+                            	} else {
+                            		currentQuantity = (long) 1;
+                            		totalQuantity.put(type, currentQuantity);
+                            	}                    		
+                        	}
+                        	// Now update Daily section, get time at midnight:
+                        	Map<String, Long> dailyPrices = dailyMoney.get(fmt.format(ci.getCreated()));
+                        	if ( dailyPrices == null) {
+                        		dailyPrices = new HashMap <String, Long>();
+                        		for (EventCartItemTypeEnum ecit : EventCartItemTypeEnum.values()) {
+                        			dailyPrices.put(ecit.toString(), new Long(0));
+                        		}
+                        		System.out.println("new daily prices");
+                        		System.out.println(dailyPrices);
+                        		
+                        	}
+                        	// Check if the type has existing entries:
+                        	Long currentDailyPrice = dailyPrices.get(type);
+                        	if(currentDailyPrice != null) {
+                        		currentDailyPrice += ci.getPrice() * ci.getQuantity() * 100;
+                        		dailyPrices.put(type, currentDailyPrice);
+                        	} else {
+                        		currentDailyPrice = ci.getPrice() * ci.getQuantity() * 100;
+                        		dailyPrices.put(type, currentDailyPrice);
+                        	}
+                        	dailyMoney.put(fmt.format(ci.getCreated()), dailyPrices);
+                        	
+                        }
+                        if(c.getCoupon() != null) {
+                        	Long coupon = noncoupon - c.getTotalPreFee();
+                        	Map<String, Long> dailyPrices = dailyMoney.get(fmt.format(c.getCreated()));
+                        	Long currentCoupon = dailyPrices.get("COUPON");
+                        	if(currentCoupon != null) {
+                        		currentCoupon += coupon;
+                        		dailyPrices.put("COUPON", currentCoupon);
+                        	} else {
+                        		currentCoupon = coupon;
+                        		dailyPrices.put("COUPON", currentCoupon);
+                        	}
+                        	dailyMoney.put(fmt.format(c.getCreated()), dailyPrices);
+                        	Long totalCouponQuantity = totalQuantity.get("COUPON");
+                        	if (totalCouponQuantity == null) {
+                        		totalQuantity.put("COUPON", new Long(1));
+                        	} else {
+                        		totalQuantity.put("COUPON", totalCouponQuantity + 1);
+                        	}
+                        	Long totalCoupon = totalMoney.get("COUPON");
+                        	if (totalCoupon == null) {
+                        		totalMoney.put("COUPON", coupon);
+                        	} else {
+                        		totalMoney.put("COUPON", totalCoupon + coupon);
+                        	}
+                        }
+                        
                     }
                     
                     if(!dailyMoney.isEmpty()) {

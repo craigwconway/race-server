@@ -70,6 +70,29 @@ public class CartItem {
 
     private Long bib;
     
+    public static TypedQuery<CartItem> findCompletedCartItemsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
+        if (eventCartItems == null)
+            throw new IllegalArgumentException("The eventCartItems argument is required");
+        EntityManager em = CartItem.entityManager();
+        //SELECT o FROM CartItem AS o join o.cart c WHERE o.bib is null
+        String jpaQuery = "SELECT o FROM CartItem AS o join o.cart c WHERE o.eventCartItem IN (:eventCartItems) and c.status = 3";
+        if (greaterThan != null) {
+            jpaQuery += " AND o.created > :fromDate";
+        }
+        if (lessThan != null) {
+            jpaQuery += " AND o.created < :toDate";
+        }
+        TypedQuery<CartItem> q = em.createQuery(jpaQuery, CartItem.class);
+        q.setParameter("eventCartItems", eventCartItems);
+        if (greaterThan != null) {
+            q.setParameter("fromDate", greaterThan);
+        }
+        if (lessThan != null) {
+            q.setParameter("toDate", lessThan);
+        }
+        return q;
+    }
+
     public static TypedQuery<CartItem> findCartItemsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
         if (eventCartItems == null)
             throw new IllegalArgumentException("The eventCartItems argument is required");
@@ -90,8 +113,8 @@ public class CartItem {
             q.setParameter("toDate", lessThan);
         }
         return q;
-    }
-
+    }    
+    
     public static TypedQuery<CartItem> findCompletedCartItemsByEventCartItems(List<EventCartItem> eventCartItems, boolean all) {
         if (eventCartItems == null)
             throw new IllegalArgumentException("The eventCartItems argument is required");

@@ -99,6 +99,7 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
+        cart.setTotalPreFee(total);
         // Finally, apply bibs processing fee. TODO: put this at level of event.
         total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
         // set total price which is at least 0
