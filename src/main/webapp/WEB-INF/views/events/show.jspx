@@ -333,9 +333,9 @@
                                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                                 <c:if test='${(event.regEnabled)}'>
                                     <li><a href="#" onclick="emailModal(); return false;">Send Email Announcement</a></li>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 </sec:authorize>
-                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
                                 <li><a href="#" onclick="waiverModal();return false;">Waiver</a></li>
                             </ul>

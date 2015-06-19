@@ -224,7 +224,7 @@
         if('TICKET' in quantity){
             totalSales += money.TICKET;
             jQuery("#total-tickets").text(quantity.TICKET);
-            jQuery("#total-money-tickets").text("$" + money.TICKET);
+            jQuery("#total-money-tickets").text("$" + money.TICKET/100);
         }
         else{
             jQuery("#total-tickets").text(initValue);
@@ -233,15 +233,16 @@
         if('T_SHIRT' in quantity){
             totalSales += money.T_SHIRT;
             jQuery("#total-shirts").text(quantity.T_SHIRT);
-            jQuery("#total-money-shirts").text("$" + money.T_SHIRT);
+            jQuery("#total-money-shirts").text("$" + money.T_SHIRT/100);
         }
         else{
             jQuery("#total-shirts").text(initValue);
             jQuery("#total-money-shirts").text("$0");
         }
         if('DONATION' in quantity){
+            totalSales += money.DONATION;
             jQuery("#total-donations").text(quantity.DONATION);
-            jQuery("#total-money-donations").text("$" + money.DONATION);
+            jQuery("#total-money-donations").text("$" + money.DONATION/100);
         }
         else{
             jQuery("#total-donations").text(initValue);
@@ -249,7 +250,7 @@
         }
         jQuery("#total-refund").text("0");
         jQuery("#total-money-refund").text("$0");
-        jQuery("#total-sales").text("$"+totalSales);
+        jQuery("#total-sales").text("$"+totalSales/100);
     }
 
 /*
@@ -274,21 +275,21 @@
         var allAry = [];
         dates.forEach(function(item, i){
             // fillValues(dates[i], d[item], item);
-            var day = Number(dates[i]);
+            var day = new Date(dates[i]);
             var val = d[item];
             var ary = [];
             if('TICKET' in val){
-                ary = [day, val.TICKET];
+                ary = [day, val.TICKET/100];
                 ticketAry.push(ary);
                 allAry.push(ary);
             }
             if('T_SHIRT' in val){
-                ary = [day, val.T_SHIRT];
+                ary = [day, val.T_SHIRT/100];
                 shirtAry.push(ary);
                 allAry.push(ary);
             }
             if('DONATION' in val){
-                ary = [day, val.DONATION];
+                ary = [day, val.DONATION/100];
                 donationAry.push(ary);
                 allAry.push(ary);
             }
