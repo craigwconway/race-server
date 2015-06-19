@@ -56,6 +56,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.HttpResponse;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,7 @@ import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAwardsConfig;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventUserGroup;
@@ -1045,30 +1047,39 @@ public class EventController {
         }
         Event trueEvent = Event.findEvent(event.getId());
         System.out.println("incoming localdate: " + event.getTimeStartLocal());
+        //Handle Cascades
         try {
-
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
             format.setTimeZone(event.getTimezone());
             Calendar timeStart = new GregorianCalendar();
 			timeStart.setTime(format.parse(event.getTimeStartLocal()));
 			event.setTimeStart(timeStart.getTime());
+			Set<EventType> eventTypes = trueEvent.getEventTypes();
+			for(EventType eventType : eventTypes) {
+				eventType.setStartTime(format.parse(eventType.getTimeStartLocal()));
+				eventType.merge();
+			}
+			for(EventCartItem eventCartItem : EventCartItem.findEventCartItemsByEvent(trueEvent).getResultList()) {
+				eventCartItem.setTimeStart(format.parse(eventCartItem.getTimeStartLocal()));
+				eventCartItem.setTimeEnd(format.parse(eventCartItem.getTimeEndLocal()));
+				eventCartItem.merge();
+				for(EventCartItemPriceChange eventCartItemPriceChange : eventCartItem.getPriceChanges()) {
+					SimpleDateFormat priceChangeFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss.SSS a");
+					priceChangeFormat.setTimeZone(event.getTimezone());
+					eventCartItemPriceChange.setStartDate(priceChangeFormat.parse(eventCartItemPriceChange.getDateStartLocal()));
+					eventCartItemPriceChange.setEndDate(priceChangeFormat.parse(eventCartItemPriceChange.getDateEndLocal()));
+					eventCartItemPriceChange.merge();
+				}
+			}
+			if(trueEvent.getTicketTransferCutoffLocal() != null) {
+				event.setTicketTransferCutoff(format.parse(trueEvent.getTicketTransferCutoffLocal()));
+				event.setTicketTransferCutoffLocal(trueEvent.getTicketTransferCutoffLocal());
+			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return "events/create";
 		}
-        
-        Date time0 = new Date(event.getGunTimeStart());
-        Date time1 = event.getGunTime();
-        log.info("update2 " + (time0 == time1) + " " + time0 + " " + time1);
-
-        if (time0 != time1 && null != event.getGunTime()) {
-            for (RaceResult r : RaceResult.findRaceResultsByEvent(event).getResultList()) {
-                r.setTimestart(time1.getTime());
-                r.merge();
-            }
-            event.setGunTimeStart(event.getGunTime().getTime());
-        }
         event.setAwardsConfig(trueEvent.getAwardsConfig());
         System.out.println(event.getAwardsConfig());
         uiModel.asMap().clear();
@@ -1239,15 +1250,39 @@ public class EventController {
         Event event = Event.findEvent(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-
+        if (event == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
         // check the rights the user has for event
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
         }
 
-        if (event == null) {
-            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        //Check if the build has any attached entities:
+        List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        List <CartItem> cis;
+        System.out.println("madeit: " + ecis.size() + " eventcartitems found");
+        if(ecis.size() != 0) {
+        	cis = CartItem.findCartItemsByEventCartItems(ecis, null, null).getResultList();
         }
+        if(!PermissionsUtil.isSysAdmin(UserProfileUtil.getLoggedInUserProfile()) && CartItem.countFindCompletedCartItemsByEventCartItems(ecis, false) > 0) {
+        	return SpringJSONUtil.returnErrorMessage("Cannot delete active event", HttpStatus.FORBIDDEN);
+        }
+        System.out.println("nulling eci");
+        for(EventCartItem eci : ecis) {
+        	eci.setEvent(null);
+        	eci.setEventType(null);
+        	eci.merge();
+        }
+        System.out.println("nulling event.type");
+        Set<EventType> types = event.getEventTypes();
+        event.setEventTypes(null);
+        System.out.println("nulling nulling type.event");
+        for(EventType type : types) {
+        	type.setEvent(null);
+        	type.merge();
+        }
+        event.merge();
         event.remove();
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
@@ -1408,7 +1443,28 @@ public class EventController {
         	}
         	//bibTimeout.clearMultiBibs(clearBibs); TODO: Figure out how to autowire this
         }
-        
+        //Check if the build has any attached entities:
+        List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        List <CartItem> cis = CartItem.findCartItemsByEventCartItems(ecis, null, null).getResultList();
+        if(!PermissionsUtil.isSysAdmin(UserProfileUtil.getLoggedInUserProfile()) && CartItem.countFindCompletedCartItemsByEventCartItems(ecis, false) > 0) {
+        	return "redirect:/events/" + id;
+        }
+        System.out.println("nulling eci");
+        for(EventCartItem eci : ecis) {
+        	eci.setEvent(null);
+        	eci.setEventType(null);
+        	eci.merge();
+        }
+        System.out.println("nulling event.type");
+        Set<EventType> types = event.getEventTypes();
+        event.setEventTypes(null);
+        System.out.println("nulling nulling type.event");
+        for(EventType type : types) {
+        	type.setEvent(null);
+        	type.merge();
+        }
+        event.merge();
+        Hibernate.initialize(event.getAlerts());
         event.remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());

@@ -4,6 +4,10 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemPriceChange;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.SpringJSONUtil;
+import com.bibsmobile.util.UserProfileUtil;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -127,10 +131,15 @@ public class EventCartItemPriceChangeController {
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        UserProfile currentUser = UserProfileUtil.getLoggedInUserProfile();
+
         for (EventCartItemPriceChange eventCartItemPriceChange : EventCartItemPriceChange.fromJsonArrayToEventCartItemPriceChanges(json)) {
             long id = eventCartItemPriceChange.getEventCartItem().getId();
             EventCartItem eci = EventCartItem.findEventCartItem(id);
             Event event = eci.getEvent();
+            if (!PermissionsUtil.isEventAdmin(currentUser, event)) {
+                return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+            }
             if (eci != null) {
                 eventCartItemPriceChange.setEventCartItem(eci);
                 eventCartItemPriceChange.persist();
@@ -163,8 +172,14 @@ public class EventCartItemPriceChangeController {
 
     @RequestMapping(value = "/jsonArray", method = RequestMethod.DELETE, headers = "Accept=application/json")
     public ResponseEntity<String> deleteFromJsonArray(@RequestBody String json) {
+        UserProfile currentUser = UserProfileUtil.getLoggedInUserProfile();
         for (EventCartItemPriceChange tmp : EventCartItemPriceChange.fromJsonArrayToEventCartItemPriceChanges(json)) {
             EventCartItemPriceChange eventCartItemPriceChange = EventCartItemPriceChange.findEventCartItemPriceChange(tmp.getId());
+            if(eventCartItemPriceChange.getEventCartItem() != null) {
+                if (!PermissionsUtil.isEventAdmin(currentUser, eventCartItemPriceChange.getEventCartItem().getEvent())) {
+                    return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+                }
+            }
             eventCartItemPriceChange.setEventCartItem(null);
             eventCartItemPriceChange.persist();
             eventCartItemPriceChange.remove();

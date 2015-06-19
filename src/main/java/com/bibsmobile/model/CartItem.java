@@ -114,6 +114,18 @@ public class CartItem {
         }
         return q;
     }    
+    public static long countFindCompletedCartItemsByEventCartItems(List<EventCartItem> eventCartItems, boolean all) {
+        if (eventCartItems == null)
+            return 0;
+        EntityManager em = CartItem.entityManager();
+        String jpaQuery = "SELECT COUNT(o) FROM CartItem o AS o join o.cart c WHERE o.eventCartItem IN (:eventCartItems) and c.status = 3";
+        if (!all) {
+            jpaQuery += " AND o.exported != true";
+        }
+        TypedQuery<Long> q = em.createQuery(jpaQuery, Long.class);
+        q.setParameter("eventCartItems", eventCartItems);
+        return q.getSingleResult();
+    }
     
     public static TypedQuery<CartItem> findCompletedCartItemsByEventCartItems(List<EventCartItem> eventCartItems, boolean all) {
         if (eventCartItems == null)

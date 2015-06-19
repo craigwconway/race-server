@@ -248,8 +248,14 @@
             jQuery("#total-donations").text(initValue);
             jQuery("#total-money-donations").text("$0");
         }
-        jQuery("#total-refund").text("0");
-        jQuery("#total-money-refund").text("$0");
+        if('REFUND' in quantity){
+            jQuery("#total-refund").text(quantity.REFUND);
+            jQuery("#total-money-refund").text("$" + money.REFUND/100);
+        }
+        else{
+            jQuery("#total-refund").text(initValue);
+            jQuery("#total-money-refund").text("$0");
+        }
         jQuery("#total-sales").text("$"+totalSales/100);
     }
 
