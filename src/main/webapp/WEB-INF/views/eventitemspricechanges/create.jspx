@@ -645,8 +645,8 @@
                 request.done(function( data ) {
                     if( data !== null ){
                         eci = data;
-                        eciStart = moment(data.timeStart).format('MM/DD/YYYY h:mm:ss.SSS a');
-                        eciEnd = moment(data.timeEnd).format('MM/DD/YYYY h:mm:ss.SSS a');
+                        eciStart = moment(data.timeStartLocal).format('MM/DD/YYYY h:mm:ss.SSS a');
+                        eciEnd = moment(data.timeEndLocal).format('MM/DD/YYYY h:mm:ss.SSS a');
                         eciBasePrice = eci.price;
                         jQuery("#event-name").text(eci.name);
                         jQuery(".base-price").each(function(){
