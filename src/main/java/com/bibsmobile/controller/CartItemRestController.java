@@ -78,8 +78,10 @@ public class CartItemRestController {
                     SimpleDateFormat fmt = new SimpleDateFormat("MM-dd-yyyy");
                     fmt.setTimeZone(event.getTimezone());
                     for(Cart c : carts) {
+                    	System.out.println("Processing cart: " + c.getId());
                     	long noncoupon = 0;
                         for(CartItem ci : c.getCartItems()) {
+                        	System.out.println("CARTITEM ID: " + ci.getId() + " TYPE: " + ci.getEventCartItem().getType());
                     		noncoupon += ci.getPrice() * ci.getQuantity() * 100;
                         	// First get type. Store as a string instead of a enum to support refunds
                         	String type = ci.getEventCartItem().getType().toString();
@@ -157,6 +159,9 @@ public class CartItemRestController {
                         		totalMoney.put("COUPON", totalCoupon + coupon);
                         	}
                         }
+                        System.out.println("Adding cartitem...");
+                        System.out.println("Total Money: ---------");
+                        System.out.println(totalMoney);
                         
                     }
                     

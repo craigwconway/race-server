@@ -332,7 +332,7 @@ public class Cart {
             throw new IllegalArgumentException("The eventCartItems argument is required");
         EntityManager em = CartItem.entityManager();
         //SELECT o FROM CartItem AS o join o.cart c WHERE o.bib is null
-        String jpaQuery = "SELECT o FROM Cart AS o join o.cartItems c WHERE c.eventCartItem IN (:eventCartItems) and o.status = 3";
+        String jpaQuery = "SELECT DISTINCT o FROM Cart AS o join o.cartItems c WHERE c.eventCartItem IN (:eventCartItems) and o.status = 3";
         if (greaterThan != null) {
             jpaQuery += " AND o.created > :fromDate";
         }
