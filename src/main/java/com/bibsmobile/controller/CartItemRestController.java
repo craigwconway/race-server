@@ -197,8 +197,15 @@ public class CartItemRestController {
                         	}
                         }
                     }
-
-                    
+                    //Find Refunded Carts:
+                    Long refundTotal = new Long(0);
+                    Long refundCount = new Long(0);
+                    for(Cart refundCart : Cart.findRefundedCartsByEventCartItems(eventCartItems, fromDate, toDate).getResultList()) {
+                    	refundCount++;
+                    	refundTotal += refundCart.getTotalPreFee();
+                    }
+                    totalMoney.put("REFUND", refundTotal);
+                    totalQuantity.put("REFUND", refundCount);
                     System.out.println("TotalMoney:");
                     System.out.println(totalMoney);
                     System.out.println("Total Quantity:");
