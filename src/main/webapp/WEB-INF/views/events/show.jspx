@@ -773,7 +773,7 @@
                 dataType: "text"
             });
             request.done(function( d ) {
-                jQuery(".waiver-content").val(d);
+                jQuery(".waiver-content").val(decodeURIComponent(d).replace(/\+/g, " "));
             });
             request.fail(function( jqXHR, textStatus ) {
             });
@@ -789,7 +789,7 @@
             });
             request.done(function( d ) {
                 jQuery("#waiverModal").modal('hide');
-
+                window.location.reload();
             });
             request.fail(function( jqXHR, textStatus ) {
             });
