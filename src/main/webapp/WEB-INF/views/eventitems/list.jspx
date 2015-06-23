@@ -828,10 +828,9 @@
                 var transferDate = jQuery('input[name="ticketTransferCutoff"]').val();
 
                 jQuery.ajax({
-                    url: "/bibs-server/events/${event.id}/tickettransfer",
+                    url: "/bibs-server/events/${event.id}/tickettransfer" + "?tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
                     type: "PUT",
                     dataType: "text/html",
-                    data: "tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
                     complete: function() {
                         window.location.reload();
                     }
