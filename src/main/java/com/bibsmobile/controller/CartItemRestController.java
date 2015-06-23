@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,10 +27,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.Map;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -68,6 +71,7 @@ public class CartItemRestController {
                     Map <String, Long> totalQuantity = new HashMap();
                     Map <String, Map<String, Long>> dailyQuantity = new HashMap();
                     Map <String, Map<String, Long>> dailyMoney = new HashMap();
+                    Map <String, Map<String, Long>> sortedDailyMoney = new LinkedHashMap();
                     // now lets fill up dailyMoney
             		//Fill this with zeroes
             		HashMap <String, Long> fillMap = new HashMap <String, Long> ();
@@ -118,6 +122,7 @@ public class CartItemRestController {
                         		for (EventCartItemTypeEnum ecit : EventCartItemTypeEnum.values()) {
                         			dailyPrices.put(ecit.toString(), new Long(0));
                         		}
+                        		dailyPrices.put("COUPON", new Long(0));
                         		System.out.println("new daily prices");
                         		System.out.println(dailyPrices);
                         		
@@ -169,6 +174,10 @@ public class CartItemRestController {
                         // filling the data for sos0:
                         DateTime minDate = null;
                         DateTime maxDate = null;
+                        Calendar minCal = null;
+                        //minCal.setTimeZone(event.getTimezone());
+                        //maxCal.setTimezone(event.getTimezone());
+                        Calendar maxCal = null;
                         for(String dateString : dailyMoney.keySet()) {
                         	Date date;
 							try {
@@ -179,22 +188,30 @@ public class CartItemRestController {
 								return SpringJSONUtil.returnErrorMessage("Server Date Parse Error", HttpStatus.INTERNAL_SERVER_ERROR);
 							}
                         	Calendar cal = new GregorianCalendar();
-                        	
+                        	cal.setTime(date);
                         	DateTime dt = new DateTime(date);
                         	if(null == minDate || null == maxDate) {
                         		minDate = dt;
                         		maxDate = dt;
+                        		minCal = cal;
+                        		maxCal = cal;
                         	} else {
                         		minDate = minDate.isBefore(dt) ? minDate : dt;
                         		maxDate = maxDate.isAfter(dt) ? maxDate : dt;
+                        		minCal = minCal.before(cal) ? minCal : cal;
+                        		maxCal = maxCal.after(cal) ? maxCal : cal;
                         	}
                         	
                         }
-                        for(DateTime dateIterator = minDate; dateIterator.isBefore(maxDate); dateIterator = dateIterator.plusDays(1)) {
-                        	Long fillLong = dateIterator.getMillis();
-                        	if(!dailyMoney.containsKey(fillLong)) {
-                        		dailyMoney.put(fmt.format(dateIterator), fillMap);
+                        //DateTimeFormatter dtf = DateTimeFormat.forPattern("MM-dd-yyyy");
+                        //DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MMM-yy")
+                        //	    .withLocale(Locale.US);
+                        for(Calendar calIterator = minCal; !calIterator.after(maxCal); calIterator.add(Calendar.DATE, 1)) {
+                        	String fillString = fmt.format(calIterator.getTime());
+                        	if(!dailyMoney.containsKey(fillString)) {
+                        		dailyMoney.put(fillString, fillMap);
                         	}
+                        	sortedDailyMoney.put(fillString, dailyMoney.get(fillString));
                         }
                     }
                     //Find Refunded Carts:
@@ -219,7 +236,7 @@ public class CartItemRestController {
                     responseObj.add("totalMoney", moneyTree);
                     JsonElement quantityTree = gson.toJsonTree(totalQuantity);
                     responseObj.add("totalQuantity", quantityTree);
-                    JsonElement dailyMoneyTree = gson.toJsonTree(dailyMoney);
+                    JsonElement dailyMoneyTree = gson.toJsonTree(sortedDailyMoney);
                     responseObj.add("dailyMoney", dailyMoneyTree);
                     //JsonElement cartItemTree = gson.toJsonTree(cartItems);
                     //responseObj.add("cartItems", cartItemTree);
