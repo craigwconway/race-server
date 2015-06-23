@@ -181,7 +181,7 @@
                 <div class="modal-footer">
                     <button type="button" class="ui button" data-dismiss="modal">Close</button>
                     <button type="button" class="ui green button post-coupon" onclick="saveCoupon(false)">Submit</button>
-                    <button type="button" class="ui red button put-coupon" style="display:none" onclick="deleteQuestion()">Remove</button>
+                    <button type="button" class="ui red button put-coupon" style="display:none" onclick="deleteCoupon()">Remove</button>
                     <button type="button" class="ui green button put-coupon" style="display:none" onclick="saveCoupon(true)">Save</button>
                 </div>
             </div>
@@ -443,26 +443,57 @@
         }
 
         function deleteCoupon(){
+            var error = true;
+
+            var questUrl = "/bibs-server/eventcoupons";
+            var questType = 'PUT';
             var id = currCouponId;
-            var obj = {};
-            obj.id = id;
-            obj.event = null;
             if( id !== "" &amp;&amp; id !== null ){
-                if( confirm('Are you sure you want to delete this coupon? This cannot be undone.') ){
-                    jQuery.ajax({
-                        url: "/bibs-server/eventcoupons/" + id,
-                        type: "DELETE",
-                        dataType: "json",
-                        data: obj,
-                        complete: function() {
-                            window.location.reload();
-                        }
-                    });
-                }
+                questUrl = questUrl + "/" + id;
             }
             else{
-                alert("Something went wrong while trying to delete this coupon.");
+                alert("Something went wrong while trying to save this coupon.");
                 window.location.reload();
+            }
+
+            var obj = {};
+            obj.event = null;
+
+            var couponcode = jQuery('input[name="couponcode"]').val();
+            var discount = jQuery('input[name="discount"]').val();
+            var available = jQuery('input[name="available"]').val();
+
+            if( couponcode.length > 0 ){ obj.code = couponcode; }
+            if( available.length > 0 ){  obj.available = parseInt(available); }
+
+            var discountAbsolute = null;
+            var discountRelative = null;
+            if( jQuery('#disc-curr').hasClass('positive') ){
+                if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
+                    // convert to cents
+                    discount = parseFloat(discount) * 100;
+                }
+                obj.discountAbsolute = discount;
+            }
+            if( jQuery('#disc-perc').hasClass('positive') ){ obj.discountRelative = parseFloat(discount); }
+
+            if( obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
+                error = true;
+            }
+            else{
+                console.log(obj);
+                if( confirm('Are you sure you want to delete this coupon? This cannot be undone.') ){
+                    jQuery.ajax({
+                        url: questUrl,
+                        type: questType,
+                        contentType: "application/json",
+                        data: JSON.stringify(obj),
+                        dataType: "json",
+                        complete: function(data) {
+                            window.location.reload();
+                        }
+                    })
+                }
             }
         }
 
@@ -502,7 +533,7 @@
                     // convert to cents
                     discount = parseFloat(discount) * 100;
                 }
-                obj.discountAbsolute = discount;
+                obj.discountAbsolute = discount * 100;
             }
             if( jQuery('#disc-perc').hasClass('positive') ){ obj.discountRelative = parseFloat(discount); }
 
@@ -523,6 +554,7 @@
                 })
             }
         }
+
         function addQuestionModal(){
             jQuery("#addQuestion").modal('show');
             jQuery('input[name="id"]').val("");
