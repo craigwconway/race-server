@@ -133,18 +133,18 @@
                     <div class="two fields">
                         <div class="field">
                             <label>Item Sale Start Date: </label>
-                            <input  type="text" name="timeStart"
+                            <input  type="text" name="timeStartLocal"
                                 id="ECIStart"
                                 placeholder="Price start date"
-                                value="${eventCartItem.timeStart}"
+                                value="${eventCartItem.timeStartLocal}"
                                 data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-date-format="MM/DD/YYYY hh:mm:ss a"
                                 data-parsley-error-message="Please specify a start date."
                                 data-parsley-required="true"></input>
                         </div>
                         <div class="field">
                             <label>Item Sale End Date: </label>
-                            <input  type="text" name="timeEnd"
+                            <input  type="text" name="timeEndLocal"
                                 id="ECIEnd"
                                 placeholder="Price end date"
                                 value="${eventCartItem.timeEnd}"
@@ -435,10 +435,10 @@
         }
 
         function initDateTimePickers(){
-            var start = "${eventCartItem.timeStart}";
-            var end = "${eventCartItem.timeEnd}";
-            var momStart = moment(start).format('MM/DD/YYYY h:mm:ss a');
-            var momEnd = moment(end).format('MM/DD/YYYY h:mm:ss a');
+            var start = "${eventCartItem.timeStartLocal}";
+            var end = "${eventCartItem.timeEndLocal}";
+            var momStart = moment(start).format('MM/DD/YYYY hh:mm:ss a');
+            var momEnd = moment(end).format('MM/DD/YYYY hh:mm:ss a');
             jQuery("#ECIStart").val(momStart);
             jQuery("#ECIEnd").val(momEnd);
             jQuery("#ECIStart")
@@ -453,7 +453,7 @@
                     sideBySide: true
                 });
             jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
-            var eventStart = moment('${event.timeStart}').startOf('hour').format('MM/DD/YYYY h:mm:ss a');
+            var eventStart = moment('${event.timeStartLocal}').startOf('hour').format('MM/DD/YYYY hh:mm:ss a');
             jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
 
             <!-- on change-ui -->

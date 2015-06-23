@@ -110,7 +110,8 @@ public class EventCartItemCouponController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json; charset=utf-8");
 		// check the rights the user has for event
-		if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), eventCoupon.getEvent())) {
+		if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event) 
+				|| !PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), existing.getEvent())) {
 			return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
 		}
 		

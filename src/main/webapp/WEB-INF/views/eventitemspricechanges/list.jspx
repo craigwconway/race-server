@@ -67,8 +67,8 @@
                                 <div class="content">
                                     <div class="ui header"><i class="fa fa-tag"><!--  --></i>$${item.price}</div>
                                     <div class="date-ranges">
-                                        <span class="dates"><fmt:formatDate value="${item.startDate}" pattern="yyyy-MM-dd HH:mm:ss" /></span> to
-                                        <span class="dates"><fmt:formatDate value="${item.endDate}" pattern="yyyy-MM-dd HH:mm:ss" /></span>
+                                        <span class="dates">${item.dateStartLocal}</span> to
+                                        <span class="dates">${item.dateEndLocal}</span>
                                     </div>
                                 </div>
                             </div>

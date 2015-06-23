@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
         <style>
@@ -90,22 +90,15 @@
                     </div>
                     <div class="ui labeled input">
                         <div class="ui blue label">Event Date</div>
-                        <input  type="text" name="timeStart"
+                        <input  type="text" name="timeStartLocal"
                                 class="form-control"
                                 id="eventDatepicker"
-                                value="${event.timeStart}"
+                                value="${event.timeStartLocal}"
                                 placeholder="Event date"
                                 data-provide="datepicker"
                                 data-date-format="MM/DD/YYYY h:mm:ss a"
                                 data-parsley-error-message="Please enter a date for this event."
                                 data-parsley-required="true"></input>
-                    </div>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Timezone</div>
-                        <div class="ui search" id="timezone-search">
-                            <input class="prompt" type="text" name="timezone" placeholder="Timezone" value="${event.timezone.ID}"><!--  --></input>
-                            <div class="results"><!--  --></div>
-                        </div>
                     </div>
                     <div class="ui labeled input">
                         <div class="ui blue label">Organization</div>
@@ -205,6 +198,13 @@
                                     value="${event.latitude}"></input>
                             <input  id="geolong" type="text" name="longitude"
                                     value="${event.longitude}"></input>
+                        </div>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Timezone</div>
+                        <div class="ui search" id="timezone-search">
+                            <input class="prompt" type="text" name="timezone" placeholder="Timezone" value="${event.timezone.ID}"><!--  --></input>
+                            <div class="results"><!--  --></div>
                         </div>
                     </div>
                     <c:if test='${(!build.rfid)}'>
@@ -347,8 +347,9 @@
         }
 
         function initDateTimePickers(){
-            var eventTime = "${event.timeStart}";
+            var eventTime = "${event.timeStartLocal}";
             var momentEventTime = moment(eventTime).format('MM/DD/YYYY h:mm:ss a');
+            console.log(momentEventTime);
             jQuery("#eventDatepicker").val(momentEventTime);
             jQuery("#eventDatepicker")
                 .datetimepicker({
@@ -384,17 +385,22 @@
         }
 
         function preventGeocompleteBlur(){
-            jQuery('#submit').click(function(){
-                e.preventDefault();
-                if( addr == "" ){
-                    jQuery('#geoaddress').val(misc);
-                }else{
-                    jQuery('#geoaddress').val(addr);
-                }
-                jQuery('#geocity').val(city);
-                jQuery('#geostate').val(state);
-                jQuery('#geocountry').val(country);
-                this.submit();
+            jQuery('#proceed').click(function(){
+                jQuery("#event").submit(function(e) {
+                    e.preventDefault();
+                    var localdate = jQuery('input[name="timeStartLocal"]').val();
+                    localdate = moment(localdate).format('MM/DD/YYYY hh:mm:ss a');
+                    jQuery('input[name="timeStartLocal"]').val(localdate);
+                    if( addr == "" ){
+                        jQuery('#geoaddress').val(misc);
+                    }else{
+                        jQuery('#geoaddress').val(addr);
+                    }
+                    jQuery('#geocity').val(city);
+                    jQuery('#geostate').val(state);
+                    jQuery('#geocountry').val(country);
+                    this.submit();
+                });
             })
         }
 

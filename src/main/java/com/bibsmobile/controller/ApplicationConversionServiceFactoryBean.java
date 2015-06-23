@@ -169,7 +169,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         return new Converter<Cart, String>() {
             @Override
             public String convert(Cart cart) {
-                return new StringBuilder().append(cart.getShipping()).append(' ').append(cart.getTotal()).append(' ').append(cart.getCreated()).append(' ')
+                return new StringBuilder().append(cart.getTotal()).append(' ').append(cart.getCreated()).append(' ')
                         .append(cart.getUpdated()).toString();
             }
         };

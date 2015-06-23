@@ -82,13 +82,10 @@
                 <div class="ui blue horizontal label">Base Price</div>${eventcartitem.price}
               </div>
               <div class="item">
-                <div class="ui blue horizontal label">Time Limit</div>${eventcartitem.timeLimit}
+                <div class="ui blue horizontal label">Start Time</div>${eventcartitem.timeStartLocal}
               </div>
               <div class="item">
-                <div class="ui blue horizontal label">Start Time</div>${eventcartitem.timeStart}
-              </div>
-              <div class="item">
-                <div class="ui blue horizontal label">End Time</div>${eventcartitem.timeEnd}
+                <div class="ui blue horizontal label">End Time</div>${eventcartitem.timeEndLocal}
               </div>
               <div class="item">
                 <div class="ui blue horizontal label">Age Group</div>${eventcartitem.minAge} to ${eventcartitem.maxAge}

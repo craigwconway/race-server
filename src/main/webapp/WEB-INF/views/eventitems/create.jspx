@@ -136,27 +136,27 @@
                     <div class="two fields">
                         <div class="field">
                             <label>Item Sale Start Date: </label>
-                            <input  type="text" name="timeStart"
+                            <input  type="text" name="timeStartLocal"
                                 id="ECIStart"
                                 placeholder="Price start date"
                                 data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-date-format="MM/DD/YYYY hh:mm:ss a"
                                 data-parsley-error-message="Please specify a start date."
                                 data-parsley-required="true"></input>
                         </div>
                         <div class="field">
                             <label>Item Sale End Date: </label>
-                            <input  type="text" name="timeEnd"
+                            <input  type="text" name="timeEndLocal"
                                 id="ECIEnd"
                                 placeholder="Price end date"
                                 data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-date-format="MM/DD/YYYY hh:mm:ss a"
                                 data-parsley-error-message="Please specify an end date."
                                 data-parsley-required="true"></input>
                         </div>
                     </div>
                     <div style="display:none">
-                        <input id="eventStartDate" value="${event.timeStart}"></input>
+                        <input id="eventStartDate" value="${event.timeStartLocal}"></input>
                     </div>
                     <div class="ui labeled input shirt-settings" style="display:none">
                         <div class="ui blue label">Sizes</div>
@@ -430,7 +430,7 @@
                     sideBySide: true
                 });
             jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
-            var eventStart = moment('${event.timeStart}').startOf('hour').format('MM/DD/YYYY h:mm:ss a');
+            var eventStart = moment('${event.timeStartLocal}').startOf('hour').format('MM/DD/YYYY h:mm:ss a');
             jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
 
             <!-- on change-ui -->

@@ -63,12 +63,14 @@ public class EventCartItem {
     private boolean timeLimit;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date timeStart;
 
+    private String timeStartLocal;
+    
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss a")
     private Date timeEnd;
+    
+    private String timeEndLocal;
 
     /**
      */
@@ -205,6 +207,7 @@ public class EventCartItem {
                 .append(this.phone, rhs.phone).append(this.price, rhs.price).append(this.purchased, rhs.purchased).append(this.timeEnd, rhs.timeEnd)
                 .append(this.timeLimit, rhs.timeLimit).append(this.timeStart, rhs.timeStart).append(this.tshirtColors, rhs.tshirtColors)
                 .append(this.tshirtImageUrls, rhs.tshirtImageUrls).append(this.tshirtSizes, rhs.tshirtSizes).append(this.type, rhs.type).append(this.zipCode, rhs.zipCode)
+                .append(this.timeStartLocal, rhs.timeStartLocal).append(this.timeEndLocal, rhs.timeEndLocal)
                 .isEquals();
     }
 
@@ -214,7 +217,7 @@ public class EventCartItem {
                 .append(this.description).append(this.email)
                 .append(this.emergencyContactName).append(this.emergencyContactPhone).append(this.event).append(this.eventType).append(this.gender).append(this.hearFrom)
                 .append(this.id).append(this.maxAge).append(this.minAge).append(this.name).append(this.phone).append(this.price).append(this.purchased).append(this.timeEnd)
-                .append(this.timeLimit).append(this.timeStart).append(this.tshirtColors).append(this.tshirtImageUrls).append(this.tshirtSizes).append(this.type)
+                .append(this.timeLimit).append(this.timeStart).append(this.timeStartLocal).append(this.timeEndLocal).append(this.tshirtColors).append(this.tshirtImageUrls).append(this.tshirtSizes).append(this.type)
                 .append(this.zipCode).toHashCode();
     }
 
@@ -320,7 +323,21 @@ public class EventCartItem {
         this.timeStart = timeStart;
     }
 
-    public Date getTimeEnd() {
+    /**
+	 * @return the timeStartLocal
+	 */
+	public String getTimeStartLocal() {
+		return timeStartLocal;
+	}
+
+	/**
+	 * @param timeStartLocal the timeStartLocal to set
+	 */
+	public void setTimeStartLocal(String timeStartLocal) {
+		this.timeStartLocal = timeStartLocal;
+	}
+
+	public Date getTimeEnd() {
         return this.timeEnd;
     }
 
@@ -328,7 +345,21 @@ public class EventCartItem {
         this.timeEnd = timeEnd;
     }
 
-    public EventCartItemTypeEnum getType() {
+    /**
+	 * @return the timeEndLocal
+	 */
+	public String getTimeEndLocal() {
+		return timeEndLocal;
+	}
+
+	/**
+	 * @param timeEndLocal the timeEndLocal to set
+	 */
+	public void setTimeEndLocal(String timeEndLocal) {
+		this.timeEndLocal = timeEndLocal;
+	}
+
+	public EventCartItemTypeEnum getType() {
         return this.type;
     }
 

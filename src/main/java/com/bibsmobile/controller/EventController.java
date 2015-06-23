@@ -17,12 +17,15 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +56,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.HttpResponse;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +91,7 @@ import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAwardsConfig;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventUserGroup;
@@ -147,6 +152,8 @@ public class EventController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
+        	System.out.println("errors detected in uimodel");
+        	System.out.println(bindingResult.getFieldErrors());
             this.populateEditForm(uiModel, event);
             uiModel.addAttribute("build", BuildTypeUtil.getBuild());
             return "events/create";
@@ -174,7 +181,33 @@ public class EventController {
             user.getUserGroup().setEvents(groupEvents);
             user.getUserGroup().merge();
         }*/
+        System.out.println("incoming localdate: " + event.getTimeStartLocal());
+        try {
 
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar timeStart = new GregorianCalendar();
+			timeStart.setTime(format.parse(event.getTimeStartLocal()));
+			event.setTimeStart(timeStart.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "events/create";
+		}
+        /**
+        System.out.println("start" + event.getTimeStart());
+        long offset = 0;
+        // Timezone logic: If user has entered a timezone that does not line up with their machine local time, adjust timestamp to preserve local time
+        if(event.getTimezone() != null && event.getLocalTimeOffset() != null ) {
+        	System.out.println("Event offset: " + event.getTimezone().getOffset(event.getTimeStart().getTime()) + ", Local time offset: " + event.getLocalTimeOffset());
+        	offset = event.getTimezone().getOffset(event.getTimeStart().getTime()) - event.getLocalTimeOffset() * 60000;
+        }
+        if(offset != 0) {
+        	System.out.println("setting new value with offset: " + offset);
+        	event.setTimeStart(new Date(event.getTimeStart().getTime() + offset));
+        }
+        */
+        System.out.println("localstart" + event.getTimeStartLocal() + ", start" + event.getTimeStart());
         // Generate a hashtag based on event name
         event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));        
         event.setAwardsConfig(new EventAwardsConfig());
@@ -804,13 +837,13 @@ public class EventController {
     }
 
     void addDateTimeFormatPatterns1(Model uiModel) {
-        uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss a");
-        uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss a");
+        uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_guntime_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_created_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_updated_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss aZ");
+        uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss aZ");
     }
     
 	@RequestMapping(value = "/systemdetails", method = RequestMethod.GET)
@@ -1013,27 +1046,40 @@ public class EventController {
             return "events/update";
         }
         Event trueEvent = Event.findEvent(event.getId());
-
-        long offset = 0;
-        // Timezone logic: If a user enters changes a timezone, we should update all of the times by the difference between the two
-        if(trueEvent.getTimezone() != null && event.getTimezone() != null && trueEvent.getTimezone() != event.getTimezone()) {
-        	offset = trueEvent.getTimezone().getOffset(event.getTimeStart().getTime()) - event.getTimezone().getOffset(event.getTimeStart().getTime());
-        }
-        if(offset != 0) {
-        	event.setTimeStart(new Date(event.getTimeStart().getTime() + offset));
-        }
-        
-        Date time0 = new Date(event.getGunTimeStart());
-        Date time1 = event.getGunTime();
-        log.info("update2 " + (time0 == time1) + " " + time0 + " " + time1);
-
-        if (time0 != time1 && null != event.getGunTime()) {
-            for (RaceResult r : RaceResult.findRaceResultsByEvent(event).getResultList()) {
-                r.setTimestart(time1.getTime());
-                r.merge();
-            }
-            event.setGunTimeStart(event.getGunTime().getTime());
-        }
+        System.out.println("incoming localdate: " + event.getTimeStartLocal());
+        //Handle Cascades
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar timeStart = new GregorianCalendar();
+			timeStart.setTime(format.parse(event.getTimeStartLocal()));
+			event.setTimeStart(timeStart.getTime());
+			Set<EventType> eventTypes = trueEvent.getEventTypes();
+			for(EventType eventType : eventTypes) {
+				eventType.setStartTime(format.parse(eventType.getTimeStartLocal()));
+				eventType.merge();
+			}
+			for(EventCartItem eventCartItem : EventCartItem.findEventCartItemsByEvent(trueEvent).getResultList()) {
+				eventCartItem.setTimeStart(format.parse(eventCartItem.getTimeStartLocal()));
+				eventCartItem.setTimeEnd(format.parse(eventCartItem.getTimeEndLocal()));
+				eventCartItem.merge();
+				for(EventCartItemPriceChange eventCartItemPriceChange : eventCartItem.getPriceChanges()) {
+					SimpleDateFormat priceChangeFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss.SSS a");
+					priceChangeFormat.setTimeZone(event.getTimezone());
+					eventCartItemPriceChange.setStartDate(priceChangeFormat.parse(eventCartItemPriceChange.getDateStartLocal()));
+					eventCartItemPriceChange.setEndDate(priceChangeFormat.parse(eventCartItemPriceChange.getDateEndLocal()));
+					eventCartItemPriceChange.merge();
+				}
+			}
+			if(trueEvent.getTicketTransferCutoffLocal() != null) {
+				event.setTicketTransferCutoff(format.parse(trueEvent.getTicketTransferCutoffLocal()));
+				event.setTicketTransferCutoffLocal(trueEvent.getTicketTransferCutoffLocal());
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "events/create";
+		}
         event.setAwardsConfig(trueEvent.getAwardsConfig());
         System.out.println(event.getAwardsConfig());
         uiModel.asMap().clear();
@@ -1204,15 +1250,39 @@ public class EventController {
         Event event = Event.findEvent(id);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-
+        if (event == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
         // check the rights the user has for event
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
         }
 
-        if (event == null) {
-            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        //Check if the build has any attached entities:
+        List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        List <CartItem> cis;
+        System.out.println("madeit: " + ecis.size() + " eventcartitems found");
+        if(ecis.size() != 0) {
+        	cis = CartItem.findCartItemsByEventCartItems(ecis, null, null).getResultList();
         }
+        if(!PermissionsUtil.isSysAdmin(UserProfileUtil.getLoggedInUserProfile()) && CartItem.countFindCompletedCartItemsByEventCartItems(ecis, false) > 0) {
+        	return SpringJSONUtil.returnErrorMessage("Cannot delete active event", HttpStatus.FORBIDDEN);
+        }
+        System.out.println("nulling eci");
+        for(EventCartItem eci : ecis) {
+        	eci.setEvent(null);
+        	eci.setEventType(null);
+        	eci.merge();
+        }
+        System.out.println("nulling event.type");
+        Set<EventType> types = event.getEventTypes();
+        event.setEventTypes(null);
+        System.out.println("nulling nulling type.event");
+        for(EventType type : types) {
+        	type.setEvent(null);
+        	type.merge();
+        }
+        event.merge();
         event.remove();
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
@@ -1246,6 +1316,7 @@ public class EventController {
     public String show(@PathVariable("id") Long id, Model uiModel) {
         this.addDateTimeFormatPatterns(uiModel);
         Event e = Event.findEvent(id);
+        System.out.println("showing event id: " + e.getId() + " name: " + e.getName() + " starting at: " + e.getTimeStart());
 
         ResultsFile latestImportFile = e.getLatestImportFile();
         ResultsImport latestImport = ((latestImportFile == null) ? null : latestImportFile.getLatestImport());
@@ -1372,7 +1443,28 @@ public class EventController {
         	}
         	//bibTimeout.clearMultiBibs(clearBibs); TODO: Figure out how to autowire this
         }
-        
+        //Check if the build has any attached entities:
+        List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+        List <CartItem> cis = CartItem.findCartItemsByEventCartItems(ecis, null, null).getResultList();
+        if(!PermissionsUtil.isSysAdmin(UserProfileUtil.getLoggedInUserProfile()) && CartItem.countFindCompletedCartItemsByEventCartItems(ecis, false) > 0) {
+        	return "redirect:/events/" + id;
+        }
+        System.out.println("nulling eci");
+        for(EventCartItem eci : ecis) {
+        	eci.setEvent(null);
+        	eci.setEventType(null);
+        	eci.merge();
+        }
+        System.out.println("nulling event.type");
+        Set<EventType> types = event.getEventTypes();
+        event.setEventTypes(null);
+        System.out.println("nulling nulling type.event");
+        for(EventType type : types) {
+        	type.setEvent(null);
+        	type.merge();
+        }
+        event.merge();
+        Hibernate.initialize(event.getAlerts());
         event.remove();
         uiModel.asMap().clear();
         uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
@@ -1384,25 +1476,38 @@ public class EventController {
     @RequestMapping(value="/{id}/tickettransfer",method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<String> manageTicketTransfer(@PathVariable("id") Long id,
-    		@RequestParam(value = "ticketTransferEnabled") boolean ticketTransferEnabled,
-    		@RequestParam(value = "ticketTransferCutoff", required=false) Date ticketTransferCutoff) {
+    		@RequestParam(value = "tickettransferenabled") boolean ticketTransferEnabled,
+    		@RequestParam(value = "tickettransfercutoff", required=false) String ticketTransferCutoff) {
     	Event event = Event.findEvent(id);
     	HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        System.out.println("ENtered Ticket transfer endpoint, incoming cutoff: " + ticketTransferCutoff);
     	if(null == event) {
     		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
     	}
     	if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
         }
+
     	if(ticketTransferCutoff == null) {
     		event.setTicketTransferEnabled(false);
     		event.setTicketTransferCutoff(null);
     		event.merge();
     		return new ResponseEntity<>("No cutoff specified, disabling ticket transfer", headers, HttpStatus.BAD_REQUEST);
     	}
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar ticketTransfer = new GregorianCalendar();
+			ticketTransfer.setTime(format.parse(ticketTransferCutoff));
+			event.setTicketTransferCutoff(ticketTransfer.getTime());
+			event.setTicketTransferCutoffLocal(ticketTransferCutoff);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+    		return new ResponseEntity<>("Malformed time string", headers, HttpStatus.BAD_REQUEST);
+		}
     	event.setTicketTransferEnabled(ticketTransferEnabled);
-    	event.setTicketTransferCutoff(ticketTransferCutoff);
     	event.merge();
     	return new ResponseEntity<>(headers, HttpStatus.OK);
     }

@@ -142,6 +142,7 @@
 
         <script type="text/javascript">
             jQuery(function($) {
+                $('nav').hide();
                 $('#transfer-form').submit(function(event) {
                     var $form = $(this);
 

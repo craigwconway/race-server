@@ -241,7 +241,7 @@
                             <div class="twelve wide required field">
                                 <label id="starttime">Start Time</label>
                                 <div class="ui action input">
-                                    <input  type="text" name="startTime"
+                                    <input  type="text" name="timeStartLocal"
                                             class="form-control"
                                             id="timedisp"
                                             placeholder="Official Time (hh:mm)"
@@ -324,18 +324,18 @@
                                     <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                     <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                     <li><a href="#" onclick="exportModal(); return false;">Export Registrations</a></li>
-                                </c:if>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                </c:if>
                                 <c:if test="${not empty eventTypes}">
                                     <li><a href="#" onclick="bibsModal(); return false;">Manage Bib Numbers</a></li>
-                                </c:if>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                </c:if>
                                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                                 <c:if test='${(event.regEnabled)}'>
                                     <li><a href="#" onclick="emailModal(); return false;">Send Email Announcement</a></li>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 </sec:authorize>
-                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
                                 <li><a href="#" onclick="waiverModal();return false;">Waiver</a></li>
                             </ul>
@@ -414,22 +414,15 @@
                 </div>
             </div>
             <div class="event-name">${event.name}</div>
-            <div class="event-location">
-            <c:if test="${not empty event.city} &amp;&amp; ${not empty event.state}">${event.city}, ${event.state}</c:if>
-            <c:if test="${empty event.state}">${event.city}</c:if>
-            <c:if test="${empty event.city}">${event.state}</c:if></div>
-            <c:if test="${not empty event.country &amp;&amp; event.country != 'United States'}"><div class="event-location">${event.country}</div></c:if>
-            <c:set var="start" value="${event.timeStart}" />
-            <div id="event-time"><fmt:formatDate type="date" value="${start}" />
-            <br/>first start <fmt:formatDate type="time" value="${start}" /><br/>
-            <c:if test="${not empty event.timezone}">${event.timezone.ID}</c:if></div>
-            <br/>
+            <div class="event-location">${event.city}, ${event.state}</div>
+            <c:set var="start" value="${event.timeStartLocal}" />
+            <div id="event-time">${event.timeStartLocal}</div>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
                     <button type="button" class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
                 </div>
                 <c:if test="${not empty eventTypes}">
-                    <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${start}" /></h3>
+                    <h3 class="ui header event-type-header">events taking place on ${event.timeStartLocal}</h3>
                     <table class="ui small table">
                         <thead><tr>
                             <th>Name</th>
@@ -438,12 +431,11 @@
                             <th>Start Time</th>
                         </tr></thead>
                         <tbody>
-                            <c:forEach var="item" items="${eventTypes}"><tr class="eventtype-item" onclick="editEventType('${item.typeName}', '${item.racetype}', '${item.distance}', '${item.startTime}', '${item.id}')">
+                            <c:forEach var="item" items="${eventTypes}"><tr class="eventtype-item" onclick="editEventType('${item.typeName}', '${item.racetype}', '${item.distance}', '${item.timeStartLocal}', '${item.id}')">
                                 <td>${item.typeName}</td>
                                 <td>${item.racetype}</td>
                                 <td>${item.distance}</td>
-                                <c:set var="time" value="${item.startTime}" />
-                                <td><fmt:formatDate type="time" value="${time}" /></td>
+                                <td>${item.timeStartLocal}</td>
                             </tr></c:forEach>
                         </tbody>
                     </table>
@@ -466,12 +458,13 @@
             </c:if>
         }
 
+        var localTime = '${event.timeStartLocal}';
         var distType;
         function initInfo(){
-            var str = jQuery("#event-time").text()
-            str = str.substring(0,str.length-2);
+            localtime = moment(localTime).format('hh:mm:ss a');
+            jQuery('#displayLocal').text(localtime);
 
-            var momentRRTime = moment('${event.timeStart}').startOf('hour');
+            var momentRRTime = moment('${event.timeStartLocal}').startOf('hour');
             jQuery("#timedisp").datetimepicker({
                 defaultDate: momentRRTime,
                 pickDate: false
@@ -573,18 +566,18 @@
             if( jQuery('#dist-m').hasClass('positive')  ){ distType = ' m';  }
             if( jQuery('#dist-km').hasClass('positive') ){ distType = ' km'; }
             if( jQuery('#dist-mi').hasClass('positive') ){ distType = ' mi'; }
-            var startTime = jQuery('input[name="startTime"]').val();
+            var startTime = jQuery('input[name="timeStartLocal"]').val();
             var raceType  = jQuery('input[name="raceType"]').val();
             var lowbib = jQuery('#etype-lowbib').val();
             var highbib = jQuery('#etype-highbib').val();
 
-            var parseDate = moment('${event.timeStart}');
+            var parseDate = moment('${event.timeStartLocal}');
             var hour   = moment(startTime, "h:mm a").hour();
             var minute = moment(startTime, "h:mm a").minute();
-            
+
             parseDate.set('hour', hour);
             parseDate.set('minute', minute);
-            parseDate = new Date(parseDate);
+            parseDate = parseDate.format('MM/DD/YYYY hh:mm:ss a');
 
             if( distance === "" || parseDate === "" || raceType === "" ){
                 error = true;
@@ -598,8 +591,8 @@
                 }
                 if( parseDate === "" ){
                     jQuery('#starttime').parent().addClass('error');
-                    jQuery('input[name="startTime"]').on('keypress', function(){
-                        if(jQuery('input[name="startTime"]').val().length > 0){
+                    jQuery('input[name="timeStartLocal"]').on('keypress', function(){
+                        if(jQuery('input[name="timeStartLocal"]').val().length > 0){
                             jQuery('#starttime').parent().removeClass('error');
                         }
                     })
@@ -628,7 +621,7 @@
 
                 dat.typeName = typeName;
                 dat.distance = distance + distType;
-                dat.startTime = parseDate;
+                dat.timeStartLocal = parseDate;
                 dat.racetype = raceType;
                 if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
                 if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
@@ -722,6 +715,8 @@
                     jQuery("#bibsModal").modal('hide');
                 });
                 request.fail(function( jqXHR, textStatus ) {
+                    /*  TODO    
+                        add error message for ranged error return   */
                 });
             }
         }
@@ -735,10 +730,10 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             jQuery('#putFieldForm input').val('');
 
-            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').startOf('hour'));
+            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
             
             jQuery("#removetime").click(function(){
-                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStart}').startOf('hour'));
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
             });
 
             jQuery('#racetype-dropdown').dropdown('clear');
@@ -778,7 +773,7 @@
                 dataType: "text"
             });
             request.done(function( d ) {
-                jQuery(".waiver-content").val(d);
+                jQuery(".waiver-content").val(decodeURIComponent(d).replace(/\+/g, " "));
             });
             request.fail(function( jqXHR, textStatus ) {
             });
@@ -794,7 +789,7 @@
             });
             request.done(function( d ) {
                 jQuery("#waiverModal").modal('hide');
-
+                window.location.reload();
             });
             request.fail(function( jqXHR, textStatus ) {
             });
