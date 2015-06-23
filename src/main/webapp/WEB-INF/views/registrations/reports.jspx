@@ -355,41 +355,24 @@
                 allAry.push(ary);
             }
         })
-        ticketAry.sort(function(a, b) {
-            return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
-        });
-        shirtAry.sort(function(a, b) {
-            return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
-        });
-        donationAry.sort(function(a, b) {
-            return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
-        });
-        couponAry.sort(function(a, b) {
-            return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
-        });
+        // ticketAry.sort(function(a, b) {
+        //     console.log(a[0] + ' vs ' + b[0]);
+        //     return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
+        // });
+        // shirtAry.sort(function(a, b) {
+        //     return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
+        // });
+        // donationAry.sort(function(a, b) {
+        //     return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
+        // });
+        // couponAry.sort(function(a, b) {
+        //     return a[0] &gt; b[0] ? -1 : a[0] &lt; b[0] ? 1 : 0;
+        // });
         ticketObj.values = ticketAry;
         shirtObj.values = shirtAry;
         donationObj.values = donationAry;
         couponObj.values = couponAry;
         nvdata.push(ticketObj, shirtObj, donationObj, couponObj);
-    }
-
-    function fillDates(){
-        dates.push(minDate);
-        var today = moment();
-        if( dates.indexOf(today.format("YYYY-MM-DD")) == -1 ){
-            dates.push(today.format("YYYY-MM-DD"));
-        }
-
-        var days = today.diff(minDate, 'd', false);
-        var curr = moment(minDate).format("YYYY-MM-DD");
-        for( i = 0; i &lt; days; i++ ){
-            if( dates.indexOf(curr) == -1 ){
-                dates.push(curr);
-            }
-            curr = moment(curr).add(1, 'd').format("YYYY-MM-DD");
-        }
-        // console.log(dates);
     }
 
     function getEventCartItems(){
