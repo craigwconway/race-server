@@ -242,7 +242,8 @@
         <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
         <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
         <script src="/bibs-server/resources/scripts/jquery.geocomplete.js" type="text/javascript"><jsp:text/></script>
-        <script src="https://timezonedb.googlecode.com/files/timezonedb.js" type="text/javascript"><jsp:text/></script>
+        <c:set var="tzdb" value="https://timezonedb.googlecode.com/files/timezonedb.js" />
+        <script src="${tzdb}" type="text/javascript"><jsp:text/></script>
     </c:if>
     <script>
     window.onload = init;
