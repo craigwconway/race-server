@@ -105,10 +105,6 @@
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY hh:mm:ss a"
                         data-parsley-error-message="Please enter a date for this event."></input>
-                <div class="ui search" id="timezone-search">
-                    <input class="prompt" type="text" name="timezone" placeholder="Timezone"><!--  --></input>
-                    <div class="results"><!--  --></div>
-                </div>
                 <input  type="text" name="organization"
                         class="form-control"
                         placeholder="Organization"
@@ -187,6 +183,10 @@
                     </label>
                 </div>
             </div>
+            <div class="ui search" id="timezone-search">
+                <input class="prompt" type="text" name="timezone" placeholder="Timezone"><!--  --></input>
+                <div class="results"><!--  --></div>
+            </div>
         </div>
     	<div style="display:none;">
             <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
@@ -247,7 +247,7 @@
     <script>
     window.onload = init;
 
-    var test = true;
+    var test = false;
     function init(){
         initDateTimePickers();
         <c:if test='${(!build.rfid)}'>
