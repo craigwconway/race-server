@@ -28,6 +28,7 @@ import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -49,6 +50,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     private static UserGroup userGroup;
+    
+    @Autowired
+    private StandardPasswordEncoder encoder;
 
 
 	private static Random r = new Random();
@@ -142,28 +146,28 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
             userProfile = new UserProfile();
             userProfile.setUsername("admin");
-            userProfile.setPassword("admin");
+            userProfile.setPassword(encoder.encode("admin"));
             userProfile.setFirstname("System");
             userProfile.setLastname("Administrator");
             userProfile.persist();
 
             userProfile = new UserProfile();
             userProfile.setUsername("eventadmin");
-            userProfile.setPassword("eventadmin");
+            userProfile.setPassword(encoder.encode("eventadmin"));
             userProfile.setFirstname("Event");
             userProfile.setLastname("Administrator");
             userProfile.persist();  
             
             userProfile = new UserProfile();
             userProfile.setUsername("useradmin");
-            userProfile.setPassword("useradmin");
+            userProfile.setPassword(encoder.encode("useradmin"));
             userProfile.setFirstname("User");
             userProfile.setLastname("Administrator");
             userProfile.persist();
 
             userProfile = new UserProfile();
             userProfile.setUsername("user");
-            userProfile.setPassword("user");
+            userProfile.setPassword(encoder.encode("user"));
             userProfile.setFirstname("Bibs");
             userProfile.setLastname("User");
             userProfile.persist();

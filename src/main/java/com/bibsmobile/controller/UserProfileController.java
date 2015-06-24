@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -196,7 +197,10 @@ public class UserProfileController {
     }
 
     @Autowired
-    UserProfileService userProfileService;
+    private UserProfileService userProfileService;
+    
+    @Autowired
+    private StandardPasswordEncoder encoder;
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid UserProfile userProfile, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -205,6 +209,7 @@ public class UserProfileController {
             return "userprofiles/create";
         }
         uiModel.asMap().clear();
+        userProfile.setPassword(encoder.encode(userProfile.getPassword()));
         this.userProfileService.saveUserProfile(userProfile);
         return "redirect:/userprofiles/" + this.encodeUrlPathSegment(userProfile.getId().toString(), httpServletRequest);
     }

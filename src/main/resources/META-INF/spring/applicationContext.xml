@@ -116,4 +116,5 @@
         <property name="text" value="${email.forgotPassword.text}"/>
     </bean>
 
+	<bean id="encoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder"/>
 </beans>
