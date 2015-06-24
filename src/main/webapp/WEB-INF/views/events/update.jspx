@@ -284,7 +284,7 @@
         <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" />
         <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
         <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script>
-        <script src="https://timezonedb.googlecode.com/files/timezonedb.js" type="text/javascript"><jsp:text/></script>
+        <script src="/bibs-server/resources/scripts/timezonedb.js" type="text/javascript"><jsp:text/></script>
     </c:if>
     <script>
         window.onload = init;
