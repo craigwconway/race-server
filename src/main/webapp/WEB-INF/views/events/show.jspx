@@ -60,7 +60,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui green button" onclick="postWaiver()">Save</button>
+                    <button type="button" class="ui green button post-waiver-button" onclick="postWaiver()">Save</button>
                 </div>
             </div>
         </div>
@@ -105,7 +105,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui green button" onclick="sendEmail();return false;">Send</button>
+                    <button type="button" class="ui green button post-email-button" onclick="sendEmail();return false;">Send</button>
                 </div>
             </div>
         </div>
@@ -162,7 +162,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui red button" onclick="assignBibs();return false;">Overwrite Bib Numbers</button>
+                    <button type="button" class="ui red button post-bibs-button" onclick="assignBibs();return false;">Overwrite Bib Numbers</button>
                 </div>
             </div>
         </div>
@@ -626,6 +626,7 @@
                 if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
                 if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
 
+                jQuery('.post-event-type').prop('disabled', true);
                 jQuery.ajax({
                     url: eventTypeUrl,
                     type: ajaxType,
@@ -659,6 +660,7 @@
             }
             
             if(ready){
+                jQuery('.post-email-button').prop('disabled', true);
                 var request = jQuery.ajax({
                     url: '${event.id}/email?subject=' + subj + etype,
                     type: 'POST',
@@ -702,7 +704,7 @@
             }
             if( ready ){
                 jQuery('#bibsError').hide();
-
+                jQuery('.post-bibs-button').prop('disabled', true);
                 var request = jQuery.ajax({
                     url: '../eventtypes/associate/' + etype + '?lowbib=' + lowbib + '&amp;highbib=' + highbib + '&amp;force=true',
                     type: 'POST',
@@ -780,6 +782,7 @@
         }
 
         function postWaiver(){
+            jQuery('.post-waiver-button').prop('disabled', true);
             var content = jQuery(".waiver-content").val();
             var request = jQuery.ajax({
                 url: "/bibs-server/events/${event.id}/waiver",
