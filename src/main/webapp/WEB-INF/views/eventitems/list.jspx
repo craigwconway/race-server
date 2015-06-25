@@ -62,6 +62,11 @@
             cursor: pointer;
             margin-bottom: 2px;
         }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
@@ -161,7 +166,7 @@
                         <div class="fields" style="margin-top: 10px;">
                             <label id="discount" style="width:100%;margin-left:0;padding-left:0;">Discount</label>
                             <div class="twelve wide inline field" style="margin-left:0;padding-left:0;">
-                                <input type="text" name="discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
+                                <input type="text" name="discount" id="validate-discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
                                 <div class="ui icon buttons">
                                     <div class="ui positive button disc-btn" id="disc-perc"><b>%</b></div>
                                     <div class="ui button disc-btn" id="disc-curr"><b><i class="fa fa-usd"><!--  --></i></b></div>
@@ -171,7 +176,7 @@
                         <div class="fields">
                             <div class="twelve wide field">
                                 <label style="width:100%">Quantity</label>
-                                <input type="text" name="available" placeholder="Quantity"
+                                <input type="number" min="1" name="available" placeholder="Quantity"
                                        data-parsley-required="true"
                                        data-parsley-error-message="Please provide a quantity."><!--  --></input>
                             </div>
@@ -410,6 +415,7 @@
 
         function addCouponModal(){
             jQuery("#addCoupon").modal('show');
+            validateDiscount();
             // jQuery('input[name="id"]').val("");
             // jQuery('input[name="question"]').val("");
             jQuery(".put-coupon").hide();
@@ -441,6 +447,18 @@
                 jQuery('#disc-curr').removeClass('positive');
             }
             jQuery('input[name="available"]').val(avail);
+        }
+
+        function validateDiscount() {
+            jQuery('#validate-discount').keyup(function(){
+                var val = jQuery(this).val();
+                if(isNaN(val)){
+                     val = val.replace(/[^0-9\.]/g,'');
+                     if(val.split('.').length>2) 
+                         val = val.replace(/\.+$/,"");
+                }
+                jQuery(this).val(val); 
+            })
         }
 
         function deleteCoupon(){
