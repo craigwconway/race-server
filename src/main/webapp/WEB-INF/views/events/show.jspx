@@ -5,7 +5,7 @@
     <link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" aria-labelledby="live-label" aria-hidden="true">
+    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" aria-labelledby="live-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" aria-labelledby="waiver-label" aria-hidden="true">
+    <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" aria-labelledby="waiver-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="email-label" aria-hidden="true">
+    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="email-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -111,7 +111,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="bibsModal" tabindex="-1" role="dialog" aria-labelledby="bibs-label" aria-hidden="true">
+    <div class="modal fade" id="bibsModal" tabindex="-1" role="dialog" aria-labelledby="bibs-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -168,7 +168,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true">
+    <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -194,7 +194,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addType" tabindex="-1" role="dialog" aria-labelledby="eventtype-label" aria-hidden="true">
+    <div class="modal fade" id="addType" tabindex="-1" role="dialog" aria-labelledby="eventtype-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -323,21 +323,21 @@
                                     <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
                                     <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                     <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
-                                    <li><a href="#" onclick="exportModal(); return false;">Export Registrations</a></li>
+                                    <li><a href="#" data-toggle='modal' data-target='#exportModal'>Export Registrations</a></li>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 <c:if test="${not empty eventTypes}">
-                                    <li><a href="#" onclick="bibsModal(); return false;">Manage Bib Numbers</a></li>
+                                    <li><a href="#" data-toggle='modal' data-target='#bibsModal'>Manage Bib Numbers</a></li>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                                 <c:if test='${(event.regEnabled)}'>
-                                    <li><a href="#" onclick="emailModal(); return false;">Send Email Announcement</a></li>
+                                    <li><a href="#" data-toggle='modal' data-target='#emailModal'>Send Email Announcement</a></li>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 </sec:authorize>
                                 <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
-                                <li><a href="#" onclick="waiverModal();return false;">Waiver</a></li>
+                                <li><a href="#" data-toggle='modal' data-target='#waiverModal'>Waiver</a></li>
                             </ul>
                         </li>
                     </c:if>
@@ -419,7 +419,7 @@
             <div id="event-time">${event.timeStartLocal}</div>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
-                    <button type="button" class="btn btn-default" onclick="addEventType()"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <button type="button" class="btn btn-default" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
                 </div>
                 <c:if test="${not empty eventTypes}">
                     <h3 class="ui header event-type-header">events taking place on ${event.timeStartLocal}</h3>

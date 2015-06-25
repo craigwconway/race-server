@@ -38,8 +38,15 @@
         .ui.selection.dropdown{
             width: 100%;
             height: 34px;
-            line-height: 0.65em;
+            line-height: 1.2em;
             font-size: 1em;
+            padding: 0.6em 0.8em;
+        }
+        .ui.selection.dropdown > .text {
+            overflow: hidden;
+            width: 220px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .ui.form{
             width: 400px;
@@ -90,18 +97,22 @@
             <div class="form-horizontal">
                 <div class="ui labeled input">
                     <div class="ui blue label">Event</div>
-                    <select class="ui dropdown" id="event-selection" name="event"
-                            data-parsley-error-message="Please select an event.">
-                        <option value="">Select Event</option>
-                        <c:forEach var="item" items="${events}">
-                            <option value="${item.id}">${item}</option>
-                        </c:forEach>
-                    </select>
+                    <div class="ui selection dropdown" id="event-selection"
+                         data-parsley-error-message="Please select an event.">
+                        <input type="hidden" name="event"><!--  --></input>
+                        <div class="default text">Select Event</div>
+                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                        <div class="menu">
+                          <c:forEach var="item" items="${events}">
+                              <div class="item" data-value="${item.id}">${item}</div>
+                          </c:forEach>
+                        </div>
+                      </div>
                 </div>
                 <c:if test="${eventCartItem.type == 'TICKET'}">
                     <div class="ui labeled input">
                         <div class="ui blue label">Event Type</div>
-                        <div class="ui fluid selection dropdown" id="event-type">
+                        <div class="ui selection dropdown" id="event-type">
                             <input type="hidden" name="eventType"><!--  --></input>
                             <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                             <div class="default text">Select Event Type</div>
@@ -288,9 +299,9 @@
 
         function initDropdowns(){
             jQuery('#event-selection').dropdown('set selected', '${eventCartItem.event.id}');
+            jQuery('#event-type').dropdown('set selected', '${eventCartItem.eventType.typeName}');
             jQuery('#gender-type').dropdown('set selected', '${eventCartItem.gender}');
             jQuery('#ticket-type').dropdown('set selected', '${eventCartItem.type}');
-            jQuery('#event-type').dropdown('set selected', '${eventCartItem.eventType.typeName}');
         }
 
         var xs = false; var sm = false; var md = false; var lg = false; var xl = false;
