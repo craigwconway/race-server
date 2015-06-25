@@ -415,14 +415,14 @@
             </div>
             <div class="event-name">${event.name}</div>
             <div class="event-location">${event.city}, ${event.state}</div>
-            <c:set var="start" value="${event.timeStartLocal}" />
-            <div id="event-time">${event.timeStartLocal}</div>
+            <fmt:parseDate value="${event.timeStartLocal}" pattern="MM/dd/yyyy hh:mm:ss a" var="eventDate"/>
+            <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" /> first start <fmt:formatDate type="time" value="${eventDate}" /></div>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
                     <button type="button" class="btn btn-default" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
                 </div>
                 <c:if test="${not empty eventTypes}">
-                    <h3 class="ui header event-type-header">events taking place on ${event.timeStartLocal}</h3>
+                    <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
                     <table class="ui small table">
                         <thead><tr>
                             <th>Name</th>
