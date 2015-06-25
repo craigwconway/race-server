@@ -17,9 +17,9 @@
                     <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
                 </div>
                 Embed the code below to generate a bibs registration button:<br/>
-                <c:set var="reghtml" value='&lt;form action="https://bibs-frontend.herokuapp.com/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
+                <c:set var="reghtml" value='&lt;form action="${build.frontend}/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
                 <pre>${fn:escapeXml(reghtml)}</pre>
-                Link: <br/> <a href="https://bibs-frontend.herokuapp.com/registration/#/${event.id}">https://bibs-frontend.herokuapp.com/registration/#/${event.id}</a>
+                Link: <br/> <a href="${build.frontend}/registration/#/${event.id}">${build.frontend}/registration/#/${event.id}</a>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="modal-body">
                 Copy the url below to share live results:<br/>
-                <c:set var="livehead" value='&lt;a href="https://bibs-frontend.herokuapp.com/webapp/#/raceday/ug/'/>
+                <c:set var="livehead" value='&lt;a href="${build.frontend}/webapp/#/raceday/ug/'/>
                 <c:set var="livetail" value='/t/1/events"&gt;&lt;/a&gt;'/>
                 <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
                 </div>
