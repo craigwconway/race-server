@@ -324,6 +324,7 @@
                 }
             },
             onUpdate: function (item, callback) {
+                var dateStartLocal = moment(item.start);
                 item.content = prompt('Edit price:', item.content);
                 if( isNaN(item.content) ){
                     alert("Please enter a $ value for this price change.");
