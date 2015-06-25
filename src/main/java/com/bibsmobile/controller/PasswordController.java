@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,9 @@ public class PasswordController {
 
     @Autowired
     private SimpleMailMessage forgotPasswordMessage;
+
+    @Autowired
+    private StandardPasswordEncoder encoder;
 
     @Value("${email.forgotPassword.text}")
     private String resetPasswordText;
@@ -73,7 +77,7 @@ public class PasswordController {
         ModelAndView modelAndView = new ModelAndView("password/resetPassword");
         if (UserProfile.countFindUserProfilesByForgotPasswordCodeEquals(code) > 0) {
             UserProfile userProfile = UserProfile.findUserProfilesByForgotPasswordCodeEquals(code).getSingleResult();
-            userProfile.setPassword(password);
+            userProfile.setPassword(encoder.encode(password));
             userProfile.setForgotPasswordCode(null);
             userProfile.persist();
             modelAndView.addObject("success", true);
