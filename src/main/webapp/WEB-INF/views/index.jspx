@@ -64,7 +64,7 @@
             .clear-btn{ padding: 5px; border: 1px solid rgba(30,30,30,0.5); background: rgba(255,255,255,0.5); text-align:center; }
             @media (min-width: 1000px) {
                 .event-container{
-                    margin-left: 40%;
+                    margin-left: 35%;
                     margin-top:2%;
                     font-family:Quicksand;
                 }
@@ -75,7 +75,17 @@
                     height: 6em;
                     -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
                 }
-                .event-name{ font-size:1.9em; line-height:1.3em; }
+                .event-name{
+                    display: inline-block;
+                    font-size: 1.9em;
+                    line-height: 1em;
+                    overflow: hidden;
+                    width: 450px;
+                    text-overflow: ellipsis;
+                    -o-text-overflow: ellipsis;
+                    -ms-text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
             }
             @media (max-width: 999px) and (min-width: 700px) {
                 .event-container{
@@ -90,7 +100,17 @@
                     height: 8em;
                     -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
                 }
-                .event-name{ font-size:1.5em; line-height:1.1em; }
+                .event-name {
+                    font-size: 1.5em;
+                    line-height: 1.1em;
+                    display: inline-block;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    width: 400px;
+                    text-overflow: ellipsis;
+                    -o-text-overflow: ellipsis;
+                    -ms-text-overflow: ellipsis;
+                }
             }
             @media (max-width: 699px){
                 .event-container{
@@ -105,7 +125,17 @@
                     height: 8em;
                     -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
                 }
-                .event-name{ font-size:1.5em; line-height:1.1em; }
+                .event-name {
+                    font-size: 1.5em;
+                    line-height: 1.1em;
+                    display: inline-block;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    width: 350px;
+                    text-overflow: ellipsis;
+                    -o-text-overflow: ellipsis;
+                    -ms-text-overflow: ellipsis;
+                }
             }
             @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
                 .event-container{
@@ -130,9 +160,9 @@
                 </c:forEach>
                 <div class="not-list">
                     <div class="row">
-                    <a href="#" onclick="redirectEventCreate()"><div class="col-md-offset-9 col-md-2 col-sm-offset-5 col-sm-3 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> event</span></div></a></div>
+                    <a href="#" onclick="redirectEventCreate()"><div class="col-md-offset-8 col-md-3 col-sm-offset-5 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> event</span></div></a></div>
                     <div class="row">
-                    <a href="#" onclick="redirectEventList()"><div class="col-md-offset-9 col-md-2 col-sm-offset-5 col-sm-3 btn btn-default"><span>more events</span></div></a></div>
+                    <a href="#" onclick="redirectEventList()"><div class="col-md-offset-8 col-md-3 col-sm-offset-5 btn btn-default"><span>more events</span></div></a></div>
                 </div>
             </c:if>
             <c:if test="${empty events}">
