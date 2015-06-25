@@ -24,6 +24,8 @@ import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.model.Refund;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,8 @@ import java.util.Map;
 @RequestMapping("/stripe")
 @Controller
 public class StripeController {
+	
+	private static final Logger log = LoggerFactory.getLogger(StripeController.class);
 
     @Value("${stripe.com.secret.key}")
     private String secretKey;
@@ -228,7 +232,6 @@ public class StripeController {
             // HACK
             // TODO: this better
             long cartTotalCents = c.getTotal();
-            System.out.println("This is our price: " + c.getTotal());
             // needs to be logged in, if
             // 1) no card token was submitted
             // 2) card should be remembered
@@ -289,14 +292,19 @@ public class StripeController {
             try {
                 stripeCharge = Charge.create(chargeParams);
             } catch (CardException e) {
+            	log.info("Error charging cart id: " + c.getId() + " card unauthorized");
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
             } catch (InvalidRequestException e) {
+            	log.error("Error charging cart id: " + c.getId() + " Invalid request " + e);
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (AuthenticationException e) {
+            	log.error("Error charging cart id: " + c.getId() + " Authentication exception " + e);
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (APIConnectionException e) {
+            	log.error("Error charging cart id: " + c.getId() + " API Connection Exception " + e);
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             } catch (StripeException e) {
+            	log.error("Error charging cart id: " + c.getId() + " Stripe Exception " + e);
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
@@ -304,6 +312,7 @@ public class StripeController {
                 c.setStatus(Cart.COMPLETE);
                 c.setStripeChargeId(stripeCharge.getId());
                 c.persist();
+                log.info("Completed charge for cart Id: " + c.getId() + " total: " + c.getTotal());
                 //Review this plz
                 for(CartItem ci : c.getCartItems()) {
                 	EventCartItem eciUpdate = ci.getEventCartItem();
@@ -358,7 +367,6 @@ public class StripeController {
                     	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
                     		nondonation += ci.getPrice() * ci.getQuantity();
                     	}
-                    	System.out.println("cartprice: " + cartprice);
                     }
                     if (c.getCoupon() != null) {
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
@@ -389,7 +397,6 @@ public class StripeController {
                     } else {
                     	resultString += "0" + bibsfee % 10;
                     }
-                    System.out.println("bibs fee: " + bibsfee);
                     resultString += MailgunUtil.REG_RECEIPT_SIX_D;
                     resultString += MailgunUtil.REG_RECEIPT_SEVEN_A;
                     resultString += "$" + c.getTotal()/100 + ".";
@@ -483,12 +490,13 @@ public class StripeController {
                                          @RequestParam("email") String email) {
         // stripe stuff
         Stripe.apiKey = this.secretKey;
-
+        
         // mark cart that refund was started
         Cart cart = RegistrationsUtil.findCartFromInvoice(invoiceId, firstName, email);
         if (cart == null) return SpringJSONUtil.returnErrorMessage("unknown cart", HttpStatus.BAD_REQUEST);
         cart.setStatus(Cart.REFUND_REQUEST);
         cart.persist();
+        log.info("Initiating refund for cart id: " + cart.getId());
 
         try {
             Map<String, Object> params = new HashMap<>();

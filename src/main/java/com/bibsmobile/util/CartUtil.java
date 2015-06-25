@@ -35,7 +35,6 @@ public final class CartUtil {
     
     public static Cart checkCoupon(HttpSession session, String couponCode) {
         Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
-        System.out.println("Cartid in session: " + cartIdFromSession);
         Cart cart = null;
         UserProfile user = null;
 
@@ -59,12 +58,12 @@ public final class CartUtil {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("ERROR ADDING TO CART");
+                log.error("Caught exception finding cart in session");
                 return null;
             }
         }
         if (cart == null) {
-        	System.out.println("null cart found");
+        	log.info("Null cart found when adding coupon");
         	return null;
         }
         // add coupons to cart
@@ -87,12 +86,12 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
-        System.out.println("[Coupons] Pre coupon total: " + total);
         // Then apply coupon:
         if(cart.getCoupon() != null) {
-            total -= cart.getCoupon().getDiscount(total);
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
+        	total -= cart.getCoupon().getDiscount(total);
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with postcoupon total " + total);
         }
-        System.out.println("[Coupons] Post coupon total: " + total);
         // Then add in donations:
         for (CartItem ci : cart.getCartItems()) {
         	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
@@ -141,7 +140,7 @@ public final class CartUtil {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("ERROR ADDING TO CART");
+                log.error("Caught exception finding cart in session");
             }
         }
 
@@ -236,12 +235,12 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
-        System.out.println("[Coupons] Pre coupon total: " + total);
         // Then apply coupon:
         if(cart.getCoupon() != null) {
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
             total -= cart.getCoupon().getDiscount(total);
+            log.info("Adding coupon to cart id: " + cart.getId() + " with postcoupon total " + total);
         }
-        System.out.println("[Coupons] Post coupon total: " + total);
         // Then add in donations:
         for (CartItem ci : cart.getCartItems()) {
         	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {

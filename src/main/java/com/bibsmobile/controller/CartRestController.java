@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,9 @@ import com.bibsmobile.util.UserProfileUtil;
 @RequestMapping("/rest/carts")
 @Controller
 public class CartRestController {
+	
+	private static final Logger log = LoggerFactory.getLogger(EventController.class);
+	
     @Autowired
     private UserProfileService userProfileService;
 
@@ -47,8 +52,7 @@ public class CartRestController {
         Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, cartItemRequestWrapper.getEventCartItemPriceChange(), eventCartItemQuantity, registrationProfile, cartItemRequestWrapper.getTeam(), color, size, cartItemRequestWrapper.getCouponCode(), cartItemRequestWrapper.isNewItem());
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        System.out.println("-----Cart:-----");
-        System.out.println(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")));
+        log.info("Updating cart id: " + cart.getId() + " total: " + cart.getTotal());
         return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);
     }
 
@@ -69,19 +73,16 @@ public class CartRestController {
     public ResponseEntity<String> checkCoupon(@PathVariable("couponCode") String couponCode,
             HttpServletRequest request) {
     	couponCode = StringUtils.upperCase(couponCode);
-    	System.out.println("Checking coupon with code: " + couponCode);
+    	log.info("Checking Coupon with code: " + couponCode);
         Cart cart = CartUtil.checkCoupon(request.getSession(), couponCode);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
-        System.out.println("-----Cart:-----");
-        System.out.println("cart: " + cart.getId());
-        System.out.println("coupon: " + cart.getCoupon());
         if(cart.getCoupon() != null && cart.getCoupon().getCode().equals(couponCode)) {
-        	System.out.println("coupon match");
+        	log.info("Attempt to add coupon " + couponCode + " to cart ID " + cart.getId() + " successful");
             System.out.println(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")));
             return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);	
         } else {
-        	System.out.println("coupon miss");
+        	log.info("Attempt to add coupon " + couponCode + " to cart ID " + cart.getId() + " failed");
         	return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.NOT_ACCEPTABLE);
         }
     }    

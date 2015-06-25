@@ -14,6 +14,8 @@ import com.google.gson.JsonObject;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,6 +41,8 @@ import java.text.SimpleDateFormat;
 @RequestMapping("/rest/cartitems")
 @Controller
 public class CartItemRestController {
+	
+	private static final Logger log = LoggerFactory.getLogger(CartItemRestController.class);
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public ResponseEntity<String> search(@RequestParam(required = false) Long userGroupId, @RequestParam(required = false) Long eventId,
@@ -82,10 +86,8 @@ public class CartItemRestController {
                     SimpleDateFormat fmt = new SimpleDateFormat("MM-dd-yyyy");
                     fmt.setTimeZone(event.getTimezone());
                     for(Cart c : carts) {
-                    	System.out.println("Processing cart: " + c.getId());
                     	long noncoupon = 0;
                         for(CartItem ci : c.getCartItems()) {
-                        	System.out.println("CARTITEM ID: " + ci.getId() + " TYPE: " + ci.getEventCartItem().getType());
                     		noncoupon += ci.getPrice() * ci.getQuantity() * 100;
                         	// First get type. Store as a string instead of a enum to support refunds
                         	String type = ci.getEventCartItem().getType().toString();
@@ -122,10 +124,7 @@ public class CartItemRestController {
                         		for (EventCartItemTypeEnum ecit : EventCartItemTypeEnum.values()) {
                         			dailyPrices.put(ecit.toString(), new Long(0));
                         		}
-                        		dailyPrices.put("COUPON", new Long(0));
-                        		System.out.println("new daily prices");
-                        		System.out.println(dailyPrices);
-                        		
+                        		dailyPrices.put("COUPON", new Long(0));                        		
                         	}
                         	// Check if the type has existing entries:
                         	Long currentDailyPrice = dailyPrices.get(type);
@@ -164,9 +163,6 @@ public class CartItemRestController {
                         		totalMoney.put("COUPON", totalCoupon + coupon);
                         	}
                         }
-                        System.out.println("Adding cartitem...");
-                        System.out.println("Total Money: ---------");
-                        System.out.println(totalMoney);
                         
                     }
                     
@@ -223,13 +219,10 @@ public class CartItemRestController {
                     }
                     totalMoney.put("REFUND", refundTotal);
                     totalQuantity.put("REFUND", refundCount);
-                    System.out.println("TotalMoney:");
-                    System.out.println(totalMoney);
-                    System.out.println("Total Quantity:");
-                    System.out.println(totalQuantity);
-                    System.out.println("dailyMoneh:");
-                    System.out.println(dailyMoney);
-                   
+                    
+                    log.info("Reports generated for event id: " + event.getId() + " quantities: " + totalQuantity);
+                    log.info("Reports generated for event id: " + event.getId() + " money: " + totalMoney);
+                    
                     JsonObject responseObj = new JsonObject();
                     Gson gson = new Gson();
                     JsonElement moneyTree = gson.toJsonTree(totalMoney);
@@ -238,9 +231,6 @@ public class CartItemRestController {
                     responseObj.add("totalQuantity", quantityTree);
                     JsonElement dailyMoneyTree = gson.toJsonTree(sortedDailyMoney);
                     responseObj.add("dailyMoney", dailyMoneyTree);
-                    //JsonElement cartItemTree = gson.toJsonTree(cartItems);
-                    //responseObj.add("cartItems", cartItemTree);
-                    //return new ResponseEntity<>(CartItem.toJsonArray(cartItems), headers, HttpStatus.OK);
                     return new ResponseEntity<>(responseObj.toString(), headers, HttpStatus.OK);
                 }
             }

@@ -2,6 +2,8 @@ package com.bibsmobile.controller;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.CartUtil;
 
 @Controller
 public class PasswordController {
+	
+	private static final Logger log = LoggerFactory.getLogger(PasswordController.class);
 
     @Autowired
     private JavaMailSenderImpl mailSender;
@@ -46,13 +51,14 @@ public class PasswordController {
             String forgotPasswordCode = UUID.randomUUID().toString();
             userProfile.setForgotPasswordCode(forgotPasswordCode);
             userProfile.persist();
+            log.info("Password change requested by user id: " + userProfile.getId() + " username: " + userProfile.getUsername() + " email: " + userProfile.getEmail());
             String body = this.resetPasswordText.replace("{link}", this.resetPasswordUrl + forgotPasswordCode);
             this.forgotPasswordMessage.setText(body);
             this.forgotPasswordMessage.setTo(userProfile.getEmail());
             try {
                 this.mailSender.send(this.forgotPasswordMessage);
             } catch (Exception e) {
-                System.out.println("EXCEPTION: Email Send Fail - " + e.getMessage());
+                log.error("Failed to send password change email for user id: " + userProfile.getId());
             }
             modelAndView.addObject("success", true);
             return modelAndView;
@@ -80,10 +86,12 @@ public class PasswordController {
             userProfile.setPassword(encoder.encode(password));
             userProfile.setForgotPasswordCode(null);
             userProfile.persist();
+            log.info("Password changed by user id: " + userProfile.getId() + " username: " + userProfile.getUsername() + " email: " + userProfile.getEmail());
             modelAndView.addObject("success", true);
             return modelAndView;
         }
         modelAndView.addObject("error", "invalid code");
+        log.info("Password change failed with code: " + code);
         return modelAndView;
     }
 }
