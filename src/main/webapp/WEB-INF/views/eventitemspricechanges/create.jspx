@@ -20,7 +20,7 @@
         .info-container{
             margin: 0 7%;
             width: auto;
-            font-weight: 100;
+            font-weight: 400;
             line-height: 27px;
             color: #292929;
             text-align: center;
@@ -609,7 +609,7 @@
                 for(var i = 0; i &lt; keys.length; i++){
                     var key = keys[i];
                     var val = list[key];
-                    if( val.start.isSame(item["start"]) ){
+                    if( moment(val.start).isSame(item["start"]) ){
                         alert("This date is a duplicate. Please select a different date or you can also edit the current value by double-clicking the item.");
                         noDupes = false;
                     }
