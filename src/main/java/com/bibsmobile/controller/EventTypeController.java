@@ -373,7 +373,12 @@ public class EventTypeController {
         		rr.setState(mapUser.getState());
         		rr.setFirstname(mapUser.getFirstname());
         		rr.setLastname(mapUser.getLastname());
-        		rr.setGender(mapUser.getGender());
+        		if(mapUser.getGender() == "Male" || mapUser.getGender() == "M") {
+        			rr.setGender("M");
+        			}
+        		if(mapUser.getGender() == "Female" || mapUser.getGender() == "F"){
+        			rr.setGender("F");
+        		}
         		rr.setEvent(event);
         		rr.setEventType(eventType);
         		rr.setUserProfile(mapUser);
