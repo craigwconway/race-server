@@ -22597,7 +22597,7 @@ a.ui.card:hover,
   left: 0em;
   z-index: 1;
   border: none !important;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.2);
   width: 3.5rem;
   height: 0.25rem;
   -webkit-transform: none;
@@ -22638,7 +22638,7 @@ a.ui.card:hover,
 .ui.slider.checkbox input[type="checkbox"]:focus ~ label:before,
 .ui.slider.checkbox input[type="radio"]:focus ~ .box:before,
 .ui.slider.checkbox input[type="radio"]:focus ~ label:before {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
   border: none;
 }
 
@@ -22651,7 +22651,7 @@ a.ui.card:hover,
 
 .ui.slider.checkbox .box:hover::before,
 .ui.slider.checkbox label:hover::before {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 /* Active */
@@ -22667,7 +22667,7 @@ a.ui.card:hover,
 .ui.slider.checkbox input[type="checkbox"]:checked ~ label:before,
 .ui.slider.checkbox input[type="radio"]:checked ~ .box:before,
 .ui.slider.checkbox input[type="radio"]:checked ~ label:before {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .ui.slider.checkbox input[type="checkbox"]:checked ~ .box:after,
@@ -22708,7 +22708,7 @@ a.ui.card:hover,
   top: 0rem;
   z-index: 1;
   border: none;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.2);
   width: 3.5rem;
   height: 1.5rem;
   border-radius: 500rem;
@@ -22718,8 +22718,8 @@ a.ui.card:hover,
 
 .ui.toggle.checkbox .box:after,
 .ui.toggle.checkbox label:after {
-  background: #ffffff -webkit-linear-gradient(transparent, rgba(0, 0, 0, 0.05));
-  background: #ffffff linear-gradient(transparent, rgba(0, 0, 0, 0.05));
+  background: #ffffff -webkit-linear-gradient(transparent, rgba(0, 0, 0, 0.2));
+  background: #ffffff linear-gradient(transparent, rgba(0, 0, 0, 0.2));
   position: absolute;
   content: '';
   opacity: 1;
@@ -22750,7 +22750,7 @@ a.ui.card:hover,
 .ui.toggle.checkbox input[type="checkbox"]:focus ~ label:before,
 .ui.toggle.checkbox input[type="radio"]:focus ~ .box:before,
 .ui.toggle.checkbox input[type="radio"]:focus ~ label:before {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
   border: none;
 }
 
@@ -22758,7 +22758,7 @@ a.ui.card:hover,
 
 .ui.toggle.checkbox .box:hover::before,
 .ui.toggle.checkbox label:hover::before {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.4);
   border: none;
 }
 

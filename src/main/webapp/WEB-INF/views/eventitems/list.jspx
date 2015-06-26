@@ -561,6 +561,7 @@
             }
             else{
                 console.log(obj);
+                jQuery('.post-coupon, .put-coupon').prop('disabled', true);
                 jQuery.ajax({
                     url: questUrl,
                     type: questType,
