@@ -23,6 +23,8 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,6 +43,8 @@ import org.springframework.web.util.WebUtils;
 @RequestMapping("/eventtypes")
 @Controller
 public class EventTypeController {
+	
+	private static final Logger log = LoggerFactory.getLogger(EventTypeController.class);
 
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventType eventType, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -181,9 +185,10 @@ public class EventTypeController {
         eventType.setMeters(meters);
 
         if(eventType.getTypeName() != null && !eventType.getTypeName().isEmpty()) {
-        	System.out.println("Using Custom Typename");
+        	log.info("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName());
         } else {
         	eventType.setTypeName(eventType.getRacetype() + " - " + eventType.getDistance());
+        	log.info("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName() + " with an automatic name");
         }
         try {
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
@@ -194,6 +199,7 @@ public class EventTypeController {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			log.error("Recieved malformed start time from frontend in create event type");
 			return SpringJSONUtil.returnErrorMessage("Malformed Start Time", HttpStatus.BAD_REQUEST);
 		}
         
@@ -327,11 +333,12 @@ public class EventTypeController {
     		@RequestParam(value = "highbib", defaultValue = "100000") long highbib,
     		@RequestParam(value = "force", defaultValue = "false") boolean force,
     		@PathVariable(value = "id") Long id) {
-    	System.out.println("entered controller");
     	EventType eventType = EventType.findEventType(id);
+    	log.info("Recieved bib association request for event type: " + eventType.getId());
     	Event event = eventType.getEvent();
         UserProfile user = UserProfileUtil.getLoggedInUserProfile();
         if (id != null && !PermissionsUtil.isEventAdmin(user, event)) {
+        	log.warn("Authorization mismatch for associate event types");
         	return SpringJSONUtil.returnErrorMessage("unauthorized", HttpStatus.FORBIDDEN);
         }
         Long currentbib = lowbib;
@@ -352,19 +359,15 @@ public class EventTypeController {
         HashSet <Long> bibsUsed = new HashSet<Long>(RaceResult.findBibsUsedInEvent(event));
         int needsMapping = cartItems.size();
         int mapped = 0;
-        System.out.println("found " + cartItems.size() + "cart items");
         for(CartItem ci : cartItems) {
-        	System.out.println("Found item: " + ci.getId() + " bib: " + ci.getBib());
         	if(ci.getBib() == null) {
         		// This is not yet exported, allow user to export the bib to another event type
         		while(bibsUsed.contains(currentbib) && currentbib <= highbib) {
-        			System.out.println("collision at bib: " + currentbib + ", mapping up to" + highbib);
         			currentbib++;
         		}
         		if(currentbib > highbib) {
         			return SpringJSONUtil.returnErrorMessage(mapped + " of " + needsMapping + " bibs mapped", HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
         		}
-        		System.out.println("current bib:" + currentbib + " high bib: " + highbib);
         		RaceResult rr = new RaceResult();
         		UserProfile mapUser = ci.getUserProfile();
         		rr.setAge(mapUser.getAge());
@@ -385,7 +388,6 @@ public class EventTypeController {
         		rr.persist();
         		bibsUsed.add(rr.getBib());
         		currentbib++;
-        		System.out.println(rr);
         	} 
         }
         SlackUtil.logRegExportAsync(event.getName(), eventType.getTypeName(), (int) lowbib, (int) highbib, user.getUsername());
