@@ -11,6 +11,8 @@ import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,8 @@ import java.util.Set;
 @RequestMapping("/rest/registrations")
 @Controller
 public class RegistrationsRestController {
+	
+	private static final Logger log = LoggerFactory.getLogger(RegistrationsRestController.class);
 
     @RequestMapping(value = "/search", method = RequestMethod.GET, headers = "Accept=application/json")
     public ResponseEntity<String> search(@RequestParam("event") Long eventId,
@@ -123,6 +127,7 @@ public class RegistrationsRestController {
         //Cart cart = Cart.fromJsonToCart(json);
         Cart trueCart = Cart.findCart(id);
         if(trueCart == null) {
+        	log.error("Attempt to edit missing cart id: " + id);
         	return new ResponseEntity<> (headers, HttpStatus.NOT_FOUND);
         }
      
@@ -130,13 +135,11 @@ public class RegistrationsRestController {
         List<CartItem> cartItems = cart.getCartItems();
         List<CartItem> trueCartItems = trueCart.getCartItems();
         
-        System.out.println("Incoming cart:");
-        System.out.println(cart);
-        System.out.println("True Cart:");
-        System.out.println(trueCart);
+        log.info("Editing cart " + trueCart);
         
         // check the rights the user has for event
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), trueCart.getCartItems().get(0).getEventCartItem().getEvent())) {
+        	log.warn("Permission mismatch on attempted cart edit");
             return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
         }
         //Check incoming userprofile, if it is edited create a new regularuser:
@@ -162,17 +165,18 @@ public class RegistrationsRestController {
         		|| currentUserProfile.getGender() != newUserProfile.getGender()
         		) {
 	        newUserProfile.persist();
+	        log.info("Updating cart " + cart.getId() + " Old user: " + cart.getUser().getId() + " New user: " + newUserProfile.getId());
 	        trueCart.setUser(newUserProfile);
 	        trueCart.merge();	
         }
-        
-
-        System.out.println("Incoming Cart Items:");
-        System.out.println(cart.getCartItems());
+       
         for(CartItem tci : trueCartItems) {
         	for(CartItem ci : cart.getCartItems()) {
         		if(tci.getId() == ci.getId()) {
-                	System.out.println("ID: " + ci.getId() + " Color:" + ci.getColor());
+        			if(tci.getColor() != ci.getColor() || tci.getSize() != ci.getSize()) {
+        				log.info("Updating sizing for item " + tci.getId() + ". Color: " + tci.getColor() + "->" + ci.getColor() +
+        						" Size: " + tci.getSize() + "->" + ci.getSize());
+        			}
         			// Only allow safe edits for now, color/size.
         			// In the future, we will change the event type mapping from cartItem -> eventType for export purposes
         			tci.setColor(ci.getColor());
@@ -181,10 +185,7 @@ public class RegistrationsRestController {
         	}
 			tci.setUserProfile(trueCart.getUser());
 			tci.merge();
-        }
-        System.out.println("True Cart Items:");
-        for(CartItem ci : trueCartItems) {
-        	System.out.println("ID: " + ci.getId() + " type: " + ci.getEventCartItem().getType() + " Color:" + ci.getColor());
+			log.info("Updating cart item Id: " + tci.getId() + " Color: " + tci.getColor() + " Size: " + tci.getSize());
         }
         /*
         if(null != cartItems) {
@@ -222,7 +223,7 @@ public class RegistrationsRestController {
             uiModel.addAttribute("birthdate", cartItem.getUserProfile().getBirthdate());
             return "registrations/transfer";   		
     	} catch(Exception e) {
-    		System.out.println(e);
+    		log.warn("Invalid transfer request form. Invoice: " + invoiceId + " firstname: " + firstName + " email: " + email);
     		return "registrations/transfererror";
     	}
 
@@ -258,12 +259,20 @@ public class RegistrationsRestController {
             newUserProfile.persist();
         } else {
             newUserProfile = UserProfile.findUserProfile(newUser.getId());
-            if (newUserProfile == null) return SpringJSONUtil.returnErrorMessage("unknown user id", HttpStatus.BAD_REQUEST);
+            if (newUserProfile == null) {
+            	log.warn("Attempt to transfer to invalid user");
+            	return SpringJSONUtil.returnErrorMessage("unknown user id", HttpStatus.BAD_REQUEST);
+            }
         }
 
         // change user in the cart
+        Cart cart = cartItem.getCart();
         cartItem.setUserProfile(newUserProfile);
         cartItem.persist();
+        cart.setUser(newUserProfile);
+        cart.merge();
+        log.info("Ticket transfer: Cart " + cart.getId() + " to user: " + newUserProfile.getId());
+        
         return SpringJSONUtil.returnObject(new ShortCart(cartItem.getCart()), HttpStatus.OK);
     }
 
