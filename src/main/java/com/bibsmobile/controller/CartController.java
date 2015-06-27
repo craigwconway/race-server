@@ -147,7 +147,6 @@ public class CartController {
         List <CustomRegFieldResponse> regFieldResponses = cart.getCustomRegFieldResponses();
         if(null != cartItems) {
 	        for(CartItem cartItem: cartItems) {
-	        	System.out.println("updatingcartitem: " + cartItem);
 	        	cartItem.setUserProfile(cart.getUser());
 	        	cartItem.persist();
 	        }

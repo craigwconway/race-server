@@ -9,6 +9,8 @@ import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +38,8 @@ import javax.validation.Valid;
 @RequestMapping("/eventitemspricechanges")
 @Controller
 public class EventCartItemPriceChangeController {
+	
+	private static final Logger log = LoggerFactory.getLogger(EventCartItemPriceChangeController.class);
 
     @RequestMapping(params = "form", produces = "text/html")
     public String createForm(@RequestParam(value = "eventitem", required = true) Long eventitem, Model uiModel) {
@@ -148,8 +152,6 @@ public class EventCartItemPriceChangeController {
             }
             try {
             	//MM/DD/YYYY HH:mm:ss.SSS a
-            	System.out.println("incoming date: " + eventCartItemPriceChange.getDateStartLocal());
-            	System.out.println("incoming end date: " + eventCartItemPriceChange.getDateEndLocal());
                 SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss.SSS a");
                 format.setTimeZone(event.getTimezone());
                 Calendar timeStart = new GregorianCalendar();
@@ -158,10 +160,13 @@ public class EventCartItemPriceChangeController {
     			timeEnd.setTime(format.parse(eventCartItemPriceChange.getDateEndLocal()));
     			eventCartItemPriceChange.setStartDate(timeStart.getTime());
     			eventCartItemPriceChange.setEndDate(timeEnd.getTime());
-    			System.out.println("Saved date: " + eventCartItemPriceChange.getStartDate());
-    			System.out.println("Saved end date: " + eventCartItemPriceChange.getEndDate());
+    			log.info("Updating price changes for Event " + event.getId() + " - " + event.getName() + " Item: " + eci.getId() + " - " + eci.getName() + 
+    					" Category: "+ eventCartItemPriceChange.getCategoryName() + " Price: " + eventCartItemPriceChange.getPrice() +
+    					". Setting start time " + eventCartItemPriceChange.getDateStartLocal() + "(" + eventCartItemPriceChange.getStartDate() + ")" +
+    					". Setting end time " + eventCartItemPriceChange.getDateEndLocal() + "(" + eventCartItemPriceChange.getEndDate() + ").");
     		} catch (ParseException e) {
     			// TODO Auto-generated catch block
+    			log.error("Cannot process price change - error processing time");
     			e.printStackTrace();
     			return new ResponseEntity<> (headers, HttpStatus.UNPROCESSABLE_ENTITY);
     		}

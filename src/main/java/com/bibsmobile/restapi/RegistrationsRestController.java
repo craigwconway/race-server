@@ -47,6 +47,7 @@ public class RegistrationsRestController {
         try {
             // sanity check given parameters
             Event event = Event.findEvent(eventId);
+            log.info("Search Registrations: event:"+ eventId + " firstname:" + firstName + " lastname:" + lastName + " start:" + start + " count:" + count);
             if (event == null)
                 return SpringJSONUtil.returnErrorMessage("event not found", HttpStatus.NOT_FOUND);
 

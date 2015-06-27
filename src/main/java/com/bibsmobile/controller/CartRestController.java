@@ -79,7 +79,6 @@ public class CartRestController {
         headers.add("Content-Type", "application/json; charset=utf-8");
         if(cart.getCoupon() != null && cart.getCoupon().getCode().equals(couponCode)) {
         	log.info("Attempt to add coupon " + couponCode + " to cart ID " + cart.getId() + " successful");
-            System.out.println(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")));
             return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);	
         } else {
         	log.info("Attempt to add coupon " + couponCode + " to cart ID " + cart.getId() + " failed");
