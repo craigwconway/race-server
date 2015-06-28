@@ -381,7 +381,7 @@
                 errorTemplate: '<span></span>'
             });
 
-            jQuery("#lowAge").on('input', function(){
+            jQuery("#lowAge").on('change', function(){
                 var low = jQuery("#lowAge").val();
                 var high = jQuery("#highAge").val();
                 low = parseInt(low);
