@@ -347,41 +347,22 @@
 
         function setValidation(){
             var test = false;
-
-            // parsley.js hack
-            jQuery('#proceed').click(function(){
-                if( jQuery('input[name="type"]').val() == 'TICKET' ){
-                    var etype = jQuery('input[name="eventType"]').val();
-                    if( etype == "" || etype == null ){
-                        jQuery('#etype-error').show();
-                    }
-                    jQuery('input[name="eventType"]').on('change', function(){
-                        if(etype !== null){
-                            jQuery('#etype-error').hide();
-                        }
-                    })
-
-                    if( etype !== null ){
-                        jQuery("#eventCartItem").submit(function(e) {
-                            e.preventDefault();
-                            jQuery('.size-boxes').each(function(){
-                                jQuery('.size-boxes').removeAttr('name');
-                            });
-                            jQuery('.color-boxes').each(function(){
-                                jQuery('.size-boxes').removeAttr('name');
-                            });
-
-                            this.submit();
-                        });
-                    }
-                }
-            })
+            var proceed = false;
 
             // normal parsley
             jQuery('#eventCartItem').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
             });
+
+            jQuery('#proceed').click(function(){
+                if( jQuery('input[name="type"]').val() == 'TICKET' ){
+                    var etype = jQuery('input[name="eventType"]').val();
+                    if( etype == "" || etype == null ){
+                        jQuery('#etype-error').show();
+                    }
+                }
+            })
 
             jQuery("#lowAge").on('input', function(){
                 var low = jQuery("#lowAge").val();
@@ -415,6 +396,46 @@
                     }
                 }
             });
+
+            // parsley.js hack
+            jQuery("#eventCartItem").on('submit', function(e){
+                e.preventDefault();
+                var form = jQuery(this);
+                form.parsley().validate();
+
+                if(form.parsley().isValid()){
+                    // check event type field:
+                    var proceed = false;
+                    if( jQuery('input[name="type"]').val() == 'TICKET' ){
+                        var etype = jQuery('input[name="eventType"]').val();
+                        if( etype == "" || etype == null ){
+                            jQuery('#etype-error').show();
+                        }else{
+                            proceed = true;
+                        }
+
+                        jQuery('input[name="eventType"]').on('change', function(){
+                            if(etype !== null &amp;&amp; etype !== ""){
+                                jQuery('#etype-error').hide();
+                                proceed = true;
+                            }
+                        })
+
+                        if( proceed == true ){
+                            jQuery('#proceed').prop('disabled', true);
+                            jQuery('.size-boxes').each(function(){
+                                jQuery('.size-boxes').removeAttr('name');
+                            });
+                            jQuery('.color-boxes').each(function(){
+                                jQuery('.size-boxes').removeAttr('name');
+                            });
+                            jQuery("#eventCartItem").submit();
+                        }
+                    }
+                }
+            });
+
+
         }
 
         function initDateTimePickers(){
