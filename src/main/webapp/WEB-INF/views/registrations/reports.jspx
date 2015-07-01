@@ -71,7 +71,7 @@
             <div class="ui statistics five column grid">
                 <div class="four column centered row">
                     <div class="column">
-                        <div class="red large statistic">
+                        <div class="purple large statistic">
                             <div class="label">
                                 Total Sales
                             </div>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="purple small statistic">
+                    <div class="red small statistic">
                         <div class="label">
                             Coupons
                         </div>
@@ -124,7 +124,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="purple small statistic">
+                    <div class="red small statistic">
                         <div class="label">
                             Refunded
                         </div>
@@ -213,7 +213,7 @@
                 .rotateLabels(0)      //Angle to rotate x-axis labels.
                 .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
                 .groupSpacing(0.1)    //Distance between each group of bars.
-                .color(['#f2c61f','#00b5ad','#3b83c0', '#564f8a'])
+                .color(['#f2c61f','#00b5ad','#3b83c0', '#d95c5c'])
             ;
 
             chart.xAxis
