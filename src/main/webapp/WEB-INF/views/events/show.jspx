@@ -323,7 +323,7 @@
                                     <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
                                     <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
                                     <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
-                                    <li><a href="#" data-toggle='modal' data-target='#exportModal'>Export Registrations</a></li>
+                                    <li><a href="#" data-toggle='modal' data-target='#exportReg'>Export Registrations</a></li>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 <c:if test="${not empty eventTypes}">
