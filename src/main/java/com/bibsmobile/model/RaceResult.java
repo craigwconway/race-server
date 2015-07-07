@@ -846,6 +846,14 @@ public class RaceResult implements Comparable<RaceResult> {
         return entityManager().find(RaceResult.class, id);
     }
 
+    public static List<RaceResult> findRaceResultsByEventAndUser(Event event, UserProfile userProfile) {
+    	if(event == null || userProfile == null) {
+    		return null;
+    	}
+    	return entityManager().createQuery("SELECT o FROM RaceResult o WHERE o.event = :event AND o.userProfile = :userProfile", RaceResult.class)
+    			.setParameter("event", event).setParameter("userProfile", userProfile).getResultList();
+    }
+    
     public static List<RaceResult> findRaceResultEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM RaceResult o", RaceResult.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }

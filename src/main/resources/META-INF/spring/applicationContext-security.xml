@@ -28,7 +28,7 @@
 	<http auto-config="false" pattern="/app/**" use-expressions="true" create-session="stateless" entry-point-ref="appAuthenticationEntryPoint">
 		<intercept-url pattern="/app/token/generate" access="permitAll" />
 	    <custom-filter ref="appTokenProcessingFilter" position="FORM_LOGIN_FILTER"   />
-    	<intercept-url pattern="/app/**" access="isAuthenticated()" />
+    	<intercept-url pattern="/app/**" access="permitAll" />
 	</http>
 
     <!-- HTTP security configurations -->

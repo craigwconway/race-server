@@ -38,7 +38,7 @@ public class JWTAuthenticationToken extends AbstractAuthenticationToken{
         //this.principal=parser.getSub();
         //JWTVerifier verifier = new JWTVerifier();
         JWTVerifier verifier = new JWTVerifier("doge");
-        Map <String, Object> explodedToken = new HashMap <String, Object> ();
+        Map <String, Object> explodedToken = new HashMap <String, Object>();
         System.out.println("Entered JWTAuthenticationToken constructor\n-----Input-----\n" + jwtToken +"\n-----End-----");
         try {
 			verifier.verify(jwtToken);

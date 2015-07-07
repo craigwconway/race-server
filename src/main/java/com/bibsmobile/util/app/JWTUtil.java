@@ -3,12 +3,24 @@
  */
 package com.bibsmobile.util.app;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.auth0.jwt.JWTSigner;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.JWTVerifyException;
+import com.bibsmobile.filter.JWTAuthenticationToken;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.UserProfileUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Utility for interacting with JWT for authentication.
@@ -16,6 +28,49 @@ import com.bibsmobile.util.UserProfileUtil;
  *
  */
 public class JWTUtil {
+	
+	private static final Logger log = LoggerFactory.getLogger(JWTAuthenticationToken.class);
+	
+	public static UserProfile authenticate(String jwt) {
+		JWTVerifier verifier = new JWTVerifier("doge");
+		Map <String, Object> explodedToken = new HashMap <String, Object> ();
+        try {
+			explodedToken = verifier.verify(jwt);
+			System.out.println(explodedToken.get("user"));
+			ObjectMapper mapper = new ObjectMapper();
+			return mapper.convertValue(explodedToken.get("user"), AuthUser.class).toUserProfile();
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (NoSuchAlgorithmException e) {
+			log.error("Invalid Algorithm " + e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			log.error("Error parsing token - invalid state " + e);
+			e.printStackTrace();
+			return null;
+		} catch (SignatureException e) {
+			log.warn("Signature exception in incoming token " + e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			log.error("IO exception in incoming token " + e );
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (JWTVerifyException e) {
+			log.info("invalid token");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static String generate(UserProfile user) {
 		JWTSigner signer = new JWTSigner("doge");
 		HashMap<String, Object> claims = new HashMap<String, Object>();
@@ -40,6 +95,18 @@ public class JWTUtil {
 
         protected AuthUser() {
             super();
+        }
+        
+        protected UserProfile toUserProfile() {
+        	UserProfile user = new UserProfile();
+        	user.setId(id);
+        	user.setFirstname(firstName);
+        	user.setLastname(lastName);
+        	user.setEmail(email);
+        	user.setPhone(phone);
+        	user.setUsername(username);
+        	user.setPassword(password);
+        	return user;
         }
 
         protected AuthUser(UserProfile u) {

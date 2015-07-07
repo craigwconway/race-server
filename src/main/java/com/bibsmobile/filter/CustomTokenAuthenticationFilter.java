@@ -52,6 +52,7 @@ public class CustomTokenAuthenticationFilter extends AbstractAuthenticationProce
     @Override public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         String token = request.getHeader(HEADER_SECURITY_TOKEN);
         logger.info("token found:"+token);
+        System.out.println("token found " + token);
         AbstractAuthenticationToken userAuthenticationToken = authUserByToken(token);
         if(userAuthenticationToken == null) throw new AuthenticationServiceException(MessageFormat.format("Error | {0}", "Bad Token"));
         return userAuthenticationToken;
