@@ -179,6 +179,7 @@
 
 <script>
     window.onload = function(){
+    	initTooltip();
         if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
             jQuery(".not-list:first-child").focus();
         }
@@ -191,6 +192,24 @@
         })
     }
 
+	function initTooltip(){
+	    var url = window.location.href;
+	    var urllen = url.length;
+	    var ind = url.lastIndexOf("=");
+	    var eid = url.substring(ind+1, urllen);
+	    if( eid == 't' ){
+	    	jQuery('input[name="j_username"]').parent().addClass("has-error");
+	    	jQuery('input[name="j_password"]').parent().addClass("has-error");
+		    jQuery("#loginForm").show();
+		    jQuery('input[name="j_username"]').focus();
+		    jQuery('input[name="j_username"]').parent().tooltip("show");
+	    }
+	    else{
+	    	jQuery('input[name="j_username"]').parent().removeClass("has-error");
+	    	jQuery('input[name="j_password"]').parent().removeClass("has-error");
+	    	return false;
+	    }
+	}    
     function getAllEvents(){
         var request = jQuery.ajax({
             url: "/bibs-server/events/",
