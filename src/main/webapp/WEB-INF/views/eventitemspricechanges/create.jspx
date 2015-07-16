@@ -101,7 +101,7 @@
             <div class="clearfix"><!--  --></div>
             <h2 class="ui icon header">
                 <i class="fa fa-calendar"><!--  --></i>
-                <div class="content" style="margin-top:5px">Manage Price Changes
+                <div class="content" style="margin-top:5px">Manage Ticket Types
                     <div class="sub header"><span id="event-name">${eventitem.name}</span><br/><span class="base-price"> Base price: $</span></div>
                 </div>
             </h2>
@@ -154,24 +154,24 @@
             <div class="clearfix"><!--  --></div>
             <div class="ui accordion" style="width:400px;margin:0 auto;">
                 <div class="active title">
-                    <div class="ui top inverted primary blue attached header">Add Category Types <i class="fa fa-sort-desc" style="margin-right:0;margin-left:5px"><!--  --></i></div>
+                    <div class="ui top inverted primary blue attached header">Add Ticket Types <i class="fa fa-sort-desc" style="margin-right:0;margin-left:5px"><!--  --></i></div>
                 </div>
                 <div class="active content">
                     <div class="ui blue attached segment">
                         <div class="ui yellow message" id="notify">
                             <i class="close fa fa-times"><!--  --></i>
-                            <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg">You can add multiple categories!</span>
+                            <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg">You can add multiple types!</span>
                         </div>
                         <form id="add-pc-category" data-parsley-validate="data-parsley-validate">
                             <div class="ui labeled input">
-                                <div class="ui blue label">Category Name</div>
+                                <div class="ui blue label">Ticket Type Title</div>
                                 <input  type="text" name="categoryName"
                                         data-for="categoryName"
                                         class="input-form category-field"
                                         placeholder="e.g. Youth Male, Female Teams"
                                         data-parsley-group="category"
                                         data-parsley-required="true"
-                                        data-parsley-error-message="Please specify a category name."></input>
+                                        data-parsley-error-message="Please specify a ticket type title."></input>
                             </div>
                             <div class="ui labeled input">
                                 <div class="ui blue label">Min Age</div>
@@ -224,7 +224,7 @@
                                         data-parsley-required="true"></input>
                             </div>
                             <div class="pull-right">
-                                <button class="ui blue button" type="button" onclick="savePCType()">Add Category</button>
+                                <button class="ui blue button" type="button" onclick="savePCType()">Add Ticket Type</button>
                             </div>
                         </form>
                         </div>
@@ -532,7 +532,7 @@
                 jQuery("#notify").addClass("green");
                 jQuery("#notify-icon").removeClass('fa-question-circle');
                 jQuery("#notify-icon").addClass('fa-check-circle');
-                jQuery("#notify-msg").text("Category added! Add price changes above!");
+                jQuery("#notify-msg").text("Ticket type added! You can now specify time-dependent price ranges!");
                 jQuery("#notify").delay(5000).fadeOut('slow');
 
                 // clear form fields
