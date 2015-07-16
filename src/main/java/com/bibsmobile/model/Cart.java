@@ -310,6 +310,20 @@ public class Cart {
     public String toJson(String[] fields) {
         return new JSONSerializer().include(fields).exclude("*.class").serialize(this);
     }
+    
+    public String toJsonForCartReturn() {
+    	return new JSONSerializer()
+    	.include("cartItems")
+    	.include("cartItems.user")
+    	.exclude("cartItems.eventType.event")
+    	.exclude("cartItems.eventCartItem.event")
+    	.exclude("cartItems.eventCartItem.eventType.event")
+    	.exclude("event.raceResults")
+    	.exclude("event.latestImportFile")
+    	.exclude("event.awardCategorys")
+    	.exclude("eventType")
+    	.exclude("*.class").serialize(this);
+    }
 
     public static Cart fromJsonToCart(String json) {
         return new JSONDeserializer<Cart>().use(null, Cart.class).deserialize(json);

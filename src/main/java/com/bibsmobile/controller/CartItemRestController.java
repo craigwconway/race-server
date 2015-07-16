@@ -189,8 +189,10 @@ public class CartItemRestController {
                         	if(null == minDate || null == maxDate) {
                         		minDate = dt;
                         		maxDate = dt;
-                        		minCal = cal;
-                        		maxCal = cal;
+                        		minCal = new GregorianCalendar();
+                        		minCal.setTime(date);
+                        		maxCal = new GregorianCalendar();
+                        		maxCal.setTime(date);
                         	} else {
                         		minDate = minDate.isBefore(dt) ? minDate : dt;
                         		maxDate = maxDate.isAfter(dt) ? maxDate : dt;
