@@ -53,7 +53,7 @@ public class CartRestController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         log.info("Updating cart id: " + cart.getId() + " total: " + cart.getTotal());
-        return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);
+        return new ResponseEntity<>(cart.toJsonForCartReturn(), headers, HttpStatus.OK);
     }
 
     /**
@@ -82,7 +82,7 @@ public class CartRestController {
             return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.OK);	
         } else {
         	log.info("Attempt to add coupon " + couponCode + " to cart ID " + cart.getId() + " failed");
-        	return new ResponseEntity<>(cart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user")), headers, HttpStatus.NOT_ACCEPTABLE);
+        	return new ResponseEntity<>(cart.toJsonForCartReturn(), headers, HttpStatus.NOT_ACCEPTABLE);
         }
     }    
     
