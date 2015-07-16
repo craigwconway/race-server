@@ -203,7 +203,7 @@
                     </div>
                     <div style="display:none"><input type="text" name="tshirtColors"></input></div>
                     <div class="form-fields not-donation not-shirt">
-                        <div class="ui fluid selection dropdown" id="gender-type">
+                        <div class="ui fluid selection required dropdown" id="gender-type">
                             <input type="hidden" name="gender" 
                                 data-parsley-error-message="Please select a gender."
                                 data-parsley-required="true"><!--  --></input>
@@ -214,6 +214,10 @@
                                 <div class="item" data-value="MALE">Male</div>
                                 <div class="item" data-value="FEMALE">Female</div>
                             </div>
+                        </div>
+                        <div    style="display:none;margin-bottom:5px;" id="gender-error"
+                                class="has-error filled">
+                            <span class="parsley-custom-error-message">Please select a gender.</span>
                         </div>
                     </div>
                     <div class="two fields not-donation not-shirt">
@@ -294,8 +298,8 @@
                     jQuery(".shirt-settings").hide();
                     jQuery('.not-shirt').show();
                     jQuery('.not-donation').show();
-                    jQuery("#box-black").removeAttr("data-parsley-required");
-                    jQuery("#box-xs").removeAttr("data-parsley-required");
+                    jQuery("#box-black").attr("data-parsley-required", false);
+                    jQuery("#box-xs").attr("data-parsley-required", false);
                     jQuery('input[name="minAge"]').val("");
                     jQuery('input[name="maxAge"]').val("");
                     jQuery('input[name="price"]').val("");
@@ -324,8 +328,8 @@
                     jQuery(".ticket-settings").hide();
                     jQuery(".shirt-settings").hide();
                     jQuery(".not-donation").hide();
-                    jQuery("#box-black").removeAttr("data-parsley-required");
-                    jQuery("#box-xs").removeAttr("data-parsley-required");
+                    jQuery("#box-black").attr("data-parsley-required", false);
+                    jQuery("#box-xs").attr("data-parsley-required", false);
                     jQuery('input[name="minAge"]').val(1);
                     jQuery('input[name="maxAge"]').val(120);
                     jQuery('input[name="price"]').val(1);
@@ -345,9 +349,10 @@
             jQuery("#_event_id").val(eid);
         }
 
+        var proceedE = false;
+        var proceedG = false;
         function setValidation(){
             var test = false;
-            var proceed = false;
 
             // normal parsley
             jQuery('#eventCartItem').parsley({
@@ -357,12 +362,50 @@
 
             jQuery('#proceed').click(function(){
                 if( jQuery('input[name="type"]').val() == 'TICKET' ){
-                    var etype = jQuery('input[name="eventType"]').val();
+                    var etype = jQuery('#event-type').dropdown('get value');
                     if( etype == "" || etype == null ){
+                        jQuery('#proceed').prop('disabled', true);
                         jQuery('#etype-error').show();
+                        jQuery('#event-type').addClass('error');
+                        jQuery('#event-type').dropdown({
+                            onChange: function (val) {
+                                jQuery('#etype-error').hide();
+                                jQuery('#event-type').removeClass('error');
+                                proceedE = true;
+                                if( proceedE &amp;&amp; proceedG ){
+                                    jQuery('#proceed').prop('disabled', null);
+                                }
+                            }
+                        });
+                    }
+
+                    var gender = jQuery('#gender-type').dropdown('get value');
+                    if( gender == "" || gender == null ){
+                        jQuery('#proceed').prop('disabled', true);
+                        jQuery('#gender-error').show();
+                        jQuery('#gender-type').addClass('error');
+                        jQuery('#gender-type').dropdown({
+                            onChange: function (val) {
+                                jQuery('#gender-error').hide();
+                                jQuery('#gender-type').removeClass('error');
+                                proceedG = true;
+                                if( proceedE &amp;&amp; proceedG ){
+                                    jQuery('#proceed').prop('disabled', null);
+                                }
+                            }
+                        });
                     }
                 }
-            })
+                if( proceedE &amp;&amp; proceedG ){
+                    jQuery('.size-boxes').each(function(){
+                        jQuery('.size-boxes').removeAttr('name');
+                    });
+                    jQuery('.color-boxes').each(function(){
+                        jQuery('.size-boxes').removeAttr('name');
+                    });
+                    jQuery("#eventCartItem").submit();
+                }
+            });
 
             jQuery("#lowAge").on('input', function(){
                 var low = jQuery("#lowAge").val();
@@ -397,45 +440,9 @@
                 }
             });
 
-            // parsley.js hack
-            jQuery("#eventCartItem").on('submit', function(e){
-                e.preventDefault();
-                var form = jQuery(this);
-                form.parsley().validate();
-
-                if(form.parsley().isValid()){
-                    // check event type field:
-                    var proceed = false;
-                    if( jQuery('input[name="type"]').val() == 'TICKET' ){
-                        var etype = jQuery('input[name="eventType"]').val();
-                        if( etype == "" || etype == null ){
-                            jQuery('#etype-error').show();
-                        }else{
-                            proceed = true;
-                        }
-
-                        jQuery('input[name="eventType"]').on('change', function(){
-                            if(etype !== null &amp;&amp; etype !== ""){
-                                jQuery('#etype-error').hide();
-                                proceed = true;
-                            }
-                        })
-
-                        if( proceed == true ){
-                            jQuery('#proceed').prop('disabled', true);
-                            jQuery('.size-boxes').each(function(){
-                                jQuery('.size-boxes').removeAttr('name');
-                            });
-                            jQuery('.color-boxes').each(function(){
-                                jQuery('.size-boxes').removeAttr('name');
-                            });
-                            jQuery("#eventCartItem").submit();
-                        }
-                    }
-                }
+            jQuery('#eventCartItem').on('submit', function(){
+                jQuery('#proceed').prop('disabled', true);
             });
-
-
         }
 
         function initDateTimePickers(){

@@ -300,7 +300,11 @@
         function initDropdowns(){
             jQuery('#event-selection').dropdown('set selected', '${eventCartItem.event.id}');
             jQuery('#event-type').dropdown('set selected', '${eventCartItem.eventType.typeName}');
-            jQuery('#gender-type').dropdown('set selected', '${eventCartItem.gender}');
+            var gender = '${eventCartItem.gender}';
+            if( gender == "" ){
+                gender = 'MALE_AND_FEMALE';
+            }
+            jQuery('#gender-type').dropdown('set selected', gender);
             jQuery('#ticket-type').dropdown('set selected', '${eventCartItem.type}');
         }
 
