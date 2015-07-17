@@ -78,11 +78,16 @@
                     </div>
                 </h2>
 
+                <!-- chrome autocomplete hack -->
+                <div style="display: none;">
+                    <input type="text" id="PreventChromeAutocomplete" name="PreventChromeAutocomplete" autocomplete="address-level4" />
+                </div>
                 <div class="form-horizontal">
                     <div class="ui labeled input">
                         <div class="ui blue label">Event Name</div>
                         <input  type="text" name="name"
                                 class="form-control"
+                                autocomplete="off"
                                 placeholder="Event name"
                                 value="${event.name}"
                                 data-parsley-error-message="Please enter an event name."
@@ -92,6 +97,7 @@
                         <div class="ui blue label">Event Date</div>
                         <input  type="text" name="timeStartLocal"
                                 class="form-control"
+                                autocomplete="off"
                                 id="eventDatepicker"
                                 value="${event.timeStartLocal}"
                                 placeholder="Event date"
@@ -104,6 +110,7 @@
                         <div class="ui blue label">Organization</div>
                         <input  type="text" name="organization"
                                 class="form-control"
+                                autocomplete="off"
                                 placeholder="Organization"
                                 value="${event.organization}"></input>
                     </div>
@@ -111,6 +118,7 @@
                         <div class="ui blue label">Charity</div>
                         <input  type="text" name="charity"
                                 class="form-control"
+                                autocomplete="off"
                                 placeholder="Charity Name"
                                 value="${event.charity}"></input>
                     </div>
@@ -119,6 +127,7 @@
                             <div class="ui blue label">Website</div>
                             <input  type="url" name="website"
                                 class="form-control"
+                                autocomplete="off"
                                 id="mask-website"
                                 placeholder="Website"
                                 value="${event.website}"
@@ -130,6 +139,7 @@
                             <div class="ui blue label">Phone Number</div>
                             <input  type="text" name="phone"
                                 class="form-control"
+                                autocomplete="off"
                                 id="mask-phone"
                                 placeholder="Phone Number"
                                 value="${event.phone}"
@@ -143,6 +153,7 @@
                             <div class="ui blue label">Website</div>
                             <input  type="url" name="website"
                                 class="form-control"
+                                autocomplete="off"
                                 id="mask-website"
                                 placeholder="Website"
                                 value="${event.website}"
@@ -153,6 +164,7 @@
                             <div class="ui blue label">Phone Number</div>
                             <input  type="text" name="phone"
                                 class="form-control"
+                                autocomplete="off"
                                 id="mask-phone"
                                 placeholder="Phone Number"
                                 value="${event.phone}"
@@ -163,7 +175,7 @@
                     <div id="demo">
                         <div class="ui labeled input">
                             <div class="ui blue label">Address</div>
-                            <input  id="geoaddress"
+                            <input  id="geoaddress" autocomplete="off"
                                     type="text" name="address"
                                     class="form-control"
                                     placeholder="Address or Location"
@@ -171,7 +183,7 @@
                         </div>
                         <div class="ui labeled input">
                             <div class="ui blue label">City</div>
-                            <input  id="geocity"
+                            <input  id="geocity" autocomplete="off"
                                     type="text" name="city"
                                     class="form-control"
                                     placeholder="City"
@@ -179,7 +191,7 @@
                         </div>
                         <div class="ui labeled input">
                             <div class="ui blue label">State</div>
-                            <input  id="geostate"
+                            <input  id="geostate" autocomplete="off"
                                     type="text" name="state"
                                     class="form-control"
                                     placeholder="State"
@@ -187,16 +199,20 @@
                         </div>
                         <div class="ui labeled input">
                             <div class="ui blue label">Country</div>
-                            <input  id="geocountry" type="text" name="country"
+                            <input  id="geocountry" autocomplete="off"
+                                    type="text" name="country"
                                     class="form-control" placeholder="Country"
                                     value="${event.country}"></input>
                         </div>
                         <div style="display:none">
-                            <input  id="geozip" type="text" name="zip"
+                            <input  id="geozip" autocomplete="off"
+                                    type="text" name="zip"
                                     value="${event.zip}"></input>
-                            <input  id="geolat" type="text" name="latitude"
+                            <input  id="geolat" autocomplete="off"
+                                    type="text" name="latitude"
                                     value="${event.latitude}"></input>
-                            <input  id="geolong" type="text" name="longitude"
+                            <input  id="geolong" autocomplete="off"
+                                    type="text" name="longitude"
                                     value="${event.longitude}"></input>
                         </div>
                     </div>
@@ -305,6 +321,7 @@
         }
 
         function initInfo(){
+            var form = jQuery('#event').attr('autocomplete', 'off');
             var status = '${event.gunFired}';
             if( status === 'true' ){
                 jQuery('input[name="gunFired"]').prop('checked', true);
@@ -392,13 +409,17 @@
                     localdate = moment(localdate).format('MM/DD/YYYY hh:mm:ss a');
                     jQuery('input[name="timeStartLocal"]').val(localdate);
                     if( addr == "" ){
-                        jQuery('#geoaddress').val(misc);
+                        jQuery('#geoaddress').val('${event.address}');
+                        jQuery('#geocity').val('${event.city}');
+                        jQuery('#geostate').val('${event.state}');
+                        jQuery('#geocountry').val('${event.country}');
                     }else{
                         jQuery('#geoaddress').val(addr);
+                        jQuery('#geocity').val(city);
+                        jQuery('#geostate').val(state);
+                        jQuery('#geocountry').val(country);
                     }
-                    jQuery('#geocity').val(city);
-                    jQuery('#geostate').val(state);
-                    jQuery('#geocountry').val(country);
+                    jQuery('input[name="PreventChromeAutocomplete"]').removeAttr('name');
                     this.submit();
                 });
             })
