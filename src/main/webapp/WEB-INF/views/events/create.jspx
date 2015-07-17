@@ -90,7 +90,10 @@
                     <div class="sub header">Provide the details for this future event.</div>
                 </div>
             </h2>
-            <!-- chrome autocomplete hack -->
+            <!-- chrome autocomplete hack
+                https://code.google.com/p/chromium/issues/detail?id=468153
+                comment number 41 shows the solution i used below.
+             -->
             <div style="display: none;">
                 <input type="text" id="PreventChromeAutocomplete" name="PreventChromeAutocomplete" autocomplete="address-level4" />
             </div>
