@@ -30,6 +30,11 @@ public class DummyTimer extends AbstractTimer implements Timer, Runnable {
 		status = 2;
 		System.out.println(log + " Started.");
 	}
+	
+	@Override
+	public void emptyBuffer() {
+		
+	}
 
 	@Override
 	public void stopReader() {
@@ -81,7 +86,7 @@ public class DummyTimer extends AbstractTimer implements Timer, Runnable {
 		System.out.println(log + " run...");
 		bibTimes.clear();
 		while (status == 2) {
-			int bibnum = new Random().nextInt(30);
+			int bibnum = new Random().nextInt(300);
 			long bibtime = new Date().getTime();
 			
 			// yay

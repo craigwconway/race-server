@@ -3,550 +3,824 @@
 	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-	
 	<style>
-	.corners{
-		margin: 16px;
-		padding: 16px;
-		border:solid #DDD 1px;
-		border-radius: 5px;
-		margin: 6px;
-		padding: 6px;
-	}
-	.event-row{
-		border:solid #DDD 1px;
-		border-radius: 5px;
-		padding: 10px;
-		margin: 10px;
-	}
-	.event-name{
-		font-size: 28px;
-		font-weight: bold;
-		margin-right: 12px;
-	}
-	.reader-title{
-	}
-	.reader{
-		width: 350px;
-		float: left;
-	}
-	#event{
-		margin:10px; 
-		width: 350px;
-	}
-	#events{
-	}
-	#readers{
-	}
-	small{
-		color: grey;
-		font-size: 14px;
-		font-weight: none;
-	}
+        body{
+            background-image: url('../images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            width: 90%;
+            min-height: 400px;
+            line-height: 27px;
+            color: #292929;
+        }
+        table{
+        	margin: 0 auto;
+        }
+        th{
+        	text-align: center;
+        }
+		.corners{
+			margin: 16px;
+			padding: 16px;
+			border:solid #DDD 1px;
+			border-radius: 5px;
+			margin: 6px;
+			padding: 6px;
+		}
+		.event-row{
+			border:solid #DDD 1px;
+			border-radius: 5px;
+			padding: 10px;
+			margin: 10px;
+			width:650px;
+			float: left;
+		}
+		.event-name{
+			font-size: 28px;
+			font-weight: bold;
+			margin-right: 12px;
+		}
+		.reader{
+			width: 350px;
+			float: left;
+		}
+		#event{
+			margin:10px; 
+			width: 350px;
+		}
+		small{
+			color: grey;
+			font-size: 14px;
+			font-weight: none;
+		}
+		#antenna{
+			width: 100px;
+			min-width: 80px;
+		}
+		#events-dropdown i{
+			margin-right: 10px;
+		}
+        .submit{
+        	width: inherit;
+        	margin: 0 auto;
+        	text-align: left;
+        }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+        	.reader {
+        		width: 90%;
+        		float: left;
+        	}
+			#event {
+				margin:10px; 
+				width: 90%;
+			}
+			.ui.icon.header {
+				margin: 2rem 0em 0rem;
+			}
+			.event-row {
+				width: 90%;
+			}
+			.event-name {
+				font-size: 0.9em;
+				margin-right: 0;
+			}
+			.table th:nth-child(4), th:nth-child(5), td:nth-child(4), td:nth-child(5) {
+				display: none;
+			}
+        }
 	</style>
 	
-	<div>
-			<button id="btn-update---id--" type="button" class="btn btn-info" 
-				style="margin:0;margin-left: 3px;"
-				onclick="printReport()">Print Report</button>
-				
-			<button id="btn-update---id--" type="button" class="btn btn-info" 
-				style="margin:0;margin-left: 3px;"
-				onclick="clearReport()">Clear Report</button>
-				
-			<script>
-			function printReport(){
-				window.open("/bibs-server/timers/bib-report/1","_blank");
-			}
-			function clearReport(){
-				var url = "/bibs-server/timers/clear-bib-report/1";
-				var request = jQuery.ajax({
-					url: url,
-					type: "GET",
-					dataType: "html"
-					});
-			}
-			</script>
-	</div>	
-	
-<div id="templates">
-	<div id="reader-template" style="display:none">
-		<div id="reader---id--" class="reader corners">
-			<div class="pull-left">
-			<span id="reader-title---id--" class="reader-title"
-				style="margin:0;margin-left: 3px;"><strong>Reader --count-- </strong>  
-				<span id="reader-pos---id--"
-					style="margin:0;margin-left: 3px;">--position--
-					</span>
-				<br/>
-				<span id="reader-status-label"
-					style="margin:0;margin-left:3px;font-weight:bold;">Status: </span>
-				<span id="reader-status---id--"
-					style="margin:0;margin-left: 3px;">Not Connected</span>
-			</span>
-			</div>
-			<div class="pull-right">
-			<button id="btn-update---id--" type="button" class="btn btn-info" 
-				style="margin:0;margin-left: 3px;"
-				onclick="timerUpdate(--id--);">Edit</button>
-			<button id="btn-start---id--" type="button" class="btn btn-success" 
-				style="margin:0;margin-left: 3px;display:none;"
-				onclick="startReader(--id--);">Start</button>
-			<button id="btn-stop---id--" type="button" class="btn btn-danger" 
-				style="margin:0;margin-left: 3px;display:none;"
-				onclick="stopReader(--id--);">Stop</button>
-			<span id="reader-progress---id--" style="margin:0;margin-left:6px;display:none;">
-				<img src="/bibs-server/resources/images/loading.gif" title="loading..."/> </span>
-			</div>
-   		</div>
-	</div>
-	
-	<div id="eventTemplate" style="display:none;">
-		<div id="event---event_id--" class="event-row" style="display:none;">
-			<div>
-				<div id="event-name---event_id--" class="event-name">--event_name--</div>
-				<div>
-					<span>Official Time: </span>
-					<span id="event-timer---event_id--" 
-						style="display:none;">0
+    <div class="white-overlay">
+        <div class="info-container">
+			<div class="submit">
+				<script>
+					function printReport(){
+						window.open("/bibs-server/timers/bib-report/1","_blank");
+					}
+					
+					function clearAllTimes(eventId){
+						// dirty double confirm
+						var proceed = false;
+						if (confirm("Clear ALL runner times for this Event?")) {
+							if (!confirm("Caution: Are your sure? This cannot be undone.")) {
+								setTimeout(function() { location.reload(true); }, 1000);
+							} else {
+								// empty table
+								jQuery("#results"+eventId).html("<tr><td></td></tr>");
+								// api call
+								var request = jQuery.ajax({
+								url: "/bibs-server/timers/clear-all-times?eventId="+eventId
+							});
+							setTimeout(function() { location.reload(true); }, 1000);				
+							}
+						} else {
+							setTimeout(function() { location.reload(true); }, 1000);
+						}
+
+					}
+					function clearFinishTimes(eventId){
+						// dirty double confirm
+						var proceed = false;
+						if (confirm("Clear ALL runner times for this Event?")) {
+							if (!confirm("Caution: Are your sure? This cannot be undone.")) {
+								setTimeout(function() { location.reload(true); }, 1000);
+							} else {
+								// empty table
+								jQuery("#results"+eventId).html("<tr><td></td></tr>");
+								// api call
+								var request = jQuery.ajax({
+								url: "/bibs-server/timers/clear-finish-times?eventId="+eventId
+								});
+								setTimeout(function() { location.reload(true); }, 1000);		
+							}
+						} else {
+							setTimeout(function() { location.reload(true); }, 1000);
+						}
+
+					}
+				</script>
+			</div>	
+			
+			<div id="templates">
+				<div id="reader-template" style="display:none">
+					<div id="reader---id--" class="reader corners">
+						<div class="pull-left">
+						<span id="reader-title---id--" class="reader-title"
+							style="margin:0;margin-left: 3px;"><strong>Reader --count-- </strong>  
+							<span id="reader-pos---id--"
+								style="margin:0;margin-left: 3px;">--position--
+								</span>
+							<br/>
+							<span id="reader-status-label"
+								style="margin:0;margin-left:3px;font-weight:bold;">Status: </span>
+							<span id="reader-status---id--"
+								style="margin:0;margin-left: 3px;">Not Connected</span>
 						</span>
-					<span id="event-timer-str---event_id--" 
-						style="display:none;">0
-						</span>
-					<a href="#" id="btn-done---event_id--"
-						style="display:none;margin-left:10px;"
-						onclick="stopRunning(--event_id--);">Finish</a>
+						</div>
+						<div class="pull-right">
+						<button id="btn-update---id--" type="button" class="btn btn-info" 
+							style="margin:0;margin-left: 3px;"
+							onclick="timerUpdate(--id--);">Edit</button>
+						<button id="btn-start---id--" type="button" class="btn btn-success" 
+							style="margin:0;margin-left: 3px;display:none;"
+							onclick="startReader(--id--);">Start</button>
+						<button id="btn-stop---id--" type="button" class="btn btn-danger" 
+							style="margin:0;margin-left: 3px;display:none;"
+							onclick="stopReader(--id--);">Stop</button>
+						<span id="reader-progress---id--" style="margin:0;margin-left:6px;display:none;">
+							<img src="/bibs-server/resources/images/logo_04.gif" style="width:32px;height:auto;max-height:32px;" title="loading..."/> </span>
+						</div>
+			   		</div>
 				</div>
-				<div>
-					<span id="metrics---event_id--" >
-						Runners Completed: 
-						<span id="done---event_id--">0</span> /
-						<span class="total---event_id--">0</span>
-					</span>
+				
+				<div id="eventTemplate" style="display:none;">
+					<div id="event---event_id--" class="event-row" style="display:none;">
+						<div>
+							<h2 class="ui icon header">
+							    <img id="antenna" src="../images/antennafinal.png"></img>
+							    <div class="content">
+									<div id="event-name---event_id--" class="event-name">--event_name--</div>
+							    </div>
+							</h2>
+							<div>
+								<span>Official Time: </span>
+								<span id="event-timer---event_id--" 
+									style="display:none;">0
+									</span>
+								<span id="event-timer-str---event_id--" 
+									style="display:none;">0
+									</span>
+								<a href="#" id="btn-done---event_id--"
+									style="display:none;margin-left:10px;"
+									onclick="stopRunning(--event_id--);">Finish</a>
+							</div>
+							<div>
+								<span id="metrics---event_id--" >
+									Runners Completed: 
+									<span id="done---event_id--">0</span> /
+									<span class="total---event_id--">0</span>
+								</span>
+							</div>
+						</div>
+						<button id="btn-manual---event_id--" type="button" class="btn btn-danger"
+							style="display:none;margin:3px auto;margin-left: 3px;"
+							onclick="manual(--event_id--);"> Manual Time Set </button>
+						<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
+							style="margin:3px auto;margin-left: 3px;"
+							onclick="gun(--event_id--);"> Fire Gun! </button> 
+						<button id="btn-update---id--" type="button" class="btn btn-info" 
+							style="margin:3px auto;margin-left: 3px;"
+							onclick="clearAllTimes(--event_id--)">Clear All</button>
+						<button id="btn-update---id--" type="button" class="btn btn-info" 
+							style="margin:3px auto;margin-left: 3px;"
+							onclick="clearFinishTimes(--event_id--)">Clear Finish</button>				
+						<table id="results--event_id--" class="table" 
+							style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
+					</div>
 				</div>
+			</div>	
+
+			<table><tr>
+			<td>
+				<div id="readers"> 
+				</div>
+			</td></tr><tr><td>
+
+			<div id="mgmt-view">
+				 <div id="events-dropdown">
+			        <select class="form-control" id="event" name="event" 
+			        	onchange="addEvent()" style="float:left">
+			            <option value="0" selected="true">Manage an Event...</option>
+			            <c:forEach items="${events}" var="event" varStatus="i">
+			                <option value="${event.id}">${ event.name }</option>
+			            </c:forEach> 
+			        </select>
+			        <div class="btn-group" role="group" aria-label="announcermode" style="margin:10px;float:left">
+						<button type="button" style="float:left;margin:0" class="btn btn-default" onclick="setSplits('detailed')">
+						<i class="glyphicon glyphicon-user"><!--  --></i>Details</button>
+						<button type="button" style="float:left;margin:0;margin-left:-1px;" class="btn btn-default" onclick="setSplits('splits')">
+						<i class="glyphicon glyphicon-random"><!--  --></i>Splits</button>
+						<button type="button" style="float:left;margin:0;margin-left:-1px;" class="btn btn-default" onclick="setSplits('laps')">
+						<i class="glyphicon glyphicon-road"><!--  --></i>Laps</button>
+					</div>
+			    </div>
+			    <div style="clear:both"> </div>
+				<div id="events"> </div>
 			</div>
-			<button id="btn-manual---event_id--" type="button" class="btn btn-danger"
-				style="display:none"
-				onclick="manual(--event_id--);"> Manual Time Set </button>
-			<button id="btn-gun---event_id--" type="button" class="btn btn-danger"
-				onclick="gun(--event_id--);"> Fire Gun! </button> 
-			<table id="results--event_id--" class="table" 
-				style="padding:10px;margin:10px;display:none;"><tr><td></td></tr></table>
+
+			</td></tr></table>
 		</div>
 	</div>
-</div>	
+		
+	<script>
+		var readerOn={}; // Create a hashmap to represent whether reader is running
+		var gotTimeAlready = false;
+		var sysdetails = {};
+		var runningEventCount = 0;
+		var readerStatus = 0;
+		var REFRESH_RESULTS = 800;		// 0.8 sec
+		var REFRESH_TIMER = 1000 * 5;	// 5 sec
+		var REFRESH_UNCAT = 1000 * 5; 	// 5 sec
+		var isReloading = false;
+		var isUncat = false;
+		var isSplits = true;
+		var announcerType = "details";
 
-<table width="100%"><tr>
-<td>
-	<div id="readers"> 
-	</div>
-</td></tr><tr><td>
+		window.onload = racedayInit;
+		// window.onunload = racedayEnd;
 
-<div id="mgmt-view" >
-	 <div id="events-dropdown" >
-        <select class="form-control" id="event" name="event"
-        	onchange="addEvent()">
-            <option value="0" selected="true">Manage an Event...</option>
-            <c:forEach items="${events}" var="event" varStatus="i">
-                <option value="${event.id}">${ event.name }</option>
-            </c:forEach> 
-        </select>
-    </div>
-	<div id="events"> </div>
-</div>
+		function racedayInit(){
+			// console.log("racedayInit");
+			getSysDetails();
+			// get events in progress
+			getRunning();
+			// get readers attached
+			getReaders();
+			// refresh results on interval
+			setInterval(function(){
+				var needResults = false;
+				// console.log(readerOn);
+				for (var key in readerOn) {
+					if(readerOn[key] == true) {
+						needResults = true;
+					}
+				}
+				if(needResults) {
+					getReaderResults();
+				}
+			}, REFRESH_RESULTS );
+			// refresh timer on interval
+			setInterval(function(){
+				if(isReloading){ // not on first load
+				// sos0 TODO here:
+				// For each reader id in the readeron object
+				// call the timerUpdate function on a loop
+				// Make the timerupdate only update the status portion of the
+				// box so it doesn't flicker
+					console.log(readerOn);
+					for (var key in readerOn) {
+						console.log(key);
+						timerStatus(key);
+					}
 
-</td></tr></table>	
-	
-<script>
-var readerOn=false;
-var runningEventCount = 0;
-var readerStatus = 0;
-
-window.onload = racedayInit;
-// window.onunload = racedayEnd;
-
-function racedayInit(){
-	getRunning();
-	getReaders();
-	// pool announcer
-	setInterval(function(){
-		if(readerOn) getReaderResults();
-	},4000);
-}
-
-function timerUpdate(id){
-	window.location = "/bibs-server/timers/"+id+"?form";
-}
-
-function timerStatus(id){
-	jQuery("#reader-progress-"+id).show();
-	var r = jQuery.ajax({
-		url: "/bibs-server/timers/status/"+id,
-		type: "GET",
-		dataType: "html"
-		});
-	r.done(function( data ) {
-    	readerStatus = Math.max(0,data); 
-    	var rtn = "Not Connected";
-    	if(readerStatus == 0){
-    		rtn = "Disconnected";
-    		jQuery("#btn-start-"+id).show();
-    		jQuery("#btn-stop-"+id).hide();
-    		jQuery("#btn-update-"+id).show();
-        	jQuery("#reader-progress-"+id).hide();
-        	readerOn=false;
-    	}else if(readerStatus == 1){
-    		rtn = "Connected";
-    		jQuery("#btn-start-"+id).show();
-    		jQuery("#btn-stop-"+id).hide();
-    		jQuery("#btn-update-"+id).show();
-        	jQuery("#reader-progress-"+id).hide();
-    		readerOn=false;
-    	}else if(readerStatus == 2){
-    		rtn = "Reading...";
-    		jQuery("#btn-start-"+id).hide();
-    		jQuery("#btn-stop-"+id).show();
-    		jQuery("#btn-update-"+id).hide();
-    		jQuery("#reader-progress-"+id).show();
-    		readerOn=true;
-    	}else if(readerStatus == 3){
-    		rtn = "Writing...";
-    		stopReader(id);
-    		jQuery("#btn-start-"+id).hide();
-    		jQuery("#btn-stop-"+id).show();
-    		jQuery("#btn-update-"+id).hide();
-        	jQuery("#reader-progress-"+id).show();
-    	}
-    	jQuery("#reader-status-"+id).html(rtn);
-	});
-	r.fail(function( jqXHR, textStatus ) {
-		//alert("Timing Hardware Not Found");
-	});
-}
-
-function timerConnect(id){
-	jQuery("#reader-progress-"+id).show();
-	var r = jQuery.ajax({
-		url: "/bibs-server/timers/connect/"+id,
-		type: "GET",
-		dataType: "html"
-		});
-	r.done(function( data ) {
-		timerStatus(id);
-	});
-	r.fail(function( jqXHR, textStatus ) {
-		timerStatus(id);
-	});
-}
-
-function timerSync(id){
-	var timerTime = jQuery.ajax({
-		url: "/bibs-server/timers/time/"+id,
-		type: "GET",
-		dataType: "html"
-		});
-	timerTime.done(function( data ) {
-		if(data != "true"){
-			jQuery("#reader-"+id).css("border","solid red 1px");
+				}
+			}, REFRESH_TIMER );
+			// refresh uncat on interval
+			setInterval(function(){
+				if(!isUncat){ // not on first load
+					findUncategorized();
+				}
+			}, REFRESH_UNCAT );
+			isReloading = true;
 		}
-	});
-}
 
-function lookupStartTime(eventId){
-	var r = jQuery.ajax({
-		url: "/bibs-server/events/"+eventId,
-		type: "GET",
-		dataType: "json"
-		});
-	r.done(function( data ) {
-		var date = new Date(data.timeStart);
-		var dateStr = date.toString().split("GMT")[0];
-		jQuery('#starttime-'+eventId).html(dateStr);
-	});
-	r.fail(function( jqXHR, textStatus ) {
-		jQuery('#starttime-'+eventId).html(new Date());
-	});
-}
-
-function addEvent(){
-	var eventId = jQuery("#event").val();
-	if(null==eventId || !(eventId>0)) return false;
-	var eventName = jQuery("#event option[value='"+eventId+"']").text();
-	runningEventCount++;
-	makeEventRow(eventId,eventName);
-	setRunning(eventId,runningEventCount);
-	readerQuery(eventId);
-}
-
-function makeReaderRow(n,readerObj){
-	var position = "Starting Line";
-	if(readerObj.position) position = "Finish Line";
-	var row = jQuery("#reader-template").html()
-		.replace(/--count--/g,n)
-		.replace(/--id--/g,readerObj.id)
-		.replace(/--position--/g,position)
-		.replace(/--url--/g,readerObj.id);
-	jQuery("#readers").append(row);
-}
-
-function makeEventRow(eventId,eventName){
-	var eventRow = jQuery("#eventTemplate").html()
-		.replace(/--event_id--/g,eventId)
-		.replace(/--event_name--/g,eventName);
-	jQuery("#events").append(eventRow);
-	jQuery("#event-"+eventId).slideDown();
-	jQuery("#event option[value='"+eventId+"']").remove();
-	readerQuery(eventId);
-	refreshMetrics(eventId);
-}
-
-function startReader(id){
-	jQuery('#btn-start-'+id).hide();
-	jQuery('#btn-stop-'+id).show();
-	jQuery("#btn-update-"+id).hide();
-	jQuery("#reader-progress-"+id).show();
-	jQuery("#reader-status-"+id).html("Connecting...");
-	var readerStart = jQuery.ajax({
-		url: "/bibs-server/timers/start/"+id,
-		type: "GET",
-		dataType: "html"
-		});
-	readerStart.done(function( msg ) {
-		if(msg!="true") 	
-			alert("Reader not available.")
-		else
-			readerOn=true;
-		timerStatus(id);
-	});
-	readerStart.fail(function( jqXHR, textStatus ) {
-		timerStatus(id);
-	});
-}
-
-function initTimer(eventId){
-	var now = new Date().getTime();
-	var req = jQuery.ajax({
-		url: "/bibs-server/events/"+eventId,
-		type: "GET",
-		dataType: "json"
-		});
-	req.done(function( data ) {
-		if(!eval(data.gunFired)){
-			jQuery("#event-timer-str-"+eventId).hide();
-			return true;
-		}
-		jQuery("#event-timer-"+eventId).html(now-data.gunTime);
-		timer(eventId);
-		jQuery("#event-timer-str-"+eventId).show();
-		setInterval(function(){
-			timer(eventId);
-		},1000);
-	});
-	
-}
-
-function timer(eventId){
-	var l = Math.max(0,jQuery("#event-timer-"+eventId).html()) + 1000 // add 1 sec
-	jQuery("#event-timer-"+eventId).html(l);
-	var e = jQuery("#event-timer-str-"+eventId);
-	getHoursMinutesSeconds(e,l);
-	
-}
-
-
-function getReaderResults(){
-	jQuery("#events > .event-row").each(function(index,element){
-		var eventId = element.id.split("-")[1];
-		readerQuery(eventId);
-	});
-}
-
-function readerQuery(eventId){
-	console.log("readerQuery "+eventId);
-	var request = jQuery.ajax({
-		url: "/bibs-server/events/results?event="+eventId,
-		type: "GET",
-		dataType: "json"
-		});
-	request.done(function( data ) {
-			jQuery("#results"+eventId).html( 
-					makeRunnersTable(data, "", eventId ) );
-			jQuery("#results"+eventId).show();
-			if(data.length > 0)
-				refreshMetrics(eventId);
-			});
-	request.fail(function( jqXHR, textStatus ) {
-		// error?
-		});
-}
-
-function stopReader(id){
-	readerOn=false;
-	var request = jQuery.ajax({
-		url: "/bibs-server/timers/stop/"+id,
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( msg ) {
-			jQuery('#btn-stop-'+id).hide();
-			jQuery('#btn-start-'+id).show();
-    		jQuery("#btn-update-"+id).show();
-			jQuery("#timer-progress-"+id).hide();
-			jQuery("#timer-status-"+id).html("Stopping...");
-			timerStatus(id);
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		alert("Error");
-		});
-}
-
-function setRunning(eventId,order){
-	var request = jQuery.ajax({
-		url: "/bibs-server/events/run?event="+eventId+"&amp;order="+order,
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( msg ) {
-		if(msg!="true"){
-			// error
-		}
-		getRunning(); // already running?
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		// error
-		});
-}
-
-function stopRunning(eventId){
-	runningEventCount--;
-	var request = jQuery.ajax({
-		url: "/bibs-server/events/done?event="+eventId,
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( msg ) {
-		if(msg=="true") {
-			var eventName = jQuery("#event-name-"+eventId).html();
-			jQuery("#event-"+eventId).slideUp("slow",function(){
-					jQuery("#event-"+eventId).remove();
+		function getSysDetails() {
+			console.log("getting system info")
+			console.log("findUncategorized");
+			var r = jQuery.ajax({
+				url: "/bibs-server/events/systemdetails",
+				dataType: "json"
 				});
-			jQuery("#event").append("<option value="+eventId+">"+eventName+"</option>");
+			r.done(function( data ) {
+				if(!gotTimeAlready) {
+					sysdetails = data;
+				}
+				gotTimeAlready = true;
+				console.log(data)
+			});
+			r.fail(function( jqXHR, textStatus ) {
+				console.log("uh oh");
+			});	
 		}
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		// error
-		});
-}
 
-function gun(eventId){
-	var request = jQuery.ajax({
-		url: "/bibs-server/events/gun?event="+eventId,
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( msg ) {
-		if(msg=="true") {
-			jQuery("#btn-gun-"+eventId).hide();
-			jQuery("#btn-done-"+eventId).show();
-			jQuery("#btn-manual-"+eventId).show();
-			initTimer(eventId);
+		function findUncategorized(){
+			// console.log("findUncategorized");
+			var r = jQuery.ajax({
+				url: "/bibs-server/events/uncat",
+				dataType: "json"
+				});
+			r.done(function( data ) {
+				var id = Number(data.id);
+				var name = data.name;
+				if(id > 0){
+					// console.log("FOUND UNCAT "+id);
+					addUncat(id,name);
+					isUncat = true; // dont call this again
+				}
+			});
+			r.fail(function( jqXHR, textStatus ) {
+				// console.log(textStatus);
+			});
 		}
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		alert("Error firing gun.")
-		});
-}
 
+		function timerUpdate(id){
+			window.location = "/bibs-server/timers/"+id+"?form";
+		}
 
-function manual(eventId){
-	var bib = window.prompt("Bib");
-	if(bib.trim()==""){
-		return true;
-	}
-	var request = jQuery.ajax({
-		url: "/bibs-server/events/manual?event="+eventId+"&amp;bib="+bib,
-		type: "GET",
-		dataType: "html"
-		});
-	request.done(function( msg ) {
-		readerQuery(eventId);
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		alert("Error")
-		});
-}
+		function timerStatus(id){
+			var r = jQuery.ajax({
+				url: "/bibs-server/timers/status/"+id,
+				type: "GET",
+				dataType: "html"
+				});
+			r.done(function( data ) {
+		    	readerStatus = Math.max(0,data); 
+		    	var rtn = "Not Connected";
+		    	var currStatus = jQuery("#reader-status-"+id).text();
 
-function getRunning(){
-	var request = jQuery.ajax({
-		url: "/bibs-server/events/running",
-		type: "GET",
-		dataType: "json"
-		});
-	request.done(function( data ) {
-		for(var i in data){
-			var eventId = data[i].id;
-			var eventName = data[i].name;
+		    	if(readerStatus == 0){
+		    		rtn = "Disconnected";
+		    		jQuery("#btn-start-"+id).show();
+		    		jQuery("#btn-stop-"+id).hide();
+		    		jQuery("#btn-update-"+id).show();
+		        	jQuery("#reader-progress-"+id).hide();
+		        	readerOn[id]=false;
+		    	}else if(readerStatus == 1){
+		    		rtn = "Connected";
+		    		jQuery("#btn-start-"+id).show();
+		    		jQuery("#btn-stop-"+id).hide();
+		    		jQuery("#btn-update-"+id).show();
+		        	jQuery("#reader-progress-"+id).hide();
+		    		readerOn[id]=false;
+		    	}else if(readerStatus == 2){
+		    		rtn = "Reading...";
+		    		jQuery("#btn-start-"+id).hide();
+		    		jQuery("#btn-stop-"+id).show();
+		    		jQuery("#btn-update-"+id).hide();
+		    		jQuery("#reader-progress-"+id).show();
+		    		readerOn[id]=true;
+		    	}else if(readerStatus == 3){
+		    		rtn = "Writing...";
+		    		stopReader(id);
+		    		jQuery("#btn-start-"+id).hide();
+		    		jQuery("#btn-stop-"+id).show();
+		    		jQuery("#btn-update-"+id).hide();
+		        	jQuery("#reader-progress-"+id).show();
+		    	}
+		    	jQuery("#reader-status-"+id).html(rtn);
+			});
+			r.fail(function( jqXHR, textStatus ) {
+				//alert("Timing Hardware Not Found");
+			});
+		}
+
+		function timerConnect(id){
+			jQuery("#reader-progress-"+id).show();
+			var r = jQuery.ajax({
+				url: "/bibs-server/timers/connect/"+id,
+				type: "GET",
+				dataType: "html"
+				});
+			r.done(function( data ) {
+				timerStatus(id);
+			});
+			r.fail(function( jqXHR, textStatus ) {
+				timerStatus(id);
+			});
+		}
+
+		function timerSync(id){
+			var timerTime = jQuery.ajax({
+				url: "/bibs-server/timers/time/"+id,
+				type: "GET",
+				dataType: "html"
+				});
+			timerTime.done(function( data ) {
+				if(data != "true"){
+					jQuery("#reader-"+id).css("border","solid red 1px");
+				}
+			});
+		}
+
+		function lookupStartTime(eventId){
+			var r = jQuery.ajax({
+				url: "/bibs-server/events/"+eventId,
+				type: "GET",
+				dataType: "json"
+				});
+			r.done(function( data ) {
+				var date = new Date(data.timeStart);
+				var dateStr = date.toString().split("GMT")[0];
+				jQuery('#starttime-'+eventId).html(dateStr);
+			});
+			r.fail(function( jqXHR, textStatus ) {
+				jQuery('#starttime-'+eventId).html(new Date());
+			});
+		}
+
+		function addEvent(){
+			var eventId = jQuery("#event").val();
+			if(null==eventId || !(eventId>0)) return false;
+			var eventName = jQuery("#event option[value='"+eventId+"']").text();
 			runningEventCount++;
 			makeEventRow(eventId,eventName);
-			//jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart).toLocaleTimeString());
-			initTimer(eventId);
-			if(data[i].gunFired == true){
-				jQuery("#btn-gun-"+eventId).hide();
-				jQuery("#btn-done-"+eventId).show();
-				jQuery("#btn-manual-"+eventId).show();
+			setRunning(eventId,runningEventCount);
+			readerQuery(eventId);
+		}
+		
+		function setSplits(type) {
+			console.log("setting splits to " + type);
+			isSplits = !isSplits;
+			announcerType=type;
+			getReaderResults();
+		}
+		
+		function addUncat(eventId, eventName){
+			if(null==eventId || !(eventId>0)) return false;
+			runningEventCount++;
+			makeEventRow(eventId,eventName);
+			setRunning(eventId,runningEventCount);
+			readerQuery(eventId);
+		}
+
+		function makeReaderRow(n,readerObj){
+			var position = "Starting Line";
+			switch(readerObj.position) {
+			case 0:
+				position = "Starting Line";
+				break;
+			case 1:
+				position = "Finish Line";
+				break;
+			default:
+				var splitpos = readerObj.position - 1;
+				position = "Split Number " + splitpos;
+			}
+			var row = jQuery("#reader-template").html()
+				.replace(/--count--/g,n)
+				.replace(/--id--/g,readerObj.id)
+				.replace(/--position--/g,position)
+				.replace(/--url--/g,readerObj.id);
+			jQuery("#readers").append(row);
+		}
+
+		function makeEventRow(eventId,eventName){
+			var eventstring = &#x27;&lt;a href="/bibs-server/events/&#x27;+eventId+&#x27;"&gt;&#x27;+eventName+&#x27;&lt;/a&gt;&#x27;
+			var eventRow = jQuery("#eventTemplate").html()
+				.replace(/--event_id--/g,eventId)
+				.replace(/--event_name--/g, eventstring);
+			jQuery("#events").append(eventRow);
+			jQuery("#event-"+eventId).slideDown();
+			jQuery("#event option[value='"+eventId+"']").remove();
+			readerQuery(eventId);
+			refreshMetrics(eventId);
+		}
+
+		function startReader(id){
+			jQuery('#btn-start-'+id).hide();
+			jQuery('#btn-stop-'+id).show();
+			jQuery("#btn-update-"+id).hide();
+			jQuery("#reader-progress-"+id).show();
+			jQuery("#reader-status-"+id).html("Connecting...");
+			var readerStart = jQuery.ajax({
+				url: "/bibs-server/timers/start/"+id,
+				type: "GET",
+				dataType: "html"
+				});
+			readerStart.done(function( msg ) {
+				if(msg!="true"){
+					alert("Reader not available.");
+					location.reload(true);
+				}
+				else{
+					readerOn[id]=true;
+				}
+				timerStatus(id);
+			});
+			readerStart.fail(function( jqXHR, textStatus ) {
+				timerStatus(id);
+			});
+		}
+
+		var clocks = new Array();
+		function initTimer(eventId){
+			var now = sysdetails.time;
+			console.log("setting Time: " + sysdetails.time + " for event id " + eventId);
+			var req = jQuery.ajax({
+				url: "/bibs-server/events/rest/"+eventId,
+				type: "GET",
+				dataType: "json"
+				});
+			req.done(function( data ) {
+			console.log(data);
+			console.log("gunfired: " + data.gunFired);
+				if(!eval(data.gunFired || data.name == "Unassigned Results")){
+				console.log("no gun fired");
+					jQuery("#event-timer-str-"+eventId).hide();
+					return true;
+				}
+				if(jQuery.inArray(eventId, clocks) > -1 ) {
+					return true;
+				}
+				console.log("event time: " + now-data.gunTime);
+				jQuery("#event-timer-"+eventId).html(now-data.gunTime);
+				timer(eventId);
+				console.log("gun time:");
+				console.log(now-data.gunTime);
+				jQuery("#event-timer-str-"+eventId).show();
+				//console.log("clocks");
+				console.log(clocks);
+				if(jQuery.inArray(eventId, clocks) == -1){
+					setInterval(function(){
+						timer(eventId);
+					},1000);
+					clocks.push(eventId);
+				}	
+			});
+			
+		}
+
+		function timer(eventId){
+			//console.log("timer for event:" + eventId + ", clocks:" + clocks);
+			var l = Math.max(0,jQuery("#event-timer-"+eventId).html()) + 1000 // add 1 sec
+			jQuery("#event-timer-"+eventId).html(l);
+			var e = jQuery("#event-timer-str-"+eventId);
+			getHoursMinutesSeconds(e,l);
+			
+		}
+
+
+		function getReaderResults(){
+			jQuery("#events > .event-row").each(function(index,element){
+				var eventId = element.id.split("-")[1];
+				readerQuery(eventId);
+			});
+		}
+
+		function readerQuery(eventId){
+			// console.log("readerQuery "+eventId);
+			if(announcerType === "splits") {
+				var request = jQuery.ajax({
+					url: "/bibs-server/events/splitresults?event="+eventId,
+					type: "GET",
+					dataType: "json"
+					});
+				request.done(function( data ) {
+					jQuery("#results"+eventId).html( 
+							makeRunnersTable(data, "", eventId, announcerType) );
+					jQuery("#results"+eventId).show();
+					if(data.length > 0)
+						refreshMetrics(eventId);
+					});
+				request.fail(function( jqXHR, textStatus ) {
+					// error?
+				});
+			} else if(announcerType === "laps") {
+				var request = jQuery.ajax({
+					url: "/bibs-server/events/results?event="+eventId,
+					type: "GET",
+					dataType: "json"
+					});
+				request.done(function( data ) {
+					jQuery("#results"+eventId).html( 
+							makeRunnersTable(data, "", eventId, announcerType) );
+					jQuery("#results"+eventId).show();
+					if(data.length > 0)
+						refreshMetrics(eventId);
+					});
+				request.fail(function( jqXHR, textStatus ) {
+					// error?
+				});
+			} else {
+				var request = jQuery.ajax({
+					url: "/bibs-server/events/results?event="+eventId,
+					type: "GET",
+					dataType: "json"
+					});
+				request.done(function( data ) {
+					jQuery("#results"+eventId).html( 
+							makeRunnersTable(data, "", eventId, "") );
+					jQuery("#results"+eventId).show();
+					if(data.length > 0)
+						refreshMetrics(eventId);
+					});
+				request.fail(function( jqXHR, textStatus ) {
+					// error?
+				});
 			}
 		}
-		getReaderResults();
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		// error?
-		});
-}
 
-function getReaders(){
-	var request = jQuery.ajax({
-		url: "/bibs-server/timers",
-		type: "GET",
-		dataType: "json"
-		});
-	request.done(function( data ) {
-		var n = 1;
-		for(var i in data){
-			makeReaderRow(n++,data[i]);
-			timerStatus(data[i].id);
+		function stopReader(id){
+			readerOn[id]=false;
+			var request = jQuery.ajax({
+				url: "/bibs-server/timers/stop/"+id,
+				type: "GET",
+				dataType: "html"
+				});
+			request.done(function( msg ) {
+					jQuery('#btn-stop-'+id).hide();
+					jQuery('#btn-start-'+id).show();
+		    		jQuery("#btn-update-"+id).show();
+					jQuery("#timer-progress-"+id).hide();
+					jQuery("#timer-status-"+id).html("Stopping...");
+					timerStatus(id);
+				});
+			request.fail(function( jqXHR, textStatus ) {
+				alert("Error");
+				location.reload(true);
+				});
 		}
-		});
-	request.fail(function( jqXHR, textStatus ) {
-		// error?
-		});
-}
-function refreshMetrics(eventId){
-	var total = jQuery.ajax({
-		url: "/bibs-server/events/count?event="+eventId,
-		type: "GET",
-		dataType: "html"
-		});
-	total.done(function(data){
-		jQuery(".total-"+eventId).html(data);
-	});
-// 	var started = jQuery.ajax({
-// 		url: "/bibs-server/events/countstarted?event="+eventId,
-// 		type: "GET",
-// 		dataType: "html"
-// 		});
-// 	started.done(function( data ) {
-// 		jQuery("#start-"+eventId).html(data);
-// 	});
-	var finished = jQuery.ajax({
-		url: "/bibs-server/events/countcomplete?event="+eventId,
-		type: "GET",
-		dataType: "html"
-		});
-	finished.done(function( data ) {
-		jQuery("#done-"+eventId).html(data);
-	});
-}
 
-</script>
+		function setRunning(eventId,order){
+			var request = jQuery.ajax({
+				url: "/bibs-server/events/run?event="+eventId+"&amp;order="+order,
+				type: "GET",
+				dataType: "html"
+				});
+			request.done(function( msg ) {
+				if(msg!="true"){
+					// error
+				}
+				getRunning(); // already running?
+				});
+			request.fail(function( jqXHR, textStatus ) {
+				// error
+				});
+		}
+
+		function stopRunning(eventId){
+			runningEventCount--;
+			var request = jQuery.ajax({
+				url: "/bibs-server/events/done?event="+eventId,
+				type: "GET",
+				dataType: "html"
+				});
+			request.done(function( msg ) {
+				if(msg=="true") {
+					var eventName = jQuery("#event-name-"+eventId).html();
+					jQuery("#event-"+eventId).slideUp("slow",function(){
+							jQuery("#event-"+eventId).remove();
+						});
+					jQuery("#event").append("<option value="+eventId+">"+eventName+"</option>");
+				}
+				});
+			request.fail(function( jqXHR, textStatus ) {
+				// error
+				});
+		}
+
+		function gun(eventId){
+			var request = jQuery.ajax({
+				url: "/bibs-server/events/gun?event="+eventId,
+				type: "GET",
+				dataType: "html"
+				});
+			request.done(function( msg ) {
+				if(msg=="true") {
+					jQuery("#btn-gun-"+eventId).hide();
+					jQuery("#btn-done-"+eventId).show();
+					jQuery("#btn-manual-"+eventId).show();
+					initTimer(eventId);
+				}
+				});
+			request.fail(function( jqXHR, textStatus ) {
+				alert("Error firing gun.");
+				location.reload(true);
+				});
+		}
+
+
+		function manual(eventId){
+			var bib = window.prompt("Bib");
+			if(bib.trim()==""){
+				return true;
+			}
+			var request = jQuery.ajax({
+				url: "/bibs-server/events/manual?event="+eventId+"&amp;bib="+bib,
+				type: "GET",
+				dataType: "html"
+				});
+			request.done(function( msg ) {
+				readerQuery(eventId);
+				});
+			request.fail(function( jqXHR, textStatus ) {
+				alert("Error");
+				location.reload(true);
+				});
+		}
+
+		function getRunning(){
+			var request = jQuery.ajax({
+				url: "/bibs-server/events/running",
+				type: "GET",
+				dataType: "json"
+				});
+			request.done(function( data ) {
+				for(var i in data){
+					var eventId = data[i].id;
+					var eventName = data[i].name;
+					runningEventCount++;
+					makeEventRow(eventId,eventName);
+					//jQuery("#starttime-"+eventId).html(new Date(data[i].timeStart).toLocaleTimeString());
+					initTimer(eventId);
+					if(data[i].gunFired == true){
+						jQuery("#btn-gun-"+eventId).hide();
+						jQuery("#btn-done-"+eventId).show();
+						jQuery("#btn-manual-"+eventId).show();
+					}
+				}
+				getReaderResults();
+				});
+			request.fail(function( jqXHR, textStatus ) {
+				// error?
+				});
+		}
+
+		function getReaders(){
+			var request = jQuery.ajax({
+				url: "/bibs-server/timers",
+				type: "GET",
+				dataType: "json"
+				});
+			request.done(function( data ) {
+				var n = 1;
+				for(var i in data){
+					makeReaderRow(n++,data[i]);
+					timerStatus(data[i].id);
+				}
+				});
+			request.fail(function( jqXHR, textStatus ) {
+				// error?
+				});
+		}
+		function refreshMetrics(eventId){
+			var total = jQuery.ajax({
+				url: "/bibs-server/events/count?event="+eventId,
+				type: "GET",
+				dataType: "html"
+				});
+			total.done(function(data){
+				jQuery(".total-"+eventId).html(data);
+			});
+		// 	var started = jQuery.ajax({
+		// 		url: "/bibs-server/events/countstarted?event="+eventId,
+		// 		type: "GET",
+		// 		dataType: "html"
+		// 		});
+		// 	started.done(function( data ) {
+		// 		jQuery("#start-"+eventId).html(data);
+		// 	});
+			var finished = jQuery.ajax({
+				url: "/bibs-server/events/countcomplete?event="+eventId,
+				type: "GET",
+				dataType: "html"
+				});
+			finished.done(function( data ) {
+				jQuery("#done-"+eventId).html(data);
+			});
+		}
+	</script>
 
 </div>

@@ -10,6 +10,10 @@
     <put-attribute name="body" value="/WEB-INF/views/dataAccessFailure.jspx"/>
   </definition>
 
+  <definition extends="public" name="accessDeniedFailure">
+    <put-attribute name="body" value="/WEB-INF/views/accessDeniedFailure.jspx"/>
+  </definition>
+
   <definition extends="public" name="resourceNotFound">
     <put-attribute name="body" value="/WEB-INF/views/resourceNotFound.jspx"/>
   </definition>

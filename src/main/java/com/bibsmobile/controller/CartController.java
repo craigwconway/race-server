@@ -2,37 +2,40 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
-import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.CustomRegFieldResponse;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.CartUtil;
 import com.bibsmobile.util.UserProfileUtil;
-import org.apache.commons.collections.CollectionUtils;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Date;
+import javax.validation.Valid;
+
+import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Random;
+import java.util.Set;
 
 @RequestMapping("/carts")
 @Controller
-@RooWebScaffold(path = "carts", formBackingObject = Cart.class)
-@RooWebJson(jsonObject = Cart.class)
 public class CartController {
 
     @RequestMapping(value = "/item/{id}", produces = "text/html")
@@ -41,16 +44,242 @@ public class CartController {
     }
 
     @RequestMapping(value = "/item/{id}/updatequantity", produces = "text/html")
-    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, Model uiModel,
-                                     @ModelAttribute UserProfile userProfile, HttpServletRequest request) {
+    public String updateItemQuantity(@PathVariable("id") Long eventCartItemId, @RequestParam Integer quantity, @RequestParam("priceChangeId") Long eventCartItemPriceChangeId, Model uiModel, @ModelAttribute UserProfile userProfile,
+            HttpServletRequest request) {
         if (userProfile.getId() == null) {
             UserProfileUtil.disableUserProfile(userProfile);
             userProfile.persist();
         }
-        //TODO: implement if needed color and size in admin panel
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, quantity, userProfile, null, null);
+        // TODO: implement if needed color and size in admin panel
+
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, EventCartItemPriceChange.findEventCartItemPriceChange(eventCartItemPriceChangeId), quantity, userProfile, null, null, null, null, false);
         uiModel.addAttribute("cart", cart);
         return "redirect:/carts/item/" + eventCartItemId;
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
+        Cart cart = Cart.findCart(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (cart == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(cart.toJson(), headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> listJson() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        List<Cart> result = Cart.findAllCarts();
+        return new ResponseEntity<>(Cart.toJsonArray(result), headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createFromJson(@RequestBody String json, UriComponentsBuilder uriBuilder) {
+        Cart cart = Cart.fromJsonToCart(json);
+        cart.persist();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        RequestMapping a = this.getClass().getAnnotation(RequestMapping.class);
+        headers.add("Location", uriBuilder.path(a.value()[0] + "/" + cart.getId()).build().toUriString());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
+        for (Cart cart : Cart.fromJsonArrayToCarts(json)) {
+            cart.persist();
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * @api {put} /carts/{id}
+     * @apiGroup carts
+     * @apiName putCart
+     * @apiParam {Object} cart Cart object containing questions
+     * @apiParam {Number} cart.id Id of posted cart
+     * @apiParam {Object} cart.user Userprofile object inside of cart
+     * @apiParam {Object[]} cart.cartItems Array of items inside of cart
+     * @apiParam {Object[]} cart.customRegFieldResponses An array of custom reg field responses selected by the user.
+     * @apiParam {Number} [cart.customRegFieldResponses.id] Id of customregfieldresponse to post. Include this to update an answer
+     * @apiParam {String} [cart.customRegFieldResponses.response] String containing the response to the question
+     * @apiParam {Object} cart.customRegFieldResponses.customRegField Regfield answered. Must contain id.
+     * @apiParam {Number} cart.customRegFieldResponses.customRegField.id id of linked CustomRegField
+     * @apiParamExample {json} Sample Create
+     * 		{
+     * 			"id": 1,
+     * 			"customRegFieldResponses": 
+     * 				[
+     * 					{
+     * 						"customRegField": {"id":2},
+     * 						"response": "nodejs"
+     * 					}
+     * 				]
+     * 		}
+     * @apiParamExample {json} Sample Update
+     * 		{
+     * 			"id": 1,
+     * 			"customRegFieldResponses": 
+     * 				[
+     * 					{
+     * 						"id": 1,
+     * 						"customRegField": {"id":2},
+     * 						"response": "nodejs"
+     * 					}
+     * 				]
+     * 		}
+     * @apiSuccess (200) {Object} cart Modified cart object
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
+    public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        Cart cart = Cart.fromJsonToCart(json);
+        cart.setId(id);
+        List<CartItem> cartItems = cart.getCartItems();
+        List <CustomRegFieldResponse> regFieldResponses = cart.getCustomRegFieldResponses();
+        if(null != cartItems) {
+	        for(CartItem cartItem: cartItems) {
+	        	cartItem.setUserProfile(cart.getUser());
+	        	cartItem.persist();
+	        }
+        }
+        if (null != regFieldResponses) {
+        	for(CustomRegFieldResponse crfr : regFieldResponses) {
+        		if(crfr.getId() != null) {
+        			// check for a match
+        			try {
+        				CustomRegFieldResponse match = CustomRegFieldResponse.findCustomRegFieldResponse(crfr.getId());
+        				match.setResponse(crfr.getResponse());
+        				match.merge();
+        			} catch(Exception e) {
+        				crfr.setCart(cart);
+        				crfr.persist();
+        				}
+        		} else {
+        			crfr.setCart(cart);
+        			crfr.persist();
+        		}
+        	}
+        }
+        if (cart.merge() == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
+        Cart cart = Cart.findCart(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (cart == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        cart.remove();
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(params = "find=ByUser", headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> jsonFindCartsByUser(@RequestParam("user") UserProfile user) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        return new ResponseEntity<>(Cart.toJsonArray(Cart.findCartsByUser(user).getResultList()), headers, HttpStatus.OK);
+    }
+
+    @Autowired
+    UserProfileService userProfileService;
+
+    @RequestMapping(method = RequestMethod.POST, produces = "text/html")
+    public String create(@Valid Cart cart, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            this.populateEditForm(uiModel, cart);
+            return "carts/create";
+        }
+        uiModel.asMap().clear();
+        cart.persist();
+        return "redirect:/carts/" + this.encodeUrlPathSegment(cart.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(params = "form", produces = "text/html")
+    public String createForm(Model uiModel) {
+        this.populateEditForm(uiModel, new Cart());
+        return "carts/create";
+    }
+
+    @RequestMapping(value = "/{id}", produces = "text/html")
+    public String show(@PathVariable("id") Long id, Model uiModel) {
+        uiModel.addAttribute("cart", Cart.findCart(id));
+        uiModel.addAttribute("itemId", id);
+        return "carts/show";
+    }
+
+    @RequestMapping(produces = "text/html")
+    public String list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("carts", Cart.findCartEntries(firstResult, sizeNo, sortFieldName, sortOrder));
+            float nrOfPages = (float) Cart.countCarts() / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("carts", Cart.findAllCarts(sortFieldName, sortOrder));
+        }
+        return "carts/list";
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
+    public String update(@Valid Cart cart, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        if (bindingResult.hasErrors()) {
+            this.populateEditForm(uiModel, cart);
+            return "carts/update";
+        }
+        uiModel.asMap().clear();
+        cart.merge();
+        return "redirect:/carts/" + this.encodeUrlPathSegment(cart.getId().toString(), httpServletRequest);
+    }
+
+    @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
+    public String updateForm(@PathVariable("id") Long id, Model uiModel) {
+        this.populateEditForm(uiModel, Cart.findCart(id));
+        return "carts/update";
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "text/html")
+    public String delete(@PathVariable("id") Long id, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size,
+            Model uiModel) {
+        Cart cart = Cart.findCart(id);
+        cart.remove();
+        uiModel.asMap().clear();
+        uiModel.addAttribute("page", (page == null) ? "1" : page.toString());
+        uiModel.addAttribute("size", (size == null) ? "10" : size.toString());
+        return "redirect:/carts";
+    }
+
+    void populateEditForm(Model uiModel, Cart cart) {
+        uiModel.addAttribute("cart", cart);
+        uiModel.addAttribute("cartitems", CartItem.findAllCartItems());
+        uiModel.addAttribute("userprofiles", this.userProfileService.findAllUserProfiles());
+    }
+
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {
+        }
+        return pathSegment;
+    }
 }

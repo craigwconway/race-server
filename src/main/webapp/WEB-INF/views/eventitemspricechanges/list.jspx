@@ -1,24 +1,133 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 102%;
+            margin-top: -2%;
+            margin-left: -1%;
+            margin-right: -3%;
+            padding-top: 2%;
+            padding-bottom: 4%;
+            padding-left: 5%;
+        }
+        .info-container{
+            margin: 0 auto;
+            width: 50%;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+            text-align: center;
+        }
+        i{
+            margin-right: 5px;
+        }
+        .ui.list .list > .item > .content, .ui.list > .item > .content{
+            text-align: center;
+        }
+        .ui.cards > .card > .content > .header{
+            text-align: left;
+        }
+    </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-        <h2>Manage Price Changes for Product ${ eventitem.name }</h2>
-        <button class="btn btn-default btn-top" onclick="addItemPriceChange()" type="button">
-            Add a Price Change
-        </button>
-        <script>
-            function addItemPriceChange(){
-                window.location="/bibs-server/eventitemspricechanges?form&amp;eventitem=${eventitem.id}";
-            }
-        </script>
-        <page:list id="pl_com_bibsmobile_model_EventCartItemPriceChange" items="${eventcartitempricechanges}" z="WMiJzrJ1IWZWaft43kpuzLU+jlw=">
-            <table:table data="${eventcartitempricechanges}" id="l_com_bibsmobile_model_EventCartItemPriceChange" path="/eventitemspricechanges" z="XooZereYxZTyK+skkYrQfdMU68w=">
-                <table:column date="true" dateTimePattern="${eventCartItemPriceChange_startdate_date_format}" id="c_com_bibsmobile_model_EventCartItemPriceChange_startDate" property="startDate" z="Tk27/JhDb8kv8+6dFPoeB36Frhc="/>
-                <table:column date="true" dateTimePattern="${eventCartItemPriceChange_enddate_date_format}" id="c_com_bibsmobile_model_EventCartItemPriceChange_endDate" property="endDate" z="KJfwfKLOmms+dwtzLdfcBobgZSI="/>
-                <table:column id="c_com_bibsmobile_model_EventCartItemPriceChange_eventCartItem" property="eventCartItem" z="1me9MSrtuxXZPRgNF7cAhhfc+bM="/>
-                <table:column id="c_com_bibsmobile_model_EventCartItemPriceChange_price" property="price" z="POzSQCF5duZhplUrt+x/Yzomo04="/>
-            </table:table>
-        </page:list>
+    <div class="white-overlay">
+        <div class="info-container">
+            <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
+            <div class="pull-right"><div class="ui icon yellow button" onclick="addItemPriceChange()" ><i style="margin-right:5px;" class="fa fa-pencil fa-inverse"><!--  --></i> Add/Edit</div></div>
+            <div class="clearfix"><!--  --></div>
+            <page:list id="pl_com_bibsmobile_model_EventCartItemPriceChange" items="${eventcartitempricechanges}" z="WMiJzrJ1IWZWaft43kpuzLU+jlw=">
+            <h2 class="ui icon header">
+                <i class="fa fa-gears fa-2x fa-rotate-90"><!--  --></i>
+                <div class="content" style="margin-top:5px">Manage Ticket Types
+                    <div class="sub header">${eventitem.name}<br/> Current base price: $${eventitem.price}</div>
+                </div>
+            </h2>
+            <div class="ui raised segment" style="text-align: left">
+                <c:if test="${not empty eventcartitempricechanges}">
+                    <c:forEach var="item" items="${eventcartitempricechanges}">
+                        <div style="display:none" class="category">${item.categoryName}</div>
+                        <div class="ui teal big ribbon label ${item.categoryName}">${item.categoryName}
+                            <div class="description">${item.lowAgeThreshold} to ${item.highAgeThreshold}, 
+                                <c:if test="${item.gender eq 'MALE_AND_FEMALE'}"><i class="fa fa-venus-mars"><!--  --></i></c:if>
+                                <c:if test="${item.gender eq 'MALE'}"><i class="fa fa-mars"><!--  --></i></c:if>
+                                <c:if test="${item.gender eq 'FEMALE'}"><i class="fa fa-venus"><!--  --></i></c:if>
+                                <c:if test="${item.team eq true}"><i class="fa fa-user-plus"><!--  --></i></c:if>
+                                <c:if test="${item.team eq false}"><i class="fa fa-user-times"><!--  --></i></c:if>
+                            </div>
+                        </div>
+                        <div class="ui large list">
+                            <div class="item">
+                                <div class="content">
+                                    <div class="ui header"><i class="fa fa-tag"><!--  --></i>$${item.price}</div>
+                                    <div class="date-ranges">
+                                        <span class="dates">${item.dateStartLocal}</span> to
+                                        <span class="dates">${item.dateEndLocal}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </c:if>
+            </div>
+            </page:list>
+        </div>
+    </div>
     </sec:authorize>
+    <script>
+        var eid;
+        window.onload = function(){
+            eid = parseEventId();
+            jQuery(".dates").each(function(){
+                var pcdate = jQuery(this).text();
+                var momdate = moment(pcdate).format('MMM Do \'YY h:mm a');
+                jQuery(this).text(momdate);
+            })
+            jQuery(".category").each(function(){
+                var name = jQuery(this).text();
+                jQuery("." + name + ":not(:first)").hide();
+            })
+        }
+
+        function parseEventId(){
+            var url = window.location.href;
+            var urllen = url.length;
+            var ind = url.lastIndexOf("=");
+            var eid = url.substring(ind+1, urllen);
+            return eid;
+        }
+
+        function onBack(){
+            window.location="/bibs-server/eventitems/"+eid;
+        }
+        function addItemPriceChange(){
+            window.location="/bibs-server/eventitemspricechanges?form&amp;eventitem=${eventitem.id}";
+        }
+        function redirectItemDetail(id){
+            // window.location="/bibs-server/eventitemspricechanges/"+id;
+            window.location="/bibs-server/eventitemspricechanges/" + id + "?form";
+        }
+        function deletePriceChange(id){
+            if(confirm("Delete Price Change?")){
+                jQuery(".cat-"+id).remove();
+                sendDelete(id);
+            }
+        }
+        function sendDelete(id){    
+            var request = jQuery.ajax({
+                url: "/bibs-server/eventitemspricechanges/"+id,
+                type: 'DELETE',
+                dataType: "json",
+                success: function(){
+                    window.location.reload(true);
+                }
+            });
+        }
+    </script>
 </div>

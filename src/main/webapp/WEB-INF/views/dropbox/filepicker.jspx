@@ -88,10 +88,16 @@
         }
 
         // create actual list entries
-        for (var i in data['entries']) {
-          var dirEntry = data['entries'][i];
-          var listEntry = createListEntry(dirEntry);
-          jQuery('#filepicker_lst').append(listEntry);
+        if (data['entries'].length == 0 &amp;&amp; currentPath == '/') {
+          jQuery('#filepicker_lst').append("<li>Your Bibs App folder is empty</li>");
+        } else if (data['entries'].length == 0 &amp;&amp; currentPath != '/') {
+          jQuery('#filepicker_lst').append("<li>This folder is empty</li>");
+        } else {
+          for (var i in data['entries']) {
+            var dirEntry = data['entries'][i];
+            var listEntry = createListEntry(dirEntry);
+            jQuery('#filepicker_lst').append(listEntry);
+          }
         }
       });
     }

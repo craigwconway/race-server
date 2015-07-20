@@ -1,46 +1,214 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            font-size: 1.2em;
+            font-weight: 400;
+            line-height: 27px;
+            color: #292929;
+        }
+        .form-fields>input, #demo>input{
+            width: 400px;
+            margin: 5px auto; 
+        }
+        #timezone-search{
+            margin: 0 auto;
+            width: 400px;
+        }
+        .ui.search .prompt{
+            width: 400px;
+            height: 34px;
+            padding: 6px 12px;
+            line-height: 1.4;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -moz-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            font-size: 0.85em;
+            font-family: inherit;
+        }
+        .ui.search > .results{
+            width: 400px;
+        }
+        .ui.search > .results .result{
+            font-size: 0.9em;
+            line-height: 1.1em;
+            color: #555;
+        }
+        .ui.search > .results .result .title{
+            font-family: inherit;
+            font-weight: normal;
+        }
+        .submit{
+            margin: 0 auto;
+            width: 400px;
+            text-align: right;
+        }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+            .form-fields>input, #demo>input{
+                width: 90%;
+                margin: 5px auto; 
+            }
+            .submit{
+                width: auto;
+                text-align: inherit;
+            }
+            .has-error{
+                margin: 0 auto;
+                width: 90%;
+                white-space: pre-line;
+                text-align: left;
+            }
+        }
+    </style>
+    <div class="white-overlay">
     <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
-        <field:input field="name" id="c_com_bibsmobile_model_Event_name" required="true" z="LgTSrfmMcGEeKn9EIVuDj0Da7ls="/>
-        <field:input field="city" id="c_com_bibsmobile_model_Event_city" z="iYWjL3ti+38Wz9q1TzkesCh+8mw="/>
-        <field:input field="state" id="c_com_bibsmobile_model_Event_state" z="317hwhiMIVVt+Bq3TzgDkWOKaGA="/>
-        <field:datetime dateTimePattern="${event_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_Event_timeStart" z="user-managed"/>
-        <div style="display:none;">
-            <field:datetime dateTimePattern="${event_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_Event_timeEnd" z="user-managed"/>
+        <div class="info-container">
+            <h2 class="ui icon header">
+                <i class="fa fa-bullhorn"><!--  --></i>
+                <div class="content">Create Event
+                    <div class="sub header">Provide the details for this future event.</div>
+                </div>
+            </h2>
+            <!-- chrome autocomplete hack
+                https://code.google.com/p/chromium/issues/detail?id=468153
+                comment number 41 shows the solution i used below.
+             -->
+            <div style="display: none;">
+                <input type="text" id="PreventChromeAutocomplete" name="PreventChromeAutocomplete" autocomplete="address-level4" />
+            </div>
+            <div class="form-fields">
+                <input  type="text" name="name"
+                        class="form-control" autocomplete="off"
+                        placeholder="Event name"
+                        value="${event.name}"
+                        data-parsley-error-message="Please enter an event name."
+                        data-parsley-required="required"></input>
+                <input  type="text" name="timeStartLocal"
+                        class="form-control" autocomplete="off"
+                        id="eventDatepicker"
+                        placeholder="Event date"
+                        data-provide="datepicker"
+                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                        data-parsley-error-message="Please enter a date for this event."></input>
+                <input  type="text" name="organization"
+                        class="form-control" autocomplete="off"
+                        placeholder="Organization"
+                        value="${event.organization}"></input>
+                <input  type="text" name="charity"
+                        class="form-control" autocomplete="off"
+                        placeholder="Charity Name"
+                        value="${event.charity}"></input>
+                <c:if test='${(!build.rfid)}'>
+                    <input  type="url" name="website"
+                            class="form-control" autocomplete="off"
+                            id="mask-website"
+                            placeholder="Website"
+                            value="${event.website}"
+                            data-parsley-type="url"
+                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"
+                            data-parsley-required="required"></input>
+                    <input  type="text" name="phone"
+                        class="form-control" autocomplete="off"
+                        id="mask-phone"
+                        placeholder="Phone Number"
+                        value="${event.phone}"
+                        data-parsley-length="[10,18]"
+                        data-parsley-error-message="Please enter a valid phone number."
+                        data-parsley-required="required"></input>
+                </c:if>
+                <c:if test='${(build.rfid)}'>
+                    <input  type="url" name="website"
+                            class="form-control" autocomplete="off"
+                            id="mask-website"
+                            placeholder="Website"
+                            value="${event.website}"
+                            data-parsley-type="url"
+                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
+                    <input  type="text" name="phone"
+                        class="form-control" autocomplete="off"
+                        id="mask-phone"
+                        placeholder="Phone Number"
+                        value="${event.phone}"
+                        data-parsley-length="[10,18]"
+                        data-parsley-error-message="Please enter a valid phone number."></input>
+                </c:if>
+            </div>
+    		<div id="demo">
+                <input  id="geoaddress"
+                        type="text" name="address"
+                        class="form-control" autocomplete="off"
+                        placeholder="Address or Location"
+                        value="${event.address}"></input>
+                <input  id="geocity"
+                        type="text" name="city"
+                        class="form-control" autocomplete="off"
+                        placeholder="City"
+                        value="${event.city}"></input>
+                <input  id="geostate"
+                        type="text" name="state"
+                        class="form-control" autocomplete="off"
+                        placeholder="State"
+                        value="${event.state}"></input>
+                <input  id="geocountry" type="text" name="country"
+                        class="form-control" autocomplete="off"
+                        placeholder="Country"
+                        value="${event.country}"></input>
+                <div style="display:none">
+                    <label for="eventZip">
+                    <input  id="geozip" type="text" name="zip" placeholder="zip" autocomplete="off"
+                            value="${event.zip}"></input>
+                    </label>
+                    <label for="eventLat">
+                    <input  id="geolat" type="text" name="latitude" placeholder="latitude" autocomplete="off"
+                            value="${event.latitude}"></input>
+                    </label>
+                    <label for="eventLong">
+                    <input  id="geolong" type="text" name="longitude" placeholder="longitude" autocomplete="off"
+                            value="${event.longitude}"></input>
+                    </label>
+                </div>
+            </div>
+            <div class="ui search" id="timezone-search">
+                <input class="prompt" type="text" name="timezone" autocomplete="off" placeholder="Timezone"><!--  --></input>
+                <div class="results"><!--  --></div>
+            </div>
+        </div>
+    	<div style="display:none;">
             <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
-            <field:input field="lattitude" id="c_com_bibsmobile_model_Event_lattitude" z="user-managed"/>
+            <field:input field="latitude" id="c_com_bibsmobile_model_Event_latitude" z="user-managed"/>
             <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed"/>
-            <field:input field="type" id="c_com_bibsmobile_model_Event_type" z="user-managed"/>
-            <field:input field="website" id="c_com_bibsmobile_model_Event_website" z="user-managed"/>
-            <field:input field="phone" id="c_com_bibsmobile_model_Event_phone" z="user-managed"/>
             <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/>
             <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="user-managed"/>
             <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="user-managed"/>
             <field:input field="general" id="c_com_bibsmobile_model_Event_general" z="user-managed"/>
             <field:input field="description" id="c_com_bibsmobile_model_Event_description" z="user-managed"/>
-            <field:input field="organization" id="c_com_bibsmobile_model_Event_organization" z="user-managed"/>
             <field:input field="photo" id="c_com_bibsmobile_model_Event_photo" z="user-managed"/>
             <field:input field="photo2" id="c_com_bibsmobile_model_Event_photo2" z="user-managed"/>
             <field:input field="photo3" id="c_com_bibsmobile_model_Event_photo3" z="user-managed"/>
-            <field:input field="map" id="c_com_bibsmobile_model_Event_map" z="user-managed"/>
-            <field:input field="map2" id="c_com_bibsmobile_model_Event_map2" z="user-managed"/>
-            <field:input field="map3" id="c_com_bibsmobile_model_Event_map3" z="user-managed"/>
-            <field:input field="results1" id="c_com_bibsmobile_model_Event_results1" z="user-managed"/>
-            <field:input field="results2" id="c_com_bibsmobile_model_Event_results2" z="user-managed"/>
-            <field:input field="results3" id="c_com_bibsmobile_model_Event_results3" z="user-managed"/>
-            <field:input field="alert1" id="c_com_bibsmobile_model_Event_alert1" z="user-managed"/>
-            <field:input field="alert2" id="c_com_bibsmobile_model_Event_alert2" z="user-managed"/>
-            <field:input field="alert3" id="c_com_bibsmobile_model_Event_alert3" z="user-managed"/>
             <field:input field="donateUrl" id="c_com_bibsmobile_model_Event_donateUrl" z="user-managed"/>
             <field:input field="facebookUrl1" id="c_com_bibsmobile_model_Event_facebookUrl1" z="user-managed"/>
-            <field:input field="facebookUrl2" id="c_com_bibsmobile_model_Event_facebookUrl2" z="user-managed"/>
             <field:input field="photoUploadUrl" id="c_com_bibsmobile_model_Event_photoUploadUrl" z="user-managed"/>
-            <field:input field="coursemaps" id="c_com_bibsmobile_model_Event_coursemaps" z="user-managed"/>
-            <field:input field="merchandise" id="c_com_bibsmobile_model_Event_merchandise" z="user-managed"/>
-            <field:input field="beachEvents" id="c_com_bibsmobile_model_Event_beachEvents" z="user-managed"/>
-            <field:input field="shuttles" id="c_com_bibsmobile_model_Event_shuttles" z="user-managed"/>
             <field:input field="courseRules" id="c_com_bibsmobile_model_Event_courseRules" z="user-managed"/>
             <field:datetime dateTimePattern="${event_updated_date_format}" field="updated" id="c_com_bibsmobile_model_Event_updated" z="user-managed"/>
             <field:simple field="raceResults" id="c_com_bibsmobile_model_Event_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" z="user-managed"/>
@@ -51,12 +219,8 @@
             <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
             <field:simple field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
             <field:input field="running" id="c_com_bibsmobile_model_Event_running" z="user-managed"/>
-            <field:checkbox field="gunFired" id="c_com_bibsmobile_model_Event_gunFired" z="user-managed"/>
-            <field:datetime dateTimePattern="${event_guntime_date_format}" field="gunTime" id="c_com_bibsmobile_model_Event_gunTime" z="user-managed"/>
-            <field:input field="gunTimeStart" id="c_com_bibsmobile_model_Event_gunTimeStart" z="user-managed"/>
             <field:checkbox field="sync" id="c_com_bibsmobile_model_Event_sync" z="user-managed"/>
             <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
-            <field:input field="country" id="c_com_bibsmobile_model_Event_country" z="+KdCI8XBYHxAhvF/xzHhV5KxyAI="/>
             <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_Event" render="${not empty dependencies}" z="97PxZzAnMjrQHEYGI+GbAcLkB+8="/>
             <field:input field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" z="3DmdaoAlr4tuRBA+G/h/8/CKxFw="/>
             <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="user-managed"/>
@@ -73,21 +237,250 @@
 	        <field:select field="eventTypes" id="c_com_bibsmobile_model_Event_eventTypes" itemValue="id" items="${eventtypes}" multiple="true" path="/eventtypes" z="IAV39d3gnOz6oaXPsSbO2ZBUxDs="/>
 	        <field:input field="waiver" id="c_com_bibsmobile_model_Event_waiver" z="6jFLnmgp5aXDMO+F/Z5txj7Xtco="/>
 	   	</div>
+    	
+        <!-- <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#demo">
+            Quick Add
+        </button> -->
     </form:create>
+    </div>
+    <script src="/bibs-server/resources/scripts/tzid.js" type="text/javascript"><jsp:text/></script>
+    <c:if test='${(!build.rfid)}'>
+        <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
+        <script src="${gmaps}" type="text/javascript"><jsp:text/></script>
+        <script src="/bibs-server/resources/scripts/jquery.geocomplete.js" type="text/javascript"><jsp:text/></script>
+        <script src="/bibs-server/resources/scripts/timezonedb.js" type="text/javascript"><jsp:text/></script>
+    </c:if>
     <script>
-    window.onload = function(){
-    	jQuery("#_name_id").focus();
-    	var myRegEnabled = jQuery("#_regEnabled_id");
-    	var myRegDates = jQuery("#regDates");
-    	if(myRegEnabled.attr("checked")){
-    		myRegDates.show();
-    	}else{
-    		myRegDates.hide();
-    	}
-    	// add toggle to myRegEnabled
-    	myRegEnabled.click(function(){
-    		myRegDates.toggle('slow');
-    	});
+    window.onload = init;
+
+    var test = false;
+    function init(){
+        initDateTimePickers();
+        <c:if test='${(!build.rfid)}'>
+            setGeocomplete();
+            jQuery('#timezone-search').search({
+                source: timezoneId,
+                searchFields: ['title'],
+                searchFullText: true
+            });
+            preventGeocompleteBlur();
+        </c:if>
+        setValidation();
+        if(test){
+            initTesting();
+        }
+    }
+
+    function initTesting(){
+        jQuery('input[name="name"]').val('Timezone Test Event');
+        jQuery('input[name="timezone"]').val('America/New_York');
+        jQuery('input[name="website"]').val('http://www.ny.com');
+        jQuery('input[name="phone"]').val('1231231234');
+    }
+
+    function getCurrentTimezone(lat, lng){
+        var tz = new TimeZoneDB;
+        tz.getJSON({
+            key: "9LX7B46RBTP0",
+            lat: lat,
+            lng: lng
+        }, function(data){
+            if(data.zoneName !== ""){
+                var userInputTz = jQuery('input[name="timezone"]').val();
+                if( data.zoneName !== userInputTz ){
+                    if( userInputTz !== "" ){
+                        if( confirm('This address is not within the timezone you specified. The timezone you input will be replaced with the one corresponding to this address.') ){
+                        }
+                    }
+                    jQuery('input[name="timezone"]').val(data.zoneName);
+                    jQuery('input[name="timezone"]').prop('readonly', 'readonly');
+                    jQuery('input[name="timezone"]').css('background-color', 'rgba(0,0,0,0.03)');
+                }
+            }
+        });
+    }
+
+    function initDateTimePickers(){
+        var todayDate = moment().startOf('day');
+        jQuery("input[name='timeStartLocal']")
+            .datetimepicker({
+                defaultDate: todayDate,
+                useSeconds: true,
+                sideBySide: true
+            });
+        jQuery("#localTimeOffset").val(moment().utcOffset());
+    }
+
+    function setValidation(){
+        jQuery('#event').parsley({
+            errorsWrapper: '<div class="has-error"></div>',
+            errorTemplate: '<span></span>'
+        });
+
+        /*  non-parsley  */
+        jQuery("#mask-website").focus(function(){
+            var content = jQuery("#mask-website").val();
+            if( !content ){
+                jQuery("#mask-website").val("http://");
+            }
+        });
+
+        jQuery("input[name='website']").focusout(function(){
+            var fulltext = jQuery("input[name='website']").val();
+            jQuery("input[name='website']").val(fulltext);
+        });
+    }
+
+    function preventGeocompleteBlur(){
+        jQuery('#proceed').click(function(){
+            jQuery("#event").submit(function(e) {
+                e.preventDefault();
+
+                if( addr == "" ){
+                    jQuery('#geoaddress').val(misc);
+                }else{
+                    jQuery('#geoaddress').val(addr);
+                }
+                jQuery('#geocity').val(city);
+                jQuery('#geostate').val(state);
+                jQuery('#geocountry').val(country);
+                this.submit();
+            });
+        })
+    }
+
+    // creating new variables to prevent full control given to autocomplete feature
+    var addr = ""; var city = ""; var state = ""; var country = ""; var misc = "";
+    function setGeocomplete(){
+        jQuery("#demo input").geocomplete({
+            details: ".details",
+            detailsAttribute: "data-geo",
+            types: ["geocode", "establishment"],
+            blur: false
+        }).bind("geocode:result", function(event, result){
+            addr = ""; city = ""; state = ""; country = ""; misc = "";
+            console.log(result);
+            var formatted_addr = result.formatted_address;
+            var components = result.address_components;
+            jQuery.each(components, function(i, d){
+                switch(d.types[0]){
+                    case 'natural_feature':
+                        if( d.long_name !== null ){
+                            misc = d.long_name;
+                        }
+                        break;
+                    case 'street_number':
+                        if( d.long_name !== null ){
+                            addr = d.long_name + " ";
+                        }
+                        break;
+                    case 'premise':
+                        if( d.long_name !== null ){
+                            if( addr == "" ){
+                                addr = d.long_name + " ";
+                            }
+                        }
+                        break;
+                    case 'route':
+                        if( d.long_name !== null ){
+                            jQuery('#geoaddress').val(addr + d.long_name);
+                            addr = addr + d.long_name;
+                        }
+                        break;
+                    case 'sublocality_level_4':
+                        if( d.long_name !== null ){
+                            jQuery('#geoaddress').val(addr + d.long_name);
+                            addr = addr + " " + d.long_name;
+                        }
+                        break;
+                    case 'locality':
+                        if( d.long_name !== null ){
+                            jQuery("#geocity").val(d.long_name);
+                            city = d.long_name;
+                        }
+                        break;
+                    case 'administrative_area_level_4':
+                        if( d.short_name !== null ){
+                            if( city !== d.short_name ){
+                                jQuery("#geocity").val(d.short_name);
+                                city = city + ", " + d.short_name;
+                            }
+                        }
+                        break;
+                    case 'administrative_area_level_3':
+                        if( d.short_name !== null ){
+                            var currCity = jQuery("#geocity").val();
+                            if( currCity !== "" ){
+                                jQuery("#geocity").val(currCity + ", " + d.short_name);
+                                city = city + ", " + d.short_name;
+                            }
+                            else{
+                                jQuery("#geocity").val(d.short_name);
+                            }
+                        }
+                        break;
+                    case 'administrative_area_level_1':
+                        if( d.short_name !== null ){
+                            state = d.short_name;
+                            jQuery("#geostate").val(d.short_name);
+                        }
+                        break;
+                    case 'country':
+                        if( d.long_name !== null ){
+                            country = d.long_name;
+                            jQuery("#geocountry").val(d.long_name);
+                        }
+                        break;
+                    case 'postal_code':
+                        if( d.long_name !== null ){
+                            jQuery("#geozip").val(d.long_name);
+                        }
+                        break;
+                }
+            })
+
+            if( addr == "" ){
+                jQuery('#geoaddress').val(misc);
+            }else{
+                jQuery('#geoaddress').val(addr);
+                console.log('address should be: ' + addr);
+            }
+            jQuery('#geocity').val(city);
+            jQuery('#geostate').val(state);
+            jQuery('#geocountry').val(country);
+
+            var longitude = result.geometry.location.lng();
+            var lat =  result.geometry.location.lat();
+            if( longitude !== null ){
+                jQuery("#geolong").val(longitude);
+            }
+            if( lat !== null ){
+                jQuery("#geolat").val(lat);
+            }
+
+            getCurrentTimezone(lat, longitude);
+        }).bind("geocode:error", function(results, status){
+            if( status == 'google.maps.GeocoderStatus.ZERO_STATUS'){
+                console.log("zero status");
+            }
+
+            if( jQuery("#geocity").val() == "" ){
+                var geoaddr = jQuery("#geoaddress").val();
+                var splitaddr = geoaddr.split(",");
+                jQuery("#geocity").val(splitaddr[1]);
+                jQuery("#geostate").val(splitaddr[2]);
+            }
+        });
+    }
+
+    function clearForm(){
+        jQuery("#geoaddress").val("");
+        jQuery("#geocity").val("");
+        jQuery("#geostate").val("");
+        jQuery("#geocountry").val("");
+        jQuery("#geozip").val("");
+        jQuery("#geolong").val("");
+        jQuery("#geolat").val("");
     }
 	</script>
 </div>

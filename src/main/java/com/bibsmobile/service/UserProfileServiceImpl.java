@@ -14,9 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bibsmobile.model.UserProfile;
 
-
-//@Service
-//@Transactional
+@Service
+@Transactional
 public class UserProfileServiceImpl implements UserProfileService, UserDetailsService {
 
     @Autowired
@@ -25,53 +24,57 @@ public class UserProfileServiceImpl implements UserProfileService, UserDetailsSe
     @Autowired
     private SimpleMailMessage registrationMessage;
 
-	@Override
-	public UserDetails loadUserByUsername(String username)
-			throws UsernameNotFoundException {
-		System.out.println("login " +username);
-		UserDetails user = findUserProfilesByUsernameEquals(username);
-		System.out.println(user);
-		return user;
-	}
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserDetails user = this.findUserProfilesByUsernameEquals(username);
+        return user;
+    }
 
-	@Override 
-	public UserProfile findUserProfilesByUsernameEquals(String username) {
-		return UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
-	}
+    @Override
+    public UserProfile findUserProfilesByUsernameEquals(String username) {
+        return UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+    }
 
-	public long countAllUserProfiles() {
+    @Override
+    public long countAllUserProfiles() {
         return UserProfile.countUserProfiles();
     }
 
-	public void deleteUserProfile(UserProfile userProfile) {
+    @Override
+    public void deleteUserProfile(UserProfile userProfile) {
         userProfile.remove();
     }
 
-	public UserProfile findUserProfile(Long id) {
+    @Override
+    public UserProfile findUserProfile(Long id) {
         return UserProfile.findUserProfile(id);
     }
 
-	public List<UserProfile> findAllUserProfiles() {
+    @Override
+    public List<UserProfile> findAllUserProfiles() {
         return UserProfile.findAllUserProfiles();
     }
 
-	public List<UserProfile> findUserProfileEntries(int firstResult, int maxResults) {
+    @Override
+    public List<UserProfile> findUserProfileEntries(int firstResult, int maxResults) {
         return UserProfile.findUserProfileEntries(firstResult, maxResults);
     }
 
-	public void saveUserProfile(UserProfile userProfile) {
+    @Override
+    public void saveUserProfile(UserProfile userProfile) {
         userProfile.persist();
         if (StringUtils.isNotEmpty(userProfile.getEmail())) {
-        	try{
-	            registrationMessage.setTo(userProfile.getEmail());
-	            mailSender.send(registrationMessage);
-        	}catch(Exception e){
-        		System.out.println("EXCEPTION: Email Send Fail - "+e.getMessage());
-        	}
+            try {
+                this.registrationMessage.setTo(userProfile.getEmail());
+                this.mailSender.send(this.registrationMessage);
+            } catch (Exception e) {
+                System.out.println("EXCEPTION: Email Send Fail - " + e.getMessage());
+            }
         }
     }
 
-	public UserProfile updateUserProfile(UserProfile userProfile) {
+    @Override
+    public UserProfile updateUserProfile(UserProfile userProfile) {
         return userProfile.merge();
     }
 }

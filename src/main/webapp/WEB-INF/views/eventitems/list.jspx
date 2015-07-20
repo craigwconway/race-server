@@ -1,51 +1,876 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <script>
-	function addToCart(item){
-		window.location = "/bibs-server/carts/item/" + item + "/updatequantity?quantity=1";
-	}
-	</script>
-    <h2>Shop Products for ${ event.name }</h2>
-    <table>
-        <c:forEach items="${eventcartitems}" var="item" varStatus="i">
-            <tr class="${(i.index % 2 eq 0) ? 'row-alt' :''}">
-                <td>
-                    <button class="btn btn-default btn-top" onclick="addToCart('${item.id}')" type="button">
-                	 Add to Cart
-               	</button>
-                </td>
-                <td>
-                    <c:out value="${item.name}"/>
-                    (<c:out value="${item.description}"/>)
-                </td>
-                <td>
-                    <c:out value="${item.price}"/>
-                </td>
-            </tr>
-        </c:forEach>
-    </table>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 102%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 4%;
+            padding-left: 2%;
+        }
+        .info-container{
+            margin: 0 auto;
+            width: 80%;
+            font-size: 1.2em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+            text-align: center;
+        }
+        i{
+            margin-right: 5px;
+        }
+        .x-btn{
+            margin-left: 5px;
+            margin-right: 0px;
+        }
+        .x-btn:hover{
+            cursor: pointer;
+        }
+        .ui.cards > .card > .content > .header{
+            text-align: left;
+        }
+        h2,h3{
+            margin-left: 0;
+            padding-left:0;
+        }
+        .ui.form{
+            text-align: left;
+            margin: auto 5%;
+        }
+        .ui.form .field > label, .ui.form .inline.fields .field > label, .ui.form .inline.fields > label{
+            font-size: 1em;
+            width: 150px;
+            margin: 1em 0em 1em;
+        }
+        .ui.menu .item{
+            cursor: pointer;
+        }
+        label#question-label{
+            width:100%;
+        }
+        .ui.labels .label, .ui.label{
+            cursor: pointer;
+            margin-bottom: 2px;
+        }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
+    </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-        <h2>Manage Products for ${ event.name }</h2>
-        <button class="btn btn-default btn-top" onclick="addItem()" type="button">
-		Add a Product
-		</button>
-        <script>
-	function addItem(){
-		window.location="/bibs-server/eventitems?form&amp;event=${event.id}";
-	}
-	</script>
-        <page:list id="pl_com_bibsmobile_model_EventCartItem" items="${eventcartitems}" z="zp1ngwnIlBdFFjgmz3ro9p5OEmw=">
-            <table:table data="${eventcartitems}" id="l_com_bibsmobile_model_EventCartItem" path="/eventitems" z="OsuVDAhDSJw9IUFeaH8m9t1H1uQ=">
-                <table:column id="c_com_bibsmobile_model_EventCartItem_event" property="event" z="ev9lCWn4+ZT3PKWP2fpalsOyBa0="/>
-                <table:column id="c_com_bibsmobile_model_EventCartItem_name" property="name" z="user-managed"/>
-                <table:column id="c_com_bibsmobile_model_EventCartItem_type" property="type" z="540sRjqhJ00sFpRD+4vGPH4+ymQ="/>
-                <table:column id="c_com_bibsmobile_model_EventCartItem_description" property="description" z="540sRjqhJ00sFpRD+4vGPH4+ymQ="/>
-                <table:column id="c_com_bibsmobile_model_EventCartItem_price" property="price" z="bLxdn9fqJQDmeOMWN+sCZn7T64g="/>
-                <table:column id="c_com_bibsmobile_model_EventCartItem_available" property="available" z="L/zFgiG4tO8o926SyKF+uh9y78w="/>
-                <table:column id="c_com_bibsmobile_model_EventCartItem_purchased" property="purchased" z="K1BDhfnEI9twWJjWoATUFeW6juI="/>
-            </table:table>
-        </page:list>
+    <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="addQuestionModal">Add Question</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui form" id="putFieldForm">
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label>Question</label>
+                                <input type="text" name="question" placeholder="What do you want to ask?"
+                                       data-parsley-required="true"
+                                       data-parsley-error-message="Please provide a question."><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label for="responseType">Response Type</label>
+                                <div class="inline fields">
+                                    <div class="field">
+                                        <div class="ui radio checkbox checked">
+                                            <input type="radio" checked="" name="responseType" value="input"><!--  --></input>
+                                            <label>User Input</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="responseType" value="dropdown"><!--  --></input>
+                                            <label>Dropdown Menu</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields" id="dropdown-field" style="display:none">
+                            <div class="twelve wide field">
+                                <label style="width:100%">Dropdown Options (separated by comma)</label>
+                                <div class="ui action input">
+                                    <input  type="text" id="drop-option" placeholder="Add dropdown option"></input>
+                                    <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
+                                </div>
+                            </div>
+                            <div style="clear:both"><!--  --></div>
+                            <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
+                        </div>
+                        <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
+                        </h4>
+                        <span id="placeholder-text">Please enter details for the custom question to see a preview.</span>
+                        <div id="question-preview" style="display:none">
+                            <div class="fields">
+                                <div class="field" style="width: 375px">
+                                    <label id="question-label" style="display:none"><!--  --></label>
+                                    <input id="type-input-selected" type="text" style="display:none"><!--  --></input>
+                                    <div class="ui selection dropdown" id="type-dropdown-selected" style="display:none">
+                                        <input type="hidden"><!--  --></input>
+                                        <div class="default text">Select one</div>
+                                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                        <div class="menu" id="dropdown-options"><!--  -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" data-dismiss="modal">Close</button>
+                    <button type="button" class="ui green button post-question" onclick="saveQuestion(false)">Submit</button>
+                    <button type="button" class="ui red button put-question" style="display:none" onclick="deleteQuestion()">Remove</button>
+                    <button type="button" class="ui green button put-question" style="display:none" onclick="saveQuestion(true)">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addCoupon" tabindex="-1" role="dialog" aria-labelledby="addCouponModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="addCouponModal">Add Coupon</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui form" id="couponForm">
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label style="width:100%">Coupon Code</label>
+                                <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
+                                       data-parsley-required="true" 
+                                       data-parsley-error-message="Please provide a coupon code."><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="fields" style="margin-top: 10px;">
+                            <label id="discount" style="width:100%;margin-left:0;padding-left:0;">Discount</label>
+                            <div class="twelve wide inline field" style="margin-left:0;padding-left:0;">
+                                <input type="text" name="discount" id="validate-discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
+                                <div class="ui icon buttons">
+                                    <div class="ui positive button disc-btn" id="disc-perc"><b>%</b></div>
+                                    <div class="ui button disc-btn" id="disc-curr"><b><i class="fa fa-usd"><!--  --></i></b></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label style="width:100%">Quantity</label>
+                                <input type="number" min="1" name="available" placeholder="Quantity"
+                                       data-parsley-required="true"
+                                       data-parsley-error-message="Please provide a quantity."><!--  --></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" data-dismiss="modal">Close</button>
+                    <button type="button" class="ui green button post-coupon" onclick="saveCoupon(false)">Submit</button>
+                    <button type="button" class="ui red button put-coupon" style="display:none" onclick="deleteCoupon()">Remove</button>
+                    <button type="button" class="ui green button put-coupon" style="display:none" onclick="saveCoupon(true)">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="white-overlay">
+        <div class="info-container">
+            <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
+            <div style="clear:both"><!--  --></div>
+            <div class="ui top attached tabular menu">
+                <div class="active item" data-tab="eci-menu">Products</div>
+                <div class="item" data-tab="ticket-menu">Transfers</div>
+                <div class="item" data-tab="form-menu">Custom Forms</div>
+                <div class="item" data-tab="coupon-menu">Coupons</div>
+            </div>
+            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
+                <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
+                <h3 class="ui icon header">
+                    <i class="fa fa-gear fa-2x"><!--  --></i>
+                    <div class="content" style="margin-top:5px">
+                        Manage Products
+                        <div class="sub header">Manage your event cart items for ${ event.name }.</div>
+                    </div>
+                </h3>
+                <div class="content">
+                    <div class="ui four doubling cards">
+                        <c:if test="${not empty eventcartitems}">
+                            <c:forEach var="item" items="${eventcartitems}">
+                                <div class="ui fluid card">
+                                    <div class="content">
+                                        <c:if test="${item.type == 'TICKET'}">
+                                            <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
+                                        </c:if>
+                                        <c:if test="${item.type == 'T_SHIRT'}">
+                                            <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
+                                        </c:if>
+                                        <c:if test="${item.type == 'DONATION'}">
+                                            <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
+                                        </c:if>
+                                        <div class="description">${item.description}
+                                        </div>
+                                    </div>
+                                    <div class="extra content">
+                                        <c:if test="${item.type != 'DONATION'}">
+                                            <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
+                                            <div class="right floated">$${item.price}</div>
+                                        </c:if>
+                                        <c:if test="${item.type == 'DONATION'}">
+                                            <div class="left floated">${item.purchased} donations</div>
+                                            <div class="right floated">$${item.price * item.purchased}</div>
+                                        </c:if>
+                                    </div>
+                                    <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
+                                        <i class="fa fa-external-link"><!--  --></i>View Details
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+                        <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
+                            <div class="content">
+                                <div class="ui header"><span style="visibility:hidden">name</span></div>
+                                <div class="description">add a new product</div>
+                                <div class="extra content">
+                                    <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                    <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                                </div>
+                            </div>
+                            <div class="ui bottom attached button">
+                                <i class="fa fa-plus"><!--  --></i> product
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui bottom attached tab segment" data-tab="ticket-menu">
+                <h3 class="ui icon header">
+                    <i class="fa fa-gear fa-2x"><!--  --></i>
+                    <div class="content" style="margin-top:5px">
+                        Ticket Transfer Settings
+                        <div class="sub header">Allow users to transfer tickets to others.</div>
+                    </div>
+                </h3>
+                <form class="ui small form" id="transferForm">
+                    <div class="fields">
+                        <div class="twelve wide field">
+                            <div class="ui toggle checkbox">
+                                <label><b>Enable</b> ticket transfer</label>
+                                <input type="radio" name="ticketTransferEnabled"><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="six wide field">
+                            <label>Transfer cutoff date</label>
+                            <input  type="text" name="ticketTransferCutoff"
+                                id="cutoff-date"
+                                placeholder="Transfer cutoff date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY h:mm:ss a"
+                                data-parsley-error-message="Please specify an end date."
+                                data-parsley-required="true"></input>
+                        </div>
+                    </div>
+                    <div style="clear:both"><!--  --></div>
+                    <div class="pull-right">
+                        <button class="ui green button" type="submit">Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class="ui bottom attached tab segment" data-tab="form-menu">
+                <h3 class="ui icon header">
+                    <i class="fa fa-gear fa-2x"><!--  --></i>
+                    <div class="content" style="margin-top:5px">
+                        Custom Forms
+                        <div class="sub header">Add custom form questions for user registration.</div>
+                    </div>
+                </h3>
+                <div class="content">
+                    <div class="ui four doubling cards">
+                        <c:if test="${not empty customregfields}">
+                            <div>Added Questions:</div>
+                            <c:forEach var="item" items="${customregfields}">
+                                <div class="ui fluid card">
+                                    <div class="content">
+                                        <div class="ui yellow header" style="text-align:center"><i class="fa fa-question"><!--  --></i></div>
+                                        <div class="description">${item.question}</div>
+                                        <div class="extra content"> 
+                                            <c:if test="${empty item.responseSet}">Response Type: user input</c:if>
+                                            <c:if test="${not empty item.responseSet}">Choices: ${item.responseSet}</c:if>
+                                        </div>
+                                    </div>
+                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, '${item.question}', '${item.responseSet}')">
+                                        <i class="fa fa-external-link"><!--  --></i>View Details
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+                        <div class="ui fluid card" onclick="addQuestionModal()" style="cursor:pointer">
+                            <div class="content">
+                                <div class="ui header"><span style="visibility:hidden">name</span></div>
+                                <div class="description">add a new question</div>
+                                <div class="extra content">
+                                    <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                    <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                                </div>
+                            </div>
+                            <div class="ui bottom attached button">
+                                <i class="fa fa-plus"><!--  --></i> question
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear:both"><!--  --></div>
+                <div class="pull-right">
+                    <button class="ui green button" type="button">Save</button>
+                </div>
+            </div>
+            <div class="ui bottom attached tab segment" data-tab="coupon-menu">
+                <h3 class="ui icon header">
+                    <i class="fa fa-gear fa-2x"><!--  --></i>
+                    <div class="content" style="margin-top:5px">
+                        Coupons
+                        <div class="sub header">Manage coupons for ${event.name}.</div>
+                    </div>
+                </h3>
+                <div class="content">
+                    <div class="ui four doubling cards">
+                        <c:if test="${not empty eventcoupons}">
+                            <br/>
+                            <c:forEach var="item" items="${eventcoupons}">
+                                <div class="ui fluid card">
+                                    <div class="content">
+                                        <div class="ui blue header" style="text-align:center;text-transform:uppercase"><i class="fa fa-cart-arrow-down"><!--  --></i><br/>${item.code}</div>
+                                        <div class="description"><c:if test="${not empty item.discountRelative}">- ${item.discountRelative}%</c:if>
+                                        <fmt:setLocale value="en_US"/>
+                                        <c:if test="${not empty item.discountAbsolute}"><fmt:formatNumber value="${item.discountAbsolute/100}" type="currency"/></c:if></div>
+                                    </div>
+                                    <div class="extra content" style="color:#767676">
+                                        <div class="right floated">${item.available} available</div>
+                                    </div>
+                                    <div class="ui bottom attached button" onclick="couponDetail('${item.id}', '${item.code}', '${item.discountRelative}', '${item.discountAbsolute}', '${item.available}')">
+                                        <i class="fa fa-external-link"><!--  --></i>View Details
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:if>
+                        <div class="ui fluid card" onclick="addCouponModal()" style="cursor:pointer">
+                            <div class="content">
+                                <div class="ui header"><span style="visibility:hidden">name</span></div>
+                                <div class="description">add a new coupon</div>
+                                <div class="extra content">
+                                    <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                    <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                                </div>
+                            </div>
+                            <div class="ui bottom attached button">
+                                <i class="fa fa-plus"><!--  --></i> coupon
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear:both"><!--  --></div>
+                <div class="pull-right">
+                    <button class="ui green button" type="button">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
     </sec:authorize>
+    <script>
+        window.onload = function(){
+            // initialize semantic-ui elements
+            jQuery('.menu .item').tab();
+            jQuery('.ui.checkbox').checkbox();
+            jQuery('.disc-btn').each(function(){
+                jQuery(this).click(function(){
+                    var id = jQuery(this).attr("id");
+                    jQuery(this).addClass('positive');
+                    jQuery(this).siblings().removeClass('positive');
+                    distType = id;
+                })
+            })
+
+            transferHandler();
+            customFormTab();
+        }
+
+        function addCouponModal(){
+            jQuery("#addCoupon").modal('show');
+            validateDiscount();
+            // jQuery('input[name="id"]').val("");
+            // jQuery('input[name="question"]').val("");
+            jQuery(".put-coupon").hide();
+            jQuery(".post-coupon").show();
+        }
+
+        var currCouponId;
+        function couponDetail(id, code, discountRel, discountAbs, avail){
+            currCouponId = id;
+            jQuery("#addCoupon").modal('show');
+            jQuery(".post-coupon").hide();
+            jQuery(".put-coupon").show();
+
+            var obj = {};
+            var eid = '${event.id}';
+
+            if( eid.length > 0 ){       var eobj = {};
+                                        eobj.id = parseInt(eid);
+                                        obj.event = eobj;        }
+            jQuery('input[name="couponcode"]').val(code);
+            if( discountRel === null || discountRel === "" ){
+                jQuery('input[name="discount"]').val(discountAbs/100);
+                jQuery('#disc-curr').addClass('positive');
+                jQuery('#disc-perc').removeClass('positive');
+            }
+            else if( discountAbs === null || discountAbs === "" ){
+                jQuery('input[name="discount"]').val(discountRel);
+                jQuery('#disc-perc').addClass('positive');
+                jQuery('#disc-curr').removeClass('positive');
+            }
+            jQuery('input[name="available"]').val(avail);
+        }
+
+        function validateDiscount() {
+            jQuery('#validate-discount').keyup(function(){
+                var val = jQuery(this).val();
+                if(isNaN(val)){
+                     val = val.replace(/[^0-9\.]/g,'');
+                     if(val.split('.').length>2) 
+                         val = val.replace(/\.+$/,"");
+                }
+                jQuery(this).val(val); 
+            })
+        }
+
+        function deleteCoupon(){
+            var error = true;
+
+            var questUrl = "/bibs-server/eventcoupons";
+            var questType = 'PUT';
+            var id = currCouponId;
+            if( id !== "" &amp;&amp; id !== null ){
+                questUrl = questUrl + "/" + id;
+            }
+            else{
+                alert("Something went wrong while trying to save this coupon.");
+                window.location.reload();
+            }
+
+            var obj = {};
+            obj.event = null;
+
+            var couponcode = jQuery('input[name="couponcode"]').val();
+            var discount = jQuery('input[name="discount"]').val();
+            var available = jQuery('input[name="available"]').val();
+
+            if( couponcode.length > 0 ){ obj.code = couponcode; }
+            if( available.length > 0 ){  obj.available = parseInt(available); }
+
+            var discountAbsolute = null;
+            var discountRelative = null;
+            if( jQuery('#disc-curr').hasClass('positive') ){
+                if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
+                    // convert to cents
+                    discount = parseFloat(discount) * 100;
+                }
+                obj.discountAbsolute = discount;
+            }
+            if( jQuery('#disc-perc').hasClass('positive') ){ obj.discountRelative = parseFloat(discount); }
+
+            if( obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
+                error = true;
+            }
+            else{
+                console.log(obj);
+                if( confirm('Are you sure you want to delete this coupon? This cannot be undone.') ){
+                    jQuery.ajax({
+                        url: questUrl,
+                        type: questType,
+                        contentType: "application/json",
+                        data: JSON.stringify(obj),
+                        dataType: "json",
+                        complete: function(data) {
+                            window.location.reload();
+                        }
+                    })
+                }
+            }
+        }
+
+        function saveCoupon(put){
+            var error = true;
+
+            var questUrl = "/bibs-server/eventcoupons";
+            var questType = 'POST';
+            if( put ){
+                var id = currCouponId;
+                if( id !== "" &amp;&amp; id !== null ){
+                    questType = 'PUT';
+                    questUrl = questUrl + "/" + id;
+                }
+                else{
+                    alert("Something went wrong while trying to save this coupon.");
+                    window.location.reload();
+                }
+            }
+
+            var obj = {};
+            var eid = '${event.id}';
+            var couponcode = jQuery('input[name="couponcode"]').val();
+            var discount = jQuery('input[name="discount"]').val();
+            var available = jQuery('input[name="available"]').val();
+
+            if( eid.length > 0 ){       var eobj = {};
+                                        eobj.id = parseInt(eid);
+                                        obj.event = eobj;        }
+            if( couponcode.length > 0 ){ obj.code = couponcode; }
+            if( available.length > 0 ){  obj.available = parseInt(available); }
+
+            var discountAbsolute = null;
+            var discountRelative = null;
+            if( jQuery('#disc-curr').hasClass('positive') ){
+                if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
+                    // convert to cents
+                    discount = parseFloat(discount) * 100;
+                }
+                obj.discountAbsolute = discount * 100;
+            }
+            if( jQuery('#disc-perc').hasClass('positive') ){ obj.discountRelative = parseFloat(discount); }
+
+            if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
+                error = true;
+            }
+            else{
+                console.log(obj);
+                jQuery('.post-coupon, .put-coupon').prop('disabled', true);
+                jQuery.ajax({
+                    url: questUrl,
+                    type: questType,
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })
+            }
+        }
+
+        function addQuestionModal(){
+            jQuery("#addQuestion").modal('show');
+            jQuery('input[name="id"]').val("");
+            jQuery('input[name="question"]').val("");
+            jQuery("#drop-option").val("");
+            jQuery(".put-question").hide();
+            jQuery(".post-question").show();
+        }
+
+        var currOptions = '';
+        function addDropdownOption(){
+            jQuery('#type-dropdown-selected').dropdown();
+            var opt = jQuery("#drop-option").val();
+            if( opt.length > 0 ){
+                currOptions += opt + ',';
+                jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
+                jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                jQuery('#type-dropdown-selected').dropdown('refresh');
+                jQuery('#drop-option').val("");
+            }
+        }
+
+        function removeDropdownOption(o){
+            var parsed = currOptions;
+            if( parsed.slice(-1) == ',' ){
+                parsed = parsed.substring(0, parsed.length-1);
+            }
+
+            parsed = parsed.split(',');
+            var opt = jQuery(o).text();
+            if( parsed.indexOf(opt) > -1 ){
+                parsed.splice(parsed.indexOf(opt), 1);
+                currOptions = parsed;
+            }
+            jQuery(".dropdown .menu").html("");
+            jQuery('#drop-option').val("");
+            jQuery('#option-list').html("");
+            parsed.forEach(function(el, i, ary){
+                jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + el + '<i class="x-btn fa fa-remove"></i></div></li>');
+                jQuery(".dropdown .menu").append('<div class="item">' + el + '</div>');
+            })
+            jQuery('#type-dropdown-selected').dropdown('refresh');
+
+            if( currOptions.slice(-1) !== ',' ){
+                currOptions += ',';
+            }
+        }
+
+        var currQuestionId;
+        function questionDetail(id, eid, question, responseSet){
+            currQuestionId = id;
+            jQuery("#addQuestion").modal('show');
+            jQuery(".post-question").hide();
+            jQuery(".put-question").show();
+
+            var obj = {};
+            var eid = '${event.id}';
+
+            if( eid.length > 0 ){       var eobj = {};
+                                        eobj.id = parseInt(eid);
+                                        obj.event = eobj;        }
+            jQuery('input[name="id"]').val(id);
+            jQuery('input[name="question"]').val(question);
+
+            if( responseSet !== "" ){
+                jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
+                jQuery("#dropdown-field").show();
+                jQuery('#type-dropdown-selected').dropdown();
+                
+                jQuery('#drop-option').val("");
+                var opt = responseSet;
+                if( opt.length > 0 ){
+                    // remove last comma if string ends with comma
+                    if( opt.slice(-1) == ',' ){
+                        opt = opt.substring(0, opt.length-1);
+                    }
+                    var split = opt.split(',');
+                    jQuery(".dropdown .menu").html("");
+                    var parsedOptions = "";
+                    for( i = 0; i &lt; split.length; i++ ){
+                        opt = split[i];
+                        if( opt !== "" &amp;&amp; opt !== " " ){
+                            jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                            parsedOptions += opt + ",";
+                        }
+                    }
+                    if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
+                        parsedOptions = parsedOptions.substring(0, parsedOptions.length-1);
+                        responseType = parsedOptions;
+                    }
+                    jQuery('#type-dropdown-selected').dropdown('refresh');
+                }
+                jQuery("#type-input-selected").hide();
+                jQuery("#type-dropdown-selected").show();
+            }
+            else{
+                jQuery("#dropdown-field").hide();
+                jQuery("#type-dropdown-selected").hide();
+                jQuery("#type-input-selected").show();
+            }
+            if( (question !== null || question !== "") ){
+                jQuery("#question-preview").show();
+                jQuery("#question-label").text(question);
+                jQuery("#question-label").show();
+                jQuery("#placeholder-text").hide();
+            }
+        }
+
+        function deleteQuestion(){
+            var id = jQuery('input[name="id"]').val();
+            if( id !== "" &amp;&amp; id !== null ){
+                if( confirm('Are you sure you want to delete this question? This cannot be undone.') ){
+                    jQuery.ajax({
+                        url: "/bibs-server/regfields/" + id,
+                        type: "DELETE",
+                        dataType: "json",
+                        complete: function() {
+                            window.location.reload();
+                        }
+                    });
+                }
+            }
+            else{
+                alert("Something went wrong while trying to delete this question.");
+                window.location.reload();
+            }
+        }
+
+        function saveQuestion(put){
+            var error = true;
+
+            var questUrl = "/bibs-server/regfields";
+            var questType = 'POST';
+            if( put ){
+                var id = currQuestionId;
+                if( id !== "" &amp;&amp; id !== null ){
+                    questType = 'PUT';
+                    questUrl = questUrl + "/" + id;
+                }
+                else{
+                    alert("Something went wrong while trying to save this question.");
+                    window.location.reload();
+                }
+            }
+
+            var obj = {};
+            var eid = '${event.id}';
+            var question = jQuery('input[name="question"]').val();
+
+            if( eid.length > 0 ){       var eobj = {};
+                                        eobj.id = parseInt(eid);
+                                        obj.event = eobj;        }
+            if( question.length > 0 ){  obj.question = question; }
+
+            // remove last comma if string ends with comma
+            if( currOptions.slice(-1) == ',' ){
+                responseType = currOptions.substring(0, currOptions.length-1);
+            }
+            var type = responseType;
+            if( type !== 'input' ){     obj.responseSet = responseType; }
+            else{ obj.responseSet = ""; }
+
+            if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('question') === false || obj.hasOwnProperty('responseSet') === false ){
+                error = true;
+            }
+            else{
+                // console.log(obj);
+                jQuery.ajax({
+                    url: questUrl,
+                    type: questType,
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })
+            }
+        }
+
+        var responseType = 'input';
+        function customFormTab(){
+            jQuery("#type-input-selected").show();
+
+            jQuery('input[name="question"]').keyup(function(){
+                var question = jQuery('input[name="question"]').val();
+                jQuery("#question-label").text(question);
+
+                if( (question !== null || question !== "") ){
+                    jQuery("#question-preview").show();
+                    jQuery("#question-label").show();
+                    jQuery("#placeholder-text").hide();
+                }
+                else{
+                    jQuery("#question-preview").hide();
+                    jQuery("#question-label").hide();
+                    jQuery("#placeholder-text").show();
+                }
+            })
+
+            jQuery('input[name="responseType"]').on('change', function() {
+                // populate preview
+                var type = jQuery('input[name="responseType"]:checked').val();
+                if( type == 'dropdown' ){
+                    responseType = 'dropdown';
+                    jQuery("#dropdown-field").show();
+                    jQuery("#addOption").click(function(){
+                        jQuery('#type-dropdown-selected').dropdown();
+                        var opt = jQuery("#drop-option").val();
+                        if( opt.length > 0 ){
+                            // remove last comma if string ends with comma
+                            if( opt.slice(-1) == ',' ){
+                                opt = opt.substring(0, opt.length-1);
+                            }
+                            var split = opt.split(',');
+                            jQuery(".dropdown .menu").html("");
+                            var parsedOptions = "";
+                            for( i = 0; i &lt; split.length; i++ ){
+                                opt = split[i];
+                                if( opt !== "" &amp;&amp; opt !== " " ){
+                                    jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                                    parsedOptions += opt + ",";
+                                }
+                            }
+                            if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
+                                parsedOptions = parsedOptions.substring(0, parsedOptions.length-1);
+                                responseType = parsedOptions;
+                            }
+                            jQuery('#type-dropdown-selected').dropdown('refresh');
+                        }
+                    })
+                    jQuery("#type-dropdown-selected").show();
+                    jQuery("#type-input-selected").hide();
+                }
+                else{
+                    responseType = 'input';
+                    jQuery("#dropdown-field").hide();
+                    jQuery("#type-dropdown-selected").hide();
+                    jQuery("#type-input-selected").show();
+                }
+            });
+        }
+
+        function transferHandler(){
+            var transfer = '${event.ticketTransferEnabled}';
+            var transferDate = '${event.ticketTransferCutoff}'
+            var def = Date();
+
+            if( transfer == 'true' ){
+                jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
+            }
+            if( transferDate !== 'null' || transferDate !== "" ){
+                def = moment(transferDate);
+            }
+            
+            jQuery("#cutoff-date")
+                .datetimepicker({
+                    defaultDate: def,
+                    useSeconds: false
+                });
+
+            jQuery('#cutoff-date').data("DateTimePicker").setMinDate(Date());
+            
+            jQuery('#transferForm').parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
+            });
+
+            jQuery("#transferForm").submit(function() {
+                var transfer = jQuery('input[name="ticketTransferEnabled"]').prop("checked");
+                var transferDate = jQuery('input[name="ticketTransferCutoff"]').val();
+
+                jQuery.ajax({
+                    url: "/bibs-server/events/${event.id}/tickettransfer" + "?tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
+                    type: "PUT",
+                    dataType: "text/html",
+                    complete: function() {
+                        window.location.reload();
+                    }
+                });
+
+                return false; // avoid to execute the actual submit of the form.
+            });
+        }
+
+        function onBack(){
+            window.location="/bibs-server/events/${event.id}";
+        }
+        function redirectItemDetail(id){
+            window.location="/bibs-server/eventitems/"+id;
+        }
+        function addItem(){
+            window.location="/bibs-server/eventitems?form&amp;event=${event.id}";
+        }
+        function addToCart(item){
+            window.location = "/bibs-server/carts/item/" + item + "/updatequantity?quantity=1";
+        }
+    </script>
 </div>

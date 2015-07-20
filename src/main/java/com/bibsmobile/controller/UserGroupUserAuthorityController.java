@@ -1,14 +1,16 @@
 package com.bibsmobile.controller;
 
-import com.bibsmobile.model.UserAuthorities;
-import com.bibsmobile.model.UserAuthoritiesID;
-import com.bibsmobile.model.UserAuthority;
-import com.bibsmobile.model.UserGroup;
-import com.bibsmobile.model.UserGroupUserAuthority;
-import com.bibsmobile.model.UserGroupUserAuthorityID;
-import com.bibsmobile.model.UserProfile;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,21 +18,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 
-import javax.persistence.TypedQuery;
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserAuthoritiesID;
+import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.UserGroupUserAuthorityID;
+import com.bibsmobile.model.UserProfile;
 
 @RequestMapping("/usergroupuserauthorities")
 @Controller
-@RooWebScaffold(path = "usergroupuserauthorities", formBackingObject = UserGroupUserAuthority.class, update = false)
 public class UserGroupUserAuthorityController {
 
     @RequestMapping(params = "form", produces = "text/html")
-    public String createForm(@RequestParam(value = "usergroup") Long userGroupId, @RequestParam(value = "userprofile", required = false) Long userProfileId, Model uiModel) {
+    public String createForm(@RequestParam("usergroup") Long userGroupId, @RequestParam(value = "userprofile", required = false) Long userProfileId, Model uiModel) {
         UserGroupUserAuthority userGroupUserAuthority = new UserGroupUserAuthority();
 
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
@@ -55,7 +59,7 @@ public class UserGroupUserAuthorityController {
 
         userGroupUserAuthority.setId(id);
         userGroupUserAuthority.setUserGroup(userGroup);
-        populateEditForm(uiModel, userGroupUserAuthority);
+        this.populateEditForm(uiModel, userGroupUserAuthority);
         uiModel.addAttribute("userprofiles", allUserProfiles);
         return "usergroupuserauthorities/createUGUA";
     }
@@ -76,7 +80,7 @@ public class UserGroupUserAuthorityController {
         userGroupUserAuthorityToSave.setId(id);
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("userprofiles", UserProfile.findAllUserProfiles());
-            populateEditForm(uiModel, userGroupUserAuthority);
+            this.populateEditForm(uiModel, userGroupUserAuthority);
             return "usergroupuserauthorities/createUGUA";
         }
         uiModel.asMap().clear();
@@ -114,7 +118,8 @@ public class UserGroupUserAuthorityController {
     }
 
     @RequestMapping(value = "/{id}/{uid}/{aid}", method = RequestMethod.DELETE, produces = "text/html")
-    public String delete(@PathVariable("id") Long userGroupId, @PathVariable("uid") Long userProfileId, @PathVariable("aid") Long authorityId, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
+    public String delete(@PathVariable("id") Long userGroupId, @PathVariable("uid") Long userProfileId, @PathVariable("aid") Long authorityId,
+            @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, Model uiModel) {
         UserProfile userProfile = UserProfile.findUserProfile(userProfileId);
         UserAuthority userAuthority = UserAuthority.findUserAuthority(authorityId);
         if (userAuthority != null && userProfile != null) {
@@ -133,20 +138,19 @@ public class UserGroupUserAuthorityController {
         return "redirect:/usergroupuserauthorities?usergroup=" + userGroupId;
     }
 
-
     void populateEditForm(Model uiModel, UserGroupUserAuthority userGroupUserAuthority) {
         List<UserAuthorities> userAuthoritiesListForRoles;
         UserAuthorities userAuthoritieses = userGroupUserAuthority.getUserAuthorities();
         if (userAuthoritieses != null) {
             UserProfile userProfile = userAuthoritieses.getUserProfile();
             if (userProfile != null) {
-                //list to find available roles
+                // list to find available roles
                 userAuthoritiesListForRoles = UserAuthorities.findUserAuthoritiesesByUserProfile(userProfile).getResultList();
             } else {
-                userAuthoritiesListForRoles = Collections.EMPTY_LIST;
+                userAuthoritiesListForRoles = Collections.emptyList();
             }
         } else {
-            userAuthoritiesListForRoles = Collections.EMPTY_LIST;
+            userAuthoritiesListForRoles = Collections.emptyList();
         }
         List<UserAuthority> userRoles = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(userAuthoritiesListForRoles)) {
@@ -154,8 +158,7 @@ public class UserGroupUserAuthorityController {
             for (UserAuthorities userAuthorities : userAuthoritiesListForRoles) {
                 boolean contains = false;
                 for (UserAuthority userRole : userRoles) {
-                    rolesIteration:
-                    if (userAuthorities.getUserAuthority().getId().equals(userRole.getId())) {
+                    rolesIteration: if (userAuthorities.getUserAuthority().getId().equals(userRole.getId())) {
                         contains = true;
                         break rolesIteration;
                     }
@@ -168,5 +171,17 @@ public class UserGroupUserAuthorityController {
         uiModel.addAttribute("userGroupUserAuthority", userGroupUserAuthority);
         uiModel.addAttribute("userauthorities", userRoles);
         uiModel.addAttribute("usergroups", Arrays.asList(userGroupUserAuthority.getUserGroup()));
+    }
+
+    String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {
+        }
+        return pathSegment;
     }
 }

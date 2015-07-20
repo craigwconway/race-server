@@ -1,172 +1,214 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div
-	 xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-	
+<div xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+	xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
 	<style>
-	b{
-		fint-size: 15px;
-	}
-	input{
-		margin-left: 6px;
-	}
-	label{
-		width:60px;
-	}
-	.awards-title{
-		font-size: 18px;
-	}
-	.awards-table{
-	}
+        body{
+            background-image: url('../images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            width: 700px;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+        }
+		b {
+			fint-size: 15px;
+		}
+		input {
+			margin-left: 6px;
+		}
+		label {
+			width: 100px;
+			text-align:right;
+		}
+		i{
+			margin-left: 10px;
+		}
+		.awards-title {
+			font-size: 18px;
+		}
 	</style>
-	
-	<div id="awards-nav">
-	
-	<button class="btn btn-primary btn-top" 
-		onclick="printAwards()" type="button">
-		Print
-	</button>
-	
-	<button class="btn btn-default btn-top" onclick="jQuery('#search-box').toggle()" type="button">
-		Custom
-	</button>
-	
-	<form id="search-box" class="form-inline" role="form" style="display:none;">
-	  	<div class="form-group">
-		    <label for="gender">Gender</label>
-			<select id="gender" name="gender" onchange="getAwards()" 
-				class="form-control" style="width:160px;">
-				<option value="">Any</option>
-				<option value="M">Men</option>
-				<option value="F">Women</option>
-			</select>
-		</div>
-	  	<div class="form-group">
-		    <label for="ageMin">Age Min</label>
-			<input id="ageMin" name="ageMin" 
-				class="form-control" style="width:80px;"
-				placeholder="Age Min"/>
-		</div>
-	  	<div class="form-group">
-		    <label for="ageMax">Age Max</label>
-			<input id="ageMax" name="ageMax"
-				class="form-control" style="width:80px;"
-				placeholder="Age Max"/>
-		</div>
-	  	<div class="form-group">
-		    <label for="listSize">List Size</label>
-			<input id="listSize" name="listSize"
-				class="form-control" style="width:80px;"
-				placeholder="List Size"/>
-		</div>
-	    <button class="btn btn-primary btn-top" onclick="getAwards()" type="button">
-			Go
-		</button>
-	</form>
-	
-	</div><!-- awards-nav -->
-	
-	<div style="clear:both;"/>
-	
-	
-	<h3 style="padding-top:0;margin-top:0;">${event.name} <small id="award-title">Official Results</small></h3>
-	<div id="awards-table"></div>
+	<div class="white-overlay">
+        <div style="width:700px; margin: 0 auto;">
+            <div class="pull-left">
+                <button class="btn btn-default btn-top" onclick="onBack()" type="button">Back</button>
+            </div>
+			<div class="pull-right">
+				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+				<button class="btn btn-primary btn-top"
+					onclick="create()" 
+					type="button"><i class="fa fa-plus" style="margin-left:0; margin-right:5px"><!--  --></i> Category</button>
+				</sec:authorize>
+					
+				<button class="btn btn-success btn-top" 
+					onclick="printawards()"
+					type="button">Print</button>
+			</div>
+        </div>
+        <div style="clear:both"></div>
+	    <div class="info-container">
+		    <h2 class="ui icon header">
+		        <i class="fa fa-trophy fa-2x" style="margin-left:0"><!--  --></i>
+		        <div class="content">Official Results
+		            <div class="sub header">Standings for ${event.name}</div>
+		        </div>
+		    </h2>
 
+			<div class="awards-nav"> 
+				<button class="btn btn-info btn-top"
+					onclick="byGender('M')" 
+					type="button">Age M</button>
+					
+				<button class="btn btn-info btn-top"
+					onclick="byGender('F')" 
+					type="button">Age F</button>
+				
+				<button class="btn btn-info btn-top"
+					onclick="awards()" 
+					type="button">Medals</button>
+					
+				<button class="btn btn-info btn-top" 
+					onclick="overall()"
+					type="button">Overall</button>
+				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+					<div class="ui large form">
+						<div class="inline fields">
+						    <div class="field">
+						     	<label>Allow Duplicates</label>
+						     	<input type="checkbox" id="duplicate" name="duplicate" value="true" onclick="update()"/>
+						    </div>
+						    <div class="field">
+						      	<label>Masters in Overall</label>
+						      	<input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
+						    </div>
+						</div>
+					</div>
+			    </sec:authorize>
+			</div>
+			<!-- awards-nav -->
+
+			<div id="awards-table">
+				<table class="ui table awards-table">
+					<c:forEach items="${awardCategoryResults}" var="acr" varStatus="i">
+					<thead>
+						<tr class="cat-${acr.category.id}">
+							<th colspan="6">
+								<span class="awards-title">${acr.category.name}</span>
+								<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+									<div class="pull-right"><a href="/bibs-server/awardcategorys/${acr.category.id}?form" title="Edit"><div class="ui icon yellow button"><i style="margin-left:0; margin-right: 0" class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
+									<a href="javascript:deleteAwardCategory(${acr.category.id})" title="Delete"><div class="ui icon red button"><i style="margin-left:0; margin-right: 0" class="fa fa-trash"><!--  --></i></div></a></div>
+								</sec:authorize>
+							</th>
+						</tr>
+					</thead>
+					<tr class="cat-${acr.category.id}">
+						<th size="1"></th>
+						<th>Time</th>
+						<th>Bib</th>
+						<th>Runner</th>
+						<th>Age</th>
+						<th>Gender</th>
+					</tr>
+					<c:forEach items="${acr.results}" var="result" varStatus="x">
+					<tr class="cat-${acr.category.id}">
+						<td style="width:10px">${x.index+1}</td>
+						<td style="width:150px">${result.timeofficialdisplay}</td>
+						<td style="width:10px">${result.bib}</td>
+						<td>${result.firstname} ${result.lastname}</td>
+						<td style="width:10px">${result.age}</td>
+						<td style="width:10px">${result.gender}</td>
+					</tr>
+					</c:forEach>
+				</c:forEach>
+				</table>
+			</div>
+		</div>
+	</div>
+	
 	<script>
-	window.onload=getAll;
-	
-	function printAwards(){
-		jQuery('table').css('max-width','500px');
-		jQuery('#search-box').hide();
-		jQuery('#header-nav').hide();
-		jQuery('#awards-nav').hide();
-		window.print();
-		alert("Print Complete!");
-		jQuery('table').css('max-width','none');
-		jQuery('#header-nav').show();
-		jQuery('#awards-nav').show();
-	}
-	
-	function getAwards(){
-		var event = Math.max(0,GetURLParameter("event"));
-		var listSize = Math.round(jQuery('#listSize').val());
-		jQuery('#listSize').val(listSize);
-		var gender = jQuery('#gender').val();
-		var ageMin = Math.max(jQuery('#ageMin').val(),0);
-		var ageMax = Math.max(jQuery('#ageMax').val(),0);
-		fetchAwards(event,ageMin,ageMax,gender,listSize,"");
-	}
-	
-	function fetchAwards(event,ageMin,ageMax,gender,listSize,title){	
-		if(title==""){
-			if(gender=="M") title = "Male ";
-			if(gender=="F") title = "Female ";
-			if(ageMin>0 ){
-				if(ageMax>0){
-					title += "Ages " + ageMin +" to "+ageMax;
-				}
-			}
-		}
-		var params = "?event="+event+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize;
-		var request = jQuery.ajax({
-			url: "/bibs-server/events/timeofficial"+params,
-			type: "GET",
-			dataType: "json"
-			});
-		request.done(function( data ) {
-			jQuery('#awards-table').html( makeAwardsTable(data,title));
-			});
-		request.fail(function( jqXHR, textStatus ) {
-			alert( "Error: " + textStatus );
-			});
-	}
-	
-	function appendAwards(event,ageMin,ageMax,gender,listSize,title,recurse){		
-		if(title==""){
-			if(gender=="M") title = "Male ";
-			if(gender=="F") title = "Female ";
-			if(ageMin>0 ){
-				if(ageMax > 0){
-					title += "Ages " + ageMin +" to "+ageMax;
-				}
-			}
-		}
-		var params = "?event="+event+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize;
-		var request = jQuery.ajax({
-			url: "/bibs-server/events/timeofficial"+params,
-			type: "GET",
-			dataType: "json"
-			});
-		request.done(function( data ) {
-			if(data.length &gt; 0) 
-				jQuery('#awards-table').append( makeAwardsTable(data,title));
-			if(recurse){
-				if(ageMin &lt;= 109){
-					ageMax++; ageMin=ageMax; ageMax=ageMax+4; 
-					appendAwards(event,ageMin,ageMax,"",10,"",true);
-				}
-			}
-			});
-		request.fail(function( jqXHR, textStatus ) {
-			alert( "Error: " + textStatus );
-			});
-	}
-	
-	function getAll(){	
-		var event = Math.max(0,GetURLParameter("event"));
-		appendAwards(event,0,0,"",9999,"Overall Winners",false);
-		setTimeout(function(){
-			getMore();
-		},2000);
-	}
+		var eventid = GetURLParameter("event");
 
-	function getMore(){
-		var event = Math.max(0,GetURLParameter("event"));
-		appendAwards(event,1,10,"",10,"",false);
-		appendAwards(event,10,13,"",10,"",false);
-		appendAwards(event,14,19,"",10,"",true);
-	}
+		window.onload=function(){
+			if(${event.awardsConfig.allowMedalsInAgeGenderRankings}){
+				jQuery('#duplicate').prop('checked', true);
+			}
+			if(${event.awardsConfig.allowMastersInNonMasters}){
+				jQuery('#master').prop('checked', true);
+			}
+		}
+        function onBack(){
+            window.location="/bibs-server/events/${event.id}"
+        }
+
+		function update(){
+			var loc = "/bibs-server/events/awards/update?event="+eventid;
+			if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
+			if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
+			window.location=loc;
+		}
+
+		function printAwards(){
+			jQuery('table').css('max-width','500px');
+			jQuery('#search-box').hide();
+			jQuery('#header-nav').hide();
+			jQuery('.awards-nav').hide();
+			window.print();
+			alert("Print Complete!");
+			jQuery('table').css('max-width','none');
+			jQuery('#header-nav').show();
+			jQuery('.awards-nav').show();
+		}
+
+		function byGender(gender){
+			window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+gender;
+		}
+
+		function awards(){
+			window.location = "/bibs-server/events/awards?event="+eventid;
+		}
+
+		function overall(){
+			window.location = "/bibs-server/events/overall?event="+eventid;
+		}
+
+		function printawards(){
+			window.location = "/bibs-server/events/printawards?event="+eventid;
+		}		
+		
+		function deleteAwardCategory(id){
+			if(confirm("Delete Award Category?")){
+				jQuery(".cat-"+id).remove();
+				sendDelete(id);
+			}
+		}
+
+		function sendDelete(id){	
+			var request = jQuery.ajax({
+				url: "/bibs-server/awardcategorys/delete/"+id
+				});
+		}
+
+		function create(){
+			window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
+		}
 	</script>
-	
 </div>

@@ -2,24 +2,71 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/timers?form';" type="button">
-		Add Reader</button>
-	<!--
-    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/userprofiles';" type="button">
-        Manage Users</button>
-    <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
-        Manage User Groups</button>
-       -->
-    <page:list id="pl_com_bibsmobile_model_TimerConfig" items="${timerconfigs}" z="21mRsfOwmhGthvwvny4D/kHR0oI=">
-        <table:table data="${timerconfigs}" id="l_com_bibsmobile_model_TimerConfig" path="/timers" z="HOBF5DQvvbIVD4p/2xw3W/3V3ZY=">
-            <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_position" property="position" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_type" property="type" render="false" z="user-managed"/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_connectionTimeout" property="connectionTimeout" z="7qQts1pPhzjyb4XWeBfFVmAGBGQ="/>
-            <table:column id="c_com_bibsmobile_model_TimerConfig_filename" property="filename" render="false" z="user-managed"/>
-        </table:table>
-    </page:list>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            width: 90%;
+            min-height: 400px;
+            line-height: 27px;
+            color: #292929;
+        }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+            .ui.blue.table thead, .ui.table:not(.unstackable) tr > td:nth-child(2), .ui.table:not(.unstackable) tr > td:nth-child(3), .ui.table:not(.unstackable) tr > td:nth-child(4) {
+                display: none !important;
+            }
+            .clickable-row{
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 1em;
+            }
+        }
+    </style>
+    <div class="white-overlay">
+        <div class="info-container">
+            <div class="pull-right">
+                <button class="ui button" onclick="document.location='/bibs-server/timers?form';" type="button">
+                	<i class="fa fa-plus"><!--  --></i> reader</button>
+            </div>
+            <div class="clearfix"><!--  --></div>
+            <!--
+            <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/userprofiles';" type="button">
+                Manage Users</button>
+            <button class="btn btn-default btn-top" onclick="document.location='/bibs-server/usergroups';" type="button">
+                Manage User Groups</button>
+               -->
+            <page:list id="pl_com_bibsmobile_model_TimerConfig" items="${timerconfigs}" z="21mRsfOwmhGthvwvny4D/kHR0oI=">
+                <table:table data="${timerconfigs}" id="l_com_bibsmobile_model_TimerConfig" path="/timers" z="HOBF5DQvvbIVD4p/2xw3W/3V3ZY=">
+                    <table:column id="c_com_bibsmobile_model_TimerConfig_url" property="url" z="TKWEkH7KcH1xnXz/rf4BN8lcOqc="/>
+                    <table:column id="c_com_bibsmobile_model_TimerConfig_position" property="position" z="user-managed"/>
+                    <table:column id="c_com_bibsmobile_model_TimerConfig_readTimeout" property="readTimeout" z="user-managed"/>
+                    <table:column id="c_com_bibsmobile_model_TimerConfig_readPower" property="readPower" render="false" z="user-managed"/>
+                    <table:column id="c_com_bibsmobile_model_TimerConfig_writePower" property="writePower" render="false" z="user-managed"/>
+                    <table:column id="c_com_bibsmobile_model_TimerConfig_type" property="type" render="false" z="user-managed"/>
+                    <table:column id="c_com_bibsmobile_model_TimerConfig_connectionTimeout" property="connectionTimeout" z="7qQts1pPhzjyb4XWeBfFVmAGBGQ="/>
+                    <table:column id="c_com_bibsmobile_model_TimerConfig_filename" property="filename" render="false" z="user-managed"/>
+                </table:table>
+            </page:list>
+        </div>
+    </div>
+    <script>
+        window.onload = function(){
+            jQuery(".clickable-row").click(function() {
+              console.log(jQuery(this).attr("href"))
+              window.document.location = jQuery(this).attr("href");
+            });
+        }
+    </script>
 </div>

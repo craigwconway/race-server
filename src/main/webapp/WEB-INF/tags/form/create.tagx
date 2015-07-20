@@ -51,11 +51,13 @@
           </script>
         </c:if>
         <jsp:doBody />
-        <div class="submit" id="${fn:escapeXml(id)}_submit">
-          <spring:message code="button_save" var="save_button" htmlEscape="false" />
-          <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
-          <button id="back" type="button" class="btn" onclick="window.history.back();">Cancel</button>
-          <button class="btn btn-success" id="proceed" type="submit" >Save</button>
+        <div class="row">
+          <div class="submit" id="${fn:escapeXml(id)}_submit">
+            <spring:message code="button_save" var="save_button" htmlEscape="false" />
+            <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+            <button id="back" type="button" class="btn" onclick="window.history.back();">Cancel</button>
+            <button class="btn btn-success" id="proceed" type="submit" >Save</button>
+          </div>
         </div>
       </form:form>
     </util:panel>

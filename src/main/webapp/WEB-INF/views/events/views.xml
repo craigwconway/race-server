@@ -4,6 +4,9 @@
     <definition extends="default" name="events/list">
         <put-attribute name="body" value="/WEB-INF/views/events/list.jspx"/>
     </definition>
+    <definition extends="default" name="events/myevents">
+        <put-attribute name="body" value="/WEB-INF/views/events/myevents.jspx"/>
+    </definition>    
 <definition extends="default" name="events/show">
         <put-attribute name="body" value="/WEB-INF/views/events/show.jspx"/>
     </definition>
@@ -19,6 +22,9 @@
 <definition extends="default" name="events/awards">
         <put-attribute name="body" value="/WEB-INF/views/events/awards.jspx"/>
     </definition>
+<definition extends="default" name="events/overall">
+        <put-attribute name="body" value="/WEB-INF/views/events/overall.jspx"/>
+    </definition>
 <definition extends="default" name="events/license">
         <put-attribute name="body" value="/WEB-INF/views/events/license.jspx"/>
     </definition>
@@ -27,5 +33,8 @@
     </definition>
 <definition extends="default" name="events/registrationComplete">
         <put-attribute name="body" value="/WEB-INF/views/events/registrationComplete.jspx"/>
+    </definition>
+<definition extends="default" name="events/ageGenderRankings">
+        <put-attribute name="body" value="/WEB-INF/views/events/ageGenderRankings.jspx"/>
     </definition>
 </tiles-definitions>

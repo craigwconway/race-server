@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+	xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+	
+	<style>
+	b{
+		fint-size: 15px;
+	}
+	input{
+		margin-left: 6px;
+	}
+	label{
+		width:60px;
+	}
+	.awards-title{
+		font-size: 18px;
+	}
+	.awards-table{
+	}
+	</style>
+	
+	<div id="awards-nav">
+	
+	<button class="btn btn-info btn-top" 
+		onclick="byGender('M')" type="button">
+		Age M
+	</button>
+	
+	<button class="btn btn-info btn-top" 
+		onclick="byGender('F')" type="button">
+		Age F
+	</button>
+	
+	<button class="btn btn-info btn-top" 
+		onclick="awards()" type="button">
+		Medals
+	</button>
+	
+	<button class="btn btn-info btn-top" 
+		onclick="overall()" type="button">
+		Overall
+	</button>
+	
+	<button class="btn btn-default btn-top" onclick="jQuery('#search-box').toggle()" type="button">
+		Custom
+	</button>
+
+	<button class="btn btn-success btn-top" 
+		onclick="printAwards()" type="button">
+		Print
+	</button>
+	
+	<form id="search-box" class="form-inline" role="form" style="display:none;">
+	  	<div class="form-group">
+		    <label for="gender">Gender</label>
+			<select id="gender" name="gender" 
+				class="form-control" style="width:160px;">
+				<option value="">Any</option>
+				<option value="M">Men</option>
+				<option value="F">Women</option>
+			</select>
+		</div>
+	  	<div class="form-group">
+		    <label for="ageMin">Age Min</label>
+			<input id="ageMin" name="ageMin" 
+				class="form-control" style="width:80px;"
+				placeholder="Age Min"/>
+		</div>
+	  	<div class="form-group">
+		    <label for="ageMax">Age Max</label>
+			<input id="ageMax" name="ageMax"
+				class="form-control" style="width:80px;"
+				placeholder="Age Max"/>
+		</div>
+	  	<div class="form-group">
+		    <label for="listSize">List Size</label>
+			<input id="listSize" name="listSize"
+				class="form-control" style="width:80px;"
+				placeholder="List Size"/>
+		</div>
+	    <button class="btn btn-primary btn-top" onclick="getCustom()" type="button">
+			Lookup Custom Award
+		</button>
+	</form>
+	
+	</div><!-- awards-nav -->
+	
+	<div style="clear:both;"/>
+	
+	
+	<h3 style="padding-top:0;margin-top:0;">${event.name} <small id="award-title">Official Results</small></h3>
+	<div id="awards-table">
+	
+		<table class="table awards-table">
+			<tr>
+				<th size="1"></th>
+				<th>Time</th>
+				<th>Bib</th>
+				<th>Runner</th>
+				<th>Age</th>
+				<th>Gender</th>
+			</tr>
+			<c:forEach items="${results}" var="result" varStatus="i">
+			<tr class="${result.gender}">
+				<td size="1">${i.index+1}</td>
+				<td>${result.timeofficialdisplay}</td>
+				<td>${result.bib}</td>
+				<td>${result.firstname} ${result.lastname}</td>
+				<td>${result.age}</td>
+				<td>${result.gender}</td>
+			</tr>
+			</c:forEach>
+		</table>
+	
+	</div>
+
+	<script>
+
+	var eventid = Math.max(0,GetURLParameter("event"));
+	var gender = Math.max(0,GetURLParameter("gender"));
+
+	function awards(){
+		window.location = "/bibs-server/events/awards?event="+eventid;
+	}
+	
+	function overall(){
+		window.location = "/bibs-server/events/overall?event="+eventid;
+	}
+	
+	function byGender(g){
+		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+g;
+	}
+
+	function getCustom(){
+		var listSize = Math.round(jQuery('#listSize').val());
+		jQuery('#listSize').val(listSize);
+		var gender = jQuery('#gender').val();
+		var ageMin = Math.max(jQuery('#ageMin').val(),0);
+		var ageMax = Math.max(jQuery('#ageMax').val(),0);
+		fetchAwards(ageMin,ageMax,gender,listSize,"");
+	}
+	
+	function fetchAwards(ageMin,ageMax,gender,listSize,title){	
+		if(title==""){
+			if(gender=="M") title = "Male ";
+			if(gender=="F") title = "Female ";
+			if(ageMin>0 ){
+				if(ageMax>0){
+					title += "Ages " + ageMin +" to "+ageMax;
+				}
+			}
+		}
+		var params = "?event="+eventid+"&amp;min="+ageMin+"&amp;max="+ageMax+"&amp;gender="+gender+"&amp;page=1&amp;size="+listSize;
+		var request = jQuery.ajax({
+			url: "/bibs-server/events/timeofficial"+params,
+			type: "GET",
+			dataType: "json"
+			});
+		request.done(function( data ) {
+			jQuery('#awards-table').html( makeAwardsTable(data,title));
+			});
+		request.fail(function( jqXHR, textStatus ) {
+			alert( "Error: " + textStatus );
+			});
+	}
+
+	function printAwards(){
+		jQuery('table').css('max-width','500px');
+		jQuery('#search-box').hide();
+		jQuery('#header-nav').hide();
+		jQuery('#awards-nav').hide();
+		window.print();
+		alert("Print Complete!");
+		jQuery('table').css('max-width','none');
+		jQuery('#header-nav').show();
+		jQuery('#awards-nav').show();
+	} 
+	</script>
+	
+</div>

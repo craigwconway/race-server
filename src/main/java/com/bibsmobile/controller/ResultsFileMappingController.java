@@ -2,12 +2,17 @@ package com.bibsmobile.controller;
 
 import au.com.bytecode.opencsv.CSVReader;
 
+import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.Split;
+import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.XlsToCsv;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,22 +20,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +48,6 @@ import org.springframework.web.util.WebUtils;
 
 @RequestMapping("/resultsfilemappings")
 @Controller
-@RooWebScaffold(path = "resultsfilemappings", formBackingObject = ResultsFileMapping.class)
 public class ResultsFileMappingController {
 
     @RequestMapping(value = "/updateForm.json")
@@ -208,7 +214,12 @@ public class ResultsFileMappingController {
 	// ##############################################
 
 
-    public void doImport(ResultsImport resultsImport) throws IOException, InvalidFormatException {
+    public void doImport(final ResultsImport resultsImport) throws IOException, InvalidFormatException {
+    	new Thread(){
+    	@Override
+    	public void run(){
+    	try{	
+    	final ResultsFileMappingController _this = new ResultsFileMappingController();
         System.out.println("Starting import (mapping)...");
         resultsImport.setRunDate(new Date());
         ResultsFileMapping resultsFileMapping = resultsImport.getResultsFileMapping();
@@ -223,7 +234,7 @@ public class ResultsFileMappingController {
             String[] nextLine;
             if(resultsFileMapping.isSkipFirstRow() ) reader.readNext();
             while ((nextLine = reader.readNext()) != null) {
-                saveRaceResult(resultsImport, event, nextLine, map);
+                _this.saveRaceResult(resultsImport, event, nextLine, map);
             }
             reader.close();
         } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls")
@@ -233,37 +244,194 @@ public class ResultsFileMappingController {
             Sheet sheet = wb.getSheetAt(0);
             for (int i = (resultsFileMapping.isSkipFirstRow() ? 1 : 0); i <= sheet.getLastRowNum(); i++) {
                 final String nextLine[] = csv.rowToCSV(sheet.getRow(i)).split(",");
-                saveRaceResult(resultsImport, event, nextLine, map);
+                _this.saveRaceResult(resultsImport, event, nextLine, map);
             }
         }
         System.out.println("Done");
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	}
+    	}.start(); // thread run
     }
 
     public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
-        if (nextLine.length != map.length || nextLine.length == 0) {
+        if (/*nextLine.length != map.length ||*/ nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
             return;
         }
+        
+        long[] splits = new long[9];
+        long offset = 0;
+        boolean hasOffset = false;
+    	boolean hasSplits = false;
+    	HashMap <String,String> customFields = new HashMap<String,String>();
+    	HashMap <Integer, Split> splitMap = new HashMap<Integer,Split>();
+    	
         StringBuffer json = new StringBuffer("{");
         for (int j = 0; j < nextLine.length; j++) {
-            if (map[j].equals("-")) continue;
-            if (!json.toString().equals("{")) json.append(",");
-            json.append(map[j] + ":\"" + nextLine[j] + "\"");
+            if (map[j].equals("-")){
+            	continue;
+            }
+            if(map[j].equals("bib")) {
+                if (!json.toString().equals("{")) json.append(",");
+            	if(!StringUtils.isNumeric(nextLine[j].trim())){
+                	json.append(map[j] + ":0" ); // bib NaN, default to 0
+                	System.out.println("error bibs is not a number "+nextLine[j]);
+            	}else{
+            		json.append(map[j] + ":" + nextLine[j].trim() ); 
+            	}
+            }else if(map[j].startsWith("custom")) {
+            	// We have a custom mapping. Import into a custom field with a name given after the text custom:
+            	String field = map[j].split("custom-",2)[1];
+            }else if(map[j].startsWith("timesplit-")) {
+            	String[] splitmapping = map[j].split("-");
+            	Split incomingSplit = new Split();
+            	if(splitmapping.length > 2) {
+                	if(splitmapping.length == 3) {
+                		incomingSplit.setName(splitmapping[2]);
+                	}
+                	incomingSplit.setTime(RaceResult.fromHumanTime(event.getGunTime().getTime(), nextLine[j]));
+                	splitMap.put(Integer.valueOf(splitmapping[1]), incomingSplit);           		
+            	}
+            } else if(map[j].startsWith("split")){
+            	try{
+            		System.out.println("Import mapping: " + map[j] + " value: " + nextLine[j]);
+	            	int index = Integer.valueOf(map[j].replaceAll("split", ""))-1;
+	            	splits[index] = RaceResult.fromHumanTime(event.getGunTime().getTime(), nextLine[j]);
+	            	hasSplits = true;
+            	}catch(Exception e){
+            		e.printStackTrace();
+            		System.out.println("split error "+e.getMessage());
+            	}
+            }else if(map[j].equals("offset")) {
+            	if(StringUtils.isNumeric(nextLine[j])) {
+            		try {
+            			offset = event.getGunTime().getTime() - Long.valueOf(nextLine[j]);
+            			hasOffset = true;
+            		} catch(Exception e) {
+            			System.out.println("offset error " + e.getMessage());
+            		}
+            	}
+            }else if(map[j].equals("timeofficial")) {
+            	//Try to parse incoming time, base start time at event start
+            	if(BuildTypeUtil.usesRegistration()) {
+            		//if we have a reg build, we should set timeofficial
+            		try {
+            			String officialtime = "";
+            			if (!json.toString().equals("{")) officialtime += (",");
+            			if(RaceResult.fromHumanTime(nextLine[j]) == 0) {
+            				throw new Exception("Invalid time, not mapped");
+            			}
+            			officialtime += "timeofficial:" + RaceResult.fromHumanTime(1, nextLine[j])+"," ;
+            			officialtime += "timestart:1,";
+            			officialtime += "timeofficialdisplay:\"" +nextLine[j] +"\"";
+            			json.append(officialtime);
+            		} catch(Exception e) {
+            			System.out.println(e);
+            		}
+            	}
+            }else if(!(map[j].equals("age") || map[j].equals("laps"))) {
+                if (!json.toString().equals("{")) json.append(",");
+            	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");
+            }else{
+                if (!json.toString().equals("{")) json.append(",");
+                if(nextLine[j].trim() == "" || !StringUtils.isNumeric(nextLine[j].trim())) {
+                	json.append(map[j] + ":null");
+                } else {
+                	json.append(map[j] + ":" + nextLine[j].trim());
+                }
+            }
+        }
+        String strSplits = "";
+        if(hasSplits){
+        	try{
+		        for(long split:splits){
+		        	if(strSplits.length() > 0){
+		        		strSplits += ",";
+		        	}
+		        	if(hasOffset) {
+		        		split += offset;
+		        	}
+		        	strSplits += split+"";
+		        }
+		        System.out.println("ResultsFileMappingController splits "+strSplits);
+        	}catch(Exception e){
+        		e.printStackTrace();
+        	}
         }
         json.append("}");
-        RaceResult result = RaceResult.fromJsonToRaceResult(json.toString());
+        String fixedJson = json.toString().replaceAll(",,",",");
+        System.out.println("ResultsFileMappingController saveRaceResult() "+fixedJson);
+        RaceResult result = RaceResult.fromJsonToRaceResult(fixedJson);
         result.setEvent(event);
+        result.setTimesplit(strSplits);
+        System.out.println("ResultsFileMappingController splits2 "+result.getTimesplit());
         RaceResult exists = null;
         try {
             exists = RaceResult.findRaceResultsByEventAndBibEquals(event, result.getBib()).getSingleResult();
+            Hibernate.initialize(exists.getCustomFields());
+            Hibernate.initialize(exists.getSplits());
         } catch (Exception e) {
+            System.out.println("ResultsFileMappingController error "+e.getMessage());
         }
         if (null != exists) {
+        	if(exists.getTimeofficial() > 0){
+        		result.setTimestart(exists.getTimestart());
+        		result.setTimeofficial(exists.getTimeofficial());
+        		result.setTimeofficialdisplay(exists.getTimeofficialdisplay());
+        	}
+        	//Update merged result to reflect existing results licensing status
+    		if(BuildTypeUtil.usesLicensing()) {
+    			result.setLicensed(exists.isLicensed());
+    			result.setTimed(exists.isTimed());
+    		}
+    		
+    		exists.getCustomFields().putAll(customFields);
+    		
+        	if(exists.getTimesplit() != null && !exists.getTimesplit().isEmpty()) {
+        		// merge splits
+        		String strSplits2 = "";
+        		String[] existingSplits = exists.getTimesplit().split(",");
+                if(hasSplits){
+                	try{
+        		        for(int i = 0; i < splits.length; i++){
+        		        	long split = splits[i];
+        		        	if(strSplits2.length() > 0){
+        		        		strSplits2 += ",";
+        		        	}
+        		        	if(split !=0) {
+        		        		if(hasOffset) split += offset;
+        		        		strSplits2 += split+"";
+        		        	} else if(i < existingSplits.length && existingSplits[i] != null && !existingSplits[i].isEmpty()) {
+        		        		strSplits2 += existingSplits[i];
+        		        	} else {
+        		        		strSplits2 += split+"";
+        		        	}
+        		        }
+        		        result.setTimesplit(strSplits2);
+        		        System.out.println("ResultsFileMappingController splits "+strSplits);
+                	}catch(Exception e){
+                		e.printStackTrace();
+                	}
+                } else {
+        			result.setTimesplit(exists.getTimesplit());
+        		}
+        		
+        	}
             exists.merge(result);
             exists.merge();
         } else {
-            result.persist();
+            if(BuildTypeUtil.usesLicensing()) {
+            	DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
+                result.setLicensed(License.isUnitAvailible());
+                result.persist();
+                systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
+                systemInfo.merge();
+            } else {
+            	result.persist();
+            }
         }
         resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);
     }

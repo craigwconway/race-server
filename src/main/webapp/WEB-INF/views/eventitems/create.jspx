@@ -2,42 +2,512 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
-        <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
-        <field:input field="name" id="c_com_bibsmobile_model_EventCartItem_name" z="dSVCfVY0Ubmxz6e6aYw3W6ve1ic="/>
-        <field:input field="description" id="c_com_bibsmobile_model_EventCartItem_description" z="PUHaF+kcXtSHZosW2pLOs4XAOYc="/>
-        <field:input field="coupon" id="c_com_bibsmobile_model_EventCartItem_coupon" z="bmAFeWE+t1iQ7Qe9JqfSRKF+XU4="/>
-        <field:input field="price" id="c_com_bibsmobile_model_EventCartItem_price" z="5a38EjZfb2r/0Aw0kSlEQrbjT2E="/>
-        <field:input field="couponPrice" id="c_com_bibsmobile_model_EventCartItem_couponPrice" z="/8M7q+UaL0vVm5UMh66kSwHUx2k="/>
-        <field:input field="couponsAvailable" id="c_com_bibsmobile_model_EventCartItem_couponsAvailable" z="l7I6HtzWBknc4JmIKxU0KsJ0x+g="/>
-        <field:input field="couponsUsed" id="c_com_bibsmobile_model_EventCartItem_couponsUsed" z="11Hs6VlxdzCSPE719s2YamB7VXA="/>
-        <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
-        <field:input field="purchased" id="c_com_bibsmobile_model_EventCartItem_purchased" z="SBP90uqaOyaKhGK95DUBM9ONqJ0="/>
-        <field:datetime dateTimePattern="${eventCartItem_timestart_date_format}" field="timeStart" id="c_com_bibsmobile_model_EventCartItem_timeStart" z="R67dcL0GUsFRBsgYDAp1Zl48lYc="/>
-        <field:datetime dateTimePattern="${eventCartItem_timeend_date_format}" field="timeEnd" id="c_com_bibsmobile_model_EventCartItem_timeEnd" z="kq5uOMjsGDgMTTJLRga/lgiNCI0="/>
-        <field:input field="available" id="c_com_bibsmobile_model_EventCartItem_available" z="zHPmOaa/kg0T8qHJQjSiKu0Wu8s="/>
-        <field:select field="type" id="c_com_bibsmobile_model_EventCartItem_type" items="${eventcartitemtypeenums}" path="eventcartitemtypeenums" required="true" z="g+W9OR2k/yrQ4Pj87bO3WG88/SU="/>
-        <field:input field="donationAmount" id="c_com_bibsmobile_model_EventCartItem_donationAmount" z="VZFWFkpuJC9h6reOZuaam4TV3tA="/>
-        <field:input field="charityName" id="c_com_bibsmobile_model_EventCartItem_charityName" z="tkvJAEiBX0M6TeamUAzmlX2kFrw="/>
-        <div id="tshirtInfo">
-            <field:input field="tshirtSizes" id="c_com_bibsmobile_model_EventCartItem_tshirtSizes" z="n9MPSxEZOJb9R0u5w3gBYJirwS0="/>
-            <field:input field="tshirtColors" id="c_com_bibsmobile_model_EventCartItem_tshirtColors" z="aKV7pvNxff0M/QCV3pMsYdw7FcQ="/>
-            <field:input field="tshirtImageUrls" id="c_com_bibsmobile_model_EventCartItem_tshirtImageUrls" z="t0koesrChFSIhqrDu/8zGjTcupQ="/>
-        </div>
-        <field:simple field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Cart Item Price Change" render="false" z="user-managed"/>
-        <field:input field="minAge" id="c_com_bibsmobile_model_EventCartItem_minAge" z="gLMoH8RvkqgTOLu7e6f+ru8/Akg="/>
-        <field:input field="maxAge" id="c_com_bibsmobile_model_EventCartItem_maxAge" z="gxKwAx4uoNx6quMhyMo4rXfd2jA="/>
-        <field:select field="gender" id="c_com_bibsmobile_model_EventCartItem_gender" items="${eventcartitemgenderenums}" path="eventcartitemgenderenums" z="+Jg/WI19uo3scDKsAgDOwlnJVVA="/>
-        <field:datetime dateTimePattern="${eventCartItem_birthdate_date_format}" field="birthDate" id="c_com_bibsmobile_model_EventCartItem_birthDate" render="false" z="user-managed"/>
-        <field:input field="email" id="c_com_bibsmobile_model_EventCartItem_email" render="false" validationMessageCode="field_invalid_email" z="user-managed"/>
-        <field:input field="phone" id="c_com_bibsmobile_model_EventCartItem_phone" render="false" z="user-managed"/>
-        <field:input field="addressLine1" id="c_com_bibsmobile_model_EventCartItem_addressLine1" render="false" z="user-managed"/>
-        <field:input field="addressLine2" id="c_com_bibsmobile_model_EventCartItem_addressLine2" render="false" z="user-managed"/>
-        <field:input field="zipCode" id="c_com_bibsmobile_model_EventCartItem_zipCode" render="false" z="user-managed"/>
-        <field:input field="emergencyContactName" id="c_com_bibsmobile_model_EventCartItem_emergencyContactName" render="false" z="user-managed"/>
-        <field:input field="emergencyContactPhone" id="c_com_bibsmobile_model_EventCartItem_emergencyContactPhone" render="false" z="user-managed"/>
-        <field:input field="hearFrom" id="c_com_bibsmobile_model_EventCartItem_hearFrom" render="false" z="user-managed"/>
-        <field:input field="eventType" id="c_com_bibsmobile_model_EventCartItem_eventType" z="v51+H5eTfIAwQhg/F9iq3Geq5kg="/>
-    </form:create>
-    <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .ui.form.info-container{
+            margin: 0 auto;
+            width: 400px;
+            font-weight: 400;
+            color: #292929;
+        }
+        .ui.form .fields{
+            margin-bottom: -5px;
+        }
+        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
+            margin-bottom: 5px;
+        }
+        .ui.form input, .ui.form textarea, .ui.form select, .ui.fluid.dropdown, #demo>input{
+            width: 400px;
+            margin: 5px auto; 
+        }
+        .ui.labeled.input {
+            display: table;
+            margin: 5px auto;
+            text-align: left;
+            width: 400px;
+        }
+        .ui.labeled.input > .label {
+            width: 20%;
+        }
+        .ui.form select{
+            height: 38px;
+            font-size: 1em;
+        }
+        .ui.form textarea{
+            height: 0;
+            min-height: 5em;
+        }
+        .submit{
+            margin: 0 auto;
+            width: 400px;
+            text-align: right;
+        }
+        .ui.three.cards > .card:nth-child(3n+1){
+            clear:none;
+        }
+        .ui.form input[type="number"]{
+            height: 38px;
+        }
+        .ui.three.cards{
+            outline: none;
+            border: none;
+        }
+        .ui.cards > .card > .content, .ui.card > .content:hover{
+            cursor: pointer;
+        }
+        #event-type > .text:not(.default) {
+          font-weight: bold;
+        }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
+    </style>
+    <div class="white-overlay">
+        <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
+            <div class="ui form info-container">
+                <h2 class="ui icon header">
+                    <i class="fa fa-cog"><!--  --></i>
+                    <div class="content">Add Product
+                        <div class="sub header">Provide the details for this product.</div>
+                    </div>
+                </h2>
+                    <div class="ui three cards" id="ticket-type">
+                        <input type="hidden" name="type"
+                            data-parsley-error-message="Please select a product type."
+                            data-parsley-required="true"><!--  --></input>
+                        <div class="ui card" id="card-ticket" onclick="cardHandler('TICKET')">
+                            <div class="content">
+                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
+                            </div>
+                        </div>
+                        <div class="ui card" id="card-tshirt" onclick="cardHandler('T_SHIRT')">
+                            <div class="content">
+                                <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
+                            </div>
+                        </div>
+                        <div class="ui card" id="card-donation" onclick="cardHandler('DONATION')">
+                            <div class="content">
+                                <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="form-fields">
+                    <div class="ui fluid selection dropdown ticket-settings" id="event-type">
+                        <input type="hidden" name="eventType"><!--  --></input>
+                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                        <div class="default text">Select Event Type</div>
+                        <div class="menu">
+                            <c:forEach var="item" items="${eventTypes}">
+                                <div class="item" data-value="${item.id}">${item.typeName}</div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                    <div    style="display:none;margin-bottom:5px;" id="etype-error"
+                            class="has-error filled">
+                        <span class="parsley-custom-error-message">Please select an event type.</span>
+                    </div>
+                </div>
+                <div class="form-fields">
+                    <input  type="text" name="name"
+                            class="form-control"
+                            placeholder="Product name"
+                            data-parsley-error-message="Please enter a product name."
+                            data-parsley-required="true"></input>
+                    <textarea  name="description"
+                        class="form-control" rows="2"
+                        placeholder="Product description"><!-- --></textarea>
+                </div>
+                <div class="form-fields">
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Item Sale Start Date: </label>
+                            <input  type="text" name="timeStartLocal"
+                                id="ECIStart"
+                                placeholder="Price start date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                data-parsley-error-message="Please specify a start date."
+                                data-parsley-required="true"></input>
+                        </div>
+                        <div class="field">
+                            <label>Item Sale End Date: </label>
+                            <input  type="text" name="timeEndLocal"
+                                id="ECIEnd"
+                                placeholder="Price end date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                data-parsley-error-message="Please specify an end date."
+                                data-parsley-required="true"></input>
+                        </div>
+                    </div>
+                    <div style="display:none">
+                        <input id="eventStartDate" value="${event.timeStartLocal}"></input>
+                    </div>
+                    <div class="ui labeled input shirt-settings" style="display:none">
+                        <div class="ui blue label">Sizes</div>
+                        <div class="ui active buttons">
+                            <div class="ui toggle button" id="size-1" onclick="updateShirt('XS')">XS</div>
+                            <div class="ui toggle button" id="size-2" onclick="updateShirt('S')">S</div>
+                            <div class="ui toggle button" id="size-3" onclick="updateShirt('M')">M</div>
+                            <div class="ui toggle button" id="size-4" onclick="updateShirt('L')">L</div>
+                            <div class="ui toggle button" id="size-5" onclick="updateShirt('XL')">XL</div>
+                            <span style="display:none">
+                                <input  class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xs"
+                                        data-parsley-mincheck="1" data-parsley-error-message="Please select at least one size."></input>
+                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-s"></input>
+                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-m"></input>
+                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-l"></input>
+                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xl"></input>
+                            </span>
+                        </div>
+                    </div>
+                    <div style="display:none"><input type="text" name="tshirtSizes"></input></div>
+                    <div class="ui labeled input shirt-settings" style="display:none">
+                        <div class="ui blue label">Colors</div>
+                        <div class="ui active buttons">
+                            <div class="ui toggle black basic button" id="color-black" onclick="updateShirt('black')">black</div>
+                            <div class="ui toggle black basic button" id="color-white" onclick="updateShirt('white')">white</div>
+                            <div class="ui toggle red basic button" id="color-red" onclick="updateShirt('red')">red</div>
+                            <div class="ui toggle yellow basic button" id="color-yellow" onclick="updateShirt('yellow')">yellow</div>
+                            <div class="ui toggle green basic button" id="color-green" onclick="updateShirt('green')">green</div>
+                            <div class="ui toggle blue basic button" id="color-blue" onclick="updateShirt('blue')">blue</div>
+                            <div class="ui toggle teal basic button" id="color-teal" onclick="updateShirt('teal')">teal</div>
+                            <div class="ui toggle purple basic button" id="color-purple" onclick="updateShirt('purple')">purple</div>
+                            <span style="display:none">
+                                <input  class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-black"
+                                        data-parsley-mincheck="1" data-parsley-error-message="Please select at least one color."></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-white"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-red"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-yellow"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-green"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-blue"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-teal"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-purple"></input>
+                            </span>
+                        </div>
+                    </div>
+                    <div style="display:none"><input type="text" name="tshirtColors"></input></div>
+                    <div class="form-fields not-donation not-shirt">
+                        <div class="ui fluid selection required dropdown" id="gender-type">
+                            <input type="hidden" name="gender" 
+                                data-parsley-error-message="Please select a gender."
+                                data-parsley-required="true"><!--  --></input>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Gender</div>
+                            <div class="menu">
+                                <div class="item" data-value="MALE_AND_FEMALE">Both</div>
+                                <div class="item" data-value="MALE">Male</div>
+                                <div class="item" data-value="FEMALE">Female</div>
+                            </div>
+                        </div>
+                        <div    style="display:none;margin-bottom:5px;" id="gender-error"
+                                class="has-error filled">
+                            <span class="parsley-custom-error-message">Please select a gender.</span>
+                        </div>
+                    </div>
+                    <div class="two fields not-donation not-shirt">
+                        <div class="field">
+                            <label><!--  --></label>
+                            <input  type="number" name="minAge"
+                                    id="lowAge"
+                                    placeholder="Min Age"
+                                    min="1"
+                                    max="120"
+                                    data-parsley-error-message="Invalid age."
+                                    data-parsley-required="true"
+                                    value=""></input>
+                        </div>
+                        <div class="field">
+                            <label><!--  --></label>
+                            <input  type="number" name="maxAge"
+                                    id="highAge"
+                                    placeholder="Max Age"
+                                    min="1"
+                                    max="120"
+                                    data-parsley-error-message="Invalid age."
+                                    data-parsley-required="true"
+                                    value=""></input>
+                        </div>
+                    </div>
+                    <div class="ui labeled input not-donation">
+                        <div class="ui label">$</div>
+                        <input  type="number" name="price"
+                                class="form-control"
+                                placeholder="Base price"
+                                min="1"
+                                data-parsley-error-message="Invalid base price."
+                                data-parsley-required="true"></input>
+                    </div>
+                    <input  type="number" name="available"
+                            class="form-control not-donation" style="margin-top:5px"
+                            placeholder="Quantity"
+                            min="1"
+                            data-parsley-error-message="Invalid maximum quantity."
+                            data-parsley-required="true"></input>
+                </div>
+            </div>
+
+            <!-- required fields not displayed for user -->
+            <div style="display:none">
+                <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
+                <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
+                <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
+            </div>
+        </form:create>
+    
+        <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
+    </div>
+    <script>
+        window.onload = function(){
+            parseEventId();
+            setValidation();
+            initDateTimePickers();
+            jQuery('.ui.button').state();
+            jQuery('#card-ticket > .content').attr('style', 'background: #F0F0F0');
+            jQuery('#event-type').dropdown();
+            jQuery('#gender-type').dropdown();
+            jQuery('input[name="type"]').val('TICKET');
+        }
+
+        function cardHandler(val){
+            jQuery('input[name="type"]').val(val);
+            jQuery('.has-error').each(function(i,e){
+                jQuery(e).text("");
+            })
+            switch(val){
+                case 'TICKET':
+                    jQuery('#card-ticket > .content').attr('style', 'background:#F0F0F0');
+                    jQuery('#card-tshirt > .content').attr('style', 'background:none');
+                    jQuery('#card-donation > .content').attr('style', 'background:none');
+                    jQuery(".ticket-settings").show();
+                    jQuery(".shirt-settings").hide();
+                    jQuery('.not-shirt').show();
+                    jQuery('.not-donation').show();
+                    jQuery("#box-black").attr("data-parsley-required", false);
+                    jQuery("#box-xs").attr("data-parsley-required", false);
+                    jQuery('input[name="minAge"]').val("");
+                    jQuery('input[name="maxAge"]').val("");
+                    jQuery('input[name="price"]').val("");
+                    jQuery('input[name="available"]').val("");
+                    break;
+                case 'T_SHIRT':
+                    jQuery('#card-ticket > .content').attr('style', 'background:none');
+                    jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
+                    jQuery('#card-donation > .content').attr('style', 'background:none');
+                    jQuery(".ticket-settings").hide();
+                    jQuery(".shirt-settings").show();
+                    jQuery('.not-donation').show();
+                    jQuery('.not-shirt').hide();
+                    jQuery("#box-black").attr("data-parsley-required", true);
+                    jQuery("#box-xs").attr("data-parsley-required", true);
+                    jQuery('input[name="minAge"]').val(1);
+                    jQuery('input[name="maxAge"]').val(120);
+                    jQuery('input[name="price"]').val("");
+                    jQuery('input[name="available"]').val("");
+                    jQuery('#etype-error').hide();
+                    break;
+                case 'DONATION':
+                    jQuery('#card-ticket > .content').attr('style', 'background:none');
+                    jQuery('#card-tshirt > .content').attr('style', 'background:none');
+                    jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
+                    jQuery(".ticket-settings").hide();
+                    jQuery(".shirt-settings").hide();
+                    jQuery(".not-donation").hide();
+                    jQuery("#box-black").attr("data-parsley-required", false);
+                    jQuery("#box-xs").attr("data-parsley-required", false);
+                    jQuery('input[name="minAge"]').val(1);
+                    jQuery('input[name="maxAge"]').val(120);
+                    jQuery('input[name="price"]').val(1);
+                    jQuery('input[name="available"]').val(1000000000);
+                    jQuery('#etype-error').hide();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function parseEventId(){
+            var url = window.location.href;
+            var urllen = url.length;
+            var ind = url.lastIndexOf("=");
+            var eid = url.substring(ind+1, urllen);
+            jQuery("#_event_id").val(eid);
+        }
+
+        var proceedE = false;
+        var proceedG = false;
+        function setValidation(){
+            var test = false;
+
+            // normal parsley
+            jQuery('#eventCartItem').parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
+            });
+
+            jQuery('#proceed').click(function(){
+                if( jQuery('input[name="type"]').val() == 'TICKET' ){
+                    var etype = jQuery('#event-type').dropdown('get value');
+                    if( etype == "" || etype == null ){
+                        jQuery('#proceed').prop('disabled', true);
+                        jQuery('#etype-error').show();
+                        jQuery('#event-type').addClass('error');
+                        jQuery('#event-type').dropdown({
+                            onChange: function (val) {
+                                jQuery('#etype-error').hide();
+                                jQuery('#event-type').removeClass('error');
+                                proceedE = true;
+                                if( proceedE &amp;&amp; proceedG ){
+                                    jQuery('#proceed').prop('disabled', null);
+                                }
+                            }
+                        });
+                    }
+
+                    var gender = jQuery('#gender-type').dropdown('get value');
+                    if( gender == "" || gender == null ){
+                        jQuery('#proceed').prop('disabled', true);
+                        jQuery('#gender-error').show();
+                        jQuery('#gender-type').addClass('error');
+                        jQuery('#gender-type').dropdown({
+                            onChange: function (val) {
+                                jQuery('#gender-error').hide();
+                                jQuery('#gender-type').removeClass('error');
+                                proceedG = true;
+                                if( proceedE &amp;&amp; proceedG ){
+                                    jQuery('#proceed').prop('disabled', null);
+                                }
+                            }
+                        });
+                    }
+                }
+                if( proceedE &amp;&amp; proceedG ){
+                    jQuery('.size-boxes').each(function(){
+                        jQuery('.size-boxes').removeAttr('name');
+                    });
+                    jQuery('.color-boxes').each(function(){
+                        jQuery('.size-boxes').removeAttr('name');
+                    });
+                    jQuery("#eventCartItem").submit();
+                }
+            });
+
+            jQuery("#lowAge").on('input', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+                if( high !== "" ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highAge").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery("#highAge").on('change', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+                if( low !== "" ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowAge").attr("max", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery('#eventCartItem').on('submit', function(){
+                jQuery('#proceed').prop('disabled', true);
+            });
+        }
+
+        function initDateTimePickers(){
+            jQuery("#ECIStart")
+                .datetimepicker({
+                    defaultDate: moment().startOf('day'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery("#ECIEnd")
+                .datetimepicker({
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+            var eventStart = moment('${event.timeStartLocal}').startOf('hour').format('MM/DD/YYYY h:mm:ss a');
+            jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
+
+            <!-- on change-ui -->
+            jQuery("#ECIStart").on("dp.change",function (e) {
+                jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+            });
+            jQuery("#ECIEnd").on("dp.change",function (e) {
+                jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+            });
+        }
+
+        var xs = false; var sm = false; var md = false; var lg = false; var xl = false;
+        var blk = false; var wht = false; var red = false; var yel = false;
+        var grn = false; var blue = false; var teal = false; var purp = false;
+        function updateShirt(val){
+            switch(val) {
+                case 'XS':      xs = !xs;       jQuery("#box-xs").click();          break;
+                case 'S':       sm = !sm;       jQuery("#box-s").click();           break;
+                case 'M':       md = !md;       jQuery("#box-m").click();           break;
+                case 'L':       lg = !lg;       jQuery("#box-l").click();           break;
+                case 'XL':      xl = !xl;       jQuery("#box-xl").click();          break;
+                case 'black':   blk  = !blk;    jQuery("#box-black").click();     break;
+                case 'white':   wht  = !wht;    jQuery("#box-white").click();     break;
+                case 'red':     red  = !red;    jQuery("#box-red").click();       break;
+                case 'yellow':  yel  = !yel;    jQuery("#box-yellow").click();    break;
+                case 'green':   grn  = !grn;    jQuery("#box-green").click();     break;
+                case 'blue':    blue = !blue;   jQuery("#box-blue").click();      break;
+                case 'teal':    teal = !teal;   jQuery("#box-teal").click();      break;
+                case 'purple':  purp = !purp;   jQuery("#box-purple").click();    break;
+                default: break;
+            }
+            var sizes = ""; var colors = "";
+            if(xs){ sizes += "XS,"; }
+            if(sm){ sizes += "S,"; }
+            if(md){ sizes += "M,"; }
+            if(lg){ sizes += "L,"; }
+            if(xl){ sizes += "XL,"; }
+            if(blk){ colors += "Black,"; }
+            if(wht){ colors += "White,"; }
+            if(red){ colors += "Red,"; }
+            if(yel){ colors += "Yellow,"; }
+            if(grn){ colors += "Green,"; }
+            if(blue){ colors += "Blue,"; }
+            if(teal){ colors += "Teal,"; }
+            if(purp){ colors += "Purple,"; }
+            if( sizes.length > 1 ){ sizes = sizes.substr(0, sizes.length-1); }
+            if( colors.length > 1 ){ colors = colors.substr(0, colors.length-1); }
+            jQuery('input[name="tshirtSizes"]').val(sizes);
+            jQuery('input[name="tshirtColors"]').val(colors);
+        }
+    </script>
 </div>
