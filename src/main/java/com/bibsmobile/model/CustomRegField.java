@@ -4,7 +4,9 @@
 package com.bibsmobile.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -42,6 +45,28 @@ public class CustomRegField {
 	private String question;
 
 	private String responseSet;
+	
+	/**
+	 * Used by event directors to hide unwanted responses
+	 */
+	boolean hidden;
+
+	/**
+	 * Used by to make answering questions optional
+	 */
+	boolean optional;
+	
+	/**
+	 * Used to display whether a question should appear in all items. This is automatically set.
+	 * If no items are checked, it will not display.
+	 */
+	boolean allItems;
+	
+	/**
+	 * The set of EventCartItems that have this question displayed
+	 */
+	@ManyToMany
+	private Set <EventCartItem> eventItems = new HashSet<EventCartItem>();
 
 	/**
 	 * @return CustomRegField Id, Autoincremented from 1
@@ -103,6 +128,66 @@ public class CustomRegField {
 		this.responseSet = responseSet;
 	}
 	
+	/**
+	 * @return the hidden
+	 */
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	/**
+	 * @param hidden the hidden to set
+	 */
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+
+	/**
+	 * @return the optional
+	 */
+	public boolean isOptional() {
+		return optional;
+	}
+
+	/**
+	 * @param optional the optional to set
+	 */
+	public void setOptional(boolean optional) {
+		this.optional = optional;
+	}
+
+	/**
+	 * @return the eventItems
+	 */
+	public Set<EventCartItem> getEventItems() {
+		return eventItems;
+	}
+
+	/**
+	 * @param eventItems the eventItems to set
+	 */
+	public void setEventItems(HashSet<EventCartItem> eventItems) {
+		this.eventItems = eventItems;
+	}
+
+	/**
+	 * Whether or not this should be displayed to all items. This is set automatically
+	 * if no specific EventCartItems are checked.
+	 * @return the allItems
+	 */
+	public boolean isAllItems() {
+		return allItems;
+	}
+
+	/**
+	 * Whether or not this should be displayed to all items. This is set automatically
+	 * if no specific EventCartItems are checked.
+	 * @param allItems the allItems to set
+	 */
+	public void setAllItems(boolean allItems) {
+		this.allItems = allItems;
+	}
+
 	/**
 	 * Hibernate Overhead -- Do not remove
 	 */

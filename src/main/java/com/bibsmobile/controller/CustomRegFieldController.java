@@ -3,6 +3,7 @@
  */
 package com.bibsmobile.controller;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.http.HttpHeaders;
@@ -33,6 +34,15 @@ public class CustomRegFieldController {
     public String createFromJson(@RequestBody String json) {
         CustomRegField customRegField = CustomRegField.fromJsonToCustomRegField(json);
         customRegField.setEvent(Event.findEvent(customRegField.getEvent().getId()));
+        HashSet <EventCartItem> eventItems = new HashSet<EventCartItem>();
+        for(EventCartItem eventItem : customRegField.getEventItems()) {
+        	eventItems.add(EventCartItem.findEventCartItem(eventItem.getId()));
+        }
+        if(eventItems.size() > 0) {
+        	customRegField.setAllItems(false);
+        } else {
+        	customRegField.setAllItems(true);
+        }
         customRegField.persist();
         return customRegField.toJson();
     }

@@ -1257,7 +1257,9 @@ public class EventController {
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
         }
-
+        
+        event.setHidden(true);
+        
         //Check if the build has any attached entities:
         List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
         List <CartItem> cis;

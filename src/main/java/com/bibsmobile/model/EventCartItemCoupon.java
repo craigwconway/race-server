@@ -13,10 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Configurable
@@ -29,7 +31,22 @@ public class EventCartItemCoupon {
     private Long id;
     @ManyToOne
     private Event event;
+    @OneToOne
+    private EventCartItem item;
 
+    private String timeStartLocal;
+    private String timeEndLocal;
+    private Date timeStart;
+    private Date timeEnd;
+    
+    /**
+     * Whether the coupon is currently active. Default true.
+     */
+    private boolean active=true;
+    
+    /**
+     * Code linked with coupon
+     */
     private String code;
     private Long discountAbsolute; // is an object to allow for null
     private Double discountRelative; // is an object to allow for null
@@ -52,7 +69,101 @@ public class EventCartItemCoupon {
         this.event = event;
     }
 
-    public String getCode() {
+    /**
+     * String containing local starting time for coupon
+	 * @return the timeStartLocal
+	 */
+	public String getTimeStartLocal() {
+		return timeStartLocal;
+	}
+
+	/**
+	 * String containing local starting time for coupon
+	 * @param timeStartLocal the timeStartLocal to set
+	 */
+	public void setTimeStartLocal(String timeStartLocal) {
+		this.timeStartLocal = timeStartLocal;
+	}
+
+	/**
+	 * String containing local ending time for coupon
+	 * @return the timeEndLocal
+	 */
+	public String getTimeEndLocal() {
+		return timeEndLocal;
+	}
+
+	/**
+	 * String containing local ending time for coupon
+	 * @param timeEndLocal the timeEndLocal to set
+	 */
+	public void setTimeEndLocal(String timeEndLocal) {
+		this.timeEndLocal = timeEndLocal;
+	}
+
+	/**
+	 * Generated from timeStartLocal in event's timezone
+	 * @return the timeStart
+	 */
+	public Date getTimeStart() {
+		return timeStart;
+	}
+
+	/**
+	 * generated from timeStartLocal in event's timezone
+	 * @param timeStart the timeStart to set
+	 */
+	public void setTimeStart(Date timeStart) {
+		this.timeStart = timeStart;
+	}
+
+	/**
+	 * generated from timeEndLocal in event's timezone
+	 * @return the timeEnd
+	 */
+	public Date getTimeEnd() {
+		return timeEnd;
+	}
+
+	/**
+	 * generated from timeEndLocal in event's timezone
+	 * @param timeEnd the timeEnd to set
+	 */
+	public void setTimeEnd(Date timeEnd) {
+		this.timeEnd = timeEnd;
+	}
+
+	/**
+	 * Switch for whether the coupon is active
+	 * @return the active
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * Switch for whether the coupon is active
+	 * @param active the active to set
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	/**
+	 * @return the item
+	 */
+	public EventCartItem getItem() {
+		return item;
+	}
+
+	/**
+	 * @param item the item to set
+	 */
+	public void setItem(EventCartItem item) {
+		this.item = item;
+	}
+
+	public String getCode() {
         return code;
     }
 
