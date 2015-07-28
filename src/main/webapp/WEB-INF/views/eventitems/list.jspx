@@ -156,6 +156,38 @@
                 <div class="modal-body">
                     <div class="ui form" id="couponForm">
                         <div class="fields">
+                            <h4 class="ui header">
+                              <div class="content">
+                                <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit coupon to product: 
+                                    <div class="ui inline compact dropdown" id="couponECI" style="border: 1px rgba(39, 41, 43, 0.35) solid; padding: 8px; border-radius: 5px; margin-left: 10px;">
+                                      <div class="text">none</div>
+                                      <input type="hidden" name="eventItem"><!--  --></input>
+                                      <i class="fa fa-caret-down" style="margin-left:5px;"><!--  --></i>
+                                      <div class="menu">
+                                        <c:if test="${empty eventcartitems}">
+                                            <div class="header">No Current Products</div>
+                                        </c:if>
+                                        <c:if test="${not empty eventcartitems}">
+                                            <div class="header">Current Products</div>
+                                            <c:forEach var="item" items="${eventcartitems}">
+                                                <c:if test="${item.type == 'TICKET'}">
+                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="yellow icon fa fa-ticket"><!--  --></i></div>${item.name}</div>
+                                                </c:if>
+                                                <c:if test="${item.type == 'T_SHIRT'}">
+                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="teal icon fa fa-shirtsinbulk"><!--  --></i></div>${item.name}</div>
+                                                </c:if>
+                                                <c:if test="${item.type == 'DONATION'}">
+                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="blue icon fa fa-heart-o"><!--  --></i></div>${item.name}</div>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
+                                      </div>
+                                    </div>
+                                </label>
+                              </div>
+                            </h4>
+                        </div>
+                        <div class="fields">
                             <div class="twelve wide field">
                                 <label style="width:100%">Coupon Code</label>
                                 <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
@@ -198,12 +230,12 @@
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="active item" data-tab="eci-menu">Products</div>
+                <div class="item" data-tab="eci-menu">Products</div>
                 <div class="item" data-tab="ticket-menu">Transfers</div>
                 <div class="item" data-tab="form-menu">Custom Forms</div>
-                <div class="item" data-tab="coupon-menu">Coupons</div>
+                <div class="active item" data-tab="coupon-menu">Coupons</div>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
+            <div class="ui bottom attached tab segment" data-tab="eci-menu">
                 <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
@@ -343,7 +375,7 @@
                     <button class="ui green button" type="button">Save</button>
                 </div>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="coupon-menu">
+            <div class="ui bottom attached active tab segment" data-tab="coupon-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -355,18 +387,18 @@
                     <div class="ui four doubling cards">
                         <c:if test="${not empty eventcoupons}">
                             <br/>
-                            <c:forEach var="item" items="${eventcoupons}">
+                            <c:forEach var="coupon" items="${eventcoupons}">
                                 <div class="ui fluid card">
                                     <div class="content">
-                                        <div class="ui blue header" style="text-align:center;text-transform:uppercase"><i class="fa fa-cart-arrow-down"><!--  --></i><br/>${item.code}</div>
-                                        <div class="description"><c:if test="${not empty item.discountRelative}">- ${item.discountRelative}%</c:if>
+                                        <div class="ui blue header" style="text-align:center;text-transform:uppercase"><i class="fa fa-cart-arrow-down"><!--  --></i><br/>${coupon.code}</div>
+                                        <div class="description"><c:if test="${not empty coupon.discountRelative}">- ${coupon.discountRelative}%</c:if>
                                         <fmt:setLocale value="en_US"/>
-                                        <c:if test="${not empty item.discountAbsolute}"><fmt:formatNumber value="${item.discountAbsolute/100}" type="currency"/></c:if></div>
+                                        <c:if test="${not empty coupon.discountAbsolute}"><fmt:formatNumber value="${coupon.discountAbsolute/100}" type="currency"/></c:if></div>
                                     </div>
                                     <div class="extra content" style="color:#767676">
-                                        <div class="right floated">${item.available} available</div>
+                                        <div class="right floated">${coupon.available} available</div>
                                     </div>
-                                    <div class="ui bottom attached button" onclick="couponDetail('${item.id}', '${item.code}', '${item.discountRelative}', '${item.discountAbsolute}', '${item.available}')">
+                                    <div class="ui bottom attached button" onclick="couponDetail('${coupon.id}', '${coupon.code}', '${coupon.discountRelative}', '${coupon.discountAbsolute}', '${coupon.available}', '${coupon.item.id}')">
                                         <i class="fa fa-external-link"><!--  --></i>View Details
                                     </div>
                                 </div>
@@ -398,6 +430,7 @@
     <script>
         window.onload = function(){
             // initialize semantic-ui elements
+            jQuery('.ui.dropdown').dropdown();
             jQuery('.menu .item').tab();
             jQuery('.ui.checkbox').checkbox();
             jQuery('.disc-btn').each(function(){
@@ -423,7 +456,7 @@
         }
 
         var currCouponId;
-        function couponDetail(id, code, discountRel, discountAbs, avail){
+        function couponDetail(id, code, discountRel, discountAbs, avail, eci){
             currCouponId = id;
             jQuery("#addCoupon").modal('show');
             jQuery(".post-coupon").hide();
@@ -447,6 +480,8 @@
                 jQuery('#disc-curr').removeClass('positive');
             }
             jQuery('input[name="available"]').val(avail);
+            jQuery('#couponECI').dropdown('set selected', eci);
+            jQuery('input[name="eventItem"]').val(eci);
         }
 
         function validateDiscount() {
@@ -535,6 +570,7 @@
 
             var obj = {};
             var eid = '${event.id}';
+            var eci = jQuery('input[name="eventItem"]').val();
             var couponcode = jQuery('input[name="couponcode"]').val();
             var discount = jQuery('input[name="discount"]').val();
             var available = jQuery('input[name="available"]').val();
@@ -544,6 +580,11 @@
                                         obj.event = eobj;        }
             if( couponcode.length > 0 ){ obj.code = couponcode; }
             if( available.length > 0 ){  obj.available = parseInt(available); }
+            if( eci !== null || eci !== "" ){
+                var item = {};
+                item.id = parseInt(eci);
+                obj.item = item;
+            }
 
             var discountAbsolute = null;
             var discountRelative = null;
