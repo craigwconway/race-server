@@ -82,12 +82,12 @@
                         <div class="grouped fields">
                             <label for="viewType"><i class="fa fa-cogs" style="margin-right: 5px;"><!--  --></i> Options</label>
                             <div class="field">
-                                <div class="ui toggle checkbox">
+                                <div class="ui toggle checkbox" id="optional1">
                                     <input type="checkbox" name="optional"><!--  --></input>
                                     <label style="width:100%">Make this question optional</label>
                                 </div>
                             </div>
-                            <div class="field">
+                            <div class="field" id="optional2" style="display:none">
                                 <div class="ui toggle checkbox">
                                     <input type="checkbox" name="hidden"><!--  --></input>
                                     <label style="width:100%">Hide from registration form</label>
@@ -365,7 +365,7 @@
                                             <c:if test="${not empty item.responseSet}">Choices: ${item.responseSet}</c:if>
                                         </div>
                                     </div>
-                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, '${item.question}', '${item.responseSet}')">
+                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responseSet}')">
                                         <i class="fa fa-external-link"><!--  --></i>View Details
                                     </div>
                                 </div>
@@ -655,7 +655,16 @@
             jQuery('input[name="question"]').val("");
             jQuery("#drop-option").val("");
             jQuery(".put-question").hide();
+            jQuery('#optional2').hide();
             jQuery(".post-question").show();
+            jQuery('#optional1').click(function(){
+                if(jQuery('input[name="optional"]').prop('checked')){
+                    jQuery('#optional2').show();
+                }
+                else{
+                    jQuery('#optional2').hide();
+                }
+            })
         }
 
         function addDropdownOption(){
@@ -697,7 +706,7 @@
         }
 
         var currQuestionId;
-        function questionDetail(id, eid, question, responseSet){
+        function questionDetail(id, eid, optional, hidden, question, responseSet){
             currQuestionId = id;
             currOptions = responseSet;
             jQuery("#addQuestion").modal('show');
@@ -712,6 +721,20 @@
                                         obj.event = eobj;        }
             jQuery('input[name="id"]').val(id);
             jQuery('input[name="question"]').val(question);
+
+            console.log(optional);
+            if(optional){
+                jQuery('#optional1').addClass('checked');
+                jQuery('input[name="optional"]').prop('checked', true);
+            }else{
+                jQuery('#optional2').hide();
+            }
+
+            if(hidden){
+                jQuery('#optional2').show();
+                jQuery('#optional2').addClass('checked');
+                jQuery('input[name="hidden"]').prop('checked', true);
+            }
 
             if( responseSet !== "" ){
                 jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
