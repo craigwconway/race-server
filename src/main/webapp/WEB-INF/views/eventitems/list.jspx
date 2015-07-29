@@ -78,6 +78,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
+                        <div class="grouped fields">
+                            <label for="viewType"><i class="fa fa-cogs" style="margin-right: 5px;"><!--  --></i> Options</label>
+                            <div class="field">
+                                <div class="ui toggle checkbox">
+                                    <input type="checkbox" name="optional"><!--  --></input>
+                                    <label style="width:100%">Make this question optional</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui toggle checkbox">
+                                    <input type="checkbox" name="hidden"><!--  --></input>
+                                    <label style="width:100%">Hide from registration form</label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="fields">
                             <div class="twelve wide field">
                                 <label>Question</label>
@@ -428,6 +443,7 @@
     </div>
     </sec:authorize>
     <script>
+        var currOptions = '';
         window.onload = function(){
             // initialize semantic-ui elements
             jQuery('.ui.dropdown').dropdown();
@@ -444,9 +460,14 @@
 
             jQuery('#addQuestion').on('hidden.bs.modal', function(){
                 responseSet = '';
+                currOptions = '';
                 jQuery(this).find('input[type="text"]').val('');
+                jQuery('#type-dropdown-selected').dropdown('set text', 'Select one')
                 jQuery('#dropdown-options').text('');
                 jQuery('#option-list').text('');
+                jQuery('input[name="optional"]').prop('checked', false);
+                jQuery('input[name="hidden"]').prop('checked', false);
+                jQuery('#question-preview').hide();
             });
 
             jQuery('#addCoupon').on('hidden.bs.modal', function(){
@@ -638,7 +659,6 @@
             jQuery(".post-question").show();
         }
 
-        var currOptions = '';
         function addDropdownOption(){
             jQuery('#type-dropdown-selected').dropdown();
             var opt = jQuery("#drop-option").val();
@@ -783,6 +803,10 @@
             var obj = {};
             var eid = '${event.id}';
             var question = jQuery('input[name="question"]').val();
+            var option = jQuery('input[name="optional"]').prop('checked');
+            var hidden = jQuery('input[name="hidden"]').prop('checked');
+            obj.option = option;
+            obj.hidden = hidden;
 
             if( eid.length > 0 ){       var eobj = {};
                                         eobj.id = parseInt(eid);
