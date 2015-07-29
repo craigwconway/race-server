@@ -78,6 +78,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
+                        <input type="hidden" name="id"><!--  --></input>
                         <div class="grouped fields">
                             <label for="viewType"><i class="fa fa-cogs" style="margin-right: 5px;"><!--  --></i> Options</label>
                             <div class="field">
@@ -483,8 +484,6 @@
         function addCouponModal(){
             jQuery("#addCoupon").modal('show');
             validateDiscount();
-            // jQuery('input[name="id"]').val("");
-            // jQuery('input[name="question"]').val("");
             jQuery(".put-coupon").hide();
             jQuery(".post-coupon").show();
         }
