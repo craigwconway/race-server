@@ -551,6 +551,12 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             getWebappId();
             getWaiver();
+
+            jQuery('#addType').on('hidden.bs.modal', function(){
+                jQuery(this).find('input[type="text"],input[type="number"]').val('');
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
+                jQuery('#racetype-dropdown').dropdown('clear');
+            });
         }
 
         function saveEventType(put){
