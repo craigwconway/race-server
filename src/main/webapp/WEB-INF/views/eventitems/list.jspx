@@ -107,7 +107,7 @@
                         </div>
                         <div class="fields" id="dropdown-field" style="display:none">
                             <div class="twelve wide field">
-                                <label style="width:100%">Dropdown Options (separated by comma)</label>
+                                <label style="width:100%">Dropdown Options</label>
                                 <div class="ui action input">
                                     <input  type="text" id="drop-option" placeholder="Add dropdown option"></input>
                                     <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
@@ -232,8 +232,8 @@
             <div class="ui top attached tabular menu">
                 <div class="item" data-tab="eci-menu">Products</div>
                 <div class="item" data-tab="ticket-menu">Transfers</div>
-                <div class="item" data-tab="form-menu">Custom Forms</div>
-                <div class="active item" data-tab="coupon-menu">Coupons</div>
+                <div class="active item" data-tab="form-menu">Custom Forms</div>
+                <div class="item" data-tab="coupon-menu">Coupons</div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="eci-menu">
                 <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
@@ -327,7 +327,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="form-menu">
+            <div class="ui bottom attached active tab segment" data-tab="form-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -375,7 +375,7 @@
                     <button class="ui green button" type="button">Save</button>
                 </div>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="coupon-menu">
+            <div class="ui bottom attached tab segment" data-tab="coupon-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -441,6 +441,16 @@
                     distType = id;
                 })
             })
+
+            jQuery('#addQuestion').on('hidden.bs.modal', function(){
+                jQuery(this).find('input[type="text"]').val('');
+            });
+
+            jQuery('#addCoupon').on('hidden.bs.modal', function(){
+                jQuery('#couponECI').dropdown('clear');
+                jQuery('#couponECI').dropdown('set text', 'none');
+                jQuery(this).find('input[type="text"],input[type="number"]').val('');
+            });
 
             transferHandler();
             customFormTab();
@@ -667,6 +677,7 @@
         var currQuestionId;
         function questionDetail(id, eid, question, responseSet){
             currQuestionId = id;
+            currOptions = responseSet;
             jQuery("#addQuestion").modal('show');
             jQuery(".post-question").hide();
             jQuery(".put-question").show();
@@ -700,6 +711,11 @@
                         if( opt !== "" &amp;&amp; opt !== " " ){
                             jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
                             parsedOptions += opt + ",";
+                            jQuery('#type-dropdown-selected').dropdown();
+                            // append tags
+                            jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
+                            jQuery('#type-dropdown-selected').dropdown('refresh');
+                            jQuery('#drop-option').val("");
                         }
                     }
                     if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
