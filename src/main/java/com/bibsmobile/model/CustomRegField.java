@@ -3,6 +3,7 @@
  */
 package com.bibsmobile.model;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
@@ -327,9 +330,24 @@ public class CustomRegField {
      * @return Deserialized CustomRegField object
      */
     public static CustomRegField fromJsonToCustomRegField(String json) {
-        return new JSONDeserializer<CustomRegField>().use(null, CustomRegField.class).deserialize(json);
+        return new JSONDeserializer<CustomRegField>().use(null, CustomRegField.class).use("eventItems", EventCartItem.class).deserialize(json);
     }
-
+    
+    /**
+     * The Jackson version of the json deserializser
+     * @param json
+     * @return
+     */
+    public static CustomRegField fromJson(String json) {
+    	ObjectMapper mapper = new ObjectMapper();
+    	try {
+			return mapper.readValue(json, CustomRegField.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
     /**
      * Deserialize an array of CustomRegField objects. These must have the format:
      * {values:[{"id":11, "Question":"Team Name", "responseSet":""}, {"id":12, "Question"Photos?", "responseSet":"yes,no"}]}
