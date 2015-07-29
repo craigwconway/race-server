@@ -443,7 +443,10 @@
             })
 
             jQuery('#addQuestion').on('hidden.bs.modal', function(){
+                responseSet = '';
                 jQuery(this).find('input[type="text"]').val('');
+                jQuery('#dropdown-options').text('');
+                jQuery('#option-list').text('');
             });
 
             jQuery('#addCoupon').on('hidden.bs.modal', function(){
