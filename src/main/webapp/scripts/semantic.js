@@ -6462,7 +6462,7 @@ $.fn.dropdown.settings = {
     input        : '> input[type="hidden"], > select',
     item         : '.item',
     label        : '> .label',
-    remove       : '> .label > .delete.icon',
+    remove       : '> .label > .fa.fa-times',
     siblingLabel : '.label',
     menu         : '.menu',
     message      : '.message',
