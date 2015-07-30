@@ -67,6 +67,11 @@
           -webkit-appearance: none; 
           margin: 0; 
         }
+        .ui.form .field > label, .ui.form .inline.fields .field > label, .ui.form .inline.fields > label{
+            font-size: 1em;
+            width: 100%;
+            margin: 1em 0em 0.5em;
+        }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
@@ -93,9 +98,37 @@
                                     <label style="width:100%">Archive (Hide from registration form)</label>
                                 </div>
                             </div>
+                            <div class="fields">
+                                <h5 class="ui header">
+                                  <div class="content" style="width:100%">
+                                    <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
+                                    </label>
+                                    <div class="inline field">
+                                        <div class="ui multiple selection dropdown" id="questionECI">
+                                            <i class="dropdown icon"><!--  --></i>
+                                            <input name="eventItems" type="hidden"><!--  --></input>
+                                            <c:if test="${empty eventcartitems}">
+                                                <div class="item">No Current Products</div>
+                                            </c:if>
+                                            <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-times" style="margin-left:5px;margin-right:0;"><!--  --></i></a>
+                                            <c:if test="${not empty eventcartitems}">
+                                                <div class="default text">none</div>
+                                                <div class="menu" id="question-eci-options">
+                                                    <c:forEach var="item" items="${eventcartitems}">
+                                                        <div class="item" data-value="${item.id}">${item.name}</div>
+                                                    </c:forEach>
+                                                </div>
+                                            </c:if>
+                                        </div>
+                                        <div class="ui button" id="question-clear-eci-options">Clear</div>
+                                    </div>
+                                  </div>
+                                </h5>
+                            </div>
+                            
                         </div>
                         <div class="fields">
-                            <div class="twelve wide field">
+                            <div class="twelve wide required field">
                                 <label>Question</label>
                                 <input type="text" name="question" placeholder="What do you want to ask?"
                                        data-parsley-required="true"
@@ -103,7 +136,7 @@
                             </div>
                         </div>
                         <div class="fields">
-                            <div class="twelve wide field">
+                            <div class="twelve wide required field">
                                 <label for="responseType">Response Type</label>
                                 <div class="inline fields">
                                     <div class="field">
@@ -365,7 +398,7 @@
                                             <c:if test="${not empty item.responseSet}">Choices: ${item.responseSet}</c:if>
                                         </div>
                                     </div>
-                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responseSet}')">
+                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responseSet}', ${item.eventItemIds})">
                                         <i class="fa fa-external-link"><!--  --></i>View Details
                                     </div>
                                 </div>
@@ -445,6 +478,8 @@
     </sec:authorize>
     <script>
         var currOptions = '';
+        var domList = [];
+
         window.onload = function(){
             // initialize semantic-ui elements
             jQuery('.ui.dropdown').dropdown();
@@ -469,6 +504,12 @@
                 jQuery('input[name="optional"]').prop('checked', false);
                 jQuery('input[name="hidden"]').prop('checked', false);
                 jQuery('#question-preview').hide();
+                
+                domList.forEach(function(dom, i, ary){
+                    jQuery(dom).remove();
+                })
+                domList = [];
+                jQuery('#question-eci-options').children().show();
             });
 
             jQuery('#addCoupon').on('hidden.bs.modal', function(){
@@ -651,10 +692,10 @@
 
         function addQuestionModal(){
             jQuery("#addQuestion").modal('show');
-            jQuery('input[name="id"]').val("");
-            jQuery('input[name="question"]').val("");
-            jQuery("#drop-option").val("");
-            jQuery('#radio-input').checkbox('check');
+            // jQuery('input[name="id"]').val("");
+            // jQuery('input[name="question"]').val("");
+            // jQuery("#drop-option").val("");
+            // jQuery('#radio-input').checkbox('check');
             jQuery(".put-question").hide();
             jQuery(".post-question").show();
         }
@@ -665,10 +706,17 @@
             if( opt.length > 0 ){
                 currOptions += opt + ',';
                 jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery("#option-list").append('<div class="item">' + opt + '</div>');
+                jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
                 jQuery('#type-dropdown-selected').dropdown('refresh');
                 jQuery('#drop-option').val("");
             }
+        }
+
+        function removeLabelOption(o){
+            var id = jQuery(o).attr('data-value');
+            jQuery(o).detach();
+            var domContent = jQuery('#questionECI').dropdown('get item', id);
+            jQuery(domContent).show();
         }
 
         function removeDropdownOption(o){
@@ -698,12 +746,12 @@
         }
 
         var currQuestionId;
-        function questionDetail(id, eid, optional, hidden, question, responseSet){
+        function questionDetail(id, eid, optional, hidden, question, responseSet, eci){
             currQuestionId = id;
             currOptions = responseSet;
-            jQuery("#addQuestion").modal('show');
             jQuery(".post-question").hide();
             jQuery(".put-question").show();
+            jQuery("#addQuestion").modal('show');
 
             var obj = {};
             var eid = '${event.id}';
@@ -714,7 +762,28 @@
             jQuery('input[name="id"]').val(id);
             jQuery('input[name="question"]').val(question);
 
-            console.log(optional);
+            // hack:
+            // add labels
+            for(var i in eci){
+                var domClone = jQuery('.label-clone').clone()
+                                                    .insertBefore('#question-eci-options')
+                                                    .removeClass('label-clone')
+                                                    .attr('data-value', eci[i])
+                                                    .attr('id', 'eci-id-'+eci[i]);
+                jQuery('#eci-id-'+eci[i]).show();
+                var domContent = jQuery('#questionECI').dropdown('get item', eci[i]);
+                var textContent = jQuery(domContent).text();
+                jQuery(domContent).hide();
+                jQuery(domClone).find('.label-eci-name').text(textContent);
+                domList.push(domClone);
+            }
+            jQuery('#questionECI').dropdown('set selected', eci);
+            jQuery('#questionECI').dropdown('refresh');
+            jQuery('#question-clear-eci-options').click(function(){
+                jQuery('#questionECI').dropdown('restore defaults');
+            })
+
+
             if(optional){
                 jQuery('#optional1').addClass('checked');
                 jQuery('input[name="optional"]').prop('checked', true);
@@ -767,6 +836,7 @@
                 jQuery("#type-input-selected").show();
                 jQuery('#radio-input').checkbox('check');
             }
+
             if( (question !== null || question !== "") ){
                 jQuery("#question-preview").show();
                 jQuery("#question-label").text(question);
@@ -815,6 +885,14 @@
             var obj = {};
             var eid = '${event.id}';
             var question = jQuery('input[name="question"]').val();
+            var eventItems = {};
+            var eciList = jQuery('input[name="eventItems"]').val();
+            eciList = eciList.split(',');
+            obj.eventItems = eciList.map(function(item){
+                var obj = {};
+                obj.id = parseInt(item);
+                return obj;
+            });
             var option = jQuery('input[name="optional"]').prop('checked');
             var hidden = jQuery('input[name="hidden"]').prop('checked');
             obj.optional = option;
@@ -837,7 +915,6 @@
                 error = true;
             }
             else{
-                // console.log(obj);
                 jQuery.ajax({
                     url: questUrl,
                     type: questType,
