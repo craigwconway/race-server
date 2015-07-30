@@ -143,7 +143,7 @@ public class EventCartItemController {
             customRegFields = Collections.emptyList();
         } else {
             resultList = EventCartItem.findEventCartItemsByEvent(event).getResultList();
-            customRegFields = CustomRegField.findCustomRegFieldsByEvent(event).getResultList();
+            customRegFields = CustomRegField.findVisibleCustomRegFieldsByEvent(event).getResultList();
         }
         return new ResponseEntity<>("{\"eventitems\":" + EventCartItem.toJsonArrayForReg(resultList) + ", \"regfields\":" + CustomRegField.toJsonArray(customRegFields) + "}", headers, HttpStatus.OK);
     }    

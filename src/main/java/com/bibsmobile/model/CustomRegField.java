@@ -279,6 +279,15 @@ public class CustomRegField {
         return q;
     }
     
+    public static TypedQuery<CustomRegField> findVisibleCustomRegFieldsByEvent(Event event) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = CustomRegField.entityManager();
+        TypedQuery<CustomRegField> q = em.createQuery("SELECT o FROM CustomRegField AS o WHERE o.event = :event AND o.hidden IS NOT 1", CustomRegField.class);
+        q.setParameter("event", event);
+        return q;
+    }    
+    
     /**
      * Find a single CustomRegField by id. This will throw an exception on fail.
      * @param id - Long id of the CustomRegField to search for. Null safe, but should not be null
