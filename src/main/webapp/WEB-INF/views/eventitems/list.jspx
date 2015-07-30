@@ -179,7 +179,7 @@
                                       <div class="text">none</div>
                                       <input type="hidden" name="eventItem"><!--  --></input>
                                       <i class="fa fa-caret-down" style="margin-left:5px;"><!--  --></i>
-                                      <div class="menu">
+                                      <div class="menu" id="option-list-eci">
                                         <c:if test="${empty eventcartitems}">
                                             <div class="header">No Current Products</div>
                                         </c:if>
@@ -665,7 +665,7 @@
             if( opt.length > 0 ){
                 currOptions += opt + ',';
                 jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                jQuery("#option-list").append('<div class="item">' + opt + '</div>');
                 jQuery('#type-dropdown-selected').dropdown('refresh');
                 jQuery('#drop-option').val("");
             }
@@ -683,12 +683,12 @@
                 parsed.splice(parsed.indexOf(opt), 1);
                 currOptions = parsed;
             }
-            jQuery(".dropdown .menu").html("");
+            jQuery("#dropdown-options").html("");
             jQuery('#drop-option').val("");
             jQuery('#option-list').html("");
             parsed.forEach(function(el, i, ary){
                 jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + el + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery(".dropdown .menu").append('<div class="item">' + el + '</div>');
+                jQuery("#dropdown-options").append('<div class="item">' + el + '</div>');
             })
             jQuery('#type-dropdown-selected').dropdown('refresh');
 
@@ -738,12 +738,12 @@
                         opt = opt.substring(0, opt.length-1);
                     }
                     var split = opt.split(',');
-                    jQuery(".dropdown .menu").html("");
+                    jQuery("#dropdown-options").html("");
                     var parsedOptions = "";
                     for( i = 0; i &lt; split.length; i++ ){
                         opt = split[i];
                         if( opt !== "" &amp;&amp; opt !== " " ){
-                            jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                            jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
                             parsedOptions += opt + ",";
                             jQuery('#type-dropdown-selected').dropdown();
                             // append tags
