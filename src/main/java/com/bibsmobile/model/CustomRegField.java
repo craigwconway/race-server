@@ -4,6 +4,7 @@
 package com.bibsmobile.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -157,6 +158,18 @@ public class CustomRegField {
 	 */
 	public void setOptional(boolean optional) {
 		this.optional = optional;
+	}
+	
+	/**
+	 * Extra method for getting only integers for mapped eventItems
+	 * for frontend implementation.
+	 */
+	public List<Long> getEventItemIds(){
+		List<Long> ids = new ArrayList<Long>();
+		for(EventCartItem item : this.eventItems) {
+			ids.add(item.getId());
+		}
+		return ids;
 	}
 
 	/**
