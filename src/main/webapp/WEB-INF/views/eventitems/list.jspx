@@ -99,31 +99,26 @@
                                 </div>
                             </div>
                             <div class="fields">
-                                <h5 class="ui header">
-                                  <div class="content" style="width:100%">
-                                    <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
-                                    </label>
-                                    <div class="inline field">
-                                        <div class="ui multiple selection dropdown" id="questionECI">
-                                            <i class="dropdown icon"><!--  --></i>
-                                            <input name="eventItems" type="hidden"><!--  --></input>
-                                            <c:if test="${empty eventcartitems}">
-                                                <div class="item">No Current Products</div>
-                                            </c:if>
-                                            <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-times" style="margin-left:5px;margin-right:0;"><!--  --></i></a>
-                                            <c:if test="${not empty eventcartitems}">
-                                                <div class="default text">none</div>
-                                                <div class="menu" id="question-eci-options">
-                                                    <c:forEach var="item" items="${eventcartitems}">
-                                                        <div class="item" data-value="${item.id}">${item.name}</div>
-                                                    </c:forEach>
-                                                </div>
-                                            </c:if>
-                                        </div>
-                                        <div class="ui button" id="question-clear-eci-options">Clear</div>
+                                <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
+                                </label>
+                                <div class="field">
+                                    <div class="ui multiple selection dropdown" id="questionECI">
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <input name="eventItems" type="hidden"><!--  --></input>
+                                        <c:if test="${empty eventcartitems}">
+                                            <div class="default text">No Current Products</div>
+                                        </c:if>
+                                        <c:if test="${not empty eventcartitems}">
+                                            <div class="default text">none</div>
+                                            <div class="menu" id="question-eci-options">
+                                                <c:forEach var="item" items="${eventcartitems}">
+                                                    <div class="item" data-value="${item.id}">${item.name}</div>
+                                                </c:forEach>
+                                            </div>
+                                        </c:if>
                                     </div>
-                                  </div>
-                                </h5>
+                                    <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-times" style="margin-left:5px;margin-right:0;"><!--  --></i></a>
+                                </div>
                             </div>
                             
                         </div>
@@ -482,7 +477,7 @@
 
         window.onload = function(){
             // initialize semantic-ui elements
-            jQuery('.ui.dropdown').dropdown();
+            jQuery('#couponECI, #questionECI, #type-dropdown-selected').dropdown();
             jQuery('.menu .item').tab();
             jQuery('.ui.checkbox').checkbox();
             jQuery('.disc-btn').each(function(){
@@ -504,12 +499,7 @@
                 jQuery('input[name="optional"]').prop('checked', false);
                 jQuery('input[name="hidden"]').prop('checked', false);
                 jQuery('#question-preview').hide();
-                
-                domList.forEach(function(dom, i, ary){
-                    jQuery(dom).remove();
-                })
-                domList = [];
-                jQuery('#question-eci-options').children().show();
+                jQuery('#questionECI').dropdown('restore defaults');
             });
 
             jQuery('#addCoupon').on('hidden.bs.modal', function(){
@@ -692,10 +682,6 @@
 
         function addQuestionModal(){
             jQuery("#addQuestion").modal('show');
-            // jQuery('input[name="id"]').val("");
-            // jQuery('input[name="question"]').val("");
-            // jQuery("#drop-option").val("");
-            // jQuery('#radio-input').checkbox('check');
             jQuery(".put-question").hide();
             jQuery(".post-question").show();
         }
@@ -710,13 +696,6 @@
                 jQuery('#type-dropdown-selected').dropdown('refresh');
                 jQuery('#drop-option').val("");
             }
-        }
-
-        function removeLabelOption(o){
-            var id = jQuery(o).attr('data-value');
-            jQuery(o).detach();
-            var domContent = jQuery('#questionECI').dropdown('get item', id);
-            jQuery(domContent).show();
         }
 
         function removeDropdownOption(o){
@@ -762,27 +741,9 @@
             jQuery('input[name="id"]').val(id);
             jQuery('input[name="question"]').val(question);
 
-            // hack:
-            // add labels
-            for(var i in eci){
-                var domClone = jQuery('.label-clone').clone()
-                                                    .insertBefore('#question-eci-options')
-                                                    .removeClass('label-clone')
-                                                    .attr('data-value', eci[i])
-                                                    .attr('id', 'eci-id-'+eci[i]);
-                jQuery('#eci-id-'+eci[i]).show();
-                var domContent = jQuery('#questionECI').dropdown('get item', eci[i]);
-                var textContent = jQuery(domContent).text();
-                jQuery(domContent).hide();
-                jQuery(domClone).find('.label-eci-name').text(textContent);
-                domList.push(domClone);
-            }
-            jQuery('#questionECI').dropdown('set selected', eci);
-            jQuery('#questionECI').dropdown('refresh');
-            jQuery('#question-clear-eci-options').click(function(){
-                jQuery('#questionECI').dropdown('restore defaults');
+            eci.forEach(function(n,i){
+                jQuery('#questionECI').dropdown('set selected', n);
             })
-
 
             if(optional){
                 jQuery('#optional1').addClass('checked');
