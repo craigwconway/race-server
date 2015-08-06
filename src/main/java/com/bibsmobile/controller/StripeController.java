@@ -376,7 +376,7 @@ public class StripeController {
                     	donation = cartprice - nondonation;
                     	couponprice = c.getCoupon().getDiscount(nondonation*100);
                         resultString += "(" + "$" + couponprice/100 + ".";
-                        if(donation % 100 > 9) {
+                        if(couponprice % 100 > 9) {
                         	resultString += couponprice % 100;
                         } else {
                         	resultString += "0" + couponprice % 10;
