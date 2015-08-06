@@ -848,12 +848,14 @@
             var question = jQuery('input[name="question"]').val();
             var eventItems = {};
             var eciList = jQuery('input[name="eventItems"]').val();
-            eciList = eciList.split(',');
-            obj.eventItems = eciList.map(function(item){
-                var obj = {};
-                obj.id = parseInt(item);
-                return obj;
-            });
+            if( eciList !== null &amp;&amp; eciList !== "" ){
+                eciList = eciList.split(',');
+                obj.eventItems = eciList.map(function(item){
+                    var obj = {};
+                    obj.id = parseInt(item);
+                    return obj;
+                });
+            }
             var option = jQuery('input[name="optional"]').prop('checked');
             var hidden = jQuery('input[name="hidden"]').prop('checked');
             obj.optional = option;
