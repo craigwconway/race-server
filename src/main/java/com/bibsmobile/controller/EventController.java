@@ -1475,7 +1475,7 @@ public class EventController {
 
     /**
      * @api {put} /events/:id/socialsharing Manage Social Sharing
-     * @apigroup restcarts
+     * @apigroup events
      * @apiName Manage Social Sharing
      * @apiDescription Settings for managing social sharing. If social sharing discounts are enabled,
      * the minimum amount is $1.00 (100 cents). An event director may optionally specify a custom prize

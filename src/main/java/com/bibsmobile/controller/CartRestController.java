@@ -29,6 +29,36 @@ import com.bibsmobile.util.UserProfileUtil;
 @Controller
 public class CartRestController {
 	
+	/**
+	 * @apiDefine CartReturn
+	 * 
+	 * @apiSuccess (200) {Number} id Unique Id of cart
+	 * @apiSuccess (200) {Number} total total in cents of cart
+	 * @apiSuccess (200) {Number} totalPreFee total in cents of cart before bibs fee is applied
+	 * @apiSuccess (200) {Date} created creation datetime of cart
+	 * @apiSuccess (200) {Date} last update datetime of cart
+	 * @apiSuccess (200) {Number} status Status Code of cart
+	 * @apiSuccess (200) {String} referralUrl Url to use for referring other users
+	 * @apiSuccess (200) {Boolean} shared Switch to indicate whether the cart has been shared
+	 * @apiSuccess (200) {Object} referral cart referring this cart
+	 * @apiSuccess (200) {Number} referralDiscount Number in cents discounted by social sharing
+	 * @apiSuccess (200) {Number} timeout Timeout of cart
+	 * @apiSuccess (200) {Object[]} cartItems Array of cartItem objects in cart
+	 * @apiSuccess (200) {Number} cartItems.id Unique ID of Cart Item
+	 * @apiSuccess (200) {Object} cartItems.eventCartItem EventCartItem pointed to by CartItem
+	 * @apiSuccess (200) {Object[]} customRegFieldResponses Array of responses to custom questions
+	 * @apiSuccess (200) {Object} user User controlling cart
+	 * @apiSuccess (200) {Number} user.id Id of user controlling cart
+	 * @apiSuccess (200) {String} user.firstname firstname of user controlling cart
+	 * @apiSuccess (200) {String} user.lastname lastname of user controlling cart
+	 * @apiSuccess (200) {String} user.email email of user in cart
+	 * @apiSuccess (200) {Object} coupon Coupon in cart
+	 * @apiSuccess (200) {Number} coupon.id Id of coupon in cart
+	 * @apiSuccess (200) {Number} coupon.discountAbsolute Absolute Discount to apply (if non-null)
+	 * @apiSuccess (200) {Number} coupon.discountRelative Relative Discount to apply (if non-null)
+	 */
+	
+	
 	private static final Logger log = LoggerFactory.getLogger(EventController.class);
 	
     @Autowired
@@ -50,6 +80,8 @@ public class CartRestController {
      * @apiParam {String} [color] color of SHIRT type cart items
      * @apiParam {Number} [priceChangeId] ID of pricechange to use with this object
      * @apiParam {Number} [referral] ID of referring cart
+     * @apiSampleRequest http://localhost:8080/bibs-server/item/:id/updatequantity/:eventCartItemQuantity
+     * @apiUse CartReturn
      * @return
      */
     @RequestMapping(value = "/item/{id}/updatequantity/{eventCartItemQuantity}", method = RequestMethod.POST, headers = "Accept=application/json")
@@ -74,7 +106,18 @@ public class CartRestController {
         log.info("Updating cart id: " + cart.getId() + " total: " + cart.getTotal());
         return new ResponseEntity<>(cart.toJsonForCartReturn(), headers, HttpStatus.OK);
     }
-
+    
+    /**
+     * @api {post} /rest/carts/socialshare Social Share
+     * @apiName Social Share
+     * @apiGroup restcarts
+     * @apiDescription Mark a cart social shared for modifying the totals calculations. Post to this url with an empty body, response
+     * codes denote how share is processed. 202 = discount applied, 200 = shared only.
+     * @apiSampleRequest http://localhost:8080/bibs-server/rest/carts/socialshare
+     * @ApiUse CartReturn
+     * 
+     * @return
+     */
     @RequestMapping(value = "/socialshare", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> socialShare(HttpServletRequest request) {
@@ -82,7 +125,12 @@ public class CartRestController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         log.info("Updating cart id: " + cart.getId() + " total: " + cart.getTotal());
-        return new ResponseEntity<>(cart.toJsonForCartReturn(), headers, HttpStatus.OK);
+        if(cart.getReferralDiscount() > 0 ) {
+        	return new ResponseEntity<>(cart.toJsonForCartReturn(), headers, HttpStatus.ACCEPTED);
+        } else {
+        	return new ResponseEntity<>(cart.toJsonForCartReturn(), headers, HttpStatus.OK);
+        }
+        
     }
     
     /**
@@ -93,6 +141,7 @@ public class CartRestController {
      * If the coupon code is not valid, return the original cart. If no cart is found or a coupon is attempted add before it is found, return
      * error.
      * @apiParam {String} couponCode URL Param of string containing coupon code. The coupon will be added to the cart if it is valid.
+     * @apiUse CartReturn
      * @param couponCode
      * @param request
      * @return
