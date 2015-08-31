@@ -171,6 +171,12 @@ public class Event {
     
     private Date ticketTransferCutoff;
     
+    private boolean socialSharingDiscounts=false;
+    
+    private long socialSharingDiscountAmount=100;
+    
+    private String topSharerReward;
+    
     private boolean live;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -1275,6 +1281,52 @@ public class Event {
     }
 
     /**
+     * Switch to use discounts for social shares
+	 * @return the socialSharingDiscounts
+	 */
+	public boolean isSocialSharingDiscounts() {
+		return socialSharingDiscounts;
+	}
+
+	/**
+	 * Switch to user discounts for social shares
+	 * @param socialSharingDiscounts the socialSharingDiscounts to set
+	 */
+	public void setSocialSharingDiscounts(boolean socialSharingDiscounts) {
+		this.socialSharingDiscounts = socialSharingDiscounts;
+	}
+
+	/**
+	 * @return the socialSharingDiscountAmount
+	 */
+	public long getSocialSharingDiscountAmount() {
+		return socialSharingDiscountAmount;
+	}
+
+	/**
+	 * @param socialSharingDiscountAmount the socialSharingDiscountAmount to set
+	 */
+	public void setSocialSharingDiscountAmount(long socialSharingDiscountAmount) {
+		this.socialSharingDiscountAmount = socialSharingDiscountAmount;
+	}
+
+	/**
+	 * Text description of a reward for the top referring user
+	 * @return the topSharerReward
+	 */
+	public String getTopSharerReward() {
+		return topSharerReward;
+	}
+
+	/**
+	 * Text description of a reward for the top referring user
+	 * @param topSharerReward the topSharerReward to set
+	 */
+	public void setTopSharerReward(String topSharerReward) {
+		this.topSharerReward = topSharerReward;
+	}
+
+	/**
      * Returns whether ticket transfer is enabled for this event.
      * An event director still needs to specify a cutoff time for this feature to work.
      * @return

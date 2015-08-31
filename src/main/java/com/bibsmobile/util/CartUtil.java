@@ -28,6 +28,7 @@ public final class CartUtil {
     public static final String SESSION_ATTR_CART_ID = "cartId";
     private static final double BIBS_ABSOLUTE_FEE = 100;
     private static final double BIBS_RELATIVE_FEE = 0.06;
+    public static final long BIBS_SOCIAL_DISCOUNT = 100;
 
     private CartUtil() {
         super();
@@ -107,6 +108,78 @@ public final class CartUtil {
         return cart;
     }
 
+    public static Cart markSocialShared(HttpSession session) {
+        Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
+        Cart cart = null;
+        UserProfile user = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String username = authentication.getName();
+            if (!username.equals("anonymousUser")) {
+                user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            }
+        }
+        
+        if (cartIdFromSession != null) {
+            cart = Cart.findCart(cartIdFromSession);
+        } else if (user != null) {
+            try {
+                List<Cart> carts = Cart.findCartsByUser(user).getResultList();
+                for (Cart c : carts) {
+                    if (c.getStatus() == Cart.NEW) {
+                        cart = c;
+                        session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Caught exception finding cart in session");
+                return null;
+            }
+        }
+        if (cart == null) {
+        	log.info("Null cart found when marking social");
+        	return null;
+        }
+        cart.setShared(true);
+        long total = 0;
+        // First, add up price of all cart items without donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        if(cart.getEvent().isSocialSharingDiscounts()) {
+	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+	        }
+	        else if(total > 0) {
+	        	cart.setReferralDiscount(total);
+	        	cart.setTotal(0);
+	        }
+        }
+        // Then apply coupon:
+        if(cart.getCoupon() != null) {
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
+        	total -= cart.getCoupon().getDiscount(total);
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with postcoupon total " + total);
+        }
+        // Then add in donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        cart.setTotalPreFee(total);
+        // Finally, apply bibs processing fee. TODO: put this at level of event.
+        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
+        // set total price which is at least 0
+        cart.setTotal(Math.max(0, total));
+        cart.merge();
+        return cart;
+    }    
+    
     public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem, Long referral) {
          // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());

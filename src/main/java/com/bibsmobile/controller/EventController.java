@@ -1473,6 +1473,54 @@ public class EventController {
         return "redirect:/events";
     }
 
+    /**
+     * @api {put} /events/:id/socialsharing Manage Social Sharing
+     * @apigroup restcarts
+     * @apiName Manage Social Sharing
+     * @apiDescription Settings for managing social sharing. If social sharing discounts are enabled,
+     * the minimum amount is $1.00 (100 cents). An event director may optionally specify a custom prize
+     * given to the top referrer under topSharerReward. If null, this does not appear. An event director may
+     * specify a top sharer reward, a discount, and a 
+     * @apiParam {Boolean} socialSharingDiscounts Switch to turn on/off social sharing discounts for an event
+     * @apiParam {Number} [socialSharingDiscountAmount=100] Number of cents to take off of each order (minimum 100).
+     * @apiParam {String} topSharerReward Text description of prize to give to top sharer.
+     * @apiParamExample {json} Sample Activate
+     * 	{
+     * 		"socialSharingDiscounts":true,
+     * 		"socialSharingDiscountAmount":100,
+     * 		"topSharerReward":"The top referrer will win a free race hoodie!"
+     * 	}
+     * @apiParamExample {json} Sample Partial Deactivate
+     * 	{
+     * 		"socialSharingDiscounts":false,
+     * 		"topSharerReward":"The top referrer will win a free race hoodie!"
+     * 	}
+     * @apiSampleRequest http://localhost:8080/bibs-server/events/:id/socialsharing
+     */
+    @RequestMapping(value="/{id}/socialsharing",method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<String> manageSocialSharing(@PathVariable("id") Long id,
+    		@RequestBody Event incoming) {
+    	Event event = Event.findEvent(id);
+    	HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+    	if(null == event) {
+    		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+    	}
+    	if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+    	if(incoming.isSocialSharingDiscounts() && incoming.getSocialSharingDiscountAmount() < 100) {
+    		return new ResponseEntity<>(headers, HttpStatus.BAD_REQUEST);
+    	}
+    	event.setSocialSharingDiscounts(incoming.isSocialSharingDiscounts());
+    	event.setTopSharerReward(incoming.getTopSharerReward());
+    	event.setSocialSharingDiscountAmount(incoming.getSocialSharingDiscountAmount());
+    	event.merge();
+    	return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+    
+    
     @RequestMapping(value="/{id}/tickettransfer",method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<String> manageTicketTransfer(@PathVariable("id") Long id,

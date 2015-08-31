@@ -75,6 +75,16 @@ public class CartRestController {
         return new ResponseEntity<>(cart.toJsonForCartReturn(), headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/socialshare", method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> socialShare(HttpServletRequest request) {
+        Cart cart = CartUtil.markSocialShared(request.getSession());
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        log.info("Updating cart id: " + cart.getId() + " total: " + cart.getTotal());
+        return new ResponseEntity<>(cart.toJsonForCartReturn(), headers, HttpStatus.OK);
+    }
+    
     /**
      * @api {post} /rest/carts/checkcoupon/:couponCode Check Coupon
      * @apiName Check Coupon Code
