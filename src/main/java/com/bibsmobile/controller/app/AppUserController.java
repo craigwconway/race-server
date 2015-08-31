@@ -66,12 +66,39 @@ public class AppUserController {
 	 */
 	@RequestMapping(value = "/me/short", method = RequestMethod.GET)
 	@ResponseBody
-	ResponseEntity<String> claim(HttpServletRequest request) {
+	ResponseEntity<String> shortDescription(HttpServletRequest request) {
 		UserProfile user =  JWTUtil.authenticate(request.getHeader("X-FacePunch"));
 		if( user == null) {
 			return SpringJSONUtil.returnErrorMessage("UserNotAuthenticated", HttpStatus.FORBIDDEN);
 		}
 		user = UserProfile.findUserProfile(user.getId());
+		
+		return new ResponseEntity<String>(user.toJson(), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/friends/add/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	ResponseEntity<String> addFriend(HttpServletRequest request, @PathVariable("id") Long id) {
+		UserProfile user =  JWTUtil.authenticate(request.getHeader("X-FacePunch"));
+		if( user == null) {
+			return SpringJSONUtil.returnErrorMessage("UserNotAuthenticated", HttpStatus.FORBIDDEN);
+		}
+		user = UserProfile.findUserProfile(user.getId());
+		UserProfile friend;
+		try {
+		friend = UserProfile.findFriendRequestForUserById(user, id);
+		user.getFriends().add(friend);
+		user.getFriendRequests().remove(friend);
+
+		} catch (Exception e) {
+			System.out.println("No friend found");
+			friend = UserProfile.findUserProfile(id);
+			if (friend != null) {
+				friend.getFriendRequests().add(user);
+				friend.persist();
+			}
+		}
+		
 		
 		return new ResponseEntity<String>(user.toJson(), HttpStatus.OK);
 	}

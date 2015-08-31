@@ -18,6 +18,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -83,6 +86,16 @@ public class UserProfile implements UserDetails {
 
     @OneToMany(mappedBy = "userProfile")
     private Set<RaceResult> raceResults;
+    
+    @ManyToMany
+    private List<UserProfile> friends = null;
+
+    @ManyToMany
+    @JoinTable(name="user_profile_friend_requests")
+    private Set<UserProfile> friendRequests;
+    
+    @ManyToMany
+    private Set<Event> events = null;
 
     private String phone;
 
@@ -468,7 +481,49 @@ public class UserProfile implements UserDetails {
         this.forgotPasswordCode = forgotPasswordCode;
     }
 
-    public static Long countFindUserProfilesByDropboxIdEquals(String dropboxId) {
+    /**
+	 * @return the friends
+	 */
+	public List<UserProfile> getFriends() {
+		return friends;
+	}
+
+	/**
+	 * @param friends the friends to set
+	 */
+	public void setFriends(List<UserProfile> friends) {
+		this.friends = friends;
+	}
+
+	/**
+	 * @return the friendRequests
+	 */
+	public Set<UserProfile> getFriendRequests() {
+		return friendRequests;
+	}
+
+	/**
+	 * @param friendRequests the friendRequests to set
+	 */
+	public void setFriendRequests(Set<UserProfile> friendRequests) {
+		this.friendRequests = friendRequests;
+	}
+
+	/**
+	 * @return the events
+	 */
+	public Set<Event> getEvents() {
+		return events;
+	}
+
+	/**
+	 * @param events the events to set
+	 */
+	public void setEvents(Set<Event> events) {
+		this.events = events;
+	}
+
+	public static Long countFindUserProfilesByDropboxIdEquals(String dropboxId) {
         if (dropboxId == null || dropboxId.isEmpty())
             throw new IllegalArgumentException("The dropboxId argument is required");
         EntityManager em = UserProfile.entityManager();
@@ -577,6 +632,16 @@ public class UserProfile implements UserDetails {
         TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.email = :email AND o.enabled = 1", UserProfile.class);
         q.setParameter("email", email);
         return q;
+    }
+    
+    public static UserProfile findFriendRequestForUserById(UserProfile user, Long id) {
+    	if (user == null || id == null) {
+    		throw new IllegalArgumentException("The user or id is null");
+    	}
+    	EntityManager em = UserProfile.entityManager();
+        TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile o inner join o.friendRequests WHERE o.id = :id", UserProfile.class);
+        q.setParameter("id", id);
+        return q.getSingleResult();
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByUsernameEquals(String username, String sortFieldName, String sortOrder) {
