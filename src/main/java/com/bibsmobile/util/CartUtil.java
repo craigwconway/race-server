@@ -107,7 +107,7 @@ public final class CartUtil {
         return cart;
     }
 
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem) {
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem, Long referral) {
          // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());
 
@@ -143,12 +143,17 @@ public final class CartUtil {
                 log.error("Caught exception finding cart in session");
             }
         }
-
+        
+        EventCartItem eventCartItem = EventCartItem.findEventCartItem(eventCartItemId);
         Date now = new Date();
         // create cart if it doesn't exist yet.
         if (cart == null) {
             newCart = true;
             cart = new Cart();
+            if(referral != null) {
+            	Cart referralCart = Cart.findCart(referral);
+            	cart.setReferral(referralCart);
+            }
             cart.setStatus(Cart.NEW);
             cart.setCreated(now);
             cart.setUpdated(now);
@@ -158,9 +163,11 @@ public final class CartUtil {
             cart.setTimeout(Cart.DEFAULT_TIMEOUT);
             cart.persist();
             session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+            cart.setReferralUrl(BuildTypeUtil.getBuild().getFrontend() + "/registration/#/" + eventCartItem.getId() + "?ref=" + cart.getId());
+            cart.merge();
         }
 
-        EventCartItem eventCartItem = EventCartItem.findEventCartItem(eventCartItemId);
+
         CartItem cartItem;
         // if doesn't have product in cart and not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {

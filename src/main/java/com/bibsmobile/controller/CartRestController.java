@@ -34,6 +34,24 @@ public class CartRestController {
     @Autowired
     private UserProfileService userProfileService;
 
+    /**
+     * @api {post} /item/:id/updatequantity/:eventCartItemQuantity Add/Update Cart Item
+     * @apiName Add/Update Cart Item
+     * @apiGroup restcarts
+     * @apiDescription Add or update a quantity of an eventcartitem in a cart. If no cart has been created previously, this call creates a new cart.
+     * If no user is linked with the cart, this call adds a new user profile. Setting quantity to 0 removes from cart, adding a duplicate
+     * item of a different size/color needs the newItem switch.
+     * @apiParam {Object} [userProfile] user object linked with cart request
+     * @apiParam {Number} [userProfile.id] unique ID of user profile
+     * @apiParam {Object} [userGroup] team the cart belongs to
+     * @apiParam {Number} [userGroup.id] unique ID of team
+     * @apiParam {Boolean} [newItem=false] Switch to add a new item of this type instead of modifying previous items of this type in cart
+     * @apiParam {String} [size] size of SHIRT type cart items
+     * @apiParam {String} [color] color of SHIRT type cart items
+     * @apiParam {Number} [priceChangeId] ID of pricechange to use with this object
+     * @apiParam {Number} [referral] ID of referring cart
+     * @return
+     */
     @RequestMapping(value = "/item/{id}/updatequantity/{eventCartItemQuantity}", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> updateOrCreateCartJson(@PathVariable("id") Long eventCartItemId, @PathVariable Integer eventCartItemQuantity, @RequestBody String json,
@@ -42,6 +60,7 @@ public class CartRestController {
         UserProfile registrationProfile = cartItemRequestWrapper.getUserProfile();
         String color = cartItemRequestWrapper.getColor();
         String size = cartItemRequestWrapper.getSize();
+        Long referral = cartItemRequestWrapper.getReferral();
         if (registrationProfile == null) {
             return new ResponseEntity<>("invalid user profile", HttpStatus.BAD_REQUEST);
         }
@@ -49,7 +68,7 @@ public class CartRestController {
         if (registrationProfile.getId() == null) {
             this.userProfileService.saveUserProfile(registrationProfile);
         }
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, cartItemRequestWrapper.getEventCartItemPriceChange(), eventCartItemQuantity, registrationProfile, cartItemRequestWrapper.getTeam(), color, size, cartItemRequestWrapper.getCouponCode(), cartItemRequestWrapper.isNewItem());
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, cartItemRequestWrapper.getEventCartItemPriceChange(), eventCartItemQuantity, registrationProfile, cartItemRequestWrapper.getTeam(), color, size, cartItemRequestWrapper.getCouponCode(), cartItemRequestWrapper.isNewItem(), referral);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         log.info("Updating cart id: " + cart.getId() + " total: " + cart.getTotal());

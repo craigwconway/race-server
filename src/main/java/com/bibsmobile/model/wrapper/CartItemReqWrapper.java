@@ -25,6 +25,7 @@ public class CartItemReqWrapper {
     private String color;
     private long priceChangeId;
     private String couponCode;
+    private Long referral;
 
     public UserProfile getUserProfile() {
         return this.userProfile;
@@ -86,7 +87,21 @@ public class CartItemReqWrapper {
         this.couponCode = couponCode;
     }
 
-    @Override
+    /**
+	 * @return the referral
+	 */
+	public Long getReferral() {
+		return referral;
+	}
+
+	/**
+	 * @param referral the referral to set
+	 */
+	public void setReferral(Long referral) {
+		this.referral = referral;
+	}
+
+	@Override
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
