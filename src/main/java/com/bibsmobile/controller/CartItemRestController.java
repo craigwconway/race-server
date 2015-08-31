@@ -68,6 +68,7 @@ public class CartItemRestController {
         } else if (eventId != null) {
             Event event = Event.findEvent(eventId);
             if (event != null) {
+            	long shared = 0;
                 List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
                 if (!eventCartItems.isEmpty()) {
                     List<Cart> carts = Cart.findCompletedCartsByEventCartItems(eventCartItems, fromDate, toDate).getResultList();
@@ -86,6 +87,9 @@ public class CartItemRestController {
                     SimpleDateFormat fmt = new SimpleDateFormat("MM-dd-yyyy");
                     fmt.setTimeZone(event.getTimezone());
                     for(Cart c : carts) {
+                    	if(c.isShared()) {
+                    		shared ++;
+                    	}
                     	long noncoupon = 0;
                         for(CartItem ci : c.getCartItems()) {
                     		noncoupon += ci.getPrice() * ci.getQuantity() * 100;
@@ -221,6 +225,7 @@ public class CartItemRestController {
                     }
                     totalMoney.put("REFUND", refundTotal);
                     totalQuantity.put("REFUND", refundCount);
+                    totalQuantity.put("SHARED", shared);
                     
                     log.info("Reports generated for event id: " + event.getId() + " quantities: " + totalQuantity);
                     log.info("Reports generated for event id: " + event.getId() + " money: " + totalMoney);

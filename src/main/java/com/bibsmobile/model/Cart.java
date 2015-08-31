@@ -286,7 +286,8 @@ public class Cart {
     public static long countCarts() {
         return entityManager().createQuery("SELECT COUNT(o) FROM Cart o", Long.class).getSingleResult();
     }
-
+    
+    
     public static List<Cart> findAllCarts() {
         return entityManager().createQuery("SELECT o FROM Cart o", Cart.class).getResultList();
     }
