@@ -178,6 +178,11 @@ public class Event {
     private String topSharerReward;
     
     private boolean live;
+    
+    /**
+     * Used by Event Directors to hide events they no longer want to see
+     */
+    private boolean hidden;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
@@ -1475,5 +1480,19 @@ public class Event {
 	 */
 	public void setPricing(EventPricing pricing) {
 		this.pricing = pricing;
+	}
+
+	/**
+	 * @return the hidden
+	 */
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	/**
+	 * @param hidden the hidden to set
+	 */
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 }

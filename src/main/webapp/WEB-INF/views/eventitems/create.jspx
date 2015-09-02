@@ -373,7 +373,7 @@
                                 jQuery('#event-type').removeClass('error');
                                 proceedE = true;
                                 if( proceedE &amp;&amp; proceedG ){
-                                    jQuery('#proceed').prop('disabled', null);
+                                    jQuery('#proceed').prop('disabled', false);
                                 }
                             }
                         });

@@ -67,6 +67,11 @@
           -webkit-appearance: none; 
           margin: 0; 
         }
+        .ui.form .field > label, .ui.form .inline.fields .field > label, .ui.form .inline.fields > label{
+            font-size: 1em;
+            width: 100%;
+            margin: 1em 0em 0.5em;
+        }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
@@ -78,8 +83,47 @@
                 </div>
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
+                        <input type="hidden" name="id"><!--  --></input>
+                        <div class="grouped fields">
+                            <label for="viewType"><i class="fa fa-cogs" style="margin-right: 5px;"><!--  --></i> Options</label>
+                            <div class="field">
+                                <div class="ui toggle checkbox" id="optional1">
+                                    <input type="checkbox" name="optional"><!--  --></input>
+                                    <label style="width:100%">Make this question optional</label>
+                                </div>
+                            </div>
+                            <div class="field" id="optional2">
+                                <div class="ui toggle checkbox">
+                                    <input type="checkbox" name="hidden"><!--  --></input>
+                                    <label style="width:100%">Archive (Hide from registration form)</label>
+                                </div>
+                            </div>
+                            <div class="fields">
+                                <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
+                                </label>
+                                <div class="field">
+                                    <div class="ui multiple selection dropdown" id="questionECI">
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <input name="eventItems" type="hidden"><!--  --></input>
+                                        <c:if test="${empty eventcartitems}">
+                                            <div class="default text">No Current Products</div>
+                                        </c:if>
+                                        <c:if test="${not empty eventcartitems}">
+                                            <div class="default text">none</div>
+                                            <div class="menu" id="question-eci-options">
+                                                <c:forEach var="item" items="${eventcartitems}">
+                                                    <div class="item" data-value="${item.id}">${item.name}</div>
+                                                </c:forEach>
+                                            </div>
+                                        </c:if>
+                                    </div>
+                                    <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-times" style="margin-left:5px;margin-right:0;"><!--  --></i></a>
+                                </div>
+                            </div>
+                            
+                        </div>
                         <div class="fields">
-                            <div class="twelve wide field">
+                            <div class="twelve wide required field">
                                 <label>Question</label>
                                 <input type="text" name="question" placeholder="What do you want to ask?"
                                        data-parsley-required="true"
@@ -87,17 +131,17 @@
                             </div>
                         </div>
                         <div class="fields">
-                            <div class="twelve wide field">
+                            <div class="twelve wide required field">
                                 <label for="responseType">Response Type</label>
                                 <div class="inline fields">
                                     <div class="field">
-                                        <div class="ui radio checkbox checked">
+                                        <div class="ui radio checkbox checked" id="radio-input">
                                             <input type="radio" checked="" name="responseType" value="input"><!--  --></input>
                                             <label>User Input</label>
                                         </div>
                                     </div>
                                     <div class="field">
-                                        <div class="ui radio checkbox">
+                                        <div class="ui radio checkbox" id="radio-dropdown">
                                             <input type="radio" name="responseType" value="dropdown"><!--  --></input>
                                             <label>Dropdown Menu</label>
                                         </div>
@@ -107,7 +151,7 @@
                         </div>
                         <div class="fields" id="dropdown-field" style="display:none">
                             <div class="twelve wide field">
-                                <label style="width:100%">Dropdown Options (separated by comma)</label>
+                                <label style="width:100%">Dropdown Options</label>
                                 <div class="ui action input">
                                     <input  type="text" id="drop-option" placeholder="Add dropdown option"></input>
                                     <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
@@ -156,6 +200,38 @@
                 <div class="modal-body">
                     <div class="ui form" id="couponForm">
                         <div class="fields">
+                            <h4 class="ui header">
+                              <div class="content">
+                                <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit coupon to product: 
+                                    <div class="ui inline compact dropdown" id="couponECI" style="border: 1px rgba(39, 41, 43, 0.35) solid; padding: 8px; border-radius: 5px; margin-left: 10px;">
+                                      <div class="text">none</div>
+                                      <input type="hidden" name="eventItem"><!--  --></input>
+                                      <i class="fa fa-caret-down" style="margin-left:5px;"><!--  --></i>
+                                      <div class="menu" id="option-list-eci">
+                                        <c:if test="${empty eventcartitems}">
+                                            <div class="header">No Current Products</div>
+                                        </c:if>
+                                        <c:if test="${not empty eventcartitems}">
+                                            <div class="header">Current Products</div>
+                                            <c:forEach var="item" items="${eventcartitems}">
+                                                <c:if test="${item.type == 'TICKET'}">
+                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="yellow icon fa fa-ticket"><!--  --></i></div>${item.name}</div>
+                                                </c:if>
+                                                <c:if test="${item.type == 'T_SHIRT'}">
+                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="teal icon fa fa-shirtsinbulk"><!--  --></i></div>${item.name}</div>
+                                                </c:if>
+                                                <c:if test="${item.type == 'DONATION'}">
+                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="blue icon fa fa-heart-o"><!--  --></i></div>${item.name}</div>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
+                                      </div>
+                                    </div>
+                                </label>
+                              </div>
+                            </h4>
+                        </div>
+                        <div class="fields">
                             <div class="twelve wide field">
                                 <label style="width:100%">Coupon Code</label>
                                 <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
@@ -198,12 +274,12 @@
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="active item" data-tab="eci-menu">Products</div>
+                <div class="item" data-tab="eci-menu">Products</div>
                 <div class="item" data-tab="ticket-menu">Transfers</div>
-                <div class="item" data-tab="form-menu">Custom Forms</div>
+                <div class="active item" data-tab="form-menu">Custom Forms</div>
                 <div class="item" data-tab="coupon-menu">Coupons</div>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
+            <div class="ui bottom attached tab segment" data-tab="eci-menu">
                 <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
@@ -295,7 +371,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="form-menu">
+            <div class="ui bottom attached active tab segment" data-tab="form-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -317,7 +393,7 @@
                                             <c:if test="${not empty item.responseSet}">Choices: ${item.responseSet}</c:if>
                                         </div>
                                     </div>
-                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, '${item.question}', '${item.responseSet}')">
+                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responseSet}', ${item.eventItemIds})">
                                         <i class="fa fa-external-link"><!--  --></i>View Details
                                     </div>
                                 </div>
@@ -355,18 +431,18 @@
                     <div class="ui four doubling cards">
                         <c:if test="${not empty eventcoupons}">
                             <br/>
-                            <c:forEach var="item" items="${eventcoupons}">
+                            <c:forEach var="coupon" items="${eventcoupons}">
                                 <div class="ui fluid card">
                                     <div class="content">
-                                        <div class="ui blue header" style="text-align:center;text-transform:uppercase"><i class="fa fa-cart-arrow-down"><!--  --></i><br/>${item.code}</div>
-                                        <div class="description"><c:if test="${not empty item.discountRelative}">- ${item.discountRelative}%</c:if>
+                                        <div class="ui blue header" style="text-align:center;text-transform:uppercase"><i class="fa fa-cart-arrow-down"><!--  --></i><br/>${coupon.code}</div>
+                                        <div class="description"><c:if test="${not empty coupon.discountRelative}">- ${coupon.discountRelative}%</c:if>
                                         <fmt:setLocale value="en_US"/>
-                                        <c:if test="${not empty item.discountAbsolute}"><fmt:formatNumber value="${item.discountAbsolute/100}" type="currency"/></c:if></div>
+                                        <c:if test="${not empty coupon.discountAbsolute}"><fmt:formatNumber value="${coupon.discountAbsolute/100}" type="currency"/></c:if></div>
                                     </div>
                                     <div class="extra content" style="color:#767676">
-                                        <div class="right floated">${item.available} available</div>
+                                        <div class="right floated">${coupon.available} available</div>
                                     </div>
-                                    <div class="ui bottom attached button" onclick="couponDetail('${item.id}', '${item.code}', '${item.discountRelative}', '${item.discountAbsolute}', '${item.available}')">
+                                    <div class="ui bottom attached button" onclick="couponDetail('${coupon.id}', '${coupon.code}', '${coupon.discountRelative}', '${coupon.discountAbsolute}', '${coupon.available}', '${coupon.item.id}')">
                                         <i class="fa fa-external-link"><!--  --></i>View Details
                                     </div>
                                 </div>
@@ -396,8 +472,12 @@
     </div>
     </sec:authorize>
     <script>
+        var currOptions = '';
+        var domList = [];
+
         window.onload = function(){
             // initialize semantic-ui elements
+            jQuery('#couponECI, #questionECI, #type-dropdown-selected').dropdown();
             jQuery('.menu .item').tab();
             jQuery('.ui.checkbox').checkbox();
             jQuery('.disc-btn').each(function(){
@@ -409,6 +489,25 @@
                 })
             })
 
+            jQuery('#addQuestion').on('hidden.bs.modal', function(){
+                responseSet = '';
+                currOptions = '';
+                jQuery(this).find('input[type="text"]').val('');
+                jQuery('#type-dropdown-selected').dropdown('set text', 'Select one')
+                jQuery('#dropdown-options').text('');
+                jQuery('#option-list').text('');
+                jQuery('input[name="optional"]').prop('checked', false);
+                jQuery('input[name="hidden"]').prop('checked', false);
+                jQuery('#question-preview').hide();
+                jQuery('#questionECI').dropdown('restore defaults');
+            });
+
+            jQuery('#addCoupon').on('hidden.bs.modal', function(){
+                jQuery('#couponECI').dropdown('clear');
+                jQuery('#couponECI').dropdown('set text', 'none');
+                jQuery(this).find('input[type="text"],input[type="number"]').val('');
+            });
+
             transferHandler();
             customFormTab();
         }
@@ -416,14 +515,12 @@
         function addCouponModal(){
             jQuery("#addCoupon").modal('show');
             validateDiscount();
-            // jQuery('input[name="id"]').val("");
-            // jQuery('input[name="question"]').val("");
             jQuery(".put-coupon").hide();
             jQuery(".post-coupon").show();
         }
 
         var currCouponId;
-        function couponDetail(id, code, discountRel, discountAbs, avail){
+        function couponDetail(id, code, discountRel, discountAbs, avail, eci){
             currCouponId = id;
             jQuery("#addCoupon").modal('show');
             jQuery(".post-coupon").hide();
@@ -447,6 +544,8 @@
                 jQuery('#disc-curr').removeClass('positive');
             }
             jQuery('input[name="available"]').val(avail);
+            jQuery('#couponECI').dropdown('set selected', eci);
+            jQuery('input[name="eventItem"]').val(eci);
         }
 
         function validateDiscount() {
@@ -535,6 +634,7 @@
 
             var obj = {};
             var eid = '${event.id}';
+            var eci = jQuery('input[name="eventItem"]').val();
             var couponcode = jQuery('input[name="couponcode"]').val();
             var discount = jQuery('input[name="discount"]').val();
             var available = jQuery('input[name="available"]').val();
@@ -544,6 +644,11 @@
                                         obj.event = eobj;        }
             if( couponcode.length > 0 ){ obj.code = couponcode; }
             if( available.length > 0 ){  obj.available = parseInt(available); }
+            if( eci !== null || eci !== "" ){
+                var item = {};
+                item.id = parseInt(eci);
+                obj.item = item;
+            }
 
             var discountAbsolute = null;
             var discountRelative = null;
@@ -577,21 +682,17 @@
 
         function addQuestionModal(){
             jQuery("#addQuestion").modal('show');
-            jQuery('input[name="id"]').val("");
-            jQuery('input[name="question"]').val("");
-            jQuery("#drop-option").val("");
             jQuery(".put-question").hide();
             jQuery(".post-question").show();
         }
 
-        var currOptions = '';
         function addDropdownOption(){
             jQuery('#type-dropdown-selected').dropdown();
             var opt = jQuery("#drop-option").val();
             if( opt.length > 0 ){
                 currOptions += opt + ',';
                 jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
                 jQuery('#type-dropdown-selected').dropdown('refresh');
                 jQuery('#drop-option').val("");
             }
@@ -609,12 +710,12 @@
                 parsed.splice(parsed.indexOf(opt), 1);
                 currOptions = parsed;
             }
-            jQuery(".dropdown .menu").html("");
+            jQuery("#dropdown-options").html("");
             jQuery('#drop-option').val("");
             jQuery('#option-list').html("");
             parsed.forEach(function(el, i, ary){
                 jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + el + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery(".dropdown .menu").append('<div class="item">' + el + '</div>');
+                jQuery("#dropdown-options").append('<div class="item">' + el + '</div>');
             })
             jQuery('#type-dropdown-selected').dropdown('refresh');
 
@@ -624,11 +725,12 @@
         }
 
         var currQuestionId;
-        function questionDetail(id, eid, question, responseSet){
+        function questionDetail(id, eid, optional, hidden, question, responseSet, eci){
             currQuestionId = id;
-            jQuery("#addQuestion").modal('show');
+            currOptions = responseSet;
             jQuery(".post-question").hide();
             jQuery(".put-question").show();
+            jQuery("#addQuestion").modal('show');
 
             var obj = {};
             var eid = '${event.id}';
@@ -638,6 +740,20 @@
                                         obj.event = eobj;        }
             jQuery('input[name="id"]').val(id);
             jQuery('input[name="question"]').val(question);
+
+            eci.forEach(function(n,i){
+                jQuery('#questionECI').dropdown('set selected', n);
+            })
+
+            if(optional){
+                jQuery('#optional1').addClass('checked');
+                jQuery('input[name="optional"]').prop('checked', true);
+            }
+
+            if(hidden){
+                jQuery('#optional2').addClass('checked');
+                jQuery('input[name="hidden"]').prop('checked', true);
+            }
 
             if( responseSet !== "" ){
                 jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
@@ -652,13 +768,18 @@
                         opt = opt.substring(0, opt.length-1);
                     }
                     var split = opt.split(',');
-                    jQuery(".dropdown .menu").html("");
+                    jQuery("#dropdown-options").html("");
                     var parsedOptions = "";
                     for( i = 0; i &lt; split.length; i++ ){
                         opt = split[i];
                         if( opt !== "" &amp;&amp; opt !== " " ){
-                            jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                            jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
                             parsedOptions += opt + ",";
+                            jQuery('#type-dropdown-selected').dropdown();
+                            // append tags
+                            jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
+                            jQuery('#type-dropdown-selected').dropdown('refresh');
+                            jQuery('#drop-option').val("");
                         }
                     }
                     if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
@@ -674,7 +795,9 @@
                 jQuery("#dropdown-field").hide();
                 jQuery("#type-dropdown-selected").hide();
                 jQuery("#type-input-selected").show();
+                jQuery('#radio-input').checkbox('check');
             }
+
             if( (question !== null || question !== "") ){
                 jQuery("#question-preview").show();
                 jQuery("#question-label").text(question);
@@ -723,6 +846,20 @@
             var obj = {};
             var eid = '${event.id}';
             var question = jQuery('input[name="question"]').val();
+            var eventItems = {};
+            var eciList = jQuery('input[name="eventItems"]').val();
+            if( eciList !== null &amp;&amp; eciList !== "" ){
+                eciList = eciList.split(',');
+                obj.eventItems = eciList.map(function(item){
+                    var obj = {};
+                    obj.id = parseInt(item);
+                    return obj;
+                });
+            }
+            var option = jQuery('input[name="optional"]').prop('checked');
+            var hidden = jQuery('input[name="hidden"]').prop('checked');
+            obj.optional = option;
+            obj.hidden = hidden;
 
             if( eid.length > 0 ){       var eobj = {};
                                         eobj.id = parseInt(eid);
@@ -741,7 +878,6 @@
                 error = true;
             }
             else{
-                // console.log(obj);
                 jQuery.ajax({
                     url: questUrl,
                     type: questType,

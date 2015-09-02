@@ -3,8 +3,12 @@
  */
 package com.bibsmobile.model;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -20,6 +25,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
@@ -42,6 +49,28 @@ public class CustomRegField {
 	private String question;
 
 	private String responseSet;
+	
+	/**
+	 * Used by event directors to hide unwanted responses
+	 */
+	boolean hidden;
+
+	/**
+	 * Used by to make answering questions optional
+	 */
+	boolean optional;
+	
+	/**
+	 * Used to display whether a question should appear in all items. This is automatically set.
+	 * If no items are checked, it will not display.
+	 */
+	boolean allItems;
+	
+	/**
+	 * The set of EventCartItems that have this question displayed
+	 */
+	@ManyToMany
+	private Set <EventCartItem> eventItems = new HashSet<EventCartItem>();
 
 	/**
 	 * @return CustomRegField Id, Autoincremented from 1
@@ -103,6 +132,78 @@ public class CustomRegField {
 		this.responseSet = responseSet;
 	}
 	
+	/**
+	 * @return the hidden
+	 */
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	/**
+	 * @param hidden the hidden to set
+	 */
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+
+	/**
+	 * @return the optional
+	 */
+	public boolean isOptional() {
+		return optional;
+	}
+
+	/**
+	 * @param optional the optional to set
+	 */
+	public void setOptional(boolean optional) {
+		this.optional = optional;
+	}
+	
+	/**
+	 * Extra method for getting only integers for mapped eventItems
+	 * for frontend implementation.
+	 */
+	public List<Long> getEventItemIds(){
+		List<Long> ids = new ArrayList<Long>();
+		for(EventCartItem item : this.eventItems) {
+			ids.add(item.getId());
+		}
+		return ids;
+	}
+
+	/**
+	 * @return the eventItems
+	 */
+	public Set<EventCartItem> getEventItems() {
+		return eventItems;
+	}
+
+	/**
+	 * @param eventItems the eventItems to set
+	 */
+	public void setEventItems(HashSet<EventCartItem> eventItems) {
+		this.eventItems = eventItems;
+	}
+
+	/**
+	 * Whether or not this should be displayed to all items. This is set automatically
+	 * if no specific EventCartItems are checked.
+	 * @return the allItems
+	 */
+	public boolean isAllItems() {
+		return allItems;
+	}
+
+	/**
+	 * Whether or not this should be displayed to all items. This is set automatically
+	 * if no specific EventCartItems are checked.
+	 * @param allItems the allItems to set
+	 */
+	public void setAllItems(boolean allItems) {
+		this.allItems = allItems;
+	}
+
 	/**
 	 * Hibernate Overhead -- Do not remove
 	 */
@@ -191,6 +292,15 @@ public class CustomRegField {
         return q;
     }
     
+    public static TypedQuery<CustomRegField> findVisibleCustomRegFieldsByEvent(Event event) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = CustomRegField.entityManager();
+        TypedQuery<CustomRegField> q = em.createQuery("SELECT o FROM CustomRegField AS o WHERE o.event = :event AND o.hidden IS NOT 1", CustomRegField.class);
+        q.setParameter("event", event);
+        return q;
+    }    
+    
     /**
      * Find a single CustomRegField by id. This will throw an exception on fail.
      * @param id - Long id of the CustomRegField to search for. Null safe, but should not be null
@@ -242,9 +352,24 @@ public class CustomRegField {
      * @return Deserialized CustomRegField object
      */
     public static CustomRegField fromJsonToCustomRegField(String json) {
-        return new JSONDeserializer<CustomRegField>().use(null, CustomRegField.class).deserialize(json);
+        return new JSONDeserializer<CustomRegField>().use(null, CustomRegField.class).use("eventItems", EventCartItem.class).deserialize(json);
     }
-
+    
+    /**
+     * The Jackson version of the json deserializser
+     * @param json
+     * @return
+     */
+    public static CustomRegField fromJson(String json) {
+    	ObjectMapper mapper = new ObjectMapper();
+    	try {
+			return mapper.readValue(json, CustomRegField.class);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+    }
     /**
      * Deserialize an array of CustomRegField objects. These must have the format:
      * {values:[{"id":11, "Question":"Team Name", "responseSet":""}, {"id":12, "Question"Photos?", "responseSet":"yes,no"}]}
