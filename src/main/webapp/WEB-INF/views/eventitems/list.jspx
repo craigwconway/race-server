@@ -189,7 +189,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="addCoupon" tabindex="-1" role="dialog" aria-labelledby="addCouponModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -268,19 +267,17 @@
             </div>
         </div>
     </div>
-
     <div class="white-overlay">
         <div class="info-container">
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="item" data-tab="eci-menu">Products</div>
+                <div class="active item" data-tab="eci-menu">Products</div>
                 <div class="item" data-tab="ticket-menu">Transfers</div>
-                <div class="active item" data-tab="form-menu">Custom Forms</div>
+                <div class="item" data-tab="form-menu">Custom Forms</div>
                 <div class="item" data-tab="coupon-menu">Coupons</div>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="eci-menu">
-                <!-- <div class="pull-right"><button class="btn btn-default btn-top" onclick="addItem()" type="button"><i class="fa fa-plus">.</i>product</button></div> -->
+            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -322,19 +319,31 @@
                                 </div>
                             </c:forEach>
                         </c:if>
-                        <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
-                            <div class="content">
-                                <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                <div class="description">add a new product</div>
-                                <div class="extra content">
-                                    <div class="left floated"><span style="visibility:hidden">sold</span></div>
-                                    <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                        <c:if test="${not empty event.eventTypes}">
+                            <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
+                                <div class="content">
+                                    <div class="ui header"><span style="visibility:hidden">name</span></div>
+                                    <div class="description">add a new product</div>
+                                    <div class="extra content">
+                                        <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                        <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                                    </div>
+                                </div>
+                                <div class="ui bottom attached button">
+                                    <i class="fa fa-plus"><!--  --></i> product
                                 </div>
                             </div>
-                            <div class="ui bottom attached button">
-                                <i class="fa fa-plus"><!--  --></i> product
-                            </div>
-                        </div>
+                        </c:if>
+                        <c:if test="${empty event.eventTypes}">
+                            <a class="red card" href="/bibs-server/events/${event.id}">
+                                <div class="content">
+                                    <div class="header">Warning:</div>
+                                    <div class="description">
+                                        <p style="text-align:left">You currently have no event types. Click here to go back and add an event type.</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </c:if>
                     </div>
                 </div>
             </div>
@@ -371,7 +380,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="form-menu">
+            <div class="ui bottom attached tab segment" data-tab="form-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
