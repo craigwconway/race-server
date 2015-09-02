@@ -256,6 +256,13 @@
                                        data-parsley-error-message="Please provide a quantity."><!--  --></input>
                             </div>
                         </div>
+                        <div class="ui negative message" id="coupon-error-percent" style="display:none">
+                            <i class="fa fa-times" style="float:right;font-size: 1.2em;"><!--  --></i>
+                            <div class="header">
+                                We can't allow that discount.
+                            </div>
+                            <p>Please select a discount lower than 100%.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -662,30 +669,45 @@
             var discountAbsolute = null;
             var discountRelative = null;
             if( jQuery('#disc-curr').hasClass('positive') ){
+                jQuery('#coupon-error-percent').hide();
                 if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
                     // convert to cents
                     discount = parseFloat(discount) * 100;
                 }
                 obj.discountAbsolute = discount * 100;
             }
-            if( jQuery('#disc-perc').hasClass('positive') ){ obj.discountRelative = parseFloat(discount); }
+            if( jQuery('#disc-perc').hasClass('positive') ){
+                if(parseFloat(discount) &lt; 100){
+                    obj.discountRelative = parseFloat(discount);
+                    jQuery('#coupon-error-percent').hide();
+                    error = false;
+                }else{
+                    error = true;
+                    jQuery('#coupon-error-percent').show();
+                    jQuery('.fa.fa-times').click(function(){
+                        jQuery(this).parent().hide();
+                    });
+                }
+            }
 
             if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
                 error = true;
             }
             else{
-                console.log(obj);
-                jQuery('.post-coupon, .put-coupon').prop('disabled', true);
-                jQuery.ajax({
-                    url: questUrl,
-                    type: questType,
-                    contentType: "application/json",
-                    data: JSON.stringify(obj),
-                    dataType: "json",
-                    complete: function(data) {
-                        window.location.reload();
-                    }
-                })
+                if(!error){
+                    console.log(obj);
+                    jQuery('.post-coupon, .put-coupon').prop('disabled', true);
+                    jQuery.ajax({
+                        url: questUrl,
+                        type: questType,
+                        contentType: "application/json",
+                        data: JSON.stringify(obj),
+                        dataType: "json",
+                        complete: function(data) {
+                            window.location.reload();
+                        }
+                    })
+                }
             }
         }
 

@@ -7022,7 +7022,7 @@ $.fn.nag.settings = {
   },
 
   selector      : {
-    close : '.close.icon'
+    close : '.fa.fa-times'
   },
 
   speed         : 500,
