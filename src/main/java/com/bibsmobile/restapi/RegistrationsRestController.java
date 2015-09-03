@@ -43,7 +43,8 @@ public class RegistrationsRestController {
                                          @RequestParam(value = "firstName", required = false) String firstName,
                                          @RequestParam(value = "lastName", required = false) String lastName,
                                          @RequestParam(value = "start", required = false) Integer start,
-                                         @RequestParam(value = "count", required = false) Integer count) {
+                                         @RequestParam(value = "count", required = false) Integer count,
+                                         @RequestParam(value = "refunded", required = false) Boolean refunded) {
         try {
             // sanity check given parameters
             Event event = Event.findEvent(eventId);
@@ -55,8 +56,8 @@ public class RegistrationsRestController {
             if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
                 return SpringJSONUtil.returnErrorMessage("no rights for this event", HttpStatus.UNAUTHORIZED);
             }
-
-            List<Cart> registrationsFull = RegistrationsUtil.search(event, firstName, lastName, null, null);
+            if (refunded == null) refunded = false;
+            List<Cart> registrationsFull = RegistrationsUtil.search(event, firstName, lastName, null, null, refunded);
             if (registrationsFull == null)
                 return SpringJSONUtil.returnErrorMessage("firstName or lastName has to be included", HttpStatus.BAD_REQUEST);
             List<ShortCart> registrations = new ArrayList<ShortCart>(registrationsFull.size());

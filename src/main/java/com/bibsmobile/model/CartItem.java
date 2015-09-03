@@ -126,6 +126,19 @@ public class CartItem {
         q.setParameter("eventCartItems", eventCartItems);
         return q.getSingleResult();
     }
+
+    public static TypedQuery<CartItem> findRefundedCartItemsByEventCartItems(List<EventCartItem> eventCartItems, boolean all) {
+        if (eventCartItems == null)
+            throw new IllegalArgumentException("The eventCartItems argument is required");
+        EntityManager em = CartItem.entityManager();
+        String jpaQuery = "SELECT o FROM CartItem AS o WHERE o.eventCartItem IN (:eventCartItems) and o.cart.status = 5";
+        if (!all) {
+            jpaQuery += " AND o.exported != true";
+        }
+        TypedQuery<CartItem> q = em.createQuery(jpaQuery, CartItem.class);
+        q.setParameter("eventCartItems", eventCartItems);
+        return q;
+    }    
     
     public static TypedQuery<CartItem> findCompletedCartItemsByEventCartItems(List<EventCartItem> eventCartItems, boolean all) {
         if (eventCartItems == null)

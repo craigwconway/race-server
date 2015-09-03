@@ -51,7 +51,7 @@ public final class RegistrationsUtil {
         return ci.getCart();
     }
 
-    public static List<Cart> search(Event event, String firstName, String lastName, String email, String invoiceId) {
+    public static List<Cart> search(Event event, String firstName, String lastName, String email, String invoiceId, Boolean refunded) {
         boolean firstNameGiven = (firstName != null && !firstName.isEmpty());
         boolean lastNameGiven = (lastName != null && !lastName.isEmpty());
         boolean emailGiven = (email != null && !email.isEmpty());
@@ -75,7 +75,13 @@ public final class RegistrationsUtil {
         Set<Cart> carts = new HashSet<>();
         List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
         if (!eventCartItems.isEmpty()) {
-            List<CartItem> cartItems = CartItem.findCompletedCartItemsByEventCartItems(eventCartItems, true).getResultList();
+        	List<CartItem> cartItems;
+        	if(refunded == true) {
+        		cartItems = CartItem.findRefundedCartItemsByEventCartItems(eventCartItems, true).getResultList();
+        	} else {
+        		cartItems = CartItem.findCompletedCartItemsByEventCartItems(eventCartItems, true).getResultList();
+        	}
+             
             for (CartItem cartItem : cartItems) {
                 carts.add(cartItem.getCart());
             }
