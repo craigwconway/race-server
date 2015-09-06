@@ -176,19 +176,49 @@
                     <h4 class="modal-title" id="export-label">Export Registration</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <button type="button" class="ui button" style="width:150px" onclick="exportRegHandler(false)">
-                            <i class="fa fa-file-o" style="margin-right:7px"><!--  --></i>Export New
-                        </button>
+                    <style>.ui.three.cards > .card:nth-child(3n+1){ clear:none; }
+                        .ui.three.cards{ outline: none; border: none; margin: 0 auto; width: 75%; text-align: center; }
+                        .ui.cards > .card > .content, .ui.card > .content:hover{ cursor: pointer; }
+                    </style>
+                    <div class="ui three cards" id="ticket-type">
+                        <div class="ui card" id="card-ticket" onclick="setExportRegType('TICKET')">
+                            <div class="content">
+                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
+                            </div>
+                        </div>
+                        <div class="ui card" id="card-tshirt" onclick="setExportRegType('T_SHIRT')">
+                            <div class="content">
+                                <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
+                            </div>
+                        </div>
+                        <div class="ui card" id="card-donation" onclick="setExportRegType('DONATION')">
+                            <div class="content">
+                                <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row">
-                        <button type="button" class="ui button" style="width:150px" onclick="exportRegHandler(true)">
-                            <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Export All
-                        </button>
+                    <div style="width:70%;margin:0 auto">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="questions"></input>
+                            <label style="width:100%;margin:0">Include custom questions?</label>
+                        </div>
+                    </div>
+                    <div style="clear:both"><!--  --></div>
+                    <div style="width:70%;margin:0 auto">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="bibnum"></input>
+                            <label style="width:100%;margin:0">Include bib numbers?</label>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
+                    <button type="button" class="ui red button" style="float:left" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui button" style="width:200px;margin-right:20px;" onclick="exportRegHandler(false)">
+                        <i class="fa fa-file-o" style="margin-right:7px"><!--  --></i>New Data Only
+                    </button>
+                    <button type="button" class="ui button" style="width:150px;" onclick="exportRegHandler(true)">
+                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>All Data
+                    </button>
                 </div>
             </div>
         </div>
@@ -586,6 +616,7 @@
                 jQuery(this).closest('.message').fadeOut();
             });
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
+            jQuery('.ui.checkbox').checkbox();
             getWebappId();
             getWaiver();
 
@@ -956,9 +987,6 @@
             getWaiver();
             jQuery("#waiverModal").modal('show');
         }
-        function exportModal(){
-            jQuery("#exportReg").modal('show');
-        }
         function emailModal(){
             jQuery('#emailModal').modal('show');
         }
@@ -969,12 +997,57 @@
             jQuery('.modal').modal('hide');
         }
         function exportRegHandler(all){
-            var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false";
+            var typeString = "";
+            for( var i in currentExportRegTypes ){
+                typeString += '&amp;type='+currentExportRegTypes[i];
+            }
+            var optString = "";
+            if( jQuery('input[name="questions"]').prop('checked') ){
+                optString += '&amp;questions=true';
+            }else{
+                optString += '&amp;questions=false';
+            }
+            if( jQuery('input[name="bibnum"]').prop('checked') ){
+                optString += '&amp;bibnum=true';
+            }else{
+                optString += '&amp;bibnum=false';
+            }
+            var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false" + typeString + optString;
             if(all){
-                callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true";
+                callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true" + typeString + optString;
             }
             window.location=callUrl;
         }
+
+        var currentExportRegTypes = [];
+        function setExportRegType(val){
+            jQuery('#card-ticket > .content').attr('style', 'background:none');
+            jQuery('#card-tshirt > .content').attr('style', 'background:none');
+            jQuery('#card-donation > .content').attr('style', 'background:none');
+                        
+            if(currentExportRegTypes.indexOf(val) == -1){
+                currentExportRegTypes.push(val);
+            }else{
+                currentExportRegTypes.splice(currentExportRegTypes.indexOf(val), 1);
+            }
+
+            for( var i in currentExportRegTypes ){
+                switch(currentExportRegTypes[i]){
+                    case 'TICKET':
+                        jQuery('#card-ticket > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    case 'T_SHIRT':
+                        jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    case 'DONATION':
+                        jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         function redirectDropboxImport(){
             window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
         }
