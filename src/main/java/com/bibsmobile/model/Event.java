@@ -24,6 +24,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PrePersist;
@@ -86,7 +87,10 @@ public class Event {
     private String timeStartLocal;
 
     private TimeZone timezone;
-    
+  
+	@ManyToOne
+	private Series series;
+	
     private int featured;
 
     private String address;
