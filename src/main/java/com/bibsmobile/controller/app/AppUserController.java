@@ -141,30 +141,26 @@ public class AppUserController {
 	 * 	"Content-Type": "Application/json",
 	 * 	"X-FacePunch": "YOUR.TOKEN.HERE"
 	 *  }
-	 * @apiSuccess (200) {Object} user UserProfile object returned for logged in user
+	 * @apiSuccess (200) {String} status Status of the friend Request
+	 * @apiSuccess (202) {String} status Status of the friend Request
 	 * @apiError (403) {String} UserNotAuthenticated The supplied authentication token is missing or invalid.
-	 * @apiSuccessExample {json} Success
+	 * @apiError (404) {String} UserNotFound The user has requested a friend that does not exist.
+	 * @apiSuccessExample {json} Sucessfully Requested
 	 * HTTP/1.1 200 OK
-	 * [
-	 * 	{
-	 * 		"firstname": "Galen",
-	 * 		"lastname": "Danziger",
-	 * 		"gender": "M",
-	 * 		"username": "galen"
-	 * 	},
-	 * 		"firstname": "Patrick",
-	 * 		"lastname": "McLain",
-	 * 		"gender": "M",
-	 * 		"username": "shouldershrug"
-	 * 	}
-	 * ]
-	 * 	
+	 * {
+	 * 	"status":"FriendRequested"
+	 * }
+	 * @apiSuccessExample {json} Successfully Added
+	 * HTTP/1.1 202 ACCEPTED
+	 * {
+	 * 	"status":"FriendAdded"
+	 * }
 	 * @apiErrorExample {json} UserNotAuthenticated
 	 * HTTP/1.1 403 Forbidden
 	 * {
 	 * 	"error": "UserNotAuthenticated"
 	 * }
-	 * @apiSampleRequest https://condor.bibs.io/bibs-server/app/user/me/friends
+	 * @apiSampleRequest https://condor.bibs.io/bibs-server/app/user/friends/add/:id
 	 */
 	@RequestMapping(value = "/friends/add/{id}", method = RequestMethod.POST)
 	@ResponseBody
@@ -179,17 +175,21 @@ public class AppUserController {
 		friend = UserProfile.findFriendRequestForUserById(user, id);
 		user.getFriends().add(friend);
 		user.getFriendRequests().remove(friend);
+		user.merge();
+		return SpringJSONUtil.returnStatusMessage("FriendAdded", HttpStatus.ACCEPTED);
 
 		} catch (Exception e) {
 			System.out.println("No friend found");
 			friend = UserProfile.findUserProfile(id);
 			if (friend != null) {
 				friend.getFriendRequests().add(user);
-				friend.persist();
+				friend.merge();
+				return SpringJSONUtil.returnStatusMessage("FriendRequested", HttpStatus.OK);
 			}
+			return SpringJSONUtil.returnErrorMessage("UserNotFound", HttpStatus.NOT_FOUND);
 		}
 		
 		
-		return new ResponseEntity<String>(user.toJson(), HttpStatus.OK);
+		
 	}
 }

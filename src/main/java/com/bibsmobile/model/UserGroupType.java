@@ -2,5 +2,5 @@ package com.bibsmobile.model;
 
 public enum UserGroupType {
 
-    COMPANY, TEAM
+    COMPANY, TEAM, SERIES
 }
