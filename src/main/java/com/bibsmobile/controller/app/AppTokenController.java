@@ -31,6 +31,38 @@ public class AppTokenController {
     @Autowired
     private StandardPasswordEncoder encoder;
 	
+    /**
+     * @api {post} /app/token/generate Login
+     * @apiGroup app
+     * @apiName Login
+     * @apiDescription Pass up a User profile object for authentication. If successful, pass back a token in X-FacePunch.
+     * @apiParam {String} email Email of user to authenticate
+     * @apiParam {String} password Password of user to authenticate
+     * @apiParamExample {json} Sample Json Login
+     * 	{
+     * 		"email":"gedanziger@gmail.com",
+     * 		"password":"shrugsallday1234"
+     * 	}
+     * @apiErrorExample {json} Null User Submitted
+     * HTTP 1.1 400 Bad Request
+     * 	{
+     * 		"error":"Error - null user submitted"
+     * 	}
+     * @apiErrorExample {json} Username or password is Null
+     * HTTP 1.1 400 Bad Request
+     * 	{
+     * 		"error":"Missing email or password"
+     * 	}
+     * @apiSuccess (201) Successful Login
+     * 	{
+     * 		"time":123123123,
+     * 		"status":"success",
+     * 		"exp":1441607658000
+     * 	}
+     * @apiSampleRequest https://condor.bibs.io/bibs-server/app/token/register
+     * @param response
+     * @return
+     */
 	@RequestMapping("/generate")
 	@ResponseBody
 	ResponseEntity<String> login(@RequestBody UserProfile user, HttpServletResponse response) {
@@ -59,7 +91,58 @@ public class AppTokenController {
 		}
 		return SpringJSONUtil.returnErrorMessage("error", HttpStatus.BAD_REQUEST);
 	}
-	
+
+    /**
+     * @api {post} /app/token/register Register
+     * @apiGroup app
+     * @apiName Register
+     * @apiDescription Pass up a user Profile to register. Minimum required fields are Email, Password, Firstname and Lastname.
+     * A user can also optionally pass extra information in a second step, or in updating the profile to enable more functionality
+     * in the app. Upon a successful registration, a token authenticating the user is returned in X-FacePunch.
+     * @apiParam {String} email Email of user to authenticate
+     * @apiParam {String} password Password of user to authenticate
+     * @apiParam {String} firstname First Name of user to register
+     * @apiParam {String} lastname Last Name of user to register
+     * @apiParam {String="M,F"} [gender] Gender of user
+     * @apiParam {Date} [birthdate] User's birthdate in UTC time
+     * @apiParam {String} [username] User's handle to appear in app
+     * @apiSampleRequest https://condor.bibs.io/bibs-server/app/token/register
+     * @apiParamExample {json} Minimal Json Registration
+     * 	{
+     * 		"email":"gedanziger@gmail.com",
+     * 		"password":"shrugsallday1234",
+     * 		"firstname":"Galen",
+     * 		"lastname":"Danziger"
+     * 	}
+     * @apiErrorExample {json} Null User Submitted
+     * HTTP 1.1 400 Bad Request
+     * 	{
+     * 		"error":"Error - null user submitted"
+     * 	}
+     * @apiErrorExample {json} Username or password is Null
+     * HTTP 1.1 400 Bad Request
+     * 	{
+     * 		"error":"Missing email or password"
+     * 	}
+     * @apiErrorExample {json} Firstname / Lastname missing
+     * HTTP 1.1 400 Bad Request
+     * 	{
+     * 		"error":"Missing name"
+     * 	}
+     * @apiErrorExample {json} Duplicate
+     * HTTP 1.1 400 Bad Request
+     * 	{
+     * 		"error":"Duplicate"
+     * 	}
+     * @apiSuccess (201) Successful Registration
+     * 	{
+     * 		"time":123123123,
+     * 		"status":"success",
+     * 		"exp":1441607658000
+     * 	}
+     * @param response
+     * @return
+     */	
 	@RequestMapping("/register")
 	@ResponseBody
 	ResponseEntity<String> register(@RequestBody UserProfile user, HttpServletResponse response) {

@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,7 @@ public class AppUserController {
 	 * {
 	 * 	"error": "UserNotAuthenticated"
 	 * }
+	 * @apiSampleRequest https://condor.bibs.io/bibs-server/app/user/me/short
 	 */
 	@RequestMapping(value = "/me/short", method = RequestMethod.GET)
 	@ResponseBody
@@ -75,8 +77,96 @@ public class AppUserController {
 		
 		return new ResponseEntity<String>(user.toJson(), HttpStatus.OK);
 	}
+
+	/**
+	 * @api {get} /app/user/me/friends Get Friends
+	 * @apiName Get Friends
+	 * @apiGroup app
+	 * @apiPermission User
+	 * @apiDescription Get all friends for a the current user
+	 * @apiHeader X-FacePunch Access token for user account
+	 * @apiHeader Content-Type Application/json
+	 * @apiHeaderExample {json} JSON Headers
+	 * {
+	 * 	"Content-Type": "Application/json",
+	 * 	"X-FacePunch": "YOUR.TOKEN.HERE"
+	 *  }
+	 * @apiSuccess (200) {Object} user UserProfile object returned for logged in user
+	 * @apiError (403) {String} UserNotAuthenticated The supplied authentication token is missing or invalid.
+	 * @apiSuccessExample {json} Success
+	 * HTTP/1.1 200 OK
+	 * [
+	 * 	{
+	 * 		"firstname": "Galen",
+	 * 		"lastname": "Danziger",
+	 * 		"gender": "M",
+	 * 		"username": "galen"
+	 * 	},
+	 * 		"firstname": "Patrick",
+	 * 		"lastname": "McLain",
+	 * 		"gender": "M",
+	 * 		"username": "shouldershrug"
+	 * 	}
+	 * ]
+	 * 	
+	 * @apiErrorExample {json} UserNotAuthenticated
+	 * HTTP/1.1 403 Forbidden
+	 * {
+	 * 	"error": "UserNotAuthenticated"
+	 * }
+	 * @apiSampleRequest https://condor.bibs.io/bibs-server/app/user/me/friends
+	 */
+	@RequestMapping(value = "/me/friends", method = RequestMethod.GET)
+	@ResponseBody
+	ResponseEntity<String> userFriends(HttpServletRequest request) {
+		UserProfile user =  JWTUtil.authenticate(request.getHeader("X-FacePunch"));
+		if( user == null) {
+			return SpringJSONUtil.returnErrorMessage("UserNotAuthenticated", HttpStatus.FORBIDDEN);
+		}
+		user = UserProfile.findUserProfile(user.getId());
+		Hibernate.initialize(user.getFriends());
+		
+		return new ResponseEntity<String>(UserProfile.toJsonArray(user.getFriends()), HttpStatus.OK);
+	}
 	
-	@RequestMapping(value = "/friends/add/{id}", method = RequestMethod.GET)
+	/**
+	 * @api {post} /app/user/friends/add/:id Add Friend
+	 * @apiName Add Friend
+	 * @apiGroup app
+	 * @apiDescription Send/Confirm a friend request for the current user.
+	 * @apiHeader X-FacePunch Access token for user account
+	 * @apiHeader Content-Type Application/json
+	 * @apiHeaderExample {json} JSON Headers
+	 * {
+	 * 	"Content-Type": "Application/json",
+	 * 	"X-FacePunch": "YOUR.TOKEN.HERE"
+	 *  }
+	 * @apiSuccess (200) {Object} user UserProfile object returned for logged in user
+	 * @apiError (403) {String} UserNotAuthenticated The supplied authentication token is missing or invalid.
+	 * @apiSuccessExample {json} Success
+	 * HTTP/1.1 200 OK
+	 * [
+	 * 	{
+	 * 		"firstname": "Galen",
+	 * 		"lastname": "Danziger",
+	 * 		"gender": "M",
+	 * 		"username": "galen"
+	 * 	},
+	 * 		"firstname": "Patrick",
+	 * 		"lastname": "McLain",
+	 * 		"gender": "M",
+	 * 		"username": "shouldershrug"
+	 * 	}
+	 * ]
+	 * 	
+	 * @apiErrorExample {json} UserNotAuthenticated
+	 * HTTP/1.1 403 Forbidden
+	 * {
+	 * 	"error": "UserNotAuthenticated"
+	 * }
+	 * @apiSampleRequest https://condor.bibs.io/bibs-server/app/user/me/friends
+	 */
+	@RequestMapping(value = "/friends/add/{id}", method = RequestMethod.POST)
 	@ResponseBody
 	ResponseEntity<String> addFriend(HttpServletRequest request, @PathVariable("id") Long id) {
 		UserProfile user =  JWTUtil.authenticate(request.getHeader("X-FacePunch"));
