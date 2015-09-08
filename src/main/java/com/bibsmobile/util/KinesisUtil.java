@@ -3,6 +3,8 @@
  */
 package com.bibsmobile.util;
 
+import java.nio.ByteBuffer;
+
 import com.amazonaws.kinesis.producer.KinesisProducer;
 import com.amazonaws.services.kinesis.AmazonKinesisClient;
 
@@ -11,11 +13,19 @@ import com.amazonaws.services.kinesis.AmazonKinesisClient;
  * @author galen
  *
  */
-public class KinesisUtil {
+public final class KinesisUtil {
 	//AmazonKinesisClient amazonKinesisClient = new AmazonKinesisClient();
-	KinesisProducer kinesis = new KinesisProducer();
+	private static KinesisProducer kinesis = new KinesisProducer();
 	
-	void test() {
+	private KinesisUtil() {
+		super();
+	}
+	
+	public static void test() {
 		//kinesis.addUserRecord(stream, partitionKey, data);
+		String sampleData = "{\"value\":\"test\"}";
+		ByteBuffer buffer = ByteBuffer.allocate(sampleData.length());
+		buffer.put(sampleData.getBytes());
+		kinesis.addUserRecord("bibs1", "bibs1", buffer);
 	}
 }
