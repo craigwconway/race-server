@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.UserBadge;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
@@ -91,7 +92,11 @@ public class AppUserController {
 	 * 	"Content-Type": "Application/json",
 	 * 	"X-FacePunch": "YOUR.TOKEN.HERE"
 	 *  }
-	 * @apiSuccess (200) {Object} user UserProfile object returned for logged in user
+	 * @apiSuccess (200) {Object[]} friends UserProfile objects returned for each of logged in user's friends
+	 * @apiSuccess (200) {String} friends.firstname firstname of user
+	 * @apiSuccess (200) {String} friends.lastname lastname of user
+	 * @apiSuccess (200) {String} friends.gender gender of user
+	 * @apiSuccess (200) {String} friends.username username of user
 	 * @apiError (403) {String} UserNotAuthenticated The supplied authentication token is missing or invalid.
 	 * @apiSuccessExample {json} Success
 	 * HTTP/1.1 200 OK
@@ -102,6 +107,7 @@ public class AppUserController {
 	 * 		"gender": "M",
 	 * 		"username": "galen"
 	 * 	},
+	 * 	{
 	 * 		"firstname": "Patrick",
 	 * 		"lastname": "McLain",
 	 * 		"gender": "M",
@@ -128,6 +134,80 @@ public class AppUserController {
 		
 		return new ResponseEntity<String>(UserProfile.toJsonArray(user.getFriends()), HttpStatus.OK);
 	}
+
+	/**
+	 * @api {get} /app/user/me/badges Get Badges
+	 * @apiName Get Badges
+	 * @apiGroup app
+	 * @apiPermission User
+	 * @apiDescription Get all badges for a the current user
+	 * @apiHeader X-FacePunch Access token for user account
+	 * @apiHeader Content-Type Application/json
+	 * @apiHeaderExample {json} JSON Headers
+	 * {
+	 * 	"Content-Type": "Application/json",
+	 * 	"X-FacePunch": "YOUR.TOKEN.HERE"
+	 *  }
+	 * @apiSuccess (200) {Object[]} badges array of badges returned for the current user
+	 * @apiSuccess (200) {String} badges.created Timestamp of badge creation
+	 * @apiSuccess (200) {Boolean} badges.active switch to indicate whether the badge has been granted or is invalidated
+	 * @apiSuccess (200) {Number} badges.id Id of earned badge copy
+	 * @apiSuccess (200) {Object} badges.badge True badge on server
+	 * @apiSuccess (200) {Number} badges.badge.id Numeric id of badge
+	 * @apiSuccess (200) {String} badges.badge.name Name of assigned badge
+	 * @apiSuccess (200) {String} badges.badge.url URL containing thumbnail image for badge
+	 * @apiError (403) {String} UserNotAuthenticated The supplied authentication token is missing or invalid.
+	 * @apiSuccessExample {json} Success
+	 * HTTP/1.1 200 OK
+	 * [
+	 * 	{
+	 * 		"active": true,
+	 * 		"badge": {
+	 * 			"active":true,
+	 * 			"badgeTrigger":"INSTAGRAM_WEBHOOK",
+	 * 			"id":2,
+	 * 			"name":"5 Face Punches",
+	 * 			"timeEnd":null,
+	 * 			"timeStart":null,
+	 * 			"url":"http://dgbc7tshfzi70.cloudfront.net/smedia/minus/images/emojis/facepunch.png"
+	 * 		},
+	 * 		"created": 1441673906000,
+	 * 		"id": 2,
+	 * 	},
+	 * 	{
+	 * 		"active": true,
+	 * 		"badge": {
+	 * 			"active":true,
+	 * 			"badgeTrigger":"ADD_FRIEND",
+	 * 			"id":1,
+	 * 			"name":"Most Face Punches Recieved",
+	 * 			"timeEnd":null,
+	 * 			"timeStart":null,
+	 * 			"url":"http://dgbc7tshfzi70.cloudfront.net/smedia/minus/images/emojis/facepunch.png"
+	 * 		},
+	 * 		"created": 1441673985000,
+	 * 		"id": 1,
+	 * 	}
+	 * ]
+	 * 	
+	 * @apiErrorExample {json} UserNotAuthenticated
+	 * HTTP/1.1 403 Forbidden
+	 * {
+	 * 	"error": "UserNotAuthenticated"
+	 * }
+	 * @apiSampleRequest https://condor.bibs.io/bibs-server/app/user/me/badges
+	 */
+	@RequestMapping(value = "/me/badges", method = RequestMethod.GET)
+	@ResponseBody
+	ResponseEntity<String> userBadges(HttpServletRequest request) {
+		UserProfile user =  JWTUtil.authenticate(request.getHeader("X-FacePunch"));
+		if( user == null) {
+			return SpringJSONUtil.returnErrorMessage("UserNotAuthenticated", HttpStatus.FORBIDDEN);
+		}
+		user = UserProfile.findUserProfile(user.getId());
+		Hibernate.initialize(user.getBadges());
+		return new ResponseEntity<String>(UserBadge.toJsonArray(user.getBadges()), HttpStatus.OK);
+	}	
 	
 	/**
 	 * @api {post} /app/user/friends/add/:id Add Friend

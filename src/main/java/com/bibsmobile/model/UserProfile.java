@@ -116,6 +116,9 @@ public class UserProfile implements UserDetails {
     private String dropboxAccessToken;
 
     private String stripeCustomerId;
+    
+    @OneToMany(mappedBy="user")
+    private Set<UserBadge> badges;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "importUser")
     private Set<ResultsFile> resultsFiles;
@@ -521,6 +524,20 @@ public class UserProfile implements UserDetails {
 	 */
 	public void setEvents(Set<Event> events) {
 		this.events = events;
+	}
+
+	/**
+	 * @return the badges
+	 */
+	public Set<UserBadge> getBadges() {
+		return badges;
+	}
+
+	/**
+	 * @param badges the badges to set
+	 */
+	public void setBadges(Set<UserBadge> badges) {
+		this.badges = badges;
 	}
 
 	public static Long countFindUserProfilesByDropboxIdEquals(String dropboxId) {
