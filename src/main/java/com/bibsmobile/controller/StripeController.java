@@ -384,7 +384,20 @@ public class StripeController {
                         resultString += ")";
                         resultString += MailgunUtil.REG_RECEIPT_SIX_D;
                     }
-
+                    if (c.getReferralDiscount() > 0) {
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    	resultString += " Sharing Discount" ;
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                        resultString += "(" + "$" + c.getReferralDiscount()/100 + ".";
+                        if(c.getReferralDiscount() % 100 > 9) {
+                        	resultString += c.getReferralDiscount() % 100;
+                        } else {
+                        	resultString += "0" + c.getReferralDiscount() % 10;
+                        }
+                        resultString += ")";
+                        resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    }
                     resultString += MailgunUtil.REG_RECEIPT_SIX_A;
                     resultString += "Bibs Fee";
                     resultString += MailgunUtil.REG_RECEIPT_SIX_B;
