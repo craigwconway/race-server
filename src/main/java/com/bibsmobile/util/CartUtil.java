@@ -12,13 +12,16 @@ import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import javax.servlet.http.HttpSession;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +35,35 @@ public final class CartUtil {
 
     private CartUtil() {
         super();
+    }
+    
+    public static Cart getCartFromSession(HttpSession session) {
+    	UserProfile user = null;
+    	Cart cart = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String username = authentication.getName();
+            if (!username.equals("anonymousUser")) {
+                user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            }
+        }
+	    Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
+	    if (cartIdFromSession != null) {
+	        cart = Cart.findCart(cartIdFromSession);
+	    } else if (user != null) {
+	        try {
+	            List<Cart> carts = Cart.findCartsByUser(user).getResultList();
+	            for (Cart c : carts) {
+	                if (c.getStatus() == Cart.NEW) {
+	                    cart = c;
+	                    session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+	                }
+	            }
+	        } catch (Exception e) {
+	            log.error("Caught exception finding cart in session");
+	        }
+	    }
+	    return cart;
     }
     
     public static Cart checkCoupon(HttpSession session, String couponCode) {

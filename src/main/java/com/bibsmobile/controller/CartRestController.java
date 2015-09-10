@@ -1,5 +1,10 @@
 package com.bibsmobile.controller;
 
+import java.util.List;
+import java.util.Set;
+import java.util.LinkedList;
+import java.util.HashSet;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -10,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegField;
 import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.wrapper.CartItemReqWrapper;
@@ -64,6 +73,46 @@ public class CartRestController {
     @Autowired
     private UserProfileService userProfileService;
 
+    /**
+     * @api {get} /getquestions Get Questions
+     * @apiName Get Questions
+     * @apiGroup restcarts
+     * @apiDescription Get a specific set of customregfields to use in the cart
+     * @apiSuccess (200) {Object[]} customRegField
+     * @apiSuccess (200) {Number} customRegField.id Id of question
+     * @apiSuccess (200) {String} customRegField.question Text of question
+     * @apiSuccess (200) {String} customRegField.responseSet Set of comma-delimited responses to use in dropdown. If blank, display a text field.
+     */
+    @RequestMapping(value = "/getquestions", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> getQuestions(HttpServletRequest request) {
+    	Cart c = CartUtil.getCartFromSession(request.getSession());
+    	System.out.println("Cart in session: " + c);
+	    List<CustomRegField> possibleFields = CustomRegField.findVisibleCustomRegFieldsByEvent(c.getEvent()).getResultList();
+	    List<CustomRegField> returnFields = new LinkedList<CustomRegField>();
+	    Set<Long> cartItemIds = new HashSet<Long>();
+	    for(CartItem ci : c.getCartItems()) {
+	    	cartItemIds.add(ci.getEventCartItem().getId());
+	    }
+	    for(CustomRegField field : possibleFields) {
+	    	if(!field.isAllItems()) {
+	    		for(Long id : field.getEventItemIds()) {
+	    			if(cartItemIds.contains(id)) {
+	    				returnFields.add(field);
+	    				break;
+	    			}
+	    		}
+	    	} else {
+	    		returnFields.add(field);
+	    	}
+	    }
+	    System.out.println("Possible Fields: " + possibleFields.size());
+	    System.out.println("Returned Fields: " + returnFields.size());
+	    HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+	    return new ResponseEntity<>(CustomRegField.toJsonArray(returnFields), headers, HttpStatus.OK);
+    }
+    
     /**
      * @api {post} /item/:id/updatequantity/:eventCartItemQuantity Add/Update Cart Item
      * @apiName Add/Update Cart Item
