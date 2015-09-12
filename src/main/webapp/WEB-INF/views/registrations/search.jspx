@@ -389,19 +389,21 @@
         }
 
         function refundHandler(){
-            var invoiceId = jQuery("#modal-transaction").text();
-            invoiceId = encodeURIComponent(invoiceId);
-            var firstname = currFirstName;
-            var email = encodeURIComponent(currEmail);
+            if(confirm("Are you sure you want to refund this? This cannot be undone.")){
+                var invoiceId = jQuery("#modal-transaction").text();
+                invoiceId = encodeURIComponent(invoiceId);
+                var firstname = currFirstName;
+                var email = encodeURIComponent(currEmail);
 
-            var request = jQuery.ajax({
-                url: "/bibs-server/stripe/refund?invoice="+invoiceId+"&amp;firstName="+firstname+"&amp;email="+email,
-                type: "POST",
-                dataType: "text/html",
-                complete: function(data) {
-                    window.location.reload();
-                }
-            })
+                var request = jQuery.ajax({
+                    url: "/bibs-server/stripe/refund?invoice="+invoiceId+"&amp;firstName="+firstname+"&amp;email="+email,
+                    type: "POST",
+                    dataType: "text/html",
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })
+            }
         }
 
         function editModal(){
