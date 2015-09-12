@@ -208,6 +208,15 @@ public class StripeController {
         return this.chargeCardProcessing(cartId, stripeCardToken, rememberCard);
     }
 
+    @RequestMapping(value = "/freeCart", method = RequestMethod.POST, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> freeCardProcessingJson(@RequestBody String body) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        ChargeCardBody parsedJson = mapper.readValue(body, ChargeCardBody.class);
+        Long cartId = parsedJson.getCart();
+        return this.freeCartProcessing(cartId);
+    }   
+    
     @RequestMapping(value = "/chargeCardForm", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> chargeCardProcessingForm(@RequestParam("cart") Long cartId, @RequestParam(value = "stripeToken", required = false) String stripeCardToken,
@@ -497,6 +506,198 @@ public class StripeController {
         }
     }
 
+    public ResponseEntity<String> freeCartProcessing(Long cartId) {
+        Cart c = Cart.findCart(cartId);
+        if (c == null)
+            return new ResponseEntity<>("cart not found", HttpStatus.NOT_FOUND);
+        if (c.getStatus() != Cart.NEW && c.getStatus() != Cart.SAVED)
+            return new ResponseEntity<>("cart already processed", HttpStatus.BAD_REQUEST);
+        if (c.getTotal() > 0 ) {
+        	return new ResponseEntity<>("NotFree", HttpStatus.BAD_REQUEST);
+        }
+
+        // in try block, so we can reset cart on failure
+            // set cart to processing, so it doesn't get messed with (cart
+            // timeout)
+            c.setStatus(Cart.PROCESSING);
+            c.persist();
+
+            // HACK
+            // TODO: this better
+            long cartTotalCents = c.getTotal();
+            // needs to be logged in, if
+            // 1) no card token was submitted
+            // 2) card should be remembered
+            // failure if no card token provided and no customer saved
+            UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+            // HACK FOR CONFERENCE:
+            if (loggedInUser != null) {
+            	c.setUser(loggedInUser);
+            	for(CartItem ci : c.getCartItems()) {
+            		ci.setUserProfile(loggedInUser);
+            		ci.persist();
+            	}
+            	c.persist();
+            }
+                c.setStatus(Cart.COMPLETE);
+                c.persist();
+                log.info("Completed charge for cart Id: " + c.getId() + " total: " + c.getTotal());
+                //Review this plz
+                for(CartItem ci : c.getCartItems()) {
+                	EventCartItem eciUpdate = ci.getEventCartItem();
+                	if (eciUpdate.getType() == EventCartItemTypeEnum.DONATION) {
+                		eciUpdate.setPurchased(eciUpdate.getPurchased() + 1);
+                	} else {
+                    	eciUpdate.setPurchased(eciUpdate.getPurchased() + ci.getQuantity());
+                	}
+                	eciUpdate.merge();
+                }
+
+                // can only sent an email if we have a logged in users email
+                if (loggedInUser != null) {
+                    // this assumes that all cartitems belong to the same event,
+                    // so only grabbing first one
+                    Event cartEvent = c.getCartItems().get(0).getEventCartItem().getEvent();
+
+                    // built text for order confirmation mail
+                    String resultString = new String();
+                    resultString = MailgunUtil.REG_RECEIPT_ONE;
+                    resultString += cartEvent.getName();
+                    resultString += MailgunUtil.REG_RECEIPT_TWO;
+                    resultString += loggedInUser.getFirstname();
+                    resultString += MailgunUtil.REG_RECEIPT_THREE;
+                    resultString += cartEvent.getName();
+                    resultString += MailgunUtil.REG_RECEIPT_FOUR;
+                    resultString += loggedInUser.getFirstname() + " " + loggedInUser.getLastname();
+                    resultString += MailgunUtil.REG_RECEIPT_FIVE;
+                    long cartprice = 0;
+                    long nondonation = 0;
+                    long donation = 0;
+                    long couponprice = 0;
+                    for (CartItem ci : c.getCartItems()) {
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.T_SHIRT) {
+                    		resultString += " T-Shirt - ";
+                    	} else if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.TICKET) {
+                    		resultString += " Ticket - ";
+                    	} else if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
+                    		resultString += " Donation - ";
+                    	}
+                    	resultString += ci.getEventCartItem().getName();
+                    	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.T_SHIRT) {
+                    		resultString += " " + ci.getSize() + " " + ci.getColor();
+                    	}
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    	resultString += ci.getQuantity();
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                    	resultString += "$" + ci.getPrice();
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    	cartprice += (ci.getPrice() * ci.getQuantity());
+                    	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                    		nondonation += ci.getPrice() * ci.getQuantity();
+                    	}
+                    }
+                    if (c.getCoupon() != null) {
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    	resultString += " Coupon - " + c.getCoupon().getCode();
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                    	donation = cartprice - nondonation;
+                    	couponprice = c.getCoupon().getDiscount(nondonation*100);
+                        resultString += "(" + "$" + couponprice/100 + ".";
+                        if(couponprice % 100 > 9) {
+                        	resultString += couponprice % 100;
+                        } else {
+                        	resultString += "0" + couponprice % 10;
+                        }
+                        resultString += ")";
+                        resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    }
+                    if (c.getReferralDiscount() > 0) {
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    	resultString += " Sharing Discount" ;
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                        resultString += "(" + "$" + c.getReferralDiscount()/100 + ".";
+                        if(c.getReferralDiscount() % 100 > 9) {
+                        	resultString += c.getReferralDiscount() % 100;
+                        } else {
+                        	resultString += "0" + c.getReferralDiscount() % 10;
+                        }
+                        resultString += ")";
+                        resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    }
+                    resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    resultString += "Bibs Fee";
+                    resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    resultString += " ";
+                    resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                    long bibsfee = c.getTotal() - (cartprice * 100 - couponprice);
+                    resultString += "$" + bibsfee/100 + ".";
+                    if(bibsfee % 100 > 9) {
+                    	resultString += bibsfee % 100;
+                    } else {
+                    	resultString += "0" + bibsfee % 10;
+                    }
+                    resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    resultString += MailgunUtil.REG_RECEIPT_SEVEN_A;
+                    resultString += "$" + c.getTotal()/100 + ".";
+                    if(c.getTotal() % 100 > 9) {
+                    	resultString += c.getTotal() % 100;
+                    } else {
+                    	resultString += "0" + c.getTotal() % 10;
+                    }
+                    resultString += MailgunUtil.REG_RECEIPT_SEVEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_EIGHT;
+                    resultString += MailgunUtil.REG_RECEIPT_NINE_A;
+                    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                    timeFormat.setTimeZone(cartEvent.getTimezone());
+                    dateFormat.setTimeZone(cartEvent.getTimezone());
+                    resultString += timeFormat.format(cartEvent.getTimeStart());
+                    resultString += "<br>";
+                    resultString += dateFormat.format(cartEvent.getTimeStart());
+                    resultString += MailgunUtil.REG_RECEIPT_NINE_B;
+                    // Move Part ten to end of email
+                    resultString += MailgunUtil.REG_RECEIPT_ELEVEN_A;
+                    if(cartEvent.getAddress() != null) {
+                        resultString += cartEvent.getAddress();
+                        resultString += "<br>";
+                    } else if(cartEvent.getLocation() != null) {
+                    	resultString += cartEvent.getLocation();
+                    	resultString += "<br>";
+                    }
+                    resultString += cartEvent.getCity();
+                    if(cartEvent.getState() != null) {
+                    	resultString += ", " + cartEvent.getState();
+                    }
+                    resultString += MailgunUtil.REG_RECEIPT_ELEVEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_TWELVE_A;
+                    resultString += loggedInUser.getEmergencyContactName() + " " + loggedInUser.getEmergencyContactPhone();
+                    resultString += MailgunUtil.REG_RECEIPT_TWELVE_B;
+                    resultString += MailgunUtil.REG_RECEIPT_THIRTEEN_A;
+                    if(cartEvent.getWebsite() != null) {
+                    	resultString += cartEvent.getWebsite() + "<br>";
+                    }
+                    if(cartEvent.getPhone() != null) {
+                    	resultString += cartEvent.getPhone();
+                    }
+                    resultString += MailgunUtil.REG_RECEIPT_THIRTEEN_B;
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_A;
+                    resultString += "https://overmind.bibs.io/bibs-server/rest/registrations/transfer?invoice=";
+                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId() + "&firstName=" + loggedInUser.getFirstname() + "&email=" + loggedInUser.getEmail();
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_B;
+                    resultString += "B" + c.getId() + "T" + c.getStripeChargeId();
+                    resultString += MailgunUtil.REG_RECEIPT_TEN_C;                    
+                    resultString += MailgunUtil.REG_RECEIPT_FOURTEEN;
+                    resultString += MailgunUtil.googleEventReservationCard(cartEvent, c.getId(), loggedInUser.getFirstname(), loggedInUser.getLastname());
+                    MailgunUtil.sendHTML(loggedInUser.getEmail(), "Thank you for registering with bibs!", resultString);
+                }
+
+                return new ResponseEntity<>("FreeCartSuccess", HttpStatus.OK);
+    }    
+    
+    
     @RequestMapping(value = "/refund", method = RequestMethod.POST)
     public ResponseEntity<String> refund(@RequestParam("invoice") String invoiceId,
                                          @RequestParam("firstName") String firstName,
