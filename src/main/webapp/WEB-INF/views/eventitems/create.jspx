@@ -255,7 +255,7 @@
                         <input  type="number" name="price"
                                 class="form-control"
                                 placeholder="Base price"
-                                min="1"
+                                min="0"
                                 data-parsley-error-message="Invalid base price."
                                 data-parsley-required="true"></input>
                     </div>
