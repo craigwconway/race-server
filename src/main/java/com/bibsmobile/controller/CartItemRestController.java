@@ -78,6 +78,7 @@ public class CartItemRestController {
                     Map <String, Map<String, Long>> dailyQuantity = new HashMap();
                     Map <String, Map<String, Long>> dailyMoney = new HashMap();
                     Map <String, Map<String, Long>> sortedDailyMoney = new LinkedHashMap();
+                    Map <Long, Integer> referralCounts = new HashMap<Long, Integer>();
                     // now lets fill up dailyMoney
             		//Fill this with zeroes
             		HashMap <String, Long> fillMap = new HashMap <String, Long> ();
@@ -107,6 +108,41 @@ public class CartItemRestController {
                         	} else {
                         		currentPrice = ci.getPrice() * ci.getQuantity() * 100;
                         		totalMoney.put(type, currentPrice);
+                        	}
+                        	// Handle Social Sharing Discounts
+                        	Long currentShared = totalMoney.get("SHARED");
+                        	Long currentShareQuantity = totalQuantity.get("SHARED");
+                        	if (currentShared != null) {
+                        		currentShared += c.isShared() ? 1 : 0;
+                        		totalMoney.put("SHARED", currentShared);
+                        	} else {
+                        		currentShared = c.isShared() ? new Long(1) : new Long(0);
+                        		totalMoney.put("SHARED", currentShared);
+                        	}
+                        	if (currentShareQuantity != null) {
+                        		currentShareQuantity += c.getReferralDiscount();
+                        		totalMoney.put("SHARED", currentShareQuantity);
+                        	} else {
+                        		currentShareQuantity = c.getReferralDiscount();
+                        		totalMoney.put("SHARED", currentShareQuantity);
+                        	}
+                        	// Handle Referral tracking
+                        	if(c.getReferral() != null) {
+                        		// If we find a referral, credit the referring cart
+                        		Integer oldCounts = referralCounts.get(c.getReferral().getId());
+                        		referralCounts.put(c.getReferral().getId(), oldCounts == null ? 1 : oldCounts + 1);
+                        		Long currentReferredQuantity = totalQuantity.get("REFERRED");
+                        		Long currentReferredAmount = totalMoney.get("REFERRED");
+                        		if(currentReferredQuantity != null) {
+                        			totalQuantity.put("REFERRED", currentReferredQuantity + 1);
+                        		} else {
+                        			totalQuantity.put("REFERRED", new Long(1));
+                        		}
+                        		if(currentReferredAmount != null) {
+                        			totalMoney.put("REFERRED", currentReferredAmount + c.getTotal());
+                        		} else {
+                        			totalMoney.put("REFERRED", currentReferredAmount);
+                        		}
                         	}
                         	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
                             	if (currentQuantity != null) {
