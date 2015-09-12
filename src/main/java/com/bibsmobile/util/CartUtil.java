@@ -268,7 +268,7 @@ public final class CartUtil {
             cart.setTimeout(Cart.DEFAULT_TIMEOUT);
             cart.persist();
             session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
-            cart.setReferralUrl(BuildTypeUtil.getBuild().getFrontend() + "/registration/#/" + eventCartItem.getId() + "?ref=" + cart.getId());
+            cart.setReferralUrl(BuildTypeUtil.getBuild().getFrontend() + "/registration/#/" + eventCartItem.getEvent().getId() + "?ref=" + cart.getId());
             cart.merge();
         }
 
@@ -361,7 +361,19 @@ public final class CartUtil {
         }
         // Finally, apply bibs processing fee. TODO: put this at level of event.
         cart.setTotalPreFee(total);
-        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
+        double absolute;
+        double relative;
+        try {
+            absolute = cart.getEvent().getPricing().getAbsoluteFee();
+            relative = cart.getEvent().getPricing().getRelative();
+        } catch (Exception e) {
+        	absolute = BIBS_ABSOLUTE_FEE;
+        	relative = BIBS_RELATIVE_FEE;
+        }
+        if(total > 0) {
+        	total += total * relative + absolute;
+        }
+        
         // calculate discounts of total price based on coupons
 
         // set total price which is at least 0
