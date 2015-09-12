@@ -68,8 +68,8 @@
                <button class="ui orange button" onclick="onBack()" type="submit">Back</button>
             </div>
             <div style="clear:both"><!--  --></div>
-            <div class="ui statistics five column grid">
-                <div class="four column centered row">
+            <div class="ui statistics six column grid">
+                <div class="five column centered row">
                     <div class="column">
                         <div class="purple large statistic">
                             <div class="label">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="blue small statistic">
+                    <div class="pink small statistic">
                         <div class="label">
                             Donations
                         </div>
@@ -110,6 +110,16 @@
                             <span id="total-donations" style="margin-left:10px;">0</span>
                         </div>
                         <div class="meta"><span class="price" id="total-money-donations"><!--  --></span></div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="blue small statistic">
+                        <div class="label">
+                            Shares
+                        </div>
+                        <div class="value"><i class="fa fa-share"><!--  --></i>
+                            <span id="total-shares" style="margin-left:10px;">0</span>
+                        </div>
                     </div>
                 </div>
                 <div class="column">
@@ -213,7 +223,7 @@
                 .rotateLabels(0)      //Angle to rotate x-axis labels.
                 .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
                 .groupSpacing(0.1)    //Distance between each group of bars.
-                .color(['#f2c61f','#00b5ad','#3b83c0', '#d95c5c'])
+                .color(['#f2c61f','#00b5ad','#d9499a', '#d95c5c'])
             ;
 
             chart.xAxis
@@ -301,6 +311,11 @@
         else{
             jQuery("#total-refund").text(initValue);
             jQuery("#total-money-refund").text("$0");
+        }
+        if('SHARED' in quantity){
+            jQuery('#total-shares').text(quantity.SHARED);
+        }else{
+            jQuery('#total-shares').text(initValue);
         }
         amount = displayDollar(totalSales);
         jQuery("#total-sales").text(amount);
