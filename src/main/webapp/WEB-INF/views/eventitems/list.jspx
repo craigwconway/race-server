@@ -716,6 +716,7 @@
             var discountRelative = null;
             if( jQuery('#disc-curr').hasClass('positive') ){
                 jQuery('#coupon-error-percent').hide();
+                error = false;
                 if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
                     // convert to cents
                     discount = parseFloat(discount) * 100;
