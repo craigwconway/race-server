@@ -129,6 +129,7 @@ public class CartRestController {
      * @apiParam {String} [color] color of SHIRT type cart items
      * @apiParam {Number} [priceChangeId] ID of pricechange to use with this object
      * @apiParam {Number} [referral] ID of referring cart
+     * @apiParam {Number} [deleteId] ID of specific Cart Item to delete
      * @apiSampleRequest http://localhost:8080/bibs-server/item/:id/updatequantity/:eventCartItemQuantity
      * @apiUse CartReturn
      * @return
@@ -149,7 +150,7 @@ public class CartRestController {
         if (registrationProfile.getId() == null) {
             this.userProfileService.saveUserProfile(registrationProfile);
         }
-        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, cartItemRequestWrapper.getEventCartItemPriceChange(), eventCartItemQuantity, registrationProfile, cartItemRequestWrapper.getTeam(), color, size, cartItemRequestWrapper.getCouponCode(), cartItemRequestWrapper.isNewItem(), referral);
+        Cart cart = CartUtil.updateOrCreateCart(request.getSession(), eventCartItemId, cartItemRequestWrapper.getEventCartItemPriceChange(), eventCartItemQuantity, registrationProfile, cartItemRequestWrapper.getTeam(), color, size, cartItemRequestWrapper.getCouponCode(), cartItemRequestWrapper.isNewItem(), referral, cartItemRequestWrapper.getDeleteId());
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json; charset=utf-8");
         log.info("Updating cart id: " + cart.getId() + " total: " + cart.getTotal());

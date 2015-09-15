@@ -26,6 +26,7 @@ public class CartItemReqWrapper {
     private long priceChangeId;
     private String couponCode;
     private Long referral;
+    private Long deleteId;
 
     public UserProfile getUserProfile() {
         return this.userProfile;
@@ -99,6 +100,20 @@ public class CartItemReqWrapper {
 	 */
 	public void setReferral(Long referral) {
 		this.referral = referral;
+	}
+
+	/**
+	 * @return the deleteId
+	 */
+	public Long getDeleteId() {
+		return deleteId;
+	}
+
+	/**
+	 * @param deleteId the deleteId to set
+	 */
+	public void setDeleteId(Long deleteId) {
+		this.deleteId = deleteId;
 	}
 
 	@Override

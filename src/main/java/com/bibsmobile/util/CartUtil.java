@@ -246,7 +246,7 @@ public final class CartUtil {
         return cart;
     }    
     
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem, Long referral) {
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem, Long referral, Long deleteId) {
          // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());
 
@@ -348,12 +348,15 @@ public final class CartUtil {
 
                         }
                         // removing
-                        else {
+                        else if(deleteId != null && ci.getId() == deleteId){
                             // add removed quantity to available
                         	System.out.println("Removing " + ci.getQuantity() +" of " + eventCartItem.getName() + "...");
                             eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
                             cartItemToRemove = ci;
-                            
+                        } else if(deleteId == null) {
+                        	System.out.println("Removing " + ci.getQuantity() +" of " + eventCartItem.getName() + "...");
+                            eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
+                            cartItemToRemove = ci;
                         }
                         eventCartItem.merge();
                         break;
