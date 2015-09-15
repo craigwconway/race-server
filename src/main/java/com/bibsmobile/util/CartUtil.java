@@ -306,6 +306,7 @@ public final class CartUtil {
             cart.merge();
         }
 
+    	CartItem cartItemToRemove = null;
 
         CartItem cartItem;
         // if doesn't have product in cart and not removing
@@ -349,8 +350,10 @@ public final class CartUtil {
                         // removing
                         else {
                             // add removed quantity to available
+                        	System.out.println("Removing " + ci.getQuantity() +" of " + eventCartItem.getName() + "...");
                             eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
-                            ci.remove();
+                            cartItemToRemove = ci;
+                            
                         }
                         eventCartItem.merge();
                         break;
@@ -365,8 +368,13 @@ public final class CartUtil {
             }
 
         }
-        
-        
+        System.out.println("Size of cart: " + cart.getCartItems().size());
+        if(cartItemToRemove != null) {
+            cart.getCartItems().remove(cartItemToRemove);
+            cart.merge();
+        }
+        System.out.println("Size of cart: " + cart.getCartItems().size());
+
 
         // add coupons to cart
         EventCartItemCoupon coupon = null;
