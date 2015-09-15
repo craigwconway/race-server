@@ -119,6 +119,18 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
+        
+        if(cart.getEvent().isSocialSharingDiscounts()) {
+	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+	        }
+	        else if(total > 0) {
+	        	cart.setReferralDiscount(total);
+	        	cart.setTotal(0);
+	        }
+        }
+        
         // Then apply coupon:
         if(cart.getCoupon() != null) {
         	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
@@ -133,7 +145,18 @@ public final class CartUtil {
         }
         cart.setTotalPreFee(total);
         // Finally, apply bibs processing fee. TODO: put this at level of event.
-        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
+        double absolute;
+        double relative;
+        try {
+            absolute = cart.getEvent().getPricing().getAbsoluteFee();
+            relative = cart.getEvent().getPricing().getRelative();
+        } catch (Exception e) {
+        	absolute = BIBS_ABSOLUTE_FEE;
+        	relative = BIBS_RELATIVE_FEE;
+        }
+        if(total > 0) {
+        	total += total * relative + absolute;
+        }
         // set total price which is at least 0
         cart.setTotal(Math.max(0, total));
         cart.merge();
@@ -205,7 +228,18 @@ public final class CartUtil {
         }
         cart.setTotalPreFee(total);
         // Finally, apply bibs processing fee. TODO: put this at level of event.
-        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
+        double absolute;
+        double relative;
+        try {
+            absolute = cart.getEvent().getPricing().getAbsoluteFee();
+            relative = cart.getEvent().getPricing().getRelative();
+        } catch (Exception e) {
+        	absolute = BIBS_ABSOLUTE_FEE;
+        	relative = BIBS_RELATIVE_FEE;
+        }
+        if(total > 0) {
+        	total += total * relative + absolute;
+        }
         // set total price which is at least 0
         cart.setTotal(Math.max(0, total));
         cart.merge();
@@ -331,6 +365,8 @@ public final class CartUtil {
             }
 
         }
+        
+        
 
         // add coupons to cart
         EventCartItemCoupon coupon = null;
@@ -347,6 +383,18 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
+        
+        if(cart.getEvent().isSocialSharingDiscounts()) {
+	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+	        }
+	        else if(total > 0) {
+	        	cart.setReferralDiscount(total);
+	        	cart.setTotal(0);
+	        }
+        }
+        
         // Then apply coupon:
         if(cart.getCoupon() != null) {
         	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);

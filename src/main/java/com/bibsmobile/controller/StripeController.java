@@ -296,7 +296,6 @@ public class StripeController {
             Map<String, String> initialMetadata = new HashMap<>();
             initialMetadata.put("order_id", c.getId().toString());
             chargeParams.put("metadata", initialMetadata);
-
             Charge stripeCharge = null;
             try {
                 stripeCharge = Charge.create(chargeParams);
@@ -412,7 +411,7 @@ public class StripeController {
                     resultString += MailgunUtil.REG_RECEIPT_SIX_B;
                     resultString += " ";
                     resultString += MailgunUtil.REG_RECEIPT_SIX_C;
-                    long bibsfee = c.getTotal() - (cartprice * 100 - couponprice);
+                    long bibsfee = c.getTotal() - c.getTotalPreFee();
                     resultString += "$" + bibsfee/100 + ".";
                     if(bibsfee % 100 > 9) {
                     	resultString += bibsfee % 100;
