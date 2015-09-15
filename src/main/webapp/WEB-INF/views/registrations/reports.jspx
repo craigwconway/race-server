@@ -120,6 +120,7 @@
                         <div class="value"><i class="fa fa-share"><!--  --></i>
                             <span id="total-shares" style="margin-left:10px;">0</span>
                         </div>
+                        <div class="meta"><span class="price" id="total-money-shares"><!--  --></span></div>
                     </div>
                 </div>
                 <div class="column">
@@ -313,9 +314,13 @@
             jQuery("#total-money-refund").text("$0");
         }
         if('SHARED' in quantity){
+            totalSales -= money.SHARED;
             jQuery('#total-shares').text(quantity.SHARED);
+            amount = displayDollar(money.SHARED);
+            jQuery("#total-money-shares").text(amount);
         }else{
             jQuery('#total-shares').text(initValue);
+            jQuery("#total-money-shares").text("$0");
         }
         amount = displayDollar(totalSales);
         jQuery("#total-sales").text(amount);
@@ -399,10 +404,18 @@
             });
         request.done(function(result) {
             if(result.length > 0){
-                console.log(result);
                 jQuery.each(result, function(i, d){
+                    console.log(d.type);
                     var query = jQuery(".cartitem-card").children();
                     query.clone().appendTo("#cartitems").attr("id", "item"+i);
+                    if(d.type == 'T_SHIRT'){
+                        jQuery('#item'+i).find('.statistic').removeClass('yellow').addClass('teal');
+                        jQuery('#item'+i).find('i').removeClass('fa-ticket').addClass('fa-shirtsinbulk');
+                    }
+                    if(d.type == 'DONATION'){
+                        jQuery('#item'+i).find('.statistic').removeClass('yellow').addClass('pink');
+                        jQuery('#item'+i).find('i').removeClass('fa-ticket').addClass('fa-gift');
+                    }
                     jQuery("#item"+i+" .header").html(d.name + '<div class="meta">Price: $' + d.price + '</div>');
                     jQuery("#item"+i+" .purchased-num").html(d.purchased);
                 })
