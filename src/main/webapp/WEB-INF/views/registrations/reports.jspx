@@ -245,6 +245,9 @@
     }
 
     function displayDollar(amount){
+        if(isNaN(amount)){
+            amount = 0;
+        }
         var dollars = '';
         if(Math.floor(amount/100) == 0){
             dollars = dollars + "0";
@@ -265,59 +268,85 @@
         var initValue = "0";
         var amount = '';
         if('TICKET' in quantity){
-            totalSales += money.TICKET;
+            if('TICKET' in money){
+                totalSales += money.TICKET;
+                amount = displayDollar(money.TICKET);
+                jQuery("#total-money-tickets").text(amount);
+            }else{
+                totalSales += 0;
+                amount = displayDollar(0);
+            }
             jQuery("#total-tickets").text(quantity.TICKET);
-            amount = displayDollar(money.TICKET);
-            jQuery("#total-money-tickets").text(amount);
         }
         else{
             jQuery("#total-tickets").text(initValue);
             jQuery("#total-money-tickets").text("$0");
         }
         if('T_SHIRT' in quantity){
-            totalSales += money.T_SHIRT;
+            if('T_SHIRT' in money){
+                totalSales += money.T_SHIRT;
+                amount = displayDollar(money.T_SHIRT);
+                jQuery("#total-money-shirts").text(amount);
+            }else{
+                totalSales += 0;
+                amount = displayDollar(0);
+            }
             jQuery("#total-shirts").text(quantity.T_SHIRT);
-            amount = displayDollar(money.T_SHIRT);
-            jQuery("#total-money-shirts").text(amount);
         }
         else{
             jQuery("#total-shirts").text(initValue);
             jQuery("#total-money-shirts").text("$0");
         }
         if('DONATION' in quantity){
-            totalSales += money.DONATION;
+            if('DONATION' in money){
+                totalSales += money.DONATION;
+                amount = displayDollar(money.DONATION);
+                jQuery("#total-money-donations").text(amount);
+            }else{
+                totalSales += 0;
+                amount = displayDollar(0);
+            }
             jQuery("#total-donations").text(quantity.DONATION);
-            amount = displayDollar(money.DONATION);
-            jQuery("#total-money-donations").text(amount);
         }
         else{
             jQuery("#total-donations").text(initValue);
             jQuery("#total-money-donations").text("$0");
         }
         if('COUPON' in quantity){
-            totalSales -= money.COUPON;
+            if('COUPON' in money){
+                totalSales -= money.COUPON;
+                amount = displayDollar(money.COUPON);
+                jQuery("#total-money-coupons").text(amount);
+            }else{
+                totalSales -= 0;
+                amount = displayDollar(0);
+            }
             jQuery("#total-coupons").text(quantity.COUPON);
-            amount = displayDollar(money.COUPON);
-            jQuery("#total-money-coupons").text(amount);
         }
         else{
             jQuery("#total-coupons").text(initValue);
             jQuery("#total-money-coupons").text("$0");
         }
         if('REFUND' in quantity){
+            if('REFUND' in money){
+                amount = displayDollar(money.REFUND);
+                jQuery("#total-money-refund").text(amount);
+            }
             jQuery("#total-refund").text(quantity.REFUND);
-            amount = displayDollar(money.REFUND);
-            jQuery("#total-money-refund").text(amount);
         }
         else{
             jQuery("#total-refund").text(initValue);
             jQuery("#total-money-refund").text("$0");
         }
         if('SHARED' in quantity){
-            totalSales -= money.SHARED;
+            if('SHARED' in money){
+                totalSales -= money.SHARED;
+                amount = displayDollar(money.SHARED);
+                jQuery("#total-money-shares").text(amount);
+            }else{
+                totalSales -= money.SHARED;
+            }
             jQuery('#total-shares').text(quantity.SHARED);
-            amount = displayDollar(money.SHARED);
-            jQuery("#total-money-shares").text(amount);
         }else{
             jQuery('#total-shares').text(initValue);
             jQuery("#total-money-shares").text("$0");
