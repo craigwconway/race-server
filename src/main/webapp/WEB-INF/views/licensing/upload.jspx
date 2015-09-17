@@ -47,7 +47,7 @@
 		    	        <input type="text" id="filename" readonly="readonly"></input>
 		    	        <label for="file" class="ui icon button btn-file">
 		    	             <i class="fa fa-folder-open" style="margin-right:5px"><!--  --></i>Import File
-		    	             <input type="file" id="file" name="license" style="display: none"></input>
+		    	             <div style="width:0px;height:0px;overflow:hidden;"><input type="file" id="file" name="license"></input></div>
 		    	        </label>
 		    	    </div>
 		    	    <div class="meta" style="text-align:right">allowed: .lic (&lt;1KB)</div>
@@ -76,7 +76,7 @@
 		var fileExtentionRange = '.lic';
 		var MAX_SIZE = 1; // KB
 
-		jQuery(document).on('change', '.btn-file :file', function() {
+		jQuery('.btn-file input:file').on('change', function() {
 		    var input = jQuery(this);
 
 		    if (navigator.appVersion.indexOf("MSIE") != -1) { // IE
@@ -92,7 +92,7 @@
 		    }
 		});
 
-		jQuery('.btn-file :file').on('fileselect', function(event, numFiles, label, size) {
+		jQuery('.btn-file input:file').on('fileselect', function(event, numFiles, label, size) {
 		    jQuery('#file').attr('name', 'license'); // allow upload.
 
 		    var postfix = label.substr(label.lastIndexOf('.'));
