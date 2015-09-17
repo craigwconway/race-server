@@ -340,6 +340,7 @@
                 if( colors[i] == 'Teal' ){ teal = true; jQuery("#color-teal").addClass('active'); }
                 if( colors[i] == 'Purple' ){ purp = true; jQuery("#color-purple").addClass('active'); }
             }
+            updateShirt();
         }
 
         function updateShirt(val){
@@ -351,7 +352,7 @@
                 case 'L':       lg   = !lg;   break;
                 case 'XL':      xl   = !xl;   break;
                 case '2XL':     xl2  = !xl2;  break;
-                case '3XL':    xl3  = !xl3;  break;
+                case '3XL':     xl3  = !xl3;  break;
                 case 'black':   blk  = !blk;  break;
                 case 'white':   wht  = !wht;  break;
                 case 'red':     red  = !red;  break;
