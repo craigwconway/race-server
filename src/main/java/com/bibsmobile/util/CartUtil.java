@@ -119,18 +119,19 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
-        
-        if(cart.getEvent().isSocialSharingDiscounts()) {
-	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
-	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
-	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
-	        }
-	        else if(total > 0) {
-	        	cart.setReferralDiscount(total);
-	        	cart.setTotal(0);
-	        }
+        if(cart.isShared()) {
+            if(cart.getEvent().isSocialSharingDiscounts()) {
+    	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+    	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+    	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+    	        }
+    	        else if(total > 0) {
+    	        	cart.setReferralDiscount(total);
+    	        	cart.setTotal(0);
+    	        }
+            }
         }
-        
+
         // Then apply coupon:
         if(cart.getCoupon() != null) {
         	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
@@ -395,15 +396,17 @@ public final class CartUtil {
         	}
         }
         
-        if(cart.getEvent().isSocialSharingDiscounts()) {
-	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
-	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
-	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
-	        }
-	        else if(total > 0) {
-	        	cart.setReferralDiscount(total);
-	        	cart.setTotal(0);
-	        }
+        if(cart.isShared()) {
+            if(cart.getEvent().isSocialSharingDiscounts()) {
+    	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+    	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+    	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+    	        }
+    	        else if(total > 0) {
+    	        	cart.setReferralDiscount(total);
+    	        	cart.setTotal(0);
+    	        }
+            }
         }
         
         // Then apply coupon:
