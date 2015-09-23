@@ -1,283 +1,303 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-        <style>
-            body{
-                background-image: url('../images/auth.jpg');
-                background-size: cover; background-repeat: no-repeat;
-            }
-            .white-overlay{
-                display: block;
-                background: rgba(255,255,255,.8);
-                width: 103%;
-                margin-top: -2%;
-                margin-left: -1%;
-                padding-top: 2%;
-                padding-bottom: 2%;
-                text-align: center;
-            }
-            .info-container{
-                margin: 0 auto;
-                font-size: 1.2em;
-                font-weight: 100;
-                line-height: 27px;
-                color: #292929;
-            }
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+    <style>
+        body{
+            background-image: url('../images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 103%;
+            margin-top: -2%;
+            margin-left: -1%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+            text-align: center;
+        }
+        .info-container{
+            margin: 0 auto;
+            font-size: 1.2em;
+            font-weight: 100;
+            line-height: 27px;
+            color: #292929;
+        }
+        .ui.labeled.input {
+            display: table;
+            margin: 5px auto;
+            text-align: left;
+            width: 500px;
+        }
+        .ui.labeled.input > .label {
+            width: 26%;
+        }
+        .ui.button, .ui.button:hover{
+            width: 8%;
+            color: #DD0000;
+        }
+        .submit{
+            margin: 0 auto;
+            width: 500px;
+            text-align: right;
+        }
+        .ui.search .prompt{
+            border-radius: 4px;
+        }
+        .ui.search > .results{
+            width: 100%;
+        }
+        .ui.search > .results .result{
+            color: #555;
+        }
+        .ui.search > .results .result .title{
+            font-family: inherit;
+            font-weight: normal;
+        }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
             .ui.labeled.input {
-                display: table;
-                margin: 5px auto;
-                text-align: left;
-                width: 500px;
+                width: 90%;
             }
             .ui.labeled.input > .label {
-                width: 26%;
-            }
-            .ui.button, .ui.button:hover{
-                width: 8%;
-                color: #DD0000;
+                width: 29%;
+                font-size: 0.8em;
             }
             .submit{
-                margin: 0 auto;
-                width: 500px;
-                text-align: right;
+                width: 90%;
             }
-            .ui.search .prompt{
-                border-radius: 4px;
-            }
-            .ui.search > .results{
-                width: 100%;
-            }
-            .ui.search > .results .result{
-                color: #555;
-            }
-            .ui.search > .results .result .title{
-                font-family: inherit;
-                font-weight: normal;
-            }
-            @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
-                .ui.labeled.input {
-                    width: 90%;
-                }
-                .ui.labeled.input > .label {
-                    width: 29%;
-                    font-size: 0.8em;
-                }
-                .submit{
-                    width: 90%;
-                }
-            }
-        </style>
-        <div class="white-overlay">
-            <form:update id="fu_com_bibsmobile_model_Event" modelAttribute="event" path="/events" versionField="Version" z="HRUEbbTPOtP6NCVvkP7sA85e324=">
-            <div class="info-container">
-                <h2 class="ui icon header">
-                    <i class="fa fa-cog"><!--  --></i>
-                    <div class="content">Edit Event
-                        <div class="sub header">Edit the details for ${event.name}.</div>
-                    </div>
-                </h2>
-
-                <div class="form-horizontal">
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Event Name</div>
-                        <input  type="text" name="name"
-                                class="form-control"
-                                placeholder="Event name"
-                                value="${event.name}"
-                                data-parsley-error-message="Please enter an event name."
-                                data-parsley-required="required"></input>
-                    </div>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Event Date</div>
-                        <input  type="text" name="timeStartLocal"
-                                class="form-control"
-                                id="eventDatepicker"
-                                value="${event.timeStartLocal}"
-                                placeholder="Event date"
-                                data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY h:mm:ss a"
-                                data-parsley-error-message="Please enter a date for this event."
-                                data-parsley-required="true"></input>
-                    </div>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Organization</div>
-                        <input  type="text" name="organization"
-                                class="form-control"
-                                placeholder="Organization"
-                                value="${event.organization}"></input>
-                    </div>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Charity</div>
-                        <input  type="text" name="charity"
-                                class="form-control"
-                                placeholder="Charity Name"
-                                value="${event.charity}"></input>
-                    </div>
-                    <c:if test='${(!build.rfid)}'>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">Website</div>
-                            <input  type="url" name="website"
-                                class="form-control"
-                                id="mask-website"
-                                placeholder="Website"
-                                value="${event.website}"
-                                data-parsley-type="url"
-                                data-parsley-error-message="Please enter a valid website starting with http:// or https://"
-                                data-parsley-required="required"></input>
-                        </div>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">Phone Number</div>
-                            <input  type="text" name="phone"
-                                class="form-control"
-                                id="mask-phone"
-                                placeholder="Phone Number"
-                                value="${event.phone}"
-                                data-parsley-length="[10,18]"
-                                data-parsley-error-message="Please enter a valid phone number."
-                                data-parsley-required="required"></input>
-                        </div>
-                    </c:if>
-                    <c:if test='${(build.rfid)}'>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">Website</div>
-                            <input  type="url" name="website"
-                                class="form-control"
-                                id="mask-website"
-                                placeholder="Website"
-                                value="${event.website}"
-                                data-parsley-type="url"
-                                data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
-                        </div>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">Phone Number</div>
-                            <input  type="text" name="phone"
-                                class="form-control"
-                                id="mask-phone"
-                                placeholder="Phone Number"
-                                value="${event.phone}"
-                                data-parsley-length="[10,18]"
-                                data-parsley-error-message="Please enter a valid phone number."></input>
-                        </div>
-                    </c:if>
-                    <div id="demo">
-                        <div class="ui labeled input">
-                            <div class="ui blue label">Address</div>
-                            <input  id="geoaddress"
-                                    type="text" name="address"
-                                    class="form-control"
-                                    placeholder="Address or Location"
-                                    value="${event.address}"></input>
-                        </div>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">City</div>
-                            <input  id="geocity"
-                                    type="text" name="city"
-                                    class="form-control"
-                                    placeholder="City"
-                                    value="${event.city}"></input>
-                        </div>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">State</div>
-                            <input  id="geostate"
-                                    type="text" name="state"
-                                    class="form-control"
-                                    placeholder="State"
-                                    value="${event.state}"></input>
-                        </div>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">Country</div>
-                            <input  id="geocountry" type="text" name="country"
-                                    class="form-control" placeholder="Country"
-                                    value="${event.country}"></input>
-                        </div>
-                        <div style="display:none">
-                            <input  id="geozip" type="text" name="zip"
-                                    value="${event.zip}"></input>
-                            <input  id="geolat" type="text" name="latitude"
-                                    value="${event.latitude}"></input>
-                            <input  id="geolong" type="text" name="longitude"
-                                    value="${event.longitude}"></input>
-                        </div>
-                    </div>
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Timezone</div>
-                        <div class="ui search" id="timezone-search">
-                            <input class="prompt" type="text" name="timezone" placeholder="Timezone" value="${event.timezone.ID}"><!--  --></input>
-                            <div class="results"><!--  --></div>
-                        </div>
-                    </div>
-                    <c:if test='${(!build.rfid)}'>
-                        <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                            <div class="ui labeled input">
-                                <div class="ui blue label">Gun Fired</div>
-                                <div class="btn btn-default btn-sm" id="reg" onclick="gunToggle()">
-                                    <c:if test='${event.gunFired}'>
-                                        <span class="glyphicon glyphicon-ok"></span>
-                                    </c:if>
-                                    <c:if test='${!(event.gunFired)}'>
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </c:if>
-                                </div>
-                                <input style="display:none" id="checkgun" type="checkbox" name="gunFired"></input>
-                            </div>
-
-                            <div class="ui labeled action input">
-                                <div class="ui blue label">Gun Time</div>
-                                <input  type="text" name="gunTime"
-                                            class="form-control" style="margin-top: 0; margin-bottom:0"
-                                            id="guntime" value="${event.gunTime}"
-                                            placeholder="Gun Time"
-                                            data-provide="datepicker"
-                                            data-date-format="MM/DD/YYYY h:mm:ss a"
-                                            data-parsley-error-message="Invalid time format."></input>
-                                <div class="ui icon button" id="removetime"><i class="fa fa-remove"><!--  --></i></div>
-                            </div>
-                        </sec:authorize>
-                    </c:if>
+        }
+    </style>
+    <div class="white-overlay">
+        <form:update id="fu_com_bibsmobile_model_Event" modelAttribute="event" path="/events" versionField="Version" z="HRUEbbTPOtP6NCVvkP7sA85e324=">
+        <div class="info-container">
+            <h2 class="ui icon header">
+                <i class="fa fa-cog"><!--  --></i>
+                <div class="content">Edit Event
+                    <div class="sub header">Edit the details for ${event.name}.</div>
                 </div>
-                <div style="display:none">
-                    <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
-                    <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/>
-                    <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="user-managed"/>
-                    <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="user-managed"/>
-                    <field:input field="general" id="c_com_bibsmobile_model_Event_general" z="user-managed"/>
-                    <field:input field="description" id="c_com_bibsmobile_model_Event_description" z="user-managed"/>
-                    <field:input field="photo" id="c_com_bibsmobile_model_Event_photo" z="user-managed"/>
-                    <field:input field="photo2" id="c_com_bibsmobile_model_Event_photo2" z="user-managed"/>
-                    <field:input field="photo3" id="c_com_bibsmobile_model_Event_photo3" z="user-managed"/>
-                    <field:input field="donateUrl" id="c_com_bibsmobile_model_Event_donateUrl" z="user-managed"/>
-                    <field:input field="facebookUrl1" id="c_com_bibsmobile_model_Event_facebookUrl1" z="user-managed"/>
-                    <field:input field="photoUploadUrl" id="c_com_bibsmobile_model_Event_photoUploadUrl" z="user-managed"/>
-                    <field:input field="courseRules" id="c_com_bibsmobile_model_Event_courseRules" z="user-managed"/>
-                    <field:datetime dateTimePattern="${event_updated_date_format}" field="updated" id="c_com_bibsmobile_model_Event_updated" z="user-managed"/>
-                    <field:simple field="raceResults" id="c_com_bibsmobile_model_Event_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" z="user-managed"/>
-                    <field:simple field="resultsFile" id="c_com_bibsmobile_model_Event_resultsFile" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" z="user-managed"/>
-                    <field:simple field="raceImage" id="c_com_bibsmobile_model_Event_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
-                    <field:simple render="false" field="eventAwardCategorys" id="c_com_bibsmobile_model_Event_eventAwardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
-                    <field:simple field="resultsFiles" id="c_com_bibsmobile_model_Event_resultsFiles" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" z="user-managed"/>
-                    <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
-                    <field:simple  render="false" field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
-                    <field:input field="running" id="c_com_bibsmobile_model_Event_running" render="true" z="user-managed"/>
-                    <field:input field="gunTimeStart" id="c_com_bibsmobile_model_Event_gunTimeStart" z="user-managed"/>
-                    <field:checkbox field="sync" id="c_com_bibsmobile_model_Event_sync" z="user-managed"/>
-                    <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
-                    <field:input render="false" field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" z="user-managed"/>
-                    <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="user-managed"/>
-                    <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="user-managed"/>
-                    <field:simple field="photos" id="c_com_bibsmobile_model_Event_photos" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Photo" z="user-managed"/>
-                    <field:simple field="results" id="c_com_bibsmobile_model_Event_results" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Result" z="user-managed"/>
-                    <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="user-managed"/>
-                    <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="user-managed"/>
-                    <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="user-managed"/>
-                    <field:input field="eventUserGroup" id="c_com_bibsmobile_model_Event_eventUserGroup" z="user-managed" render="false"/>
-                    <field:input field="eventUserGroups" id="c_com_bibsmobile_model_Event_eventUserGroups" z="user-managed" render="false"/>
-                    <field:select field="eventTypes" id="c_com_bibsmobile_model_Event_eventTypes" itemValue="id" items="${eventtypes}" multiple="true" path="/eventtypes" z="user-managed"/>
-                    <field:input field="waiver" id="c_com_bibsmobile_model_Event_waiver" z="user-managed"/>
-                </div>
+            </h2>
+
+            <!-- chrome autocomplete hack -->
+            <div style="display: none;">
+                <input type="text" id="PreventChromeAutocomplete" name="PreventChromeAutocomplete" autocomplete="address-level4" />
             </div>
-            </form:update>
+            <div class="form-horizontal">
+                <div class="ui labeled input">
+                    <div class="ui blue label">Event Name</div>
+                    <input  type="text" name="name"
+                            class="form-control"
+                            autocomplete="off"
+                            placeholder="Event name"
+                            value="${event.name}"
+                            data-parsley-error-message="Please enter an event name."
+                            data-parsley-required="required"></input>
+                </div>
+                <textarea   name="description" style="width:500px;margin:0 auto"
+                            class="form-control" rows="2"
+                            placeholder="Product description"
+                            value="${event.description}"><!-- --></textarea>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Event Date</div>
+                    <input  type="text" name="timeStartLocal"
+                            class="form-control"
+                            autocomplete="off"
+                            id="eventDatepicker"
+                            value="${event.timeStartLocal}"
+                            placeholder="Event date"
+                            data-provide="datepicker"
+                            data-date-format="MM/DD/YYYY h:mm:ss a"
+                            data-parsley-error-message="Please enter a date for this event."
+                            data-parsley-required="true"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Organization</div>
+                    <input  type="text" name="organization"
+                            class="form-control"
+                            autocomplete="off"
+                            placeholder="Organization"
+                            value="${event.organization}"></input>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Charity</div>
+                    <input  type="text" name="charity"
+                            class="form-control"
+                            autocomplete="off"
+                            placeholder="Charity Name"
+                            value="${event.charity}"></input>
+                </div>
+                <c:if test='${(!build.rfid)}'>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Website</div>
+                        <input  type="url" name="website"
+                            class="form-control"
+                            autocomplete="off"
+                            id="mask-website"
+                            placeholder="Website"
+                            value="${event.website}"
+                            data-parsley-type="url"
+                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"
+                            data-parsley-required="required"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Phone Number</div>
+                        <input  type="text" name="phone"
+                            class="form-control"
+                            autocomplete="off"
+                            id="mask-phone"
+                            placeholder="Phone Number"
+                            value="${event.phone}"
+                            data-parsley-length="[10,18]"
+                            data-parsley-error-message="Please enter a valid phone number."
+                            data-parsley-required="required"></input>
+                    </div>
+                </c:if>
+                <c:if test='${(build.rfid)}'>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Website</div>
+                        <input  type="url" name="website"
+                            class="form-control"
+                            autocomplete="off"
+                            id="mask-website"
+                            placeholder="Website"
+                            value="${event.website}"
+                            data-parsley-type="url"
+                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Phone Number</div>
+                        <input  type="text" name="phone"
+                            class="form-control"
+                            autocomplete="off"
+                            id="mask-phone"
+                            placeholder="Phone Number"
+                            value="${event.phone}"
+                            data-parsley-length="[10,18]"
+                            data-parsley-error-message="Please enter a valid phone number."></input>
+                    </div>
+                </c:if>
+                <div id="demo">
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Address</div>
+                        <input  id="geoaddress" autocomplete="off"
+                                type="text" name="address"
+                                class="form-control"
+                                placeholder="Address or Location"
+                                value="${event.address}"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">City</div>
+                        <input  id="geocity" autocomplete="off"
+                                type="text" name="city"
+                                class="form-control"
+                                placeholder="City"
+                                value="${event.city}"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">State</div>
+                        <input  id="geostate" autocomplete="off"
+                                type="text" name="state"
+                                class="form-control"
+                                placeholder="State"
+                                value="${event.state}"></input>
+                    </div>
+                    <div class="ui labeled input">
+                        <div class="ui blue label">Country</div>
+                        <input  id="geocountry" autocomplete="off"
+                                type="text" name="country"
+                                class="form-control" placeholder="Country"
+                                value="${event.country}"></input>
+                    </div>
+                    <div style="display:none">
+                        <input  id="geozip" autocomplete="off"
+                                type="text" name="zip"
+                                value="${event.zip}"></input>
+                        <input  id="geolat" autocomplete="off"
+                                type="text" name="latitude"
+                                value="${event.latitude}"></input>
+                        <input  id="geolong" autocomplete="off"
+                                type="text" name="longitude"
+                                value="${event.longitude}"></input>
+                    </div>
+                </div>
+                <div class="ui labeled input">
+                    <div class="ui blue label">Timezone</div>
+                    <div class="ui search" id="timezone-search">
+                        <input class="prompt" type="text" name="timezone" placeholder="Timezone" value="${event.timezone.ID}"><!--  --></input>
+                        <div class="results"><!--  --></div>
+                    </div>
+                </div>
+                <c:if test='${(!build.rfid)}'>
+                    <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Gun Fired</div>
+                            <div class="btn btn-default btn-sm" id="reg" onclick="gunToggle()">
+                                <c:if test='${event.gunFired}'>
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                </c:if>
+                                <c:if test='${!(event.gunFired)}'>
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                </c:if>
+                            </div>
+                            <input style="display:none" id="checkgun" type="checkbox" name="gunFired"></input>
+                        </div>
+
+                        <div class="ui labeled action input">
+                            <div class="ui blue label">Gun Time</div>
+                            <input  type="text" name="gunTime"
+                                        class="form-control" style="margin-top: 0; margin-bottom:0"
+                                        id="guntime" value="${event.gunTime}"
+                                        placeholder="Gun Time"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY h:mm:ss a"
+                                        data-parsley-error-message="Invalid time format."></input>
+                            <div class="ui icon button" id="removetime"><i class="fa fa-remove"><!--  --></i></div>
+                        </div>
+                    </sec:authorize>
+                </c:if>
+            </div>
+            <div style="display:none">
+                <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
+                <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/>
+                <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="user-managed"/>
+                <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="user-managed"/>
+                <field:input field="general" id="c_com_bibsmobile_model_Event_general" z="user-managed"/>
+                <field:input field="description" id="c_com_bibsmobile_model_Event_description" z="user-managed"/>
+                <field:input field="photo" id="c_com_bibsmobile_model_Event_photo" z="user-managed"/>
+                <field:input field="photo2" id="c_com_bibsmobile_model_Event_photo2" z="user-managed"/>
+                <field:input field="photo3" id="c_com_bibsmobile_model_Event_photo3" z="user-managed"/>
+                <field:input field="donateUrl" id="c_com_bibsmobile_model_Event_donateUrl" z="user-managed"/>
+                <field:input field="facebookUrl1" id="c_com_bibsmobile_model_Event_facebookUrl1" z="user-managed"/>
+                <field:input field="photoUploadUrl" id="c_com_bibsmobile_model_Event_photoUploadUrl" z="user-managed"/>
+                <field:input field="courseRules" id="c_com_bibsmobile_model_Event_courseRules" z="user-managed"/>
+                <field:datetime dateTimePattern="${event_updated_date_format}" field="updated" id="c_com_bibsmobile_model_Event_updated" z="user-managed"/>
+                <field:simple field="raceResults" id="c_com_bibsmobile_model_Event_raceResults" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Result" z="user-managed"/>
+                <field:simple field="resultsFile" id="c_com_bibsmobile_model_Event_resultsFile" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" z="user-managed"/>
+                <field:simple field="raceImage" id="c_com_bibsmobile_model_Event_raceImage" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
+                <field:simple render="false" field="eventAwardCategorys" id="c_com_bibsmobile_model_Event_eventAwardCategorys" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
+                <field:simple field="resultsFiles" id="c_com_bibsmobile_model_Event_resultsFiles" messageCode="entity_reference_not_managed" messageCodeAttribute="Results File" z="user-managed"/>
+                <field:simple field="raceImages" id="c_com_bibsmobile_model_Event_raceImages" messageCode="entity_reference_not_managed" messageCodeAttribute="Race Image" z="user-managed"/>
+                <field:simple  render="false" field="eventAwardCategory" id="c_com_bibsmobile_model_Event_eventAwardCategory" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Award Category" z="user-managed"/>
+                <field:input field="running" id="c_com_bibsmobile_model_Event_running" render="true" z="user-managed"/>
+                <field:input field="gunTimeStart" id="c_com_bibsmobile_model_Event_gunTimeStart" z="user-managed"/>
+                <field:checkbox field="sync" id="c_com_bibsmobile_model_Event_sync" z="user-managed"/>
+                <field:input field="syncId" id="c_com_bibsmobile_model_Event_syncId" z="user-managed"/>
+                <field:input render="false" field="awardCategorys" id="c_com_bibsmobile_model_Event_awardCategorys" z="user-managed"/>
+                <field:simple field="alerts" id="c_com_bibsmobile_model_Event_alerts" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Alert" z="user-managed"/>
+                <field:simple field="maps" id="c_com_bibsmobile_model_Event_maps" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Map" z="user-managed"/>
+                <field:simple field="photos" id="c_com_bibsmobile_model_Event_photos" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Photo" z="user-managed"/>
+                <field:simple field="results" id="c_com_bibsmobile_model_Event_results" messageCode="entity_reference_not_managed" messageCodeAttribute="Event Result" z="user-managed"/>
+                <field:checkbox field="regEnabled" id="c_com_bibsmobile_model_Event_regEnabled" z="user-managed"/>
+                <field:datetime dateTimePattern="${event_regstart_date_format}" field="regStart" id="c_com_bibsmobile_model_Event_regStart" z="user-managed"/>
+                <field:datetime dateTimePattern="${event_regend_date_format}" field="regEnd" id="c_com_bibsmobile_model_Event_regEnd" z="user-managed"/>
+                <field:input field="eventUserGroup" id="c_com_bibsmobile_model_Event_eventUserGroup" z="user-managed" render="false"/>
+                <field:input field="eventUserGroups" id="c_com_bibsmobile_model_Event_eventUserGroups" z="user-managed" render="false"/>
+                <field:select field="eventTypes" id="c_com_bibsmobile_model_Event_eventTypes" itemValue="id" items="${eventtypes}" multiple="true" path="/eventtypes" z="user-managed"/>
+                <field:input field="waiver" id="c_com_bibsmobile_model_Event_waiver" z="user-managed"/>
+            </div>
         </div>
+        </form:update>
+    </div>
     <script src="/bibs-server/resources/scripts/tzid.js" type="text/javascript"><jsp:text/></script>
     <c:if test='${(!build.rfid)}'>
         <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
@@ -305,6 +325,8 @@
         }
 
         function initInfo(){
+            jQuery('textarea[name="description"]').val('${event.description}');
+            var form = jQuery('#event').attr('autocomplete', 'off');
             var status = '${event.gunFired}';
             if( status === 'true' ){
                 jQuery('input[name="gunFired"]').prop('checked', true);
@@ -392,13 +414,17 @@
                     localdate = moment(localdate).format('MM/DD/YYYY hh:mm:ss a');
                     jQuery('input[name="timeStartLocal"]').val(localdate);
                     if( addr == "" ){
-                        jQuery('#geoaddress').val(misc);
+                        jQuery('#geoaddress').val('${event.address}');
+                        jQuery('#geocity').val('${event.city}');
+                        jQuery('#geostate').val('${event.state}');
+                        jQuery('#geocountry').val('${event.country}');
                     }else{
                         jQuery('#geoaddress').val(addr);
+                        jQuery('#geocity').val(city);
+                        jQuery('#geostate').val(state);
+                        jQuery('#geocountry').val(country);
                     }
-                    jQuery('#geocity').val(city);
-                    jQuery('#geostate').val(state);
-                    jQuery('#geocountry').val(country);
+                    jQuery('input[name="PreventChromeAutocomplete"]').removeAttr('name');
                     this.submit();
                 });
             })

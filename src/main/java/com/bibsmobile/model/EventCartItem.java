@@ -185,6 +185,13 @@ public class EventCartItem {
     			.exclude("*.class").deepSerialize(collection);
     }
     
+    public static String toJsonArrayForReg(Collection<EventCartItem> collection) {
+    	return new JSONSerializer().exclude("event.awardCategorys").exclude("event.resultsFiles")
+    			.exclude("event.latestImportFile").exclude("event.eventType.event")
+    			.exclude("eventType.event").exclude("event.raceResults")
+    			.include("event").include("priceChanges").exclude("*.class").serialize(collection);
+    }
+    
     public static String toJsonArray(Collection<EventCartItem> collection) {
         return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
     }
@@ -626,6 +633,16 @@ public class EventCartItem {
         TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event", EventCartItem.class);
         q.setParameter("event", event);
         return q;
+    }
+    
+    public static TypedQuery<EventCartItem> findEventCartItemsByEventAndTypes(Event event, List <EventCartItemTypeEnum> types) {
+        if (event == null || types == null)
+            throw new IllegalArgumentException("The event and types argument are required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event AND o.type IN (:types)", EventCartItem.class);
+        q.setParameter("event", event);
+        q.setParameter("types", types);
+        return q;    	
     }
 
     public static TypedQuery<EventCartItem> findEventCartItemsByEvent(Event event, String sortFieldName, String sortOrder) {

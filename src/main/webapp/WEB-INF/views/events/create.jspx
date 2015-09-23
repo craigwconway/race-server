@@ -90,32 +90,41 @@
                     <div class="sub header">Provide the details for this future event.</div>
                 </div>
             </h2>
-            
+            <!-- chrome autocomplete hack
+                https://code.google.com/p/chromium/issues/detail?id=468153
+                comment number 41 shows the solution i used below.
+             -->
+            <div style="display: none;">
+                <input type="text" id="PreventChromeAutocomplete" name="PreventChromeAutocomplete" autocomplete="address-level4" />
+            </div>
             <div class="form-fields">
                 <input  type="text" name="name"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         placeholder="Event name"
                         value="${event.name}"
                         data-parsley-error-message="Please enter an event name."
                         data-parsley-required="required"></input>
+                <textarea  name="description" style="width:400px;margin:0 auto"
+                        class="form-control" rows="2"
+                        placeholder="Event description"><!-- --></textarea>
                 <input  type="text" name="timeStartLocal"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         id="eventDatepicker"
                         placeholder="Event date"
                         data-provide="datepicker"
                         data-date-format="MM/DD/YYYY hh:mm:ss a"
                         data-parsley-error-message="Please enter a date for this event."></input>
                 <input  type="text" name="organization"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         placeholder="Organization"
                         value="${event.organization}"></input>
                 <input  type="text" name="charity"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         placeholder="Charity Name"
                         value="${event.charity}"></input>
                 <c:if test='${(!build.rfid)}'>
                     <input  type="url" name="website"
-                            class="form-control"
+                            class="form-control" autocomplete="off"
                             id="mask-website"
                             placeholder="Website"
                             value="${event.website}"
@@ -123,7 +132,7 @@
                             data-parsley-error-message="Please enter a valid website starting with http:// or https://"
                             data-parsley-required="required"></input>
                     <input  type="text" name="phone"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         id="mask-phone"
                         placeholder="Phone Number"
                         value="${event.phone}"
@@ -133,14 +142,14 @@
                 </c:if>
                 <c:if test='${(build.rfid)}'>
                     <input  type="url" name="website"
-                            class="form-control"
+                            class="form-control" autocomplete="off"
                             id="mask-website"
                             placeholder="Website"
                             value="${event.website}"
                             data-parsley-type="url"
                             data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
                     <input  type="text" name="phone"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         id="mask-phone"
                         placeholder="Phone Number"
                         value="${event.phone}"
@@ -151,40 +160,40 @@
     		<div id="demo">
                 <input  id="geoaddress"
                         type="text" name="address"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         placeholder="Address or Location"
                         value="${event.address}"></input>
                 <input  id="geocity"
                         type="text" name="city"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         placeholder="City"
                         value="${event.city}"></input>
                 <input  id="geostate"
                         type="text" name="state"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         placeholder="State"
                         value="${event.state}"></input>
                 <input  id="geocountry" type="text" name="country"
-                        class="form-control"
+                        class="form-control" autocomplete="off"
                         placeholder="Country"
                         value="${event.country}"></input>
                 <div style="display:none">
                     <label for="eventZip">
-                    <input  id="geozip" type="text" name="zip" placeholder="zip"
+                    <input  id="geozip" type="text" name="zip" placeholder="zip" autocomplete="off"
                             value="${event.zip}"></input>
                     </label>
                     <label for="eventLat">
-                    <input  id="geolat" type="text" name="latitude" placeholder="latitude"
+                    <input  id="geolat" type="text" name="latitude" placeholder="latitude" autocomplete="off"
                             value="${event.latitude}"></input>
                     </label>
                     <label for="eventLong">
-                    <input  id="geolong" type="text" name="longitude" placeholder="longitude"
+                    <input  id="geolong" type="text" name="longitude" placeholder="longitude" autocomplete="off"
                             value="${event.longitude}"></input>
                     </label>
                 </div>
             </div>
             <div class="ui search" id="timezone-search">
-                <input class="prompt" type="text" name="timezone" placeholder="Timezone"><!--  --></input>
+                <input class="prompt" type="text" name="timezone" autocomplete="off" placeholder="Timezone"><!--  --></input>
                 <div class="results"><!--  --></div>
             </div>
         </div>
@@ -196,7 +205,6 @@
             <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="user-managed"/>
             <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="user-managed"/>
             <field:input field="general" id="c_com_bibsmobile_model_Event_general" z="user-managed"/>
-            <field:input field="description" id="c_com_bibsmobile_model_Event_description" z="user-managed"/>
             <field:input field="photo" id="c_com_bibsmobile_model_Event_photo" z="user-managed"/>
             <field:input field="photo2" id="c_com_bibsmobile_model_Event_photo2" z="user-managed"/>
             <field:input field="photo3" id="c_com_bibsmobile_model_Event_photo3" z="user-managed"/>

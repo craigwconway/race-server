@@ -77,7 +77,12 @@ public class EventCartItemController {
     @RequestMapping(produces = "text/html")
     public String list(@RequestParam(value = "event", required = true) Long event, Model uiModel) {
         Event e = Event.findEvent(event);
+        List <Long> eventCartItemIds = new ArrayList<Long>();
+        for(EventCartItem eci : EventCartItem.findEventCartItemsByEvent(e).getResultList()) {
+        	eventCartItemIds.add(eci.getId());
+        }
         uiModel.addAttribute("event", e);
+        uiModel.addAttribute("eventcartitemids", eventCartItemIds);
         uiModel.addAttribute("eventcartitems", EventCartItem.findEventCartItemsByEvent(e).getResultList());
         uiModel.addAttribute("customregfields", CustomRegField.findCustomRegFieldsByEvent(e).getResultList());
         uiModel.addAttribute("eventcoupons", EventCartItemCoupon.findEventCartItemCouponsByEvent(e).getResultList());
@@ -143,9 +148,9 @@ public class EventCartItemController {
             customRegFields = Collections.emptyList();
         } else {
             resultList = EventCartItem.findEventCartItemsByEvent(event).getResultList();
-            customRegFields = CustomRegField.findCustomRegFieldsByEvent(event).getResultList();
+            customRegFields = CustomRegField.findVisibleCustomRegFieldsByEvent(event).getResultList();
         }
-        return new ResponseEntity<>("{\"eventitems\":" + EventCartItem.toDeepJsonArray(resultList) + ", \"regfields\":" + CustomRegField.toJsonArray(customRegFields) + "}", headers, HttpStatus.OK);
+        return new ResponseEntity<>("{\"eventitems\":" + EventCartItem.toJsonArrayForReg(resultList) + ", \"regfields\":" + CustomRegField.toJsonArray(customRegFields) + "}", headers, HttpStatus.OK);
     }    
     /*
      * Model attributes
