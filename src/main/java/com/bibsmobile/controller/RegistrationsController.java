@@ -51,6 +51,7 @@ public class RegistrationsController {
                                 @RequestParam(value = "email", required = false) String email,
                                 @RequestParam(value = "invoiceId", required = false) String invoiceId,
                                 @RequestParam(value = "start", required = false) Integer start,
+                                @RequestParam(value = "refunded", required = false) Boolean refunded,
                                 @RequestParam(value = "count", required = false) Integer count,
                                 Model uiModel) {
         UserProfile user = UserProfileUtil.getLoggedInUserProfile();
@@ -58,11 +59,11 @@ public class RegistrationsController {
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return "accessDeniedFailure";
         }
-
+        if (refunded == null) refunded = false;
         if (start == null) start = 0;
         if (count == null) count = 25;
 
-        List<Cart> registrations = RegistrationsUtil.search(event, firstName, lastName, email, invoiceId);
+        List<Cart> registrations = RegistrationsUtil.search(event, firstName, lastName, email, invoiceId, refunded);
         Collections.sort(registrations, new Comparator<Cart>() { public int compare(Cart c1, Cart c2) { return c1.getId().compareTo(c2.getId());}});
         if (registrations == null)
             return null;

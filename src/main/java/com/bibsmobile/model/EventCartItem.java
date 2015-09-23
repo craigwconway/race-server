@@ -634,6 +634,16 @@ public class EventCartItem {
         q.setParameter("event", event);
         return q;
     }
+    
+    public static TypedQuery<EventCartItem> findEventCartItemsByEventAndTypes(Event event, List <EventCartItemTypeEnum> types) {
+        if (event == null || types == null)
+            throw new IllegalArgumentException("The event and types argument are required");
+        EntityManager em = EventCartItem.entityManager();
+        TypedQuery<EventCartItem> q = em.createQuery("SELECT o FROM EventCartItem AS o WHERE o.event = :event AND o.type IN (:types)", EventCartItem.class);
+        q.setParameter("event", event);
+        q.setParameter("types", types);
+        return q;    	
+    }
 
     public static TypedQuery<EventCartItem> findEventCartItemsByEvent(Event event, String sortFieldName, String sortOrder) {
         if (event == null)

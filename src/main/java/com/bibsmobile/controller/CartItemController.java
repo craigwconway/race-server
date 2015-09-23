@@ -5,7 +5,9 @@ import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
+import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserProfile;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +22,13 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @RequestMapping("/cartitems")
@@ -96,35 +102,86 @@ public class CartItemController {
         return "redirect:/cartitems";
     }
 
+    /**
+     * @api {get} /cartitems/export Export Registrations
+     * @apiName Export Registrations
+     * @apiDescription Call to export a CSV of registrations 
+     * @apiGroup registrations
+     * @apiParam {Number} eventId Id of event to export registrations from as querystring
+     * @apiParam {Boolean} all Switch to export all or only new registrations of this type as querystring
+     * @apiParam {String="TICKET","T_SHIRT","DONATION"} [type] Type of EventCartItems to export as querystring
+     * @apiParam {Boolean} [questions=true] Switch to export custom Fields as querystring
+     * @apiParam {Boolean} [bibnum=false] Switch to export assigned bib numbers as querystring
+     * @throws IOException
+     */
     @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public static void export(@RequestParam Long eventId, @RequestParam boolean all, HttpServletResponse response) throws IOException {
+    public static void export(@RequestParam Long eventId, @RequestParam boolean all, HttpServletResponse response,
+    		@RequestParam(value = "type") List <EventCartItemTypeEnum> types,
+    		@RequestParam(value = "questions", defaultValue = "true") boolean questions,
+    		@RequestParam(value = "bibnum", defaultValue = "false") boolean bibnum) throws IOException {
         List<CartItem> cartItems = new ArrayList<>();
+        System.out.println("Handling export for types: " + types);
         Event event = Event.findEvent(eventId);
         if (event != null) {
-            List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+            List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEventAndTypes(event, types).getResultList();
+            System.out.println(eventCartItems.size() + " ECIs matching criteria, triggering export");
             if (!eventCartItems.isEmpty()) {
                 cartItems = CartItem.findCompletedCartItemsByEventCartItems(eventCartItems, all).getResultList();
             }
         }
+        System.out.println(cartItems.size() + " CIs matching criteria, triggering export");
+        //Format all time strings in the event director's timezone:
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+        format.setTimeZone(event.getTimezone());
+        
         response.setContentType("text/csv;charset=utf-8");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + "registrations.csv\"");
+        String headers = "Checkout Time, Ticket Type, Item, Quantity, Size, Color, Coupon Code, Raw Price, Price Option, Social Shared, Event Type,";
+        if(bibnum == true) {
+        	headers += " Bib Number,";
+        }
+        headers += "Firstname, Lastname, Age, Gender, Email, Phone, Address, Zip Code, City, State, Emergency Contact, Emergency Contact Phone";
+        headers += "\r\n";
         for (CartItem cartItem : cartItems) {
+        	System.out.println("Checking cartitem: " + cartItem.getId());
             if (BooleanUtils.isNotTrue(cartItem.getExported())) {
                 cartItem.setExported(Boolean.TRUE);
                 cartItem.persist();
             }
             Cart cart = cartItem.getCart();
+            String couponCode = (cart.getCoupon() == null) ? "N/A" : cart.getCoupon().getCode();
+            String color = (cartItem.getColor() == null) ? "N/A" : cartItem.getColor();
+            String size = (cartItem.getColor() == null) ? "N/A" : cartItem.getSize();
+            String eventTypeName = (cartItem.getEventType() == null) ? "N/A" : cartItem.getEventType().getTypeName();
+            String categoryName = cartItem.getEventCartItemPriceChange() == null ? "All" : cartItem.getEventCartItemPriceChange().getCategoryName();
             EventCartItem eventCartItem = cartItem.getEventCartItem();
             UserProfile userProfile = cartItem.getUserProfile();
-            String str = cartItem.getCreated() + ", " + cartItem.getQuantity() + ", " + cartItem.getPrice() + ", " + cartItem.getSize() + ", "
-                    + cartItem.getColor() + ", " + eventCartItem.getType() + ", " + eventCartItem.getName() + ", " + eventCartItem.getPrice() + ", ";
-            for (CustomRegFieldResponse r : cart.getCustomRegFieldResponses()) {
-                str += r.getCustomRegField().getQuestion() + ", " + r.getResponse() + ", ";
+            String str = format.format(cartItem.getCreated()) + ", " + cartItem.getEventCartItem().getType() + ", " + cartItem.getEventCartItem().getName() + ", " 
+            		+ cartItem.getQuantity() + ", " + size + ", " + color + ", " + couponCode + ", " 
+                    + "$" + cartItem.getPrice()/100 + "." + cartItem.getPrice()%100 + ", " + categoryName + ", "
+            		+ cart.isShared() + ", " + eventTypeName + ", ";
+            if(bibnum == true) {
+            	if(cartItem.getEventCartItem().getType() == EventCartItemTypeEnum.TICKET) {
+            		if (cartItem.getBib() == null) {
+            			str += "-";
+            		} else {
+            			str += cartItem.getBib();
+            		}
+            	} else {
+            		str += "N/A";
+            	}
             }
+
             if (userProfile != null) {
-                str += userProfile.getBirthdate() + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", " + userProfile.getAddressLine1() + ", "
-                        + userProfile.getAddressLine2() + ", " + userProfile.getZipCode() + ", " + userProfile.getEmergencyContactName() + ", "
-                        + userProfile.getEmergencyContactPhone() + ", " + userProfile.getHearFrom();
+                str += userProfile.getFirstname() + ", " + userProfile.getLastname() + ", " + userProfile.getAge() + ", "
+                		+ userProfile.getGender() + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", "
+                		+ userProfile.getAddressLine1() + ", " + userProfile.getZipCode() + ", " + userProfile.getCity() + ", "
+                		+ userProfile.getState() + ", " + userProfile.getEmergencyContactName() + ", " + userProfile.getEmergencyContactPhone();
+            }
+            if(questions == true) {
+                for (CustomRegFieldResponse r : cart.getCustomRegFieldResponses()) {
+                    str += r.getCustomRegField().getQuestion() + ", " + r.getResponse() + ", ";
+                }
             }
             str += "\r\n";
             response.getWriter().write(str);

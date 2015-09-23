@@ -68,6 +68,8 @@ public class CartItemRestController {
         } else if (eventId != null) {
             Event event = Event.findEvent(eventId);
             if (event != null) {
+            	long shared = 0;
+            	long referred = 0;
                 List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
                 if (!eventCartItems.isEmpty()) {
                     List<Cart> carts = Cart.findCompletedCartsByEventCartItems(eventCartItems, fromDate, toDate).getResultList();
@@ -76,6 +78,7 @@ public class CartItemRestController {
                     Map <String, Map<String, Long>> dailyQuantity = new HashMap();
                     Map <String, Map<String, Long>> dailyMoney = new HashMap();
                     Map <String, Map<String, Long>> sortedDailyMoney = new LinkedHashMap();
+                    Map <Long, Integer> referralCounts = new HashMap<Long, Integer>();
                     // now lets fill up dailyMoney
             		//Fill this with zeroes
             		HashMap <String, Long> fillMap = new HashMap <String, Long> ();
@@ -86,6 +89,12 @@ public class CartItemRestController {
                     SimpleDateFormat fmt = new SimpleDateFormat("MM-dd-yyyy");
                     fmt.setTimeZone(event.getTimezone());
                     for(Cart c : carts) {
+                    	if(c.isShared()) {
+                    		shared ++;
+                    	}
+                    	if(c.getReferral() != null) {
+                    		referred ++;
+                    	}
                     	long noncoupon = 0;
                         for(CartItem ci : c.getCartItems()) {
                     		noncoupon += ci.getPrice() * ci.getQuantity() * 100;
@@ -99,6 +108,41 @@ public class CartItemRestController {
                         	} else {
                         		currentPrice = ci.getPrice() * ci.getQuantity() * 100;
                         		totalMoney.put(type, currentPrice);
+                        	}
+                        	// Handle Social Sharing Discounts
+                        	Long currentShared = totalMoney.get("SHARED");
+                        	Long currentShareQuantity = totalQuantity.get("SHARED");
+                        	if (currentShared != null) {
+                        		currentShared += c.isShared() ? 1 : 0;
+                        		totalMoney.put("SHARED", currentShared);
+                        	} else {
+                        		currentShared = c.isShared() ? new Long(1) : new Long(0);
+                        		totalMoney.put("SHARED", currentShared);
+                        	}
+                        	if (currentShareQuantity != null) {
+                        		currentShareQuantity += c.getReferralDiscount();
+                        		totalMoney.put("SHARED", currentShareQuantity);
+                        	} else {
+                        		currentShareQuantity = c.getReferralDiscount();
+                        		totalMoney.put("SHARED", currentShareQuantity);
+                        	}
+                        	// Handle Referral tracking
+                        	if(c.getReferral() != null) {
+                        		// If we find a referral, credit the referring cart
+                        		Integer oldCounts = referralCounts.get(c.getReferral().getId());
+                        		referralCounts.put(c.getReferral().getId(), oldCounts == null ? 1 : oldCounts + 1);
+                        		Long currentReferredQuantity = totalQuantity.get("REFERRED");
+                        		Long currentReferredAmount = totalMoney.get("REFERRED");
+                        		if(currentReferredQuantity != null) {
+                        			totalQuantity.put("REFERRED", currentReferredQuantity + 1);
+                        		} else {
+                        			totalQuantity.put("REFERRED", new Long(1));
+                        		}
+                        		if(currentReferredAmount != null) {
+                        			totalMoney.put("REFERRED", currentReferredAmount + c.getTotal());
+                        		} else {
+                        			totalMoney.put("REFERRED", currentReferredAmount);
+                        		}
                         	}
                         	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
                             	if (currentQuantity != null) {
@@ -221,6 +265,7 @@ public class CartItemRestController {
                     }
                     totalMoney.put("REFUND", refundTotal);
                     totalQuantity.put("REFUND", refundCount);
+                    totalQuantity.put("SHARED", shared);
                     
                     log.info("Reports generated for event id: " + event.getId() + " quantities: " + totalQuantity);
                     log.info("Reports generated for event id: " + event.getId() + " money: " + totalMoney);

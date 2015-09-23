@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
@@ -63,6 +64,11 @@ public class Cart {
     private Date created;
     private Date updated;
     private int status;
+    private String referralUrl;
+    @OneToOne
+    private Cart referral;
+    private boolean shared;
+    private long referralDiscount;
 
     @ManyToOne
     private EventCartItemCoupon coupon;
@@ -186,7 +192,63 @@ public class Cart {
         this.stripeRefundId = stripeRefundId;
     }
 
-    @Override
+    /**
+	 * @return the referral
+	 */
+	public Cart getReferral() {
+		return referral;
+	}
+
+	/**
+	 * @param referral the referral to set
+	 */
+	public void setReferral(Cart referral) {
+		this.referral = referral;
+	}
+
+	/**
+	 * @return the referralUrl
+	 */
+	public String getReferralUrl() {
+		return referralUrl;
+	}
+
+	/**
+	 * @param referralUrl the referralUrl to set
+	 */
+	public void setReferralUrl(String referralUrl) {
+		this.referralUrl = referralUrl;
+	}
+
+	/**
+	 * @return the shared
+	 */
+	public boolean isShared() {
+		return shared;
+	}
+
+	/**
+	 * @param shared the shared to set
+	 */
+	public void setShared(boolean shared) {
+		this.shared = shared;
+	}
+
+	/**
+	 * @return the referralDiscount
+	 */
+	public long getReferralDiscount() {
+		return referralDiscount;
+	}
+
+	/**
+	 * @param referralDiscount the referralDiscount to set
+	 */
+	public void setReferralDiscount(long referralDiscount) {
+		this.referralDiscount = referralDiscount;
+	}
+
+	@Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if (this == obj) return true;
@@ -224,7 +286,8 @@ public class Cart {
     public static long countCarts() {
         return entityManager().createQuery("SELECT COUNT(o) FROM Cart o", Long.class).getSingleResult();
     }
-
+    
+    
     public static List<Cart> findAllCarts() {
         return entityManager().createQuery("SELECT o FROM Cart o", Cart.class).getResultList();
     }

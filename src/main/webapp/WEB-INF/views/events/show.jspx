@@ -176,19 +176,84 @@
                     <h4 class="modal-title" id="export-label">Export Registration</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <button type="button" class="ui button" style="width:150px" onclick="exportRegHandler(false)">
-                            <i class="fa fa-file-o" style="margin-right:7px"><!--  --></i>Export New
-                        </button>
+                    <style>.ui.three.cards > .card:nth-child(3n+1){ clear:none; }
+                        .ui.three.cards{ outline: none; border: none; margin: 0 auto; width: 75%; text-align: center; }
+                        .ui.cards > .card > .content, .ui.card > .content:hover{ cursor: pointer; }
+                    </style>
+                    <div class="ui three cards" id="ticket-type">
+                        <div class="ui card" id="card-ticket" onclick="setExportRegType('TICKET')">
+                            <div class="content">
+                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
+                            </div>
+                        </div>
+                        <div class="ui card" id="card-tshirt" onclick="setExportRegType('T_SHIRT')">
+                            <div class="content">
+                                <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
+                            </div>
+                        </div>
+                        <div class="ui card" id="card-donation" onclick="setExportRegType('DONATION')">
+                            <div class="content">
+                                <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row">
-                        <button type="button" class="ui button" style="width:150px" onclick="exportRegHandler(true)">
-                            <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Export All
-                        </button>
+                    <div style="width:70%;margin:0 auto">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="questions"></input>
+                            <label style="width:100%;margin:0">Include custom questions?</label>
+                        </div>
+                    </div>
+                    <div style="clear:both"><!--  --></div>
+                    <div style="width:70%;margin:0 auto">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="bibnum"></input>
+                            <label style="width:100%;margin:0">Include bib numbers?</label>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
+                    <button type="button" class="ui red button" style="float:left" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui button" style="width:200px;margin-right:20px;" onclick="exportRegHandler(false)">
+                        <i class="fa fa-file-o" style="margin-right:7px"><!--  --></i>New Data Only
+                    </button>
+                    <button type="button" class="ui button" style="width:150px;" onclick="exportRegHandler(true)">
+                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>All Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exportAthletes" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="export-label">Export Athletes</h4>
+                </div>
+                <div class="modal-body">
+                    <h4 class="ui header">Export by Event Type (optional)</h4>
+                    <div class="row">
+                        <div class="ui selection compact dropdown" id="exportAthletes-eventTypes">
+                            <input type="hidden" name="type"><!--  --></input>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Export by Event Type (optional)</div>
+                            <div class="menu">
+                                <c:forEach var="item" items="${eventTypes}">
+                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="font-size: 0.9em;color:#808080">Default: Export all athletes</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui primary button" style="width:150px" onclick="exportAthletesHandler()">
+                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Export
+                    </button>
                 </div>
             </div>
         </div>
@@ -351,7 +416,7 @@
                             </c:if>
                             <li class="disabled"><a href="#">Import bibs file</a></li>
                             <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
-                            <li><a href="#" onclick="redirectExport();return false;">Export</a></li>
+                            <li><a href="#" data-toggle='modal' data-target='#exportAthletes'>Export</a></li>
                             <li><a href="#" onclick="cloud();return false;">Cloud Sync</a></li>
                             <c:if test="${lastImport != null}">
                                 <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
@@ -545,12 +610,21 @@
                 })
             })
 
+            jQuery('#exportAthletes-eventTypes').dropdown();
+
             jQuery('.message .close').on('click', function() {
                 jQuery(this).closest('.message').fadeOut();
             });
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
+            jQuery('.ui.checkbox').checkbox();
             getWebappId();
             getWaiver();
+
+            jQuery('#addType').on('hidden.bs.modal', function(){
+                jQuery(this).find('input[type="text"],input[type="number"]').val('');
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
+                jQuery('#racetype-dropdown').dropdown('clear');
+            });
         }
 
         function saveEventType(put){
@@ -913,9 +987,6 @@
             getWaiver();
             jQuery("#waiverModal").modal('show');
         }
-        function exportModal(){
-            jQuery("#exportReg").modal('show');
-        }
         function emailModal(){
             jQuery('#emailModal').modal('show');
         }
@@ -926,12 +997,57 @@
             jQuery('.modal').modal('hide');
         }
         function exportRegHandler(all){
-            var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false";
+            var typeString = "";
+            for( var i in currentExportRegTypes ){
+                typeString += '&amp;type='+currentExportRegTypes[i];
+            }
+            var optString = "";
+            if( jQuery('input[name="questions"]').prop('checked') ){
+                optString += '&amp;questions=true';
+            }else{
+                optString += '&amp;questions=false';
+            }
+            if( jQuery('input[name="bibnum"]').prop('checked') ){
+                optString += '&amp;bibnum=true';
+            }else{
+                optString += '&amp;bibnum=false';
+            }
+            var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false" + typeString + optString;
             if(all){
-                callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true"; 
+                callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true" + typeString + optString;
             }
             window.location=callUrl;
         }
+
+        var currentExportRegTypes = [];
+        function setExportRegType(val){
+            jQuery('#card-ticket > .content').attr('style', 'background:none');
+            jQuery('#card-tshirt > .content').attr('style', 'background:none');
+            jQuery('#card-donation > .content').attr('style', 'background:none');
+                        
+            if(currentExportRegTypes.indexOf(val) == -1){
+                currentExportRegTypes.push(val);
+            }else{
+                currentExportRegTypes.splice(currentExportRegTypes.indexOf(val), 1);
+            }
+
+            for( var i in currentExportRegTypes ){
+                switch(currentExportRegTypes[i]){
+                    case 'TICKET':
+                        jQuery('#card-ticket > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    case 'T_SHIRT':
+                        jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    case 'DONATION':
+                        jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         function redirectDropboxImport(){
             window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
         }
@@ -945,8 +1061,16 @@
                 }
             });
         }
-        function redirectExport(){
-            window.location="/bibs-server/events/export?event=${event.id}";
+        function exportAthletesHandler(){
+            var type = jQuery('#exportAthletes-eventTypes').dropdown('get value');
+            console.log(type);
+
+            var callUrl = "/bibs-server/events/export?event=${event.id}";
+            if(type !== null || type !== ""){
+                window.location = callUrl + '&amp;type=' + type;
+            }else{
+                window.location = callUrl;
+            }
         }
         function redirectBackup(){
             window.location="/bibs-server/events/exportBackup?event=${event.id}";

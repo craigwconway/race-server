@@ -12,13 +12,16 @@ import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import javax.servlet.http.HttpSession;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,9 +31,39 @@ public final class CartUtil {
     public static final String SESSION_ATTR_CART_ID = "cartId";
     private static final double BIBS_ABSOLUTE_FEE = 100;
     private static final double BIBS_RELATIVE_FEE = 0.06;
+    public static final long BIBS_SOCIAL_DISCOUNT = 100;
 
     private CartUtil() {
         super();
+    }
+    
+    public static Cart getCartFromSession(HttpSession session) {
+    	UserProfile user = null;
+    	Cart cart = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String username = authentication.getName();
+            if (!username.equals("anonymousUser")) {
+                user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            }
+        }
+	    Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
+	    if (cartIdFromSession != null) {
+	        cart = Cart.findCart(cartIdFromSession);
+	    } else if (user != null) {
+	        try {
+	            List<Cart> carts = Cart.findCartsByUser(user).getResultList();
+	            for (Cart c : carts) {
+	                if (c.getStatus() == Cart.NEW) {
+	                    cart = c;
+	                    session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+	                }
+	            }
+	        } catch (Exception e) {
+	            log.error("Caught exception finding cart in session");
+	        }
+	    }
+	    return cart;
     }
     
     public static Cart checkCoupon(HttpSession session, String couponCode) {
@@ -86,6 +119,19 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
+        if(cart.isShared()) {
+            if(cart.getEvent().isSocialSharingDiscounts()) {
+    	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+    	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+    	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+    	        }
+    	        else if(total > 0) {
+    	        	cart.setReferralDiscount(total);
+    	        	cart.setTotal(0);
+    	        }
+            }
+        }
+
         // Then apply coupon:
         if(cart.getCoupon() != null) {
         	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
@@ -100,14 +146,108 @@ public final class CartUtil {
         }
         cart.setTotalPreFee(total);
         // Finally, apply bibs processing fee. TODO: put this at level of event.
-        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
+        double absolute;
+        double relative;
+        try {
+            absolute = cart.getEvent().getPricing().getAbsoluteFee();
+            relative = cart.getEvent().getPricing().getRelative();
+        } catch (Exception e) {
+        	absolute = BIBS_ABSOLUTE_FEE;
+        	relative = BIBS_RELATIVE_FEE;
+        }
+        if(total > 0) {
+        	total += total * relative + absolute;
+        }
         // set total price which is at least 0
         cart.setTotal(Math.max(0, total));
         cart.merge();
         return cart;
     }
 
-    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem) {
+    public static Cart markSocialShared(HttpSession session) {
+        Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
+        Cart cart = null;
+        UserProfile user = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String username = authentication.getName();
+            if (!username.equals("anonymousUser")) {
+                user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            }
+        }
+        
+        if (cartIdFromSession != null) {
+            cart = Cart.findCart(cartIdFromSession);
+        } else if (user != null) {
+            try {
+                List<Cart> carts = Cart.findCartsByUser(user).getResultList();
+                for (Cart c : carts) {
+                    if (c.getStatus() == Cart.NEW) {
+                        cart = c;
+                        session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Caught exception finding cart in session");
+                return null;
+            }
+        }
+        if (cart == null) {
+        	log.info("Null cart found when marking social");
+        	return null;
+        }
+        cart.setShared(true);
+        long total = 0;
+        // First, add up price of all cart items without donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        if(cart.getEvent().isSocialSharingDiscounts()) {
+	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+	        }
+	        else if(total > 0) {
+	        	cart.setReferralDiscount(total);
+	        	cart.setTotal(0);
+	        }
+        }
+        // Then apply coupon:
+        if(cart.getCoupon() != null) {
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
+        	total -= cart.getCoupon().getDiscount(total);
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with postcoupon total " + total);
+        }
+        // Then add in donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        cart.setTotalPreFee(total);
+        // Finally, apply bibs processing fee. TODO: put this at level of event.
+        double absolute;
+        double relative;
+        try {
+            absolute = cart.getEvent().getPricing().getAbsoluteFee();
+            relative = cart.getEvent().getPricing().getRelative();
+        } catch (Exception e) {
+        	absolute = BIBS_ABSOLUTE_FEE;
+        	relative = BIBS_RELATIVE_FEE;
+        }
+        if(total > 0) {
+        	total += total * relative + absolute;
+        }
+        // set total price which is at least 0
+        cart.setTotal(Math.max(0, total));
+        cart.merge();
+        return cart;
+    }    
+    
+    public static Cart updateOrCreateCart(HttpSession session, Long eventCartItemId, EventCartItemPriceChange priceChange, Integer quantity, UserProfile userProfile, UserGroup team, String color, String size, String couponCode, boolean forceNewItem, Long referral, Long deleteId) {
          // make sure our UserProfile is attached
         userProfile = UserProfile.findUserProfile(userProfile.getId());
 
@@ -143,12 +283,17 @@ public final class CartUtil {
                 log.error("Caught exception finding cart in session");
             }
         }
-
+        
+        EventCartItem eventCartItem = EventCartItem.findEventCartItem(eventCartItemId);
         Date now = new Date();
         // create cart if it doesn't exist yet.
         if (cart == null) {
             newCart = true;
             cart = new Cart();
+            if(referral != null) {
+            	Cart referralCart = Cart.findCart(referral);
+            	cart.setReferral(referralCart);
+            }
             cart.setStatus(Cart.NEW);
             cart.setCreated(now);
             cart.setUpdated(now);
@@ -158,9 +303,12 @@ public final class CartUtil {
             cart.setTimeout(Cart.DEFAULT_TIMEOUT);
             cart.persist();
             session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+            cart.setReferralUrl(BuildTypeUtil.getBuild().getFrontend() + "/registration/#/" + eventCartItem.getEvent().getId() + "?ref=" + cart.getId());
+            cart.merge();
         }
 
-        EventCartItem eventCartItem = EventCartItem.findEventCartItem(eventCartItemId);
+    	CartItem cartItemToRemove = null;
+
         CartItem cartItem;
         // if doesn't have product in cart and not removing
         if (CollectionUtils.isEmpty(cart.getCartItems()) && quantity > 0) {
@@ -201,10 +349,15 @@ public final class CartUtil {
 
                         }
                         // removing
-                        else {
+                        else if(deleteId != null && ci.getId() == deleteId){
                             // add removed quantity to available
+                        	System.out.println("Removing " + ci.getQuantity() +" of " + eventCartItem.getName() + "...");
                             eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
-                            ci.remove();
+                            cartItemToRemove = ci;
+                        } else if(deleteId == null) {
+                        	System.out.println("Removing " + ci.getQuantity() +" of " + eventCartItem.getName() + "...");
+                            eventCartItem.setAvailable(eventCartItem.getAvailable() + ci.getQuantity());
+                            cartItemToRemove = ci;
                         }
                         eventCartItem.merge();
                         break;
@@ -219,6 +372,13 @@ public final class CartUtil {
             }
 
         }
+        System.out.println("Size of cart: " + cart.getCartItems().size());
+        if(cartItemToRemove != null) {
+            cart.getCartItems().remove(cartItemToRemove);
+            cart.merge();
+        }
+        System.out.println("Size of cart: " + cart.getCartItems().size());
+
 
         // add coupons to cart
         EventCartItemCoupon coupon = null;
@@ -235,6 +395,20 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
+        
+        if(cart.isShared()) {
+            if(cart.getEvent().isSocialSharingDiscounts()) {
+    	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+    	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+    	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+    	        }
+    	        else if(total > 0) {
+    	        	cart.setReferralDiscount(total);
+    	        	cart.setTotal(0);
+    	        }
+            }
+        }
+        
         // Then apply coupon:
         if(cart.getCoupon() != null) {
         	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
@@ -249,7 +423,19 @@ public final class CartUtil {
         }
         // Finally, apply bibs processing fee. TODO: put this at level of event.
         cart.setTotalPreFee(total);
-        total += total * BIBS_RELATIVE_FEE + BIBS_ABSOLUTE_FEE;
+        double absolute;
+        double relative;
+        try {
+            absolute = cart.getEvent().getPricing().getAbsoluteFee();
+            relative = cart.getEvent().getPricing().getRelative();
+        } catch (Exception e) {
+        	absolute = BIBS_ABSOLUTE_FEE;
+        	relative = BIBS_RELATIVE_FEE;
+        }
+        if(total > 0) {
+        	total += total * relative + absolute;
+        }
+        
         // calculate discounts of total price based on coupons
 
         // set total price which is at least 0

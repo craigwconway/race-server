@@ -170,11 +170,14 @@
                     <div class="ui labeled input shirt-settings">
                         <div class="ui blue label">Sizes</div>
                         <div class="ui active buttons">
+                            <div class="ui toggle button" id="size-0" onclick="updateShirt('XXS')">XXS</div>
                             <div class="ui toggle button" id="size-1" onclick="updateShirt('XS')">XS</div>
                             <div class="ui toggle button" id="size-2" onclick="updateShirt('S')">S</div>
                             <div class="ui toggle button" id="size-3" onclick="updateShirt('M')">M</div>
                             <div class="ui toggle button" id="size-4" onclick="updateShirt('L')">L</div>
                             <div class="ui toggle button" id="size-5" onclick="updateShirt('XL')">XL</div>
+                            <div class="ui toggle button" id="size-6" onclick="updateShirt('2XL')">2XL</div>
+                            <div class="ui toggle button" id="size-7" onclick="updateShirt('3XL')">3XL</div>
                         </div>
                     </div>
                     <div class="ui labeled input shirt-settings">
@@ -244,7 +247,7 @@
                         <input  type="number" name="price"
                                 class="form-control"
                                 placeholder="Base price"
-                                min="1"
+                                min="0"
                                 value="${eventCartItem.price}"
                                 data-parsley-error-message="Invalid base price."
                                 data-parsley-required="true"></input>
@@ -309,6 +312,7 @@
         }
 
         var xs = false; var sm = false; var md = false; var lg = false; var xl = false;
+        var xxs = false; var xl2 = false; var xl3 = false;
         var blk = false; var wht = false; var red = false; var yel = false;
         var grn = false; var blue = false; var teal = false; var purp = false;
         function initShirtValues(){
@@ -317,11 +321,14 @@
             sizes = sizes.split(',');
             colors = colors.split(',');
             for(i=0; i &lt; sizes.length; i++){
-                if( sizes[i] == 'XS' ){ xs = true; jQuery("#size-1").addClass('active'); }
-                if( sizes[i] == 'S' ){ sm = true; jQuery("#size-2").addClass('active'); }
-                if( sizes[i] == 'M' ){ md = true; jQuery("#size-3").addClass('active'); }
-                if( sizes[i] == 'L' ){ lg = true; jQuery("#size-4").addClass('active'); }
-                if( sizes[i] == 'XL' ){ xl = true; jQuery("#size-5").addClass('active'); }
+                if( sizes[i] == 'XXS'  ){ xxs = true; jQuery("#size-0").addClass('active'); }
+                if( sizes[i] == 'XS'   ){ xs = true; jQuery("#size-1").addClass('active'); }
+                if( sizes[i] == 'S'    ){ sm = true; jQuery("#size-2").addClass('active'); }
+                if( sizes[i] == 'M'    ){ md = true; jQuery("#size-3").addClass('active'); }
+                if( sizes[i] == 'L'    ){ lg = true; jQuery("#size-4").addClass('active'); }
+                if( sizes[i] == 'XL'   ){ xl = true; jQuery("#size-5").addClass('active'); }
+                if( sizes[i] == 'XXL'  ){ xl2 = true; jQuery("#size-6").addClass('active'); }
+                if( sizes[i] == 'XXXL' ){ xl3 = true; jQuery("#size-7").addClass('active'); }
             }
             for(i=0; i &lt; colors.length; i++){
                 if( colors[i] == 'Black' ){ blk = true; jQuery("#color-black").addClass('active'); }
@@ -333,36 +340,43 @@
                 if( colors[i] == 'Teal' ){ teal = true; jQuery("#color-teal").addClass('active'); }
                 if( colors[i] == 'Purple' ){ purp = true; jQuery("#color-purple").addClass('active'); }
             }
+            updateShirt();
         }
 
         function updateShirt(val){
             switch(val) {
-                case 'XS': xs = !xs; break;
-                case 'S':  sm = !sm; break;
-                case 'M':  md = !md; break;
-                case 'L':  lg = !lg; break;
-                case 'XL': xl = !xl; break;
-                case 'black':   blk  = !blk; break;
-                case 'white':   wht  = !wht; break;
-                case 'red':     red  = !red; break;
-                case 'yellow':  yel  = !yel; break;
-                case 'green':   grn  = !grn; break;
+                case 'XXS':     xxs  = !xxs;  break;
+                case 'XS':      xs   = !xs;   break;
+                case 'S':       sm   = !sm;   break;
+                case 'M':       md   = !md;   break;
+                case 'L':       lg   = !lg;   break;
+                case 'XL':      xl   = !xl;   break;
+                case '2XL':     xl2  = !xl2;  break;
+                case '3XL':     xl3  = !xl3;  break;
+                case 'black':   blk  = !blk;  break;
+                case 'white':   wht  = !wht;  break;
+                case 'red':     red  = !red;  break;
+                case 'yellow':  yel  = !yel;  break;
+                case 'green':   grn  = !grn;  break;
                 case 'blue':    blue = !blue; break;
                 case 'teal':    teal = !teal; break;
                 case 'purple':  purp = !purp; break;
                 default: break;
             }
             var sizes = ""; var colors = "";
-            if(xs){ sizes += "XS,"; }
-            if(sm){ sizes += "S,"; }
-            if(md){ sizes += "M,"; }
-            if(lg){ sizes += "L,"; }
-            if(xl){ sizes += "XL,"; }
-            if(blk){ colors += "Black,"; }
-            if(wht){ colors += "White,"; }
-            if(red){ colors += "Red,"; }
-            if(yel){ colors += "Yellow,"; }
-            if(grn){ colors += "Green,"; }
+            if(xxs){  sizes  += "XXS,"; }
+            if(xs){   sizes  += "XS,"; }
+            if(sm){   sizes  += "S,"; }
+            if(md){   sizes  += "M,"; }
+            if(lg){   sizes  += "L,"; }
+            if(xl){   sizes  += "XL,"; }
+            if(xl2){  sizes  += "XXL,"; }
+            if(xl3){  sizes  += "XXXL,"; }
+            if(blk){  colors += "Black,"; }
+            if(wht){  colors += "White,"; }
+            if(red){  colors += "Red,"; }
+            if(yel){  colors += "Yellow,"; }
+            if(grn){  colors += "Green,"; }
             if(blue){ colors += "Blue,"; }
             if(teal){ colors += "Teal,"; }
             if(purp){ colors += "Purple,"; }

@@ -68,8 +68,8 @@
                <button class="ui orange button" onclick="onBack()" type="submit">Back</button>
             </div>
             <div style="clear:both"><!--  --></div>
-            <div class="ui statistics five column grid">
-                <div class="four column centered row">
+            <div class="ui statistics six column grid">
+                <div class="five column centered row">
                     <div class="column">
                         <div class="purple large statistic">
                             <div class="label">
@@ -102,7 +102,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="blue small statistic">
+                    <div class="pink small statistic">
                         <div class="label">
                             Donations
                         </div>
@@ -110,6 +110,17 @@
                             <span id="total-donations" style="margin-left:10px;">0</span>
                         </div>
                         <div class="meta"><span class="price" id="total-money-donations"><!--  --></span></div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="blue small statistic">
+                        <div class="label">
+                            Shares
+                        </div>
+                        <div class="value"><i class="fa fa-share"><!--  --></i>
+                            <span id="total-shares" style="margin-left:10px;">0</span>
+                        </div>
+                        <div class="meta"><span class="price" id="total-money-shares"><!--  --></span></div>
                     </div>
                 </div>
                 <div class="column">
@@ -213,7 +224,7 @@
                 .rotateLabels(0)      //Angle to rotate x-axis labels.
                 .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
                 .groupSpacing(0.1)    //Distance between each group of bars.
-                .color(['#f2c61f','#00b5ad','#3b83c0', '#d95c5c'])
+                .color(['#f2c61f','#00b5ad','#d9499a', '#d95c5c'])
             ;
 
             chart.xAxis
@@ -234,6 +245,9 @@
     }
 
     function displayDollar(amount){
+        if(isNaN(amount)){
+            amount = 0;
+        }
         var dollars = '';
         if(Math.floor(amount/100) == 0){
             dollars = dollars + "0";
@@ -254,53 +268,88 @@
         var initValue = "0";
         var amount = '';
         if('TICKET' in quantity){
-            totalSales += money.TICKET;
+            if('TICKET' in money){
+                totalSales += money.TICKET;
+                amount = displayDollar(money.TICKET);
+                jQuery("#total-money-tickets").text(amount);
+            }else{
+                totalSales += 0;
+                amount = displayDollar(0);
+            }
             jQuery("#total-tickets").text(quantity.TICKET);
-            amount = displayDollar(money.TICKET);
-            jQuery("#total-money-tickets").text(amount);
         }
         else{
             jQuery("#total-tickets").text(initValue);
             jQuery("#total-money-tickets").text("$0");
         }
         if('T_SHIRT' in quantity){
-            totalSales += money.T_SHIRT;
+            if('T_SHIRT' in money){
+                totalSales += money.T_SHIRT;
+                amount = displayDollar(money.T_SHIRT);
+                jQuery("#total-money-shirts").text(amount);
+            }else{
+                totalSales += 0;
+                amount = displayDollar(0);
+            }
             jQuery("#total-shirts").text(quantity.T_SHIRT);
-            amount = displayDollar(money.T_SHIRT);
-            jQuery("#total-money-shirts").text(amount);
         }
         else{
             jQuery("#total-shirts").text(initValue);
             jQuery("#total-money-shirts").text("$0");
         }
         if('DONATION' in quantity){
-            totalSales += money.DONATION;
+            if('DONATION' in money){
+                totalSales += money.DONATION;
+                amount = displayDollar(money.DONATION);
+                jQuery("#total-money-donations").text(amount);
+            }else{
+                totalSales += 0;
+                amount = displayDollar(0);
+            }
             jQuery("#total-donations").text(quantity.DONATION);
-            amount = displayDollar(money.DONATION);
-            jQuery("#total-money-donations").text(amount);
         }
         else{
             jQuery("#total-donations").text(initValue);
             jQuery("#total-money-donations").text("$0");
         }
         if('COUPON' in quantity){
-            totalSales -= money.COUPON;
+            if('COUPON' in money){
+                totalSales -= money.COUPON;
+                amount = displayDollar(money.COUPON);
+                jQuery("#total-money-coupons").text(amount);
+            }else{
+                totalSales -= 0;
+                amount = displayDollar(0);
+            }
             jQuery("#total-coupons").text(quantity.COUPON);
-            amount = displayDollar(money.COUPON);
-            jQuery("#total-money-coupons").text(amount);
         }
         else{
             jQuery("#total-coupons").text(initValue);
             jQuery("#total-money-coupons").text("$0");
         }
         if('REFUND' in quantity){
+            if('REFUND' in money){
+                amount = displayDollar(money.REFUND);
+                jQuery("#total-money-refund").text(amount);
+            }
             jQuery("#total-refund").text(quantity.REFUND);
-            amount = displayDollar(money.REFUND);
-            jQuery("#total-money-refund").text(amount);
         }
         else{
             jQuery("#total-refund").text(initValue);
             jQuery("#total-money-refund").text("$0");
+        }
+        if('SHARED' in quantity){
+            if('SHARED' in money){
+                totalSales -= money.SHARED;
+                amount = displayDollar(money.SHARED);
+                jQuery("#total-money-shares").text(amount);
+            }else{
+                totalSales -= money.SHARED;
+            }
+            jQuery('#total-shares').text(quantity.SHARED);
+        }else{
+            jQuery('#total-shares').text(initValue);
+            jQuery("#total-money-shares").text("$0");
         }
         amount = displayDollar(totalSales);
         jQuery("#total-sales").text(amount);
@@ -384,10 +433,18 @@
             });
         request.done(function(result) {
             if(result.length > 0){
-                console.log(result);
                 jQuery.each(result, function(i, d){
+                    console.log(d.type);
                     var query = jQuery(".cartitem-card").children();
                     query.clone().appendTo("#cartitems").attr("id", "item"+i);
+                    if(d.type == 'T_SHIRT'){
+                        jQuery('#item'+i).find('.statistic').removeClass('yellow').addClass('teal');
+                        jQuery('#item'+i).find('i').removeClass('fa-ticket').addClass('fa-shirtsinbulk');
+                    }
+                    if(d.type == 'DONATION'){
+                        jQuery('#item'+i).find('.statistic').removeClass('yellow').addClass('pink');
+                        jQuery('#item'+i).find('i').removeClass('fa-ticket').addClass('fa-gift');
+                    }
                     jQuery("#item"+i+" .header").html(d.name + '<div class="meta">Price: $' + d.price + '</div>');
                     jQuery("#item"+i+" .purchased-num").html(d.purchased);
                 })
