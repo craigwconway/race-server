@@ -529,6 +529,11 @@
 			<version>2.1.v20100127</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.sachinhandiekar</groupId>
+			<artifactId>jInstagram</artifactId>
+			<version>1.1.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
