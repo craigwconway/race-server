@@ -110,6 +110,8 @@ public class UserProfile implements UserDetails {
     private String emergencyContactPhone;
 
     private String hearFrom;
+    
+    private int zapposPoints = 0;
 
     private String dropboxId;
 
@@ -798,4 +800,18 @@ public class UserProfile implements UserDetails {
     public void setVersion(Integer version) {
         this.version = version;
     }
+
+	/**
+	 * @return the zapposPoints
+	 */
+	public int getZapposPoints() {
+		return zapposPoints;
+	}
+
+	/**
+	 * @param zapposPoints the zapposPoints to set
+	 */
+	public void setZapposPoints(int zapposPoints) {
+		this.zapposPoints = zapposPoints;
+	}
 }
