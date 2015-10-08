@@ -84,44 +84,6 @@
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
                         <input type="hidden" name="id"><!--  --></input>
-                        <div class="grouped fields">
-                            <label for="viewType"><i class="fa fa-cogs" style="margin-right: 5px;"><!--  --></i> Options</label>
-                            <div class="field">
-                                <div class="ui toggle checkbox" id="optional1">
-                                    <input type="checkbox" name="optional"><!--  --></input>
-                                    <label style="width:100%">Make this question optional</label>
-                                </div>
-                            </div>
-                            <div class="field" id="optional2">
-                                <div class="ui toggle checkbox">
-                                    <input type="checkbox" name="hidden"><!--  --></input>
-                                    <label style="width:100%">Archive (Hide from registration form)</label>
-                                </div>
-                            </div>
-                            <div class="fields">
-                                <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
-                                </label>
-                                <div class="field">
-                                    <div class="ui multiple selection dropdown" id="questionECI">
-                                        <i class="dropdown icon"><!--  --></i>
-                                        <input name="eventItems" type="hidden"><!--  --></input>
-                                        <c:if test="${empty eventcartitems}">
-                                            <div class="default text">No Current Products</div>
-                                        </c:if>
-                                        <c:if test="${not empty eventcartitems}">
-                                            <div class="default text">none</div>
-                                            <div class="menu" id="question-eci-options">
-                                                <c:forEach var="item" items="${eventcartitems}">
-                                                    <div class="item" data-value="${item.id}">${item.name}</div>
-                                                </c:forEach>
-                                            </div>
-                                        </c:if>
-                                    </div>
-                                    <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-times" style="margin-left:5px;margin-right:0;"><!--  --></i></a>
-                                </div>
-                            </div>
-                            
-                        </div>
                         <div class="fields">
                             <div class="twelve wide required field">
                                 <label>Question</label>
@@ -159,6 +121,45 @@
                             </div>
                             <div style="clear:both"><!--  --></div>
                             <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
+                        </div>
+                        <h4 class="ui horizontal header divider"><i class="fa fa-cogs"><!--  --></i> Options
+                        </h4>
+                        <div class="grouped fields">
+                            <div class="field">
+                                <div class="ui toggle checkbox" id="optional1">
+                                    <input type="checkbox" name="optional"><!--  --></input>
+                                    <label style="width:100%">Make this question optional</label>
+                                </div>
+                            </div>
+                            <div class="field" id="optional2">
+                                <div class="ui toggle checkbox">
+                                    <input type="checkbox" name="hidden"><!--  --></input>
+                                    <label style="width:100%">Archive (Hide from registration form)</label>
+                                </div>
+                            </div>
+                            <div class="fields">
+                                <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
+                                </label>
+                                <div class="field">
+                                    <div class="ui multiple selection dropdown" id="questionECI">
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <input name="eventItems" type="hidden"><!--  --></input>
+                                        <c:if test="${empty eventcartitems}">
+                                            <div class="default text">No Current Products</div>
+                                        </c:if>
+                                        <c:if test="${not empty eventcartitems}">
+                                            <div class="default text">none</div>
+                                            <div class="menu" id="question-eci-options">
+                                                <c:forEach var="item" items="${eventcartitems}">
+                                                    <div class="item" data-value="${item.id}">${item.name}</div>
+                                                </c:forEach>
+                                            </div>
+                                        </c:if>
+                                    </div>
+                                    <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-times" style="margin-left:5px;margin-right:0;"><!--  --></i></a>
+                                </div>
+                            </div>
+                            
                         </div>
                         <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
                         </h4>
