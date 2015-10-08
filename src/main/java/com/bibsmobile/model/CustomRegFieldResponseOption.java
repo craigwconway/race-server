@@ -51,4 +51,5 @@ public class CustomRegFieldResponseOption {
         return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
     }
 
+
 }
