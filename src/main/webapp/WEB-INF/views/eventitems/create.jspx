@@ -267,10 +267,6 @@
                             min="1"
                             data-parsley-error-message="Invalid maximum quantity."
                             data-parsley-required="true"></input>
-                    <div class="ui toggle checkbox shirt-settings" style="display:none;width:100%">
-                        <input type="checkbox" name="shirtsLimited"><!--  --></input>
-                        <label style="width:100%;text-align:left">Limit to 1 shirt per customer</label>
-                    </div>
                 </div>
             </div>
 
@@ -416,8 +412,6 @@
                     jQuery('.color-boxes').each(function(){
                         jQuery('.size-boxes').removeAttr('name');
                     });
-                    var limited = jQuery('input[name="shirtsLimited"]').prop('checked');
-                    jQuery('input[name="shirtsLimited"]').val(limited);
                     jQuery("#eventCartItem").submit();
                 }
             });

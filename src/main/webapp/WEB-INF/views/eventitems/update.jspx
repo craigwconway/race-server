@@ -261,12 +261,6 @@
                                 data-parsley-error-message="Invalid maximum quantity."
                                 data-parsley-required="true"></input>
                     </div>
-                    <c:if test="${eventCartItem.type == 'T_SHIRT'}">
-                        <div class="ui toggle checkbox shirt-settings" id="shirtsLimited" style="display:none;width:100%">
-                            <input type="checkbox" name="shirtsLimited"><!--  --></input>
-                            <label style="width:100%;text-align:left">Limit to 1 shirt per customer</label>
-                        </div>
-                    </c:if>
                 </c:if>
                 <c:if test="${eventCartItem.type == 'DONATION'}">
                     <div style="display:none">
@@ -365,13 +359,6 @@
                     none = true;
                     jQuery("#color-none").addClass('active');
                 }
-            }
-
-            var limitQuantity = '${eventCartItem.shirtsLimited}';
-            if(limitQuantity){
-                $('#shirtsLimited').checkbox('check');
-            }else{
-                $('#shirtsLimited').checkbox('uncheck');
             }
             updateShirt();
         }

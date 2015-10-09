@@ -75,7 +75,7 @@
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="width:750px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
@@ -112,10 +112,17 @@
                             </div>
                         </div>
                         <div class="fields" id="dropdown-field" style="display:none">
-                            <div class="twelve wide field">
-                                <label style="width:100%">Dropdown Options</label>
-                                <div class="ui action input">
+                            <div class="eight wide field">
+                                <label style="width:100%">Add Dropdown Option</label>
+                                <div class="ui input" style="width:90%">
                                     <input  type="text" id="drop-option" placeholder="Add dropdown option"></input>
+                                </div>
+                                <span style="line-height:40px;padding-left:12px;font-size:1.5em;"> + </span>
+                            </div>
+                            <div class="seven wide field">
+                                <label style="width:100%">Attach Discount/Fee (Optional)</label>
+                                <div class="ui action input">
+                                    <input type="number" step="5" id="discount-option" placeholder="&amp;dollar; Amount (i.e. -3.50 or 1.50)"></input>
                                     <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
                                 </div>
                             </div>
@@ -280,13 +287,13 @@
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="active item" data-tab="eci-menu">Products</div>
+                <div class="item" data-tab="eci-menu">Products</div>
                 <div class="item" data-tab="share-menu">Social Sharing</div>
-                <div class="item" data-tab="form-menu">Custom Forms</div>
+                <div class="active item" data-tab="form-menu">Custom Forms</div>
                 <div class="item" data-tab="coupon-menu">Coupons</div>
                 <div class="item" data-tab="ticket-menu">Transfers</div>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
+            <div class="ui bottom attached tab segment" data-tab="eci-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -400,7 +407,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="form-menu">
+            <div class="ui bottom attached active tab segment" data-tab="form-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -419,7 +426,11 @@
                                         <div class="description">${item.question}</div>
                                         <div class="extra content"> 
                                             <c:if test="${empty item.responseSet}">Response Type: user input</c:if>
-                                            <c:if test="${not empty item.responseSet}">Choices: ${item.responseSet}</c:if>
+                                            <c:if test="${not empty item.responseSet}">Dropdown Options: 
+                                                <c:forEach var="dropdown" items="${item.responseSet}">
+                                                    <p>${dropdown.response}: $${dropdown.price/100}</p>
+                                                </c:forEach>
+                                            </c:if>
                                         </div>
                                     </div>
                                     <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responseSet}', ${item.eventItemIds})">
@@ -534,7 +545,7 @@
     </div>
     </sec:authorize>
     <script>
-        var currOptions = '';
+        var currOptionsObjList = [];
         var domList = [];
 
         window.onload = function(){
@@ -553,7 +564,7 @@
 
             jQuery('#addQuestion').on('hidden.bs.modal', function(){
                 responseSet = '';
-                currOptions = '';
+                currOptionsObjList = [];
                 jQuery(this).find('input[type="text"]').val('');
                 jQuery('#type-dropdown-selected').dropdown('set text', 'Select one')
                 jQuery('#dropdown-options').text('');
@@ -768,61 +779,97 @@
         function addDropdownOption(){
             jQuery('#type-dropdown-selected').dropdown();
             var opt = jQuery("#drop-option").val();
+            var fee = jQuery("#discount-option").val();
+
             if( opt.length > 0 ){
-                currOptions += opt + ',';
-                jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
+                var optionObj = {};
+                optionObj.response = opt;
+                var feeString = "";
+                if(fee.length > 0){
+                    optionObj.price = fee * 100;
+                    if(parseFloat(fee) &lt; 0){
+                        feeString = ' (-&amp;dollar;' + parseFloat(fee).toFixed(2) * -1 + ' discount)';
+                    }else{
+                        feeString = ' (&amp;dollar;' + parseFloat(fee).toFixed(2) + ' fee)';
+                    }
+                }else{
+                    optionObj.price = 0;
+                }
+                if(optionObj.hasOwnProperty('response') &amp;&amp; optionObj.hasOwnProperty('price')){
+                    currOptionsObjList.push(optionObj);
+                }
+
+                jQuery('#option-list').append('<li><div class="ui label" data-index="' + (currOptionsObjList.length-1) + '" onclick="removeDropdownOption(this)">' + opt + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
+
+                // add to sample dropdown for user
                 jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
                 jQuery('#type-dropdown-selected').dropdown('refresh');
+
+                // clear UI
                 jQuery('#drop-option').val("");
+                jQuery('#discount-option').val("");
             }
         }
 
         function removeDropdownOption(o){
-            var parsed = currOptions;
-            if( parsed.slice(-1) == ',' ){
-                parsed = parsed.substring(0, parsed.length-1);
-            }
+            var index = parseInt(jQuery(o).data('index'));
+            currOptionsObjList.splice(index, 1);
 
-            parsed = parsed.split(',');
-            var opt = jQuery(o).text();
-            if( parsed.indexOf(opt) > -1 ){
-                parsed.splice(parsed.indexOf(opt), 1);
-                currOptions = parsed;
-            }
             jQuery("#dropdown-options").html("");
             jQuery('#drop-option').val("");
             jQuery('#option-list').html("");
-            parsed.forEach(function(el, i, ary){
-                jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + el + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery("#dropdown-options").append('<div class="item">' + el + '</div>');
+            currOptionsObjList.forEach(function(el, i, ary){
+                if( el.price &lt; 0 ){
+                    feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
+                }else{
+                    feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
+                }
+                jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
+                jQuery("#dropdown-options").append('<div class="item">' + el.response + '</div>');
             })
             jQuery('#type-dropdown-selected').dropdown('refresh');
-
-            if( currOptions.slice(-1) !== ',' ){
-                currOptions += ',';
-            }
         }
 
         var currQuestionId;
         function questionDetail(id, eid, optional, hidden, question, responseSet, eci){
-            currQuestionId = id;
-            currOptions = responseSet;
+            jQuery("#addQuestion").modal('show');
             jQuery(".post-question").hide();
             jQuery(".put-question").show();
-            jQuery("#addQuestion").modal('show');
 
-            var obj = {};
-            var eid = '${event.id}';
-
-            if( eid.length > 0 ){       var eobj = {};
-                                        eobj.id = parseInt(eid);
-                                        obj.event = eobj;        }
+            currQuestionId = id;
             jQuery('input[name="id"]').val(id);
             jQuery('input[name="question"]').val(question);
 
-            eci.forEach(function(n,i){
-                jQuery('#questionECI').dropdown('set selected', n);
-            })
+            currOptionsObjList = responseSet;
+
+            if( responseSet.length > 0 ){
+                jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
+                jQuery("#dropdown-field").show();
+                jQuery('#type-dropdown-selected').dropdown();
+                
+                jQuery('#drop-option').val("");
+                jQuery("#dropdown-options").html("");
+                for(i = 0; i &lt; responseSet.length; i++){
+                    var el = responseSet[i];
+                    console.log(el);
+                    jQuery("#dropdown-options").append('<div class="item">' + el.response + '</div>');
+                    jQuery('#type-dropdown-selected').dropdown();
+
+                    jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.price + '<i class="x-btn fa fa-remove"></i></div></li>');
+                    jQuery('#type-dropdown-selected').dropdown('refresh');
+                    jQuery('#drop-option').val("");
+                }
+                jQuery('#type-dropdown-selected').dropdown('refresh');
+                
+                jQuery("#type-input-selected").hide();
+                jQuery("#type-dropdown-selected").show();
+            }
+            else{
+                jQuery("#dropdown-field").hide();
+                jQuery("#type-dropdown-selected").hide();
+                jQuery("#type-input-selected").show();
+                jQuery('#radio-input').checkbox('check');
+            }
 
             if(optional){
                 jQuery('#optional1').addClass('checked');
@@ -834,48 +881,9 @@
                 jQuery('input[name="hidden"]').prop('checked', true);
             }
 
-            if( responseSet !== "" ){
-                jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
-                jQuery("#dropdown-field").show();
-                jQuery('#type-dropdown-selected').dropdown();
-                
-                jQuery('#drop-option').val("");
-                var opt = responseSet;
-                if( opt.length > 0 ){
-                    // remove last comma if string ends with comma
-                    if( opt.slice(-1) == ',' ){
-                        opt = opt.substring(0, opt.length-1);
-                    }
-                    var split = opt.split(',');
-                    jQuery("#dropdown-options").html("");
-                    var parsedOptions = "";
-                    for( i = 0; i &lt; split.length; i++ ){
-                        opt = split[i];
-                        if( opt !== "" &amp;&amp; opt !== " " ){
-                            jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
-                            parsedOptions += opt + ",";
-                            jQuery('#type-dropdown-selected').dropdown();
-                            // append tags
-                            jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
-                            jQuery('#type-dropdown-selected').dropdown('refresh');
-                            jQuery('#drop-option').val("");
-                        }
-                    }
-                    if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
-                        parsedOptions = parsedOptions.substring(0, parsedOptions.length-1);
-                        responseType = parsedOptions;
-                    }
-                    jQuery('#type-dropdown-selected').dropdown('refresh');
-                }
-                jQuery("#type-input-selected").hide();
-                jQuery("#type-dropdown-selected").show();
-            }
-            else{
-                jQuery("#dropdown-field").hide();
-                jQuery("#type-dropdown-selected").hide();
-                jQuery("#type-input-selected").show();
-                jQuery('#radio-input').checkbox('check');
-            }
+            eci.forEach(function(n,i){
+                jQuery('#questionECI').dropdown('set selected', n);
+            })
 
             if( (question !== null || question !== "") ){
                 jQuery("#question-preview").show();
@@ -945,13 +953,11 @@
                                         obj.event = eobj;        }
             if( question.length > 0 ){  obj.question = question; }
 
-            // remove last comma if string ends with comma
-            if( currOptions.slice(-1) == ',' ){
-                responseType = currOptions.substring(0, currOptions.length-1);
+            if( currOptionsObjList.length > 0 ){
+                obj.responseSet = currOptionsObjList;
+            }else{
+                obj.responseSet = null;
             }
-            var type = responseType;
-            if( type !== 'input' ){     obj.responseSet = responseType; }
-            else{ obj.responseSet = ""; }
 
             if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('question') === false || obj.hasOwnProperty('responseSet') === false ){
                 error = true;
@@ -1005,12 +1011,12 @@
                                 opt = opt.substring(0, opt.length-1);
                             }
                             var split = opt.split(',');
-                            jQuery(".dropdown .menu").html("");
+                            jQuery("#dropdown-options").html("");
                             var parsedOptions = "";
                             for( i = 0; i &lt; split.length; i++ ){
                                 opt = split[i];
                                 if( opt !== "" &amp;&amp; opt !== " " ){
-                                    jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
+                                    jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
                                     parsedOptions += opt + ",";
                                 }
                             }
