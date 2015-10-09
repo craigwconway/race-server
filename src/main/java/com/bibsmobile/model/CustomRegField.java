@@ -147,6 +147,7 @@ public class CustomRegField {
 		ObjectMapper mapper = new ObjectMapper();
 		return new HashSet<CustomRegFieldResponseOption>(Arrays.asList(mapper.readValue(this.responses, CustomRegFieldResponseOption[].class)));
 		} catch (Exception e) {
+			System.out.println(e);
 			return null;
 		}
 	}
@@ -348,7 +349,7 @@ public class CustomRegField {
      * @return Json String of single CustomRegField object
      */
     public String toJson() {
-        return new JSONSerializer().exclude("*.class").serialize(this);
+        return new JSONSerializer().include("responseSet").exclude("*.class").serialize(this);
     }
 
     /**
@@ -365,7 +366,7 @@ public class CustomRegField {
      * @return json array of custom reg fields, all children included
      */
     public static String toJsonArray(Collection<CustomRegField> collection) {
-        return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
+        return new JSONSerializer().include("*.children").include("responseSet").exclude("*.class").serialize(collection);
     }
 
     /**
