@@ -54,7 +54,7 @@ public class CustomRegField {
 	@Transient
 	private Set<CustomRegFieldResponseOption> responseSet;
 	
-	@JSON(include = false)
+	//@JSON(include = false)
 	private String responses;
 	
 	/**
