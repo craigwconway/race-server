@@ -1525,6 +1525,7 @@ public class EventController {
 
     /**
      * @api {put} /events/:id/regsettings Manage Registration Settings
+     * @apigroup registrations
      * @apiName Manage Registration Settings
      * @apiDescription Manage event level settings for registration
      * @apiParam {boolean} shirtslimited Switch to limit shirts to one per purchase

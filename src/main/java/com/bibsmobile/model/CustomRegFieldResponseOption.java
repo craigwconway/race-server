@@ -50,6 +50,10 @@ public class CustomRegFieldResponseOption {
     public static String toJsonArray(Collection<CustomRegFieldResponseOption> collection) {
         return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
     }
+    
+    public String toJson() {
+    	return new JSONSerializer().serialize(this);
+    }
 
 
 }

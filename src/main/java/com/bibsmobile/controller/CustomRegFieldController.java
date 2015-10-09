@@ -39,7 +39,9 @@ public class CustomRegFieldController {
 	 * @apiParam {Object} event Event object this CustomRegField belongs to
 	 * @apiParam {Number} event.id Id of event object this CustomRegField belongs to
      * @apiParam {String} question Question mapped by this CustomRegField
-     * @apiParam {String} [responseSet] Comma-delimited set of responses to use for dropdowns
+     * @apiParam {Object[]} [responseSet] Array of responses that a user can select from
+     * @apiParam {String} responseSet.response String containing response option
+     * @apiParam {Number} [responseSet.price] Amount the cart is modified by for selecting this option. Absent = no change in price.
      * @apiParam {Object[]} [eventItems] Array of EventCartItem objects to restrict this question to. If null, it appears on all.
      * @apiParam {Number} [eventItems.id] ID of mapped EventCartItems
      * @apiParam {Boolean} [optional=false] Whether or not the question is optional
@@ -55,16 +57,45 @@ public class CustomRegFieldController {
      * 		"event":{"id":2},
      * 		"optional":true,
      * 		"question":"What is the top search engine?",
-     * 		"responseSet":"AOL,AOL",
+     * 		"responseSet": [
+     * 			{"response": "AOL"},
+     * 			{"response": "AOL"}
+     * 		],
      * 		"eventItems":[{"id":1},{"id":2}]
      * 	}
+     * @apiParamExample {json} Sample Post with Price
+     *	{
+     *		"event":{"id":1},
+     *		"optional":false,
+     *		"question":"nodejs?",
+     *		"responseSet":[
+     *			{"response":"yes","price":500}, 
+     *			{"response":"no", "price":-500}
+     *		]
+     *	}
      * @apiSuccess (200) {Object} customRegField created CustomRegField object
+     * @apiSuccessExample {json} Sample Create with values
+     * 	{
+     * 		"allItems":true,
+     * 		"event":{"id":1},
+     * 		"hidden":false,
+     * 		"id":7,
+     * 		"optional":false,
+     * 		"question":"nodejs?",
+     * 		"responseSet": [
+     * 			{"price":-500,"response":"no"},
+     * 			{"price":500,"response":"yes"}
+     * 		]
+     * 	}
      */
     @RequestMapping( method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
     public String createFromJson(@RequestBody String json) {
         CustomRegField customRegField = CustomRegField.fromJson(json);
         customRegField.setEvent(Event.findEvent(customRegField.getEvent().getId()));
+        if(customRegField.getResponseSet() != null) {
+        	System.out.println("Creating response set with " + customRegField.getResponseSet().size() + " entries");
+        }
         HashSet <EventCartItem> eventItems = new HashSet<EventCartItem>();
         for(EventCartItem eventItem : customRegField.getEventItems()) {
         	eventItems.add(EventCartItem.findEventCartItem(eventItem.getId()));
@@ -121,7 +152,9 @@ public class CustomRegFieldController {
 	 * @apiParam {Object} event Event object this CustomRegField belongs to
 	 * @apiParam {Number} event.id Id of event object this CustomRegField belongs to
      * @apiParam {String} question Question mapped by this CustomRegField
-     * @apiParam {String} [responseSet] Comma-delimited set of responses to use for dropdowns
+     * @apiParam {Object[]} [responseSet] Comma-delimited set of responses to use for dropdowns
+     * @apiParam {String} responseSet.response String containing response option
+     * @apiParam {Number} [responseSet.price] Amount the cart is modified by for selecting this option. Absent = no change in price.
      * @apiParam {Object[]} [eventItems] Array of EventCartItem objects to restrict this question to. If null, it appears on all.
      * @apiParam {Number} [eventItems.id] ID of mapped EventCartItems
      * @apiParam {Boolean} [optional=false] Whether or not the question is optional
@@ -144,6 +177,19 @@ public class CustomRegFieldController {
      * 		"eventItems":[{"id":1},{"id":2}]
      * 	}
      * @apiSuccess (200) {Object} customRegField created CustomRegField object
+     * @apiSuccessExample {json} Sample Create with values
+     * 	{
+     * 		"allItems":true,
+     * 		"event":{"id":1},
+     * 		"hidden":false,
+     *		"id":7,
+     * 		"optional":false,
+     * 		"question":"nodejs?",
+     * 		"responseSet": [
+     * 			{"price":-500,"response":"no"},
+     * 			{"price":500,"response":"yes"}
+     * 		]
+     * 	}
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJson(@RequestBody String json, @PathVariable("id") Long id) {
