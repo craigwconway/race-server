@@ -302,6 +302,9 @@
                     </div>
                 </h3>
                 <div class="content">
+                    <c:if test="${shirt}">
+                        <h3 class="ui icon header">shirt exists</h3>
+                    </c:if>
                     <div class="ui four doubling cards">
                         <c:if test="${not empty eventcartitems}">
                             <c:forEach var="item" items="${eventcartitems}">
@@ -433,7 +436,7 @@
                                             </c:if>
                                         </div>
                                     </div>
-                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responseSet}', ${item.eventItemIds})">
+                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responses}', ${item.eventItemIds})">
                                         <i class="fa fa-external-link"><!--  --></i>View Details
                                     </div>
                                 </div>
@@ -840,25 +843,30 @@
             jQuery('input[name="id"]').val(id);
             jQuery('input[name="question"]').val(question);
 
-            currOptionsObjList = responseSet;
-
-            if( responseSet.length > 0 ){
+            if( responseSet.length > 0  &amp;&amp; responseSet !== 'null' ){
                 jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
                 jQuery("#dropdown-field").show();
                 jQuery('#type-dropdown-selected').dropdown();
                 
                 jQuery('#drop-option').val("");
                 jQuery("#dropdown-options").html("");
-                for(i = 0; i &lt; responseSet.length; i++){
-                    var el = responseSet[i];
-                    console.log(el);
+                var parsed = responseSet.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+                    parsed = parsed.replace(/'/g, '"');
+                var parsedObjList = JSON.parse(parsed);
+                currOptionsObjList = parsedObjList;
+                parsedObjList.forEach(function(el, i, ary){
+                    if( el.price &lt; 0 ){
+                        feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
+                    }else{
+                        feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
+                    }
                     jQuery("#dropdown-options").append('<div class="item">' + el.response + '</div>');
                     jQuery('#type-dropdown-selected').dropdown();
 
-                    jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.price + '<i class="x-btn fa fa-remove"></i></div></li>');
+                    jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
                     jQuery('#type-dropdown-selected').dropdown('refresh');
                     jQuery('#drop-option').val("");
-                }
+                })
                 jQuery('#type-dropdown-selected').dropdown('refresh');
                 
                 jQuery("#type-input-selected").hide();
