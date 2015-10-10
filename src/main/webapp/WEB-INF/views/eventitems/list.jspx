@@ -287,13 +287,13 @@
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="item" data-tab="eci-menu">Products</div>
+                <div class="active item" data-tab="eci-menu">Products</div>
                 <div class="item" data-tab="share-menu">Social Sharing</div>
-                <div class="active item" data-tab="form-menu">Custom Forms</div>
+                <div class="item" data-tab="form-menu">Custom Forms</div>
                 <div class="item" data-tab="coupon-menu">Coupons</div>
                 <div class="item" data-tab="ticket-menu">Transfers</div>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="eci-menu">
+            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -303,7 +303,19 @@
                 </h3>
                 <div class="content">
                     <c:if test="${shirt}">
-                        <h3 class="ui icon header">shirt exists</h3>
+                        <form class="ui small form" id="shirtsLimitedForm">
+                            <div class="ui basic segment">
+                                <div class="ui toggle checkbox shirt-settings" style="width:100%">
+                                    <input type="checkbox" name="shirtsLimited"><!--  --></input>
+                                    <label style="width:100%;text-align:left">Limit to 1 shirt per customer</label>
+                                </div>
+                                <div style="clear:both"><!--  --></div>
+                                <div class="pull-right">
+                                    <button class="ui green button" type="submit">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                        <h3 class="ui dividing header">Current Products</h3>
                     </c:if>
                     <div class="ui four doubling cards">
                         <c:if test="${not empty eventcartitems}">
@@ -410,7 +422,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="form-menu">
+            <div class="ui bottom attached tab segment" data-tab="form-menu">
                 <h3 class="ui icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
@@ -457,10 +469,6 @@
                         </div>
                     </div>
                 </div>
-                <div style="clear:both"><!--  --></div>
-                <div class="pull-right">
-                    <button class="ui green button" type="button">Save</button>
-                </div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="coupon-menu">
                 <h3 class="ui icon header">
@@ -505,10 +513,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div style="clear:both"><!--  --></div>
-                <div class="pull-right">
-                    <button class="ui green button" type="button">Save</button>
                 </div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="ticket-menu">
@@ -586,6 +590,7 @@
 
             shareHandler();
             transferHandler();
+            limitShirtHandler();
             customFormTab();
         }
 
@@ -1108,7 +1113,7 @@
 
         function transferHandler(){
             var transfer = '${event.ticketTransferEnabled}';
-            var transferDate = '${event.ticketTransferCutoff}'
+            var transferDate = '${event.ticketTransferCutoff}';
             var def = Date();
 
             if( transfer == 'true' ){
@@ -1137,6 +1142,29 @@
 
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/tickettransfer" + "?tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
+                    type: "PUT",
+                    dataType: "text/html",
+                    complete: function() {
+                        window.location.reload();
+                    }
+                });
+
+                return false; // avoid to execute the actual submit of the form.
+            });
+        }
+
+        function limitShirtHandler(){
+            var shirtsLimited = '${event.shirtsLimited}';
+
+            if( shirtsLimited == 'true' ){
+                jQuery('input[name="shirtsLimited"]').prop("checked", true);
+            }
+
+            jQuery("#shirtsLimitedForm").submit(function() {
+                var shirtsLimited = jQuery('input[name="shirtsLimited"]').prop("checked");
+
+                jQuery.ajax({
+                    url: "/bibs-server/events/${event.id}/regsettings" + "?shirtslimited="+shirtsLimited,
                     type: "PUT",
                     dataType: "text/html",
                     complete: function() {
