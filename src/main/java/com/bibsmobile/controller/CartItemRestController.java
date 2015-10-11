@@ -7,6 +7,7 @@ import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -86,6 +87,7 @@ public class CartItemRestController {
             			fillMap.put(type.toString(), new Long(0));
             		}
             		fillMap.put("COUPON", new Long(0));
+            		fillMap.put("QUESTIONS", new Long(0));
                     SimpleDateFormat fmt = new SimpleDateFormat("MM-dd-yyyy");
                     fmt.setTimeZone(event.getTimezone());
                     for(Cart c : carts) {
@@ -96,6 +98,8 @@ public class CartItemRestController {
                     		referred ++;
                     	}
                     	long noncoupon = 0;
+
+                    	
                         for(CartItem ci : c.getCartItems()) {
                     		noncoupon += ci.getPrice() * ci.getQuantity() * 100;
                         	// First get type. Store as a string instead of a enum to support refunds
@@ -168,7 +172,8 @@ public class CartItemRestController {
                         		for (EventCartItemTypeEnum ecit : EventCartItemTypeEnum.values()) {
                         			dailyPrices.put(ecit.toString(), new Long(0));
                         		}
-                        		dailyPrices.put("COUPON", new Long(0));                        		
+                        		dailyPrices.put("COUPON", new Long(0));
+                        		dailyPrices.put("QUESTIONS", new Long(0));
                         	}
                         	// Check if the type has existing entries:
                         	Long currentDailyPrice = dailyPrices.get(type);
@@ -182,6 +187,32 @@ public class CartItemRestController {
                         	dailyMoney.put(fmt.format(ci.getCreated()), dailyPrices);
                         	
                         }
+                        
+                    	Long questionPriceSum = new Long(0);
+                    	for(CustomRegFieldResponse crfr : c.getCustomRegFieldResponses()) {
+                    		if(crfr.getPrice() != null) {
+                    			questionPriceSum += crfr.getPrice();
+                    		}
+                    	}
+                    	Long currentQuestions = totalMoney.get("QUESTIONS");
+                    	if (currentQuestions != null) {
+                    		currentQuestions += questionPriceSum;
+                    		totalMoney.put("QUESTIONS", currentQuestions);
+                    	} else {
+                    		currentQuestions = questionPriceSum;
+                    		totalMoney.put("QUESTIONS", currentQuestions);
+                    	}
+                    	Map<String, Long> dailyPricesQuestion = dailyMoney.get(fmt.format(c.getCreated()));
+                    	Long currentQuestionsDaily = dailyPricesQuestion.get("QUESTIONS");
+                    	if(currentQuestionsDaily != null) {
+                    		currentQuestionsDaily += questionPriceSum;
+                    		dailyPricesQuestion.put("QUESTIONS", currentQuestionsDaily);
+                    	} else {
+                    		currentQuestionsDaily = questionPriceSum;
+                    		dailyPricesQuestion.put("QUESTIONS", questionPriceSum);
+                    	}
+                    	dailyMoney.put(fmt.format(c.getCreated()), dailyPricesQuestion);
+                    	
                         if(c.getCoupon() != null) {
                         	Long coupon = noncoupon - c.getTotalPreFee();
                         	Map<String, Long> dailyPrices = dailyMoney.get(fmt.format(c.getCreated()));
