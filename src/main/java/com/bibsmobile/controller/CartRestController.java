@@ -259,6 +259,7 @@ public class CartRestController {
     			// check for a match
     			try {
     				CustomRegFieldResponse match = CustomRegFieldResponse.findCustomRegFieldResponse(crfr.getId());
+    				match.setPrice(crfr.getPrice());
     				match.setResponse(crfr.getResponse());
     				match.merge();
     			} catch(Exception e) {
