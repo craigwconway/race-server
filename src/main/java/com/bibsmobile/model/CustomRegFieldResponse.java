@@ -41,6 +41,8 @@ public class CustomRegFieldResponse {
 	
 	private String response;
 	
+	private Long price;
+	
 	
 	/**
 	 * @return the id
@@ -96,6 +98,20 @@ public class CustomRegFieldResponse {
 	 */
 	public void setResponse(String response) {
 		this.response = response;
+	}
+
+	/**
+	 * @return the price
+	 */
+	public Long getPrice() {
+		return price;
+	}
+
+	/**
+	 * @param price the price to set
+	 */
+	public void setPrice(Long price) {
+		this.price = price;
 	}
 
 	/**
