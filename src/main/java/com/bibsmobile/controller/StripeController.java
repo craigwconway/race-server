@@ -596,6 +596,19 @@ public class StripeController {
                     		nondonation += ci.getPrice() * ci.getQuantity();
                     	}
                     }
+                    if (c.getQuestions() > 0) {
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
+                    	resultString += " Bells & whistles ";
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_B;
+                    	resultString += MailgunUtil.REG_RECEIPT_SIX_C;
+                    	if(c.getQuestions() % 100 > 9) {
+                        	resultString += c.getQuestions() % 100;
+                        } else {
+                        	resultString += "0" + c.getQuestions() % 10;
+                        }
+                        resultString += ")";
+                        resultString += MailgunUtil.REG_RECEIPT_SIX_D;
+                    }
                     if (c.getCoupon() != null) {
                     	resultString += MailgunUtil.REG_RECEIPT_SIX_A;
                     	resultString += " Coupon - " + c.getCoupon().getCode();

@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import java.util.List;
 import java.util.Set;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.CustomRegField;
 import com.bibsmobile.model.CustomRegFieldResponse;
+import com.bibsmobile.model.CustomRegFieldResponseOption;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.wrapper.CartItemReqWrapper;
 import com.bibsmobile.service.UserProfileService;
@@ -252,27 +254,60 @@ public class CartRestController {
      */
     @RequestMapping(value = "/questions", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> updateOrCreateResponses(@RequestBody Cart cart) {
+    public ResponseEntity<String> updateOrCreateResponses(@RequestBody Cart cart, HttpServletRequest request) {
     	Cart trueCart = Cart.findCart(cart.getId());
     	for(CustomRegFieldResponse crfr : cart.getCustomRegFieldResponses()) {
-    		if(crfr.getId() != null) {
-    			// check for a match
-    			try {
-    				CustomRegFieldResponse match = CustomRegFieldResponse.findCustomRegFieldResponse(crfr.getId());
-    				match.setPrice(crfr.getPrice());
-    				match.setResponse(crfr.getResponse());
-    				match.merge();
-    			} catch(Exception e) {
-    				crfr.persist();
-    				crfr.setCart(trueCart);
-    			}
-    		} else {
-    			crfr.setCart(trueCart);
-    			crfr.persist();
+    		CustomRegField upField = crfr.getCustomRegField();
+    		CustomRegField field = upField != null ? CustomRegField.findCustomRegField(upField.getId()) : null;
+    		if (field != null) {
+    			Set <CustomRegFieldResponseOption> options = field.getResponseSet();
+	    		if(crfr.getId() != null) {
+	    			// check for a match
+	    			try {
+	    				CustomRegFieldResponse match = CustomRegFieldResponse.findCustomRegFieldResponse(crfr.getId());
+	    				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
+	    				uploadedOption.setResponse(crfr.getResponse());
+	    				if(!options.isEmpty() && options.contains(uploadedOption)) {
+	    					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
+	    					for(CustomRegFieldResponseOption realOption : optionsList) {
+	    						if(realOption.equals(uploadedOption)) {
+	    							match.setPrice(realOption.getPrice());
+	    						}
+	    					}
+	    				}
+	    				match.setResponse(crfr.getResponse());
+	    				match.merge();
+	    			} catch(Exception e) {
+	    				crfr.persist();
+	    				crfr.setCart(trueCart);
+	    			}
+	    		} else {
+	    			crfr.setCart(trueCart);
+    				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
+    				uploadedOption.setResponse(crfr.getResponse());
+    				System.out.println("Reg Field Options: " + options);
+    				if(!options.isEmpty() && options.contains(uploadedOption)) {
+    					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
+    					for(CustomRegFieldResponseOption realOption : optionsList) {
+    						if(realOption.equals(uploadedOption)) {
+    							crfr.setPrice(realOption.getPrice());
+    						}
+    					}
+    				}
+	    			crfr.persist();
+	    		}
+				
     		}
     	}
+    	Cart realCart = null;
+    	try{
+    		realCart = CartUtil.processQuestions(trueCart.getId());
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
+    	
     	HttpHeaders headers = new HttpHeaders();
     	headers.add("Content-Type", "application/json; charset=utf-8");
-    	return new ResponseEntity<>(trueCart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user", "customRegFieldResponses")), headers, HttpStatus.OK);
+    	return new ResponseEntity<>(realCart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user", "customRegFieldResponses")), headers, HttpStatus.OK);
     }
 }
