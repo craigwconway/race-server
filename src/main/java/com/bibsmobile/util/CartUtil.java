@@ -4,6 +4,7 @@ import com.bibsmobile.job.BaseJob;
 import com.bibsmobile.job.CartExpiration;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventCartItem;
@@ -12,6 +13,7 @@ import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.CustomRegField;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
@@ -164,6 +166,101 @@ public final class CartUtil {
         return cart;
     }
 
+    
+    public static Cart processQuestions(/*HttpSession session*/ Long id) {
+        Long cartIdFromSession = /*(Long) session.getAttribute(SESSION_ATTR_CART_ID)*/ id;
+        Cart cart = null;
+        UserProfile user = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String username = authentication.getName();
+            if (!username.equals("anonymousUser")) {
+                user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            }
+        }
+        
+        if (cartIdFromSession != null) {
+            cart = Cart.findCart(cartIdFromSession);
+        } else if (user != null) {
+            try {
+                List<Cart> carts = Cart.findCartsByUser(user).getResultList();
+                for (Cart c : carts) {
+                    if (c.getStatus() == Cart.NEW) {
+                        cart = c;
+                        //session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Caught exception finding cart in session");
+                return null;
+            }
+        }
+        if (cart == null) {
+        	log.info("Null cart found modifying questions");
+        	return null;
+        }
+        long total = 0;
+        // First, add up price of all cart items without donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        if(cart.getEvent().isSocialSharingDiscounts()) {
+	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+	        }
+	        else if(total > 0) {
+	        	cart.setReferralDiscount(total);
+	        	cart.setTotal(0);
+	        }
+        }
+        long questiontotal=0;
+        for(CustomRegFieldResponse response : cart.getCustomRegFieldResponses()) {
+        	if(response.getPrice() != null) {
+        		questiontotal += response.getPrice();
+        	}
+        }
+        if((-1 * questiontotal) > total){
+        	questiontotal = -1*total;
+        }
+        cart.setQuestions(questiontotal);
+        total += questiontotal;
+        // Then apply coupon:
+        if(cart.getCoupon() != null) {
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
+        	total -= cart.getCoupon().getDiscount(total);
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with postcoupon total " + total);
+        }
+        // Then add in donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        cart.setTotalPreFee(total);
+        // Finally, apply bibs processing fee. TODO: put this at level of event.
+        double absolute;
+        double relative;
+        try {
+            absolute = cart.getEvent().getPricing().getAbsoluteFee();
+            relative = cart.getEvent().getPricing().getRelative();
+        } catch (Exception e) {
+        	absolute = BIBS_ABSOLUTE_FEE;
+        	relative = BIBS_RELATIVE_FEE;
+        }
+        if(total > 0) {
+        	total += total * relative + absolute;
+        }
+        // set total price which is at least 0
+        cart.setTotal(Math.max(0, total));
+        cart.merge();
+        return cart;
+    }    
+    
+    
     public static Cart markSocialShared(HttpSession session) {
         Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
         Cart cart = null;

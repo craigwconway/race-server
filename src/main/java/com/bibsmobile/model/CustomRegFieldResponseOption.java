@@ -47,7 +47,37 @@ public class CustomRegFieldResponseOption {
 		this.price = price;
 	}
 	
-    public static String toJsonArray(Collection<CustomRegFieldResponseOption> collection) {
+    /* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((response == null) ? 0 : response.hashCode());
+		return result;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CustomRegFieldResponseOption other = (CustomRegFieldResponseOption) obj;
+		if (response == null) {
+			if (other.response != null)
+				return false;
+		} else if (!response.equals(other.response))
+			return false;
+		return true;
+	}
+	public static String toJsonArray(Collection<CustomRegFieldResponseOption> collection) {
         return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
     }
     
