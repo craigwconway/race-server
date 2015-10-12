@@ -68,7 +68,7 @@
                <button class="ui orange button" onclick="onBack()" type="submit">Back</button>
             </div>
             <div style="clear:both"><!--  --></div>
-            <div class="ui statistics six column grid">
+            <div class="ui statistics five column grid">
                 <div class="five column centered row">
                     <div class="column">
                         <div class="purple large statistic">
@@ -79,70 +79,85 @@
                         </div>
                     </div>
                 </div>
-                <div class="column">
-                    <div class="yellow small statistic">
-                        <div class="label">
-                            Tickets
+                <div class="five column centered row">
+                    <div class="column">
+                        <div class="yellow small statistic">
+                            <div class="label">
+                                Tickets
+                            </div>
+                            <div class="value"><i class="fa fa-ticket"><!--  --></i>
+                                <span id="total-tickets" style="margin-left:10px;">0</span>
+                            </div>
+                            <div class="meta"><span class="price" id="total-money-tickets"><!--  --></span></div>
                         </div>
-                        <div class="value"><i class="fa fa-ticket"><!--  --></i>
-                            <span id="total-tickets" style="margin-left:10px;">0</span>
+                    </div>
+                    <div class="column">
+                        <div class="teal small statistic">
+                            <div class="label">
+                                T-shirts
+                            </div>
+                            <div class="value"><i class="fa fa-shirtsinbulk"><!--  --></i>
+                                <span id="total-shirts" style="margin-left:10px;">0</span>
+                            </div>
+                            <div class="meta"><span class="price" id="total-money-shirts"><!--  --></span></div>
                         </div>
-                        <div class="meta"><span class="price" id="total-money-tickets"><!--  --></span></div>
+                    </div>
+                    <div class="column">
+                        <div class="pink small statistic">
+                            <div class="label">
+                                Donations
+                            </div>
+                            <div class="value"><i class="fa fa-gift"><!--  --></i>
+                                <span id="total-donations" style="margin-left:10px;">0</span>
+                            </div>
+                            <div class="meta"><span class="price" id="total-money-donations"><!--  --></span></div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="small statistic">
+                            <div class="label">
+                                Form Responses
+                            </div>
+                            <div class="value"><i class="fa fa-question"><!--  --></i>
+                                <span id="total-questions" style="margin-left:10px;">-</span>
+                            </div>
+                            <div class="meta"><span class="price" id="total-money-questions"><!--  --></span></div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="blue small statistic">
+                            <div class="label">
+                                Shares
+                            </div>
+                            <div class="value"><i class="fa fa-share"><!--  --></i>
+                                <span id="total-shares" style="margin-left:10px;">0</span>
+                            </div>
+                            <div class="meta"><span class="price" id="total-money-shares"><!--  --></span></div>
+                        </div>
                     </div>
                 </div>
-                <div class="column">
-                    <div class="teal small statistic">
-                        <div class="label">
-                            T-shirts
+                <div class="five column centered row">
+                    <div class="column">
+                        <div class="red tiny statistic">
+                            <div class="label">
+                                Coupons
+                            </div>
+                            <div class="value"><i class="fa fa-cut"><!--  --></i>
+                                <span id="total-coupons" style="margin-left:10px;">0</span>
+                            </div>
+                            <div class="meta"><span class="price" id="total-money-coupons"><!--  --></span></div>
                         </div>
-                        <div class="value"><i class="fa fa-shirtsinbulk"><!--  --></i>
-                            <span id="total-shirts" style="margin-left:10px;">0</span>
-                        </div>
-                        <div class="meta"><span class="price" id="total-money-shirts"><!--  --></span></div>
                     </div>
-                </div>
-                <div class="column">
-                    <div class="pink small statistic">
-                        <div class="label">
-                            Donations
+                    <div class="column">
+                        <div class="red tiny statistic">
+                            <div class="label">
+                                Refunded
+                            </div>
+                            <div class="value"><i class="fa fa-cart-arrow-down"><!--  --></i>
+                                <span id="total-refund" style="margin-left:10px;">0</span>
+                            </div>
+                            <div class="meta"><span class="price" id="total-money-refund"><!--  --></span></div>
                         </div>
-                        <div class="value"><i class="fa fa-gift"><!--  --></i>
-                            <span id="total-donations" style="margin-left:10px;">0</span>
-                        </div>
-                        <div class="meta"><span class="price" id="total-money-donations"><!--  --></span></div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="blue small statistic">
-                        <div class="label">
-                            Shares
-                        </div>
-                        <div class="value"><i class="fa fa-share"><!--  --></i>
-                            <span id="total-shares" style="margin-left:10px;">0</span>
-                        </div>
-                        <div class="meta"><span class="price" id="total-money-shares"><!--  --></span></div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="red small statistic">
-                        <div class="label">
-                            Coupons
-                        </div>
-                        <div class="value"><i class="fa fa-cut"><!--  --></i>
-                            <span id="total-coupons" style="margin-left:10px;">0</span>
-                        </div>
-                        <div class="meta"><span class="price" id="total-money-coupons"><!--  --></span></div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="red small statistic">
-                        <div class="label">
-                            Refunded
-                        </div>
-                        <div class="value"><i class="fa fa-cart-arrow-down"><!--  --></i>
-                            <span id="total-refund" style="margin-left:10px;">0</span>
-                        </div>
-                        <div class="meta"><span class="price" id="total-money-refund"><!--  --></span></div>
                     </div>
                 </div>
             </div>
@@ -224,7 +239,7 @@
                 .rotateLabels(0)      //Angle to rotate x-axis labels.
                 .showControls(true)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
                 .groupSpacing(0.1)    //Distance between each group of bars.
-                .color(['#f2c61f','#00b5ad','#d9499a', '#d95c5c'])
+                .color(['#f2c61f','#00b5ad','#d9499a', '#d95c5c', '#666666'])
             ;
 
             chart.xAxis
@@ -248,19 +263,26 @@
         if(isNaN(amount)){
             amount = 0;
         }
+        
         var dollars = '';
         if(Math.floor(amount/100) == 0){
-            dollars = dollars + "0";
+            dollars = "0";
         }else{
-            dollars = dollars + Math.floor(amount/100).toString();
-        }
-        if((amount % 100).toString() == 0){
-            dollars = dollars + '.00';
-        }else{
-            dollars = dollars + '.' + (amount % 100).toString();
+            dollars = Math.floor(Math.abs(amount)/100).toString();
         }
 
-        return '$' + dollars;
+        var cents = '';
+        if((amount % 100).toString() == 0){
+            cents = '.00';
+        }else{
+            cents = '.' + (amount % 100).toString();
+        }
+
+        if( parseFloat(amount) >= 0 ){
+            return '$' + dollars + cents;
+        }else{
+            return '-$' + dollars + cents;
+        }
     }
 
     function populateBasicInfo(quantity, money){
@@ -351,6 +373,15 @@
             jQuery('#total-shares').text(initValue);
             jQuery("#total-money-shares").text("$0");
         }
+        if('QUESTIONS' in money){
+            totalSales += money.QUESTIONS;
+            amount = displayDollar(money.QUESTIONS);
+            console.log(amount);
+            jQuery("#total-money-questions").text(amount);
+        }else{
+            jQuery('#total-questions').text(initValue);
+            jQuery("#total-money-questions").text("$0");
+        }
         amount = displayDollar(totalSales);
         jQuery("#total-sales").text(amount);
     }
@@ -372,10 +403,12 @@
         var shirtObj = { "key": "T-shirts", "values": [] };
         var donationObj = { "key": "Donations", "values": [] };
         var couponObj = { "key": "Coupons", "values": [] };
+        var questionObj = { "key": "Form Responses", "values": [] };
         var ticketAry = [];
         var shirtAry = [];
         var donationAry = [];
         var couponAry = [];
+        var questionAry = [];
         var allAry = [];
         dates.forEach(function(item, i){
             // fillValues(dates[i], d[item], item);
@@ -398,9 +431,13 @@
                 allAry.push(ary);
             }
             if('COUPON' in val){
-                console.log(val.COUPON*-1/100);
                 ary = [day, val.COUPON*-1/100];
                 couponAry.push(ary);
+                allAry.push(ary);
+            }
+            if('QUESTIONS' in val){
+                ary = [day, val.QUESTIONS/100];
+                questionAry.push(ary);
                 allAry.push(ary);
             }
         })
@@ -421,7 +458,8 @@
         shirtObj.values = shirtAry;
         donationObj.values = donationAry;
         couponObj.values = couponAry;
-        nvdata.push(ticketObj, shirtObj, donationObj, couponObj);
+        questionObj.values = questionAry;
+        nvdata.push(ticketObj, shirtObj, donationObj, couponObj, questionObj);
     }
 
     function getEventCartItems(){
