@@ -133,7 +133,9 @@ public final class CartUtil {
     	        }
             }
         }
-
+        if(cart.getQuestions() != 0) {
+        	total += cart.getQuestions();
+        }
         // Then apply coupon:
         if(cart.getCoupon() != null) {
         	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
@@ -504,6 +506,9 @@ public final class CartUtil {
     	        	cart.setTotal(0);
     	        }
             }
+        }
+        if(cart.getQuestions() != 0) {
+        	total += cart.getQuestions();
         }
         
         // Then apply coupon:
