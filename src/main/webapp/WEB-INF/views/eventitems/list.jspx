@@ -115,14 +115,14 @@
                             <div class="eight wide field">
                                 <label style="width:100%">Add Dropdown Option</label>
                                 <div class="ui input" style="width:90%">
-                                    <input  type="text" id="drop-option" placeholder="Add dropdown option"></input>
+                                    <input  type="text" id="custom-response-dropdown-input" placeholder="Add dropdown option"></input>
                                 </div>
                                 <span style="line-height:40px;padding-left:12px;font-size:1.5em;"> + </span>
                             </div>
                             <div class="seven wide field">
                                 <label style="width:100%">Attach Discount/Fee (Optional)</label>
                                 <div class="ui action input">
-                                    <input type="number" step="5" id="discount-option" placeholder="&amp;dollar; Amount (i.e. -3.50 or 1.50)"></input>
+                                    <input type="number" step="5" id="custom-price-dropdown-input" placeholder="&amp;dollar; Amount (i.e. -3.50 or 1.50)"></input>
                                     <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
                                 </div>
                             </div>
@@ -176,11 +176,11 @@
                                 <div class="field" style="width: 375px">
                                     <label id="question-label" style="display:none"><!--  --></label>
                                     <input id="type-input-selected" type="text" style="display:none"><!--  --></input>
-                                    <div class="ui selection dropdown" id="type-dropdown-selected" style="display:none">
+                                    <div class="ui selection dropdown" id="customQuestionsPreviewDropdown" style="display:none">
                                         <input type="hidden"><!--  --></input>
                                         <div class="default text">Select one</div>
                                         <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                        <div class="menu" id="dropdown-options"><!--  -->
+                                        <div class="menu" id="customQuestionsPreviewOptions"><!--  -->
                                         </div>
                                     </div>
                                 </div>
@@ -557,7 +557,7 @@
 
         window.onload = function(){
             // initialize semantic-ui elements
-            jQuery('#couponECI, #questionECI, #type-dropdown-selected').dropdown();
+            jQuery('#couponECI, #questionECI, #customQuestionsPreviewDropdown').dropdown();
             jQuery('.menu .item').tab();
             jQuery('.ui.checkbox').checkbox();
             jQuery('.disc-btn').each(function(){
@@ -573,8 +573,8 @@
                 responseSet = '';
                 currOptionsObjList = [];
                 jQuery(this).find('input[type="text"]').val('');
-                jQuery('#type-dropdown-selected').dropdown('set text', 'Select one')
-                jQuery('#dropdown-options').text('');
+                jQuery('#customQuestionsPreviewDropdown').dropdown('set text', 'Select one')
+                jQuery('#customQuestionsPreviewOptions').text('');
                 jQuery('#option-list').text('');
                 jQuery('input[name="optional"]').prop('checked', false);
                 jQuery('input[name="hidden"]').prop('checked', false);
@@ -785,9 +785,9 @@
         }
 
         function addDropdownOption(){
-            jQuery('#type-dropdown-selected').dropdown();
-            var opt = jQuery("#drop-option").val();
-            var fee = jQuery("#discount-option").val();
+            jQuery('#customQuestionsPreviewDropdown').dropdown();
+            var opt = jQuery("#custom-response-dropdown-input").val();
+            var fee = jQuery("#custom-price-dropdown-input").val();
 
             if( opt.length > 0 ){
                 var optionObj = {};
@@ -810,12 +810,12 @@
                 jQuery('#option-list').append('<li><div class="ui label" data-index="' + (currOptionsObjList.length-1) + '" onclick="removeDropdownOption(this)">' + opt + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
 
                 // add to sample dropdown for user
-                jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
-                jQuery('#type-dropdown-selected').dropdown('refresh');
+                jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + opt + feeString + '</div>');
+                jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
 
                 // clear UI
-                jQuery('#drop-option').val("");
-                jQuery('#discount-option').val("");
+                jQuery('#custom-response-dropdown-input').val("");
+                jQuery('#custom-price-dropdown-input').val("");
             }
         }
 
@@ -823,8 +823,8 @@
             var index = parseInt(jQuery(o).data('index'));
             currOptionsObjList.splice(index, 1);
 
-            jQuery("#dropdown-options").html("");
-            jQuery('#drop-option').val("");
+            jQuery("#customQuestionsPreviewOptions").html("");
+            jQuery('#custom-response-dropdown-input').val("");
             jQuery('#option-list').html("");
             currOptionsObjList.forEach(function(el, i, ary){
                 if( el.price &lt; 0 ){
@@ -833,9 +833,9 @@
                     feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
                 }
                 jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery("#dropdown-options").append('<div class="item">' + el.response + '</div>');
+                jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
             })
-            jQuery('#type-dropdown-selected').dropdown('refresh');
+            jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
         }
 
         var currQuestionId;
@@ -851,10 +851,10 @@
             if( responseSet.length > 0  &amp;&amp; responseSet !== 'null' ){
                 jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
                 jQuery("#dropdown-field").show();
-                jQuery('#type-dropdown-selected').dropdown();
+                jQuery('#customQuestionsPreviewDropdown').dropdown();
                 
-                jQuery('#drop-option').val("");
-                jQuery("#dropdown-options").html("");
+                jQuery('#custom-response-dropdown-input').val("");
+                jQuery("#customQuestionsPreviewOptions").html("");
                 var parsed = responseSet.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
                     parsed = parsed.replace(/'/g, '"');
                 var parsedObjList = JSON.parse(parsed);
@@ -865,21 +865,21 @@
                     }else{
                         feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
                     }
-                    jQuery("#dropdown-options").append('<div class="item">' + el.response + '</div>');
-                    jQuery('#type-dropdown-selected').dropdown();
+                    jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
+                    jQuery('#customQuestionsPreviewDropdown').dropdown();
 
                     jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
-                    jQuery('#type-dropdown-selected').dropdown('refresh');
-                    jQuery('#drop-option').val("");
+                    jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+                    jQuery('#custom-response-dropdown-input').val("");
                 })
-                jQuery('#type-dropdown-selected').dropdown('refresh');
+                jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
                 
                 jQuery("#type-input-selected").hide();
-                jQuery("#type-dropdown-selected").show();
+                jQuery("#customQuestionsPreviewDropdown").show();
             }
             else{
                 jQuery("#dropdown-field").hide();
-                jQuery("#type-dropdown-selected").hide();
+                jQuery("#customQuestionsPreviewDropdown").hide();
                 jQuery("#type-input-selected").show();
                 jQuery('#radio-input').checkbox('check');
             }
@@ -1015,38 +1015,13 @@
                 if( type == 'dropdown' ){
                     responseType = 'dropdown';
                     jQuery("#dropdown-field").show();
-                    jQuery("#addOption").click(function(){
-                        jQuery('#type-dropdown-selected').dropdown();
-                        var opt = jQuery("#drop-option").val();
-                        if( opt.length > 0 ){
-                            // remove last comma if string ends with comma
-                            if( opt.slice(-1) == ',' ){
-                                opt = opt.substring(0, opt.length-1);
-                            }
-                            var split = opt.split(',');
-                            jQuery("#dropdown-options").html("");
-                            var parsedOptions = "";
-                            for( i = 0; i &lt; split.length; i++ ){
-                                opt = split[i];
-                                if( opt !== "" &amp;&amp; opt !== " " ){
-                                    jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
-                                    parsedOptions += opt + ",";
-                                }
-                            }
-                            if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
-                                parsedOptions = parsedOptions.substring(0, parsedOptions.length-1);
-                                responseType = parsedOptions;
-                            }
-                            jQuery('#type-dropdown-selected').dropdown('refresh');
-                        }
-                    })
-                    jQuery("#type-dropdown-selected").show();
+                    jQuery("#customQuestionsPreviewDropdown").show();
                     jQuery("#type-input-selected").hide();
                 }
                 else{
                     responseType = 'input';
                     jQuery("#dropdown-field").hide();
-                    jQuery("#type-dropdown-selected").hide();
+                    jQuery("#customQuestionsPreviewDropdown").hide();
                     jQuery("#type-input-selected").show();
                 }
             });
