@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,6 +263,7 @@ public class CartRestController {
     		crfr.flush();
     		System.out.println("deleting custom field");
     	}*/
+    	/*
     	Iterator <CustomRegFieldResponse> oldResponses = trueCart.getCustomRegFieldResponses().iterator();
     	trueCart.setCustomRegFieldResponses(null);
     	trueCart.merge();
@@ -275,53 +277,36 @@ public class CartRestController {
     		CustomRegField field = upField != null ? CustomRegField.findCustomRegField(upField.getId()) : null;
     		if (field != null) {
     			Set <CustomRegFieldResponseOption> options = field.getResponseSet();
-	    		if(crfr.getId() != null) {
-	    			// check for a match
-	    			try {
-	    				CustomRegFieldResponse match = CustomRegFieldResponse.findCustomRegFieldResponse(crfr.getId());
-	    				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
-	    				uploadedOption.setResponse(crfr.getResponse());
-	    				if(!options.isEmpty() && options.contains(uploadedOption)) {
-	    					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
-	    					for(CustomRegFieldResponseOption realOption : optionsList) {
-	    						if(realOption.equals(uploadedOption)) {
-	    							match.setPrice(realOption.getPrice());
-	    						}
-	    					}
-	    				}
-	    				match.setResponse(crfr.getResponse());
-	    				match.merge();
-	    			} catch(Exception e) {
-	    				crfr.persist();
-	    				crfr.setCart(trueCart);
-	    			}
-	    		} else {
-	    			crfr.setCart(trueCart);
-    				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
-    				uploadedOption.setResponse(crfr.getResponse());
-    				System.out.println("Reg Field Options: " + options);
-    				if(!options.isEmpty() && options.contains(uploadedOption)) {
-    					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
-    					for(CustomRegFieldResponseOption realOption : optionsList) {
-    						if(realOption.equals(uploadedOption)) {
-    							crfr.setPrice(realOption.getPrice());
-    						}
-    					}
-    				}
-	    			crfr.persist();
-	    		}
-				
+    			crfr.setCart(trueCart);
+				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
+				uploadedOption.setResponse(crfr.getResponse());
+				System.out.println("Reg Field Options: " + options);
+				if(!options.isEmpty() && options.contains(uploadedOption)) {
+					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
+					for(CustomRegFieldResponseOption realOption : optionsList) {
+						if(realOption.equals(uploadedOption)) {
+							crfr.setPrice(realOption.getPrice());
+						}
+					}
+				}
+    			crfr.persist();
+			
     		}
     	}
     	Cart realCart = null;
     	try{
-    		realCart = CartUtil.processQuestions(trueCart.getId());
+    		realCart = CartUtil.processQuestions(request.getSession());
     	} catch (Exception e) {
     		System.out.println(e);
     	}
-    	
+    	System.out.println("realcart: " + realCart);
+
+    	for(CustomRegFieldResponse crfr : realCart.getCustomRegFieldResponses()) {
+    		Hibernate.initialize(crfr.getResponse());
+    	}
+    	*/
     	HttpHeaders headers = new HttpHeaders();
     	headers.add("Content-Type", "application/json; charset=utf-8");
-    	return new ResponseEntity<>(realCart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user", "customRegFieldResponses")), headers, HttpStatus.OK);
+    	return new ResponseEntity<>(CartUtil.processQuestions(request.getSession(), cart).toJson(ArrayUtils.toArray("cartItems", "cartItems.user", "customRegFieldResponses")), headers, HttpStatus.OK);
     }
 }

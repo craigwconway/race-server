@@ -5,6 +5,7 @@ import com.bibsmobile.job.CartExpiration;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.CustomRegFieldResponse;
+import com.bibsmobile.model.CustomRegFieldResponseOption;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventCartItem;
@@ -26,7 +27,9 @@ import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public final class CartUtil {
     private static final Logger log = LoggerFactory.getLogger(CartUtil.class);
@@ -169,8 +172,8 @@ public final class CartUtil {
     }
 
     
-    public static Cart processQuestions(/*HttpSession session*/ Long id) {
-        Long cartIdFromSession = /*(Long) session.getAttribute(SESSION_ATTR_CART_ID)*/ id;
+    public static Cart processQuestions(HttpSession session, Cart incoming) {
+        Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
         Cart cart = null;
         UserProfile user = null;
 
@@ -194,14 +197,55 @@ public final class CartUtil {
                     }
                 }
             } catch (Exception e) {
+            	System.out.println("Caught exception finding cart in session");
                 log.error("Caught exception finding cart in session");
                 return null;
             }
         }
         if (cart == null) {
+        	System.out.println("Null cart found with id");
         	log.info("Null cart found modifying questions");
         	return null;
         }
+        
+    	Iterator <CustomRegFieldResponse> oldResponses = cart.getCustomRegFieldResponses().iterator();
+    	cart.setCustomRegFieldResponses(null);
+    	cart.merge();
+    	while(oldResponses.hasNext()) {
+    		CustomRegFieldResponse toRemove = oldResponses.next();
+    		toRemove.remove();
+    	}
+    	List <CustomRegFieldResponse> responses = new ArrayList <CustomRegFieldResponse>();
+    	for(CustomRegFieldResponse crfr : incoming.getCustomRegFieldResponses()) {
+    		CustomRegField upField = crfr.getCustomRegField();
+    		CustomRegField field = upField != null ? CustomRegField.findCustomRegField(upField.getId()) : null;
+    		if (field != null) {
+    			Set <CustomRegFieldResponseOption> options = field.getResponseSet();
+    			CustomRegFieldResponse toAdd = new CustomRegFieldResponse();
+    			toAdd.setCart(cart);
+    			toAdd.setCustomRegField(field);
+    			toAdd.setResponse(crfr.getResponse());
+				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
+				uploadedOption.setResponse(crfr.getResponse());
+				System.out.println("Reg Field Options: " + options);
+				if(!options.isEmpty() && options.contains(uploadedOption)) {
+					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
+					for(CustomRegFieldResponseOption realOption : optionsList) {
+						if(realOption.equals(uploadedOption)) {
+							toAdd.setPrice(realOption.getPrice());
+						}
+					}
+				}
+    			toAdd.persist();
+    			responses.add(toAdd);
+    		}
+    	}
+        cart.setCustomRegFieldResponses(responses);
+        cart.merge();
+        
+        
+        
+        
         long total = 0;
         // First, add up price of all cart items without donations:
         for (CartItem ci : cart.getCartItems()) {
