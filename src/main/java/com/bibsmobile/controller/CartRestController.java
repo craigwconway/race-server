@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -256,6 +257,19 @@ public class CartRestController {
     @ResponseBody
     public ResponseEntity<String> updateOrCreateResponses(@RequestBody Cart cart, HttpServletRequest request) {
     	Cart trueCart = Cart.findCart(cart.getId());
+    	/*for(CustomRegFieldResponse crfr : trueCart.getCustomRegFieldResponses()) {
+    		crfr.merge().remove();
+    		crfr.flush();
+    		System.out.println("deleting custom field");
+    	}*/
+    	Iterator <CustomRegFieldResponse> oldResponses = trueCart.getCustomRegFieldResponses().iterator();
+    	trueCart.setCustomRegFieldResponses(null);
+    	trueCart.merge();
+    	while(oldResponses.hasNext()) {
+    		CustomRegFieldResponse toRemove = oldResponses.next();
+    		toRemove.remove();
+    	}
+    	
     	for(CustomRegFieldResponse crfr : cart.getCustomRegFieldResponses()) {
     		CustomRegField upField = crfr.getCustomRegField();
     		CustomRegField field = upField != null ? CustomRegField.findCustomRegField(upField.getId()) : null;
