@@ -75,7 +75,7 @@
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="width:750px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
@@ -84,8 +84,54 @@
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
                         <input type="hidden" name="id"><!--  --></input>
+                        <div class="fields">
+                            <div class="twelve wide required field">
+                                <label>Question</label>
+                                <input type="text" name="question" placeholder="What do you want to ask?"
+                                       data-parsley-required="true"
+                                       data-parsley-error-message="Please provide a question."><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide required field">
+                                <label for="responseType">Response Type</label>
+                                <div class="inline fields">
+                                    <div class="field">
+                                        <div class="ui radio checkbox checked" id="radio-input">
+                                            <input type="radio" checked="" name="responseType" value="input"><!--  --></input>
+                                            <label>User Input</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui radio checkbox" id="radio-dropdown">
+                                            <input type="radio" name="responseType" value="dropdown"><!--  --></input>
+                                            <label>Dropdown Menu</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields" id="dropdown-field" style="display:none">
+                            <div class="eight wide field">
+                                <label style="width:100%">Add Dropdown Option</label>
+                                <div class="ui input" style="width:90%">
+                                    <input  type="text" id="custom-response-dropdown-input" placeholder="Add dropdown option"></input>
+                                </div>
+                                <span style="line-height:40px;padding-left:12px;font-size:1.5em;"> + </span>
+                            </div>
+                            <div class="seven wide field">
+                                <label style="width:100%">Attach Discount/Fee (Optional)</label>
+                                <div class="ui action input">
+                                    <input type="number" step="5" id="custom-price-dropdown-input" placeholder="&amp;dollar; Amount (i.e. -3.50 or 1.50)"></input>
+                                    <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
+                                </div>
+                            </div>
+                            <div style="clear:both"><!--  --></div>
+                            <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
+                        </div>
+                        <h4 class="ui horizontal header divider"><i class="fa fa-cogs"><!--  --></i> Options
+                        </h4>
                         <div class="grouped fields">
-                            <label for="viewType"><i class="fa fa-cogs" style="margin-right: 5px;"><!--  --></i> Options</label>
                             <div class="field">
                                 <div class="ui toggle checkbox" id="optional1">
                                     <input type="checkbox" name="optional"><!--  --></input>
@@ -122,44 +168,6 @@
                             </div>
                             
                         </div>
-                        <div class="fields">
-                            <div class="twelve wide required field">
-                                <label>Question</label>
-                                <input type="text" name="question" placeholder="What do you want to ask?"
-                                       data-parsley-required="true"
-                                       data-parsley-error-message="Please provide a question."><!--  --></input>
-                            </div>
-                        </div>
-                        <div class="fields">
-                            <div class="twelve wide required field">
-                                <label for="responseType">Response Type</label>
-                                <div class="inline fields">
-                                    <div class="field">
-                                        <div class="ui radio checkbox checked" id="radio-input">
-                                            <input type="radio" checked="" name="responseType" value="input"><!--  --></input>
-                                            <label>User Input</label>
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <div class="ui radio checkbox" id="radio-dropdown">
-                                            <input type="radio" name="responseType" value="dropdown"><!--  --></input>
-                                            <label>Dropdown Menu</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="fields" id="dropdown-field" style="display:none">
-                            <div class="twelve wide field">
-                                <label style="width:100%">Dropdown Options</label>
-                                <div class="ui action input">
-                                    <input  type="text" id="drop-option" placeholder="Add dropdown option"></input>
-                                    <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
-                                </div>
-                            </div>
-                            <div style="clear:both"><!--  --></div>
-                            <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
-                        </div>
                         <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
                         </h4>
                         <span id="placeholder-text">Please enter details for the custom question to see a preview.</span>
@@ -168,11 +176,11 @@
                                 <div class="field" style="width: 375px">
                                     <label id="question-label" style="display:none"><!--  --></label>
                                     <input id="type-input-selected" type="text" style="display:none"><!--  --></input>
-                                    <div class="ui selection dropdown" id="type-dropdown-selected" style="display:none">
+                                    <div class="ui selection dropdown" id="customQuestionsPreviewDropdown" style="display:none">
                                         <input type="hidden"><!--  --></input>
                                         <div class="default text">Select one</div>
                                         <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                        <div class="menu" id="dropdown-options"><!--  -->
+                                        <div class="menu" id="customQuestionsPreviewOptions"><!--  -->
                                         </div>
                                     </div>
                                 </div>
@@ -294,6 +302,21 @@
                     </div>
                 </h3>
                 <div class="content">
+                    <c:if test="${shirt}">
+                        <form class="ui small form" id="shirtsLimitedForm">
+                            <div class="ui basic segment">
+                                <div class="ui toggle checkbox shirt-settings" style="width:100%">
+                                    <input type="checkbox" name="shirtsLimited"><!--  --></input>
+                                    <label style="width:100%;text-align:left">Limit to 1 shirt per customer</label>
+                                </div>
+                                <div style="clear:both"><!--  --></div>
+                                <div class="pull-right">
+                                    <button class="ui green button" type="submit">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                        <h3 class="ui dividing header">Current Products</h3>
+                    </c:if>
                     <div class="ui four doubling cards">
                         <c:if test="${not empty eventcartitems}">
                             <c:forEach var="item" items="${eventcartitems}">
@@ -418,10 +441,14 @@
                                         <div class="description">${item.question}</div>
                                         <div class="extra content"> 
                                             <c:if test="${empty item.responseSet}">Response Type: user input</c:if>
-                                            <c:if test="${not empty item.responseSet}">Choices: ${item.responseSet}</c:if>
+                                            <c:if test="${not empty item.responseSet}">Dropdown Options: 
+                                                <c:forEach var="dropdown" items="${item.responseSet}">
+                                                    <p>${dropdown.response}: $${dropdown.price/100}</p>
+                                                </c:forEach>
+                                            </c:if>
                                         </div>
                                     </div>
-                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responseSet}', ${item.eventItemIds})">
+                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responses}', ${item.eventItemIds})">
                                         <i class="fa fa-external-link"><!--  --></i>View Details
                                     </div>
                                 </div>
@@ -441,10 +468,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div style="clear:both"><!--  --></div>
-                <div class="pull-right">
-                    <button class="ui green button" type="button">Save</button>
                 </div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="coupon-menu">
@@ -491,10 +514,6 @@
                         </div>
                     </div>
                 </div>
-                <div style="clear:both"><!--  --></div>
-                <div class="pull-right">
-                    <button class="ui green button" type="button">Save</button>
-                </div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="ticket-menu">
                 <h3 class="ui icon header">
@@ -533,12 +552,12 @@
     </div>
     </sec:authorize>
     <script>
-        var currOptions = '';
+        var currOptionsObjList = [];
         var domList = [];
 
         window.onload = function(){
             // initialize semantic-ui elements
-            jQuery('#couponECI, #questionECI, #type-dropdown-selected').dropdown();
+            jQuery('#couponECI, #questionECI, #customQuestionsPreviewDropdown').dropdown();
             jQuery('.menu .item').tab();
             jQuery('.ui.checkbox').checkbox();
             jQuery('.disc-btn').each(function(){
@@ -552,10 +571,10 @@
 
             jQuery('#addQuestion').on('hidden.bs.modal', function(){
                 responseSet = '';
-                currOptions = '';
+                currOptionsObjList = [];
                 jQuery(this).find('input[type="text"]').val('');
-                jQuery('#type-dropdown-selected').dropdown('set text', 'Select one')
-                jQuery('#dropdown-options').text('');
+                jQuery('#customQuestionsPreviewDropdown').dropdown('set text', 'Select one')
+                jQuery('#customQuestionsPreviewOptions').text('');
                 jQuery('#option-list').text('');
                 jQuery('input[name="optional"]').prop('checked', false);
                 jQuery('input[name="hidden"]').prop('checked', false);
@@ -571,6 +590,7 @@
 
             shareHandler();
             transferHandler();
+            limitShirtHandler();
             customFormTab();
         }
 
@@ -765,63 +785,110 @@
         }
 
         function addDropdownOption(){
-            jQuery('#type-dropdown-selected').dropdown();
-            var opt = jQuery("#drop-option").val();
+            jQuery('#customQuestionsPreviewDropdown').dropdown();
+            var opt = jQuery("#custom-response-dropdown-input").val();
+            var fee = jQuery("#custom-price-dropdown-input").val();
+
             if( opt.length > 0 ){
-                currOptions += opt + ',';
-                jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
-                jQuery('#type-dropdown-selected').dropdown('refresh');
-                jQuery('#drop-option').val("");
+                var optionObj = {};
+                optionObj.response = opt;
+                var feeString = "";
+                if(fee.length > 0){
+                    optionObj.price = fee * 100;
+                    if(parseFloat(fee) &lt; 0){
+                        feeString = ' (-&amp;dollar;' + parseFloat(fee).toFixed(2) * -1 + ' discount)';
+                    }else{
+                        feeString = ' (&amp;dollar;' + parseFloat(fee).toFixed(2) + ' fee)';
+                    }
+                }else{
+                    optionObj.price = 0;
+                }
+                if(optionObj.hasOwnProperty('response') &amp;&amp; optionObj.hasOwnProperty('price')){
+                    currOptionsObjList.push(optionObj);
+                }
+
+                jQuery('#option-list').append('<li><div class="ui label" data-index="' + (currOptionsObjList.length-1) + '" onclick="removeDropdownOption(this)">' + opt + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
+
+                // add to sample dropdown for user
+                jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + opt + feeString + '</div>');
+                jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+
+                // clear UI
+                jQuery('#custom-response-dropdown-input').val("");
+                jQuery('#custom-price-dropdown-input').val("");
             }
         }
 
         function removeDropdownOption(o){
-            var parsed = currOptions;
-            if( parsed.slice(-1) == ',' ){
-                parsed = parsed.substring(0, parsed.length-1);
-            }
+            var index = parseInt(jQuery(o).data('index'));
+            currOptionsObjList.splice(index, 1);
 
-            parsed = parsed.split(',');
-            var opt = jQuery(o).text();
-            if( parsed.indexOf(opt) > -1 ){
-                parsed.splice(parsed.indexOf(opt), 1);
-                currOptions = parsed;
-            }
-            jQuery("#dropdown-options").html("");
-            jQuery('#drop-option').val("");
+            jQuery("#customQuestionsPreviewOptions").html("");
+            jQuery('#custom-response-dropdown-input').val("");
             jQuery('#option-list').html("");
-            parsed.forEach(function(el, i, ary){
-                jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + el + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery("#dropdown-options").append('<div class="item">' + el + '</div>');
+            currOptionsObjList.forEach(function(el, i, ary){
+                if( el.price &lt; 0 ){
+                    feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
+                }else{
+                    feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
+                }
+                jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
+                jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
             })
-            jQuery('#type-dropdown-selected').dropdown('refresh');
-
-            if( currOptions.slice(-1) !== ',' ){
-                currOptions += ',';
-            }
+            jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
         }
 
         var currQuestionId;
         function questionDetail(id, eid, optional, hidden, question, responseSet, eci){
-            currQuestionId = id;
-            currOptions = responseSet;
+            jQuery("#addQuestion").modal('show');
             jQuery(".post-question").hide();
             jQuery(".put-question").show();
-            jQuery("#addQuestion").modal('show');
 
-            var obj = {};
-            var eid = '${event.id}';
-
-            if( eid.length > 0 ){       var eobj = {};
-                                        eobj.id = parseInt(eid);
-                                        obj.event = eobj;        }
+            currQuestionId = id;
             jQuery('input[name="id"]').val(id);
             jQuery('input[name="question"]').val(question);
 
-            eci.forEach(function(n,i){
-                jQuery('#questionECI').dropdown('set selected', n);
-            })
+            if( responseSet.length > 0  &amp;&amp; responseSet !== 'null' ){
+                jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
+                jQuery("#dropdown-field").show();
+                jQuery('#customQuestionsPreviewDropdown').dropdown();
+                
+                jQuery('#custom-response-dropdown-input').val("");
+                jQuery("#customQuestionsPreviewOptions").html("");
+                //var parsed = responseSet.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+
+                    var parsed = responseSet.replace(/'/g, '"');
+                    console.log("preparsed")
+                    console.log(parsed)
+                    parsed = parsed.replace(/qFq/g, '"');
+                    console.log("parsed:")
+                    console.log(parsed)
+                var parsedObjList = JSON.parse(parsed);
+                currOptionsObjList = parsedObjList;
+                parsedObjList.forEach(function(el, i, ary){
+                    if( el.price &lt; 0 ){
+                        feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
+                    }else{
+                        feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
+                    }
+                    jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
+                    jQuery('#customQuestionsPreviewDropdown').dropdown();
+
+                    jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
+                    jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+                    jQuery('#custom-response-dropdown-input').val("");
+                })
+                jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+                
+                jQuery("#type-input-selected").hide();
+                jQuery("#customQuestionsPreviewDropdown").show();
+            }
+            else{
+                jQuery("#dropdown-field").hide();
+                jQuery("#customQuestionsPreviewDropdown").hide();
+                jQuery("#type-input-selected").show();
+                jQuery('#radio-input').checkbox('check');
+            }
 
             if(optional){
                 jQuery('#optional1').addClass('checked');
@@ -833,48 +900,9 @@
                 jQuery('input[name="hidden"]').prop('checked', true);
             }
 
-            if( responseSet !== "" ){
-                jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
-                jQuery("#dropdown-field").show();
-                jQuery('#type-dropdown-selected').dropdown();
-                
-                jQuery('#drop-option').val("");
-                var opt = responseSet;
-                if( opt.length > 0 ){
-                    // remove last comma if string ends with comma
-                    if( opt.slice(-1) == ',' ){
-                        opt = opt.substring(0, opt.length-1);
-                    }
-                    var split = opt.split(',');
-                    jQuery("#dropdown-options").html("");
-                    var parsedOptions = "";
-                    for( i = 0; i &lt; split.length; i++ ){
-                        opt = split[i];
-                        if( opt !== "" &amp;&amp; opt !== " " ){
-                            jQuery("#dropdown-options").append('<div class="item">' + opt + '</div>');
-                            parsedOptions += opt + ",";
-                            jQuery('#type-dropdown-selected').dropdown();
-                            // append tags
-                            jQuery('#option-list').append('<li><div class="ui label" onclick="removeDropdownOption(this)">' + opt + '<i class="x-btn fa fa-remove"></i></div></li>');
-                            jQuery('#type-dropdown-selected').dropdown('refresh');
-                            jQuery('#drop-option').val("");
-                        }
-                    }
-                    if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
-                        parsedOptions = parsedOptions.substring(0, parsedOptions.length-1);
-                        responseType = parsedOptions;
-                    }
-                    jQuery('#type-dropdown-selected').dropdown('refresh');
-                }
-                jQuery("#type-input-selected").hide();
-                jQuery("#type-dropdown-selected").show();
-            }
-            else{
-                jQuery("#dropdown-field").hide();
-                jQuery("#type-dropdown-selected").hide();
-                jQuery("#type-input-selected").show();
-                jQuery('#radio-input').checkbox('check');
-            }
+            eci.forEach(function(n,i){
+                jQuery('#questionECI').dropdown('set selected', n);
+            })
 
             if( (question !== null || question !== "") ){
                 jQuery("#question-preview").show();
@@ -944,13 +972,11 @@
                                         obj.event = eobj;        }
             if( question.length > 0 ){  obj.question = question; }
 
-            // remove last comma if string ends with comma
-            if( currOptions.slice(-1) == ',' ){
-                responseType = currOptions.substring(0, currOptions.length-1);
+            if( currOptionsObjList.length > 0 ){
+                obj.responseSet = currOptionsObjList;
+            }else{
+                obj.responseSet = null;
             }
-            var type = responseType;
-            if( type !== 'input' ){     obj.responseSet = responseType; }
-            else{ obj.responseSet = ""; }
 
             if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('question') === false || obj.hasOwnProperty('responseSet') === false ){
                 error = true;
@@ -995,38 +1021,13 @@
                 if( type == 'dropdown' ){
                     responseType = 'dropdown';
                     jQuery("#dropdown-field").show();
-                    jQuery("#addOption").click(function(){
-                        jQuery('#type-dropdown-selected').dropdown();
-                        var opt = jQuery("#drop-option").val();
-                        if( opt.length > 0 ){
-                            // remove last comma if string ends with comma
-                            if( opt.slice(-1) == ',' ){
-                                opt = opt.substring(0, opt.length-1);
-                            }
-                            var split = opt.split(',');
-                            jQuery(".dropdown .menu").html("");
-                            var parsedOptions = "";
-                            for( i = 0; i &lt; split.length; i++ ){
-                                opt = split[i];
-                                if( opt !== "" &amp;&amp; opt !== " " ){
-                                    jQuery(".dropdown .menu").append('<div class="item">' + opt + '</div>');
-                                    parsedOptions += opt + ",";
-                                }
-                            }
-                            if( parsedOptions.length > 1 &amp;&amp; parsedOptions.slice(-1) == ',' ){
-                                parsedOptions = parsedOptions.substring(0, parsedOptions.length-1);
-                                responseType = parsedOptions;
-                            }
-                            jQuery('#type-dropdown-selected').dropdown('refresh');
-                        }
-                    })
-                    jQuery("#type-dropdown-selected").show();
+                    jQuery("#customQuestionsPreviewDropdown").show();
                     jQuery("#type-input-selected").hide();
                 }
                 else{
                     responseType = 'input';
                     jQuery("#dropdown-field").hide();
-                    jQuery("#type-dropdown-selected").hide();
+                    jQuery("#customQuestionsPreviewDropdown").hide();
                     jQuery("#type-input-selected").show();
                 }
             });
@@ -1093,7 +1094,7 @@
 
         function transferHandler(){
             var transfer = '${event.ticketTransferEnabled}';
-            var transferDate = '${event.ticketTransferCutoff}'
+            var transferDate = '${event.ticketTransferCutoff}';
             var def = Date();
 
             if( transfer == 'true' ){
@@ -1122,6 +1123,29 @@
 
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/tickettransfer" + "?tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
+                    type: "PUT",
+                    dataType: "text/html",
+                    complete: function() {
+                        window.location.reload();
+                    }
+                });
+
+                return false; // avoid to execute the actual submit of the form.
+            });
+        }
+
+        function limitShirtHandler(){
+            var shirtsLimited = '${event.shirtsLimited}';
+
+            if( shirtsLimited == 'true' ){
+                jQuery('input[name="shirtsLimited"]').prop("checked", true);
+            }
+
+            jQuery("#shirtsLimitedForm").submit(function() {
+                var shirtsLimited = jQuery('input[name="shirtsLimited"]').prop("checked");
+
+                jQuery.ajax({
+                    url: "/bibs-server/events/${event.id}/regsettings" + "?shirtslimited="+shirtsLimited,
                     type: "PUT",
                     dataType: "text/html",
                     complete: function() {

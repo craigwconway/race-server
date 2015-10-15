@@ -5,6 +5,7 @@ package com.bibsmobile.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
+import flexjson.JSON;
 
 /**
  * @author galen
@@ -48,7 +51,11 @@ public class CustomRegField {
 	@NotNull
 	private String question;
 
-	private String responseSet;
+	@Transient
+	private Set<CustomRegFieldResponseOption> responseSet;
+	
+	//@JSON(include = false)
+	private String responses;
 	
 	/**
 	 * Used by event directors to hide unwanted responses
@@ -120,18 +127,42 @@ public class CustomRegField {
 	 * A comma separated list of responses. Leave blank if the object is a field.
 	 * @return the responseSet.
 	 */
-	public String getResponseSet() {
-		return responseSet;
+	public String getResponses() {
+		return responses;
 	}
 
 	/**
 	 * A comma separated list of responses. Leave blank if the object is a field.
 	 * @param responseSet the responseSet to set.
 	 */
-	public void setResponseSet(String responseSet) {
-		this.responseSet = responseSet;
+	public void setResponses(String responses) {
+		this.responses = responses;
 	}
 	
+	/**
+	 * @return the responses
+	 */
+	public Set<CustomRegFieldResponseOption> getResponseSet() {
+		try {
+		ObjectMapper mapper = new ObjectMapper();
+		return new HashSet<CustomRegFieldResponseOption>(Arrays.asList(mapper.readValue(this.responses, CustomRegFieldResponseOption[].class)));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * @param responses the responses to set
+	 */
+	public void setResponseSet(Set<CustomRegFieldResponseOption> responses) {
+		try {
+			this.responses = CustomRegFieldResponseOption.toJsonArray(responses);
+		} catch (Exception e) {
+			this.responses = null;
+		}
+
+	}
+
 	/**
 	 * @return the hidden
 	 */
@@ -317,7 +348,7 @@ public class CustomRegField {
      * @return Json String of single CustomRegField object
      */
     public String toJson() {
-        return new JSONSerializer().exclude("*.class").serialize(this);
+        return new JSONSerializer().include("responseSet").exclude("*.class").serialize(this);
     }
 
     /**
@@ -334,7 +365,7 @@ public class CustomRegField {
      * @return json array of custom reg fields, all children included
      */
     public static String toJsonArray(Collection<CustomRegField> collection) {
-        return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
+        return new JSONSerializer().include("*.children").include("responseSet").exclude("*.class").serialize(collection);
     }
 
     /**

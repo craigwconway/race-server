@@ -1522,6 +1522,34 @@ public class EventController {
     	return new ResponseEntity<>(headers, HttpStatus.OK);
     }
     
+
+    /**
+     * @api {put} /events/:id/regsettings Manage Registration Settings
+     * @apigroup registrations
+     * @apiName Manage Registration Settings
+     * @apiDescription Manage event level settings for registration
+     * @apiParam {boolean} shirtslimited Switch to limit shirts to one per purchase
+     * @param shirtsLimited
+     * @return
+     */
+    @RequestMapping(value="/{id}/regsettings",method = RequestMethod.PUT)
+    @ResponseBody
+    public ResponseEntity<String> regsettings(@PathVariable("id") Long id,
+    		@RequestParam(value = "shirtslimited") boolean shirtsLimited) {
+    	Event event = Event.findEvent(id);
+    	HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+    	if(null == event) {
+    		return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+    	}
+    	if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+    	event.setShirtsLimited(shirtsLimited);
+    	event.merge();
+    	return new ResponseEntity<>(headers, HttpStatus.OK);
+    }    
+    
     
     @RequestMapping(value="/{id}/tickettransfer",method = RequestMethod.PUT)
     @ResponseBody

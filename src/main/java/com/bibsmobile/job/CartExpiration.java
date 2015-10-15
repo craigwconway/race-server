@@ -36,6 +36,9 @@ public class CartExpiration extends BaseJob {
         Query q = em.createQuery("DELETE FROM CartItem ci WHERE ci.cart = :cart");
         q.setParameter("cart", c);
         q.executeUpdate();
+        q = em.createQuery("DELETE FROM CustomRegFieldResponse r WHERE r.cart = :cart");
+        q.setParameter("cart", c);
+        q.executeUpdate();
         q = em.createQuery("DELETE FROM Cart c WHERE c.id = :id");
         q.setParameter("id", c.getId());
         q.executeUpdate();

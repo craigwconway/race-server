@@ -184,6 +184,11 @@ public class Event {
     private boolean live;
     
     /**
+     * Used by Event Directors to restrict one shirt per order with registration
+     */
+    private boolean shirtsLimited = false;
+    
+    /**
      * Used by Event Directors to hide events they no longer want to see
      */
     private boolean hidden;
@@ -1437,6 +1442,20 @@ public class Event {
 	public void setLive(boolean live) {
 		this.live = live;
 	}
+	/**
+	 * @return the shirtsLimited
+	 */
+	public boolean isShirtsLimited() {
+		return shirtsLimited;
+	}
+
+	/**
+	 * @param shirtsLimited the shirtsLimited to set
+	 */
+	public void setShirtsLimited(boolean shirtsLimited) {
+		this.shirtsLimited = shirtsLimited;
+	}
+
 	public String getLocation() {
 		return location;
 	}

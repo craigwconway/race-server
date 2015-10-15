@@ -60,6 +60,7 @@ public class Cart {
     private List<CustomRegFieldResponse> customRegFieldResponses;
     
     private long totalPreFee;
+    private long questions;
     private long total;
     private Date created;
     private Date updated;
@@ -128,7 +129,21 @@ public class Cart {
         this.totalPreFee = totalPreFee;
     }
 
-    public long getTotal() {
+    /**
+	 * @return the totalQuestions
+	 */
+	public long getQuestions() {
+		return questions;
+	}
+
+	/**
+	 * @param totalQuestions the totalQuestions to set
+	 */
+	public void setQuestions(long questions) {
+		this.questions = questions;
+	}
+
+	public long getTotal() {
         return this.total;
     }
 

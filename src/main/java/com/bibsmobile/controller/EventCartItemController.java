@@ -81,6 +81,18 @@ public class EventCartItemController {
         for(EventCartItem eci : EventCartItem.findEventCartItemsByEvent(e).getResultList()) {
         	eventCartItemIds.add(eci.getId());
         }
+        List<EventCartItem> eciList = EventCartItem.findEventCartItemsByEvent(e).getResultList();
+        boolean tshirt = false;
+        for(EventCartItem eci : eciList) {
+        	if( eci.getType() == EventCartItemTypeEnum.T_SHIRT) {
+        		tshirt = true;
+        	}
+        }
+        List<CustomRegField> fields = CustomRegField.findCustomRegFieldsByEvent(e).getResultList();
+        for(CustomRegField field : fields) {
+        	field.setResponses(field.getResponses().replaceAll("\"", "qFq"));
+        }
+        uiModel.addAttribute("shirt", tshirt);
         uiModel.addAttribute("event", e);
         uiModel.addAttribute("eventcartitemids", eventCartItemIds);
         uiModel.addAttribute("eventcartitems", EventCartItem.findEventCartItemsByEvent(e).getResultList());

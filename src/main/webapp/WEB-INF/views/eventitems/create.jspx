@@ -194,6 +194,7 @@
                             <div class="ui toggle blue basic button" id="color-blue" onclick="updateShirt('blue')">blue</div>
                             <div class="ui toggle teal basic button" id="color-teal" onclick="updateShirt('teal')">teal</div>
                             <div class="ui toggle purple basic button" id="color-purple" onclick="updateShirt('purple')">purple</div>
+                            <div class="ui toggle black basic button" id="color-none" onclick="updateShirt('none')">n/a</div>
                             <span style="display:none">
                                 <input  class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-black"
                                         data-parsley-mincheck="1" data-parsley-error-message="Please select at least one color."></input>
@@ -204,6 +205,7 @@
                                 <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-blue"></input>
                                 <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-teal"></input>
                                 <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-purple"></input>
+                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-none"></input>
                             </span>
                         </div>
                     </div>
@@ -288,6 +290,7 @@
             jQuery('#event-type').dropdown();
             jQuery('#gender-type').dropdown();
             jQuery('input[name="type"]').val('TICKET');
+            jQuery('.ui.checkbox').checkbox();
         }
 
         function cardHandler(val){
@@ -446,7 +449,8 @@
                 }
             });
 
-            jQuery('#eventCartItem').on('submit', function(){
+            jQuery('#eventCartItem').on('submit', function(e){
+                // e.preventDefault();
                 jQuery('#proceed').prop('disabled', true);
             });
         }
@@ -479,7 +483,24 @@
         var xs = false; var sm = false; var md = false; var lg = false; var xl = false;
         var xxs = false; var xl2 = false; var xl3 = false;
         var blk = false; var wht = false; var red = false; var yel = false;
-        var grn = false; var blue = false; var teal = false; var purp = false;
+        var grn = false; var blue = false; var teal = false; var purp = false; var none = false;
+        function resetColors(){
+            blk = false; wht = false; red = false; yel = false;
+            grn = false; blue = false; teal = false; purp = false;
+            jQuery('#color-black').removeClass('active');
+            jQuery('#color-white').removeClass('active');
+            jQuery('#color-red').removeClass('active');
+            jQuery('#color-yellow').removeClass('active');
+            jQuery('#color-green').removeClass('active');
+            jQuery('#color-blue').removeClass('active');
+            jQuery('#color-teal').removeClass('active');
+            jQuery('#color-purple').removeClass('active');
+            console.log('resetting colors..')
+        }
+        function resetNone(){
+            none = false;
+            jQuery('#color-none').removeClass('active');
+        }
         function updateShirt(val){
             switch(val) {
                 case 'XXS':     xxs  = !xxs;    jQuery("#box-xxs").click();       break;
@@ -492,14 +513,17 @@
                 case 'XXL':     xl2  = !xl2;    jQuery("#box-xl2").click();       break;
                 case '3XL':     
                 case 'XXXL':    xl3  = !xl3;    jQuery("#box-xl3").click();       break;
-                case 'black':   blk  = !blk;    jQuery("#box-black").click();     break;
-                case 'white':   wht  = !wht;    jQuery("#box-white").click();     break;
-                case 'red':     red  = !red;    jQuery("#box-red").click();       break;
-                case 'yellow':  yel  = !yel;    jQuery("#box-yellow").click();    break;
-                case 'green':   grn  = !grn;    jQuery("#box-green").click();     break;
-                case 'blue':    blue = !blue;   jQuery("#box-blue").click();      break;
-                case 'teal':    teal = !teal;   jQuery("#box-teal").click();      break;
-                case 'purple':  purp = !purp;   jQuery("#box-purple").click();    break;
+                case 'black':   blk  = !blk;    jQuery("#box-black").click();     resetNone(); break;
+                case 'white':   wht  = !wht;    jQuery("#box-white").click();     resetNone(); break;
+                case 'red':     red  = !red;    jQuery("#box-red").click();       resetNone(); break;
+                case 'yellow':  yel  = !yel;    jQuery("#box-yellow").click();    resetNone(); break;
+                case 'green':   grn  = !grn;    jQuery("#box-green").click();     resetNone(); break;
+                case 'blue':    blue = !blue;   jQuery("#box-blue").click();      resetNone(); break;
+                case 'teal':    teal = !teal;   jQuery("#box-teal").click();      resetNone(); break;
+                case 'purple':  purp = !purp;   jQuery("#box-purple").click();    resetNone(); break;
+                case 'none':    none = !none;   jQuery("#box-none").click();      
+                                resetColors();
+                                break;
                 default: break;
             }
             var sizes = ""; var colors = "";
@@ -519,6 +543,7 @@
             if(blue){ colors += "Blue,"; }
             if(teal){ colors += "Teal,"; }
             if(purp){ colors += "Purple,"; }
+            if(none){ colors += "N/A,"; }
             if( sizes.length > 1 ){ sizes = sizes.substr(0, sizes.length-1); }
             if( colors.length > 1 ){ colors = colors.substr(0, colors.length-1); }
             jQuery('input[name="tshirtSizes"]').val(sizes);

@@ -56,6 +56,8 @@ public class EventCartItem {
     private int available;
 
     private int purchased;
+    
+    private boolean shirtsLimited = false;
 
     @ManyToOne
     private EventType eventType;
@@ -306,7 +308,21 @@ public class EventCartItem {
         this.purchased = purchased;
     }
 
-    public EventType getEventType() {
+    /**
+	 * @return the shirtsLimited
+	 */
+	public boolean isShirtsLimited() {
+		return shirtsLimited;
+	}
+
+	/**
+	 * @param shirtsLimited the shirtsLimited to set
+	 */
+	public void setShirtsLimited(boolean shirtsLimited) {
+		this.shirtsLimited = shirtsLimited;
+	}
+
+	public EventType getEventType() {
         return this.eventType;
     }
 

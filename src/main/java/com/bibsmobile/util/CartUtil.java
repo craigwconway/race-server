@@ -4,6 +4,8 @@ import com.bibsmobile.job.BaseJob;
 import com.bibsmobile.job.CartExpiration;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegFieldResponse;
+import com.bibsmobile.model.CustomRegFieldResponseOption;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventCartItem;
@@ -12,6 +14,7 @@ import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.CustomRegField;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.SchedulerException;
@@ -24,7 +27,9 @@ import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public final class CartUtil {
     private static final Logger log = LoggerFactory.getLogger(CartUtil.class);
@@ -131,7 +136,9 @@ public final class CartUtil {
     	        }
             }
         }
-
+        if(cart.getQuestions() != 0) {
+        	total += cart.getQuestions();
+        }
         // Then apply coupon:
         if(cart.getCoupon() != null) {
         	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
@@ -164,6 +171,142 @@ public final class CartUtil {
         return cart;
     }
 
+    
+    public static Cart processQuestions(HttpSession session, Cart incoming) {
+        Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
+        Cart cart = null;
+        UserProfile user = null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            String username = authentication.getName();
+            if (!username.equals("anonymousUser")) {
+                user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
+            }
+        }
+        
+        if (cartIdFromSession != null) {
+            cart = Cart.findCart(cartIdFromSession);
+        } else if (user != null) {
+            try {
+                List<Cart> carts = Cart.findCartsByUser(user).getResultList();
+                for (Cart c : carts) {
+                    if (c.getStatus() == Cart.NEW) {
+                        cart = c;
+                        //session.setAttribute(SESSION_ATTR_CART_ID, cart.getId());
+                    }
+                }
+            } catch (Exception e) {
+            	System.out.println("Caught exception finding cart in session");
+                log.error("Caught exception finding cart in session");
+                return null;
+            }
+        }
+        if (cart == null) {
+        	System.out.println("Null cart found with id");
+        	log.info("Null cart found modifying questions");
+        	return null;
+        }
+        
+    	Iterator <CustomRegFieldResponse> oldResponses = cart.getCustomRegFieldResponses().iterator();
+    	cart.setCustomRegFieldResponses(null);
+    	cart.merge();
+    	while(oldResponses.hasNext()) {
+    		CustomRegFieldResponse toRemove = oldResponses.next();
+    		toRemove.remove();
+    	}
+    	List <CustomRegFieldResponse> responses = new ArrayList <CustomRegFieldResponse>();
+    	for(CustomRegFieldResponse crfr : incoming.getCustomRegFieldResponses()) {
+    		CustomRegField upField = crfr.getCustomRegField();
+    		CustomRegField field = upField != null ? CustomRegField.findCustomRegField(upField.getId()) : null;
+    		if (field != null) {
+    			Set <CustomRegFieldResponseOption> options = field.getResponseSet();
+    			CustomRegFieldResponse toAdd = new CustomRegFieldResponse();
+    			toAdd.setCart(cart);
+    			toAdd.setCustomRegField(field);
+    			toAdd.setResponse(crfr.getResponse());
+				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
+				uploadedOption.setResponse(crfr.getResponse());
+				System.out.println("Reg Field Options: " + options);
+				if(!options.isEmpty() && options.contains(uploadedOption)) {
+					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
+					for(CustomRegFieldResponseOption realOption : optionsList) {
+						if(realOption.equals(uploadedOption)) {
+							toAdd.setPrice(realOption.getPrice());
+						}
+					}
+				}
+    			toAdd.persist();
+    			responses.add(toAdd);
+    		}
+    	}
+        cart.setCustomRegFieldResponses(responses);
+        cart.merge();
+        
+        
+        
+        
+        long total = 0;
+        // First, add up price of all cart items without donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() != EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        if(cart.getEvent().isSocialSharingDiscounts()) {
+	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
+	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
+	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
+	        }
+	        else if(total > 0) {
+	        	cart.setReferralDiscount(total);
+	        	cart.setTotal(0);
+	        }
+        }
+        long questiontotal=0;
+        for(CustomRegFieldResponse response : cart.getCustomRegFieldResponses()) {
+        	if(response.getPrice() != null) {
+        		questiontotal += response.getPrice();
+        	}
+        }
+        if((-1 * questiontotal) > total){
+        	questiontotal = -1*total;
+        }
+        cart.setQuestions(questiontotal);
+        total += questiontotal;
+        // Then apply coupon:
+        if(cart.getCoupon() != null) {
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with precoupon total " + total);
+        	total -= cart.getCoupon().getDiscount(total);
+        	log.info("Adding coupon to cart id: " + cart.getId() + " with postcoupon total " + total);
+        }
+        // Then add in donations:
+        for (CartItem ci : cart.getCartItems()) {
+        	if(ci.getEventCartItem().getType() == EventCartItemTypeEnum.DONATION) {
+                total += (ci.getQuantity() * ci.getPrice() * 100);
+        	}
+        }
+        cart.setTotalPreFee(total);
+        // Finally, apply bibs processing fee. TODO: put this at level of event.
+        double absolute;
+        double relative;
+        try {
+            absolute = cart.getEvent().getPricing().getAbsoluteFee();
+            relative = cart.getEvent().getPricing().getRelative();
+        } catch (Exception e) {
+        	absolute = BIBS_ABSOLUTE_FEE;
+        	relative = BIBS_RELATIVE_FEE;
+        }
+        if(total > 0) {
+        	total += total * relative + absolute;
+        }
+        // set total price which is at least 0
+        cart.setTotal(Math.max(0, total));
+        cart.merge();
+        return cart;
+    }    
+    
+    
     public static Cart markSocialShared(HttpSession session) {
         Long cartIdFromSession = (Long) session.getAttribute(SESSION_ATTR_CART_ID);
         Cart cart = null;
@@ -407,6 +550,9 @@ public final class CartUtil {
     	        	cart.setTotal(0);
     	        }
             }
+        }
+        if(cart.getQuestions() != 0) {
+        	total += cart.getQuestions();
         }
         
         // Then apply coupon:

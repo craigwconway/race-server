@@ -3,12 +3,15 @@ package com.bibsmobile.controller;
 import java.util.List;
 import java.util.Set;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,7 @@ import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.CustomRegField;
 import com.bibsmobile.model.CustomRegFieldResponse;
+import com.bibsmobile.model.CustomRegFieldResponseOption;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.wrapper.CartItemReqWrapper;
 import com.bibsmobile.service.UserProfileService;
@@ -252,26 +256,57 @@ public class CartRestController {
      */
     @RequestMapping(value = "/questions", method = RequestMethod.POST, headers = "Accept=application/json")
     @ResponseBody
-    public ResponseEntity<String> updateOrCreateResponses(@RequestBody Cart cart) {
+    public ResponseEntity<String> updateOrCreateResponses(@RequestBody Cart cart, HttpServletRequest request) {
     	Cart trueCart = Cart.findCart(cart.getId());
+    	/*for(CustomRegFieldResponse crfr : trueCart.getCustomRegFieldResponses()) {
+    		crfr.merge().remove();
+    		crfr.flush();
+    		System.out.println("deleting custom field");
+    	}*/
+    	/*
+    	Iterator <CustomRegFieldResponse> oldResponses = trueCart.getCustomRegFieldResponses().iterator();
+    	trueCart.setCustomRegFieldResponses(null);
+    	trueCart.merge();
+    	while(oldResponses.hasNext()) {
+    		CustomRegFieldResponse toRemove = oldResponses.next();
+    		toRemove.remove();
+    	}
+    	
     	for(CustomRegFieldResponse crfr : cart.getCustomRegFieldResponses()) {
-    		if(crfr.getId() != null) {
-    			// check for a match
-    			try {
-    				CustomRegFieldResponse match = CustomRegFieldResponse.findCustomRegFieldResponse(crfr.getId());
-    				match.setResponse(crfr.getResponse());
-    				match.merge();
-    			} catch(Exception e) {
-    				crfr.persist();
-    				crfr.setCart(trueCart);
-    			}
-    		} else {
+    		CustomRegField upField = crfr.getCustomRegField();
+    		CustomRegField field = upField != null ? CustomRegField.findCustomRegField(upField.getId()) : null;
+    		if (field != null) {
+    			Set <CustomRegFieldResponseOption> options = field.getResponseSet();
     			crfr.setCart(trueCart);
+				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
+				uploadedOption.setResponse(crfr.getResponse());
+				System.out.println("Reg Field Options: " + options);
+				if(!options.isEmpty() && options.contains(uploadedOption)) {
+					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
+					for(CustomRegFieldResponseOption realOption : optionsList) {
+						if(realOption.equals(uploadedOption)) {
+							crfr.setPrice(realOption.getPrice());
+						}
+					}
+				}
     			crfr.persist();
+			
     		}
     	}
+    	Cart realCart = null;
+    	try{
+    		realCart = CartUtil.processQuestions(request.getSession());
+    	} catch (Exception e) {
+    		System.out.println(e);
+    	}
+    	System.out.println("realcart: " + realCart);
+
+    	for(CustomRegFieldResponse crfr : realCart.getCustomRegFieldResponses()) {
+    		Hibernate.initialize(crfr.getResponse());
+    	}
+    	*/
     	HttpHeaders headers = new HttpHeaders();
     	headers.add("Content-Type", "application/json; charset=utf-8");
-    	return new ResponseEntity<>(trueCart.toJson(ArrayUtils.toArray("cartItems", "cartItems.user", "customRegFieldResponses")), headers, HttpStatus.OK);
+    	return new ResponseEntity<>(CartUtil.processQuestions(request.getSession(), cart).toJson(ArrayUtils.toArray("cartItems", "cartItems.user", "customRegFieldResponses")), headers, HttpStatus.OK);
     }
 }
