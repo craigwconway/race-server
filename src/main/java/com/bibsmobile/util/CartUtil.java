@@ -253,7 +253,7 @@ public final class CartUtil {
                 total += (ci.getQuantity() * ci.getPrice() * 100);
         	}
         }
-        if(cart.getEvent().isSocialSharingDiscounts()) {
+        if(cart.getEvent().isSocialSharingDiscounts() && cart.isShared()) {
 	        if(total > cart.getEvent().getSocialSharingDiscountAmount()) {
 	        	total -= cart.getEvent().getSocialSharingDiscountAmount();
 	        	cart.setReferralDiscount(cart.getEvent().getSocialSharingDiscountAmount());
