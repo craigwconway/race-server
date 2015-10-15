@@ -88,6 +88,10 @@ public class EventCartItemController {
         		tshirt = true;
         	}
         }
+        List<CustomRegField> fields = CustomRegField.findCustomRegFieldsByEvent(e).getResultList();
+        for(CustomRegField field : fields) {
+        	field.setResponses(field.getResponses().replaceAll("\"", "qFq"));
+        }
         uiModel.addAttribute("shirt", tshirt);
         uiModel.addAttribute("event", e);
         uiModel.addAttribute("eventcartitemids", eventCartItemIds);

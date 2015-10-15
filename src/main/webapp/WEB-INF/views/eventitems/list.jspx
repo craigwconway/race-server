@@ -855,8 +855,14 @@
                 
                 jQuery('#custom-response-dropdown-input').val("");
                 jQuery("#customQuestionsPreviewOptions").html("");
-                var parsed = responseSet.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-                    parsed = parsed.replace(/'/g, '"');
+                //var parsed = responseSet.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+
+                    var parsed = responseSet.replace(/'/g, '"');
+                    console.log("preparsed")
+                    console.log(parsed)
+                    parsed = parsed.replace(/qFq/g, '"');
+                    console.log("parsed:")
+                    console.log(parsed)
                 var parsedObjList = JSON.parse(parsed);
                 currOptionsObjList = parsedObjList;
                 parsedObjList.forEach(function(el, i, ary){

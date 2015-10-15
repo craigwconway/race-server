@@ -147,7 +147,6 @@ public class CustomRegField {
 		ObjectMapper mapper = new ObjectMapper();
 		return new HashSet<CustomRegFieldResponseOption>(Arrays.asList(mapper.readValue(this.responses, CustomRegFieldResponseOption[].class)));
 		} catch (Exception e) {
-			System.out.println(e);
 			return null;
 		}
 	}
