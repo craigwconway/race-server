@@ -38,5 +38,76 @@ public class Cheer {
 	@ManyToOne
 	private Event event;
 	
+	private CheerTypeEnum type;
+
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the created
+	 */
+	public Date getCreated() {
+		return created;
+	}
+
+	/**
+	 * @param created the created to set
+	 */
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	/**
+	 * @return the target
+	 */
+	public UserProfile getTarget() {
+		return target;
+	}
+
+	/**
+	 * @param target the target to set
+	 */
+	public void setTarget(UserProfile target) {
+		this.target = target;
+	}
+
+	/**
+	 * @return the event
+	 */
+	public Event getEvent() {
+		return event;
+	}
+
+	/**
+	 * @param event the event to set
+	 */
+	public void setEvent(Event event) {
+		this.event = event;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public CheerTypeEnum getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(CheerTypeEnum type) {
+		this.type = type;
+	}
 }
 
