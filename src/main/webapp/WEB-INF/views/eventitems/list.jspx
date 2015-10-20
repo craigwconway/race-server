@@ -797,8 +797,10 @@
                     optionObj.price = fee * 100;
                     if(parseFloat(fee) &lt; 0){
                         feeString = ' (-&amp;dollar;' + parseFloat(fee).toFixed(2) * -1 + ' discount)';
-                    }else{
+                    }else if(parseFloat(fee) > 0){
                         feeString = ' (&amp;dollar;' + parseFloat(fee).toFixed(2) + ' fee)';
+                    }else{
+                        feeString = 0;
                     }
                 }else{
                     optionObj.price = 0;
@@ -829,8 +831,10 @@
             currOptionsObjList.forEach(function(el, i, ary){
                 if( el.price &lt; 0 ){
                     feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
-                }else{
+                }else if(el.price > 0){
                     feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
+                }else{
+                    feeString = '';
                 }
                 jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
                 jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
@@ -868,8 +872,10 @@
                 parsedObjList.forEach(function(el, i, ary){
                     if( el.price &lt; 0 ){
                         feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
-                    }else{
+                    }else if(el.price > 0){
                         feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
+                    }else{
+                        feeString = '';
                     }
                     jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
                     jQuery('#customQuestionsPreviewDropdown').dropdown();
@@ -1036,7 +1042,7 @@
         function shareHandler(){
             var share = '${event.socialSharingDiscounts}';
             var shareAmount = '${event.socialSharingDiscountAmount}';
-            var rewardMsg = '${event.topSharerReward}';
+            var rewardMsg = decodeURI("${event.topSharerReward}");
 
             if( share == 'true' ){
                 jQuery('input[name="socialSharingDiscounts"]').prop("checked", true);
@@ -1075,7 +1081,7 @@
                 var obj = {};
                 obj.socialSharingDiscounts = share;
                 obj.socialSharingDiscountAmount = shareAmount;
-                obj.topSharerReward = shareMsg;
+                obj.topSharerReward = encodeURIComponent(shareMsg);
 
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/socialsharing",
