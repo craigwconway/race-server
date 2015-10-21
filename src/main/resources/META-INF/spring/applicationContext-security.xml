@@ -65,7 +65,8 @@
 
         <!--         <intercept-url pattern="/monitoring" access="hasRole('ROLE_SYS_ADMIN')" /> -->
 
-        <intercept-url pattern="/**" access="isAuthenticated()" />
+        <intercept-url pattern="/^app" access="isAuthenticated()" />
+        <intercept-url pattern="/^app/**" access="isAuthenticated()" />
         <intercept-url pattern="/**" access="permitAll" />
         <logout logout-url="/resources/j_spring_security_logout" />
     </http>
