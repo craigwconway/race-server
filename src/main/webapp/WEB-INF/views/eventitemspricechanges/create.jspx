@@ -603,7 +603,7 @@
             item["id"] = index + "-" + price;
             item["start"] = dateVal;
             item["content"] = price;
-            if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+            if( item["start"].isBefore(eciStart) == false &amp;&amp; item["start"].isAfter(eciEnd) == false ){
                 var noDupes = true;
                 var list = itemList[index]._data;
                 var keys = Object.keys(list);
@@ -613,12 +613,15 @@
                     if( moment(val.start).isSame(item["start"]) ){
                         alert("This date is a duplicate. Please select a different date or you can also edit the current value by double-clicking the item.");
                         noDupes = false;
+                    }else if(moment(val.start).isAfter(eciEnd)){
+                        alert("This date and time is after the event's starting time. Please select a different date or you can also edit the current value by double-clicking the item.");
+                        noDupes = false;
                     }
                 }
-                if( noDupes ){ itemList[index].add(item); }
-
-                jQuery("#"+timelineIndex).find('input[name="price"]').val();
-                alert("$"+price + " added for " + dateVal.format("MM/DD/YYYY hh:mm:ss") + ".");
+                if( noDupes ){ itemList[index].add(item); 
+                    jQuery("#"+timelineIndex).find('input[name="price"]').val();
+                    alert("$"+price + " added for " + dateVal.format("MM/DD/YYYY hh:mm:ss") + ".");
+                }
             }
             else{
                 alert("This date is out of the sale range for this product. Please select a correct date.");
