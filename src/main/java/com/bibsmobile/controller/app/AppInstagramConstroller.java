@@ -42,6 +42,8 @@ public class AppInstagramConstroller {
 	private static final String HUB_MODE = "hub.mode";
     private static final String HUB_CHALLENGE = "hub.challenge";
     private static final String HUB_VERIFY_TOKEN = "hub.verify_token";
+    private static final String CLIENT_ID = "e187dc60c88c4673a187200ad76b469b";
+    private static final String CLIENT_SECRET = "3f8a4c9912f54129be5aef1140b131c6";
     
     
     @RequestMapping(value = "/webhook", method = RequestMethod.POST)
@@ -126,13 +128,23 @@ public class AppInstagramConstroller {
         body = stringBuilder.toString();
         return body;
     }
-
+    
+    @RequestMapping(value = "/authorize", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> getAuthorizationStatus() {
+    	String authUrl = "https://instagram.com/oauth/authorize/?client_id=" + CLIENT_ID;
+    	authUrl += "&redirect_uri=" + "https://overmind.bibs.io/bibs-server/app/instagram/authorize";
+    	authUrl += "&response_type=code";
+    	authUrl += "&state=" + "1";
+    	return null;
+    }
+    
     @RequestMapping("/test")
     @ResponseBody
     public String subscribe() {
     	InstagramSubscription igSub = new InstagramSubscription()
-        .clientId("e187dc60c88c4673a187200ad76b469b")
-        .clientSecret("3f8a4c9912f54129be5aef1140b131c6")
+        .clientId(CLIENT_ID)
+        .clientSecret(CLIENT_SECRET)
         .object(SubscriptionType.TAGS)
         .objectId("london")
         .aspect("media")
