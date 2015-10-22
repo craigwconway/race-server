@@ -1259,7 +1259,9 @@ public class EventController {
         }
         
         event.setHidden(true);
-        
+        event.setRegEnabled(false);
+        event.setLive(false);
+        event.merge();
         //Check if the build has any attached entities:
         List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
         List <CartItem> cis;

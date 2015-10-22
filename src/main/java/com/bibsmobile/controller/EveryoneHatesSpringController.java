@@ -38,7 +38,7 @@ public class EveryoneHatesSpringController {
 		} else if(PermissionsUtil.isVaguelyEventAdmin(loggedInUser)) {
 			System.out.println("evenadmin detected");
 			// Case: Eventadmin: the user is using this on the bibs website.
-			events = Event.findEventsForUser(loggedInUser, 0, 3, "id", "DESC");
+			events = Event.findNonHiddenEventsForUser(loggedInUser, 0, 3, "id", "DESC");
 			System.out.println(events);
 			if(null == events) {
 				uiModel.addAttribute("events", null);
