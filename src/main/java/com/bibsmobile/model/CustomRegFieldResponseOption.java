@@ -4,6 +4,8 @@
 package com.bibsmobile.model;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
 import flexjson.JSONSerializer;
 
@@ -77,7 +79,7 @@ public class CustomRegFieldResponseOption {
 			return false;
 		return true;
 	}
-	public static String toJsonArray(Collection<CustomRegFieldResponseOption> collection) {
+	public static String toJsonArray(LinkedHashSet <CustomRegFieldResponseOption> collection) {
         return new JSONSerializer().include("*.children").exclude("*.class").serialize(collection);
     }
     

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
@@ -50,11 +52,14 @@ public class CustomRegField {
 
 	@NotNull
 	private String question;
+	
+	private String hint;
 
 	@Transient
-	private Set<CustomRegFieldResponseOption> responseSet;
+	private LinkedHashSet<CustomRegFieldResponseOption> responseSet;
 	
 	//@JSON(include = false)
+	@Column(length = 2000)
 	private String responses;
 	
 	/**
@@ -124,6 +129,20 @@ public class CustomRegField {
 	}
 
 	/**
+	 * @return the hint
+	 */
+	public String getHint() {
+		return hint;
+	}
+
+	/**
+	 * @param hint the hint to set
+	 */
+	public void setHint(String hint) {
+		this.hint = hint;
+	}
+
+	/**
 	 * A comma separated list of responses. Leave blank if the object is a field.
 	 * @return the responseSet.
 	 */
@@ -142,10 +161,10 @@ public class CustomRegField {
 	/**
 	 * @return the responses
 	 */
-	public Set<CustomRegFieldResponseOption> getResponseSet() {
+	public LinkedHashSet<CustomRegFieldResponseOption> getResponseSet() {
 		try {
 		ObjectMapper mapper = new ObjectMapper();
-		return new HashSet<CustomRegFieldResponseOption>(Arrays.asList(mapper.readValue(this.responses, CustomRegFieldResponseOption[].class)));
+		return new LinkedHashSet<CustomRegFieldResponseOption>(Arrays.asList(mapper.readValue(this.responses, CustomRegFieldResponseOption[].class)));
 		} catch (Exception e) {
 			return null;
 		}
@@ -154,7 +173,7 @@ public class CustomRegField {
 	/**
 	 * @param responses the responses to set
 	 */
-	public void setResponseSet(Set<CustomRegFieldResponseOption> responses) {
+	public void setResponseSet(LinkedHashSet<CustomRegFieldResponseOption> responses) {
 		try {
 			this.responses = CustomRegFieldResponseOption.toJsonArray(responses);
 		} catch (Exception e) {
