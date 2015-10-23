@@ -405,8 +405,16 @@
             if(none){ colors += "N/A,"; }
             if( sizes.length > 1 ){ sizes = sizes.substr(0, sizes.length-1); }
             if( colors.length > 1 ){ colors = colors.substr(0, colors.length-1); }
-            jQuery('input[name="tshirtSizes"]').val(sizes);
-            jQuery('input[name="tshirtColors"]').val(colors);
+            var shirtSizes = jQuery('input[name="tshirtSizes"]').val(sizes);
+            var shirtColors = jQuery('input[name="tshirtColors"]').val(colors);
+
+            if(shirtSizes.length > 0 &amp;&amp; shirtColors.length > 0){
+                jQuery('#proceed').prop('disabled', false);
+                proceedE = true;
+            }else{
+                jQuery('#proceed').prop('disabled', true);
+                proceedE = false;
+            }
         }
 
         function limitToggle(){
@@ -417,40 +425,128 @@
             });
         }
 
+        var proceedD = false;
+        var proceedE = false;
+        var proceedG = false;
         function setValidation(){
-            var test = false;
-
-            // parsley.js hack
-            jQuery('#proceed').click(function(){
-                var etype = jQuery('input[name="eventType"]').val();
-                if( etype == "" || etype == null ){
-                    jQuery('#etype-error').show();
-                }
-                jQuery('input[name="eventType"]').on('change', function(){
-                    if(etype !== null){
-                        jQuery('#etype-error').hide();
-                    }
-                })
-
-                if( etype !== null ){
-                    jQuery("#eventCartItem").submit(function(e) {
-                        e.preventDefault();
-                        jQuery('.size-boxes').each(function(){
-                            jQuery('.size-boxes').removeAttr('name');
-                        });
-                        jQuery('.color-boxes').each(function(){
-                            jQuery('.size-boxes').removeAttr('name');
-                        });
-
-                        this.submit();
-                    });
-                }
-            })
-
+            // normal parsley
             jQuery('#eventCartItem').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
             });
+
+            // parsley.js hack
+            jQuery('#proceed').click(function(){
+                var startDateVal = jQuery('#ECIStart').val();
+                var endDateVal = jQuery('#ECIEnd').val();
+                var startMoment = moment(startDateVal, 'MM/DD/YYYY hh:mm:ss a');
+                var startMomentStr = startMoment.format("MM/DD/YYYY hh:mm:ss a");
+                var endMoment = moment(endDateVal, 'MM/DD/YYYY hh:mm:ss a');
+                var endMomentStr = endMoment.format("MM/DD/YYYY hh:mm:ss a");
+                if(startMoment.isAfter(moment('${event.timeStartLocal}'))){
+                    jQuery('#proceed').prop('disabled', true);
+                    alert('You\'ve selected an Item Sale Start Date (' + startMomentStr + ') that is past your event\'s starting time (' + '${event.timeStartLocal}' + '). We\'ve adjusted your Item Sale Start Date to be the current time.');
+                    jQuery('#ECIStart').data('DateTimePicker').setDate(moment());
+                    proceedD = false;
+                    jQuery('#proceed').prop('disabled', false);
+                }
+                if(endMoment.isAfter(moment('${event.timeStartLocal}'))){
+                    jQuery('#proceed').prop('disabled', true);
+                    alert('You\'ve selected an Item Sale End Date (' + endMomentStr + ') that is past your event\'s starting time (' + startMomentStr + '). We\'ve adjusted your Item Sale End Date to be your event\'s starting time.');
+                    jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
+                    proceedD = false;
+                    jQuery('#proceed').prop('disabled', false);
+                }else if(endMoment.isBefore(moment()) &amp;&amp; moment('${event.timeStartLocal}').isAfter(moment())){
+                    jQuery('#proceed').prop('disabled', true);
+                    alert('You\'ve selected an Item Sale End Date (' + endMomentStr + ') that is before today, which means no one can purchase this item currently. We\'ve adjusted your Item Sale End Date to be your event\'s starting time.');
+                    jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
+                    proceedD = false;
+                    jQuery('#proceed').prop('disabled', false);
+                 }
+
+                if(startMoment.isBefore(moment('${event.timeStartLocal}')) &amp;&amp; endMoment.isBefore(moment('${event.timeStartLocal}'))){
+                    proceedD = true;
+                }
+
+                if( jQuery('input[name="type"]').val() == 'TICKET' ){
+                    var etype = jQuery('#event-type').dropdown('get value');
+                    if( etype == "" || etype == null ){
+                        jQuery('#proceed').prop('disabled', true);
+                        jQuery('#etype-error').show();
+                        jQuery('#event-type').addClass('error');
+                        jQuery('#event-type').dropdown({
+                            onChange: function (val) {
+                                jQuery('#etype-error').hide();
+                                jQuery('#event-type').removeClass('error');
+                                proceedE = true;
+                                if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
+                                    jQuery('#proceed').prop('disabled', false);
+                                }
+                            }
+                        });
+                    }
+
+                    var gender = jQuery('#gender-type').dropdown('get value');
+                    if( gender == "" || gender == null ){
+                        jQuery('#proceed').prop('disabled', true);
+                        jQuery('#gender-error').show();
+                        jQuery('#gender-type').addClass('error');
+                        jQuery('#gender-type').dropdown({
+                            onChange: function (val) {
+                                jQuery('#gender-error').hide();
+                                jQuery('#gender-type').removeClass('error');
+                                proceedG = true;
+                                if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
+                                    jQuery('#proceed').prop('disabled', null);
+                                }
+                            }
+                        });
+                    }
+                }else if('${eventCartItem.type}' == 'T_SHIRT'){
+                    var error = false;
+                    var alertMsg = "You're missing ";
+
+                    var shirtSizes = jQuery('input[name="tshirtSizes"]').val();
+                    var shirtColors = jQuery('input[name="tshirtColors"]').val();
+                    if(shirtSizes.length &lt; 1){
+                        error = true;
+                        alertMsg += 'shirt sizes';
+                    }
+                    if(shirtColors.length &lt; 1){
+                        if(error){
+                            alertMsg += ' and colors';
+                        }else{
+                            error = true;
+                            alertMsg += 'shirt colors';
+                        }
+                    }
+                    if(error){
+                        alertMsg += '. Please add at least one before continuing.';
+                        alert(alertMsg);
+                        proceedE = false;
+                        jQuery('#proceed').prop('disabled', true);
+                    }else{
+                        proceedE = true;
+                        jQuery('#proceed').prop('disabled', false);
+                    }
+                }
+
+                if( proceedD &amp;&amp; proceedE ){
+                    jQuery('#eventCartItem').submit();
+                }
+
+                jQuery("#eventCartItem").on('submit', function(e) {
+                    e.preventDefault();
+                    jQuery('.size-boxes').each(function(){
+                        jQuery('.size-boxes').removeAttr('name');
+                    });
+                    jQuery('.color-boxes').each(function(){
+                        jQuery('.size-boxes').removeAttr('name');
+                    });
+
+                    this.submit();
+                });
+            })
 
             jQuery("#lowAge").on('input', function(){
                 var low = jQuery("#lowAge").val();

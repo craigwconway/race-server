@@ -72,6 +72,9 @@
             width: 100%;
             margin: 1em 0em 0.5em;
         }
+        .ui.form input:not([type]), .ui.form input[type="text"], .ui.form input[type="email"], .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="password"], .ui.form input[type="number"], .ui.form input[type="url"], .ui.form input[type="tel"]{
+            font-weight: 400;
+        }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
