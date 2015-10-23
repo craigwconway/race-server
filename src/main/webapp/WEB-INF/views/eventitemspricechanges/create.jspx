@@ -275,7 +275,6 @@
             editable: true,
             format: {
                 minorLabels: {
-                    millisecond:'SSS',
                     second:     's',
                     minute:     'HH:mm',
                     hour:       'HH:mm',
@@ -357,7 +356,7 @@
             min: new Date(eciStart),                // lower limit of visible range
             max: new Date(eciEnd),                // upper limit of visible range
             zoomMin: 1000 * 60 * 60,             // one day in milliseconds
-            zoomMax: 1000 * 60 * 60 * 24 * 31 * 3     // about three months in milliseconds
+            zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 7     // about three months in milliseconds
         }
         var itemList = [];
         var timelineList = [];
@@ -449,11 +448,11 @@
             addGroup(obj, index, false);
 
             var price = basePrice;
-            var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss.SSS a').format('MM/DD/YYYY h:mm:ss.SSS a');
+            var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
             if( price !== null &amp;&amp; dateVal !== null ){
                 var item = {};
                     item["id"] = index + "-" + price;
-                    item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss.SSS a');
+                    item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
                     item["content"] = price;
                     if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
                         itemList[index].add(item);
@@ -474,8 +473,8 @@
 
                 obj.id = jQuery(this).find('.field-id').text();                  obj.id = parseInt(obj.id);
                 obj.price = jQuery(this).find('.field-price').text();            obj.price = parseInt(obj.price);
-                obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal, 'MM/DD/YYYY hh:mm:ss.SSS a');
-                obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal, 'MM/DD/YYYY hh:mm:ss.SSS a');
+                obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal, 'MM/DD/YYYY hh:mm:ss a');
+                obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal, 'MM/DD/YYYY hh:mm:ss a');
 
                 // check if category exists already. if it exists, do not call addGroup.
                 if( categoryNameList.length > 0 &amp;&amp; categoryNameList.indexOf(cat) !== -1 ){
@@ -512,7 +511,7 @@
                     item["id"] = obj.id;
                     item["start"] = obj.dateStartLocal;
                     item["content"] = obj.price;
-                    if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss.SSS a')) == false || item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss.SSS a')) == false ){
+                    if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false || item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
                         itemList[index].add(item);
                     }
                     else{
@@ -553,11 +552,11 @@
                 addGroup(obj, index, false);
 
                 var price = newBasePrice;
-                var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss.SSS a');
+                var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
                 if( price !== null &amp;&amp; dateVal !== null ){
                     var item = {};
                         item["id"] = index + "-" + price;
-                        item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss.SSS a');
+                        item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
                         item["content"] = price;
                         if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false || item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
                             itemList[index].add(item);
@@ -644,7 +643,7 @@
             var timelineIndex = jQuery(caller).closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
 
-            var dateVal = moment(jQuery("#"+timelineIndex).find(".pricedateStartLocal").val()).format('MM/DD/YYYY h:mm:ss.SSS a');
+            var dateVal = moment(jQuery("#"+timelineIndex).find(".pricedateStartLocal").val()).format('MM/DD/YYYY h:mm:ss a');
             var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
             dateVal = moment(dateVal);
             price   = parseInt(price);
@@ -653,18 +652,23 @@
             item["id"] = index + "-" + price + "-" + encodeURIComponent(dateVal);
             item["start"] = dateVal;
             item["content"] = price;
-            if( item["start"].isBefore(eciStart) == false &amp;&amp; item["start"].isAfter(eciEnd) == false ){
+            if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false &amp;&amp; item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
                 var noDupes = true;
                 var list = itemList[index]._data;
                 var keys = Object.keys(list);
                 for(var i = 0; i &lt; keys.length; i++){
                     var key = keys[i];
                     var val = list[key];
+                    var userInputDate = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
+                    var eventStartDate = moment(eciEnd);
+                    console.log('user input', userInputDate);
+                    console.log('event start', eventStartDate);
+                    console.log('check boolean', userInputDate.isAfter(eventStartDate));
                     if( moment(val.start).isSame(item["start"]) ){
                         alert("This date is a duplicate. Please select a different date or you can also edit the current value by double-clicking the item.");
                         noDupes = false;
                         break;
-                    }else if(moment(val.start).isAfter(eciEnd)){
+                    }else if(userInputDate.isAfter(eventStartDate)){
                         alert("This date and time is after the event's starting time. Please select a different date or you can also edit the current value by double-clicking the item.");
                         noDupes = false;
                         break;
@@ -674,9 +678,9 @@
                         break;
                     }
                 }
-                if( noDupes ){ itemList[index].add(item); 
+                if( noDupes == true ){ itemList[index].add(item); 
                     jQuery("#"+timelineIndex).find('input[name="price"]').val();
-                    alert("$"+price + " added for " + dateVal.format("MM/DD/YYYY hh:mm:ss") + ".");
+                    alert("$"+price + " added for " + userInputDate.format("MM/DD/YYYY hh:mm:ss") + ".");
                 }
             }
             else{
@@ -708,8 +712,8 @@
                 request.done(function( data ) {
                     if( data !== null ){
                         eci = data;
-                        eciStart = moment(data.timeStartLocal, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss.SSS a');
-                        eciEnd = moment(data.timeEndLocal, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss.SSS a');
+                        eciStart = moment(data.timeStartLocal, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+                        eciEnd = moment(data.timeEndLocal, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
                         eciBasePrice = eci.price;
                         jQuery("#event-name").text(eci.name);
                         jQuery(".base-price").each(function(){
@@ -730,9 +734,9 @@
         function initDateTimePickers(){
             jQuery(".pricedateStartLocal").each(function(){
                 jQuery(this).datetimepicker({
-                    defaultDate: moment(eciStart, 'MM/DD/YYYY hh:mm:ss.SSS a'),
-                    minDate: moment(eciStart, 'MM/DD/YYYY hh:mm:ss.SSS a'),
-                    maxDate: moment(eciEnd, 'MM/DD/YYYY hh:mm:ss.SSS a'),
+                    defaultDate: moment(eciStart, 'MM/DD/YYYY h:mm:ss a'),
+                    minDate: moment(eciStart, 'MM/DD/YYYY h:mm:ss a'),
+                    maxDate: moment(eciEnd, 'MM/DD/YYYY h:mm:ss a'),
                     useSeconds: true,
                     sideBySide: true
                 });
@@ -773,19 +777,19 @@
                         // last item:
                         // start date = start date, end date = eci end date
                         objdateStartLocal = value.start;
-                        objdateEndLocal = moment(eciEnd, 'MM/DD/YYYY hh:mm:ss.SSS a');
+                        objdateEndLocal = moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a');
                     }
                     else{
                         // all except last item:
                         // start date = start date, end date = next item's start date
                         objdateStartLocal = value.start;
-                        objdateEndLocal = moment(sortAry[j+1].start).subtract(1, 'ms');
+                        objdateEndLocal = moment(sortAry[j+1].start).subtract(1, 's');
                     }
                     if( objdateStartLocal !== null ){
-                        objdateStartLocal = moment(objdateStartLocal).format("MM/DD/YYYY hh:mm:ss.SSS a");
+                        objdateStartLocal = moment(objdateStartLocal).format("MM/DD/YYYY hh:mm:ss a");
                     }
                     if( objdateEndLocal !== null ){
-                        objdateEndLocal = moment(objdateEndLocal).format("MM/DD/YYYY hh:mm:ss.SSS a");
+                        objdateEndLocal = moment(objdateEndLocal).format("MM/DD/YYYY hh:mm:ss a");
                     }
 
                     var pc = {};
