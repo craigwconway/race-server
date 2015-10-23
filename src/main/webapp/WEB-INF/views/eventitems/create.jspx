@@ -481,8 +481,8 @@
             });
 
             jQuery('#eventCartItem').on('submit', function(e){
-                e.preventDefault();
-                // jQuery('#proceed').prop('disabled', true);
+                // e.preventDefault();
+                jQuery('#proceed').prop('disabled', true);
             });
         }
 
