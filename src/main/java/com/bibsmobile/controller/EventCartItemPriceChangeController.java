@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -152,12 +153,12 @@ public class EventCartItemPriceChangeController {
             }
             try {
             	//MM/DD/YYYY HH:mm:ss.SSS a
-                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss.SSS a");
+                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
                 format.setTimeZone(event.getTimezone());
                 Calendar timeStart = new GregorianCalendar();
                 Calendar timeEnd = new GregorianCalendar();
     			timeStart.setTime(format.parse(eventCartItemPriceChange.getDateStartLocal()));
-    			timeEnd.setTime(format.parse(eventCartItemPriceChange.getDateEndLocal()));
+    			timeEnd.setTime(new Date(format.parse(eventCartItemPriceChange.getDateEndLocal()).getTime() + 999));
     			eventCartItemPriceChange.setStartDate(timeStart.getTime());
     			eventCartItemPriceChange.setEndDate(timeEnd.getTime());
     			log.info("Updating price changes for Event " + event.getId() + " - " + event.getName() + " Item: " + eci.getId() + " - " + eci.getName() + 

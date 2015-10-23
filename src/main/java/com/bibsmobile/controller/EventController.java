@@ -1064,10 +1064,10 @@ public class EventController {
 				eventCartItem.setTimeEnd(format.parse(eventCartItem.getTimeEndLocal()));
 				eventCartItem.merge();
 				for(EventCartItemPriceChange eventCartItemPriceChange : eventCartItem.getPriceChanges()) {
-					SimpleDateFormat priceChangeFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss.SSS a");
+					SimpleDateFormat priceChangeFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 					priceChangeFormat.setTimeZone(event.getTimezone());
 					eventCartItemPriceChange.setStartDate(priceChangeFormat.parse(eventCartItemPriceChange.getDateStartLocal()));
-					eventCartItemPriceChange.setEndDate(priceChangeFormat.parse(eventCartItemPriceChange.getDateEndLocal()));
+					eventCartItemPriceChange.setEndDate(new Date(format.parse(eventCartItemPriceChange.getDateEndLocal()).getTime() + 999));
 					eventCartItemPriceChange.merge();
 				}
 			}
