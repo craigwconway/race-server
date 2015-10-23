@@ -144,7 +144,7 @@
                             </div>
                             <div class="row">
                                 <div style="text-align:right; margin-top: 3%; margin-right:5%">
-                                    <button type="button" class="btn btn-success" onclick="shiftTimeline(this)">Add Price</button>
+                                    <button type="button" class="btn btn-success" id="addPriceBtn" onclick="shiftTimeline(this)">Add Price</button>
                                 </div>
                             </div>
                         </div>
@@ -427,8 +427,8 @@
                 var cat = jQuery(this).find('.field-categoryName').text();
                 var update = false;
 
-                obj.id = jQuery(this).find('.field-id').text();             obj.id = parseInt(obj.id);
-                obj.price = jQuery(this).find('.field-price').text();       obj.price = parseInt(obj.price);
+                obj.id = jQuery(this).find('.field-id').text();                  obj.id = parseInt(obj.id);
+                obj.price = jQuery(this).find('.field-price').text();            obj.price = parseInt(obj.price);
                 obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal);
                 obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal);
 
@@ -591,6 +591,8 @@
         }
 
         function shiftTimeline(caller){
+            jQuery('#addPriceBtn').text("Adding...");
+            jQuery('#addPriceBtn').prop("disabled", true);
             var timelineIndex = jQuery(caller).closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
 
@@ -600,7 +602,7 @@
             price   = parseInt(price);
             
             var item = {};
-            item["id"] = index + "-" + price;
+            item["id"] = index + "-" + price + "-" + encodeURIComponent(dateVal);
             item["start"] = dateVal;
             item["content"] = price;
             if( item["start"].isBefore(eciStart) == false &amp;&amp; item["start"].isAfter(eciEnd) == false ){
@@ -613,9 +615,15 @@
                     if( moment(val.start).isSame(item["start"]) ){
                         alert("This date is a duplicate. Please select a different date or you can also edit the current value by double-clicking the item.");
                         noDupes = false;
+                        break;
                     }else if(moment(val.start).isAfter(eciEnd)){
                         alert("This date and time is after the event's starting time. Please select a different date or you can also edit the current value by double-clicking the item.");
                         noDupes = false;
+                        break;
+                    }else if( isNaN(item["content"]) ){
+                        alert("Please enter a $ value for this price change.");
+                        noDupes = false;
+                        break;
                     }
                 }
                 if( noDupes ){ itemList[index].add(item); 
@@ -629,6 +637,8 @@
 
             for( i = 0; i &lt; timelineList.length; i++ ){
                 timelineList[i].fit();
+                jQuery('#addPriceBtn').text("Add Price");
+                jQuery('#addPriceBtn').prop("disabled", false);
             }
         }
 
