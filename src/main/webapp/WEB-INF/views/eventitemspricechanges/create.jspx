@@ -728,7 +728,7 @@
                         // last item:
                         // start date = start date, end date = eci end date
                         objdateStartLocal = value.start;
-                        objdateEndLocal = eciEnd;
+                        objdateEndLocal = moment(eciEnd, 'MM/DD/YYYY hh:mm:ss.SSS a');
                     }
                     else{
                         // all except last item:
