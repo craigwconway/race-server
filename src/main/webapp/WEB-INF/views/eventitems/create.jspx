@@ -358,6 +358,7 @@
             jQuery("#_event_id").val(eid);
         }
 
+        var proceedD = false;
         var proceedE = false;
         var proceedG = false;
         function setValidation(){
@@ -370,6 +371,36 @@
             });
 
             jQuery('#proceed').click(function(){
+                var startDateVal = jQuery('#ECIStart').val();
+                var endDateVal = jQuery('#ECIEnd').val();
+                var startMoment = moment(startDateVal, 'MM/DD/YYYY hh:mm:ss a');
+                var startMomentStr = startMoment.format("MM/DD/YYYY hh:mm:ss a");
+                var endMoment = moment(endDateVal, 'MM/DD/YYYY hh:mm:ss a');
+                var endMomentStr = endMoment.format("MM/DD/YYYY hh:mm:ss a");
+                if(startMoment.isAfter(moment('${event.timeStartLocal}'))){
+                    jQuery('#proceed').prop('disabled', true);
+                    alert('You\'ve selected an Item Sale Start Date (' + startMomentStr + ') that is past your event\'s starting time (' + '${event.timeStartLocal}' + '). We\'ve adjusted your Item Sale Start Date to be the current time.');
+                    jQuery('#ECIStart').data('DateTimePicker').setDate(moment());
+                    proceedD = false;
+                    jQuery('#proceed').prop('disabled', false);
+                }
+                if(endMoment.isAfter(moment('${event.timeStartLocal}'))){
+                    jQuery('#proceed').prop('disabled', true);
+                    alert('You\'ve selected an Item Sale End Date (' + endMomentStr + ') that is past your event\'s starting time (' + startMomentStr + '). We\'ve adjusted your Item Sale End Date to be your event\'s starting time.');
+                    jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
+                    proceedD = false;
+                    jQuery('#proceed').prop('disabled', false);
+                }else if(endMoment.isBefore(moment()) &amp;&amp; moment('${event.timeStartLocal}').isAfter(moment())){
+                    jQuery('#proceed').prop('disabled', true);
+                    alert('You\'ve selected an Item Sale End Date (' + endMomentStr + ') that is before today, which means no one can purchase this item currently. We\'ve adjusted your Item Sale End Date to be your event\'s starting time.');
+                    jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
+                    proceedD = false;
+                    jQuery('#proceed').prop('disabled', false);
+                 }
+
+                if(startMoment.isBefore(moment('${event.timeStartLocal}')) &amp;&amp; endMoment.isBefore(moment('${event.timeStartLocal}'))){
+                    proceedD = true;
+                }
                 if( jQuery('input[name="type"]').val() == 'TICKET' ){
                     var etype = jQuery('#event-type').dropdown('get value');
                     if( etype == "" || etype == null ){
@@ -381,7 +412,7 @@
                                 jQuery('#etype-error').hide();
                                 jQuery('#event-type').removeClass('error');
                                 proceedE = true;
-                                if( proceedE &amp;&amp; proceedG ){
+                                if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
                                     jQuery('#proceed').prop('disabled', false);
                                 }
                             }
@@ -398,14 +429,14 @@
                                 jQuery('#gender-error').hide();
                                 jQuery('#gender-type').removeClass('error');
                                 proceedG = true;
-                                if( proceedE &amp;&amp; proceedG ){
+                                if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
                                     jQuery('#proceed').prop('disabled', null);
                                 }
                             }
                         });
                     }
                 }
-                if( proceedE &amp;&amp; proceedG ){
+                if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
                     jQuery('.size-boxes').each(function(){
                         jQuery('.size-boxes').removeAttr('name');
                     });
@@ -450,8 +481,8 @@
             });
 
             jQuery('#eventCartItem').on('submit', function(e){
-                // e.preventDefault();
-                jQuery('#proceed').prop('disabled', true);
+                e.preventDefault();
+                // jQuery('#proceed').prop('disabled', true);
             });
         }
 
