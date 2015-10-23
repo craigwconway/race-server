@@ -440,7 +440,7 @@
             obj.highAgeThreshold = 120;
             obj.gender = 'MALE_AND_FEMALE';
             obj.team = false;
-            obj.base = basePrice;
+            obj.price = basePrice;
 
             var items = new vis.DataSet();
             itemList.push(items);
@@ -539,6 +539,7 @@
                     }
                     if( key == "base" ){
                         newBasePrice = val;
+                        obj['price'] = val;
                     }
                     obj[key] = val;
                 });
@@ -552,13 +553,13 @@
                 addGroup(obj, index, false);
 
                 var price = newBasePrice;
-                var dateVal = moment(eciStart).format('MM/DD/YYYY h:mm:ss.SSS a');
+                var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss.SSS a');
                 if( price !== null &amp;&amp; dateVal !== null ){
                     var item = {};
                         item["id"] = index + "-" + price;
-                        item["start"] = moment(dateVal);
+                        item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss.SSS a');
                         item["content"] = price;
-                        if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+                        if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false || item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
                             itemList[index].add(item);
                         }
                         else{
@@ -614,6 +615,8 @@
             var team;
             if( obj.team == true ){ team = "Teams: required" }
             else if( !obj.team ){ team = "Teams: optional" }
+
+            console.log('attempting to add info for', obj);
 
             jQuery("#group"+ index).find(".panel-heading")
                 .append('Sale Price Schedule for &lt;b>' + obj.categoryName + '&lt;/b>');
