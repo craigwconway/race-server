@@ -434,8 +434,8 @@
 
                 obj.id = jQuery(this).find('.field-id').text();                  obj.id = parseInt(obj.id);
                 obj.price = jQuery(this).find('.field-price').text();            obj.price = parseInt(obj.price);
-                obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal);
-                obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal);
+                obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal, 'MM/DD/YYYY hh:mm:ss.SSS a');
+                obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal, 'MM/DD/YYYY hh:mm:ss.SSS a');
 
                 // check if category exists already. if it exists, do not call addGroup.
                 if( categoryNameList.length > 0 &amp;&amp; categoryNameList.indexOf(cat) !== -1 ){
