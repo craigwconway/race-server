@@ -111,6 +111,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"><div class="pull-right" style="margin-top:-10px;"><button onclick="deletePriceChange(this)" class="btn btn-danger" type="button"><i class="fa fa-trash" style="margin-right:0;"><!--  --></i></button></div></div>
                     <div class="panel-body">
+                        <div class="panel-inner-heading"><!--  --></div>
                         <div class="vis-left">
                             <div id="vis-header">
                                 <div id="vis-container">
@@ -615,7 +616,9 @@
             else if( !obj.team ){ team = "Teams: optional" }
 
             jQuery("#group"+ index).find(".panel-heading")
-                .append(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
+                .append('Sale Price Schedule for &lt;b>' + obj.categoryName + '&lt;/b>');
+            jQuery("#group"+ index).find(".panel-inner-heading")
+                .append('$' + obj.price + ' base price (Ages ' + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
 
             // jQuery(".eci-price").each(function(){
             //     jQuery(this).text("Base price: $" + newBasePrice);
