@@ -86,7 +86,9 @@
             eid = parseEventId();
             jQuery(".dates").each(function(){
                 var pcdate = jQuery(this).text();
-                var momdate = moment(pcdate).format('MMM Do \'YY h:mm a');
+                var momdate = moment(pcdate, 'MM/DD/YYYY hh:mm:ss.SSS a').format('MMM Do \'YY h:mm a');
+                console.log('pcdate', pcdate);
+                console.log('moment', momdate);
                 jQuery(this).text(momdate);
             })
             jQuery(".category").each(function(){
