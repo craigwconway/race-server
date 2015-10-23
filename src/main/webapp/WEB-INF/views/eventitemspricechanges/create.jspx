@@ -175,22 +175,26 @@
                             </div>
                             <div class="ui labeled input">
                                 <div class="ui blue label">Min Age</div>
-                                    <input  type="text" name="lowAgeThreshold"
+                                    <input  type="number" name="lowAgeThreshold"
                                             data-for="lowAgeThreshold" id="lowAge"
                                             class="input-form category-field"
                                             placeholder="Min Age"
                                             value=""
+                                            min="1"
+                                            max="120"
                                             data-parsley-group="category"
                                             data-parsley-required="true"
                                             data-parsley-error-message="Invalid age."></input>
                             </div>
                             <div class="ui labeled input">
                                 <div class="ui blue label">Max Age</div>
-                                    <input  type="text" name="highAgeThreshold"
+                                    <input  type="number" name="highAgeThreshold"
                                             data-for="highAgeThreshold" id="highAge"
                                             class="input-form category-field"
                                             placeholder="Max Age"
                                             value=""
+                                            min="1"
+                                            max="120"
                                             data-parsley-group="category"
                                             data-parsley-required="true"
                                             data-parsley-error-message="Invalid age."></input>
@@ -381,13 +385,14 @@
                 errorTemplate: '<span></span>'
             });
 
-            jQuery("#lowAge").on('change', function(){
+            // check that it's greater than 1, an integer, less than 120, less than high
+            jQuery("#lowAge").on('input', function(){
                 var low = jQuery("#lowAge").val();
                 var high = jQuery("#highAge").val();
                 low = parseInt(low);
                 high = parseInt(high);
 
-                if( (low == "") || (low == 0) || (isNaN(low)) || (low &lt; eciLowAge) ){ jQuery("#lowAge").val(""); }
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
                 if( high !== "" ){
                     if( low &gt;= high ){
                         jQuery(this).val(high);
@@ -403,7 +408,7 @@
                 var high = jQuery("#highAge").val();
                 low = parseInt(low);
                 high = parseInt(high);
-                if( (high == "") || (high == 0) || (isNaN(low)) || (high &gt; eciHighAge) ){ jQuery("#highAge").val("") }
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
                 if( low !== "" ){
                     if( high &lt;= low ){
                         jQuery(this).val(low);
