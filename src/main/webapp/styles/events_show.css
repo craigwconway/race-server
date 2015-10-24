@@ -5,9 +5,9 @@ body{
 .white-overlay{
     display: block;
     background: rgba(255,255,255,.8);
-    width: 102%;
+    width: 104%;
     margin-top: 3%;
-    margin-left: -1%;
+    margin-left: -2%;
     margin-right: -3%;
     padding-top: 4%;
     padding-bottom: 8%;
@@ -15,7 +15,7 @@ body{
     min-height: 480px;
 }
 .info-container{
-    width: 60%;
+    width: 70%;
     font-size: 1.2em;
     font-weight: 100;
     line-height: 27px;
@@ -23,21 +23,24 @@ body{
 }
 .map-container{
     float: right;
-    width: 350px;
+    width: 250px;
     height: auto;
-    margin-right: 7%;
+    margin-right: 5%;
     margin-top: 1%;
     text-align: right;
 }
 #map{
-    width: 350px; 
-    height: 350px;
+    width: 250px; 
+    height: 250px;
 }
 .leaflet-top{
     z-index: 1 !important;
 }
 .button-container{
     float: right;
+}
+.ui.table thead th{
+    font-size: 0.85em;
 }
 h3.ui.header.event-type-header{
     font-family: Quicksand;

@@ -263,11 +263,12 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
-                    <h4 class="modal-title" id="eventtype-label">Add Event Type</h4>
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-times"></span></button>
+                    <h4 class="modal-title" id="eventtype-label">Manage Event Type</h4>
                 </div>
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
+                        <h3 class="ui dividing header">Logistics</h3>
                         <div class="fields">
                             <div class="twelve wide required field">
                                 <label style="width:100%" id="racetypes">Race Types</label>
@@ -294,11 +295,11 @@
                         <div class="fields">
                             <div class="twelve wide inline required field" style="margin: 0.5em 0em 0em">
                                 <label id="distance" style="width:100%">Distance</label>
-                                <input type="text" name="distance" placeholder="Distance"><!--  --></input>
-                                <div class="ui icon buttons" style="margin-left:3px">
-                                    <div class="ui positive button dist-btn" id="dist-mi"><b>mi</b></div>
-                                    <div class="ui button dist-btn" id="dist-km"><b>km</b></div>
-                                    <div class="ui button dist-btn" id="dist-m"><b>m</b></div>
+                                <input type="number" name="distance" placeholder="Distance" min="0"><!--  --></input>
+                                <div class="ui icon buttons" style="margin-left:10px">
+                                    <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
+                                    <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+                                    <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
                                 </div>
                             </div>
                         </div>
@@ -333,6 +334,54 @@
                             <div class="six wide field">
                                 <label>Highest Bib Number</label>
                                 <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="ui teal button" id="reg-details-btn" onclick="regDetails()">Add Registration Details</div>
+                        <div id="reg-details-container" style="display:none;margin-top:20px">
+                            <h3 class="ui dividing header">Registration Details</h3>
+                            <div class="eight wide required field">
+                                <label style="width:100%">Price</label>
+                                <div class="ui labeled input">
+                                    <div class="ui label">$</div>
+                                    <input  type="number" name="price"
+                                            class="form-control"
+                                            placeholder="Base price"
+                                            min="0"
+                                            data-parsley-error-message="Invalid base price."
+                                            data-parsley-required="true"></input>
+                                </div>
+                            </div>
+                            <div class="eight wide field">
+                                <label style="width:100%">Max Participant Count</label>
+                                <input  type="number" name="available"
+                                    class="form-control" style="margin-top:5px"
+                                    placeholder="Max # of Participants"
+                                    min="1"
+                                    data-parsley-error-message="Invalid maximum number."
+                                    data-parsley-required="true"></input>
+                            </div>
+                            <div class="two fields">
+                                <label style="width:100%">Registration Window</label>
+                                <div class="required field">
+                                    <label>Open Date: </label>
+                                    <input  type="text" name="timeStartLocal"
+                                        id="ECIStart"
+                                        placeholder="Price start date"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                        data-parsley-error-message="Please specify a start date."
+                                        data-parsley-required="true"></input>
+                                </div>
+                                <div class="required field">
+                                    <label>Close Date: </label>
+                                    <input  type="text" name="timeEndLocal"
+                                        id="ECIEnd"
+                                        placeholder="Price end date"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                        data-parsley-error-message="Please specify an end date."
+                                        data-parsley-required="true"></input>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -382,11 +431,11 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
-                                    <li><a href="#" onclick="redirectEnableReg(); return false;">Enable Registration</a></li>
+                                    <li><a href="#" onclick="redirectEnableReg(); return false;">Open Registration</a></li>
                                 </c:if>
                                 <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
-                                    <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
-                                    <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
+                                    <li><a href="#" onclick="redirectDisableReg(); return false;">Close Registration</a></li>
+                                    <li><a href="#" onclick="redirectManageReg(); return false;">Registration Tools</a></li>
                                     <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                     <li><a href="#" data-toggle='modal' data-target='#exportReg'>Export Registrations</a></li>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
@@ -401,7 +450,7 @@
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 </sec:authorize>
-                                <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
+                                <li><a href="#" onclick="regUrl();return false;">Registration URL/Link</a></li>
                                 <li><a href="#" data-toggle='modal' data-target='#waiverModal'>Waiver</a></li>
                             </ul>
                         </li>
@@ -449,25 +498,25 @@
                     <c:if test='${event.regEnabled}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectDisableReg()">
-                             reg <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             open registration <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${(!event.regEnabled)}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectEnableReg()">
-                             reg <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             close registration <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${event.live}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectDisableLive()">
-                             live <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             public listing <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${(!event.live)}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectEnableLive()">
-                             live <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             private listing <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                 </c:if>
@@ -484,16 +533,20 @@
             <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" /> first start <fmt:formatDate type="time" value="${eventDate}" /></div>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
-                    <button type="button" class="btn btn-default" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <button type="button" class="ui basic black button" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <c:if test="${not empty eventTypes}"><button type="button" class="ui teal button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
                 </div>
                 <c:if test="${not empty eventTypes}">
                     <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
-                    <table class="ui small table">
+                    <table class="ui small compact stackable table">
                         <thead><tr>
                             <th>Name</th>
                             <th>Type</th>
                             <th>Distance</th>
                             <th>Start Time</th>
+                            <th>Registration</th>
+                            <th># Registered</th>
+                            <th># Athletes</th>
                         </tr></thead>
                         <tbody>
                             <c:forEach var="item" items="${eventTypes}"><tr class="eventtype-item" onclick="editEventType('${item.typeName}', '${item.racetype}', '${item.distance}', '${item.timeStartLocal}', '${item.id}')">
@@ -501,6 +554,9 @@
                                 <td>${item.racetype}</td>
                                 <td>${item.distance}</td>
                                 <td>${item.timeStartLocal}</td>
+                                <td><div class="ui small button">Detail</div></td>
+                                <td>15</td>
+                                <td>0</td>
                             </tr></c:forEach>
                         </tbody>
                     </table>
@@ -523,17 +579,18 @@
             </c:if>
         }
 
-        var localTime = '${event.timeStartLocal}';
         var distType;
         function initInfo(){
-            localtime = moment(localTime).format('hh:mm:ss a');
+            localtime = eventStart.format('hh:mm:ss a');
             jQuery('#displayLocal').text(localtime);
 
-            var momentRRTime = moment('${event.timeStartLocal}').startOf('hour');
+            var momentRRTime = eventStart.startOf('hour');
             jQuery("#timedisp").datetimepicker({
                 defaultDate: momentRRTime,
                 pickDate: false
             });
+
+            initDateTimePickers();
 
             jQuery('#lowbib').on('input', function(){
                 var low = jQuery("#lowbib").val();
@@ -622,9 +679,13 @@
 
             jQuery('#addType').on('hidden.bs.modal', function(){
                 jQuery(this).find('input[type="text"],input[type="number"]').val('');
-                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
+                jQuery("#timedisp").data('DateTimePicker').setDate(eventStart.startOf('hour'));
                 jQuery('#racetype-dropdown').dropdown('clear');
             });
+        }
+
+        function regDetails(){
+            jQuery('#reg-details-container').toggle();
         }
 
         function saveEventType(put){
@@ -937,6 +998,32 @@
             // fix map control UI bug
             jQuery('.leaflet-control-zoom-in').text('');
             jQuery('.leaflet-control-zoom-out').text('');
+        }
+
+        var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
+        function initDateTimePickers(){
+            jQuery("#ECIStart")
+                .datetimepicker({
+                    defaultDate: moment().startOf('day'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery("#ECIEnd")
+                .datetimepicker({
+                    defaultDate: eventStart,
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+            jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
+
+            <!-- on change-ui -->
+            jQuery("#ECIStart").on("dp.change",function (e) {
+                jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+            });
+            jQuery("#ECIEnd").on("dp.change",function (e) {
+                jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+            });
         }
 
         function editForm(){
