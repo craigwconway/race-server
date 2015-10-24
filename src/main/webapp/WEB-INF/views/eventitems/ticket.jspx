@@ -80,6 +80,10 @@
         #schedule-tab{
             padding: 2em 1em;
         }
+        #addTypeForm{
+            margin: 0 auto;
+            width: 70%;
+        }
         .sched{
             font-weight: bold;
         }
@@ -226,24 +230,51 @@
                 </form>
             </div>
             <div class="ui bottom attached active tab segment" id="schedule-tab" data-tab="schedule-menu">
-                <c:if test="${not empty eventitempricechanges}">
-                <c:forEach var="item" items="${eventitempricechanges}">
-                    <div class="row">${item.categoryName} - ${item.price} - ${item.dateStartLocal} ~ ${item.dateEndLocal}</div>
-                </c:forEach>
-                </c:if>
-                <h3 class="ui horizontal header divider">
-                    <i class="fa fa-ticket"><!--  --></i>
-                    Ticket Types
-                </h3>
+                <div class="ui yellow message" id="notify">
+                    <i class="close fa fa-times"><!--  --></i>
+                    <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg"><b>Ticket Types</b> will create purchasable tickets for people registering for ${eventtype.typeName}.<br/>You can also add <b>Price Schedules</b> to modify the price of a Ticket Type for a duration of time.<br/>For example, you can have a Ticket Type titled <em>"Early Bird"</em>,<br/> where the Price Schedule will be cheaper than General Admission by <em>$10</em> for <em>two months</em>.</span>
+                </div>
+                <h3 class="ui horizontal header divider"><i class="fa fa-ticket"><!--  --></i>Ticket Types</h3>
                 <div class="ui basic text segment" style="width:70%;margin:0 auto">
-                    <div class="pull-right"><button class="ui small basic blue button" onclick="addTicketType()" type="button"><i class="fa fa-plus"><!--  --></i> Ticket Type</button></div>
+                    <form id="addTypeForm" class="ui form" data-parsley-validate="data-parsley-vaidate">
+                        <h3 class="ui small header">Add a purchasable ticket for ${eventtype.typeName}.</h3>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">Ticket Type Title</div>
+                            <input  type="text" name="categoryName"
+                                    data-for="categoryName"
+                                    class="input-form category-field"
+                                    placeholder="e.g. Early Bird"
+                                    data-parsley-group="category"
+                                    data-parsley-required="true"
+                                    data-parsley-error-message="Please specify a ticket type title."></input>
+                        </div>
+                        <div class="ui labeled input">
+                            <div class="ui blue label">$</div>
+                            <input  type="number" data-for="base"
+                                    class="category-field" id="eci-base-price"
+                                    placeholder="Base price"
+                                    min="1"
+                                    data-parsley-group="category"
+                                    data-parsley-error-message="Invalid base price."
+                                    data-parsley-required="true"></input>
+                        </div>
+                        <div class="ui success message" id="add-type-success" style="margin:5px auto;display:none"><i class="close fa fa-times"><!--  --></i>
+                            <div class="header">Successfully added a ticket type.</div>
+                            <p class="content">You can now add a price schedule below, or simply save your progress with the button at the bottom of the page.</p>
+                        </div>
+                        <div class="ui negative message" id="add-type-error" style="margin:5px auto;display:none"><i class="close fa fa-times"><!--  --></i>
+                            <div class="header">This is a duplicate ticket type.</div>
+                            <p class="content">Please enter a different name, or try instead adding a Price Schedule below.</p>
+                        </div>
+                        <div class="pull-right"><button class="ui small basic blue button" onclick="addTicketType()" type="button"><i class="fa fa-plus"><!--  --></i> Ticket Type</button></div>
+                    </form>
                     <div style="clear:both"><!--  --></div>
-                    <div class="ui four doubling cards">
-                        <div class="ui fluid card">
+                    <div class="ui four doubling cards" id="ticket-cards">
+                        <div class="ui fluid card" id="card-template" style="display:none">
                             <div class="content">
-                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>General Admission</div>
+                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><span class="card-category">General Admission</span></div>
                             </div>
-                            <div class="extra content">Base Price: $30</div>
+                            <div class="extra content">Base Price: $<span class="card-price">30</span></div>
                             <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
                                 <i class="fa fa-edit"><!--  --></i>Modify
                             </div>
@@ -330,9 +361,17 @@
         }
 
         var ticketAry = [];
-        Ticket = function(name, desc, base){
+        Ticket = function(name, base){
             this.name = name;
             this.base = base;
+            this.DOM = null;
+            this.schedule = [];
+            this.renderCard = function(){
+                this.DOM = jQuery('#card-template').clone().appendTo('#ticket-cards').removeAttr('id', 'card-template').data('name', this.name);
+                jQuery(this.DOM).find('.card-category').text(this.name);
+                jQuery(this.DOM).find('.card-price').text(this.base);
+                jQuery(this.DOM).show();
+            }
         }
 
         window.onload = function(){
@@ -340,6 +379,8 @@
 
             var logistics = new Logistics();
             logistics.init();
+
+            initTicketList();
             initPriceScheduleVisualization();
         }
 
@@ -368,6 +409,21 @@
             jQuery("#removetime").click(function(){
                 jQuery("#timedisp").data('DateTimePicker').setDate('');
             });
+        }
+
+        function initTicketList(){
+            jQuery('#schedule-list > .item').each(function(){
+                var ticketDOM = this;
+                var name = jQuery(this).data('category');
+                var price = jQuery(this).find('.sched-price').text();
+                if(!ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
+                    var ticket = new Ticket(name, price);
+                    ticket.DOM = ticketDOM;
+                    ticket.renderCard();
+                    ticket.id = ticketAry.length;
+                    ticketAry.push(ticket);
+                }
+            })
         }
 
         var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
@@ -401,7 +457,25 @@
         }
 
         function addTicketType(){
-
+            if(true === jQuery("#addTypeForm").parsley().validate('category')){
+                jQuery('#add-type-error').hide();
+                var name = jQuery('#addTypeForm input[name="categoryName"]').val();
+                var price = jQuery('#eci-base-price').val();
+                // check if name is a duplicate.
+                // if so, suggest user to choose a different name
+                // or add a price schedule instead
+                if(ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
+                    jQuery('#add-type-error').show();
+                    jQuery('#add-type-success').hide();
+                }else{
+                    jQuery('#add-type-error').hide();
+                    jQuery('#add-type-success').show();
+                    var ticket = new Ticket(name, price);
+                    ticket.renderCard();
+                    ticket.id = ticketAry.length;
+                    ticketAry.push(ticket);
+                }
+            }
         }
 
         var sampledata = [
