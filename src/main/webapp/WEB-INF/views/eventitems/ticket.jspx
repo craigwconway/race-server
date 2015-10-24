@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        .white-overlay{
+            display: block;
+            background: rgba(255,255,255,.8);
+            width: 102%;
+            margin-top: -2%;
+            margin-left: -1%;
+            margin-right: -3%;
+            padding-top: 2%;
+            padding-bottom: 4%;
+        }
+        .info-container{
+            margin: 0 7%;
+            width: auto;
+            font-weight: 400;
+            line-height: 27px;
+            color: #292929;
+            text-align: center;
+        }
+        .ui.form .form-fields{
+            margin-bottom: 5px;
+        }
+        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
+            margin-bottom: 5px;
+        }
+        .ui.labeled.input {
+            display: table;
+            margin: 5px auto;
+            text-align: left;
+            width: 400px;
+        }
+        .ui.labeled.input > .label {
+            width: 32%;
+            font-weight: 300;
+        }
+        .ui.form select{
+            padding: 0.42em 1em;
+            height: 35px;
+        }
+        .ui.toggle.checkbox{
+            margin-left: 10px;
+        }
+        i{
+            margin-right: 5px;
+        }
+
+        /* panel sizes */
+        .category-container{
+            text-align: right;
+        }
+
+        .panel{
+            width: 100%;
+            margin-top: 2%;
+            margin-right: 15%;
+        }
+
+        .panel-heading{
+            padding: 13px 5px;
+        }
+
+        .panel-container{
+            width: 80%;
+            margin: 0 auto;
+        }
+        .panel-container-left{
+            display: inline-block;
+            width: 44%;
+            margin-left: 3%;
+            vertical-align: top;
+        }
+        .panel-container-right{
+            display: inline-block;
+            width: 50%;
+        }
+        .ui.form input[type="number"]{
+            padding: 0.5em 1em;
+        }
+        ul{
+            margin: 0;
+        }
+        li{
+            list-style-type: none;
+            margin-left: 10px;
+        }
+        #_title_pl_com_bibsmobile_model_EventCartItemPriceChange_id{
+            display:none;
+        }
+    </style>
+    <div class="white-overlay">
+        <div class="ui form info-container">
+            <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
+            <div class="clearfix"><!--  --></div>
+            <h2 class="ui icon header">
+                <i class="fa fa-calendar"><!--  --></i>
+                <div class="content" style="margin-top:5px">Manage Ticket Types
+                    <div class="sub header"><span id="event-name">${eventitem.name}</span><br/><span class="base-price"> Base price: $</span></div>
+                </div>
+            </h2>
+            <div class="clearfix"><!--  --></div>
+            <div class="row panel-container pc-groups"><!--  --></div>
+            <div class="row panel-container pc-nav" style="margin: 0 3%; display:none">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><div class="pull-right" style="margin-top:-10px;"><button onclick="deletePriceChange(this)" class="btn btn-danger" type="button"><i class="fa fa-trash" style="margin-right:0;"><!--  --></i></button></div></div>
+                    <div class="panel-body">
+                        <div class="panel-inner-heading"><!--  --></div>
+                        <div class="vis-left">
+                            <div id="vis-header">
+                                <div id="vis-container">
+                                    <div class="ui yellow message" id="vis-guide">
+                                        <i class="close fa fa-times"><!--  --></i>
+                                        <i class="fa fa-question-circle"><!--  --></i>
+                                        Scroll to navigate, click to remove, double-click to add or edit.
+                                    </div>
+                                    <div class="slider"><!--  --></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vis-right">
+                            <div class="row current-base-price" style="display:none">
+                            Base price as of today (<span id="today"></span>): $<span id="todayPrice"></span>
+                            </div>
+                            <div class="row">
+                            Start Date: <input  type="text" name="dateStartLocal"
+                                    class="form-control pricedateStartLocal"
+                                    placeholder="Price start date"
+                                    data-provide="datepicker"
+                                    data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
+                            <div class="row">
+                            <input  type="text" name="dateEndLocal"
+                                    class="form-control pricedateEndLocal"
+                                    style="display:none"
+                                    placeholder="Price end date"
+                                    data-provide="datepicker"
+                                    data-date-format="MM/DD/YYYY h:mm:ss a"></input></div>
+                            <div class="row">
+                                <input  type="text" name="price"
+                                        class="input-form"
+                                        placeholder="Price"></input>
+                            </div>
+                            <div class="row">
+                                <div style="text-align:right; margin-top: 3%; margin-right:5%">
+                                    <button type="button" class="btn btn-success" id="addPriceBtn" onclick="shiftTimeline(this)">Add Price</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"><!--  --></div>
+            <div class="ui accordion" style="width:400px;margin:0 auto;">
+                <div class="active title">
+                    <div class="ui top inverted primary blue attached header">Add Ticket Types <i class="fa fa-sort-desc" style="margin-right:0;margin-left:5px"><!--  --></i></div>
+                </div>
+                <div class="active content">
+                    <div class="ui blue attached segment">
+                        <div class="ui yellow message" id="notify">
+                            <i class="close fa fa-times"><!--  --></i>
+                            <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg">You can add multiple types!</span>
+                        </div>
+                        <form id="add-pc-category" data-parsley-validate="data-parsley-validate">
+                            <div class="ui labeled input">
+                                <div class="ui blue label">Ticket Type Title</div>
+                                <input  type="text" name="categoryName"
+                                        data-for="categoryName"
+                                        class="input-form category-field"
+                                        placeholder="e.g. Youth Male, Female Teams"
+                                        data-parsley-group="category"
+                                        data-parsley-required="true"
+                                        data-parsley-error-message="Please specify a ticket type title."></input>
+                            </div>
+                            <div class="ui labeled input">
+                                <div class="ui blue label">Min Age</div>
+                                    <input  type="number" name="lowAgeThreshold"
+                                            data-for="lowAgeThreshold" id="lowAge"
+                                            class="input-form category-field"
+                                            placeholder="Min Age"
+                                            value=""
+                                            min="1"
+                                            max="120"
+                                            data-parsley-group="category"
+                                            data-parsley-required="true"
+                                            data-parsley-error-message="Invalid age."></input>
+                            </div>
+                            <div class="ui labeled input">
+                                <div class="ui blue label">Max Age</div>
+                                    <input  type="number" name="highAgeThreshold"
+                                            data-for="highAgeThreshold" id="highAge"
+                                            class="input-form category-field"
+                                            placeholder="Max Age"
+                                            value=""
+                                            min="1"
+                                            max="120"
+                                            data-parsley-group="category"
+                                            data-parsley-required="true"
+                                            data-parsley-error-message="Invalid age."></input>
+                            </div>
+                            <div class="ui labeled input">
+                                <div class="ui blue label">Gender</div>
+                                    <select data-for="gender" class="category-field" id="gender-type" name="gender"
+                                            data-parsley-group="category"
+                                            data-parsley-error-message="Please select a gender.">
+                                        <option selected="selected" disabled="disabled">Gender</option>
+                                        <option value="MALE">Male</option>
+                                        <option value="FEMALE">Female</option>
+                                        <option value="MALE_AND_FEMALE">Both</option>
+                                    </select>
+                            </div>
+                            <div class="ui labeled input">
+                                <div class="ui blue label">Teams Only</div>
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" name="team" data-for="team" id="team-check"
+                                                class="category-field" autocomplete="off"></input>
+                                    </div>
+                            </div>
+                            <div class="ui labeled input">
+                                <div class="ui blue label">$</div>
+                                <input  type="number" data-for="base"
+                                        class="category-field" id="eci-base-price"
+                                        placeholder="Base price"
+                                        min="1"
+                                        data-parsley-group="category"
+                                        data-parsley-error-message="Invalid base price."
+                                        data-parsley-required="true"></input>
+                            </div>
+                            <div class="pull-right">
+                                <button class="ui blue button" type="button" onclick="savePCType()">Add Ticket Type</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                <button id="back" type="button" class="btn" onclick="window.history.back();">Cancel</button>
+                <button class="btn btn-success" id="proceed" type="submit" onclick="postPriceChanges()">Save</button>
+            </div>
+            <page:list id="pl_com_bibsmobile_model_EventCartItemPriceChange" items="${pricechanges}" z="WMiJzrJ1IWZWaft43kpuzLU+jlw=">
+            <c:if test="${not empty pricechanges}">
+                <c:forEach var="item" items="${pricechanges}">
+                    <div class="pcInfo" style="display:none" id="item-${item.id}">
+                        <span class="field-id">${item.id}</span>
+                        <span class="field-categoryName">${item.categoryName}</span>
+                        <span class="field-lowAge">${item.lowAgeThreshold}</span>
+                        <span class="field-highAge">${item.highAgeThreshold}</span>
+                        <span class="field-price">${item.price}</span>
+                        <span class="field-gender">${item.gender}</span>
+                        <span class="field-team">${item.team}</span>
+                        <span class="field-start">${item.dateStartLocal}</span>
+                        <span class="field-end">${item.dateEndLocal}</span>
+                    </div>
+                </c:forEach>
+            </c:if>
+            </page:list>
+        </div>
+    </div>
+    
+    <script>
+        var eciId;
+        var eci;
+        var eciStart;
+        var eciEnd;
+        var eciBasePrice;
+        var newBasePrice;
+        var eciLowAge;
+        var eciHighAge;
+        var options   = {
+            editable: true,
+            format: {
+                minorLabels: {
+                    second:     's',
+                    minute:     'HH:mm',
+                    hour:       'HH:mm',
+                    weekday:    'ddd D',
+                    day:        'D',
+                    month:      'MMM',
+                    year:       'YYYY'
+                },
+                majorLabels: {
+                    millisecond:'HH:mm:ss',
+                    second:     'D MMM HH:mm',
+                    minute:     'ddd D MMM',
+                    hour:       'ddd D MMM',
+                    weekday:    'MMM YYYY',
+                    day:        'MMM YYYY',
+                    month:      'YYYY',
+                    year:       ''
+                }
+            },
+            onAdd: function (item, callback) {
+                item.content = prompt('Price at this date:', item.content);
+                var dateStartLocal = moment(item.start);
+                if( dateStartLocal.isBefore(eciStart) == false &amp;&amp; dateStartLocal.isAfter(eciEnd) == false ){
+                    if( isNaN(item.content) ){
+                        alert("Please enter a $ value for this price change.");
+                        callback(null);
+                    }
+                    else{
+                        if( item.content !== null ){
+                            alert("$"+item.content + " added for " + dateStartLocal.format("MM/DD/YYYY hh:mm:ss") + ".");
+                            callback(item);
+                        }
+                    }
+                }
+                else{
+                    alert("This date is out of the sale range for this product. Please select a correct date.");
+                    callback(null); // cancel item creation
+                }
+            },
+            onMove: function (item, callback) {
+                var dateStartLocal = moment(item.start);
+                if( dateStartLocal.isBefore(eciStart) == false &amp;&amp; dateStartLocal.isAfter(eciEnd) == false ){
+                    if (confirm('Do you really want to move the item to\n' +
+                        'start: ' + item.start + '?')) {
+                        callback(item); // send back item as confirmation (can be changed)
+                    }
+                    else {
+                        callback(null); // cancel editing item
+                    }
+                }
+                else{
+                    alert("This date is out of the sale range for this product. Please select a correct date.");
+                    callback(null); // cancel item creation
+                }
+            },
+            onUpdate: function (item, callback) {
+                var dateStartLocal = moment(item.start);
+                item.content = prompt('Edit price:', item.content);
+                if( isNaN(item.content) ){
+                    alert("Please enter a $ value for this price change.");
+                    callback(null);
+                }
+                else{
+                    if( item.content !== null ){
+                        alert("Changed to $"+item.content + " for " + dateStartLocal.format("MM/DD/YYYY hh:mm:ss") + ".");
+                        callback(item);
+                    }
+                }
+            },
+            onRemove: function (item, callback) {
+                if (confirm('Remove this price change?')) {
+                    callback(item); // confirm deletion
+                }
+                else {
+                    callback(null); // cancel deletion
+                }
+            },
+            minHeight: '150px',
+            min: new Date(eciStart),                // lower limit of visible range
+            max: new Date(eciEnd),                // upper limit of visible range
+            zoomMin: 1000 * 60 * 60,             // one day in milliseconds
+            zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 7     // about three months in milliseconds
+        }
+        var itemList = [];
+        var timelineList = [];
+        var pcList = [];
+        var delList = [];
+
+        window.onload = function(){
+            eciId = parseEventId();
+            getEventData(eciId);
+        }
+
+        function initPage(){
+            if(${not empty pricechanges}){
+                jQuery(".field-id").each(function(){
+                    var id = jQuery(this).text();
+                    var obj = {};
+                    obj.id = id;
+                    delList.push(obj);
+                })
+                updatePageLogic();
+            }else{
+                initGeneralAdmission();
+            }
+
+            // init form elements
+            jQuery('.ui.accordion').accordion();
+            jQuery('.ui.checkbox').checkbox();
+            
+            var pcform = jQuery("#add-pc-category").parsley({
+                errorsWrapper: '<div class="has-error"></div>',
+                errorTemplate: '<span></span>'
+            });
+
+            // check that it's greater than 1, an integer, less than 120, less than high
+            jQuery("#lowAge").on('input', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+                if( high !== "" ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highAge").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery("#highAge").on('change', function(){
+                var low = jQuery("#lowAge").val();
+                var high = jQuery("#highAge").val();
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+                if( low !== "" ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowAge").attr("max", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery('.message .close').on('click', function() {
+                jQuery(this).closest('.message').fadeOut();
+            });
+        }
+
+        var categoryNameList = [];
+        var categoryObjList = [];
+        function initGeneralAdmission(){
+            // add category
+            var obj = {};
+            obj.categoryName = 'General Admission';
+            obj.lowAgeThreshold = 1;
+            obj.highAgeThreshold = 120;
+            obj.gender = 'MALE_AND_FEMALE';
+            obj.team = false;
+            obj.price = basePrice;
+
+            var items = new vis.DataSet();
+            itemList.push(items);
+
+            var index = timelineList.length;
+            addGroup(obj, index, false);
+
+            var price = basePrice;
+            var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+            if( price !== null &amp;&amp; dateVal !== null ){
+                var item = {};
+                    item["id"] = index + "-" + price;
+                    item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
+                    item["content"] = price;
+                    if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+                        itemList[index].add(item);
+                    }
+                    else{
+                        alert("This date is out of the sale range for this product. Please select a correct date.");
+                    }
+            }
+
+            // make sure timeline items are fitted.
+            timelineList[index].fit();
+        }
+        function updatePageLogic(){
+            var obj = {};
+            jQuery(".pcInfo").each(function(i){
+                var cat = jQuery(this).find('.field-categoryName').text();
+                var update = false;
+
+                obj.id = jQuery(this).find('.field-id').text();                  obj.id = parseInt(obj.id);
+                obj.price = jQuery(this).find('.field-price').text();            obj.price = parseInt(obj.price);
+                obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal, 'MM/DD/YYYY hh:mm:ss a');
+                obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal, 'MM/DD/YYYY hh:mm:ss a');
+
+                // check if category exists already. if it exists, do not call addGroup.
+                if( categoryNameList.length > 0 &amp;&amp; categoryNameList.indexOf(cat) !== -1 ){
+                    var index = categoryNameList.indexOf(cat);
+                    obj = categoryObjList[index];
+                    update = true;
+                }
+                else{   // this is the first node of the category. initialize timeline with addGroup.
+                    // grab all field info
+                    obj.categoryName = cat;
+                    obj.lowAgeThreshold = jQuery(this).find('.field-lowAge').text();    obj.lowAgeThreshold = parseInt(obj.lowAgeThreshold);
+                    obj.highAgeThreshold = jQuery(this).find('.field-highAge').text();  obj.highAgeThreshold = parseInt(obj.highAgeThreshold);
+                    obj.gender = jQuery(this).find('.field-gender').text();
+                    obj.team = jQuery(this).find('.field-team').text();
+                    if(obj.team == "true"){ obj.team = true; }
+                    if(obj.team == "false"){ obj.team = false; }
+
+                    // add to relevant lists
+                    categoryNameList.push(cat);
+                    categoryObjList.push(obj);
+
+                    // create new dataset for timeline.
+                    var items = new vis.DataSet();
+                    itemList.push(items);
+
+                    // initialize base price node
+                    newBasePrice = obj.price;
+
+                    var index = timelineList.length;
+                    addGroup(obj, index, true);
+                }
+
+                var item = {};
+                    item["id"] = obj.id;
+                    item["start"] = obj.dateStartLocal;
+                    item["content"] = obj.price;
+                    if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false || item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
+                        itemList[index].add(item);
+                    }
+                    else{
+                        alert("This date is out of the sale range for this product. Please select a correct date.");
+                    }
+
+                // make sure timeline items are fitted.
+                timelineList[index].fit();
+            })
+        }
+
+        function savePCType(){
+            if(true === jQuery("#add-pc-category").parsley().validate('category')){
+                var obj = {};
+                jQuery(".category-field").each(function(i){
+                    var key = jQuery(this).attr("data-for");
+                    var val = jQuery(this).val();
+                    if( key == "team" ){
+                        if(jQuery("#team-check").prop("checked")){
+                            val = true;
+                        }else{
+                            val = false;
+                        }
+                    }
+                    if( key == "base" ){
+                        newBasePrice = val;
+                        obj['price'] = val;
+                    }
+                    obj[key] = val;
+                });
+
+
+                // create new dataset for timeline.
+                var items = new vis.DataSet();
+                itemList.push(items);
+
+                var index = timelineList.length;
+                addGroup(obj, index, false);
+
+                var price = newBasePrice;
+                var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+                if( price !== null &amp;&amp; dateVal !== null ){
+                    var item = {};
+                        item["id"] = index + "-" + price;
+                        item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
+                        item["content"] = price;
+                        if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false || item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
+                            itemList[index].add(item);
+                        }
+                        else{
+                            alert("This date is out of the sale range for this product. Please select a correct date.");
+                        }
+                }
+
+                // make sure timeline items are fitted.
+                timelineList[index].fit();
+
+                // notification message
+                jQuery("#notify").show();
+                jQuery("#notify").removeClass("yellow");
+                jQuery("#notify").addClass("green");
+                jQuery("#notify-icon").removeClass('fa-question-circle');
+                jQuery("#notify-icon").addClass('fa-check-circle');
+                jQuery("#notify-msg").text("Ticket type added! You can now specify time-dependent price ranges!");
+                jQuery("#notify").delay(5000).fadeOut('slow');
+
+                // clear form fields
+                jQuery("#add-pc-category")[0].reset();
+            }
+        }
+
+        function addGroup(obj, index, update){
+            <!-- add panel -->
+            var query = jQuery(".pc-nav").children();
+                query.clone().appendTo(".pc-groups").attr("id", "group"+index);
+            container = document.getElementById("group"+index).getElementsByClassName("slider")[0];
+
+            timeline = new vis.Timeline(container, itemList[index], options);
+            timelineList.push(timeline);
+            timeline.fit();
+
+            var pc = {};
+            var selectiveObj = {};
+            selectiveObj.categoryName = obj.categoryName;
+            selectiveObj.gender = obj.gender;
+            selectiveObj.lowAgeThreshold = obj.lowAgeThreshold;
+            selectiveObj.highAgeThreshold = obj.highAgeThreshold;
+            selectiveObj.team = obj.team;
+            pc["obj"] = selectiveObj;
+            pc["items"] = itemList[index];
+            pc["timeline"] = timeline;
+            pcList.push(pc);
+
+            <!-- change header text -->
+            var gender;
+            if( obj.gender == "MALE" ){ gender = "M"; }
+            if( obj.gender == "FEMALE" ){ gender = "F"; }
+            if( obj.gender == "MALE_AND_FEMALE" ){ gender = "any"; }
+
+            var team;
+            if( obj.team == true ){ team = "Teams: required" }
+            else if( !obj.team ){ team = "Teams: optional" }
+
+            console.log('attempting to add info for', obj);
+
+            jQuery("#group"+ index).find(".panel-heading")
+                .append('Sale Price Schedule for &lt;b>' + obj.categoryName + '&lt;/b>');
+            jQuery("#group"+ index).find(".panel-inner-heading")
+                .append('$' + obj.price + ' base price (Ages ' + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
+
+            // jQuery(".eci-price").each(function(){
+            //     jQuery(this).text("Base price: $" + newBasePrice);
+            // });
+
+            initDateTimePickers();
+
+            // remove helper message
+            // jQuery("#vis-guide").show();
+            // jQuery("#vis-guide").delay(10000).fadeOut('slow');
+
+            jQuery('.message .close').on('click', function() {
+                jQuery(this).closest('.message').fadeOut();
+            });
+        }
+
+        function shiftTimeline(caller){
+            jQuery('#addPriceBtn').text("Adding...");
+            jQuery('#addPriceBtn').prop("disabled", true);
+            var timelineIndex = jQuery(caller).closest(".panel-default").attr("id");
+            var index = parseInt(timelineIndex[5]);
+
+            var dateVal = moment(jQuery("#"+timelineIndex).find(".pricedateStartLocal").val()).format('MM/DD/YYYY h:mm:ss a');
+            var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
+            dateVal = moment(dateVal);
+            price   = parseInt(price);
+            
+            var item = {};
+            item["id"] = index + "-" + price + "-" + encodeURIComponent(dateVal);
+            item["start"] = dateVal;
+            item["content"] = price;
+            if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false &amp;&amp; item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
+                var noDupes = true;
+                var list = itemList[index]._data;
+                var keys = Object.keys(list);
+                for(var i = 0; i &lt; keys.length; i++){
+                    var key = keys[i];
+                    var val = list[key];
+                    var userInputDate = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
+                    var eventStartDate = moment(eciEnd);
+                    console.log('user input', userInputDate);
+                    console.log('event start', eventStartDate);
+                    console.log('check boolean', userInputDate.isAfter(eventStartDate));
+                    if( moment(val.start).isSame(item["start"]) ){
+                        alert("This date is a duplicate. Please select a different date or you can also edit the current value by double-clicking the item.");
+                        noDupes = false;
+                        break;
+                    }else if(userInputDate.isAfter(eventStartDate)){
+                        alert("This date and time is after the event's starting time. Please select a different date or you can also edit the current value by double-clicking the item.");
+                        noDupes = false;
+                        break;
+                    }else if( isNaN(item["content"]) ){
+                        alert("Please enter a $ value for this price change.");
+                        noDupes = false;
+                        break;
+                    }
+                }
+                if( noDupes == true ){ itemList[index].add(item); 
+                    jQuery("#"+timelineIndex).find('input[name="price"]').val();
+                    alert("$"+price + " added for " + userInputDate.format("MM/DD/YYYY hh:mm:ss") + ".");
+                }
+            }
+            else{
+                alert("This date is out of the sale range for this product. Please select a correct date.");
+            }
+
+            for( i = 0; i &lt; timelineList.length; i++ ){
+                timelineList[i].fit();
+                jQuery('#addPriceBtn').text("Add Price");
+                jQuery('#addPriceBtn').prop("disabled", false);
+            }
+        }
+
+        function parseEventId(){
+            var url = window.location.href;
+            var urllen = url.length;
+            var ind = url.lastIndexOf("=");
+            var eid = url.substring(ind+1, urllen);
+            return eid;
+        }
+
+        var basePrice = 0;
+        function getEventData(id){
+            var request = jQuery.ajax({
+                    url: "/bibs-server/eventitems/" + id,
+                    type: "GET",
+                    dataType: "json"
+                });
+                request.done(function( data ) {
+                    if( data !== null ){
+                        eci = data;
+                        eciStart = moment(data.timeStartLocal, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+                        eciEnd = moment(data.timeEndLocal, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+                        eciBasePrice = eci.price;
+                        jQuery("#event-name").text(eci.name);
+                        jQuery(".base-price").each(function(){
+                            jQuery(this).text("Base price: $" + eciBasePrice);
+                        });
+                        eciLowAge = eci.minAge;
+                        eciHighAge = eci.maxAge;
+                        basePrice = eciBasePrice;
+                        initPage();
+                    }else{
+                    }
+                });
+                request.fail(function( jqXHR, textStatus ) {
+                    // error
+                });
+        }
+
+        function initDateTimePickers(){
+            jQuery(".pricedateStartLocal").each(function(){
+                jQuery(this).datetimepicker({
+                    defaultDate: moment(eciStart, 'MM/DD/YYYY h:mm:ss a'),
+                    minDate: moment(eciStart, 'MM/DD/YYYY h:mm:ss a'),
+                    maxDate: moment(eciEnd, 'MM/DD/YYYY h:mm:ss a'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            });
+        }
+
+        function deletePriceChange(o){
+            if( confirm('Are you sure you want to delete this category? This cannot be undone.') ){
+                var dom = jQuery(o).parent().parent().parent().attr("id");
+                var id = parseInt(dom.slice(-1));
+                jQuery("#"+dom).remove();
+                pcList.splice(id, 1);
+            }
+        }
+
+        function postPriceChanges(){
+            // iterate by group
+            var postObjList = [];
+            for( var i = 0; i &lt; pcList.length; i++ ){
+                var groupData = pcList[i].items._data;
+                var keys = Object.keys(groupData);
+                var sortAry = [];
+                for( var k = 0; k &lt; keys.length; k++ ){
+                    var index = keys[k];
+                    var value = groupData[index];
+                    sortAry.push(value);
+                }
+                sortAry.sort(function(a, b) {
+                    a = new Date(a.start);
+                    b = new Date(b.start);
+                    return a-b;
+                });
+                for( var j = 0; j &lt; sortAry.length; j++ ){
+                    var value = sortAry[j];
+                    var objdateStartLocal;
+                    var objdateEndLocal;
+                    if( j == sortAry.length-1 ){
+                        // last item:
+                        // start date = start date, end date = eci end date
+                        objdateStartLocal = value.start;
+                        objdateEndLocal = moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a');
+                    }
+                    else{
+                        // all except last item:
+                        // start date = start date, end date = next item's start date
+                        objdateStartLocal = value.start;
+                        objdateEndLocal = moment(sortAry[j+1].start).subtract(1, 's');
+                    }
+                    if( objdateStartLocal !== null ){
+                        objdateStartLocal = moment(objdateStartLocal).format("MM/DD/YYYY hh:mm:ss a");
+                    }
+                    if( objdateEndLocal !== null ){
+                        objdateEndLocal = moment(objdateEndLocal).format("MM/DD/YYYY hh:mm:ss a");
+                    }
+
+                    var pc = {};
+                    if( isNaN(value.id) ){
+                        pc = jQuery.extend({
+                            price: parseInt(value.content),
+                            eventCartItem: {'id':parseInt(eciId)},
+                            dateStartLocal: objdateStartLocal,
+                            dateEndLocal: objdateEndLocal
+                        }, pcList[i].obj);
+                    }
+                    else{
+                        pc = jQuery.extend({
+                            id: value.id,
+                            price: parseInt(value.content),
+                            eventCartItem: {'id':parseInt(eciId)},
+                            dateStartLocal: objdateStartLocal,
+                            dateEndLocal: objdateEndLocal
+                        }, pcList[i].obj);
+                    }
+
+                    pc.eventCartItem = {'id':parseInt(eciId)};
+                    postObjList.push(pc);
+                }
+            }
+
+            console.log(postObjList);
+
+            var del = jQuery.ajax({
+                url: "/bibs-server/eventitemspricechanges/jsonArray",
+                contentType: 'application/json',
+                type: 'DELETE',
+                dataType: 'json',
+                data: JSON.stringify(delList),
+                complete: function() {
+                    var request = jQuery.ajax({
+                        url: "/bibs-server/eventitemspricechanges/jsonArray",
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        type: 'POST',
+                        data: JSON.stringify(postObjList),
+                        statusCode: {
+                            200: function() {
+                                alert("There was an error while saving your price changes. Please try again!");
+                                onBack();
+                            },
+                            201:function(){
+                                onBack();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        function onBack(){
+            document.location='/bibs-server/eventitemspricechanges?eventitem=' + eciId;
+        }
+    </script>
+</div>

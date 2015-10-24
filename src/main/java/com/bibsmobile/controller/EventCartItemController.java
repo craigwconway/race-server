@@ -7,10 +7,13 @@ import com.bibsmobile.model.EventCartItemCoupon;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.SlackUtil;
+import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -282,6 +285,77 @@ public class EventCartItemController {
         return "redirect:/eventitems/" + this.encodeUrlPathSegment(eventCartItem.getId().toString(), httpServletRequest);
     }
 
+    @RequestMapping(value = "/typecreate", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<String> createJsonWithType(@RequestBody EventCartItem eventCartItem) {
+
+        Event event = Event.findEvent(eventCartItem.getEvent().getId());
+        EventType eventType = eventCartItem.getEventType();
+        if(event == null) {
+        	return SpringJSONUtil.returnErrorMessage("EventNull", HttpStatus.BAD_REQUEST);
+        }
+        if(eventType.getId() == null) {
+        	System.out.println("Create a new event type");
+        	if(eventType.getDistance() == null || eventType.getRacetype() == null || eventType.getTimeStartLocal() == null) {
+        		return SpringJSONUtil.returnErrorMessage("InvalidEventType", HttpStatus.BAD_REQUEST);
+        	}
+        	eventType.setEvent(Event.findEvent(eventType.getEvent().getId()));
+        	Long meters;
+            try {
+                if(StringUtils.endsWith(eventType.getDistance(), "k")) {
+                	meters = (Long) (1000 * Float.valueOf(eventType.getDistance().replace("k", "")).longValue());
+                } else if(StringUtils.endsWith(eventType.getDistance(), "mi")) {
+                	meters = (Long) (1760 * Float.valueOf(eventType.getDistance().replace("mi", "")).longValue());
+                } else if(StringUtils.endsWith(eventType.getDistance(), "m")) {
+                	meters = Long.valueOf(eventType.getDistance());
+                } else {
+                	meters = null;
+                }        	
+            } catch (Exception e) {
+            	meters = null;
+            }
+            eventType.setMeters(meters);
+            if(eventType.getTypeName() != null && !eventType.getTypeName().isEmpty()) {
+            	System.out.println("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName());
+            } else {
+            	eventType.setTypeName(eventType.getRacetype() + " - " + eventType.getDistance());
+            	System.out.println("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName() + " with an automatic name");
+            }
+            try {
+                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+                format.setTimeZone(event.getTimezone());
+                Calendar timeStart = new GregorianCalendar();
+    			timeStart.setTime(format.parse(eventType.getTimeStartLocal()));
+    			eventType.setStartTime(timeStart.getTime());
+    		} catch (ParseException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    			System.out.println("Recieved malformed start time from frontend in create event type");
+    			return SpringJSONUtil.returnErrorMessage("Malformed Start Time", HttpStatus.BAD_REQUEST);
+    		}
+            
+            eventType.persist();
+        }
+        try {
+
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            format.setTimeZone(event.getTimezone());
+            Calendar timeStart = new GregorianCalendar();
+            Calendar timeEnd = new GregorianCalendar();
+			timeStart.setTime(format.parse(eventCartItem.getTimeStartLocal()));
+			timeEnd.setTime(format.parse(eventCartItem.getTimeEndLocal()));
+			eventCartItem.setTimeStart(timeStart.getTime());
+			eventCartItem.setTimeEnd(timeEnd.getTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return SpringJSONUtil.returnErrorMessage("InvalidDate", HttpStatus.BAD_REQUEST);
+		}
+        eventCartItem.persist();
+        SlackUtil.logRegAddECI(eventCartItem, eventCartItem.getEvent().getName(), UserProfileUtil.getLoggedInUserProfile().getUsername());
+        return SpringJSONUtil.returnStatusMessage(eventCartItem.getId().toString(), HttpStatus.OK);
+    }    
+    
+    
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
         this.addDateTimeFormatPatterns(uiModel);
