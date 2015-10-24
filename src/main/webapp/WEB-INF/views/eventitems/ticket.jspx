@@ -19,7 +19,7 @@
             padding-bottom: 4%;
         }
         .info-container{
-            margin: 0 7%;
+            margin: 0 15%;
             width: auto;
             font-weight: 400;
             line-height: 27px;
@@ -52,6 +52,9 @@
         #schedule-list > .item{
             line-height: 2em;
         }
+        #racetype-dropdown{
+            padding: 0.78571429em 1em 0.78571429em 1em;
+        }
         .ui.toggle.checkbox{
             margin-left: 10px;
         }
@@ -74,6 +77,9 @@
         #_title_pl_com_bibsmobile_model_EventCartItemPriceChange_id{
             display:none;
         }
+        #schedule-tab{
+            padding: 2em 1em;
+        }
         .sched{
             font-weight: bold;
         }
@@ -83,18 +89,17 @@
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="item" data-tab="logistics-menu">Logistics</div>
+                <div class="item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
                 <div class="active item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="logistics-menu">
-                <h3 class="ui icon header">
-                    <i class="fa fa-gear fa-2x"><!--  --></i>
-                    <div class="content" style="margin-top:5px">
-                        Logistics Settings
-                        <div class="sub header">Maintain Event Logistics for this Event Type.</div>
-                    </div>
-                </h3>
                 <form class="ui form" id="logisticsForm" style="width:400px;margin:0 auto;text-align:left">
+                    <h3 class="ui header" style="width: 100%">
+                        <div class="content" style="margin-top:5px">
+                            Logistics Settings
+                            <div class="sub header">Maintain Event Logistics for this Event Type.</div>
+                        </div>
+                    </h3>
                     <div class="fields">
                         <div class="sixteen wide required field">
                             <label style="width:100%" id="racetypes">Race Types</label>
@@ -147,7 +152,7 @@
                     <div class="fields">
                         <div class="sixteen wide field">
                             <label style="width:100%">Event Type Name</label>
-                            <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
+                            <input type="text" name="typeName" placeholder="Event Type Name" value="${eventtype.typeName}"><!--  --></input>
                         </div>
                     </div>
                     <div class="two fields post-event-type">
@@ -155,20 +160,72 @@
                         <div style="clear:both"><!--  --></div>
                         <div class="eight wide field" style="padding-left:0">
                             <label>Lowest Bib Number</label>
-                            <input class="form-control" type="number" min="1" id="etype-lowbib" name="lowbib"><!--  --></input>
+                            <input class="form-control" type="number" min="1" id="etype-lowbib" name="lowbib" value="${eventtype.lowBib}"><!--  --></input>
                         </div>
                         <div class="eight wide field">
                             <label>Highest Bib Number</label>
-                            <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
+                            <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib" value="${eventtype.highBib}"><!--  --></input>
                         </div>
                     </div>
                     <div style="clear:both"><!--  --></div>
+                    <h3 class="ui header" style="width: 100%">
+                        <div class="content" style="margin-top:5px">
+                            Registration Details
+                            <div class="sub header">Maintain Registration Details for this Event Type.</div>
+                        </div>
+                    </h3>
+
+                    <div class="sixteen wide required field">
+                        <label style="width:100%">Price</label>
+                        <div class="ui labeled input">
+                            <div class="ui label" style="width:50px">$</div>
+                            <input  type="number" name="price"
+                                    class="form-control"
+                                    placeholder="Base price"
+                                    min="0"
+                                    data-parsley-error-message="Invalid base price."
+                                    data-parsley-required="true"></input>
+                        </div>
+                    </div>
+                    <div class="sixteen wide field">
+                        <label style="width:100%">Max Participant Count</label>
+                        <input  type="number" name="available"
+                            class="form-control" style="margin-top:5px"
+                            placeholder="Max # of Participants"
+                            min="1"
+                            data-parsley-error-message="Invalid maximum number."
+                            data-parsley-required="true"></input>
+                    </div>
+                    <div class="two fields">
+                        <label style="width:100%">Registration Window</label>
+                        <div class="required field">
+                            <label>Open Date: </label>
+                            <input  type="text" name="timeStartLocal"
+                                id="ECIStart"
+                                placeholder="Price start date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                data-parsley-error-message="Please specify a start date."
+                                data-parsley-required="true"></input>
+                        </div>
+                        <div class="required field">
+                            <label>Close Date: </label>
+                            <input  type="text" name="timeEndLocal"
+                                id="ECIEnd"
+                                placeholder="Price end date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                data-parsley-error-message="Please specify an end date."
+                                data-parsley-required="true"></input>
+                        </div>
+                    </div>
+
                     <div class="pull-right">
                         <button class="ui green button" type="submit">Save</button>
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached active tab segment" data-tab="schedule-menu">
+            <div class="ui bottom attached active tab segment" id="schedule-tab" data-tab="schedule-menu">
                 <h3 class="ui horizontal header divider">
                     <i class="fa fa-ticket"><!--  --></i>
                     Ticket Types
@@ -201,7 +258,7 @@
                     <i class="fa fa-calendar"><!--  --></i>
                     Price Schedules
                 </h3>
-                <div class="ui basic text segment" style="text-align: left;width: 60%;margin: 0 auto">
+                <div class="ui basic text segment" style="text-align:left;width:70%;margin:0 auto">
                     <div class="ui divided list" id="schedule-list">
                       <div class="item">
                         <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
@@ -225,9 +282,66 @@
         var eci;
         var eciStart;
         var eciEnd;
+        Logistics = function(){
+            this.raceType = null;
+            this.distance = null;
+            this.distType = null;
+            this.itemStart = null;
+            this.itemStartM = null;
+            this.typeName = null;
+            this.lowbib = null;
+            this.highbib = null;
+            this.price = null;
+            this.available = null;
+            this.openDate = null;
+            this.closeDate = null;
+            this.openDateM = null;
+            this.closeDateM = null;
+
+            this.init = function(){
+                // eventtype variables
+                this.rt = '${eventtype.racetype}';
+                this.dist = '${eventtype.distance}';
+                this.itemStart = '${eventtype.timeStartLocal}';
+                this.itemStartM = moment(this.itemStart, 'MM/DD/YYYY hh:mm:ss a')
+                this.typeName = '${eventtype.typeName}';
+                this.lowbib = parseInt('${eventtype.lowBib}');
+                this.highbib = parseInt('${eventtype.highBib}');
+
+                // eventcartitem variables
+                this.price = '${eventcartitem.price}';
+                this.available = parseInt('${eventcartitem.available}');
+                this.openDate = '${eventcartitem.timeStartLocal}';
+                this.closeDate = '${eventcartitem.timeEndLocal}';
+                this.openDateM = moment(this.openDate, 'MM/DD/YYYY hh:mm:ss a')
+                this.closeDateM = moment(this.closeDate, 'MM/DD/YYYY hh:mm:ss a')
+                this.updateInputValues();
+            }
+
+            this.updateInputValues = function(){
+                jQuery('#logisticsForm input[name="raceType"]').val(this.rt);
+                jQuery('#racetype-dropdown').dropdown('set selected', this.rt);
+
+                jQuery('#timedisp').data('DateTimePicker').setDate(this.itemStartM);
+
+                var parseDist = this.dist.split(' ');
+                this.distType = parseDist[1];
+                jQuery('#logisticsForm input[name="distance"]').val(parseDist[0]);
+                jQuery('#dist-' + this.distType).addClass('positive');
+
+                jQuery('#logisticsForm input[name="price"]').val(this.price);
+                // parseInt('${eventcartitem.available}') + parseInt('${eventcartitem.purchased}')
+                jQuery('#logisticsForm input[name="available"]').val(this.available);
+                jQuery('#ECIStart').data('DateTimePicker').setDate(this.openDateM);
+                jQuery('#ECIEnd').data('DateTimePicker').setDate(this.closeDateM);
+            }
+        }
 
         window.onload = function(){
             initUIElements();
+
+            var logistics = new Logistics();
+            logistics.init();
             initPriceScheduleVisualization();
         }
 
@@ -246,7 +360,46 @@
                     jQuery(this).siblings().removeClass('positive');
                     distType = id;
                 })
-            })
+            });
+
+            jQuery('#dist-m').removeClass('positive');
+            jQuery('#dist-mi').removeClass('positive');
+            jQuery('#dist-km').removeClass('positive');
+
+            initDateTimePickers();
+            jQuery("#removetime").click(function(){
+                jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
+            });
+        }
+
+        var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
+        function initDateTimePickers(){
+            jQuery("#timedisp").datetimepicker({
+                pickDate: false
+            });
+
+            jQuery("#ECIStart")
+                .datetimepicker({
+                    defaultDate: moment().startOf('day'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery("#ECIEnd")
+                .datetimepicker({
+                    defaultDate: eventStart,
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+            jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
+
+            <!-- on change-ui -->
+            jQuery("#ECIStart").on("dp.change",function (e) {
+                jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+            });
+            jQuery("#ECIEnd").on("dp.change",function (e) {
+                jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+            });
         }
 
         var sampledata = [
