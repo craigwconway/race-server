@@ -554,7 +554,7 @@
                                 <td>${item.racetype}</td>
                                 <td>${item.distance}</td>
                                 <td>${item.timeStartLocal}</td>
-                                <td><div class="ui small button">Detail</div></td>
+                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.id}')">Detail</div></td>
                                 <td>15</td>
                                 <td>0</td>
                             </tr></c:forEach>
@@ -1133,6 +1133,10 @@
                         break;
                 }
             }
+        }
+
+        function redirectEventTypeDetail(id){
+            window.location="/bibs-server/eventitems/"+id;
         }
 
         function redirectDropboxImport(){
