@@ -106,6 +106,7 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.wrapper.EventTypeTicketWrapper;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
 import com.bibsmobile.service.BibTimeout;
@@ -1327,6 +1328,23 @@ public class EventController {
         ResultsFileMapping latestMapping = ((latestImport == null) ? null : latestImport.getResultsFileMapping());
         List <EventType> eventTypes = EventType.findEventTypesByEvent(e);
         Collections.sort(eventTypes, new Comparator<EventType>() { public int compare(EventType t1, EventType t2) { return t1.getStartTime().compareTo(t2.getStartTime());}});
+        List <EventCartItem> items = EventCartItem.findEventCartItemsByEventAndType(e, EventCartItemTypeEnum.TICKET).getResultList();
+        List<EventTypeTicketWrapper> metatypes = new LinkedList <EventTypeTicketWrapper>();
+        Map <EventType, EventCartItem> itemMap = new HashMap <EventType, EventCartItem>();
+        for(EventCartItem item : items) {
+        	if(item.getEventType() != null) {
+        		itemMap.put(item.getEventType(), item);
+        	}
+        }
+        for(EventType type : eventTypes) {
+        	if(itemMap.containsKey(type)) {
+        		metatypes.add(new EventTypeTicketWrapper(type, itemMap.get(type)));
+        	} else {
+        		metatypes.add(new EventTypeTicketWrapper(type));
+        	}
+        }
+        System.out.println(metatypes);
+        uiModel.addAttribute("metatype", metatypes);
         uiModel.addAttribute("event", e);
         uiModel.addAttribute("eventTypes", eventTypes);
         uiModel.addAttribute("dropboxUnlink", (UserProfileUtil.getLoggedInDropboxAccessToken() != null));
