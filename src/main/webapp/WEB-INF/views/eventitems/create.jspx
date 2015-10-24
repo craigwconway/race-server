@@ -104,22 +104,6 @@
                 </div>
                 <div style="clear:both"><!--  --></div>
                 <div class="form-fields">
-                    <div class="ui fluid selection dropdown ticket-settings" id="event-type">
-                        <input type="hidden" name="eventType"><!--  --></input>
-                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                        <div class="default text">Select Event Type</div>
-                        <div class="menu">
-                            <c:forEach var="item" items="${eventTypes}">
-                                <div class="item" data-value="${item.id}">${item.typeName}</div>
-                            </c:forEach>
-                        </div>
-                    </div>
-                    <div style="display:none;margin-bottom:5px;" id="etype-error"
-                         class="has-error filled">
-                        <span class="parsley-custom-error-message">Please select an event type.</span>
-                    </div>
-                </div>
-                <div class="form-fields">
                     <input  type="text" name="name"
                             class="form-control"
                             placeholder="Product name"
