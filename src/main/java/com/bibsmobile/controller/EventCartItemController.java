@@ -5,6 +5,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemCoupon;
 import com.bibsmobile.model.EventCartItemGenderEnum;
+import com.bibsmobile.model.EventCartItemPriceChange;
 import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.SlackUtil;
@@ -68,6 +69,8 @@ public class EventCartItemController {
         this.populateEditForm(uiModel, i);
         return "eventitems/update";
     }
+    
+    @RequestMapping(value ="/{ticket")
 
     void populateEditForm(Model uiModel, EventCartItem eventCartItem) {
         uiModel.addAttribute("eventCartItem", eventCartItem);
@@ -283,6 +286,13 @@ public class EventCartItemController {
     public String show(@PathVariable("id") Long id, Model uiModel) {
         this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("eventcartitem", EventCartItem.findEventCartItem(id));
+        EventCartItem eci = EventCartItem.findEventCartItem(id);
+        if(eci.getType() == EventCartItemTypeEnum.TICKET) {
+        	uiModel.addAttribute("eventtype", eci.getEventType());
+        	uiModel.addAttribute("event", eci.getEvent());
+        	uiModel.addAttribute("eventitempricechanges", EventCartItemPriceChange.findEventCartItemPriceChangesByEventCartItem(eci));
+        	return "eventitems/ticket";
+        }
         uiModel.addAttribute("itemId", id);
         return "eventitems/show";
     }

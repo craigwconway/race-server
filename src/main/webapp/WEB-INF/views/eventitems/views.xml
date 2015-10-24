@@ -19,4 +19,7 @@
 <definition extends="default" name="eventitems/findEventCartItemsByNameEquals">
         <put-attribute name="body" value="/WEB-INF/views/eventitems/findEventCartItemsByNameEquals.jspx"/>
     </definition>
+<definition extends="default" name="eventitems/ticket">
+        <put-attribute name="body" value="/WEB-INF/views/eventitems/ticket.jspx"/>
+    </definition>        
 </tiles-definitions>
