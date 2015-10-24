@@ -79,10 +79,6 @@
         <form:update id="fu_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" versionField="Version" z="PdYR4Rq85GJZ0+pKtpmrAP5I3PY=">
         <div class="info-container">
             <h2 class="ui icon header">
-                <c:if test="${eventCartItem.type == 'TICKET'}">
-                    <i class="fa fa-ticket"><!--  --></i>
-                    <div class="content">Edit Ticket</div>
-                </c:if>
                 <c:if test="${eventCartItem.type == 'T_SHIRT'}">
                     <i class="fa fa-shirtsinbulk"><!--  --></i>
                     <div class="content">Edit T-shirt</div>
@@ -109,25 +105,6 @@
                         </div>
                       </div>
                 </div>
-                <c:if test="${eventCartItem.type == 'TICKET'}">
-                    <div class="ui labeled input">
-                        <div class="ui blue label">Event Type</div>
-                        <div class="ui selection dropdown" id="event-type">
-                            <input type="hidden" name="eventType"><!--  --></input>
-                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                            <div class="default text">Select Event Type</div>
-                            <div class="menu">
-                                <c:forEach var="item" items="${eventTypes}">
-                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
-                                </c:forEach>
-                            </div>
-                        </div>
-                    </div>
-                    <div    style="display:none;margin-bottom:5px;" id="etype-error"
-                            class="has-error filled">
-                        <span class="parsley-custom-error-message">Please select an event type.</span>
-                    </div>
-                </c:if>
                 <div class="ui labeled input">
                     <div class="ui blue label">Name</div>
                     <input  type="text" name="name"

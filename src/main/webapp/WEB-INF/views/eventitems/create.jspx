@@ -55,7 +55,7 @@
             width: 400px;
             text-align: right;
         }
-        .ui.three.cards > .card:nth-child(3n+1){
+        .ui.two.cards > .card:nth-child(2n+1){
             clear:none;
         }
         .ui.form input[type="number"]{
@@ -86,26 +86,23 @@
                         <div class="sub header">Provide the details for this product.</div>
                     </div>
                 </h2>
-                <div class="ui three cards" id="ticket-type">
+                <div style="clear:both"><!--  --></div>
+                <div class="ui two cards" id="ticket-type">
                     <input type="hidden" name="type"
                         data-parsley-error-message="Please select a product type."
                         data-parsley-required="true"><!--  --></input>
-                    <div class="ui card" id="card-ticket" onclick="cardHandler('TICKET')">
-                        <div class="content">
-                            <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
-                        </div>
-                    </div>
-                    <div class="ui card" id="card-tshirt" onclick="cardHandler('T_SHIRT')">
+                    <div class="card" id="card-tshirt" onclick="cardHandler('T_SHIRT')">
                         <div class="content">
                             <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
                         </div>
                     </div>
-                    <div class="ui card" id="card-donation" onclick="cardHandler('DONATION')">
+                    <div class="card" id="card-donation" onclick="cardHandler('DONATION')">
                         <div class="content">
                             <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
                         </div>
                     </div>
                 </div>
+                <div style="clear:both"><!--  --></div>
                 <div class="form-fields">
                     <div class="ui fluid selection dropdown ticket-settings" id="event-type">
                         <input type="hidden" name="eventType"><!--  --></input>
@@ -135,20 +132,20 @@
                 <div class="form-fields">
                     <div class="two fields">
                         <div class="field">
-                            <label>Item Sale Start Date: </label>
+                            <label style="width:100%">Purchase Window Opens: </label>
                             <input  type="text" name="timeStartLocal"
                                 id="ECIStart"
-                                placeholder="Price start date"
+                                placeholder="Start date"
                                 data-provide="datepicker"
                                 data-date-format="MM/DD/YYYY hh:mm:ss a"
                                 data-parsley-error-message="Please specify a start date."
                                 data-parsley-required="true"></input>
                         </div>
                         <div class="field">
-                            <label>Item Sale End Date: </label>
+                            <label style="width:100%">Purchase Window Closes: </label>
                             <input  type="text" name="timeEndLocal"
                                 id="ECIEnd"
-                                placeholder="Price end date"
+                                placeholder="End date"
                                 data-provide="datepicker"
                                 data-date-format="MM/DD/YYYY hh:mm:ss a"
                                 data-parsley-error-message="Please specify an end date."
@@ -286,11 +283,25 @@
             setValidation();
             initDateTimePickers();
             jQuery('.ui.button').state();
-            jQuery('#card-ticket > .content').attr('style', 'background: #F0F0F0');
+            jQuery('#card-tshirt > .content').attr('style', 'background: #F0F0F0');
             jQuery('#event-type').dropdown();
             jQuery('#gender-type').dropdown();
-            jQuery('input[name="type"]').val('TICKET');
             jQuery('.ui.checkbox').checkbox();
+
+            jQuery('input[name="type"]').val('T_SHIRT');
+            jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
+            jQuery('#card-donation > .content').attr('style', 'background:none');
+            jQuery(".ticket-settings").hide();
+            jQuery(".shirt-settings").show();
+            jQuery('.not-donation').show();
+            jQuery('.not-shirt').hide();
+            jQuery("#box-black").attr("data-parsley-required", true);
+            jQuery("#box-xs").attr("data-parsley-required", true);
+            jQuery('input[name="minAge"]').val(1);
+            jQuery('input[name="maxAge"]').val(120);
+            jQuery('input[name="price"]').val("");
+            jQuery('input[name="available"]').val("");
+            jQuery('#etype-error').hide();
         }
 
         function cardHandler(val){
@@ -299,23 +310,7 @@
                 jQuery(e).text("");
             })
             switch(val){
-                case 'TICKET':
-                    jQuery('#card-ticket > .content').attr('style', 'background:#F0F0F0');
-                    jQuery('#card-tshirt > .content').attr('style', 'background:none');
-                    jQuery('#card-donation > .content').attr('style', 'background:none');
-                    jQuery(".ticket-settings").show();
-                    jQuery(".shirt-settings").hide();
-                    jQuery('.not-shirt').show();
-                    jQuery('.not-donation').show();
-                    jQuery("#box-black").attr("data-parsley-required", false);
-                    jQuery("#box-xs").attr("data-parsley-required", false);
-                    jQuery('input[name="minAge"]').val("");
-                    jQuery('input[name="maxAge"]').val("");
-                    jQuery('input[name="price"]').val("");
-                    jQuery('input[name="available"]').val("");
-                    break;
                 case 'T_SHIRT':
-                    jQuery('#card-ticket > .content').attr('style', 'background:none');
                     jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
                     jQuery('#card-donation > .content').attr('style', 'background:none');
                     jQuery(".ticket-settings").hide();
@@ -331,7 +326,6 @@
                     jQuery('#etype-error').hide();
                     break;
                 case 'DONATION':
-                    jQuery('#card-ticket > .content').attr('style', 'background:none');
                     jQuery('#card-tshirt > .content').attr('style', 'background:none');
                     jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
                     jQuery(".ticket-settings").hide();
@@ -379,20 +373,20 @@
                 var endMomentStr = endMoment.format("MM/DD/YYYY hh:mm:ss a");
                 if(startMoment.isAfter(moment('${event.timeStartLocal}'))){
                     jQuery('#proceed').prop('disabled', true);
-                    alert('You\'ve selected an Item Sale Start Date (' + startMomentStr + ') that is past your event\'s starting time (' + '${event.timeStartLocal}' + '). We\'ve adjusted your Item Sale Start Date to be the current time.');
+                    alert('You\'ve selected an Purchase Window Open Date (' + startMomentStr + ') that is past your event\'s starting time (' + '${event.timeStartLocal}' + '). We\'ve adjusted your Purchase Window Open Date to be the current time.');
                     jQuery('#ECIStart').data('DateTimePicker').setDate(moment());
                     proceedD = false;
                     jQuery('#proceed').prop('disabled', false);
                 }
                 if(endMoment.isAfter(moment('${event.timeStartLocal}'))){
                     jQuery('#proceed').prop('disabled', true);
-                    alert('You\'ve selected an Item Sale End Date (' + endMomentStr + ') that is past your event\'s starting time (' + startMomentStr + '). We\'ve adjusted your Item Sale End Date to be your event\'s starting time.');
+                    alert('You\'ve selected a Purchase Window Close Date (' + endMomentStr + ') that is past your event\'s starting time (' + startMomentStr + '). We\'ve adjusted your Purchase Window Close Date to be your event\'s starting time.');
                     jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
                     proceedD = false;
                     jQuery('#proceed').prop('disabled', false);
                 }else if(endMoment.isBefore(moment()) &amp;&amp; moment('${event.timeStartLocal}').isAfter(moment())){
                     jQuery('#proceed').prop('disabled', true);
-                    alert('You\'ve selected an Item Sale End Date (' + endMomentStr + ') that is before today, which means no one can purchase this item currently. We\'ve adjusted your Item Sale End Date to be your event\'s starting time.');
+                    alert('You\'ve selected a Purchase Window Close Date (' + endMomentStr + ') that is before today, which means no one can purchase this item currently. We\'ve adjusted your Purchase Window Close Date to be your event\'s starting time.');
                     jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
                     proceedD = false;
                     jQuery('#proceed').prop('disabled', false);
@@ -400,41 +394,6 @@
 
                 if(startMoment.isBefore(moment('${event.timeStartLocal}')) &amp;&amp; endMoment.isBefore(moment('${event.timeStartLocal}'))){
                     proceedD = true;
-                }
-                if( jQuery('input[name="type"]').val() == 'TICKET' ){
-                    var etype = jQuery('#event-type').dropdown('get value');
-                    if( etype == "" || etype == null ){
-                        jQuery('#proceed').prop('disabled', true);
-                        jQuery('#etype-error').show();
-                        jQuery('#event-type').addClass('error');
-                        jQuery('#event-type').dropdown({
-                            onChange: function (val) {
-                                jQuery('#etype-error').hide();
-                                jQuery('#event-type').removeClass('error');
-                                proceedE = true;
-                                if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
-                                    jQuery('#proceed').prop('disabled', false);
-                                }
-                            }
-                        });
-                    }
-
-                    var gender = jQuery('#gender-type').dropdown('get value');
-                    if( gender == "" || gender == null ){
-                        jQuery('#proceed').prop('disabled', true);
-                        jQuery('#gender-error').show();
-                        jQuery('#gender-type').addClass('error');
-                        jQuery('#gender-type').dropdown({
-                            onChange: function (val) {
-                                jQuery('#gender-error').hide();
-                                jQuery('#gender-type').removeClass('error');
-                                proceedG = true;
-                                if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
-                                    jQuery('#proceed').prop('disabled', null);
-                                }
-                            }
-                        });
-                    }
                 }
                 if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
                     jQuery('.size-boxes').each(function(){
@@ -486,6 +445,7 @@
             });
         }
 
+        var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
         function initDateTimePickers(){
             jQuery("#ECIStart")
                 .datetimepicker({
@@ -495,11 +455,11 @@
                 });
             jQuery("#ECIEnd")
                 .datetimepicker({
+                    defaultDate: eventStart,
                     useSeconds: true,
                     sideBySide: true
                 });
             jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
-            var eventStart = moment('${event.timeStartLocal}').startOf('hour').format('MM/DD/YYYY h:mm:ss a');
             jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
 
             <!-- on change-ui -->
