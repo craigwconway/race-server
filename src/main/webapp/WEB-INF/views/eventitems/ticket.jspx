@@ -119,7 +119,7 @@
                             <input  type="number" data-for="base"
                                     class="category-field" name="price"
                                     placeholder="Base price"
-                                    min="1" step="0.1"
+                                    min="0" step="0.1"
                                     data-parsley-group="category"
                                     data-parsley-error-message="Invalid base price."
                                     data-parsley-required="true"></input>
@@ -134,7 +134,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="editSchedule-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -143,8 +143,46 @@
                     <h4 class="modal-title" id="editSchedule-label">Edit Price Schedule</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="ui form" id="addSchedForm">
+                    <div class="ui form" id="editSchedForm" style="width:400px">
                         <div class="field">
+                        Price Change Begin Date: <input  type="text" name="dateStartLocal"
+                                class="form-control"
+                                placeholder="Price start date"
+                                data-provide="datepicker"
+                                data-date-format="MM/DD/YYYY h:mm:ss a"></input>
+                        </div>
+                        <div class="field">
+                            <div class="ui labeled input" style="margin: 0 auto">
+                                <div class="ui blue label">$</div>
+                                <input  type="number" data-for="base" style="padding: 0.7em 1em"
+                                        class="category-field" name="price"
+                                        placeholder="Amount"
+                                        min="0" step="0.1"
+                                        data-parsley-error-message="Invalid base price."
+                                        data-parsley-required="true"></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui red button" onclick="removeSingleSchedule()">Remove</button>
+                    <button type="button" class="ui green button" onclick="saveSingleSchedule()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="createSchedulesModal" tabindex="-1" role="dialog" aria-labelledby="createSchedules-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-times"></span></button>
+                    <h4 class="modal-title" id="createSchedules-label">Edit Price Schedule</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui form" id="addSchedForm">
+                        <div class="required field">
                         Price Change Begin Date: <input  type="text" name="dateStartLocal"
                                 class="form-control"
                                 placeholder="Price start date"
@@ -181,7 +219,7 @@
                                     <input  type="number" data-for="base" style="padding: 0.7em 1em"
                                             class="category-field" name="price"
                                             placeholder="Amount"
-                                            min="1" step="0.1"
+                                            min="0" step="0.1"
                                             data-parsley-error-message="Invalid base price."
                                             data-parsley-required="true"></input>
                                 </div>
@@ -191,8 +229,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui red button editSchedButton" onclick="removeSchedule()">Remove</button>
-                    <button type="button" class="ui green button" onclick="saveSchedule()">Save</button>
+                    <button type="button" class="ui green button" onclick="saveSchedules()">Save</button>
                 </div>
             </div>
         </div>
@@ -366,7 +403,7 @@
                             <input  type="number" data-for="base"
                                     class="category-field" id="eci-base-price"
                                     placeholder="Base price"
-                                    min="1" step="0.1"
+                                    min="0" step="0.1"
                                     data-parsley-group="category"
                                     data-parsley-error-message="Invalid base price."
                                     data-parsley-required="true"></input>
@@ -389,7 +426,7 @@
                             </div>
                             <div class="extra content">Base Price: $<span class="card-price">30</span></div>
                             <div class="ui bottom attached button card-edit-button">
-                                <i class="fa fa-edit"><!--  --></i>Modify
+                                <i class="fa fa-edit"><!--  --></i>Edit
                             </div>
                         </div>
                     </div>
@@ -430,7 +467,7 @@
                                 <td rowspan="1"><span class="name">Beta Team</span></td>
                                 <td><span class="date">Project 1</span></td>
                                 <td><span class="price">52</span></td>
-                                <td><div class="tiny ui icon button row-edit-button"><i class="fa fa-edit"><!--  --></i>Modify</div></td>
+                                <td><div class="tiny ui icon button row-edit-button"><i class="fa fa-edit"><!--  --></i>Edit</div></td>
                             </tr>
                             <tr id="row-sched-template" style="display:none">
                                 <td><span class="date">Project 2</span></td>
@@ -518,10 +555,12 @@
             this.base = +base;
             this.cardDOM = null;
             this.dropdownDOM = null;
+            this.mainRowDOM = null;
             this.scheduleList = [];
             this.render = function(){
                 this.renderCard();
                 this.renderScheduleDropdownItem();
+                this.renderTableRow();
             }
             this.renderCard = function(){
                 if(this.cardDOM == null){
@@ -545,15 +584,31 @@
                 jQuery(this.dropdownDOM).show();
                 jQuery('#ticketTypeListDropdown').dropdown('refresh');
             }
+            this.renderTableRow = function(){
+                if(this.ticketTypeRowDOM == null){
+                    this.ticketTypeRowDOM = jQuery('#row-main-template').clone().appendTo('#schedule-table tbody')
+                        .removeAttr('id', 'row-main-template')
+                        .attr('class', 'row-' + this.id)
+                        .data('date', moment(eventCartStartDate).format('MM/DD/YYYY h:mm:ss a'))
+                        .data('price', this.base);
+
+                }
+                jQuery(this.ticketTypeRowDOM).find('.name').text(this.name);
+                jQuery(this.ticketTypeRowDOM).find('.date').text(moment(eventCartStartDate).format('MM/DD/YYYY h:mm:ss a'));
+                jQuery(this.ticketTypeRowDOM).find('.price').text(this.base);
+                // jQuery(this.ticketTypeRowDOM).find('.row-edit-button').hide();
+                jQuery(this.ticketTypeRowDOM).show();
+            }
             this.update = function(name, base){
                 var currentPrice = this.base;
+                var thisTicket = this;
                 this.scheduleList.forEach(function(el,i,ary){
                     var sched = el;
                     console.log('searching:', sched, sched.price, currentPrice);
                     if(+sched.price == +currentPrice){
                         sched.cascadeBasePrice(base);
                     }
-                    sched.renderTableRow();
+                    thisTicket.renderTableRow();
                 })
                 this.name = name;
                 this.base = base;
@@ -568,6 +623,9 @@
                     jQuery(this.dropdownDOM).remove();
                     jQuery('#ticketTypeListDropdown').dropdown('refresh');
                 }
+                if(ticketAry.length == 1){
+                    scheduleAry.length = 0;
+                }
                 delete this;
             }
             this.addToSchedule = function(schedule){
@@ -575,6 +633,10 @@
                 this.scheduleList.sort(function(a,b){
                     return moment(a.startDate, 'MM/DD/YYYY h:mm:ss a').isAfter(moment(b.startDate, 'MM/DD/YYYY h:mm:ss a'));
                 })
+                if(this.scheduleList.length > 1){
+                    schedule.renderSubRow();
+                    jQuery(this.ticketTypeRowDOM).find('td:first-child').attr('rowspan', this.scheduleList.length);
+                }
                 console.log('sorted list:', this.scheduleList);
             }
             this.removeFromSchedule = function(scheduleId){
@@ -587,34 +649,26 @@
             this.ticketId = ticketId;
             this.startDate = startDate;
             this.price = +price;
-            this.ticketTypeRowDOM = null;
             this.scheduleRowDOM = null;
-            this.renderTableRow = function(){
-                if(this.ticketTypeRowDOM == null){
-                    this.ticketTypeRowDOM = jQuery('#row-main-template').clone().appendTo('#schedule-table tbody')
-                        .removeAttr('id', 'row-main-template')
-                        .attr('class', 'row-' + this.ticketId)
+            this.renderSubRow = function(){
+                if(this.scheduleRowDOM == null){
+                    this.scheduleRowDOM = jQuery('#row-sched-template').clone().insertAfter('.row-' + this.ticketId)
+                        .removeAttr('id', 'row-sched-template')
+                        .attr('class', 'sched-' + this.id)
                         .data('date', this.startDate)
-                        .data('price', this.price);
-                }else{
-                    if(this.scheduleRowDOM == null){
-                        this.scheduleRowDOM = jQuery('#row-sched-template').clone().after('#row-' + this.ticketId)
-                            .removeAttr('id', 'row-sched-template')
-                            .attr('class', 'sched-' + this.id)
-                            .data('date', this.startDate)
-                            .data('price', this.price)
-                    }
+                        .data('price', this.price)
                 }
+                // }
                 var parsedDate = moment(this.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a')
-                jQuery(this.ticketTypeRowDOM).find('.name').text(ticketAry[this.ticketId].name);
-                jQuery(this.ticketTypeRowDOM).find('.date').text(parsedDate);
-                jQuery(this.ticketTypeRowDOM).find('.price').text(this.price);
-                jQuery(this.ticketTypeRowDOM).find('.row-edit-button').attr('onclick', 'editSchedule(' + this.id + ')')
-                jQuery(this.ticketTypeRowDOM).show();
+                jQuery(this.scheduleRowDOM).find('.name').text(ticketAry[this.ticketId].name);
+                jQuery(this.scheduleRowDOM).find('.date').text(parsedDate);
+                jQuery(this.scheduleRowDOM).find('.price').text(this.price);
+                jQuery(this.scheduleRowDOM).find('.row-edit-button').attr('onclick', 'editSchedule(' + this.id + ')');
+                console.log(this.scheduleRowDOM);
+                jQuery(this.scheduleRowDOM).show();
             }
             this.cascadeBasePrice = function(price){
                 this.price = price;
-                this.renderTableRow();
             }
         }
 
@@ -668,7 +722,7 @@
                     ticketAry.push(ticket);
                     var schedule = new Schedule(scheduleAry.length, ticket.id, startDate, price);
                     scheduleAry.push(schedule);
-                    schedule.renderTableRow();
+                    // schedule.renderTableRow();
                 }else{
                     // find matching name in ticketAry, get its id = ticket.id
                     for( var i in ticketAry ){
@@ -705,13 +759,13 @@
                     sideBySide: true
                 });
 
-            jQuery('#editScheduleModal input[name="dateStartLocal"]')
+            jQuery('input[name="dateStartLocal"]')
                 .datetimepicker({
                     defaultDate: eventCartStartDate,
                     useSeconds: true,
                     sideBySide: true
                 });
-            jQuery('#editScheduleModal input[name="dateStartLocal"]').data('DateTimePicker').setMaxDate(eventStart);
+            jQuery('input[name="dateStartLocal"]').data('DateTimePicker').setMaxDate(eventStart);
 
             jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
             jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
@@ -742,7 +796,7 @@
                     ticket.render();
                     ticketAry.push(ticket);
                     var schedule = new Schedule(scheduleAry.length, ticket.id, eventCartStartDate, price);
-                    schedule.renderTableRow();
+                    // schedule.renderTableRow();
                     scheduleAry.push(schedule);
                     ticketAry[schedule.ticketId].addToSchedule(schedule);
                     jQuery('#notify-save').show();
@@ -783,7 +837,7 @@
 
         function addSchedule(){
             jQuery('#add-sched-error').hide();
-            jQuery('#editScheduleModal').modal('show');
+            jQuery('#createSchedulesModal').modal('show');
         }
 
         function editSchedule(id){
@@ -797,9 +851,13 @@
                 }
             }
             console.log(sched);
+
+            jQuery('#editSchedForm input[name="dateStartLocal"]').val(sched.startDate);
+            jQuery('#editSchedForm input[name="price"]').val(sched.price);
+            jQuery('#editScheduleModal').modal('show');
         }
 
-        function saveSchedule(){
+        function saveSchedules(){
             var date = jQuery('#addSchedForm input[name="dateStartLocal"]').val();
             var priceDelta = jQuery('#addSchedForm input[name="price"]').val();
             var ticketList = jQuery('#addSchedForm input[name="ticketList"]').val();
@@ -811,33 +869,49 @@
             var bestDate = null;
             ticketList = ticketList.split(',');
             console.log('ticketList', ticketList)
+
+            var prevent = false;
+
+            // loop through selected tickets (which are returned by name)
             ticketList.forEach(function(id, i, ary){
                 for(var i in ticketAry){
-                    console.log('compare:', id, ticketAry[i].name);
-                    if(id == ticketAry[i].name){
+                    if((id).toLowerCase() == (ticketAry[i].name).toLowerCase()){
                         ticket = ticketAry[i];
                     }
                 }
                 console.log('ticket to observe:', ticket);
                 console.log('date:', date);
+
+                // check duplicate dates in all current schedules for this ticket
                 var specifiedDate = moment(date, 'MM/DD/YYYY h:mm:ss a');
-                bestDate = (ticket.scheduleList).length;
+                var schedules = ticket.scheduleList;
+
+                bestDate = schedules.length;
                 var bestDiff = -(new Date(0,0,0)).valueOf();
                 var currDiff = 0;
-                (ticket.scheduleList).forEach(function(el, i, ary){
-                    currDiff = moment(el.startDate, 'MM/DD/YYYY h:mm:ss a').subtract(specifiedDate).milliseconds();
-                    if(currDiff &lt; bestDiff){
-                        bestDate = i;
-                        bestDiff = currDiff;
-                        console.log('bestDiff is now: ', bestDiff);
+
+                for(var index in schedules){
+                    if(specifiedDate.isSame(moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a'), 'second')){
+                        alert('Price Change Date overlapped with ' + id + '. Please remove the ticket type or choose another date!');
+                        preventClose = true;
+                        break;
+                    }else{
+                        currDiff = moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a').subtract(specifiedDate).milliseconds();
+                        if(currDiff &lt; bestDiff){
+                            bestDate = index;
+                            bestDiff = currDiff;
+                            console.log('bestDiff is now: ', bestDiff);
+                        }
+                        
                     }
-                })
-                if(moment((ticket.scheduleList)[bestDate], 'MM/DD/YYYY h:mm:ss a').isAfter(specifiedDate)){
-                    if(bestDate > 1){
+                }
+
+                if(moment(schedules[bestDate], 'MM/DD/YYYY h:mm:ss a').isAfter(specifiedDate)){
+                    if(bestDate > 0){
                         bestDate--;
                     }
                 }
-                var closestSchedule = (ticket.scheduleList)[bestDate];
+                var closestSchedule = schedules[bestDate];
                 console.log('bestDate:', bestDate);
                 console.log('closestSchedule:', closestSchedule);
                 var closestTicketId = closestSchedule.ticketId;
@@ -852,10 +926,12 @@
                     }
                 }
 
-                var schedule = new Schedule(scheduleAry.length, closestTicketId, date, updatedPrice);
-                schedule.renderTableRow();
-                scheduleAry.push(schedule);
-                ticketAry[schedule.ticketId].addToSchedule(schedule);
+                if(!prevent){
+                    var schedule = new Schedule(scheduleAry.length, closestTicketId, date, updatedPrice);
+                    // schedule.renderTableRow();
+                    scheduleAry.push(schedule);
+                    ticketAry[schedule.ticketId].addToSchedule(schedule);
+                }
 
                 console.log('date', date);
                 console.log('price', priceDelta);
@@ -865,6 +941,26 @@
                 console.log('scheduleAry', scheduleAry);
                 console.log('ticketAry', ticketAry);
             })
+            if(!prevent){
+                closeModal();
+            }
+        }
+
+        function saveSingleSchedule(){
+            var name = jQuery('#editSchedForm input[name="categoryName"]').val();
+            var price = jQuery('#editSchedForm input[name="price"]').val();
+            scheduleAry[currentScheduleIndex].update(name, price);
+            scheduleAry[currentScheduleIndex].render();
+
+            closeModal();
+        }
+
+        function saveTicketType(){
+            var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
+            var price = jQuery('#editTicketTypeModal input[name="price"]').val();
+            ticketAry[currentTicketIndex].update(name, price);
+            ticketAry[currentTicketIndex].render();
+
             closeModal();
         }
 
