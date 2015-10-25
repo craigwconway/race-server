@@ -549,15 +549,30 @@
                             <th># Athletes</th>
                         </tr></thead>
                         <tbody>
-                            <c:forEach var="item" items="${eventTypes}"><tr class="eventtype-item" onclick="editEventType('${item.typeName}', '${item.racetype}', '${item.distance}', '${item.timeStartLocal}', '${item.id}')">
-                                <td>${item.typeName}</td>
-                                <td>${item.racetype}</td>
-                                <td>${item.distance}</td>
-                                <td>${item.timeStartLocal}</td>
-                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.id}')">Detail</div></td>
-                                <td>15</td>
-                                <td>0</td>
-                            </tr></c:forEach>
+                            <c:forEach var="item" items="${metatype}">
+	                            <c:if test="${item.ticket != null }">
+		                            <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', '${item.ticket.id}', '${item.ticket.available}', '${item.ticket.timeStartLocal}', '${item.ticket.timeEndLocal}', '${item.ticket.price}')">    
+		                                <td>${item.type.typeName}</td>
+		                                <td>${item.type.racetype}</td>
+		                                <td>${item.type.distance}</td>
+		                                <td>${item.type.timeStartLocal}</td>
+		                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
+		                                <td>15</td>
+		                                <td>0</td>
+		                            </tr>
+	                            </c:if>
+	                            <c:if test="${item.ticket == null }">
+		                            <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">
+		                                <td>${item.type.typeName}</td>
+		                                <td>${item.type.racetype}</td>
+		                                <td>${item.type.distance}</td>
+		                                <td>${item.type.timeStartLocal}</td>
+		                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
+		                                <td>15</td>
+		                                <td>0</td>
+	                            	</tr>
+	                            </c:if>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </c:if>
@@ -691,10 +706,16 @@
         function saveEventType(put){
             var dat = {};
             var error = true;
-
+			
             var eventTypeUrl = "/bibs-server/eventtypes/";
             var ajaxType = 'POST';
-
+	
+            //Check if we have valid ticket data
+            var price = jQuery('input[name="price"]').val();
+            var available = jQuery('input[name="available"]').val();
+            var timeStartLocal = jQuery('input[name="timeStartLocal"]').val();
+            var timeEndLocal = jQuery('input[name="timeEndLocal"]').val();
+            
             var typeName  = jQuery('input[name="typeName"]').val();
             var distance  = jQuery('input[name="distance"]').val();
             var distType  = null;
@@ -877,11 +898,16 @@
         }
 
         var currEventTypeId;
-        function editEventType(typeName, type, dist, raceTime, id){
+        function editEventType(typeName, type, dist, raceTime, id, ticketId, ticketAvail, ticketStart, ticketEnd, ticketPrice){
             currEventTypeId = id;
             jQuery(".post-event-type").hide();
             jQuery(".put-event-type").show();
-
+			if(ticketId != null) {
+				if(ticketAvail != null) jQuery('#putFieldForm input[name="available"]').val(ticketAvail);
+				jQuery('#putFieldForm input[name="price"]').val(ticketPrice);
+				jQuery('#putFieldForm input[name="timeStartLocal"]').val(ticketStart);
+				jQuery('#putFieldForm input[name="timeEndLocal"]').val(ticketEnd);
+			}
             jQuery('#putFieldForm input[name="typeName"]').val(typeName);
             jQuery('#putFieldForm input[name="raceType"]').val(type);
             jQuery('#racetype-dropdown').dropdown("set selected", type);
