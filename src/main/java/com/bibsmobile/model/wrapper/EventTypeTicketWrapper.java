@@ -5,6 +5,7 @@ package com.bibsmobile.model.wrapper;
 
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.RaceResult;
 
 /**
  * Generated wrapper for view of event types and tickets.
@@ -48,6 +49,16 @@ public class EventTypeTicketWrapper {
 	 */
 	public void setType(EventType type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the athletes
+	 */
+	public long getAthletes() {
+		if(type == null) return 0;
+		if(type.getId() == null) return 0;
+		return RaceResult.countFindRaceResultsByEventType(type);
+
 	}
 
 	/* (non-Javadoc)
