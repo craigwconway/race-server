@@ -158,6 +158,7 @@
                                 <input type="hidden" name="ticketList"><!--  --></input>
                                 <i class="fa fa-caret-down" style="margin-left:5px;float:right;line-height:2em;"><!--  --></i>
                                 <div class="menu" id="ticketTypeListDropdownMenu" style="width:inherit"><!--  -->
+                                    <div class="item" id="dropdown-item-template" style="display:none"><!--  --></div>
                                 </div>
                             </div>
                         </div>
@@ -420,7 +421,7 @@
                             <tr>
                                 <th rowspan="3">Ticket Type Name</th>
                                 <th rowspan="3">Start Date</th>
-                                <th rowspan="1">Price</th>
+                                <th rowspan="1">Price ($)</th>
                                 <th colspan="1"></th>
                             </tr>
                         </thead>
@@ -508,8 +509,8 @@
             }
         }
 
-        var currentTicketId = null;
-        var currentScheduleId = null;
+        var currentTicketIndex = null;
+        var currentScheduleIndex = null;
         var ticketAry = [];
         Ticket = function(id, name, base){
             this.id = id;
@@ -536,11 +537,13 @@
             }
             this.renderScheduleDropdownItem = function(){
                 if(this.dropdownDOM == null){
-                    this.dropdownDOM = jQuery("#ticketTypeListDropdownMenu").append('<div class="item" data-value="' + this.id + '">' + this.name + '</div>');
-                    jQuery('#ticketTypeListDropdown').dropdown('refresh');
-                }else{
-                    this.dropdownDOM.text(this.name);
+                    this.dropdownDOM = jQuery("#dropdown-item-template").clone().appendTo('#ticketTypeListDropdownMenu')
+                        .removeAttr('id', 'dropdown-item-template');
+                    jQuery(this.dropdownDOM).data('value', this.id);
                 }
+                jQuery(this.dropdownDOM).text(this.name);
+                jQuery(this.dropdownDOM).show();
+                jQuery('#ticketTypeListDropdown').dropdown('refresh');
             }
             this.update = function(name, base){
                 var currentPrice = this.base;
@@ -558,6 +561,12 @@
             this.destroy = function(){
                 if(this.cardDOM !== null){
                     jQuery(this.cardDOM).remove();
+                }
+                jQuery('#schedule-table tbody').find('.row-' + this.id).remove();
+                if(this.dropdownDOM !== null){
+                    console.log('remove this?', this.dropdownDOM)
+                    jQuery(this.dropdownDOM).remove();
+                    jQuery('#ticketTypeListDropdown').dropdown('refresh');
                 }
                 delete this;
             }
@@ -584,14 +593,14 @@
                 if(this.ticketTypeRowDOM == null){
                     this.ticketTypeRowDOM = jQuery('#row-main-template').clone().appendTo('#schedule-table tbody')
                         .removeAttr('id', 'row-main-template')
-                        .attr('id', 'row-' + this.ticketId)
+                        .attr('class', 'row-' + this.ticketId)
                         .data('date', this.startDate)
                         .data('price', this.price);
                 }else{
                     if(this.scheduleRowDOM == null){
                         this.scheduleRowDOM = jQuery('#row-sched-template').clone().after('#row-' + this.ticketId)
                             .removeAttr('id', 'row-sched-template')
-                            .attr('id', 'sched-' + this.id)
+                            .attr('class', 'sched-' + this.id)
                             .data('date', this.startDate)
                             .data('price', this.price)
                     }
@@ -742,24 +751,33 @@
         }
 
         function editTicketType(id){
-            currentTicketId = id;
-            jQuery('#editTicketTypeModal input[name="categoryName"]').val(ticketAry[id].name);
-            jQuery('#editTicketTypeModal input[name="price"]').val(ticketAry[id].base);
+            currentTicketIndex = id;
+            var ticket = null;
+
+            for(var i in ticketAry){
+                if(ticketAry[i].id == currentTicketIndex){
+                    ticket = ticketAry[i];
+                    currentTicketIndex = i;
+                }
+            }
+
+            jQuery('#editTicketTypeModal input[name="categoryName"]').val(ticket.name);
+            jQuery('#editTicketTypeModal input[name="price"]').val(ticket.base);
             jQuery('#editTicketTypeModal').modal('show');
         }
 
         function saveTicketType(){
             var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
             var price = jQuery('#editTicketTypeModal input[name="price"]').val();
-            ticketAry[currentTicketId].update(name, price);
-            ticketAry[currentTicketId].render();
+            ticketAry[currentTicketIndex].update(name, price);
+            ticketAry[currentTicketIndex].render();
 
             closeModal();
         }
 
         function removeTicketType(){
-            ticketAry[currentTicketId].destroy();
-            ticketAry.splice(currentTicketId, 1);
+            ticketAry[currentTicketIndex].destroy();
+            ticketAry.splice(currentTicketIndex, 1);
             closeModal();
         }
 
@@ -769,7 +787,16 @@
         }
 
         function editSchedule(id){
-            console.log(scheduleAry[id]);
+            currentScheduleIndex = id;
+            var sched = null;
+
+            for(var i in scheduleAry){
+                if(scheduleAry[i].id == currentScheduleIndex){
+                    sched = scheduleAry[i];
+                    currentScheduleIndex = i;
+                }
+            }
+            console.log(sched);
         }
 
         function saveSchedule(){
@@ -783,8 +810,14 @@
             var ticket = null;
             var bestDate = null;
             ticketList = ticketList.split(',');
+            console.log('ticketList', ticketList)
             ticketList.forEach(function(id, i, ary){
-                ticket = ticketAry[id];
+                for(var i in ticketAry){
+                    console.log('compare:', id, ticketAry[i].name);
+                    if(id == ticketAry[i].name){
+                        ticket = ticketAry[i];
+                    }
+                }
                 console.log('ticket to observe:', ticket);
                 console.log('date:', date);
                 var specifiedDate = moment(date, 'MM/DD/YYYY h:mm:ss a');
