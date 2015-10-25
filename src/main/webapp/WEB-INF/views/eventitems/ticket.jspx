@@ -184,7 +184,7 @@
                     <div class="ui form" id="addSchedForm">
                         <div class="required field">
                         Price Change Begin Date: <input  type="text" name="dateStartLocal"
-                                class="form-control"
+                                class="form-control" id="scheduleStartDate"
                                 placeholder="Price start date"
                                 data-provide="datepicker"
                                 data-date-format="MM/DD/YYYY h:mm:ss a"></input>
@@ -585,14 +585,15 @@
                 jQuery('#ticketTypeListDropdown').dropdown('refresh');
             }
             this.renderTableRow = function(){
-                if(this.ticketTypeRowDOM == null){
-                    this.ticketTypeRowDOM = jQuery('#row-main-template').clone().appendTo('#schedule-table tbody')
-                        .removeAttr('id', 'row-main-template')
-                        .attr('class', 'row-' + this.id)
-                        .data('date', moment(eventCartStartDate).format('MM/DD/YYYY h:mm:ss a'))
-                        .data('price', this.base);
-
+                if(this.ticketTypeRowDOM !== null){
+                    jQuery(this.ticketTypeRowDOM).remove();
                 }
+                this.ticketTypeRowDOM = jQuery('#row-main-template').clone().appendTo('#schedule-table tbody')
+                    .removeAttr('id', 'row-main-template')
+                    .attr('class', 'row-' + this.id)
+                    .data('date', moment(eventCartStartDate).format('MM/DD/YYYY h:mm:ss a'))
+                    .data('price', this.base);
+
                 jQuery(this.ticketTypeRowDOM).find('.name').text(this.name);
                 jQuery(this.ticketTypeRowDOM).find('.date').text(moment(eventCartStartDate).format('MM/DD/YYYY h:mm:ss a'));
                 jQuery(this.ticketTypeRowDOM).find('.price').text(this.base);
@@ -604,7 +605,6 @@
                 var thisTicket = this;
                 this.scheduleList.forEach(function(el,i,ary){
                     var sched = el;
-                    console.log('searching:', sched, sched.price, currentPrice);
                     if(+sched.price == +currentPrice){
                         sched.cascadeBasePrice(base);
                     }
@@ -617,9 +617,11 @@
                 if(this.cardDOM !== null){
                     jQuery(this.cardDOM).remove();
                 }
+                if(this.ticketTypeRowDOM !== null){
+                    jQuery(this.ticketTypeRowDOM).remove();
+                }
                 jQuery('#schedule-table tbody').find('.row-' + this.id).remove();
                 if(this.dropdownDOM !== null){
-                    console.log('remove this?', this.dropdownDOM)
                     jQuery(this.dropdownDOM).remove();
                     jQuery('#ticketTypeListDropdown').dropdown('refresh');
                 }
@@ -631,15 +633,18 @@
             this.addToSchedule = function(schedule){
                 this.scheduleList.push(schedule);
                 this.scheduleList.sort(function(a,b){
-                    return moment(a.startDate, 'MM/DD/YYYY h:mm:ss a').isAfter(moment(b.startDate, 'MM/DD/YYYY h:mm:ss a'));
+                    // backwards sort for stack order appending DOM elements
+                    return moment(a.startDate, 'MM/DD/YYYY h:mm:ss a').isBefore(moment(b.startDate, 'MM/DD/YYYY h:mm:ss a'));
                 })
                 if(this.scheduleList.length > 1){
-                    schedule.renderSubRow();
+                    this.scheduleList.forEach(function(el, i, ary){
+                        if(i &lt; ary.length-1){
+                            el.renderSubRow();
+                        }
+                    })
                     jQuery(this.ticketTypeRowDOM).find('td:first-child').attr('rowspan', this.scheduleList.length);
                 }
                 console.log('sorted list:', this.scheduleList);
-            }
-            this.removeFromSchedule = function(scheduleId){
             }
         }
 
@@ -651,20 +656,20 @@
             this.price = +price;
             this.scheduleRowDOM = null;
             this.renderSubRow = function(){
-                if(this.scheduleRowDOM == null){
-                    this.scheduleRowDOM = jQuery('#row-sched-template').clone().insertAfter('.row-' + this.ticketId)
-                        .removeAttr('id', 'row-sched-template')
-                        .attr('class', 'sched-' + this.id)
-                        .data('date', this.startDate)
-                        .data('price', this.price)
+                if(this.scheduleRowDOM !== null){
+                    jQuery(this.scheduleRowDOM).remove();
                 }
-                // }
+                this.scheduleRowDOM = jQuery('#row-sched-template').clone().insertAfter('.row-' + this.ticketId)
+                    .removeAttr('id', 'row-sched-template')
+                    .attr('class', 'sched-' + this.id)
+                    .data('date', this.startDate)
+                    .data('price', this.price)
+
                 var parsedDate = moment(this.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a')
                 jQuery(this.scheduleRowDOM).find('.name').text(ticketAry[this.ticketId].name);
                 jQuery(this.scheduleRowDOM).find('.date').text(parsedDate);
                 jQuery(this.scheduleRowDOM).find('.price').text(this.price);
                 jQuery(this.scheduleRowDOM).find('.row-edit-button').attr('onclick', 'editSchedule(' + this.id + ')');
-                console.log(this.scheduleRowDOM);
                 jQuery(this.scheduleRowDOM).show();
             }
             this.cascadeBasePrice = function(price){
@@ -739,8 +744,6 @@
 
         var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
         var eventCartStartDate = moment('${eventcartitem.timeStart}', 'YYYY-MM-DD hh:mm:ss.S');
-        console.log(eventStart);
-        console.log('${eventcartitem.timeStart}')
         function initDateTimePickers(){
             jQuery("#timedisp").datetimepicker({
                 pickDate: false
@@ -759,13 +762,13 @@
                     sideBySide: true
                 });
 
-            jQuery('input[name="dateStartLocal"]')
+            jQuery('#scheduleStartDate')
                 .datetimepicker({
                     defaultDate: eventCartStartDate,
                     useSeconds: true,
                     sideBySide: true
                 });
-            jQuery('input[name="dateStartLocal"]').data('DateTimePicker').setMaxDate(eventStart);
+            jQuery('#scheduleStartDate').data('DateTimePicker').setMaxDate(eventStart);
 
             jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
             jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
@@ -884,51 +887,52 @@
 
                 // check duplicate dates in all current schedules for this ticket
                 var specifiedDate = moment(date, 'MM/DD/YYYY h:mm:ss a');
-                var schedules = ticket.scheduleList;
-
-                bestDate = schedules.length;
-                var bestDiff = -(new Date(0,0,0)).valueOf();
-                var currDiff = 0;
+                var schedules = ticket.scheduleList.reverse(); 
+                var latestValidSchedule = null;
 
                 for(var index in schedules){
-                    if(specifiedDate.isSame(moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a'), 'second')){
-                        alert('Price Change Date overlapped with ' + id + '. Please remove the ticket type or choose another date!');
-                        preventClose = true;
-                        break;
-                    }else{
-                        currDiff = moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a').subtract(specifiedDate).milliseconds();
-                        if(currDiff &lt; bestDiff){
-                            bestDate = index;
-                            bestDiff = currDiff;
-                            console.log('bestDiff is now: ', bestDiff);
+                    if(moment(schedules[index].startDate).isBefore(specifiedDate)){
+                        if(specifiedDate.isSame(moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a'), 'second')){
+                            alert('Price Change Date overlapped with ' + id + '. Please remove the ticket type or choose another date!');
+                            prevent = true;
+                            break;
+                        }else{
+                            latestValidSchedule = schedules[index];
                         }
-                        
-                    }
-                }
-
-                if(moment(schedules[bestDate], 'MM/DD/YYYY h:mm:ss a').isAfter(specifiedDate)){
-                    if(bestDate > 0){
-                        bestDate--;
-                    }
-                }
-                var closestSchedule = schedules[bestDate];
-                console.log('bestDate:', bestDate);
-                console.log('closestSchedule:', closestSchedule);
-                var closestTicketId = closestSchedule.ticketId;
-                var closestTicket = ticketAry[closestTicketId];
-                var updatedPrice = priceDelta;
-                if(changeType > 0){
-                    updatedPrice = +closestTicket.base + +priceDelta;
-                }else if(changeType &lt; 0){
-                    updatedPrice = +closestTicket.base - +priceDelta;
-                    if(updatedPrice &lt; 0){
-                        updatedPrice = 0;
                     }
                 }
 
                 if(!prevent){
-                    var schedule = new Schedule(scheduleAry.length, closestTicketId, date, updatedPrice);
-                    // schedule.renderTableRow();
+                    // if(moment(schedules[bestDate], 'MM/DD/YYYY h:mm:ss a').isAfter(specifiedDate)){
+                    //     console.log('reduce index?', schedules[bestDate], specifiedDate);
+                    //     if(bestDate > 0){
+                    //         bestDate--;
+                    //     }
+                    // }
+
+                    // var closestSchedule = schedules[bestDate];
+                    console.log('closest schedule:', latestValidSchedule);
+                    var closestTicketId = latestValidSchedule.ticketId;
+                    // var closestTicket = null;
+                    // for(var i in ticketAry){
+                    //     if(ticketAry[i].id == closestTicketId){
+                    //         closestTicket = ticketAry[i];
+                    //     }
+                    // }
+                    var updatedPrice = priceDelta;
+                    if(changeType > 0){
+                        console.log('need to calculate new price:', latestValidSchedule.price + +priceDelta);
+                        updatedPrice = latestValidSchedule.price + +priceDelta;
+                    }else if(changeType &lt; 0){
+                        updatedPrice = latestValidSchedule.price - +priceDelta;
+                        if(updatedPrice &lt; 0){
+                            updatedPrice = 0;
+                        }
+                    }
+
+                    // if date error, prevent user from adding 
+                    var schedule = new Schedule(scheduleAry.length, closestTicketId, specifiedDate, updatedPrice);
+
                     scheduleAry.push(schedule);
                     ticketAry[schedule.ticketId].addToSchedule(schedule);
                 }
@@ -966,6 +970,59 @@
 
         function removeSchedule(){
 
+        }
+
+        function saveTicketSettings(){
+            var postObjList = [];
+            var eci = { id: '${eventcartitem.id}' };
+
+            for(var i in ticketAry){
+                var schedules = ticketAry[i].scheduleList;
+                var postObj = new Object();
+                postObj.eventCartItem = eci;
+                postObj.categoryName = ticketAry[i].name;
+                console.log('loop through schedules:', schedules);
+                schedules.forEach(function(el, i, ary){
+                    postObj.price = el.price;
+                    console.log('double-check schedule element:', el)
+                    if( i &lt; ary.length-1 ){
+                        postObj.dateStartLocal = el.startDate.format('MM/DD/YYYY h:mm:ss a');
+                        postObj.dateEndLocal = ary[i+1].startDate.subtract(1,'s').format('MM/DD/YYYY h:mm:ss a');
+                    }
+                    if( i == ary.length-1 ){
+                        postObj.dateStartLocal = el.startDate.format('MM/DD/YYYY h:mm:ss a');
+                        postObj.dateEndLocal = moment('${eventitem.timeEndLocal}', 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+                    }
+                    postObjList.push(postObj);
+                })
+            }
+            
+            console.log(postObjList);
+            // jQuery.ajax({
+            //     url: "/bibs-server/eventitemspricechanges/jsonArray",
+            //     contentType: 'application/json',
+            //     type: 'DELETE',
+            //     dataType: 'json',
+            //     data: JSON.stringify(delList),
+            //     complete: function() {
+            //         var request = jQuery.ajax({
+            //             url: "/bibs-server/eventitemspricechanges/jsonArray",
+            //             contentType: 'application/json',
+            //             dataType: 'json',
+            //             type: 'POST',
+            //             data: JSON.stringify(postObjList),
+            //             statusCode: {
+            //                 200: function() {
+            //                     alert("There was an error while saving your price changes. Please try again!");
+            //                     onBack();
+            //                 },
+            //                 201:function(){
+            //                     onBack();
+            //                 }
+            //             }
+            //         });
+            //     }
+            // });
         }
 
         var sampledata = [
