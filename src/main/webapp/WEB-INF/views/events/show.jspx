@@ -567,7 +567,7 @@
 		                                <td>${item.type.racetype}</td>
 		                                <td>${item.type.distance}</td>
 		                                <td>${item.type.timeStartLocal}</td>
-		                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
+		                                <td><div class="ui small button" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">Enable</div></td>
 		                                <td>N/A</td>
 		                                <td>${item.athletes }</td>
 	                            	</tr>
@@ -707,6 +707,7 @@
             var dat = {};
             var error = true;
 			
+            var saveType = "eventTypes";
             var eventTypeUrl = "/bibs-server/eventtypes/";
             var ajaxType = 'POST';
 	
@@ -715,6 +716,14 @@
             var available = jQuery('input[name="available"]').val();
             var timeStartLocal = jQuery('input[name="timeStartLocal"]').val();
             var timeEndLocal = jQuery('input[name="timeEndLocal"]').val();
+            if( (currEventCartItemId != null &amp;&amp; currEventCartItemId != "") 
+            		|| (price != null &amp;&amp; price != "")
+            		|| (available != null &amp;&amp; available != "")
+            		|| (timeStartLocal != null &amp;&amp; timeStartLocal != "")
+            		|| (timeEndLocal != null &amp;&amp; timeEndLocal != "")) {
+            	saveType = "ticket";
+            }
+            	
             
             var typeName  = jQuery('input[name="typeName"]').val();
             var distance  = jQuery('input[name="distance"]').val();
@@ -727,7 +736,7 @@
             var lowbib = jQuery('#etype-lowbib').val();
             var highbib = jQuery('#etype-highbib').val();
 
-            var parseDate = moment('${event.timeStartLocal}');
+            var parseDate = moment('${event.timeStartLocal}', 'MM/DD/YYYY h:mm:ss a');
             var hour   = moment(startTime, "h:mm a").hour();
             var minute = moment(startTime, "h:mm a").minute();
 
@@ -764,34 +773,86 @@
                 console.log(error);
             }
             else{
-                dat.event = {};
-                dat.event.id = parseInt('${event.id}');
-
-                if( put || put === null){
-                    eventTypeUrl = "/bibs-server/eventtypes/" + currEventTypeId;
-                    ajaxType = 'PUT';
-                    if( put === null ){
-                        dat.event = null;
-                    }
-                }
-
-                dat.typeName = typeName;
-                dat.distance = distance + distType;
-                dat.timeStartLocal = parseDate;
-                dat.racetype = raceType;
-                if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
-                if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
-
-                jQuery('.post-event-type').prop('disabled', true);
-                jQuery.ajax({
-                    url: eventTypeUrl,
-                    type: ajaxType,
-                    contentType: "application/json",
-                    data: JSON.stringify(dat),
-                    complete: function(data) {
-                        window.location.reload();
-                    }
-                })
+            	if(saveType == "eventTypes") {	
+	                dat.event = {};
+	                dat.event.id = parseInt('${event.id}');
+	
+	                if( put || put === null){
+	                    eventTypeUrl = "/bibs-server/eventtypes/" + currEventTypeId;
+	                    ajaxType = 'PUT';
+	                    if( put === null ){
+	                        dat.event = null;
+	                    }
+	                }
+	
+	                dat.typeName = typeName;
+	                dat.distance = distance + distType;
+	                dat.timeStartLocal = parseDate;
+	                dat.racetype = raceType;
+	                if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
+	                if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
+	
+	                jQuery('.post-event-type').prop('disabled', true);
+	                jQuery.ajax({
+	                    url: eventTypeUrl,
+	                    type: ajaxType,
+	                    contentType: "application/json",
+	                    data: JSON.stringify(dat),
+	                    complete: function(data) {
+	                        window.location.reload();
+	                    }
+	                })
+	        		
+            	} else {
+            		dat.event = {};
+            		dat.event.id = parseInt('${event.id}');
+            		dat.type = "TICKET";
+            		dat.name = distance;
+            		dat.price = price;
+            		dat.timeStartLocal = parseDate;
+            		dat.timeEndLocal = timeEndLocal;
+            		if (available == null || available == "") {
+            			dat.available = 10000000;
+            		}
+            		
+            		var uploadUrl = "/bibs-server/eventitems/typeupdate"
+            		var uploadMethod = "POST"
+            		
+            		if(currEventCartItemId != null &amp;&amp; currEventCartItemId != "") {
+            			dat.id = currEventCartItemId;
+            			//uploadUrl = "/bibs-server/eventitems/ticketupdate"
+            			//uploadMethod = "PUT"
+            		}
+            			
+            		
+            		dat.eventType = {};
+            		if(currEventTypeId != null &amp;&amp; currEventTypeId != "") {
+            			dat.eventType.id = currEventTypeId;
+            		}
+     				dat.eventType.event = {};
+            		dat.eventType.event.id = parseInt('${event.id}');
+            		dat.eventType.typeName = typeName;
+            		dat.eventType.distance = distance + distType;
+            		dat.eventType.timeStartLocal = parseDate;
+            		dat.eventType.racetype = raceType;
+	                if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
+	                if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
+            		
+	                jQuery('.post-event-type').prop('disabled', true);
+	                jQuery.ajax({
+	                    url: uploadUrl,
+	                    type: uploadMethod,
+	                    contentType: "application/json",
+	                    data: JSON.stringify(dat),
+	                    complete: function(data) {
+	                    	if(data != null &amp;&amp; data.status) {
+	                    		alert(data.body)
+	                    		window.location = "/bibs-server/eventitems/" + data.status;
+	                    	}
+	                        window.location.reload();
+	                    }
+	                })
+            	}
             }
         }
 
@@ -898,8 +959,10 @@
         }
 
         var currEventTypeId;
+        var currEventCartItemId;
         function editEventType(typeName, type, dist, raceTime, id, ticketId, ticketAvail, ticketStart, ticketEnd, ticketPrice){
             currEventTypeId = id;
+            currEventCartItemId = ticketId;
             jQuery(".post-event-type").hide();
             jQuery(".put-event-type").show();
 			if(ticketId != null) {
