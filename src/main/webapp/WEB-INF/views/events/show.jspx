@@ -844,10 +844,15 @@
 	                    type: uploadMethod,
 	                    contentType: "application/json",
 	                    data: JSON.stringify(dat),
+	                    dataType: "json",
 	                    complete: function(data) {
-	                    	if(data != null &amp;&amp; data.status) {
-	                    		alert(data.body)
-	                    		window.location = "/bibs-server/eventitems/" + data.status;
+	                    	console.log("ResponseData");
+	                    	console.log(data)
+	                    	if(data != null &amp;&amp; data.responseJSON) {
+	                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status)
+	                    		console.log(window.location)
+	                    		jQuery('#addType').modal('hide');
+	                    		window.location.href = "/bibs-server/eventitems/" + data.responseJSON.status
 	                    	}
 	                        window.location.reload();
 	                    }
