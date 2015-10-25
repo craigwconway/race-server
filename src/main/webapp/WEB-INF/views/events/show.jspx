@@ -557,8 +557,8 @@
 		                                <td>${item.type.distance}</td>
 		                                <td>${item.type.timeStartLocal}</td>
 		                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
-		                                <td>15</td>
-		                                <td>0</td>
+		                                <td>${item.ticket.purchased }</td>
+		                                <td>${item.athletes }</td>
 		                            </tr>
 	                            </c:if>
 	                            <c:if test="${item.ticket == null }">
@@ -568,8 +568,8 @@
 		                                <td>${item.type.distance}</td>
 		                                <td>${item.type.timeStartLocal}</td>
 		                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
-		                                <td>15</td>
-		                                <td>0</td>
+		                                <td>N/A</td>
+		                                <td>${item.athletes }</td>
 	                            	</tr>
 	                            </c:if>
                             </c:forEach>
