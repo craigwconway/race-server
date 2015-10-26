@@ -8,6 +8,7 @@ import com.bibsmobile.model.UserProfile;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -56,8 +57,24 @@ public final class RegistrationsUtil {
         boolean lastNameGiven = (lastName != null && !lastName.isEmpty());
         boolean emailGiven = (email != null && !email.isEmpty());
         boolean invoiceIdGiven = (invoiceId != null && !invoiceId.isEmpty());
-        if (!(firstNameGiven || lastNameGiven || emailGiven || invoiceIdGiven))
-            return null;
+        if (!(firstNameGiven || lastNameGiven || emailGiven || invoiceIdGiven)) {
+            // get relevant carts for event
+            Set<Cart> carts = new HashSet<>();
+            List<EventCartItem> eventCartItems = EventCartItem.findEventCartItemsByEvent(event).getResultList();
+            if (!eventCartItems.isEmpty()) {
+            	List<CartItem> cartItems;
+            	if(refunded == true) {
+            		cartItems = CartItem.findRefundedCartItemsByEventCartItems(eventCartItems, true).getResultList();
+            	} else {
+            		cartItems = CartItem.findCompletedCartItemsByEventCartItems(eventCartItems, true).getResultList();
+            	}
+                 
+                for (CartItem cartItem : cartItems) {
+                    carts.add(cartItem.getCart());
+                }
+            }
+            return new ArrayList<Cart> (carts);
+        }
 
         // invoice ID parsing
         String stripeToken = null;
