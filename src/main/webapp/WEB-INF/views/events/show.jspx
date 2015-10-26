@@ -336,8 +336,8 @@
                                 <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
                             </div>
                         </div>
-                        <div class="ui teal button" id="reg-details-btn" onclick="regDetails()">Add Registration Details</div>
-                        <div id="reg-details-container" style="display:none;margin-top:20px">
+                        <div class="ui teal button" id="reg-details-btn" onclick="regDetails()">Show/Hide Registration Details</div>
+                        <div id="reg-details-container" style="display:true;margin-top:20px">
                             <h3 class="ui dividing header">Registration Details</h3>
                             <div class="eight wide required field">
                                 <label style="width:100%">Price</label>
