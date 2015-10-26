@@ -755,7 +755,6 @@
                 jQuery('#add-type-error').hide();
                 var name = jQuery('#addTypeForm input[name="categoryName"]').val();
                 var price = jQuery('#eci-base-price').val();
-                console.log('searching through tickets:', ticketAry);
                 if(ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
                     jQuery('#add-type-error').show();
                     jQuery('#add-type-success').hide();
@@ -764,7 +763,7 @@
                     jQuery('#add-type-error').hide();
                     jQuery('#add-type-success').show();
                     var ticket = new Ticket(ticketAry.length, name, price);
-                    var schedule = new Schedule(scheduleAry.length, ticket.id, eventCartStartDate, price, true);
+                    var schedule = new Schedule(scheduleAry.length, ticket.id, moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a'), price, true);
                     ticket.scheduleId = schedule.id;
 
                     ticket.render();
@@ -823,9 +822,15 @@
             currentScheduleIndex = scheduleId;
             currentTicketIndex = ticketId;
 
-            var scheduleList = ticketObjects[ticketId].scheduleList;
-            var schedule = scheduleList[scheduleId];
-            console.log('scheduleList:', ticketObjects[ticketId].scheduleList);
+            var schedule = scheduleObjects[scheduleId];
+            var ticket = ticketObjects[schedule.ticketId];
+            var scheduleList = ticket.scheduleList;
+            for(var i in scheduleList){
+                if(scheduleList[i].id == scheduleId){
+                    schedule = scheduleList[i];
+                }
+            }
+            
             console.log('edit schedule:', schedule);
             var dateObj = schedule.startDate;
             dateObj = moment(dateObj, 'MM/DD/YYYY h:mm:ss a');
@@ -888,7 +893,7 @@
                     }
 
                     // if date error, prevent user from adding 
-                    var schedule = new Schedule(scheduleAry.length, closestTicketId, specifiedDate, updatedPrice);
+                    var schedule = new Schedule(scheduleAry.length, closestTicketId, specifiedDate, updatedPrice, false);
 
                     scheduleObjects[scheduleAry.length] = schedule;
                     scheduleAry.push(schedule);
@@ -917,18 +922,32 @@
                 error = true;
                 return;
             }else{
-                var ticket = ticketObjects[currentTicketIndex];
-                var schedule = ticketObjects[currentTicketIndex].scheduleList[currentScheduleIndex];
-                ticketObjects[currentTicketIndex].scheduleList[currentScheduleIndex].update(date.format('MM/DD/YYYY h:mm:ss a'), price);
+                console.log('current ticket index:', currentTicketIndex);
+                console.log('current schedule index:', currentScheduleIndex);
+                console.log('current tickets:', ticketObjects);
+                console.log('current schedules:', scheduleObjects);
+                var schedule = scheduleObjects[currentScheduleIndex];
+                var ticket = ticketObjects[schedule.ticketId];
+                var scheduleList = ticket.scheduleList;
+                var index = null;
+                for(var i in scheduleList){
+                    if(scheduleList[i].id == currentScheduleIndex){
+                        schedule = scheduleList[i];
+                        index = i;
+                    }
+                }
+
+                ticketObjects[schedule.ticketId].scheduleList[index].update(date.format('MM/DD/YYYY h:mm:ss a'), price);
                 if(schedule.mainRow == true){
                     console.log('check ticket', ticket);
-                    ticketObjects[currentTicketIndex].update(ticket.name, schedule.price);
-                    ticket.renderTableRow();
+                    ticketObjects[schedule.ticketId].update(ticket.name, schedule.price);
+                    ticketObjects[schedule.ticketId].renderTableRow();
                 }else{
                     schedule.renderSubRow();
                 }
             }
 
+            renderScheduleGraph();
             closeModal();
         }
 
@@ -949,15 +968,16 @@
         function renderScheduleGraph(){
             var dataset = [];
 
-            for(var i in ticketAry){
+            console.log('graph data', ticketObjects);
+            for(var key in ticketObjects){
+                var ticket = ticketObjects[key];
+                console.log(ticket);
                 var ticketType = [];
-                var ticket = ticketAry[i];
                 graphLegend.push(ticket.name);
-                var schedules = ticket.scheduleList;
-                console.log('schedules', schedules);
+                var schedules = ticket.scheduleList.reverse();
                 var lastValue = null;
-                for(var index in schedules){
-                    var sched = schedules[index];
+                for(var i in schedules){
+                    var sched = schedules[i];
                     var obj = {};
                     obj.date = moment(sched.startDate, 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
                     obj.value = sched.price;
@@ -966,13 +986,14 @@
                 }
                 // add final date
                 var lastVal = {};
-                lastVal.date = eventCartEndDate;
+                lastVal.date = moment(eventCartEndDate, 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
                 lastVal.value = lastValue;
                 ticketType.push(lastVal);
 
                 dataset.push(ticketType);
             }
             
+            graphData.length = 0;
             graphData = dataset;
             console.log(dataset);
             initPriceScheduleVisualization();
