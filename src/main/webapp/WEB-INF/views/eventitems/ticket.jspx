@@ -371,6 +371,8 @@
                     </div>
 
                     <div class="pull-right">
+                    	<button class="ui red button" onClick="deleteItem(${eventcartitem.id})">Kill This</button>
+                    	<button class="ui red button" onClick="deleteItemAndType(${eventcartitem.id})">Kill Family</button>
                         <button class="ui green button" type="submit">Save</button>
                     </div>
                 </form>
@@ -1111,6 +1113,42 @@
 
         function onBack(){
             window.location="/bibs-server/eventitems?event=${event.id}";
+        }
+        
+        
+        function deleteItem(id){
+            if(confirm("Delete Product?")){
+                jQuery(".cat-"+id).remove();
+                sendDeleteItem(id);
+            }
+        }
+        function sendDeleteItem(id){ 
+            var request = jQuery.ajax({
+                url: "/bibs-server/eventitems/ticketremove/"+id,
+                type: "DELETE",
+                dataType: "json",
+                data: { "id": id },
+                complete: function() {
+                    onBack();
+                }
+            });
+        }
+        function deleteItemAndType(id){
+            if(confirm("Delete Product?")){
+                jQuery(".cat-"+id).remove();
+                sendDeleteItem(id);
+            }
+        }
+        function sendDeleteItemAndType(id){    
+            var request = jQuery.ajax({
+                url: "/bibs-server/eventitems/fullremove/"+id,
+                type: "DELETE",
+                dataType: "json",
+                data: { "id": id },
+                complete: function() {
+                    onBack();
+                }
+            });
         }
     </script>
 </div>
