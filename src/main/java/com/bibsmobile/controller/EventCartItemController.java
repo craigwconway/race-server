@@ -532,6 +532,7 @@ public class EventCartItemController {
         	eventCartItem.persist();
         } else {
         	System.out.println("Merging EventCartItem");
+        	if(eventCartItem.getAvailable() - eventCartItem.getPurchased() < 0) eventCartItem.setAvailable(0); 
             eventCartItem.merge();
         }
         return SpringJSONUtil.returnStatusMessage(eventCartItem.getId().toString(), HttpStatus.OK);

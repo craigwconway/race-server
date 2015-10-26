@@ -812,7 +812,9 @@
             		dat.timeStartLocal = parseDate;
             		dat.timeEndLocal = timeEndLocal;
             		if (available == null || available == "") {
-            			dat.available = 10000000;
+            			dat.available = new Number(10000000);
+            		} else {
+            			dat.available = new Number(available);
             		}
             		
             		var uploadUrl = "/bibs-server/eventitems/typeupdate"
