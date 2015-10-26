@@ -293,13 +293,27 @@
                             </div>
                         </div>
                         <div class="fields">
+                        	
                             <div class="twelve wide inline required field" style="margin: 0.5em 0em 0em">
+                            
                                 <label id="distance" style="width:100%">Distance</label>
                                 <input type="number" name="distance" placeholder="Distance" min="0"><!--  --></input>
                                 <div class="ui icon buttons" style="margin-left:10px">
                                     <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
                                     <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
                                     <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
+                                </div>
+                                <div class="ui horizontal divider" style="height: 10%">or</div>
+                                <div class="ui fluid search selection dropdown" id="distance-dropdown">
+                                    <input type="hidden" name="dist"><!--  --></input>
+                                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                    <div class="default text">Select Race Type</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="5k">5k</div>
+                                        <div class="item" data-value="10k">10k</div>
+                                        <div class="item" data-value="Half Marathon">Half Marathon</div>
+                                        <div class="item" data-value="Marathon">Marathon</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -551,7 +565,7 @@
                         <tbody>
                             <c:forEach var="item" items="${metatype}">
 	                            <c:if test="${item.ticket != null }">
-		                            <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', '${item.ticket.id}', '${item.ticket.available}', '${item.ticket.timeStartLocal}', '${item.ticket.timeEndLocal}', '${item.ticket.price}')">    
+		                            <tr class="eventtype-item" onclick="redirectTicket(${item.ticket.id})">    
 		                                <td>${item.type.typeName}</td>
 		                                <td>${item.type.racetype}</td>
 		                                <td>${item.type.distance}</td>
@@ -1137,6 +1151,9 @@
                 });
             }
         }
+        function redirectTicket(id){
+            window.location="/bibs-server/eventitems/" + id +"#info";
+        }
         function redirectReport(){
             window.location="/bibs-server/registrations/reports?event=${event.id}";
         }
@@ -1232,7 +1249,7 @@
         }
 
         function redirectEventTypeDetail(id){
-            window.location="/bibs-server/eventitems/"+id;
+            window.location="/bibs-server/eventitems/"+id +"#schedule";
         }
 
         function redirectDropboxImport(){

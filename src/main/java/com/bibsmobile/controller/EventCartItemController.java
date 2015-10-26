@@ -257,6 +257,42 @@ public class EventCartItemController {
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/fullremove/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deletefully(@PathVariable("id") Long id) {
+        EventCartItem eventCartItem = EventCartItem.findEventCartItem(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (eventCartItem == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        EventType type = eventCartItem.getEventType();
+        if (type != null) {
+        	type.setEvent(null);
+        	type.merge();
+        }
+        eventCartItem.setEventType(null);
+        eventCartItem.setEvent(null);
+        eventCartItem.merge();
+        //eventCartItem.remove();
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/ticketremove/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
+    public ResponseEntity<String> deleteticket(@PathVariable("id") Long id) {
+        EventCartItem eventCartItem = EventCartItem.findEventCartItem(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        if (eventCartItem == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        eventCartItem.setEventType(null);
+        eventCartItem.setEvent(null);
+        eventCartItem.merge();
+        //eventCartItem.remove();
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }    
+    
+    
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid EventCartItem eventCartItem, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
