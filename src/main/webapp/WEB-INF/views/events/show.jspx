@@ -297,23 +297,32 @@
                             <div class="twelve wide inline required field" style="margin: 0.5em 0em 0em">
                             
                                 <label id="distance" style="width:100%">Distance</label>
+                                <div class="ui fluid search selection dropdown" id="distance-dropdown">
+                                    <input type="hidden" name="dist"><!--  --></input>
+                                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                    <div class="default text">Select Distance</div>
+                                    <div class="menu">
+                                    	<div class="item" data-value="N/A">N/A</div>
+                                        <div class="item" data-value="5k">5k</div>
+                                        <div class="item" data-value="8k">8k</div>
+                                        <div class="item" data-value="10k">10k</div>
+                                        <div class="item" data-value="12k">12k</div>
+                                        <div class="item" data-value="15k">15k</div>
+                                        <div class="item" data-value="Half Marathon">Half Marathon</div>
+                                        <div class="item" data-value="Marathon">Marathon</div>
+                                        <div class="item" data-value="Sprint">Spring</div>
+                                        <div class="item" data-value="Olympic">Olympic</div>
+                                        <div class="item" data-value="Half">Half (Triathlon)</div>
+                                        <div class="item" data-value="Full">Full (Triathlon)</div>
+                                        <div class="item" data-value="Custom">Custom</div>
+                                    </div>
+                                </div>
+								<div class="ui horizontal divider" style="height: 10%">or</div>       
                                 <input type="number" name="distance" placeholder="Distance" min="0"><!--  --></input>
                                 <div class="ui icon buttons" style="margin-left:10px">
                                     <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
                                     <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
                                     <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
-                                </div>
-                                <div class="ui horizontal divider" style="height: 10%">or</div>
-                                <div class="ui fluid search selection dropdown" id="distance-dropdown">
-                                    <input type="hidden" name="dist"><!--  --></input>
-                                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                    <div class="default text">Select Race Type</div>
-                                    <div class="menu">
-                                        <div class="item" data-value="5k">5k</div>
-                                        <div class="item" data-value="10k">10k</div>
-                                        <div class="item" data-value="Half Marathon">Half Marathon</div>
-                                        <div class="item" data-value="Marathon">Marathon</div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
