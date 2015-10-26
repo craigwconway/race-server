@@ -4,6 +4,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventCartItemGenderEnum;
 import com.bibsmobile.model.EventCartItemPriceChange;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
@@ -25,11 +26,17 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Arrays;
 import java.util.List;
 
@@ -132,6 +139,82 @@ public class EventCartItemPriceChangeController {
         return new ResponseEntity<>(EventCartItemPriceChange.toJsonArray(result), headers, HttpStatus.OK);
     }
 
+    
+    @RequestMapping(value = "/jsonArraySmart", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<String> createSmartFromJsonArray(@RequestBody String json) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        UserProfile currentUser = UserProfileUtil.getLoggedInUserProfile();
+        
+        Map <String, LinkedList<EventCartItemPriceChange>> categories = new HashMap <String,LinkedList<EventCartItemPriceChange>>();
+        Set<Long> cartItemIds = new HashSet<Long>();
+        for (EventCartItemPriceChange eventCartItemPriceChange : EventCartItemPriceChange.fromJsonArrayToEventCartItemPriceChanges(json)) {
+            long id = eventCartItemPriceChange.getEventCartItem().getId();
+            cartItemIds.add(id);
+            EventCartItem eci = EventCartItem.findEventCartItem(id);
+            Event event = eci.getEvent();
+            if (!PermissionsUtil.isEventAdmin(currentUser, event)) {
+                return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+            }
+            if (eci != null) {
+                eventCartItemPriceChange.setEventCartItem(eci);
+            } else {
+                return new ResponseEntity<>(headers, HttpStatus.UNPROCESSABLE_ENTITY);
+            }
+            try {
+            	//MM/DD/YYYY HH:mm:ss.SSS a
+                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+                format.setTimeZone(event.getTimezone());
+                Calendar timeStart = new GregorianCalendar();
+                //Calendar timeEnd = new GregorianCalendar();
+    			timeStart.setTime(format.parse(eventCartItemPriceChange.getDateStartLocal()));
+    			//timeEnd.setTime(new Date(format.parse(eventCartItemPriceChange.getDateEndLocal()).getTime() + 999));
+    			eventCartItemPriceChange.setStartDate(timeStart.getTime());
+    			//eventCartItemPriceChange.setEndDate(timeEnd.getTime());
+    			System.out.println("Updating price changes for Event " + event.getId() + " - " + event.getName() + " Item: " + eci.getId() + " - " + eci.getName() + 
+    					" Category: "+ eventCartItemPriceChange.getCategoryName() + " Price: " + eventCartItemPriceChange.getPrice() +
+    					". Setting start time " + eventCartItemPriceChange.getDateStartLocal() + "(" + eventCartItemPriceChange.getStartDate() + ").");
+    		} catch (ParseException e) {
+    			// TODO Auto-generated catch block
+    			log.error("Cannot process price change - error processing time");
+    			e.printStackTrace();
+    			return new ResponseEntity<> (headers, HttpStatus.UNPROCESSABLE_ENTITY);
+    		}
+            LinkedList <EventCartItemPriceChange> category = categories.get(eventCartItemPriceChange.getCategoryName());
+            if(category == null) category = new LinkedList<EventCartItemPriceChange>();
+            category.add(eventCartItemPriceChange);
+            categories.put(eventCartItemPriceChange.getCategoryName(), category);
+        }
+        if(cartItemIds.size() > 1) {
+        	System.out.println("too many eventitems modified");
+        	return new ResponseEntity<> (headers, HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        //LinkedList <EventCartItemPriceChange> persistList = new LinkedList <EventCartItemPriceChange>();
+        for(LinkedList<EventCartItemPriceChange> category : categories.values()) {
+            Collections.sort(category, new Comparator<EventCartItemPriceChange>() { public int compare(EventCartItemPriceChange t1, EventCartItemPriceChange t2) { return t1.getStartDate().compareTo(t2.getStartDate());}});
+            //ListIterator<EventCartItemPriceChange> iterator = category.listIterator();
+            //while(iterator.hasNext()) {
+            //	/iterator.next();
+            //}
+            LinkedList <EventCartItemPriceChange> categoryList = new LinkedList <EventCartItemPriceChange>();
+            for(EventCartItemPriceChange priceChange : category) {
+            	if(!categoryList.isEmpty()) {
+            		categoryList.getLast().setDateEndLocal(priceChange.getDateStartLocal());
+            		categoryList.getLast().setEndDate(priceChange.getStartDate());
+            	}
+            	categoryList.add(priceChange);
+            }
+            categoryList.getLast().setDateEndLocal(category.getLast().getEventCartItem().getTimeEndLocal());
+    		categoryList.getLast().setEndDate(category.getLast().getEventCartItem().getTimeEnd());
+    		for(EventCartItemPriceChange pc : categoryList) {
+    			pc.persist();
+    		}
+        }
+        
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+    }
+    
+    
     @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
         HttpHeaders headers = new HttpHeaders();
