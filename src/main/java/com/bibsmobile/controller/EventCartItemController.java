@@ -394,7 +394,7 @@ public class EventCartItemController {
     }    
 
     /**
-     * @api {put} /eventitems/typeupdate Update
+     * @api {post} /eventitems/typeupdate Update
      * @apiGroup eventitems
      * @apiName updateEventItemWithType
      * @apiParam {Number} id ID of eventitem
@@ -495,6 +495,7 @@ public class EventCartItemController {
                 Calendar timeStart = new GregorianCalendar();
     			timeStart.setTime(format.parse(eventType.getTimeStartLocal()));
     			trueEventType.setStartTime(timeStart.getTime());
+    			trueEventType.setTimeStartLocal(eventType.getTimeStartLocal());
     		} catch (ParseException e) {
     			// TODO Auto-generated catch block
     			e.printStackTrace();

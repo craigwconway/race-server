@@ -1058,6 +1058,10 @@ public class EventController {
 			Set<EventType> eventTypes = trueEvent.getEventTypes();
 			for(EventType eventType : eventTypes) {
 				eventType.setStartTime(format.parse(eventType.getTimeStartLocal()));
+				if(eventType.getStartTime().before( event.getTimeStart())) {
+					eventType.setTimeStartLocal(event.getTimeStartLocal());
+					eventType.setStartTime(format.parse(event.getTimeStartLocal()));
+				}
 				eventType.merge();
 			}
 			for(EventCartItem eventCartItem : EventCartItem.findEventCartItemsByEvent(trueEvent).getResultList()) {
