@@ -448,9 +448,9 @@
                         </c:forEach>
                         </c:if>
                         <c:if test="${empty eventitempricechanges}">
-                            <div class="item" data-id="${eventcartitem.id}" data-category="${eventcartitem.categoryName}">
+                            <div class="item" data-id="${eventcartitem.id}" data-category="General Admission">
                                 <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
-                                <span class="sched sched-date">${eventcartitem.dateStartLocal}</span> - <span class="sched sched-name">General Admission</span> $<span class="sched sched-price">${eventcartitem.price}</span>.
+                                <span class="sched sched-date">${eventcartitem.timeStartLocal}</span> - <span class="sched sched-name">General Admission</span> $<span class="sched sched-price">${eventcartitem.price}</span>.
                             </div>
                         </c:if>
                     </div>
@@ -771,21 +771,23 @@
                 var ticketDOM = this;
                 var name = jQuery(this).data('category');
                 var price = jQuery(this).find('.sched-price').text();
-                var startDate = jQuery(this).find('.sched-date').text();
+                var schedDate = jQuery(this).find('.sched-date').text();
+                schedDate = moment(schedDate, 'MM/DD/YYYY h:mm:ss a');
+
                 var schedule = null;
                 // check to make sure the names aren't duplicates
                 if(!ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
                     var ticket = new Ticket(ticketAry.length, name, price);
                     ticketObjects[ticketAry.length] = ticket;
                     ticketAry.push(ticket);
-                    schedule = new Schedule(scheduleAry.length, ticket.id, startDate, price, true);
+                    schedule = new Schedule(scheduleAry.length, ticket.id, schedDate, price, true);
                     scheduleObjects[scheduleAry.length] = schedule;
                     scheduleAry.push(schedule);
                 }else{
                     // find matching name in ticketAry, get its id = ticket.id
                     for( var i in ticketAry ){
                         if(ticketAry[i].name == name){
-                            schedule = new Schedule(scheduleAry.length, i, startDate, price, false);
+                            schedule = new Schedule(scheduleAry.length, i, schedDate, price, false);
                             scheduleObjects[scheduleAry.length] = schedule;
                             scheduleAry.push(schedule);
                             break;
