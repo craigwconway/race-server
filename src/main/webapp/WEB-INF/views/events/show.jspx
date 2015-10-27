@@ -881,8 +881,8 @@
 	                }
             		dat.eventType.timeStartLocal = parseDate;
             		dat.eventType.racetype = raceType;
-	                if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
-	                if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
+	                if( lowbib  !== "" ){    dat.eventType.lowBib  = parseFloat(lowbib);     }
+	                if( highbib !== "" ){    dat.eventType.highBib = parseFloat(highbib);    }
             		
 	                jQuery('.post-event-type').prop('disabled', true);
 	                jQuery.ajax({
