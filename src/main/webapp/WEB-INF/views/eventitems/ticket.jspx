@@ -1128,14 +1128,14 @@
 
             jQuery('#scheduleStartDate')
                 .datetimepicker({
-                    defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
+                    // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
                     useSeconds: true,
                     sideBySide: true
                 });
 
             jQuery('#editPriceSchedulePicker')
                 .datetimepicker({
-                    defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
+                    // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
                     useSeconds: true,
                     sideBySide: true
                 });
