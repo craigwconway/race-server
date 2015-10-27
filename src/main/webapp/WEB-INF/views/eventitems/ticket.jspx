@@ -1067,7 +1067,7 @@
                 }
                 // add final date
                 var lastVal = {};
-                lastVal.date = moment(eventCartEndDate, 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
+                lastVal.date = moment('${eventcartitem.timeEndLocal}', 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
                 lastVal.value = lastValue;
                 ticketType.push(lastVal);
 
