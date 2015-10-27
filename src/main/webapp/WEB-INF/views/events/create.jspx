@@ -24,10 +24,6 @@
             line-height: 27px;
             color: #292929;
         }
-        .form-fields>input, #demo>input{
-            width: 400px;
-            margin: 5px auto; 
-        }
         #timezone-search{
             margin: 0 auto;
             width: 400px;
@@ -58,6 +54,20 @@
         .ui.search > .results .result .title{
             font-family: inherit;
             font-weight: normal;
+        }
+        label{
+            width: 100%;
+            text-align:left;
+        }
+        .ui.form .field > label{
+            margin: 0;
+        }
+        .ui.form .fields .field, .ui.form .field{
+            margin: 0em 0em 0.5em;
+        }
+        .ui.textarea, .ui.form textarea{
+            height: 4em;
+            min-height: 4em;
         }
         .submit{
             margin: 0 auto;
@@ -97,104 +107,147 @@
             <div style="display: none;">
                 <input type="text" id="PreventChromeAutocomplete" name="PreventChromeAutocomplete" autocomplete="address-level4" />
             </div>
-            <div class="form-fields">
-                <input  type="text" name="name"
-                        class="form-control" autocomplete="off"
-                        placeholder="Event name"
-                        value="${event.name}"
-                        data-parsley-error-message="Please enter an event name."
-                        data-parsley-required="required"></input>
-                <textarea  name="description" style="width:400px;margin:0 auto"
-                        class="form-control" rows="2"
-                        placeholder="Event description"><!-- --></textarea>
-                <input  type="text" name="timeStartLocal"
-                        class="form-control" autocomplete="off"
-                        id="eventDatepicker"
-                        placeholder="Event date"
-                        data-provide="datepicker"
-                        data-date-format="MM/DD/YYYY hh:mm:ss a"
-                        data-parsley-error-message="Please enter a date for this event."></input>
-                <input  type="text" name="organization"
-                        class="form-control" autocomplete="off"
-                        placeholder="Organization"
-                        value="${event.organization}"></input>
-                <input  type="text" name="charity"
-                        class="form-control" autocomplete="off"
-                        placeholder="Charity Name"
-                        value="${event.charity}"></input>
-                <c:if test='${(!build.rfid)}'>
-                    <input  type="url" name="website"
-                            class="form-control" autocomplete="off"
-                            id="mask-website"
-                            placeholder="Website"
-                            value="${event.website}"
-                            data-parsley-type="url"
-                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"
+            <div class="ui small form" style="width: 400px; margin: 0 auto">
+                <div class="required field">
+                    <label>Event Name</label>
+                    <input  type="text" name="name"
+                            autocomplete="off"
+                            placeholder="i.e. Bibs Halloween Race Series"
+                            value="${event.name}"
+                            data-parsley-error-message="Please enter an event name."
                             data-parsley-required="required"></input>
-                    <input  type="text" name="phone"
-                        class="form-control" autocomplete="off"
-                        id="mask-phone"
-                        placeholder="Phone Number"
-                        value="${event.phone}"
-                        data-parsley-length="[10,18]"
-                        data-parsley-error-message="Please enter a valid phone number."
-                        data-parsley-required="required"></input>
-                </c:if>
-                <c:if test='${(build.rfid)}'>
-                    <input  type="url" name="website"
-                            class="form-control" autocomplete="off"
-                            id="mask-website"
-                            placeholder="Website"
-                            value="${event.website}"
-                            data-parsley-type="url"
-                            data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
-                    <input  type="text" name="phone"
-                        class="form-control" autocomplete="off"
-                        id="mask-phone"
-                        placeholder="Phone Number"
-                        value="${event.phone}"
-                        data-parsley-length="[10,18]"
-                        data-parsley-error-message="Please enter a valid phone number."></input>
-                </c:if>
-            </div>
-    		<div id="demo">
-                <input  id="geoaddress"
-                        type="text" name="address"
-                        class="form-control" autocomplete="off"
-                        placeholder="Address or Location"
-                        value="${event.address}"></input>
-                <input  id="geocity"
-                        type="text" name="city"
-                        class="form-control" autocomplete="off"
-                        placeholder="City"
-                        value="${event.city}"></input>
-                <input  id="geostate"
-                        type="text" name="state"
-                        class="form-control" autocomplete="off"
-                        placeholder="State"
-                        value="${event.state}"></input>
-                <input  id="geocountry" type="text" name="country"
-                        class="form-control" autocomplete="off"
-                        placeholder="Country"
-                        value="${event.country}"></input>
-                <div style="display:none">
-                    <label for="eventZip">
-                    <input  id="geozip" type="text" name="zip" placeholder="zip" autocomplete="off"
-                            value="${event.zip}"></input>
-                    </label>
-                    <label for="eventLat">
-                    <input  id="geolat" type="text" name="latitude" placeholder="latitude" autocomplete="off"
-                            value="${event.latitude}"></input>
-                    </label>
-                    <label for="eventLong">
-                    <input  id="geolong" type="text" name="longitude" placeholder="longitude" autocomplete="off"
-                            value="${event.longitude}"></input>
-                    </label>
                 </div>
-            </div>
-            <div class="ui search" id="timezone-search">
-                <input class="prompt" type="text" name="timezone" autocomplete="off" placeholder="Timezone"><!--  --></input>
-                <div class="results"><!--  --></div>
+                <div class="field">
+                    <label>Event Description</label>
+                    <textarea  name="description" style="width:400px;margin:0 auto"
+                        rows="2"
+                        placeholder="Event description"><!-- --></textarea>
+                </div>
+                <div class="required field">
+                    <label>Event Date</label>
+                    <input  type="text" name="timeStartLocal"
+                            autocomplete="off"
+                            id="eventDatepicker"
+                            placeholder="i.e. 10/31/2019 08:00:00 am"
+                            data-provide="datepicker"
+                            data-date-format="MM/DD/YYYY hh:mm:ss a"
+                            data-parsley-error-message="Please enter a date for this event."></input>
+                </div>
+                <c:if test='${(!build.rfid)}'>
+                    <div class="required field">
+                        <label>Website</label>
+                            <input  type="url" name="website"
+                                autocomplete="off"
+                                id="mask-website"
+                                placeholder="i.e. https://mybibs.co"
+                                value="${event.website}"
+                                data-parsley-type="url"
+                                data-parsley-error-message="Please enter a valid website starting with http:// or https://"
+                                data-parsley-required="required"></input>
+                    </div>
+                    <div class="required field">
+                        <label>Contact Phone Number</label>
+                            <input  type="text" name="phone"
+                                autocomplete="off"
+                                id="mask-phone"
+                                placeholder="i.e. 123-123-1234"
+                                value="${event.phone}"
+                                data-parsley-length="[10,18]"
+                                data-parsley-error-message="Please enter a valid phone number."
+                                data-parsley-required="required"></input>
+                    </div>
+                </c:if>
+                <div id="demo">
+                    <div class="required field">
+                        <label>Address</label>
+                        <input  id="geoaddress"
+                                type="text" name="address"
+                                autocomplete="off"
+                                placeholder="Address or Location"
+                                value="${event.address}"></input>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <input  id="geocity"
+                                    type="text" name="city"
+                                    autocomplete="off"
+                                    placeholder="City"
+                                    value="${event.city}"></input>
+                        </div>
+                        <div class="field">
+                            <input  id="geostate"
+                                    type="text" name="state"
+                                    autocomplete="off"
+                                    placeholder="State"
+                                    value="${event.state}"></input>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <input  id="geocountry" type="text" name="country"
+                                autocomplete="off"
+                                placeholder="Country"
+                                value="${event.country}"
+                                disabled="disabled"></input>
+                    </div>
+                    <div style="display:none">
+                        <label for="eventZip">
+                        <input  id="geozip" type="text" name="zip" placeholder="zip" autocomplete="off"
+                                value="${event.zip}"></input>
+                        </label>
+                        <label for="eventLat">
+                        <input  id="geolat" type="text" name="latitude" placeholder="latitude" autocomplete="off"
+                                value="${event.latitude}"></input>
+                        </label>
+                        <label for="eventLong">
+                        <input  id="geolong" type="text" name="longitude" placeholder="longitude" autocomplete="off"
+                                value="${event.longitude}"></input>
+                        </label>
+                    </div>
+                    <div class="field">
+                        <div class="ui search" id="timezone-search">
+                            <input class="prompt" type="text" name="timezone" autocomplete="off" placeholder="Timezone" disabled="disabled"><!--  --></input>
+                            <div class="results"><!--  --></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        <label>Organization Name</label>
+                        <input  type="text" name="organization"
+                                autocomplete="off"
+                                placeholder="i.e. Bibs Inc."
+                                value="${event.organization}"></input>
+                    </div>
+                    <div class="field">
+                        <label>Charity Name</label>
+                        <input  type="text" name="charity"
+                                autocomplete="off"
+                                placeholder="Charity Name"
+                                value="${event.charity}"></input>
+                    </div>
+                </div>
+                <c:if test='${(build.rfid)}'>
+                    <div class="field">
+                        <label>Website</label>
+                        <input  type="url" name="website"
+                                autocomplete="off"
+                                id="mask-website"
+                                placeholder="Website"
+                                value="${event.website}"
+                                data-parsley-type="url"
+                                data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
+                        </div>
+                    <div class="field">
+                        <label>Contact Phone Number</label>
+                        <input  type="text" name="phone"
+                            autocomplete="off"
+                            id="mask-phone"
+                            placeholder="Phone Number"
+                            value="${event.phone}"
+                            data-parsley-length="[10,18]"
+                            data-parsley-error-message="Please enter a valid phone number."></input>
+                    </div>
+                </c:if>
             </div>
         </div>
     	<div style="display:none;">

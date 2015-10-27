@@ -239,11 +239,11 @@
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
-                <div class="active item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
+                <div class="active item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
+                <div class="item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="logistics-menu">
-                <form class="ui form" id="logisticsForm" style="width:582px;margin:0 auto;text-align:left">
+            <div class="ui bottom attached active tab segment" data-tab="logistics-menu">
+                <form class="ui form" id="logisticsForm" style="width:400px;margin:0 auto;text-align:left">
                     <h3 class="ui header" style="width: 100%">
                         <div class="content" style="margin-top:5px">
                             Logistics Settings
@@ -390,7 +390,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached active tab segment" id="schedule-tab" data-tab="schedule-menu">
+            <div class="ui bottom attached tab segment" id="schedule-tab" data-tab="schedule-menu">
                 <div class="ui yellow message" id="notify">
                     <i class="close fa fa-times"><!--  --></i>
                     <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg"><b>Ticket Types</b> will create purchasable tickets for people registering for ${eventtype.typeName}.<br/>You can also add <b>Price Schedules</b> to modify the price of a Ticket Type for a duration of time.<br/>For example, you can have a Ticket Type titled <em>"Youth Discount (ID Required)"</em>,<br/> where the Price Schedule will be cheaper than General Admission by <em>$10</em> for <em>two months</em>.</span>
@@ -683,6 +683,9 @@
             this.update = function(name, base){
                 this.name = name;
                 this.base = base;
+                if(this.scheduleList.length == 1){
+                    this.scheduleList[0].price = this.base;
+                }
             }
             this.updateStartDate = function(date){
                 jQuery('#schedule-table tbody .ticket-'+this.id+'.main-'+this.id).find('.date').text(date);
@@ -748,6 +751,9 @@
 
             initTicketList();
         }
+        window.onbeforeunload = function() {
+            return "If you have unsaved changes in either tabs on this page, your changes will be lost.";
+        }
 
         function initUIElements(){
             jQuery('.menu .item').tab();
@@ -812,7 +818,6 @@
                 }
             })
             
-            console.log('init complete:', ticketObjects);
             if(ticketAry.length > 0){
                 renderScheduleGraph();
             }
@@ -830,6 +835,7 @@
                 }else{
                     jQuery('#add-type-error').hide();
                     jQuery('#add-type-success').show();
+                    jQuery("#add-type-success").delay(5000).fadeOut('slow');
                     var ticket = new Ticket(ticketAry.length, name, price);
                     var schedule = new Schedule(scheduleAry.length, ticket.id, moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a'), price);
                     ticket.scheduleId = schedule.id;
@@ -841,6 +847,8 @@
                     scheduleObjects[scheduleAry.length] = schedule;
                     ticketAry.push(ticket);
                     scheduleAry.push(schedule);
+                    
+                    jQuery('#addTypeForm input[name="categoryName"]').val('').focus();
                     jQuery('#notify-save').show();
                 }
                 console.log('tickets:', ticketObjects)
@@ -857,9 +865,9 @@
             var ticket = null;
 
             ticket = ticketObjects[id];
-            console.log('current ticketAry', ticketAry);
-            console.log('current ticketObjects', ticketObjects);
-            console.log('current ticket', ticket);
+            // console.log('current ticketAry', ticketAry);
+            // console.log('current ticketObjects', ticketObjects);
+            // console.log('current ticket', ticket);
 
             jQuery('#editTicketTypeModal input[name="categoryName"]').val(ticket.name);
             jQuery('#editTicketTypeModal input[name="price"]').val(ticket.base);
@@ -871,9 +879,10 @@
             var price = jQuery('#editTicketTypeModal input[name="price"]').val();
             ticketAry[currentTicketIndex].update(name, price);
             ticketObjects[currentTicketIndex].update(name, price);
-            ticketAry[currentTicketIndex].render();
-            renderScheduleGraph();
+            ticketObjects[currentTicketIndex].render();
+            ticketObjects[currentTicketIndex].renderTable();
 
+            renderScheduleGraph();
             closeModal();
         }
 
@@ -881,7 +890,6 @@
             ticketObjects[currentTicketIndex].destroy();
             ticketAry.splice(currentTicketIndex, 1);
             delete ticketObjects[currentTicketIndex];
-            console.log(ticketAry);
             if(Object.keys(ticketObjects).length > 0){
                 renderScheduleGraph();
             }else{
@@ -1024,9 +1032,17 @@
         function saveTicketType(){
             var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
             var price = jQuery('#editTicketTypeModal input[name="price"]').val();
-            ticketAry[currentTicketIndex].update(name, price);
-            ticketAry[currentTicketIndex].render();
+            ticketObjects[currentTicketIndex].update(name, +price);
+            ticketAry[currentTicketIndex].update(name, +price);
+            ticketObjects[currentTicketIndex].render();
+            ticketObjects[currentTicketIndex].renderTable();
 
+            if(ticketAry.length > 0){
+                renderScheduleGraph();                
+            }
+
+            currentTicketIndex = null;
+            currentScheduleIndex = null;
             closeModal();
         }
 
@@ -1046,7 +1062,7 @@
                 currentTicketIndex = schedule.ticketId;
                 removeTicketType();
             }else{
-                ticketAry[currentTicketIndex].scheduleList[index].destroy();
+                ticketAry[currentTicketIndex].destroy();
             }
 
             if(ticketAry.length > 0){
@@ -1135,20 +1151,17 @@
                 postObjList.push(postObj);
                 alert('You haven\'t indicated any Ticket Types. We created for you one default Ticket Type called "General Admission".');
             }
-            console.log(postObjList);
             jQuery.ajax({
                 url: "/bibs-server/eventitemspricechanges/jsonArraySmart",
                 contentType: 'application/json',
                 type: 'POST',
                 dataType: 'json',
                 data: JSON.stringify(postObjList),
-                statsCode: {
-                    422: function(){
-                        alert('There was an error in saving your ticket types and price schedule!')
-                    },
-                    201: function(){
-                        alert('Your changes have been saved!');
-                    }
+                complete: function(data) {
+                    console.log('finished');
+                    alert('Your changes have been saved!');
+                    jQuery('#saveTTPC').prop('disabled', true).text('Saving...');
+                    window.location.reload();
                 }
             });
         }
@@ -1160,7 +1173,7 @@
 
             MG.data_graphic({
                 title: "Price Schedules Graph",
-                description: "All ticket types' price schedules can be viewed here.",
+                description: "All ticket types' price schedules can be viewed here. The last date reflects the registratin window's closing date.",
                 data: graphData,
                 width: 600,
                 height: 200,
@@ -1178,7 +1191,6 @@
         var eventCartEndDate = moment('${eventcartitem.timeEndLocal}', 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
         eventStart = moment(eventStart, 'MM/DD/YYYY h:mm:ss a');
         eventCartStartDate = moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a');
-        console.log(eventCartStartDate, '${eventcartitem.timeEndLocal}', eventCartEndDate);
         function initDateTimePickers(){
             jQuery("#timedisp").datetimepicker({
                 pickDate: false
@@ -1186,14 +1198,14 @@
 
             jQuery('#scheduleStartDate')
                 .datetimepicker({
-                    defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
+                    // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
                     useSeconds: true,
                     sideBySide: true
                 });
 
             jQuery('#editPriceSchedulePicker')
                 .datetimepicker({
-                    defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
+                    // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
                     useSeconds: true,
                     sideBySide: true
                 });
@@ -1232,9 +1244,10 @@
         }
 
         function onBack(){
-            window.location="/bibs-server/eventitems?event=${event.id}";
+            // if(confirm("If you have unsaved changes in either tabs on this page, your changes will be lost. Do you still want to go back?")){
+                window.location="/bibs-server/eventitems?event=${event.id}";
+            // }
         }
-        
         
         function deleteItem(id){
             if(confirm("Delete Product?")){
