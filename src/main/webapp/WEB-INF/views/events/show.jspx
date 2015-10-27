@@ -1162,7 +1162,7 @@
                 features: [{
                     type: 'Feature',
                     properties: {
-                        title: '${event.address}',
+                        title: decodeURI("${event.address}"),
                         'marker-color': '#00dffc',
                         'marker-symbol': 'star'
                     },

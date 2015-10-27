@@ -186,8 +186,7 @@
                         <input  id="geocountry" type="text" name="country"
                                 autocomplete="off"
                                 placeholder="Country"
-                                value="${event.country}"
-                                disabled="disabled"></input>
+                                value="${event.country}"></input>
                     </div>
                     <div style="display:none">
                         <label for="eventZip">
@@ -205,7 +204,7 @@
                     </div>
                     <div class="field">
                         <div class="ui search" id="timezone-search">
-                            <input class="prompt" type="text" name="timezone" autocomplete="off" placeholder="Timezone" disabled="disabled"><!--  --></input>
+                            <input class="prompt" type="text" name="timezone" autocomplete="off" placeholder="Timezone"><!--  --></input>
                             <div class="results"><!--  --></div>
                         </div>
                     </div>
@@ -389,15 +388,25 @@
         jQuery('#proceed').click(function(){
             jQuery("#event").submit(function(e) {
                 e.preventDefault();
-
                 if( addr == "" ){
                     jQuery('#geoaddress').val(misc);
                 }else{
                     jQuery('#geoaddress').val(addr);
                 }
+
+                if( addr == "" ){
+                    var safeAddr = encodeURIComponent(misc);
+                    jQuery('#geoaddress').val(safeAddr);
+                }else{
+                    var safeAddr = encodeURIComponent(addr);
+                    jQuery('#geoaddress').val(safeAddr);
+                    console.log('address should be: ' + addr);
+                }
+
                 jQuery('#geocity').val(city);
                 jQuery('#geostate').val(state);
                 jQuery('#geocountry').val(country);
+
                 this.submit();
             });
         })
