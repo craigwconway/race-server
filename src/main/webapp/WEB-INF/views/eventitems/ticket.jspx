@@ -625,6 +625,9 @@
             this.update = function(name, base){
                 this.name = name;
                 this.base = base;
+                if(this.scheduleList.length == 1){
+                    this.scheduleList[0].price = this.base;
+                }
             }
             this.updateStartDate = function(date){
                 jQuery('#schedule-table tbody .ticket-'+this.id+'.main-'+this.id).find('.date').text(date);
@@ -799,9 +802,9 @@
             var ticket = null;
 
             ticket = ticketObjects[id];
-            console.log('current ticketAry', ticketAry);
-            console.log('current ticketObjects', ticketObjects);
-            console.log('current ticket', ticket);
+            // console.log('current ticketAry', ticketAry);
+            // console.log('current ticketObjects', ticketObjects);
+            // console.log('current ticket', ticket);
 
             jQuery('#editTicketTypeModal input[name="categoryName"]').val(ticket.name);
             jQuery('#editTicketTypeModal input[name="price"]').val(ticket.base);
@@ -813,9 +816,10 @@
             var price = jQuery('#editTicketTypeModal input[name="price"]').val();
             ticketAry[currentTicketIndex].update(name, price);
             ticketObjects[currentTicketIndex].update(name, price);
-            ticketAry[currentTicketIndex].render();
-            renderScheduleGraph();
+            ticketObjects[currentTicketIndex].render();
+            ticketObjects[currentTicketIndex].renderTable();
 
+            renderScheduleGraph();
             closeModal();
         }
 
@@ -966,9 +970,17 @@
         function saveTicketType(){
             var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
             var price = jQuery('#editTicketTypeModal input[name="price"]').val();
-            ticketAry[currentTicketIndex].update(name, price);
-            ticketAry[currentTicketIndex].render();
+            ticketObjects[currentTicketIndex].update(name, +price);
+            ticketAry[currentTicketIndex].update(name, +price);
+            ticketObjects[currentTicketIndex].render();
+            ticketObjects[currentTicketIndex].renderTable();
 
+            if(ticketAry.length > 0){
+                renderScheduleGraph();                
+            }
+
+            currentTicketIndex = null;
+            currentScheduleIndex = null;
             closeModal();
         }
 
@@ -1077,20 +1089,17 @@
                 postObjList.push(postObj);
                 alert('You haven\'t indicated any Ticket Types. We created for you one default Ticket Type called "General Admission".');
             }
-            console.log(postObjList);
             jQuery.ajax({
                 url: "/bibs-server/eventitemspricechanges/jsonArraySmart",
                 contentType: 'application/json',
                 type: 'POST',
                 dataType: 'json',
                 data: JSON.stringify(postObjList),
-                statsCode: {
-                    422: function(){
-                        alert('There was an error in saving your ticket types and price schedule!')
-                    },
-                    201: function(){
-                        alert('Your changes have been saved!');
-                    }
+                complete: function(data) {
+                    console.log('finished');
+                    alert('Your changes have been saved!');
+                    jQuery('#saveTTPC').prop('disabled', true).text('Saving...');
+                    window.location.reload();
                 }
             });
         }
@@ -1102,7 +1111,7 @@
 
             MG.data_graphic({
                 title: "Price Schedules Graph",
-                description: "All ticket types' price schedules can be viewed here.",
+                description: "All ticket types' price schedules can be viewed here. The last date reflects the registratin window's closing date.",
                 data: graphData,
                 width: 600,
                 height: 200,
@@ -1120,7 +1129,6 @@
         var eventCartEndDate = moment('${eventcartitem.timeEndLocal}', 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
         eventStart = moment(eventStart, 'MM/DD/YYYY h:mm:ss a');
         eventCartStartDate = moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a');
-        console.log(eventCartStartDate, '${eventcartitem.timeEndLocal}', eventCartEndDate);
         function initDateTimePickers(){
             jQuery("#timedisp").datetimepicker({
                 pickDate: false
