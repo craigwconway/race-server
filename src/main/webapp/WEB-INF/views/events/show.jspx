@@ -409,7 +409,11 @@
                                         data-date-format="MM/DD/YYYY hh:mm:ss a"
                                         data-parsley-error-message="Please specify an end date."
                                         data-parsley-required="true"></input>
+                                <div class="ui pointing label">
+      								Must end before your event starts
+    							</div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
