@@ -243,7 +243,7 @@
                 <div class="active item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="logistics-menu">
-                <form class="ui form" id="logisticsForm" style="width:400px;margin:0 auto;text-align:left">
+                <form class="ui form" id="logisticsForm" style="width:582px;margin:0 auto;text-align:left">
                     <h3 class="ui header" style="width: 100%">
                         <div class="content" style="margin-top:5px">
                             Logistics Settings
@@ -251,7 +251,7 @@
                         </div>
                     </h3>
                     <div class="fields">
-                        <div class="sixteen wide required field">
+                        <div class="ten wide required field">
                             <label style="width:100%" id="racetypes">Race Types</label>
                             <div class="ui fluid search selection dropdown" id="racetype-dropdown">
                                 <input type="hidden" name="raceType"><!--  --></input>
@@ -273,19 +273,44 @@
                             </div>
                         </div>
                     </div>
+					<div class="fields" style="position:relative">
+						<label id="distance" style="width:100%">Distance</label>	
+						<div class="five wide inline required field" style="margin: 0.5em 0em 0em">
+							<div class="ui fluid search selection dropdown" id="distance-dropdown">
+								<input type="hidden" name="dist"><!--  --></input>
+								<i class="fa fa-caret-down" style="float:right"><!--  --></i>
+								<div class="default text">Select Distance</div>
+								<div class="menu">
+									<div class="item" data-value="N/A">N/A</div>
+									<div class="item" data-value="5k">5k</div>
+									<div class="item" data-value="8k">8k</div>
+									<div class="item" data-value="10k">10k</div>
+									<div class="item" data-value="12k">12k</div>
+									<div class="item" data-value="15k">15k</div>
+									<div class="item" data-value="Half Marathon">Half Marathon</div>
+									<div class="item" data-value="Marathon">Marathon</div>
+									<div class="item" data-value="Sprint">Spring</div>
+									<div class="item" data-value="Olympic">Olympic</div>
+									<div class="item" data-value="Half">Half (Triathlon)</div>
+									<div class="item" data-value="Full">Full (Triathlon)</div>
+									<div class="item" data-value="Custom">Custom</div>
+								</div>
+							</div>
+						</div>
+						<div class="one wide inline required field" style="margin: 0.5em 0em 0em">
+							<div class="ui vertical divider" style="height:33%; left:34%; top:75%">or</div>
+						</div>
+						<div class="ten wide inline required field" style="margin: 0.5em 0em 0em">
+							<input type="number" name="distance" placeholder="Distance" min="0" style="width: 100px"><!--  --></input>
+							<div class="ui icon buttons" style="margin-left:10px">
+								<div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
+								<div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+								<div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
+							</div>
+						</div>
+					</div>
                     <div class="fields">
-                        <div class="sixteen wide inline required field" style="margin: 0.5em 0em 0em">
-                            <label id="distance" style="width:100%">Distance</label>
-                            <input type="number" name="distance" placeholder="Distance" min="0" step="0.1"><!--  --></input>
-                            <div class="ui icon small buttons" style="margin-left:10px">
-                                <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
-                                <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
-                                <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="fields">
-                        <div class="sixteen wide required field">
+                        <div class="ten wide required field">
                             <label id="starttime">Start Time</label>
                             <div class="ui action input">
                                 <input  type="text" name="timeStartLocal"
@@ -300,21 +325,9 @@
                         </div>
                     </div>
                     <div class="fields">
-                        <div class="sixteen wide field">
+                        <div class="ten wide field">
                             <label style="width:100%">Event Type Name</label>
                             <input type="text" name="typeName" placeholder="Event Type Name" value="${eventtype.typeName}"><!--  --></input>
-                        </div>
-                    </div>
-                    <div class="two fields post-event-type">
-                        <label style="width:100%">Assign Bib Ranges (optional)</label>
-                        <div style="clear:both"><!--  --></div>
-                        <div class="eight wide field" style="padding-left:0">
-                            <label>Lowest Bib Number</label>
-                            <input class="form-control" type="number" min="1" id="etype-lowbib" name="lowbib" value="${eventtype.lowBib}"><!--  --></input>
-                        </div>
-                        <div class="eight wide field">
-                            <label>Highest Bib Number</label>
-                            <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib" value="${eventtype.highBib}"><!--  --></input>
                         </div>
                     </div>
                     <div style="clear:both"><!--  --></div>
@@ -325,7 +338,7 @@
                         </div>
                     </h3>
 
-                    <div class="sixteen wide required field">
+                    <div class="ten wide required field">
                         <label style="width:100%">Price</label>
                         <div class="ui labeled input">
                             <div class="ui label" style="width:50px">$</div>
@@ -337,7 +350,7 @@
                                     data-parsley-required="true"></input>
                         </div>
                     </div>
-                    <div class="sixteen wide field">
+                    <div class="ten wide field">
                         <label style="width:100%">Max Participant Count</label>
                         <input  type="number" name="available"
                             class="form-control" style="margin-top:5px"
