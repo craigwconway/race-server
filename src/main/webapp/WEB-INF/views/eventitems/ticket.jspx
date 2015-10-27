@@ -540,6 +540,7 @@
                 // eventcartitem variables
                 this.price = '${eventcartitem.price}';
                 this.available = parseInt('${eventcartitem.available}');
+                this.purchased = parseInt('${eventcartitem.purchased}');
                 this.openDate = '${eventcartitem.timeStartLocal}';
                 this.closeDate = '${eventcartitem.timeEndLocal}';
                 this.openDateM = moment(this.openDate, 'MM/DD/YYYY hh:mm:ss a')
@@ -604,7 +605,7 @@
 
                 jQuery('#logisticsForm input[name="price"]').val(this.price);
                 // parseInt('${eventcartitem.available}') + parseInt('${eventcartitem.purchased}')
-                jQuery('#logisticsForm input[name="available"]').val(this.available);
+                jQuery('#logisticsForm input[name="available"]').val(this.available + this.purchased);
                 jQuery('#logisticsStartDate').data('DateTimePicker').setDate(this.openDateM);
                 jQuery('#logisticsEndDate').data('DateTimePicker').setDate(this.closeDateM);
             }
