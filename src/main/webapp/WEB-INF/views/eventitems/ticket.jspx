@@ -1285,7 +1285,7 @@
         function deleteItemAndType(id){
             if(confirm("This will remove ALL data associated with this Event Type, and cannot be restored. This includes all registration information, athlete information and their results, reports, analytics, etc. relating to this Event Type. Are you sure you want to do this? We recommend that you DON'T DO THIS.")){
                 jQuery(".cat-"+id).remove();
-                sendDeleteItem(id);
+                sendDeleteItemAndType(id);
             }
         }
         function sendDeleteItemAndType(id){    
