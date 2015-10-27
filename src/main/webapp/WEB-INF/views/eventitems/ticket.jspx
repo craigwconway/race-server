@@ -443,10 +443,15 @@
                         <c:forEach var="item" items="${eventitempricechanges}">
                             <div class="item" data-id="${item.id}" data-category="${item.categoryName}">
                                 <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
-                                <i class="fa fa-hand-o-up"><!--  --></i>
                                 <span class="sched sched-date">${item.dateStartLocal}</span> - <span class="sched sched-name">${item.categoryName}</span> $<span class="sched sched-price">${item.price}</span>.
                             </div>
                         </c:forEach>
+                        </c:if>
+                        <c:if test="${empty eventitempricechanges}">
+                            <div class="item" data-id="${eventcartitem.id}" data-category="General Admission">
+                                <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
+                                <span class="sched sched-date">${eventcartitem.timeStartLocal}</span> - <span class="sched sched-name">General Admission</span> $<span class="sched sched-price">${eventcartitem.price}</span>.
+                            </div>
                         </c:if>
                     </div>
                     <div class="pull-right">
@@ -659,6 +664,7 @@
             this.startDate = startDate;
             this.price = +price;
             this.mainRow = mainRow;
+            this.scheduleRowDOM = null;
             this.renderSubRow = function(){
                 if(this.scheduleRowDOM !== null){
                     jQuery(this.scheduleRowDOM).remove();
@@ -682,6 +688,44 @@
             this.update = function(date, price){
                 this.startDate = date;
                 this.price = +price;
+            }
+            this.destroy = function(){
+                if(this.mainRow == true){
+                    var sched = null;
+                    var schedIndex = null;
+                    var nextSched = null;
+                    var nextSchedIndex = null;
+                    var scheduleList = ticketObjects[this.ticketId].scheduleList;
+                    if(scheduleList.length > 1){
+                        for(var i in scheduleList){
+                            if(scheduleList[i].id == this.id){
+                                sched = scheduleList[i];
+                                schedIndex = i;
+                                nextSched = scheduleList[i+1];
+                                nextSchedIndex = i+1;
+                                if(i == scheduleList.length - 1){
+                                    nextSched = scheduleList[i-1];
+                                    nextSchedIndex = i-1;
+                                }
+                            }
+                        }
+                    }
+                    jQuery('#schedule-table tbody').find('.row-').remove();
+
+                    // promote next available schedule element to header row, then remove current schedule from ticket list
+                    ticketObjects[this.ticketId].scheduleList[nextSchedIndex].mainRow = true;
+                    ticketObjects[this.ticketId].scheduleList.splice(schedIndex, 1);
+                    ticketObjects[this.ticketId].render();
+                    delete scheduleObjects[this.id];
+
+                    this.mainRow = false;
+                }else{
+                    if(this.scheduleRowDOM !== null){
+                        jQuery(this.scheduleRowDOM).remove();
+                    }
+                }
+
+                delete this;
             }
         }
 
@@ -727,28 +771,32 @@
                 var ticketDOM = this;
                 var name = jQuery(this).data('category');
                 var price = jQuery(this).find('.sched-price').text();
-                var startDate = jQuery(this).find('.sched-date').text();
+                var schedDate = jQuery(this).find('.sched-date').text();
+                schedDate = moment(schedDate, 'MM/DD/YYYY h:mm:ss a');
+
+                var schedule = null;
                 // check to make sure the names aren't duplicates
                 if(!ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
                     var ticket = new Ticket(ticketAry.length, name, price);
-                    ticket.render();
                     ticketObjects[ticketAry.length] = ticket;
                     ticketAry.push(ticket);
-                    var schedule = new Schedule(scheduleAry.length, ticket.id, startDate, price, true);
+                    schedule = new Schedule(scheduleAry.length, ticket.id, schedDate, price, true);
                     scheduleObjects[scheduleAry.length] = schedule;
                     scheduleAry.push(schedule);
                 }else{
                     // find matching name in ticketAry, get its id = ticket.id
                     for( var i in ticketAry ){
                         if(ticketAry[i].name == name){
-                            var schedule = new Schedule(scheduleAry.length, i, startDate, price, false);
+                            schedule = new Schedule(scheduleAry.length, i, schedDate, price, false);
                             scheduleObjects[scheduleAry.length] = schedule;
                             scheduleAry.push(schedule);
                             break;
                         }
                     }
                 }
+                ticketAry[schedule.ticketId].scheduleId = schedule.id;
                 ticketAry[schedule.ticketId].addToSchedule(schedule);
+                ticketAry[schedule.ticketId].render();
             })
         }
 
@@ -757,7 +805,6 @@
                 jQuery('#add-type-error').hide();
                 var name = jQuery('#addTypeForm input[name="categoryName"]').val();
                 var price = jQuery('#eci-base-price').val();
-                console.log('searching through tickets:', ticketAry);
                 if(ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
                     jQuery('#add-type-error').show();
                     jQuery('#add-type-success').hide();
@@ -766,7 +813,7 @@
                     jQuery('#add-type-error').hide();
                     jQuery('#add-type-success').show();
                     var ticket = new Ticket(ticketAry.length, name, price);
-                    var schedule = new Schedule(scheduleAry.length, ticket.id, eventCartStartDate, price, true);
+                    var schedule = new Schedule(scheduleAry.length, ticket.id, moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a'), price, true);
                     ticket.scheduleId = schedule.id;
 
                     ticket.render();
@@ -781,6 +828,9 @@
                 }
                 console.log('tickets:', ticketObjects)
                 console.log('schedules:', scheduleObjects)
+                if(ticketAry.length > 0){
+                    renderScheduleGraph();
+                }
             }
         }
 
@@ -825,9 +875,15 @@
             currentScheduleIndex = scheduleId;
             currentTicketIndex = ticketId;
 
-            var scheduleList = ticketObjects[ticketId].scheduleList;
-            var schedule = scheduleList[scheduleId];
-            console.log('scheduleList:', ticketObjects[ticketId].scheduleList);
+            var schedule = scheduleObjects[scheduleId];
+            var ticket = ticketObjects[schedule.ticketId];
+            var scheduleList = ticket.scheduleList;
+            for(var i in scheduleList){
+                if(scheduleList[i].id == scheduleId){
+                    schedule = scheduleList[i];
+                }
+            }
+            
             console.log('edit schedule:', schedule);
             var dateObj = schedule.startDate;
             dateObj = moment(dateObj, 'MM/DD/YYYY h:mm:ss a');
@@ -890,7 +946,7 @@
                     }
 
                     // if date error, prevent user from adding 
-                    var schedule = new Schedule(scheduleAry.length, closestTicketId, specifiedDate, updatedPrice);
+                    var schedule = new Schedule(scheduleAry.length, closestTicketId, specifiedDate, updatedPrice, false);
 
                     scheduleObjects[scheduleAry.length] = schedule;
                     scheduleAry.push(schedule);
@@ -919,18 +975,32 @@
                 error = true;
                 return;
             }else{
-                var ticket = ticketObjects[currentTicketIndex];
-                var schedule = ticketObjects[currentTicketIndex].scheduleList[currentScheduleIndex];
-                ticketObjects[currentTicketIndex].scheduleList[currentScheduleIndex].update(date.format('MM/DD/YYYY h:mm:ss a'), price);
+                console.log('current ticket index:', currentTicketIndex);
+                console.log('current schedule index:', currentScheduleIndex);
+                console.log('current tickets:', ticketObjects);
+                console.log('current schedules:', scheduleObjects);
+                var schedule = scheduleObjects[currentScheduleIndex];
+                var ticket = ticketObjects[schedule.ticketId];
+                var scheduleList = ticket.scheduleList;
+                var index = null;
+                for(var i in scheduleList){
+                    if(scheduleList[i].id == currentScheduleIndex){
+                        schedule = scheduleList[i];
+                        index = i;
+                    }
+                }
+
+                ticketObjects[schedule.ticketId].scheduleList[index].update(date.format('MM/DD/YYYY h:mm:ss a'), price);
                 if(schedule.mainRow == true){
                     console.log('check ticket', ticket);
-                    ticketObjects[currentTicketIndex].update(ticket.name, schedule.price);
-                    ticket.renderTableRow();
+                    ticketObjects[schedule.ticketId].update(ticket.name, schedule.price);
+                    ticketObjects[schedule.ticketId].render();
                 }else{
                     schedule.renderSubRow();
                 }
             }
 
+            renderScheduleGraph();
             closeModal();
         }
 
@@ -943,7 +1013,31 @@
             closeModal();
         }
 
-        function removeSchedule(){
+        function removeSingleSchedule(){
+            var schedule = scheduleObjects[currentScheduleIndex];
+            var ticket = ticketObjects[schedule.ticketId];
+            var scheduleList = ticket.scheduleList;
+            var index = null;
+            for(var i in scheduleList){
+                if(scheduleList[i].id == currentScheduleIndex){
+                    schedule = scheduleList[i];
+                    index = i;
+                }
+            }
+
+            if(ticket.scheduleList.length == 1){
+                currentTicketIndex = schedule.ticketId;
+                removeTicketType();
+            }else{
+                ticketAry[currentTicketIndex].scheduleList[index].destroy();
+            }
+
+            if(ticketAry.length > 0){
+                renderScheduleGraph();
+            }
+            currentTicketIndex = null;
+            currentScheduleIndex = null;
+            closeModal();
         }
 
         var graphData = [];
@@ -951,15 +1045,16 @@
         function renderScheduleGraph(){
             var dataset = [];
 
-            for(var i in ticketAry){
+            console.log('graph data', ticketObjects);
+            for(var key in ticketObjects){
+                var ticket = ticketObjects[key];
+                console.log(ticket);
                 var ticketType = [];
-                var ticket = ticketAry[i];
                 graphLegend.push(ticket.name);
-                var schedules = ticket.scheduleList;
-                console.log('schedules', schedules);
+                var schedules = ticket.scheduleList.reverse();
                 var lastValue = null;
-                for(var index in schedules){
-                    var sched = schedules[index];
+                for(var i in schedules){
+                    var sched = schedules[i];
                     var obj = {};
                     obj.date = moment(sched.startDate, 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
                     obj.value = sched.price;
@@ -968,13 +1063,14 @@
                 }
                 // add final date
                 var lastVal = {};
-                lastVal.date = eventCartEndDate;
+                lastVal.date = moment(eventCartEndDate, 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
                 lastVal.value = lastValue;
                 ticketType.push(lastVal);
 
                 dataset.push(ticketType);
             }
             
+            graphData.length = 0;
             graphData = dataset;
             console.log(dataset);
             initPriceScheduleVisualization();
@@ -982,7 +1078,7 @@
 
         function saveTicketSettings(){
             var postObjList = [];
-            var eci = { id: '${eventcartitem.id}' };
+            var eci = { id: +'${eventcartitem.id}' };
 
             for(var i in ticketAry){
                 var schedules = ticketAry[i].scheduleList.reverse();
@@ -994,44 +1090,43 @@
                     console.log('double-check schedule element:', el)
                     var schedule = el;
                     if( index &lt; ary.length-1 ){
-                        postObj.dateStartLocal = schedule.startDate.format('MM/DD/YYYY h:mm:ss a');
+                        postObj.dateStartLocal = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
                         var tempEndDate = moment(ary[index+1].startDate, 'MM/DD/YYYY h:mm:ss a');
                         postObj.dateEndLocal = tempEndDate.subtract(1,'s').format('MM/DD/YYYY h:mm:ss a');
                     }
                     if( index == ary.length-1 ){
-                        postObj.dateStartLocal = schedule.startDate.format('MM/DD/YYYY h:mm:ss a');
+                        postObj.dateStartLocal = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
                         postObj.dateEndLocal = eventCartEndDate;
                     }
                     postObjList.push(postObj);
                 })
             }
             
+            if(postObjList.length == 0){
+                var postObj = {};
+                postObj.eventCartItem = eci;
+                postObj.categoryName = 'General Admission';
+                postObj.price = +'${eventcartitem.price}';
+                postObj.dateStartLocal = moment(eventCartStartDate, 'YYYY-MM-DDThh:mm:ss.SSSZ').format('MM/DD/YYYY h:mm:ss a');
+                postObjList.push(postObj);
+                alert('You haven\'t indicated any Ticket Types. We created for you one default Ticket Type called "General Admission".');
+            }
             console.log(postObjList);
-            // jQuery.ajax({
-            //     url: "/bibs-server/eventitemspricechanges/jsonArray",
-            //     contentType: 'application/json',
-            //     type: 'DELETE',
-            //     dataType: 'json',
-            //     data: JSON.stringify(delList),
-            //     complete: function() {
-            //         var request = jQuery.ajax({
-            //             url: "/bibs-server/eventitemspricechanges/jsonArray",
-            //             contentType: 'application/json',
-            //             dataType: 'json',
-            //             type: 'POST',
-            //             data: JSON.stringify(postObjList),
-            //             statusCode: {
-            //                 200: function() {
-            //                     alert("There was an error while saving your price changes. Please try again!");
-            //                     onBack();
-            //                 },
-            //                 201:function(){
-            //                     onBack();
-            //                 }
-            //             }
-            //         });
-            //     }
-            // });
+            jQuery.ajax({
+                url: "/bibs-server/eventitemspricechanges/jsonArraySmart",
+                contentType: 'application/json',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(postObjList),
+                statsCode: {
+                    422: function(){
+                        alert('There was an error in saving your ticket types and price schedule!')
+                    },
+                    201: function(){
+                        alert('Your changes have been saved!');
+                    }
+                }
+            });
         }
 
         function initPriceScheduleVisualization(){
