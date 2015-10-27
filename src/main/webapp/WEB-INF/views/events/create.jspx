@@ -121,7 +121,7 @@
                     <label>Event Description</label>
                     <textarea  name="description" style="width:400px;margin:0 auto"
                         rows="2"
-                        placeholder="Event description"><!-- --></textarea>
+                        placeholder="World's largest race series! Win up to $10,000!"><!-- --></textarea>
                 </div>
                 <div class="required field">
                     <label>Event Date</label>
@@ -222,7 +222,7 @@
                         <label>Charity Name</label>
                         <input  type="text" name="charity"
                                 autocomplete="off"
-                                placeholder="Charity Name"
+                                placeholder="i.e. Red Cross"
                                 value="${event.charity}"></input>
                     </div>
                 </div>
@@ -359,7 +359,6 @@
         var todayDate = moment().startOf('day');
         jQuery("input[name='timeStartLocal']")
             .datetimepicker({
-                defaultDate: todayDate,
                 useSeconds: true,
                 sideBySide: true
             });
