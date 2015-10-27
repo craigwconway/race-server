@@ -443,10 +443,15 @@
                         <c:forEach var="item" items="${eventitempricechanges}">
                             <div class="item" data-id="${item.id}" data-category="${item.categoryName}">
                                 <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
-                                <i class="fa fa-hand-o-up"><!--  --></i>
                                 <span class="sched sched-date">${item.dateStartLocal}</span> - <span class="sched sched-name">${item.categoryName}</span> $<span class="sched sched-price">${item.price}</span>.
                             </div>
                         </c:forEach>
+                        </c:if>
+                        <c:if test="${empty eventitempricechanges}">
+                            <div class="item" data-id="${eventcartitem.id}" data-category="${eventcartitem.categoryName}">
+                                <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
+                                <span class="sched sched-date">${eventcartitem.dateStartLocal}</span> - <span class="sched sched-name">General Admission</span> $<span class="sched sched-price">${eventcartitem.price}</span>.
+                            </div>
                         </c:if>
                     </div>
                     <div class="pull-right">
@@ -767,27 +772,29 @@
                 var name = jQuery(this).data('category');
                 var price = jQuery(this).find('.sched-price').text();
                 var startDate = jQuery(this).find('.sched-date').text();
+                var schedule = null;
                 // check to make sure the names aren't duplicates
                 if(!ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
                     var ticket = new Ticket(ticketAry.length, name, price);
-                    ticket.render();
                     ticketObjects[ticketAry.length] = ticket;
                     ticketAry.push(ticket);
-                    var schedule = new Schedule(scheduleAry.length, ticket.id, startDate, price, true);
+                    schedule = new Schedule(scheduleAry.length, ticket.id, startDate, price, true);
                     scheduleObjects[scheduleAry.length] = schedule;
                     scheduleAry.push(schedule);
                 }else{
                     // find matching name in ticketAry, get its id = ticket.id
                     for( var i in ticketAry ){
                         if(ticketAry[i].name == name){
-                            var schedule = new Schedule(scheduleAry.length, i, startDate, price, false);
+                            schedule = new Schedule(scheduleAry.length, i, startDate, price, false);
                             scheduleObjects[scheduleAry.length] = schedule;
                             scheduleAry.push(schedule);
                             break;
                         }
                     }
                 }
+                ticketAry[schedule.ticketId].scheduleId = schedule.id;
                 ticketAry[schedule.ticketId].addToSchedule(schedule);
+                ticketAry[schedule.ticketId].render();
             })
         }
 
@@ -819,6 +826,9 @@
                 }
                 console.log('tickets:', ticketObjects)
                 console.log('schedules:', scheduleObjects)
+                if(ticketAry.length > 0){
+                    renderScheduleGraph();
+                }
             }
         }
 
@@ -982,7 +992,7 @@
                 if(schedule.mainRow == true){
                     console.log('check ticket', ticket);
                     ticketObjects[schedule.ticketId].update(ticket.name, schedule.price);
-                    ticketObjects[schedule.ticketId].renderTableRow();
+                    ticketObjects[schedule.ticketId].render();
                 }else{
                     schedule.renderSubRow();
                 }
@@ -1078,12 +1088,12 @@
                     console.log('double-check schedule element:', el)
                     var schedule = el;
                     if( index &lt; ary.length-1 ){
-                        postObj.dateStartLocal = schedule.startDate.format('MM/DD/YYYY h:mm:ss a');
+                        postObj.dateStartLocal = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
                         var tempEndDate = moment(ary[index+1].startDate, 'MM/DD/YYYY h:mm:ss a');
                         postObj.dateEndLocal = tempEndDate.subtract(1,'s').format('MM/DD/YYYY h:mm:ss a');
                     }
                     if( index == ary.length-1 ){
-                        postObj.dateStartLocal = schedule.startDate.format('MM/DD/YYYY h:mm:ss a');
+                        postObj.dateStartLocal = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
                         postObj.dateEndLocal = eventCartEndDate;
                     }
                     postObjList.push(postObj);
