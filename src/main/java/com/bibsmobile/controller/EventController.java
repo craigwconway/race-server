@@ -1399,11 +1399,11 @@ public class EventController {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("events", Event.findEventsForUser(user, firstResult, sizeNo, sortFieldName, sortOrder));
+            uiModel.addAttribute("events", Event.findNonHiddenEventsForUser(user, firstResult, sizeNo, sortFieldName, sortOrder));
             float nrOfPages = (float) Event.countEvents() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("events", Event.findEventsForUser(user, -1, -1, sortFieldName, sortOrder));
+            uiModel.addAttribute("events", Event.findNonHiddenEventsForUser(user, -1, -1, sortFieldName, sortOrder));
         }
         this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
@@ -1469,6 +1469,8 @@ public class EventController {
         	}
         	//bibTimeout.clearMultiBibs(clearBibs); TODO: Figure out how to autowire this
         }
+        event.setHidden(false);
+        event.merge();
         //Check if the build has any attached entities:
         List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
         List <CartItem> cis = CartItem.findCartItemsByEventCartItems(ecis, null, null).getResultList();
