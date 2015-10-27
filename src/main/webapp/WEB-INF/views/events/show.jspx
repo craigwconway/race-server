@@ -5,7 +5,7 @@
     <link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" aria-labelledby="live-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="live-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" aria-labelledby="waiver-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="waiver-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="email-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="email-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -111,7 +111,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="bibsModal" tabindex="-1" role="dialog" aria-labelledby="bibs-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="bibsModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="bibs-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -168,7 +168,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="export-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -224,7 +224,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exportAthletes" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="exportAthletes" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="export-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -259,7 +259,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addType" tabindex="-1" role="dialog" aria-labelledby="eventtype-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="addType" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="eventtype-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
