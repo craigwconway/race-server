@@ -798,6 +798,10 @@
                 ticketAry[schedule.ticketId].addToSchedule(schedule);
                 ticketAry[schedule.ticketId].render();
             })
+            
+            if(ticketAry.length > 0){
+                renderScheduleGraph();
+            }
         }
 
         function addTicketType(){
@@ -1150,8 +1154,8 @@
         }
 
         var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
-        var eventCartStartDate = moment('${eventcartitem.timeStart}', 'YYYY-MM-DD hh:mm:ss.S').format('MM/DD/YYYY h:mm:ss a');
-        var eventCartEndDate = moment('${eventcartitem.timeEnd}', 'YYYY-MM-DD hh:mm:ss.S').format('MM/DD/YYYY h:mm:ss a');
+        var eventCartStartDate = moment('${eventcartitem.timeStartLocal}', 'YYYY-MM-DD hh:mm:ss.S').format('MM/DD/YYYY h:mm:ss a');
+        var eventCartEndDate = moment('${eventcartitem.timeEndLocal}', 'YYYY-MM-DD hh:mm:ss.S').format('MM/DD/YYYY h:mm:ss a');
         eventStart = moment(eventStart, 'MM/DD/YYYY h:mm:ss a');
         eventCartStartDate = moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a');
         function initDateTimePickers(){
