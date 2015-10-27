@@ -243,7 +243,7 @@
                 <div class="item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
             </div>
             <div class="ui bottom attached active tab segment" data-tab="logistics-menu">
-                <form class="ui form" id="logisticsForm" style="width:400px;margin:0 auto;text-align:left">
+                <form class="ui form" id="logisticsForm" style="width:576px;margin:0 auto;text-align:left">
                     <h3 class="ui header" style="width: 100%">
                         <div class="content" style="margin-top:5px">
                             Logistics Settings
