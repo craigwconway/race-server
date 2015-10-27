@@ -479,7 +479,14 @@ public class EventCartItemController {
 
         Event event = Event.findEvent(eventCartItem.getEvent().getId());
         EventType eventType = eventCartItem.getEventType();
+        System.out.println("Incoming ET: [ID: " + eventType.getId() +", Racetype: " + eventType.getRacetype() + "]");
         EventType trueEventType ;
+        EventCartItem trueEventCartItem;
+        if(eventCartItem.getId() != null) {
+        	trueEventCartItem = EventCartItem.findEventCartItem(eventCartItem.getId());
+        } else {
+        	return SpringJSONUtil.returnErrorMessage("EventItemMissing", HttpStatus.BAD_REQUEST);
+        }
         if(eventType.getId() != null) {
         	trueEventType = EventType.findEventType(eventType.getId());
 	        
@@ -489,13 +496,12 @@ public class EventCartItemController {
         } else {
         	trueEventType = new EventType();
         }
-        
+        System.out.println("true ET: [ID: " + trueEventType.getId() +", Racetype: " + trueEventType.getRacetype() + "]");
         if(event == null) {
         	return SpringJSONUtil.returnErrorMessage("EventNull", HttpStatus.BAD_REQUEST);
         }
         
         trueEventType.setEvent(event);
-        if(eventType.getId() == null) {
         	System.out.println("Create a new event type");
         	if(eventType.getDistance() == null || eventType.getRacetype() == null || eventType.getTimeStartLocal() == null) {
         		return SpringJSONUtil.returnErrorMessage("InvalidEventType", HttpStatus.BAD_REQUEST);
@@ -543,7 +549,6 @@ public class EventCartItemController {
             		+", racetype: " + trueEventType.getRacetype() + ", meters: " + trueEventType.getMeters() 
             		+ ", Start:"+ trueEventType.getTimeStartLocal() + "]");
             trueEventType = trueEventType.merge();
-        }
         try {
 
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
@@ -569,8 +574,19 @@ public class EventCartItemController {
         	eventCartItem.persist();
         } else {
         	System.out.println("Merging EventCartItem");
-        	if(eventCartItem.getAvailable() - eventCartItem.getPurchased() < 0) eventCartItem.setAvailable(0); 
-            eventCartItem.merge();
+        	trueEventCartItem.setEventType(trueEventType);
+        	trueEventCartItem.setTimeEndLocal(eventCartItem.getTimeEndLocal());
+        	trueEventCartItem.setTimeStartLocal(eventCartItem.getTimeStartLocal());
+        	trueEventCartItem.setTimeEnd(eventCartItem.getTimeEnd());
+        	trueEventCartItem.setTimeStart(eventCartItem.getTimeStart());
+        	trueEventCartItem.setPrice(eventCartItem.getPrice());
+        	trueEventCartItem.setName(eventCartItem.getName());
+        	if(eventCartItem.getAvailable() > trueEventCartItem.getAvailable() + trueEventCartItem.getPurchased()) {
+        		trueEventCartItem.setAvailable(eventCartItem.getAvailable() + trueEventCartItem.getAvailable() - eventCartItem.getPurchased());
+        	}
+
+        	//if(eventCartItem.getAvailable() - eventCartItem.getPurchased() < 0) eventCartItem.setAvailable(0); 
+            //eventCartItem.merge();
         }
         return SpringJSONUtil.returnStatusMessage(eventCartItem.getId().toString(), HttpStatus.OK);
     }    

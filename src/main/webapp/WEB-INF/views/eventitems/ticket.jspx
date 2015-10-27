@@ -1271,13 +1271,109 @@
             });
         }
         function updateEventTypeAndTicket(eventTypeId, eventCartItemId) {
+        	var dat = {};
+        	
+        	//Grab raw form values
             var price = jQuery('#logisticsForm input[name="price"]').val();
             var typeName = jQuery('#logisticsForm input[name="typeName"]').val();
             var raceType = jQuery('#logisticsForm input[name="raceType"]').val();
             var available = jQuery('input[name="available"]').val();
-            var timeStartLocal = jQuery('input[name="timeStartLocal"]').val();
-            var timeEndLocal = jQuery('input[name="timeEndLocal"]').val();
+            var timeStartLocal = jQuery('#logisticsStartDate').val();
+            var timeEndLocal = jQuery('#logisticsForm input[name="timeEndLocal"]').val();
+            var startTime = jQuery('#timedisp').val();
+            var distance  = jQuery('#logisticsForm input[name="distance"]').val();
+            var dropdownDistance = jQuery('#logisticsForm input[name="dist"]').val();
+            var distType  = null;
+            if( jQuery('#dist-m').hasClass('positive')  ){ distType = ' m';  }
+            if( jQuery('#dist-km').hasClass('positive') ){ distType = ' km'; }
+            if( jQuery('#dist-mi').hasClass('positive') ){ distType = ' mi'; }
+            
+            //Make smarter
+            var parseDate = moment('${event.timeStartLocal}', 'MM/DD/YYYY h:mm:ss a');
+            var hour   = moment(startTime, "h:mm a").hour();
+            var minute = moment(startTime, "h:mm a").minute();
+			
+            parseDate.set('hour', hour);
+            parseDate.set('minute', minute);
+            parseDate = parseDate.format('MM/DD/YYYY hh:mm:ss a');
 			console.log('[price: ' + price + ', available: ' + available + ', timeStartLocal: ' + timeStartLocal + ', timeEndLocal: ' + timeEndLocal + ']')
+			
+            if( (distance === "" &amp;&amp; dropdownDistance === "Custom") || (distance === "" &amp;&amp; dropdownDistance === "")  || (distance == "" &amp;&amp; dropdownDistance == "") || parseDate === "" || raceType === "" ){
+                error = true;
+                if( distance === "" ){
+                    jQuery('#distance').parent().addClass('error');
+                    jQuery('input[name="distance"]').on('keypress', function(){
+                        if(jQuery('input[name="distance"]').val().length > 0){
+                            jQuery('#distance').parent().removeClass('error');
+                        }
+                    })
+                }
+                if( parseDate === "" ){
+                    jQuery('#starttime').parent().addClass('error');
+                    jQuery('input[name="timeStartLocal"]').on('keypress', function(){
+                        if(jQuery('input[name="timeStartLocal"]').val().length > 0){
+                            jQuery('#starttime').parent().removeClass('error');
+                        }
+                    })
+                }
+                if( raceType === "" ){
+                    jQuery('#racetypes').parent().addClass('error');
+                    jQuery('input[name="raceType"]').on('change', function(){
+                        if(jQuery('input[name="raceType"]').val().length > 0){
+                            jQuery('#racetypes').parent().removeClass('error');
+                        }
+                    })
+                }
+                console.log(error);
+            } else {
+            	dat.event = {};
+        		dat.event.id = parseInt('${event.id}');
+        		dat.type = "TICKET";
+        		dat.name = typeName;
+        		dat.price = price;
+        		//dat.timeStartLocal = parseDate;
+        		dat.timeStartLocal = timeStartLocal;
+        		dat.timeEndLocal = timeEndLocal;
+        		if (available == null || available == "") {
+        			dat.available = new Number(10000000);
+        		} else {
+        			dat.available = new Number(available);
+        		}
+        		var uploadUrl = "/bibs-server/eventitems/typeupdate"
+            	var uploadMethod = "POST"
+            	dat.id = new Number(eventCartItemId);
+        		dat.eventType = {};
+        		dat.eventType.id = eventTypeId;
+        		dat.eventType.event = {};
+        		dat.eventType.event.id = parseInt('${event.id}');
+        		dat.eventType.typeName = typeName;
+        		if(dropdownDistance === "" || dropdownDistance === "Custom") {
+                	dat.eventType.distance = distance + distType;
+                } else {
+                	dat.eventType.distance = dropdownDistance;
+                }
+        		dat.eventType.timeStartLocal = parseDate;
+        		dat.eventType.racetype = raceType;
+        		
+        		jQuery.ajax({
+                    url: uploadUrl,
+                    type: uploadMethod,
+                    contentType: "application/json",
+                    data: JSON.stringify(dat),
+                    dataType: "json",
+                    complete: function(data) {
+                    	console.log("ResponseData");
+                    	console.log(data)
+                    	if(data != null &amp;&amp; data.responseJSON) {
+                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status)
+                    		console.log(window.location)
+                    		alert("ok saved");
+                    	} else {
+	                        alert("not ok");
+                    	}
+                    }
+                })
+            }
         }
     </script>
 </div>
