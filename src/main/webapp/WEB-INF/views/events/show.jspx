@@ -292,11 +292,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="fields">
-                        	
-                            <div class="twelve wide inline required field" style="margin: 0.5em 0em 0em">
+                        <div class="fields" style="position:relative">
+                         <label id="distance" style="width:100%">Distance</label>	
+                            <div class="five wide inline required field" style="margin: 0.5em 0em 0em">
                             
-                                <label id="distance" style="width:100%">Distance</label>
+                               
                                 <div class="ui fluid search selection dropdown" id="distance-dropdown">
                                     <input type="hidden" name="dist"><!--  --></input>
                                     <i class="fa fa-caret-down" style="float:right"><!--  --></i>
@@ -317,8 +317,13 @@
                                         <div class="item" data-value="Custom">Custom</div>
                                     </div>
                                 </div>
-								<div class="ui horizontal divider" style="height: 10%">or</div>       
-                                <input type="number" name="distance" placeholder="Distance" min="0"><!--  --></input>
+							</div>
+							<div class="one wide inline required field" style="margin: 0.5em 0em 0em">
+							<div class="ui vertical divider" style="height:33%; left:34%; top:75%">or</div>
+							</div>
+							<div class="ten wide inline required field" style="margin: 0.5em 0em 0em">
+   
+                                <input type="number" name="distance" placeholder="Distance" min="0" style="width: 100px"><!--  --></input>
                                 <div class="ui icon buttons" style="margin-left:10px">
                                     <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
                                     <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
@@ -808,7 +813,7 @@
 	                        dat.event = null;
 	                    }
 	                }
-	
+					console.log("[dropdownDistance: " + dropdownDistance + ", distance: " + distance + ",  distType: " + distType + "]");
 	                dat.typeName = typeName;
 	                if(dropdownDistance !== "" &amp;&amp; dropdownDistance != "Custom") {
 	                	dat.distance = distance + distType;
@@ -849,7 +854,7 @@
             		
             		var uploadUrl = "/bibs-server/eventitems/typeupdate"
             		var uploadMethod = "POST"
-            		
+            			console.log("[dropdownDistance: " + dropdownDistance + ", distance: " + distance + ",  distType: " + distType + "]");
             		if(currEventCartItemId != null &amp;&amp; currEventCartItemId != "") {
             			dat.id = currEventCartItemId;
             			//uploadUrl = "/bibs-server/eventitems/ticketupdate"
@@ -864,7 +869,7 @@
      				dat.eventType.event = {};
             		dat.eventType.event.id = parseInt('${event.id}');
             		dat.eventType.typeName = typeName;
-            		if(dropdownDistance !== "" &amp;&amp; dropdownDistance != "Custom") {
+            		if(dropdownDistance === "" || dropdownDistance === "Custom") {
 	                	dat.eventType.distance = distance + distType;
 	                } else {
 	                	dat.eventType.distance = dropdownDistance;
@@ -1015,14 +1020,54 @@
             jQuery('#putFieldForm input[name="typeName"]').val(typeName);
             jQuery('#putFieldForm input[name="raceType"]').val(type);
             jQuery('#racetype-dropdown').dropdown("set selected", type);
-            var parseDist = dist.split(' ');
-            jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+            
+            //Start of racetype init
             jQuery('#dist-m').removeClass('positive');
             jQuery('#dist-mi').removeClass('positive');
             jQuery('#dist-km').removeClass('positive');
-            if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
-            if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
-            if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
+            switch(dist) {
+            case "N/A":
+            	jQuery('#distance-dropdown').dropdown('set selected', "N/A");
+            	break;
+            case "5k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+            	break;
+            case "8k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+            	break;
+            case "10k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "10k");
+            	break;
+            case "15k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "15k");
+            	break;
+            case "Half Marathon":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Half Marathon");
+            	break;
+            case "Marathon":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Marathon");
+            	break;
+            case "Sprint":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Sprint");
+            	break;
+            case "Sprint":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Olympic");
+            	break;
+            case "Half":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Half");
+            	break;
+            case "Full":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Full");
+            	break;
+            default:
+            	jQuery('#distance-dropdown').dropdown('set selected', "Custom");
+            	var parseDist = dist.split(' ');
+            	jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+            	if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
+            	if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
+            	if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
+
+            }
 
             var raceTime = moment(raceTime);
             jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
