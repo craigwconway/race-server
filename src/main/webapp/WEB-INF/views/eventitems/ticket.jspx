@@ -1273,11 +1273,9 @@
         }
 
         function onBack(){
-            // if(confirm("If you have unsaved changes in either tabs on this page, your changes will be lost. Do you still want to go back?")){
             alerted = false;
             saved = false;
             window.location="/bibs-server/eventitems?event=${event.id}";
-            // }
         }
         
         function deleteItem(id){
@@ -1411,11 +1409,13 @@
                     	console.log("ResponseData");
                     	console.log(data)
                     	if(data != null &amp;&amp; data.responseJSON) {
-                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status)
-                    		console.log(window.location)
-                    		alert("ok saved");
+                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status);
+                    		console.log(window.location);
+                            alert('Your changes have been saved!');
+                            saved = true;
                     	} else {
-	                        alert("not ok");
+                            saved = false;
+	                        alert("Something went wrong while saving your data. Please try again or contact customer support!");
                     	}
                     }
                 })
