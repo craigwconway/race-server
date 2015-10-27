@@ -1406,16 +1406,13 @@
                     data: JSON.stringify(dat),
                     dataType: "json",
                     complete: function(data) {
-                    	console.log("ResponseData");
-                    	console.log(data)
-                    	if(data != null &amp;&amp; data.responseJSON) {
-                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status);
-                    		console.log(window.location);
+                        saved = true;
+                        console.log("ResponseData");
+                        console.log(data)
+                        if(data != null &amp;&amp; data.responseJSON) {
+                            console.log("/bibs-server/eventitems/" + data.responseJSON.status);
+                            console.log(window.location);
                             alert('Your changes have been saved!');
-                            saved = true;
-                    	} else {
-                            saved = false;
-	                        alert("Something went wrong while saving your data. Please try again or contact customer support!");
                     	}
                     }
                 })
