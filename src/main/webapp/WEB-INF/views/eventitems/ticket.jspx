@@ -383,10 +383,26 @@
                         </div>
                     </div>
 
-                    <div class="pull-right">
-                    	<button class="ui red button" onClick="deleteItem(${eventcartitem.id})">Kill This</button>
-                    	<button class="ui red button" onClick="deleteItemAndType(${eventcartitem.id})">Kill Family</button>
-                        <button class="ui green button" onClick="updateEventTypeAndTicket(${eventtype.id}, ${eventcartitem.id })">Save</button>
+                    <div class="row" style="margin-top:25px;">
+                        <div class="pull-left">
+                            <button class="ui red button" onClick="deleteItemAndType(${eventcartitem.id})">Purge Event Type</button>
+                            <div class="ui left pointing label">
+                                This will remove ALL data associated with this Event Type.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="pull-left">
+                            <button class="ui basic red button" onClick="deleteItem(${eventcartitem.id})">Remove Registration</button>
+                            <div class="ui left pointing label" style="text-align:left">
+                                This will disable and remove ALL data for this registration.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="pull-right">
+                            <button class="ui green button" onClick="updateEventTypeAndTicket(${eventtype.id}, ${eventcartitem.id })">Save</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1250,7 +1266,7 @@
         }
         
         function deleteItem(id){
-            if(confirm("Delete Product?")){
+            if(confirm("This will disable and remove all registration information. This includes purchase data for this Event Type, and you will no longer be able to access receipts for this Event Type. Your changes made from this page will not be saved and cannot be restored. Are you sure you want to do this? We recommend that you DON'T DO THIS.")){
                 jQuery(".cat-"+id).remove();
                 sendDeleteItem(id);
             }
@@ -1267,7 +1283,7 @@
             });
         }
         function deleteItemAndType(id){
-            if(confirm("Delete Product?")){
+            if(confirm("This will remove ALL data associated with this Event Type, and cannot be restored. This includes all registration information, athlete information and their results, reports, analytics, etc. relating to this Event Type. Are you sure you want to do this? We recommend that you DON'T DO THIS.")){
                 jQuery(".cat-"+id).remove();
                 sendDeleteItem(id);
             }
