@@ -605,6 +605,7 @@
 
                 jQuery(this.ticketTypeRowDOM).find('.name').text(this.name);
                 jQuery(this.ticketTypeRowDOM).find('.date').text(moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a'));
+
                 for(var i in this.scheduleList){
                     if(this.scheduleList[i].id == this.scheduleId){
                         jQuery(this.ticketTypeRowDOM).find('.date').text(moment(this.scheduleList[i].startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a'));
@@ -646,11 +647,9 @@
                     return moment(a.startDate, 'MM/DD/YYYY h:mm:ss a').isBefore(moment(b.startDate, 'MM/DD/YYYY h:mm:ss a'));
                 })
                 if(this.scheduleList.length > 1){
-                    this.scheduleList.forEach(function(el, i, ary){
-                        if(i &lt; ary.length-1){
-                            el.renderSubRow();
-                        }
-                    })
+                    if(schedule.mainRow == false){
+                        schedule.renderSubRow();
+                    }
                     jQuery(this.ticketTypeRowDOM).find('td:first-child').attr('rowspan', this.scheduleList.length);
                 }
             }
@@ -780,9 +779,14 @@
                     var ticket = new Ticket(ticketAry.length, name, price);
                     ticketObjects[ticketAry.length] = ticket;
                     ticketAry.push(ticket);
-                    schedule = new Schedule(scheduleAry.length, ticket.id, schedDate, price, true);
+                    schedule = new Schedule(scheduleAry.length, +ticket.id, schedDate, price, true);
                     scheduleObjects[scheduleAry.length] = schedule;
                     scheduleAry.push(schedule);
+                    if(schedule.mainRow){
+                        ticket.scheduleId = schedule.id;
+                        ticketAry[schedule.ticketId].addToSchedule(schedule);
+                        ticket.render();
+                    }
                 }else{
                     // find matching name in ticketAry, get its id = ticket.id
                     for( var i in ticketAry ){
@@ -790,15 +794,15 @@
                             schedule = new Schedule(scheduleAry.length, i, schedDate, price, false);
                             scheduleObjects[scheduleAry.length] = schedule;
                             scheduleAry.push(schedule);
+                            ticketAry[i].scheduleId = schedule.id;
+                            ticketAry[schedule.ticketId].addToSchedule(schedule);
                             break;
                         }
                     }
                 }
-                ticketAry[schedule.ticketId].scheduleId = schedule.id;
-                ticketAry[schedule.ticketId].addToSchedule(schedule);
-                ticketAry[schedule.ticketId].render();
             })
             
+            console.log('init complete:', ticketObjects);
             if(ticketAry.length > 0){
                 renderScheduleGraph();
             }
@@ -1049,10 +1053,9 @@
         function renderScheduleGraph(){
             var dataset = [];
 
-            console.log('graph data', ticketObjects);
+            // console.log('convert to graph data', ticketObjects);
             for(var key in ticketObjects){
                 var ticket = ticketObjects[key];
-                console.log(ticket);
                 var ticketType = [];
                 graphLegend.push(ticket.name);
                 var schedules = ticket.scheduleList.reverse();
@@ -1076,7 +1079,7 @@
             
             graphData.length = 0;
             graphData = dataset;
-            console.log(dataset);
+            // console.log('converted data', dataset);
             initPriceScheduleVisualization();
         }
 
