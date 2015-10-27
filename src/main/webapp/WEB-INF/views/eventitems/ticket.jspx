@@ -239,10 +239,10 @@
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
-                <div class="item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
-                <div class="active item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
+                <div class="active item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
+                <div class="item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="logistics-menu">
+            <div class="ui bottom attached active tab segment" data-tab="logistics-menu">
                 <form class="ui form" id="logisticsForm" style="width:400px;margin:0 auto;text-align:left">
                     <h3 class="ui header" style="width: 100%">
                         <div class="content" style="margin-top:5px">
@@ -377,7 +377,7 @@
                     </div>
                 </form>
             </div>
-            <div class="ui bottom attached active tab segment" id="schedule-tab" data-tab="schedule-menu">
+            <div class="ui bottom attached tab segment" id="schedule-tab" data-tab="schedule-menu">
                 <div class="ui yellow message" id="notify">
                     <i class="close fa fa-times"><!--  --></i>
                     <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg"><b>Ticket Types</b> will create purchasable tickets for people registering for ${eventtype.typeName}.<br/>You can also add <b>Price Schedules</b> to modify the price of a Ticket Type for a duration of time.<br/>For example, you can have a Ticket Type titled <em>"Youth Discount (ID Required)"</em>,<br/> where the Price Schedule will be cheaper than General Admission by <em>$10</em> for <em>two months</em>.</span>
@@ -693,6 +693,9 @@
 
             initTicketList();
         }
+        window.onbeforeunload = function() {
+            return "If you have unsaved changes in either tabs on this page, your changes will be lost.";
+        }
 
         function initUIElements(){
             jQuery('.menu .item').tab();
@@ -757,7 +760,6 @@
                 }
             })
             
-            console.log('init complete:', ticketObjects);
             if(ticketAry.length > 0){
                 renderScheduleGraph();
             }
@@ -775,6 +777,7 @@
                 }else{
                     jQuery('#add-type-error').hide();
                     jQuery('#add-type-success').show();
+                    jQuery("#add-type-success").delay(5000).fadeOut('slow');
                     var ticket = new Ticket(ticketAry.length, name, price);
                     var schedule = new Schedule(scheduleAry.length, ticket.id, moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a'), price);
                     ticket.scheduleId = schedule.id;
@@ -786,6 +789,8 @@
                     scheduleObjects[scheduleAry.length] = schedule;
                     ticketAry.push(ticket);
                     scheduleAry.push(schedule);
+                    
+                    jQuery('#addTypeForm input[name="categoryName"]').val('').focus();
                     jQuery('#notify-save').show();
                 }
                 console.log('tickets:', ticketObjects)
@@ -827,7 +832,6 @@
             ticketObjects[currentTicketIndex].destroy();
             ticketAry.splice(currentTicketIndex, 1);
             delete ticketObjects[currentTicketIndex];
-            console.log(ticketAry);
             if(Object.keys(ticketObjects).length > 0){
                 renderScheduleGraph();
             }else{
@@ -1182,9 +1186,10 @@
         }
 
         function onBack(){
-            window.location="/bibs-server/eventitems?event=${event.id}";
+            // if(confirm("If you have unsaved changes in either tabs on this page, your changes will be lost. Do you still want to go back?")){
+                window.location="/bibs-server/eventitems?event=${event.id}";
+            // }
         }
-        
         
         function deleteItem(id){
             if(confirm("Delete Product?")){
