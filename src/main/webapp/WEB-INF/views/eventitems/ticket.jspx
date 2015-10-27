@@ -579,7 +579,7 @@
                 	jQuery('#distance-dropdown').dropdown('set selected', "5k");
                 	break;
                 case "8k":
-                	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+                	jQuery('#distance-dropdown').dropdown('set selected', "8k");
                 	break;
                 case "10k":
                 	jQuery('#distance-dropdown').dropdown('set selected', "10k");
@@ -596,7 +596,7 @@
                 case "Sprint":
                 	jQuery('#distance-dropdown').dropdown('set selected', "Sprint");
                 	break;
-                case "Sprint":
+                case "Olympic":
                 	jQuery('#distance-dropdown').dropdown('set selected', "Olympic");
                 	break;
                 case "Half":
