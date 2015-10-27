@@ -767,8 +767,13 @@
 
             initTicketList();
         }
+
+        var saved = false;
+        var alerted = false;
         window.onbeforeunload = function() {
-            return "If you have unsaved changes in either tabs on this page, your changes will be lost.";
+            if(!alerted &amp;&amp; !saved){
+                return "If you have unsaved changes in either tabs on this page, your changes will be lost.";
+            }
         }
 
         function initUIElements(){
@@ -1182,6 +1187,7 @@
                 data: JSON.stringify(postObjList),
                 complete: function(data) {
                     console.log('finished');
+                    saved = true;
                     alert('Your changes have been saved!');
                     jQuery('#saveTTPC').prop('disabled', true).text('Saving...');
                     window.location.reload();
@@ -1268,7 +1274,9 @@
 
         function onBack(){
             // if(confirm("If you have unsaved changes in either tabs on this page, your changes will be lost. Do you still want to go back?")){
-                window.location="/bibs-server/eventitems?event=${event.id}";
+            alerted = false;
+            saved = false;
+            window.location="/bibs-server/eventitems?event=${event.id}";
             // }
         }
         
@@ -1285,6 +1293,7 @@
                 dataType: "json",
                 data: { "id": id },
                 complete: function() {
+                    alerted = true;
                     onBack();
                 }
             });
@@ -1302,6 +1311,7 @@
                 dataType: "json",
                 data: { "id": id },
                 complete: function() {
+                    alerted = true;
                     onBack();
                 }
             });
