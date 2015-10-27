@@ -898,9 +898,11 @@
 	                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status)
 	                    		console.log(window.location)
 	                    		jQuery('#addType').modal('hide');
-	                    		window.location.href = "/bibs-server/eventitems/" + data.responseJSON.status
+	                    		//window.location.href = "/bibs-server/eventitems/" + data.responseJSON.status
+	                    		redirectTicket(data.responseJSON.status);
+	                    	} else {
+		                        window.location.reload();
 	                    	}
-	                        window.location.reload();
 	                    }
 	                })
             	}
