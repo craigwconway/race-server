@@ -732,6 +732,8 @@
         		jQuery('#reg-details-btn').text("Disable Registration Details");
         	} else{
         		jQuery('#reg-details-btn').text("Enable Registration Details");
+        		jQuery('input[name="price"]').val("");
+                jQuery('input[name="available"]').val("");
         	}
             jQuery('#reg-details-container').toggle();
         }
