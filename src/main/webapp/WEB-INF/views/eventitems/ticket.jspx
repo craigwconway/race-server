@@ -386,7 +386,7 @@
                     <div class="pull-right">
                     	<button class="ui red button" onClick="deleteItem(${eventcartitem.id})">Kill This</button>
                     	<button class="ui red button" onClick="deleteItemAndType(${eventcartitem.id})">Kill Family</button>
-                        <button class="ui green button" type="submit">Save</button>
+                        <button class="ui green button" onClick="updateEventTypeAndTicket(${eventtype.id}, ${eventcartitem.id })">Save</button>
                     </div>
                 </form>
             </div>
@@ -553,10 +553,54 @@
 
                 jQuery('#timedisp').data('DateTimePicker').setDate(this.itemStartM);
 
-                var parseDist = this.dist.split(' ');
-                this.distType = parseDist[1];
-                jQuery('#logisticsForm input[name="distance"]').val(parseDist[0]);
-                jQuery('#dist-' + this.distType).addClass('positive');
+                //Initialize Distance
+                switch(this.dist) {
+                case "N/A":
+                	jQuery('#distance-dropdown').dropdown('set selected', "N/A");
+                	break;
+                case "5k":
+                	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+                	break;
+                case "8k":
+                	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+                	break;
+                case "10k":
+                	jQuery('#distance-dropdown').dropdown('set selected', "10k");
+                	break;
+                case "15k":
+                	jQuery('#distance-dropdown').dropdown('set selected', "15k");
+                	break;
+                case "Half Marathon":
+                	jQuery('#distance-dropdown').dropdown('set selected', "Half Marathon");
+                	break;
+                case "Marathon":
+                	jQuery('#distance-dropdown').dropdown('set selected', "Marathon");
+                	break;
+                case "Sprint":
+                	jQuery('#distance-dropdown').dropdown('set selected', "Sprint");
+                	break;
+                case "Sprint":
+                	jQuery('#distance-dropdown').dropdown('set selected', "Olympic");
+                	break;
+                case "Half":
+                	jQuery('#distance-dropdown').dropdown('set selected', "Half");
+                	break;
+                case "Full":
+                	jQuery('#distance-dropdown').dropdown('set selected', "Full");
+                	break;
+                default:
+                	jQuery('#distance-dropdown').dropdown('set selected', "Custom");
+                	//var parseDist = dist.split(' ');
+                	//jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+                	//if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
+                	//if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
+                	//if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
+                	var parseDist = this.dist.split(' ');
+                    this.distType = parseDist[1];
+                    jQuery('#logisticsForm input[name="distance"]').val(parseDist[0]);
+                    jQuery('#dist-' + this.distType).addClass('positive');
+                }
+                
 
                 jQuery('#logisticsForm input[name="price"]').val(this.price);
                 // parseInt('${eventcartitem.available}') + parseInt('${eventcartitem.purchased}')
@@ -1290,6 +1334,9 @@
                     onBack();
                 }
             });
+        }
+        function updateEventTypeAndTicket(eventTypeId, eventCartItemId) {
+        	var request
         }
     </script>
 </div>
