@@ -1376,7 +1376,7 @@
         			dat.available = new Number(available);
         		}
         		var uploadUrl = "/bibs-server/eventitems/typeupdate"
-            	var uploadMethod = "POST"
+            	var uploadMethod = "PUT"
             	dat.id = new Number(eventCartItemId);
         		dat.eventType = {};
         		dat.eventType.id = eventTypeId;
