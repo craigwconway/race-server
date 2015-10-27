@@ -389,10 +389,10 @@ public class EventCartItemController {
             }
             eventType.setMeters(meters);
             if(eventType.getTypeName() != null && !eventType.getTypeName().isEmpty()) {
-            	System.out.println("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName());
+            	//System.out.println("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName());
             } else {
             	eventType.setTypeName(eventType.getRacetype() + " - " + eventType.getDistance());
-            	System.out.println("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName() + " with an automatic name");
+            	//System.out.println("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName() + " with an automatic name");
             }
             try {
                 SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
@@ -502,7 +502,6 @@ public class EventCartItemController {
         }
         
         trueEventType.setEvent(event);
-        	System.out.println("Create a new event type");
         	if(eventType.getDistance() == null || eventType.getRacetype() == null || eventType.getTimeStartLocal() == null) {
         		return SpringJSONUtil.returnErrorMessage("InvalidEventType", HttpStatus.BAD_REQUEST);
         	}
@@ -581,12 +580,12 @@ public class EventCartItemController {
         	trueEventCartItem.setTimeStart(eventCartItem.getTimeStart());
         	trueEventCartItem.setPrice(eventCartItem.getPrice());
         	trueEventCartItem.setName(eventCartItem.getName());
-        	if(eventCartItem.getAvailable() > trueEventCartItem.getAvailable() + trueEventCartItem.getPurchased()) {
-        		trueEventCartItem.setAvailable(eventCartItem.getAvailable() + trueEventCartItem.getAvailable() - eventCartItem.getPurchased());
+        	if(eventCartItem.getAvailable() != trueEventCartItem.getAvailable() + trueEventCartItem.getPurchased()) {
+        		trueEventCartItem.setAvailable(Math.max(0,eventCartItem.getAvailable() - trueEventCartItem.getPurchased()));
         	}
 
         	//if(eventCartItem.getAvailable() - eventCartItem.getPurchased() < 0) eventCartItem.setAvailable(0); 
-            //eventCartItem.merge();
+            trueEventCartItem.merge();
         }
         return SpringJSONUtil.returnStatusMessage(eventCartItem.getId().toString(), HttpStatus.OK);
     }    
