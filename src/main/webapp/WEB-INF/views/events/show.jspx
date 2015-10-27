@@ -838,7 +838,8 @@
             		dat.type = "TICKET";
             		dat.name = distance;
             		dat.price = price;
-            		dat.timeStartLocal = parseDate;
+            		//dat.timeStartLocal = parseDate;
+            		dat.timeStartLocal = jQuery('#ECIStart').val();
             		dat.timeEndLocal = timeEndLocal;
             		if (available == null || available == "") {
             			dat.available = new Number(10000000);

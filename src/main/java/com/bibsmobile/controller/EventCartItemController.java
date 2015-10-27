@@ -519,7 +519,8 @@ public class EventCartItemController {
             trueEventType.setDistance(eventType.getDistance());
             trueEventType.setMeters(meters);
             trueEventType.setRacetype(eventType.getRacetype());
-            if(trueEventType.getTypeName() != null && !eventType.getTypeName().isEmpty()) {
+            if(eventType.getTypeName() != null && !eventType.getTypeName().isEmpty()) {
+            	trueEventType.setTypeName(eventType.getTypeName());
             	System.out.println("The event type " + eventType.getTypeName() +  " has been created in "+ event.getName());
             } else {
             	trueEventType.setTypeName(eventType.getRacetype() + " - " + eventType.getDistance());
@@ -547,7 +548,7 @@ public class EventCartItemController {
 
             SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
             format.setTimeZone(event.getTimezone());
-            eventCartItem.setName(trueEventType.getDistance());
+            eventCartItem.setName(trueEventType.getTypeName());
             Calendar timeStart = new GregorianCalendar();
             Calendar timeEnd = new GregorianCalendar();
 			timeStart.setTime(format.parse(eventCartItem.getTimeStartLocal()));
