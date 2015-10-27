@@ -357,14 +357,14 @@
                             <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
                                 <div class="content">
                                     <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                    <div class="description">add a new product</div>
+                                    <div class="description">add a new shirt/donation</div>
                                     <div class="extra content">
                                         <div class="left floated"><span style="visibility:hidden">sold</span></div>
                                         <div class="right floated"><span style="visibility:hidden">$price</span></div>
                                     </div>
                                 </div>
                                 <div class="ui bottom attached button">
-                                    <i class="fa fa-plus"><!--  --></i> product
+                                    <i class="fa fa-plus"><!--  --></i> shirt/donation
                                 </div>
                             </div>
                         </c:if>
@@ -413,7 +413,7 @@
                             <div class="ui required input">
                                 <input  type="text"
                                         name="topSharerReward"
-                                        placeholder="Reward description"
+                                        placeholder="i.e. Top sharer gets a free limited edition hoodie!"
                                         data-parsley-error-message="Please provide a reward description for the top sharer."
                                         data-parsley-required="true"></input>
                             </div>
