@@ -433,11 +433,11 @@
                         </div>
                     </div>
                 </div>
-                <h3 class="ui horizontal header divider">
-                    <i class="fa fa-calendar"><!--  --></i>
-                    Price Schedules
-                </h3>
-                <div class="ui basic text segment" style="text-align:left;width:70%;margin:0 auto">
+                <div class="ui basic text segment" id="schedule-main-container" style="text-align:left;width:70%;margin:0 auto">
+                    <h3 class="ui horizontal header divider">
+                        <i class="fa fa-calendar"><!--  --></i>
+                        Price Schedules
+                    </h3>
                     <div class="ui divided list" id="schedule-list" style="display:none">
                         <c:if test="${not empty eventitempricechanges}">
                         <c:forEach var="item" items="${eventitempricechanges}">
@@ -627,16 +627,19 @@
                 if(this.cardDOM !== null){
                     jQuery(this.cardDOM).remove();
                 }
-                if(this.ticketTypeRowDOM !== null){
-                    jQuery(this.ticketTypeRowDOM).remove();
+                if(this.scheduleList.length > 0){
+                    console.log('cleaning scheduleList', this.scheduleList);
+                    for(var i in this.scheduleList){
+                        this.scheduleList[this.scheduleList.length-1].destroy();
+                    }
                 }
+                // if(this.ticketTypeRowDOM !== null){
+                //     jQuery(this.ticketTypeRowDOM).remove();
+                // }
                 jQuery('#schedule-table tbody').find('.row-' + this.id).remove();
                 if(this.dropdownDOM !== null){
                     jQuery(this.dropdownDOM).remove();
                     jQuery('#ticketTypeListDropdown').dropdown('refresh');
-                }
-                if(ticketAry.length == 1){
-                    scheduleAry.length = 0;
                 }
                 delete this;
             }
@@ -658,8 +661,8 @@
         var scheduleAry = [];
         var scheduleObjects = {};
         Schedule = function(id, ticketId, startDate, price, mainRow){
-            this.id = id;
-            this.ticketId = ticketId;
+            this.id = +id;
+            this.ticketId = +ticketId;
             this.startDate = startDate;
             this.price = +price;
             this.mainRow = mainRow;
@@ -689,41 +692,49 @@
                 this.price = +price;
             }
             this.destroy = function(){
-                if(this.mainRow == true){
-                    var sched = null;
-                    var schedIndex = null;
-                    var nextSched = null;
-                    var nextSchedIndex = null;
-                    var scheduleList = ticketObjects[this.ticketId].scheduleList;
-                    if(scheduleList.length > 1){
+                console.log('destroy called on:', this);
+                if(this.scheduleRowDOM !== null){
+                    jQuery(this.scheduleRowDOM).remove();
+                }else{
+                    if(this.mainRow == true){
+                        console.log('scheduleList in question:', JSON.stringify(ticketObjects[this.ticketId].scheduleList));
+
+                        // ticketObjects[this.ticketId].scheduleList.length = 0;
+                        // ticketObjects[this.ticketId].render();
+                        // var sched = null;
+                        // var schedIndex = null;
+                        // var schedId = null;
+
+                        //     // promote next available schedule element to header row, then remove current schedule from ticket list
+                        //     console.log('schedule in question:', ticketObjects[this.ticketId].scheduleList[schedIndex], 'in:', ticketObjects[this.ticketId].scheduleList);
+                        //     ticketObjects[this.ticketId].scheduleList[schedIndex].mainRow = true;
+                        //     schedId = ticketObjects[this.ticketId].scheduleList[schedIndex].id;
+
+                        //     ticketObjects[this.ticketId].scheduleId = schedId;
+                        //     ticketObjects[this.ticketId].render();
+                        // }else{
+                        //     jQuery('#schedule-table tbody').find('.row-' + this.ticketId).remove();
+                        //     ticketObjects[this.ticketId].scheduleList.length = 0;
+                        //     ticketObjects[this.ticketId].scheduleId = null;
+                        // }
+                    }else{
+                        var scheduleList = ticketObjects[this.ticketId].scheduleList;
+
                         for(var i in scheduleList){
                             if(scheduleList[i].id == this.id){
                                 sched = scheduleList[i];
                                 schedIndex = i;
-                                nextSched = scheduleList[i+1];
-                                nextSchedIndex = i+1;
-                                if(i == scheduleList.length - 1){
-                                    nextSched = scheduleList[i-1];
-                                    nextSchedIndex = i-1;
-                                }
+                                // console.log('main row schedule:', sched);
                             }
                         }
-                    }
-                    jQuery('#schedule-table tbody').find('.row-').remove();
 
-                    // promote next available schedule element to header row, then remove current schedule from ticket list
-                    ticketObjects[this.ticketId].scheduleList[nextSchedIndex].mainRow = true;
-                    ticketObjects[this.ticketId].scheduleList.splice(schedIndex, 1);
-                    ticketObjects[this.ticketId].render();
-                    delete scheduleObjects[this.id];
-
-                    this.mainRow = false;
-                }else{
-                    if(this.scheduleRowDOM !== null){
-                        jQuery(this.scheduleRowDOM).remove();
+                        ticketObjects[this.ticketId].scheduleList.splice(schedIndex, 1);
                     }
                 }
 
+                jQuery('#schedule-table tbody').find('.row-' + this.ticketId).find('td:first-child').attr('rowspan', ticketObjects[this.ticketId].scheduleList.length-1);
+
+                delete scheduleObjects[this.id];
                 delete this;
             }
         }
@@ -838,6 +849,7 @@
                 console.log('schedules:', scheduleObjects)
                 if(ticketAry.length > 0){
                     renderScheduleGraph();
+                    jQuery('#schedule-main-container').show();
                 }
             }
         }
@@ -847,6 +859,9 @@
             var ticket = null;
 
             ticket = ticketObjects[id];
+            console.log('current ticketAry', ticketAry);
+            console.log('current ticketObjects', ticketObjects);
+            console.log('current ticket', ticket);
 
             jQuery('#editTicketTypeModal input[name="categoryName"]').val(ticket.name);
             jQuery('#editTicketTypeModal input[name="price"]').val(ticket.base);
@@ -857,6 +872,7 @@
             var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
             var price = jQuery('#editTicketTypeModal input[name="price"]').val();
             ticketAry[currentTicketIndex].update(name, price);
+            ticketObjects[currentTicketIndex].update(name, price);
             ticketAry[currentTicketIndex].render();
             renderScheduleGraph();
 
@@ -864,10 +880,16 @@
         }
 
         function removeTicketType(){
-            ticketAry[currentTicketIndex].destroy();
+            ticketObjects[currentTicketIndex].destroy();
             ticketAry.splice(currentTicketIndex, 1);
-            if(ticketAry.length > 0){
+            delete ticketObjects[currentTicketIndex];
+            console.log(ticketAry);
+            if(Object.keys(ticketObjects).length > 0){
                 renderScheduleGraph();
+            }else{
+                ticketAry.length = 0;
+                scheduleAry.length = 0;
+                jQuery('#schedule-main-container').hide();
             }
             closeModal();
             currentTicketIndex = null;
@@ -1052,12 +1074,13 @@
         var graphLegend = [];
         function renderScheduleGraph(){
             var dataset = [];
+            var legend = [];
 
-            // console.log('convert to graph data', ticketObjects);
+            console.log('convert to graph data', ticketObjects);
             for(var key in ticketObjects){
                 var ticket = ticketObjects[key];
                 var ticketType = [];
-                graphLegend.push(ticket.name);
+                legend.push(ticket.name);
                 var schedules = ticket.scheduleList.reverse();
                 var lastValue = null;
                 for(var i in schedules){
@@ -1076,10 +1099,12 @@
 
                 dataset.push(ticketType);
             }
-            
+
             graphData.length = 0;
+            graphLegend.length = 0;
             graphData = dataset;
-            // console.log('converted data', dataset);
+            graphLegend = legend;
+            console.log('converted data', dataset);
             initPriceScheduleVisualization();
         }
 
@@ -1158,9 +1183,10 @@
 
         var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
         var eventCartStartDate = moment('${eventcartitem.timeStartLocal}', 'YYYY-MM-DD hh:mm:ss.S').format('MM/DD/YYYY h:mm:ss a');
-        var eventCartEndDate = moment('${eventcartitem.timeEndLocal}', 'YYYY-MM-DD hh:mm:ss.S').format('MM/DD/YYYY h:mm:ss a');
+        var eventCartEndDate = moment('${eventcartitem.timeEndLocal}', 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
         eventStart = moment(eventStart, 'MM/DD/YYYY h:mm:ss a');
         eventCartStartDate = moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a');
+        console.log(eventCartStartDate, '${eventcartitem.timeEndLocal}', eventCartEndDate);
         function initDateTimePickers(){
             jQuery("#timedisp").datetimepicker({
                 pickDate: false
