@@ -844,9 +844,17 @@
                 jQuery('#add-type-error').hide();
                 var name = jQuery('#addTypeForm input[name="categoryName"]').val();
                 var price = jQuery('#eci-base-price').val();
-                if(ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
+                var addError = false;
+                for(var i in ticketObjects){
+                    ticket = ticketObjects[i];
+                    if(ticket.name.toLowerCase() == name.toLowerCase()){
+                        addError = true;
+                    }
+                }
+                if( addError ){
                     jQuery('#add-type-error').show();
                     jQuery('#add-type-success').hide();
+                    console.log(ticketAry)
                     console.log('found duplicate');
                 }else{
                     jQuery('#add-type-error').hide();
@@ -904,7 +912,6 @@
 
         function removeTicketType(){
             ticketObjects[currentTicketIndex].destroy();
-            ticketAry.splice(currentTicketIndex, 1);
             delete ticketObjects[currentTicketIndex];
             if(Object.keys(ticketObjects).length > 0){
                 renderScheduleGraph();

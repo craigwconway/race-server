@@ -314,7 +314,7 @@
                                 </div>
                                 <div style="clear:both"><!--  --></div>
                                 <div class="pull-right">
-                                    <button class="ui green button" type="submit">Save</button>
+                                    <button class="ui green button" id="shirtSaveButton" type="submit">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -421,7 +421,7 @@
                     </div>
                     <div style="clear:both"><!--  --></div>
                     <div class="pull-right">
-                        <button class="ui green button" type="submit">Save</button>
+                        <button class="ui green button" id="socialSaveButton" type="submit">Save</button>
                     </div>
                 </form>
             </div>
@@ -547,7 +547,7 @@
                     </div>
                     <div style="clear:both"><!--  --></div>
                     <div class="pull-right">
-                        <button class="ui green button" type="submit">Save</button>
+                        <button class="ui green button" id="transferSaveButton" type="submit">Save</button>
                     </div>
                 </form>
             </div>
@@ -590,6 +590,26 @@
                 jQuery('#couponECI').dropdown('set text', 'none');
                 jQuery(this).find('input[type="text"],input[type="number"]').val('');
             });
+
+            var transfer = '${event.ticketTransferEnabled}';
+            var transferDate = '${event.ticketTransferCutoffLocal}';
+            var def = moment();
+
+            if( transfer == 'true' ){
+                jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
+            }
+            if( transferDate !== 'null' || transferDate !== "" ){
+                def = moment(transferDate, 'MM/DD/YYYY h:mm:ss a');
+            }
+
+            jQuery("#cutoff-date")
+                .datetimepicker({
+                    defaultDate: def,
+                    useSeconds: false
+                });
+
+            jQuery('#cutoff-date').data("DateTimePicker").setMinDate(moment());
+
 
             shareHandler();
             transferHandler();
@@ -1086,6 +1106,8 @@
                 obj.socialSharingDiscountAmount = shareAmount;
                 obj.topSharerReward = encodeURIComponent(shareMsg);
 
+                jQuery('#socialSaveButton').prop('disabled', true).text('Saving...');
+
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/socialsharing",
                     type: "PUT",
@@ -1102,25 +1124,7 @@
         }
 
         function transferHandler(){
-            var transfer = '${event.ticketTransferEnabled}';
-            var transferDate = '${event.ticketTransferCutoff}';
-            var def = Date();
-
-            if( transfer == 'true' ){
-                jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
-            }
-            if( transferDate !== 'null' || transferDate !== "" ){
-                def = moment(transferDate);
-            }
-            
-            jQuery("#cutoff-date")
-                .datetimepicker({
-                    defaultDate: def,
-                    useSeconds: false
-                });
-
-            jQuery('#cutoff-date').data("DateTimePicker").setMinDate(Date());
-            
+                        
             jQuery('#transferForm').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
@@ -1129,6 +1133,8 @@
             jQuery("#transferForm").submit(function() {
                 var transfer = jQuery('input[name="ticketTransferEnabled"]').prop("checked");
                 var transferDate = jQuery('input[name="ticketTransferCutoff"]').val();
+
+                jQuery('#transferSaveButton').prop('disabled', true).text('Saving...');
 
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/tickettransfer" + "?tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
@@ -1152,6 +1158,7 @@
 
             jQuery("#shirtsLimitedForm").submit(function() {
                 var shirtsLimited = jQuery('input[name="shirtsLimited"]').prop("checked");
+                jQuery('#shirtSaveButton').prop('disabled', true).text('Saving...');
 
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/regsettings" + "?shirtslimited="+shirtsLimited,

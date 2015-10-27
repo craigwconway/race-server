@@ -473,7 +473,7 @@
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 <c:if test="${not empty eventTypes}">
-                                    <li><a href="#" data-toggle='modal' data-target='#bibsModal'>Manage Bib Numbers</a></li>
+                                    <li><a href="#" data-toggle='modal' data-target='#bibsModal'>Assign Bib Numbers</a></li>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
