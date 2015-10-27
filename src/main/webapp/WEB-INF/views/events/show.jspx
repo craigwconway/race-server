@@ -364,7 +364,7 @@
                                 <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
                             </div>
                         </div>
-                        <div class="ui teal button" id="reg-details-btn" onclick="regDetails()">Show/Hide Registration Details</div>
+                        <div class="ui teal button" id="reg-details-btn" onclick="regDetails()">Disable Registration Details</div>
                         <div id="reg-details-container" style="display:true;margin-top:20px">
                             <h3 class="ui dividing header">Registration Details</h3>
                             <div class="eight wide required field">
@@ -728,6 +728,11 @@
         }
 
         function regDetails(){
+        	if(jQuery('#reg-details-btn').text() === "Enable Registration Details") {
+        		jQuery('#reg-details-btn').text("Disable Registration Details");
+        	} else{
+        		jQuery('#reg-details-btn').text("Enable Registration Details");
+        	}
             jQuery('#reg-details-container').toggle();
         }
 
@@ -746,9 +751,7 @@
             var timeEndLocal = jQuery('input[name="timeEndLocal"]').val();
             if( (currEventCartItemId != null &amp;&amp; currEventCartItemId != "") 
             		|| (price != null &amp;&amp; price != "")
-            		|| (available != null &amp;&amp; available != "")
-            		|| (timeStartLocal != null &amp;&amp; timeStartLocal != "")
-            		|| (timeEndLocal != null &amp;&amp; timeEndLocal != "")) {
+            		|| (available != null &amp;&amp; available != "")) {
             	saveType = "ticket";
             }
             	
@@ -815,7 +818,7 @@
 	                }
 					console.log("[dropdownDistance: " + dropdownDistance + ", distance: " + distance + ",  distType: " + distType + "]");
 	                dat.typeName = typeName;
-	                if(dropdownDistance !== "" &amp;&amp; dropdownDistance != "Custom") {
+	                if(dropdownDistance === "" || dropdownDistance === "Custom") {
 	                	dat.distance = distance + distType;
 	                } else {
 	                	dat.distance = dropdownDistance;
@@ -1009,6 +1012,9 @@
         function editEventType(typeName, type, dist, raceTime, id, ticketId, ticketAvail, ticketStart, ticketEnd, ticketPrice){
             currEventTypeId = id;
             currEventCartItemId = ticketId;
+            jQuery('#reg-details-container').hide();
+            jQuery('#reg-details-btn').text("Enable Registration Details");
+            jQuery()
             jQuery(".post-event-type").hide();
             jQuery(".put-event-type").show();
 			if(ticketId != null) {
