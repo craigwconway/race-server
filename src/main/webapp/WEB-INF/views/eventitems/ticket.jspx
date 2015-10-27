@@ -1337,7 +1337,13 @@
             });
         }
         function updateEventTypeAndTicket(eventTypeId, eventCartItemId) {
-        	var request
+            var price = jQuery('#logisticsForm input[name="price"]').val();
+            var typeName = jQuery('#logisticsForm input[name="typeName"]').val();
+            var raceType = jQuery('#logisticsForm input[name="raceType"]').val();
+            var available = jQuery('input[name="available"]').val();
+            var timeStartLocal = jQuery('input[name="timeStartLocal"]').val();
+            var timeEndLocal = jQuery('input[name="timeEndLocal"]').val();
+			console.log('[price: ' + price + ', available: ' + available + ', timeStartLocal: ' + timeStartLocal + ', timeEndLocal: ' + timeEndLocal + ']')
         }
     </script>
 </div>
