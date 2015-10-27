@@ -530,25 +530,25 @@
                     <c:if test='${event.regEnabled}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectDisableReg()">
-                             open registration <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             registration is open <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${(!event.regEnabled)}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectEnableReg()">
-                             close registration <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             registration is closed <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${event.live}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectDisableLive()">
-                             public listing <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             listing is public <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${(!event.live)}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectEnableLive()">
-                             private listing <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             listing is private <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                 </c:if>
