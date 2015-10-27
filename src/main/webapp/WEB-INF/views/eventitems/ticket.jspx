@@ -659,6 +659,7 @@
             this.startDate = startDate;
             this.price = +price;
             this.mainRow = mainRow;
+            this.scheduleRowDOM = null;
             this.renderSubRow = function(){
                 if(this.scheduleRowDOM !== null){
                     jQuery(this.scheduleRowDOM).remove();
@@ -682,6 +683,44 @@
             this.update = function(date, price){
                 this.startDate = date;
                 this.price = +price;
+            }
+            this.destroy = function(){
+                if(this.mainRow == true){
+                    var sched = null;
+                    var schedIndex = null;
+                    var nextSched = null;
+                    var nextSchedIndex = null;
+                    var scheduleList = ticketObjects[this.ticketId].scheduleList;
+                    if(scheduleList.length > 1){
+                        for(var i in scheduleList){
+                            if(scheduleList[i].id == this.id){
+                                sched = scheduleList[i];
+                                schedIndex = i;
+                                nextSched = scheduleList[i+1];
+                                nextSchedIndex = i+1;
+                                if(i == scheduleList.length - 1){
+                                    nextSched = scheduleList[i-1];
+                                    nextSchedIndex = i-1;
+                                }
+                            }
+                        }
+                    }
+                    jQuery('#schedule-table tbody').find('.row-').remove();
+
+                    // promote next available schedule element to header row, then remove current schedule from ticket list
+                    ticketObjects[this.ticketId].scheduleList[nextSchedIndex].mainRow = true;
+                    ticketObjects[this.ticketId].scheduleList.splice(schedIndex, 1);
+                    ticketObjects[this.ticketId].render();
+                    delete scheduleObjects[this.id];
+
+                    this.mainRow = false;
+                }else{
+                    if(this.scheduleRowDOM !== null){
+                        jQuery(this.scheduleRowDOM).remove();
+                    }
+                }
+
+                delete this;
             }
         }
 
@@ -962,7 +1001,31 @@
             closeModal();
         }
 
-        function removeSchedule(){
+        function removeSingleSchedule(){
+            var schedule = scheduleObjects[currentScheduleIndex];
+            var ticket = ticketObjects[schedule.ticketId];
+            var scheduleList = ticket.scheduleList;
+            var index = null;
+            for(var i in scheduleList){
+                if(scheduleList[i].id == currentScheduleIndex){
+                    schedule = scheduleList[i];
+                    index = i;
+                }
+            }
+
+            if(ticket.scheduleList.length == 1){
+                currentTicketIndex = schedule.ticketId;
+                removeTicketType();
+            }else{
+                ticketAry[currentTicketIndex].scheduleList[index].destroy();
+            }
+
+            if(ticketAry.length > 0){
+                renderScheduleGraph();
+            }
+            currentTicketIndex = null;
+            currentScheduleIndex = null;
+            closeModal();
         }
 
         var graphData = [];
@@ -1003,7 +1066,7 @@
 
         function saveTicketSettings(){
             var postObjList = [];
-            var eci = { id: '${eventcartitem.id}' };
+            var eci = { id: +'${eventcartitem.id}' };
 
             for(var i in ticketAry){
                 var schedules = ticketAry[i].scheduleList.reverse();
@@ -1027,32 +1090,31 @@
                 })
             }
             
+            if(postObjList.length == 0){
+                var postObj = {};
+                postObj.eventCartItem = eci;
+                postObj.categoryName = 'General Admission';
+                postObj.price = +'${eventcartitem.price}';
+                postObj.dateStartLocal = moment(eventCartStartDate, 'YYYY-MM-DDThh:mm:ss.SSSZ').format('MM/DD/YYYY h:mm:ss a');
+                postObjList.push(postObj);
+                alert('You haven\'t indicated any Ticket Types. We created for you one default Ticket Type called "General Admission".');
+            }
             console.log(postObjList);
-            // jQuery.ajax({
-            //     url: "/bibs-server/eventitemspricechanges/jsonArray",
-            //     contentType: 'application/json',
-            //     type: 'DELETE',
-            //     dataType: 'json',
-            //     data: JSON.stringify(delList),
-            //     complete: function() {
-            //         var request = jQuery.ajax({
-            //             url: "/bibs-server/eventitemspricechanges/jsonArray",
-            //             contentType: 'application/json',
-            //             dataType: 'json',
-            //             type: 'POST',
-            //             data: JSON.stringify(postObjList),
-            //             statusCode: {
-            //                 200: function() {
-            //                     alert("There was an error while saving your price changes. Please try again!");
-            //                     onBack();
-            //                 },
-            //                 201:function(){
-            //                     onBack();
-            //                 }
-            //             }
-            //         });
-            //     }
-            // });
+            jQuery.ajax({
+                url: "/bibs-server/eventitemspricechanges/jsonArraySmart",
+                contentType: 'application/json',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify(postObjList),
+                statsCode: {
+                    422: function(){
+                        alert('There was an error in saving your ticket types and price schedule!')
+                    },
+                    201: function(){
+                        alert('Your changes have been saved!');
+                    }
+                }
+            });
         }
 
         function initPriceScheduleVisualization(){
