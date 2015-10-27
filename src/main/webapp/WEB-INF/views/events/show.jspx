@@ -323,7 +323,7 @@
 							</div>
 							<div class="ten wide inline required field" style="margin: 0.5em 0em 0em">
    
-                                <input type="number" name="distance" placeholder="Distance" min="0" style="width: 100px"><!--  --></input>
+                                <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px"><!--  --></input>
                                 <div class="ui icon buttons" style="margin-left:10px">
                                     <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
                                     <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
