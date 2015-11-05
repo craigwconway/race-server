@@ -272,7 +272,7 @@
                             <div class="header">
                                 We can't allow that discount.
                             </div>
-                            <p>Please select a discount lower than 100%.</p>
+                            <p>Please select a discount up to 100%.</p>
                         </div>
                     </div>
                 </div>
@@ -767,7 +767,7 @@
                 obj.discountAbsolute = discount * 100;
             }
             if( jQuery('#disc-perc').hasClass('positive') ){
-                if(parseFloat(discount) &lt; 100){
+                if(parseFloat(discount) &lt;= 100){
                     obj.discountRelative = parseFloat(discount);
                     jQuery('#coupon-error-percent').hide();
                     error = false;
