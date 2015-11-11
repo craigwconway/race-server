@@ -169,12 +169,6 @@
     </script>
     <div class="white-overlay">
         <div class="info-container">
-        <!--     </sec:authorize>
-            <sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                <button class="btn btn-success pull-left btn-top" onclick="document.location='/bibs-server/raceresults/bibs';" style="margin:0;margin-left: 3px;" type="button">
-        		Write Bibs
-        	</button>
-            </sec:authorize> -->
             <div class="pull-left">
                 <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()">
                     <option id="event-0" value="0">All Events</option>

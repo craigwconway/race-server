@@ -9,6 +9,7 @@ package com.bibsmobile.model;
  *
  */
 public enum BadgeTriggerEnum {
+	MANUAL,
 	ASSOCIATE_INSTAGRAM,
 	INSTAGRAM_WEBHOOK,
 	ASSOCIATE_MAPMYRUN,

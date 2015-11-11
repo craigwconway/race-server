@@ -42,6 +42,8 @@ public class Badge {
 	
 	private String name;
 	
+	private String description;
+	
 	private String url;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -107,6 +109,22 @@ public class Badge {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Short description for badge.
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Short description for badge.
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**
