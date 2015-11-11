@@ -5,7 +5,7 @@
     <link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" aria-labelledby="live-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="live-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" aria-labelledby="waiver-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="waiver-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="email-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="email-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -111,7 +111,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="bibsModal" tabindex="-1" role="dialog" aria-labelledby="bibs-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="bibsModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="bibs-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -168,7 +168,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="export-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -224,7 +224,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="exportAthletes" tabindex="-1" role="dialog" aria-labelledby="export-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="exportAthletes" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="export-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -259,15 +259,16 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addType" tabindex="-1" role="dialog" aria-labelledby="eventtype-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="addType" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="eventtype-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
-                    <h4 class="modal-title" id="eventtype-label">Add Event Type</h4>
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-times"></span></button>
+                    <h4 class="modal-title" id="eventtype-label">Manage Event Type</h4>
                 </div>
                 <div class="modal-body">
                     <div class="ui form" id="putFieldForm">
+                        <h3 class="ui dividing header">Logistics</h3>
                         <div class="fields">
                             <div class="twelve wide required field">
                                 <label style="width:100%" id="racetypes">Race Types</label>
@@ -291,14 +292,42 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="fields">
-                            <div class="twelve wide inline required field" style="margin: 0.5em 0em 0em">
-                                <label id="distance" style="width:100%">Distance</label>
-                                <input type="text" name="distance" placeholder="Distance"><!--  --></input>
-                                <div class="ui icon buttons" style="margin-left:3px">
-                                    <div class="ui positive button dist-btn" id="dist-mi"><b>mi</b></div>
-                                    <div class="ui button dist-btn" id="dist-km"><b>km</b></div>
-                                    <div class="ui button dist-btn" id="dist-m"><b>m</b></div>
+                        <div class="fields" style="position:relative">
+                         <label id="distance" style="width:100%">Distance</label>	
+                            <div class="five wide inline required field" style="margin: 0.5em 0em 0em">
+                            
+                               
+                                <div class="ui fluid search selection dropdown" id="distance-dropdown">
+                                    <input type="hidden" name="dist"><!--  --></input>
+                                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                    <div class="default text">Select Distance</div>
+                                    <div class="menu">
+                                    	<div class="item" data-value="N/A">N/A</div>
+                                        <div class="item" data-value="5k">5k</div>
+                                        <div class="item" data-value="8k">8k</div>
+                                        <div class="item" data-value="10k">10k</div>
+                                        <div class="item" data-value="12k">12k</div>
+                                        <div class="item" data-value="15k">15k</div>
+                                        <div class="item" data-value="Half Marathon">Half Marathon</div>
+                                        <div class="item" data-value="Marathon">Marathon</div>
+                                        <div class="item" data-value="Sprint">Spring</div>
+                                        <div class="item" data-value="Olympic">Olympic</div>
+                                        <div class="item" data-value="Half">Half (Triathlon)</div>
+                                        <div class="item" data-value="Full">Full (Triathlon)</div>
+                                        <div class="item" data-value="Custom">Custom</div>
+                                    </div>
+                                </div>
+							</div>
+							<div class="one wide inline required field" style="margin: 0.5em 0em 0em">
+							<div class="ui vertical divider" style="height:33%; left:34%; top:75%">or</div>
+							</div>
+							<div class="ten wide inline required field" style="margin: 0.5em 0em 0em">
+   
+                                <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px"><!--  --></input>
+                                <div class="ui icon buttons" style="margin-left:10px">
+                                    <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
+                                    <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+                                    <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
                                 </div>
                             </div>
                         </div>
@@ -333,6 +362,58 @@
                             <div class="six wide field">
                                 <label>Highest Bib Number</label>
                                 <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="ui teal button" id="reg-details-btn" onclick="regDetails()">Disable Registration Details</div>
+                        <div id="reg-details-container" style="display:true;margin-top:20px">
+                            <h3 class="ui dividing header">Registration Details</h3>
+                            <div class="eight wide required field">
+                                <label style="width:100%">Price</label>
+                                <div class="ui labeled input">
+                                    <div class="ui label">$</div>
+                                    <input  type="number" name="price"
+                                            class="form-control"
+                                            placeholder="Base price"
+                                            min="0"
+                                            data-parsley-error-message="Invalid base price."
+                                            data-parsley-required="true"></input>
+                                </div>
+                            </div>
+                            <div class="eight wide field">
+                                <label style="width:100%">Max Participant Count</label>
+                                <input  type="number" name="available"
+                                    class="form-control" style="margin-top:5px"
+                                    placeholder="Max # of Participants"
+                                    min="1"
+                                    data-parsley-error-message="Invalid maximum number."
+                                    data-parsley-required="true"></input>
+                            </div>
+                            <div class="two fields">
+                                <label style="width:100%">Registration Window</label>
+                                <div class="required field">
+                                    <label>Open Date: </label>
+                                    <input  type="text" name="timeStartLocal"
+                                        id="ECIStart"
+                                        placeholder="Price start date"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                        data-parsley-error-message="Please specify a start date."
+                                        data-parsley-required="true"></input>
+                                </div>
+                                <div class="required field">
+                                    <label>Close Date: </label>
+                                    <input  type="text" name="timeEndLocal"
+                                        id="ECIEnd"
+                                        placeholder="Price end date"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                        data-parsley-error-message="Please specify an end date."
+                                        data-parsley-required="true"></input>
+                                <div class="ui pointing label">
+      								Must end before your event starts
+    							</div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -382,17 +463,17 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
                                 <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
-                                    <li><a href="#" onclick="redirectEnableReg(); return false;">Enable Registration</a></li>
+                                    <li><a href="#" onclick="redirectEnableReg(); return false;">Open Registration</a></li>
                                 </c:if>
                                 <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
-                                    <li><a href="#" onclick="redirectDisableReg(); return false;">Disable Registration</a></li>
-                                    <li><a href="#" onclick="redirectManageReg(); return false;">Manage Registration</a></li>
+                                    <li><a href="#" onclick="redirectDisableReg(); return false;">Close Registration</a></li>
+                                    <li><a href="#" onclick="redirectManageReg(); return false;">Registration Tools</a></li>
                                     <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
                                     <li><a href="#" data-toggle='modal' data-target='#exportReg'>Export Registrations</a></li>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 <c:if test="${not empty eventTypes}">
-                                    <li><a href="#" data-toggle='modal' data-target='#bibsModal'>Manage Bib Numbers</a></li>
+                                    <li><a href="#" data-toggle='modal' data-target='#bibsModal'>Assign Bib Numbers</a></li>
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -401,7 +482,7 @@
                                 <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
                                 </c:if>
                                 </sec:authorize>
-                                <li><a href="#" onclick="regUrl();return false;">Generate Registration Button</a></li>
+                                <li><a href="#" onclick="regUrl();return false;">Registration URL/Link</a></li>
                                 <li><a href="#" data-toggle='modal' data-target='#waiverModal'>Waiver</a></li>
                             </ul>
                         </li>
@@ -449,25 +530,25 @@
                     <c:if test='${event.regEnabled}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectDisableReg()">
-                             reg <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             registration is open <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${(!event.regEnabled)}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectEnableReg()">
-                             reg <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             registration is closed <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${event.live}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectDisableLive()">
-                             live <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             listing is public <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${(!event.live)}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectEnableLive()">
-                             live <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             listing is private <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                 </c:if>
@@ -484,24 +565,46 @@
             <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" /> first start <fmt:formatDate type="time" value="${eventDate}" /></div>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
-                    <button type="button" class="btn btn-default" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <button type="button" class="ui basic black button" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <c:if test="${not empty eventTypes}"><button type="button" class="ui teal button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
                 </div>
                 <c:if test="${not empty eventTypes}">
                     <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
-                    <table class="ui small table">
+                    <table class="ui small compact stackable table">
                         <thead><tr>
                             <th>Name</th>
                             <th>Type</th>
                             <th>Distance</th>
                             <th>Start Time</th>
+                            <th>Registration</th>
+                            <th># Registered</th>
+                            <th># Athletes</th>
                         </tr></thead>
                         <tbody>
-                            <c:forEach var="item" items="${eventTypes}"><tr class="eventtype-item" onclick="editEventType('${item.typeName}', '${item.racetype}', '${item.distance}', '${item.timeStartLocal}', '${item.id}')">
-                                <td>${item.typeName}</td>
-                                <td>${item.racetype}</td>
-                                <td>${item.distance}</td>
-                                <td>${item.timeStartLocal}</td>
-                            </tr></c:forEach>
+                            <c:forEach var="item" items="${metatype}">
+	                            <c:if test="${item.ticket != null }">
+		                            <tr class="eventtype-item" onclick="redirectTicket(${item.ticket.id})">    
+		                                <td>${item.type.typeName}</td>
+		                                <td>${item.type.racetype}</td>
+		                                <td>${item.type.distance}</td>
+		                                <td>${item.type.timeStartLocal}</td>
+		                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
+		                                <td>${item.ticket.purchased }</td>
+		                                <td>${item.athletes }</td>
+		                            </tr>
+	                            </c:if>
+	                            <c:if test="${item.ticket == null }">
+		                            <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">
+		                                <td>${item.type.typeName}</td>
+		                                <td>${item.type.racetype}</td>
+		                                <td>${item.type.distance}</td>
+		                                <td>${item.type.timeStartLocal}</td>
+		                                <td><div class="ui small button" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">Enable</div></td>
+		                                <td>N/A</td>
+		                                <td>${item.athletes }</td>
+	                            	</tr>
+	                            </c:if>
+                            </c:forEach>
                         </tbody>
                     </table>
                 </c:if>
@@ -523,17 +626,18 @@
             </c:if>
         }
 
-        var localTime = '${event.timeStartLocal}';
         var distType;
         function initInfo(){
-            localtime = moment(localTime).format('hh:mm:ss a');
+            localtime = eventStart.format('hh:mm:ss a');
             jQuery('#displayLocal').text(localtime);
 
-            var momentRRTime = moment('${event.timeStartLocal}').startOf('hour');
+            var momentRRTime = eventStart.startOf('hour');
             jQuery("#timedisp").datetimepicker({
                 defaultDate: momentRRTime,
                 pickDate: false
             });
+
+            initDateTimePickers();
 
             jQuery('#lowbib').on('input', function(){
                 var low = jQuery("#lowbib").val();
@@ -622,20 +726,45 @@
 
             jQuery('#addType').on('hidden.bs.modal', function(){
                 jQuery(this).find('input[type="text"],input[type="number"]').val('');
-                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
+                jQuery("#timedisp").data('DateTimePicker').setDate(eventStart.startOf('hour'));
                 jQuery('#racetype-dropdown').dropdown('clear');
             });
+        }
+
+        function regDetails(){
+        	if(jQuery('#reg-details-btn').text() === "Enable Registration Details") {
+        		jQuery('#reg-details-btn').text("Disable Registration Details");
+        	} else{
+        		jQuery('#reg-details-btn').text("Enable Registration Details");
+        		jQuery('input[name="price"]').val("");
+                jQuery('input[name="available"]').val("");
+        	}
+            jQuery('#reg-details-container').toggle();
         }
 
         function saveEventType(put){
             var dat = {};
             var error = true;
-
+			
+            var saveType = "eventTypes";
             var eventTypeUrl = "/bibs-server/eventtypes/";
             var ajaxType = 'POST';
-
+	
+            //Check if we have valid ticket data
+            var price = jQuery('input[name="price"]').val();
+            var available = jQuery('input[name="available"]').val();
+            var timeStartLocal = jQuery('input[name="timeStartLocal"]').val();
+            var timeEndLocal = jQuery('input[name="timeEndLocal"]').val();
+            if( (currEventCartItemId != null &amp;&amp; currEventCartItemId != "") 
+            		|| (price != null &amp;&amp; price != "")
+            		|| (available != null &amp;&amp; available != "")) {
+            	saveType = "ticket";
+            }
+            	
+            
             var typeName  = jQuery('input[name="typeName"]').val();
             var distance  = jQuery('input[name="distance"]').val();
+            var dropdownDistance = jQuery('input[name="dist"]').val();
             var distType  = null;
             if( jQuery('#dist-m').hasClass('positive')  ){ distType = ' m';  }
             if( jQuery('#dist-km').hasClass('positive') ){ distType = ' km'; }
@@ -645,7 +774,7 @@
             var lowbib = jQuery('#etype-lowbib').val();
             var highbib = jQuery('#etype-highbib').val();
 
-            var parseDate = moment('${event.timeStartLocal}');
+            var parseDate = moment('${event.timeStartLocal}', 'MM/DD/YYYY h:mm:ss a');
             var hour   = moment(startTime, "h:mm a").hour();
             var minute = moment(startTime, "h:mm a").minute();
 
@@ -653,7 +782,7 @@
             parseDate.set('minute', minute);
             parseDate = parseDate.format('MM/DD/YYYY hh:mm:ss a');
 
-            if( distance === "" || parseDate === "" || raceType === "" ){
+            if( (distance === "" &amp;&amp; dropdownDistance === "Custom") || (distance === "" &amp;&amp; dropdownDistance === "")  || (distance == "" &amp;&amp; dropdownDistance == "") || parseDate === "" || raceType === "" ){
                 error = true;
                 if( distance === "" ){
                     jQuery('#distance').parent().addClass('error');
@@ -682,34 +811,105 @@
                 console.log(error);
             }
             else{
-                dat.event = {};
-                dat.event.id = parseInt('${event.id}');
-
-                if( put || put === null){
-                    eventTypeUrl = "/bibs-server/eventtypes/" + currEventTypeId;
-                    ajaxType = 'PUT';
-                    if( put === null ){
-                        dat.event = null;
-                    }
-                }
-
-                dat.typeName = typeName;
-                dat.distance = distance + distType;
-                dat.timeStartLocal = parseDate;
-                dat.racetype = raceType;
-                if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
-                if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
-
-                jQuery('.post-event-type').prop('disabled', true);
-                jQuery.ajax({
-                    url: eventTypeUrl,
-                    type: ajaxType,
-                    contentType: "application/json",
-                    data: JSON.stringify(dat),
-                    complete: function(data) {
-                        window.location.reload();
-                    }
-                })
+            	if(saveType == "eventTypes") {	
+	                dat.event = {};
+	                dat.event.id = parseInt('${event.id}');
+	
+	                if( put || put === null){
+	                    eventTypeUrl = "/bibs-server/eventtypes/" + currEventTypeId;
+	                    ajaxType = 'PUT';
+	                    if( put === null ){
+	                        dat.event = null;
+	                    }
+	                }
+					console.log("[dropdownDistance: " + dropdownDistance + ", distance: " + distance + ",  distType: " + distType + "]");
+	                dat.typeName = typeName;
+	                if(dropdownDistance === "" || dropdownDistance === "Custom") {
+	                	dat.distance = distance + distType;
+	                } else {
+	                	dat.distance = dropdownDistance;
+	                }
+	                
+	                dat.timeStartLocal = parseDate;
+	                dat.racetype = raceType;
+	                if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
+	                if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
+	
+	                jQuery('.post-event-type').prop('disabled', true);
+	                jQuery.ajax({
+	                    url: eventTypeUrl,
+	                    type: ajaxType,
+	                    contentType: "application/json",
+	                    data: JSON.stringify(dat),
+	                    complete: function(data) {
+	                        window.location.reload();
+	                    }
+	                })
+	        		
+            	} else {
+            		dat.event = {};
+            		dat.event.id = parseInt('${event.id}');
+            		dat.type = "TICKET";
+            		dat.name = distance;
+            		dat.price = price;
+            		//dat.timeStartLocal = parseDate;
+            		dat.timeStartLocal = jQuery('#ECIStart').val();
+            		dat.timeEndLocal = timeEndLocal;
+            		if (available == null || available == "") {
+            			dat.available = new Number(10000000);
+            		} else {
+            			dat.available = new Number(available);
+            		}
+            		
+            		var uploadUrl = "/bibs-server/eventitems/typeupdate"
+            		var uploadMethod = "POST"
+            			console.log("[dropdownDistance: " + dropdownDistance + ", distance: " + distance + ",  distType: " + distType + "]");
+            		if(currEventCartItemId != null &amp;&amp; currEventCartItemId != "") {
+            			dat.id = currEventCartItemId;
+            			//uploadUrl = "/bibs-server/eventitems/ticketupdate"
+            			//uploadMethod = "PUT"
+            		}
+            			
+            		
+            		dat.eventType = {};
+            		if(currEventTypeId != null &amp;&amp; currEventTypeId != "") {
+            			dat.eventType.id = currEventTypeId;
+            		}
+     				dat.eventType.event = {};
+            		dat.eventType.event.id = parseInt('${event.id}');
+            		dat.eventType.typeName = typeName;
+            		if(dropdownDistance === "" || dropdownDistance === "Custom") {
+	                	dat.eventType.distance = distance + distType;
+	                } else {
+	                	dat.eventType.distance = dropdownDistance;
+	                }
+            		dat.eventType.timeStartLocal = parseDate;
+            		dat.eventType.racetype = raceType;
+	                if( lowbib  !== "" ){    dat.eventType.lowBib  = parseFloat(lowbib);     }
+	                if( highbib !== "" ){    dat.eventType.highBib = parseFloat(highbib);    }
+            		
+	                jQuery('.post-event-type').prop('disabled', true);
+	                jQuery.ajax({
+	                    url: uploadUrl,
+	                    type: uploadMethod,
+	                    contentType: "application/json",
+	                    data: JSON.stringify(dat),
+	                    dataType: "json",
+	                    complete: function(data) {
+	                    	console.log("ResponseData");
+	                    	console.log(data)
+	                    	if(data != null &amp;&amp; data.responseJSON) {
+	                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status)
+	                    		console.log(window.location)
+	                    		jQuery('#addType').modal('hide');
+	                    		//window.location.href = "/bibs-server/eventitems/" + data.responseJSON.status
+	                    		redirectTicket(data.responseJSON.status);
+	                    	} else {
+		                        window.location.reload();
+	                    	}
+	                    }
+	                })
+            	}
             }
         }
 
@@ -816,22 +1016,72 @@
         }
 
         var currEventTypeId;
-        function editEventType(typeName, type, dist, raceTime, id){
+        var currEventCartItemId;
+        function editEventType(typeName, type, dist, raceTime, id, ticketId, ticketAvail, ticketStart, ticketEnd, ticketPrice){
             currEventTypeId = id;
+            currEventCartItemId = ticketId;
+            jQuery('#reg-details-container').hide();
+            jQuery('#reg-details-btn').text("Enable Registration Details");
+            jQuery()
             jQuery(".post-event-type").hide();
             jQuery(".put-event-type").show();
-
+			if(ticketId != null) {
+				if(ticketAvail != null) jQuery('#putFieldForm input[name="available"]').val(ticketAvail);
+				jQuery('#putFieldForm input[name="price"]').val(ticketPrice);
+				jQuery('#putFieldForm input[name="timeStartLocal"]').val(ticketStart);
+				jQuery('#putFieldForm input[name="timeEndLocal"]').val(ticketEnd);
+			}
             jQuery('#putFieldForm input[name="typeName"]').val(typeName);
             jQuery('#putFieldForm input[name="raceType"]').val(type);
             jQuery('#racetype-dropdown').dropdown("set selected", type);
-            var parseDist = dist.split(' ');
-            jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+            
+            //Start of racetype init
             jQuery('#dist-m').removeClass('positive');
             jQuery('#dist-mi').removeClass('positive');
             jQuery('#dist-km').removeClass('positive');
-            if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
-            if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
-            if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
+            switch(dist) {
+            case "N/A":
+            	jQuery('#distance-dropdown').dropdown('set selected', "N/A");
+            	break;
+            case "5k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+            	break;
+            case "8k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+            	break;
+            case "10k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "10k");
+            	break;
+            case "15k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "15k");
+            	break;
+            case "Half Marathon":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Half Marathon");
+            	break;
+            case "Marathon":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Marathon");
+            	break;
+            case "Sprint":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Sprint");
+            	break;
+            case "Sprint":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Olympic");
+            	break;
+            case "Half":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Half");
+            	break;
+            case "Full":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Full");
+            	break;
+            default:
+            	jQuery('#distance-dropdown').dropdown('set selected', "Custom");
+            	var parseDist = dist.split(' ');
+            	jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+            	if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
+            	if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
+            	if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
+
+            }
 
             var raceTime = moment(raceTime);
             jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
@@ -912,7 +1162,7 @@
                 features: [{
                     type: 'Feature',
                     properties: {
-                        title: '${event.address}',
+                        title: decodeURI("${event.address}"),
                         'marker-color': '#00dffc',
                         'marker-symbol': 'star'
                     },
@@ -939,6 +1189,32 @@
             jQuery('.leaflet-control-zoom-out').text('');
         }
 
+        var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
+        function initDateTimePickers(){
+            jQuery("#ECIStart")
+                .datetimepicker({
+                    defaultDate: moment().startOf('day'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery("#ECIEnd")
+                .datetimepicker({
+                    defaultDate: eventStart,
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+            jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
+
+            <!-- on change-ui -->
+            jQuery("#ECIStart").on("dp.change",function (e) {
+                jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+            });
+            jQuery("#ECIEnd").on("dp.change",function (e) {
+                jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+            });
+        }
+
         function editForm(){
             window.location="/bibs-server/events/${event.id}?form";
         }
@@ -953,6 +1229,9 @@
                     }
                 });
             }
+        }
+        function redirectTicket(id){
+            window.location="/bibs-server/eventitems/" + id +"#info";
         }
         function redirectReport(){
             window.location="/bibs-server/registrations/reports?event=${event.id}";
@@ -1046,6 +1325,10 @@
                         break;
                 }
             }
+        }
+
+        function redirectEventTypeDetail(id){
+            window.location="/bibs-server/eventitems/"+id +"#schedule";
         }
 
         function redirectDropboxImport(){

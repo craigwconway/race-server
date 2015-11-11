@@ -106,6 +106,7 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.wrapper.EventTypeTicketWrapper;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
 import com.bibsmobile.service.BibTimeout;
@@ -1057,6 +1058,10 @@ public class EventController {
 			Set<EventType> eventTypes = trueEvent.getEventTypes();
 			for(EventType eventType : eventTypes) {
 				eventType.setStartTime(format.parse(eventType.getTimeStartLocal()));
+				if(eventType.getStartTime().before( event.getTimeStart())) {
+					eventType.setTimeStartLocal(event.getTimeStartLocal());
+					eventType.setStartTime(format.parse(event.getTimeStartLocal()));
+				}
 				eventType.merge();
 			}
 			for(EventCartItem eventCartItem : EventCartItem.findEventCartItemsByEvent(trueEvent).getResultList()) {
@@ -1064,10 +1069,10 @@ public class EventController {
 				eventCartItem.setTimeEnd(format.parse(eventCartItem.getTimeEndLocal()));
 				eventCartItem.merge();
 				for(EventCartItemPriceChange eventCartItemPriceChange : eventCartItem.getPriceChanges()) {
-					SimpleDateFormat priceChangeFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss.SSS a");
+					SimpleDateFormat priceChangeFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 					priceChangeFormat.setTimeZone(event.getTimezone());
 					eventCartItemPriceChange.setStartDate(priceChangeFormat.parse(eventCartItemPriceChange.getDateStartLocal()));
-					eventCartItemPriceChange.setEndDate(priceChangeFormat.parse(eventCartItemPriceChange.getDateEndLocal()));
+					eventCartItemPriceChange.setEndDate(new Date(format.parse(eventCartItemPriceChange.getDateEndLocal()).getTime() + 999));
 					eventCartItemPriceChange.merge();
 				}
 			}
@@ -1259,7 +1264,9 @@ public class EventController {
         }
         
         event.setHidden(true);
-        
+        event.setRegEnabled(false);
+        event.setLive(false);
+        event.merge();
         //Check if the build has any attached entities:
         List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
         List <CartItem> cis;
@@ -1325,6 +1332,23 @@ public class EventController {
         ResultsFileMapping latestMapping = ((latestImport == null) ? null : latestImport.getResultsFileMapping());
         List <EventType> eventTypes = EventType.findEventTypesByEvent(e);
         Collections.sort(eventTypes, new Comparator<EventType>() { public int compare(EventType t1, EventType t2) { return t1.getStartTime().compareTo(t2.getStartTime());}});
+        List <EventCartItem> items = EventCartItem.findEventCartItemsByEventAndType(e, EventCartItemTypeEnum.TICKET).getResultList();
+        List<EventTypeTicketWrapper> metatypes = new LinkedList <EventTypeTicketWrapper>();
+        Map <EventType, EventCartItem> itemMap = new HashMap <EventType, EventCartItem>();
+        for(EventCartItem item : items) {
+        	if(item.getEventType() != null) {
+        		itemMap.put(item.getEventType(), item);
+        	}
+        }
+        for(EventType type : eventTypes) {
+        	if(itemMap.containsKey(type)) {
+        		metatypes.add(new EventTypeTicketWrapper(type, itemMap.get(type)));
+        	} else {
+        		metatypes.add(new EventTypeTicketWrapper(type));
+        	}
+        }
+        System.out.println(metatypes);
+        uiModel.addAttribute("metatype", metatypes);
         uiModel.addAttribute("event", e);
         uiModel.addAttribute("eventTypes", eventTypes);
         uiModel.addAttribute("dropboxUnlink", (UserProfileUtil.getLoggedInDropboxAccessToken() != null));
@@ -1375,11 +1399,11 @@ public class EventController {
         if (page != null || size != null) {
             int sizeNo = size == null ? 10 : size.intValue();
             final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
-            uiModel.addAttribute("events", Event.findEventsForUser(user, firstResult, sizeNo, sortFieldName, sortOrder));
+            uiModel.addAttribute("events", Event.findNonHiddenEventsForUser(user, firstResult, sizeNo, sortFieldName, sortOrder));
             float nrOfPages = (float) Event.countEvents() / sizeNo;
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
-            uiModel.addAttribute("events", Event.findEventsForUser(user, -1, -1, sortFieldName, sortOrder));
+            uiModel.addAttribute("events", Event.findNonHiddenEventsForUser(user, -1, -1, sortFieldName, sortOrder));
         }
         this.addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
@@ -1445,6 +1469,8 @@ public class EventController {
         	}
         	//bibTimeout.clearMultiBibs(clearBibs); TODO: Figure out how to autowire this
         }
+        event.setHidden(false);
+        event.merge();
         //Check if the build has any attached entities:
         List <EventCartItem> ecis = EventCartItem.findEventCartItemsByEvent(event).getResultList();
         List <CartItem> cis = CartItem.findCartItemsByEventCartItems(ecis, null, null).getResultList();

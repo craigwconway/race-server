@@ -412,7 +412,8 @@
         var allAry = [];
         dates.forEach(function(item, i){
             // fillValues(dates[i], d[item], item);
-            var day = new Date(dates[i]);
+            console.log(dates[i]);
+            var day = moment(dates[i], 'MM-DD-YYYY');
             var val = d[item];
             var ary = [];
             if('TICKET' in val){

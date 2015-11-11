@@ -529,6 +529,15 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getSingleResult();
     }
 
+    public static Long countFindRaceResultsByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.eventType = :eventType", Long.class);
+        q.setParameter("eventType", eventType);
+        return q.getSingleResult();
+    }    
+    
     public static Long countFindRaceResultsByEventAndBibEquals(Event event, long bib) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");

@@ -111,6 +111,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"><div class="pull-right" style="margin-top:-10px;"><button onclick="deletePriceChange(this)" class="btn btn-danger" type="button"><i class="fa fa-trash" style="margin-right:0;"><!--  --></i></button></div></div>
                     <div class="panel-body">
+                        <div class="panel-inner-heading"><!--  --></div>
                         <div class="vis-left">
                             <div id="vis-header">
                                 <div id="vis-container">
@@ -124,6 +125,9 @@
                             </div>
                         </div>
                         <div class="vis-right">
+                            <div class="row current-base-price" style="display:none">
+                            Base price as of today (<span id="today"></span>): $<span id="todayPrice"></span>
+                            </div>
                             <div class="row">
                             Start Date: <input  type="text" name="dateStartLocal"
                                     class="form-control pricedateStartLocal"
@@ -144,7 +148,7 @@
                             </div>
                             <div class="row">
                                 <div style="text-align:right; margin-top: 3%; margin-right:5%">
-                                    <button type="button" class="btn btn-success" onclick="shiftTimeline(this)">Add Price</button>
+                                    <button type="button" class="btn btn-success" id="addPriceBtn" onclick="shiftTimeline(this)">Add Price</button>
                                 </div>
                             </div>
                         </div>
@@ -175,22 +179,26 @@
                             </div>
                             <div class="ui labeled input">
                                 <div class="ui blue label">Min Age</div>
-                                    <input  type="text" name="lowAgeThreshold"
+                                    <input  type="number" name="lowAgeThreshold"
                                             data-for="lowAgeThreshold" id="lowAge"
                                             class="input-form category-field"
                                             placeholder="Min Age"
                                             value=""
+                                            min="1"
+                                            max="120"
                                             data-parsley-group="category"
                                             data-parsley-required="true"
                                             data-parsley-error-message="Invalid age."></input>
                             </div>
                             <div class="ui labeled input">
                                 <div class="ui blue label">Max Age</div>
-                                    <input  type="text" name="highAgeThreshold"
+                                    <input  type="number" name="highAgeThreshold"
                                             data-for="highAgeThreshold" id="highAge"
                                             class="input-form category-field"
                                             placeholder="Max Age"
                                             value=""
+                                            min="1"
+                                            max="120"
                                             data-parsley-group="category"
                                             data-parsley-required="true"
                                             data-parsley-error-message="Invalid age."></input>
@@ -267,7 +275,6 @@
             editable: true,
             format: {
                 minorLabels: {
-                    millisecond:'SSS',
                     second:     's',
                     minute:     'HH:mm',
                     hour:       'HH:mm',
@@ -349,7 +356,7 @@
             min: new Date(eciStart),                // lower limit of visible range
             max: new Date(eciEnd),                // upper limit of visible range
             zoomMin: 1000 * 60 * 60,             // one day in milliseconds
-            zoomMax: 1000 * 60 * 60 * 24 * 31 * 3     // about three months in milliseconds
+            zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 7     // about three months in milliseconds
         }
         var itemList = [];
         var timelineList = [];
@@ -370,6 +377,8 @@
                     delList.push(obj);
                 })
                 updatePageLogic();
+            }else{
+                initGeneralAdmission();
             }
 
             // init form elements
@@ -381,13 +390,14 @@
                 errorTemplate: '<span></span>'
             });
 
-            jQuery("#lowAge").on('change', function(){
+            // check that it's greater than 1, an integer, less than 120, less than high
+            jQuery("#lowAge").on('input', function(){
                 var low = jQuery("#lowAge").val();
                 var high = jQuery("#highAge").val();
                 low = parseInt(low);
                 high = parseInt(high);
 
-                if( (low == "") || (low == 0) || (isNaN(low)) || (low &lt; eciLowAge) ){ jQuery("#lowAge").val(""); }
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
                 if( high !== "" ){
                     if( low &gt;= high ){
                         jQuery(this).val(high);
@@ -403,7 +413,7 @@
                 var high = jQuery("#highAge").val();
                 low = parseInt(low);
                 high = parseInt(high);
-                if( (high == "") || (high == 0) || (isNaN(low)) || (high &gt; eciHighAge) ){ jQuery("#highAge").val("") }
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
                 if( low !== "" ){
                     if( high &lt;= low ){
                         jQuery(this).val(low);
@@ -421,16 +431,50 @@
 
         var categoryNameList = [];
         var categoryObjList = [];
+        function initGeneralAdmission(){
+            // add category
+            var obj = {};
+            obj.categoryName = 'General Admission';
+            obj.lowAgeThreshold = 1;
+            obj.highAgeThreshold = 120;
+            obj.gender = 'MALE_AND_FEMALE';
+            obj.team = false;
+            obj.price = basePrice;
+
+            var items = new vis.DataSet();
+            itemList.push(items);
+
+            var index = timelineList.length;
+            addGroup(obj, index, false);
+
+            var price = basePrice;
+            var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+            if( price !== null &amp;&amp; dateVal !== null ){
+                var item = {};
+                    item["id"] = index + "-" + price;
+                    item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
+                    item["content"] = price;
+                    if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+                        itemList[index].add(item);
+                    }
+                    else{
+                        alert("This date is out of the sale range for this product. Please select a correct date.");
+                    }
+            }
+
+            // make sure timeline items are fitted.
+            timelineList[index].fit();
+        }
         function updatePageLogic(){
             var obj = {};
             jQuery(".pcInfo").each(function(i){
                 var cat = jQuery(this).find('.field-categoryName').text();
                 var update = false;
 
-                obj.id = jQuery(this).find('.field-id').text();             obj.id = parseInt(obj.id);
-                obj.price = jQuery(this).find('.field-price').text();       obj.price = parseInt(obj.price);
-                obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal);
-                obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal);
+                obj.id = jQuery(this).find('.field-id').text();                  obj.id = parseInt(obj.id);
+                obj.price = jQuery(this).find('.field-price').text();            obj.price = parseInt(obj.price);
+                obj.dateStartLocal = jQuery(this).find('.field-start').text();   obj.dateStartLocal = moment(obj.dateStartLocal, 'MM/DD/YYYY hh:mm:ss a');
+                obj.dateEndLocal = jQuery(this).find('.field-end').text();       obj.dateEndLocal = moment(obj.dateEndLocal, 'MM/DD/YYYY hh:mm:ss a');
 
                 // check if category exists already. if it exists, do not call addGroup.
                 if( categoryNameList.length > 0 &amp;&amp; categoryNameList.indexOf(cat) !== -1 ){
@@ -467,7 +511,7 @@
                     item["id"] = obj.id;
                     item["start"] = obj.dateStartLocal;
                     item["content"] = obj.price;
-                    if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+                    if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false || item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
                         itemList[index].add(item);
                     }
                     else{
@@ -475,9 +519,7 @@
                     }
 
                 // make sure timeline items are fitted.
-                if( update ){
-                    timelineList[index].fit();
-                }
+                timelineList[index].fit();
             })
         }
 
@@ -496,6 +538,7 @@
                     }
                     if( key == "base" ){
                         newBasePrice = val;
+                        obj['price'] = val;
                     }
                     obj[key] = val;
                 });
@@ -509,13 +552,13 @@
                 addGroup(obj, index, false);
 
                 var price = newBasePrice;
-                var dateVal = moment(eciStart).format('MM/DD/YYYY h:mm:ss.SSS a');
+                var dateVal = moment(eciStart, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
                 if( price !== null &amp;&amp; dateVal !== null ){
                     var item = {};
                         item["id"] = index + "-" + price;
-                        item["start"] = moment(dateVal);
+                        item["start"] = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
                         item["content"] = price;
-                        if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+                        if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false || item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
                             itemList[index].add(item);
                         }
                         else{
@@ -572,8 +615,12 @@
             if( obj.team == true ){ team = "Teams: required" }
             else if( !obj.team ){ team = "Teams: optional" }
 
+            console.log('attempting to add info for', obj);
+
             jQuery("#group"+ index).find(".panel-heading")
-                .append(obj.categoryName + " (Ages " + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
+                .append('Sale Price Schedule for &lt;b>' + obj.categoryName + '&lt;/b>');
+            jQuery("#group"+ index).find(".panel-inner-heading")
+                .append('$' + obj.price + ' base price (Ages ' + obj.lowAgeThreshold + " ~ " + obj.highAgeThreshold + ", Gender: " + gender + ", " + team + ")" )
 
             // jQuery(".eci-price").each(function(){
             //     jQuery(this).text("Base price: $" + newBasePrice);
@@ -591,34 +638,50 @@
         }
 
         function shiftTimeline(caller){
+            jQuery('#addPriceBtn').text("Adding...");
+            jQuery('#addPriceBtn').prop("disabled", true);
             var timelineIndex = jQuery(caller).closest(".panel-default").attr("id");
             var index = parseInt(timelineIndex[5]);
 
-            var dateVal = moment(jQuery("#"+timelineIndex).find(".pricedateStartLocal").val()).format('MM/DD/YYYY h:mm:ss.SSS a');
+            var dateVal = moment(jQuery("#"+timelineIndex).find(".pricedateStartLocal").val()).format('MM/DD/YYYY h:mm:ss a');
             var price   = jQuery("#"+timelineIndex).find('input[name="price"]').val();
             dateVal = moment(dateVal);
             price   = parseInt(price);
             
             var item = {};
-            item["id"] = index + "-" + price;
+            item["id"] = index + "-" + price + "-" + encodeURIComponent(dateVal);
             item["start"] = dateVal;
             item["content"] = price;
-            if( item["start"].isBefore(eciStart) == false || item["start"].isAfter(eciEnd) == false ){
+            if( item["start"].isBefore(moment(eciStart, 'MM/DD/YYYY hh:mm:ss a')) == false &amp;&amp; item["start"].isAfter(moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a')) == false ){
                 var noDupes = true;
                 var list = itemList[index]._data;
                 var keys = Object.keys(list);
                 for(var i = 0; i &lt; keys.length; i++){
                     var key = keys[i];
                     var val = list[key];
+                    var userInputDate = moment(dateVal, 'MM/DD/YYYY h:mm:ss a');
+                    var eventStartDate = moment(eciEnd);
+                    console.log('user input', userInputDate);
+                    console.log('event start', eventStartDate);
+                    console.log('check boolean', userInputDate.isAfter(eventStartDate));
                     if( moment(val.start).isSame(item["start"]) ){
                         alert("This date is a duplicate. Please select a different date or you can also edit the current value by double-clicking the item.");
                         noDupes = false;
+                        break;
+                    }else if(userInputDate.isAfter(eventStartDate)){
+                        alert("This date and time is after the event's starting time. Please select a different date or you can also edit the current value by double-clicking the item.");
+                        noDupes = false;
+                        break;
+                    }else if( isNaN(item["content"]) ){
+                        alert("Please enter a $ value for this price change.");
+                        noDupes = false;
+                        break;
                     }
                 }
-                if( noDupes ){ itemList[index].add(item); }
-
-                jQuery("#"+timelineIndex).find('input[name="price"]').val();
-                alert("$"+price + " added for " + dateVal.format("MM/DD/YYYY hh:mm:ss") + ".");
+                if( noDupes == true ){ itemList[index].add(item); 
+                    jQuery("#"+timelineIndex).find('input[name="price"]').val();
+                    alert("$"+price + " added for " + userInputDate.format("MM/DD/YYYY hh:mm:ss") + ".");
+                }
             }
             else{
                 alert("This date is out of the sale range for this product. Please select a correct date.");
@@ -626,6 +689,8 @@
 
             for( i = 0; i &lt; timelineList.length; i++ ){
                 timelineList[i].fit();
+                jQuery('#addPriceBtn').text("Add Price");
+                jQuery('#addPriceBtn').prop("disabled", false);
             }
         }
 
@@ -637,6 +702,7 @@
             return eid;
         }
 
+        var basePrice = 0;
         function getEventData(id){
             var request = jQuery.ajax({
                     url: "/bibs-server/eventitems/" + id,
@@ -646,8 +712,8 @@
                 request.done(function( data ) {
                     if( data !== null ){
                         eci = data;
-                        eciStart = moment(data.timeStartLocal).format('MM/DD/YYYY h:mm:ss.SSS a');
-                        eciEnd = moment(data.timeEndLocal).format('MM/DD/YYYY h:mm:ss.SSS a');
+                        eciStart = moment(data.timeStartLocal, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+                        eciEnd = moment(data.timeEndLocal, 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
                         eciBasePrice = eci.price;
                         jQuery("#event-name").text(eci.name);
                         jQuery(".base-price").each(function(){
@@ -655,6 +721,7 @@
                         });
                         eciLowAge = eci.minAge;
                         eciHighAge = eci.maxAge;
+                        basePrice = eciBasePrice;
                         initPage();
                     }else{
                     }
@@ -667,9 +734,9 @@
         function initDateTimePickers(){
             jQuery(".pricedateStartLocal").each(function(){
                 jQuery(this).datetimepicker({
-                    defaultDate: moment(eciStart),
-                    minDate: moment(eciStart),
-                    maxDate: moment(eciEnd),
+                    defaultDate: moment(eciStart, 'MM/DD/YYYY h:mm:ss a'),
+                    minDate: moment(eciStart, 'MM/DD/YYYY h:mm:ss a'),
+                    maxDate: moment(eciEnd, 'MM/DD/YYYY h:mm:ss a'),
                     useSeconds: true,
                     sideBySide: true
                 });
@@ -710,19 +777,19 @@
                         // last item:
                         // start date = start date, end date = eci end date
                         objdateStartLocal = value.start;
-                        objdateEndLocal = eciEnd;
+                        objdateEndLocal = moment(eciEnd, 'MM/DD/YYYY hh:mm:ss a');
                     }
                     else{
                         // all except last item:
                         // start date = start date, end date = next item's start date
                         objdateStartLocal = value.start;
-                        objdateEndLocal = moment(sortAry[j+1].start).subtract(1, 'ms');
+                        objdateEndLocal = moment(sortAry[j+1].start).subtract(1, 's');
                     }
                     if( objdateStartLocal !== null ){
-                        objdateStartLocal = moment(objdateStartLocal).format("MM/DD/YYYY hh:mm:ss.SSS a");
+                        objdateStartLocal = moment(objdateStartLocal).format("MM/DD/YYYY hh:mm:ss a");
                     }
                     if( objdateEndLocal !== null ){
-                        objdateEndLocal = moment(objdateEndLocal).format("MM/DD/YYYY hh:mm:ss.SSS a");
+                        objdateEndLocal = moment(objdateEndLocal).format("MM/DD/YYYY hh:mm:ss a");
                     }
 
                     var pc = {};

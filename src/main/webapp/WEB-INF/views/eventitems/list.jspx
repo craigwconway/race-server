@@ -72,6 +72,9 @@
             width: 100%;
             margin: 1em 0em 0.5em;
         }
+        .ui.form input:not([type]), .ui.form input[type="text"], .ui.form input[type="email"], .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="password"], .ui.form input[type="number"], .ui.form input[type="url"], .ui.form input[type="tel"]{
+            font-weight: 400;
+        }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
@@ -269,7 +272,7 @@
                             <div class="header">
                                 We can't allow that discount.
                             </div>
-                            <p>Please select a discount lower than 100%.</p>
+                            <p>Please select a discount up to 100%.</p>
                         </div>
                     </div>
                 </div>
@@ -311,7 +314,7 @@
                                 </div>
                                 <div style="clear:both"><!--  --></div>
                                 <div class="pull-right">
-                                    <button class="ui green button" type="submit">Save</button>
+                                    <button class="ui green button" id="shirtSaveButton" type="submit">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -354,14 +357,14 @@
                             <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
                                 <div class="content">
                                     <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                    <div class="description">add a new product</div>
+                                    <div class="description">add a new shirt/donation</div>
                                     <div class="extra content">
                                         <div class="left floated"><span style="visibility:hidden">sold</span></div>
                                         <div class="right floated"><span style="visibility:hidden">$price</span></div>
                                     </div>
                                 </div>
                                 <div class="ui bottom attached button">
-                                    <i class="fa fa-plus"><!--  --></i> product
+                                    <i class="fa fa-plus"><!--  --></i> shirt/donation
                                 </div>
                             </div>
                         </c:if>
@@ -410,7 +413,7 @@
                             <div class="ui required input">
                                 <input  type="text"
                                         name="topSharerReward"
-                                        placeholder="Reward description"
+                                        placeholder="i.e. Top sharer gets a free limited edition hoodie!"
                                         data-parsley-error-message="Please provide a reward description for the top sharer."
                                         data-parsley-required="true"></input>
                             </div>
@@ -418,7 +421,7 @@
                     </div>
                     <div style="clear:both"><!--  --></div>
                     <div class="pull-right">
-                        <button class="ui green button" type="submit">Save</button>
+                        <button class="ui green button" id="socialSaveButton" type="submit">Save</button>
                     </div>
                 </form>
             </div>
@@ -544,7 +547,7 @@
                     </div>
                     <div style="clear:both"><!--  --></div>
                     <div class="pull-right">
-                        <button class="ui green button" type="submit">Save</button>
+                        <button class="ui green button" id="transferSaveButton" type="submit">Save</button>
                     </div>
                 </form>
             </div>
@@ -587,6 +590,26 @@
                 jQuery('#couponECI').dropdown('set text', 'none');
                 jQuery(this).find('input[type="text"],input[type="number"]').val('');
             });
+
+            var transfer = '${event.ticketTransferEnabled}';
+            var transferDate = '${event.ticketTransferCutoffLocal}';
+            var def = moment();
+
+            if( transfer == 'true' ){
+                jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
+            }
+            if( transferDate !== 'null' || transferDate !== "" ){
+                def = moment(transferDate, 'MM/DD/YYYY h:mm:ss a');
+            }
+
+            jQuery("#cutoff-date")
+                .datetimepicker({
+                    defaultDate: def,
+                    useSeconds: false
+                });
+
+            jQuery('#cutoff-date').data("DateTimePicker").setMinDate(moment());
+
 
             shareHandler();
             transferHandler();
@@ -744,7 +767,7 @@
                 obj.discountAbsolute = discount * 100;
             }
             if( jQuery('#disc-perc').hasClass('positive') ){
-                if(parseFloat(discount) &lt; 100){
+                if(parseFloat(discount) &lt;= 100){
                     obj.discountRelative = parseFloat(discount);
                     jQuery('#coupon-error-percent').hide();
                     error = false;
@@ -1083,6 +1106,8 @@
                 obj.socialSharingDiscountAmount = shareAmount;
                 obj.topSharerReward = encodeURIComponent(shareMsg);
 
+                jQuery('#socialSaveButton').prop('disabled', true).text('Saving...');
+
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/socialsharing",
                     type: "PUT",
@@ -1099,25 +1124,7 @@
         }
 
         function transferHandler(){
-            var transfer = '${event.ticketTransferEnabled}';
-            var transferDate = '${event.ticketTransferCutoff}';
-            var def = Date();
-
-            if( transfer == 'true' ){
-                jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
-            }
-            if( transferDate !== 'null' || transferDate !== "" ){
-                def = moment(transferDate);
-            }
-            
-            jQuery("#cutoff-date")
-                .datetimepicker({
-                    defaultDate: def,
-                    useSeconds: false
-                });
-
-            jQuery('#cutoff-date').data("DateTimePicker").setMinDate(Date());
-            
+                        
             jQuery('#transferForm').parsley({
                 errorsWrapper: '<div class="has-error"></div>',
                 errorTemplate: '<span></span>'
@@ -1126,6 +1133,8 @@
             jQuery("#transferForm").submit(function() {
                 var transfer = jQuery('input[name="ticketTransferEnabled"]').prop("checked");
                 var transferDate = jQuery('input[name="ticketTransferCutoff"]').val();
+
+                jQuery('#transferSaveButton').prop('disabled', true).text('Saving...');
 
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/tickettransfer" + "?tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
@@ -1149,6 +1158,7 @@
 
             jQuery("#shirtsLimitedForm").submit(function() {
                 var shirtsLimited = jQuery('input[name="shirtsLimited"]').prop("checked");
+                jQuery('#shirtSaveButton').prop('disabled', true).text('Saving...');
 
                 jQuery.ajax({
                     url: "/bibs-server/events/${event.id}/regsettings" + "?shirtslimited="+shirtsLimited,
