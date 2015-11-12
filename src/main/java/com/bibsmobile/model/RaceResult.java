@@ -147,6 +147,11 @@ public class RaceResult implements Comparable<RaceResult> {
      * Name of team that the runner belongs to. This is an import field.
      */
     private String team;
+    
+    /**
+     * Runner's Email. This is an import field.
+     */
+    private String email;
 
     /**
      * Number of laps completed by the runner.
@@ -1186,6 +1191,20 @@ public class RaceResult implements Comparable<RaceResult> {
 	 */
 	public void setTeam(String team) {
 		this.team = team;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	/**
