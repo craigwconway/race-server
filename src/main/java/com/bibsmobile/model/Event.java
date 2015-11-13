@@ -622,6 +622,15 @@ public class Event {
         return q.getSingleResult();
     }
 
+    public static Long countFindEventsBySeriesEquals(Series series) {
+        if (series == null)
+            throw new IllegalArgumentException("The state argument is required");
+        EntityManager em = Event.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.series = :series", Long.class);
+        q.setParameter("series", series);
+        return q.getSingleResult();
+    }    
+    
     public static Long countFindEventsByStateEqualsAndCityEquals(String state, String city) {
         if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");

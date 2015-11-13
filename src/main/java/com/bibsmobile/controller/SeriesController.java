@@ -9,9 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.Badge;
+import com.bibsmobile.model.Series;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Controls for creating badges to be given out in the series.
@@ -21,13 +24,15 @@ import java.util.ArrayList;
 @RequestMapping("/series")
 @Controller
 public class SeriesController {
-	@RequestMapping(value = "/form", produces = "text/html")
+	@RequestMapping(value = "/list", produces = "text/html")
 	public String createForm(Model uiModel) {
-		List <Badge> eventBadges = new ArrayList<Badge>();
-		Event event = Event.findEvent(new Long(1));
-		uiModel.addAttribute("event", event);
-		System.out.println("Found event: " + event);
-		uiModel.addAttribute("badges", eventBadges);
-		return "series/create";
+		List <Series> seriesList = Series.findAllSeries();
+		Map <Long, Long> eventCounts = new HashMap <Long, Long>();
+		for(Series series : seriesList) {
+			eventCounts.put(series.getId(), Event.countFindEventsBySeriesEquals(series));
+		}
+		uiModel.addAttribute("series", Series.findAllSeries());
+		uiModel.addAttribute("eventCounts", eventCounts);
+		return "series/list";
 	}
 }
