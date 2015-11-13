@@ -57,95 +57,97 @@
         <div class="ui form info-container">
             <h2 class="ui icon header">
                 <i class="fa fa-cog"><!--  --></i>
-                <div class="content">Create Badge
-                    <div class="sub header">Add details for your badge here</div>
+                <div class="content">Event Badges
+                    <div class="sub header">Manage badges for ${event.name}.</div>
                 </div>
             </h2>
-            <select class="form-control" id="event-type" name="event"
-                    data-parsley-required="true"
-                    data-parsley-error-message="Please select an event.">
-                <option selected="selected" disabled="disabled">Select Event</option>
-                <c:forEach var="item" items="${events}">
-                    <option value="${item.id}">${item}</option>
-                </c:forEach>
-            </select>
-            <div class="form-fields">
-                <input  type="number" name="bib"
-                        placeholder="Bib Number"
-                        min="1"
-                        data-parsley-error-message="Please enter a bib number."
-                        data-parsley-required="true"></input>
-            </div>
-            <c:if test='${(!build.rfid)}'>
-                <div class="form-fields">
-                    <input  type="text" name="firstname"
-                        id="firstname"
-                        placeholder="First name"
-                        data-parsley-error-message="Please provide a first name."
-                        data-parsley-required="true"></input>
-                </div>
-                <div class="form-fields">
-                    <input  type="text" name="lastname"
-                        id="lastname"
-                        placeholder="Last name"
-                        data-parsley-error-message="Please provide a last name."
-                        data-parsley-required="true"></input>
-                </div>
-            </c:if>
-            <c:if test='${(build.rfid)}'>
-                <div class="form-fields">
-                    <input  type="text" name="firstname"
-                        id="firstname"
-                        placeholder="First name"></input>
-                </div>
-                <div class="form-fields">
-                    <input  type="text" name="lastname"
-                        id="lastname"
-                        placeholder="Last name"></input>
-                </div>
-            </c:if>
-            <select name="gender" id="gender-type"
-                    data-parsley-error-message="Please select a gender.">
-                <option selected="selected" disabled="disabled">Gender</option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-            </select>
-            <div class="form-fields">
-                <input  type="number" name="age"
-                        placeholder="Age"
-                        min="1"
-                        max="120"
-                        data-parsley-error-message="Invalid age."
-                        value=""></input>
-            </div>
-            <div class="form-fields">
-                <div class="two fields">
-                    <div class="field">
-                        <input  type="text" name="city"
-                                placeholder="City"
-                                data-parsley-error-message="Please enter a city."
-                                value=""></input>
-                    </div>
-                    <div class="field">
-                        <input  type="text" name="state"
-                                placeholder="State"
-                                data-parsley-error-message="Please enter a state."
-                                value=""></input>
-                    </div>
-                </div>
-            </div>
-            <div class="form-fields">
-                <div class="ui action input">
-                    <input  type="text" name="timeofficialdisplay"
-                            class="form-control" style="margin-top: 0; margin-bottom:0"
-                            id="timedisp"
-                            placeholder="Official Time (hh:mm:ss)"
-                            data-provide="datepicker"
-                            data-date-format="HH:mm:ss"
-                            data-parsley-error-message="Invalid time format. (hh:mm:ss required)"></input>
-                    <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
-                </div>
-            </div>
         </div>
+        <div>
+	        <div class="ui three stackable cards" style="margin:5%;text-align:center">
+				<c:forEach var="item" items="${badges}">
+					<div class="card">
+						<div class="content">
+							<img class="right floated tiny ui image" src="${item.url }"> <!--  --> </img>
+							<div class="header">${item.name}</div>
+							<c:if test="${item.active}">
+								<div class="meta" onClick="deactivate(${item.id})">Active</div>
+							</c:if> 
+							<c:if test="${!item.active}">
+								<div class="meta" style="color:red;opacity:.4" onClick="activate(${item.id})">Deactivated</div>
+							</c:if> 
+							<div class="description">
+								${item.description}
+							</div>
+						</div>
+					</div>
+				</c:forEach>
+			</div>
+		</div>
+		<button type="button" id="one-photo" class="ui enabled basic black button" onClick="addBadge('photo',1)"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>Photo Upload</button>
+		<button type="button" id="three-photo" class="ui enabled basic black button" onClick="addBadge('photo',3)"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>3 Photos</button>
+		<button type="button" id="ten-photo" class="ui enabled basic black button" onClick="addBadge('photo',10)"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>10 Photos</button>
+		<button type="button" id="result-claim" class="ui enabled basic black button" onClick="addBadge('result',1)"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>Result Claim</button>
+		<button type="button" id="social-share" class="ui enabled basic black button" onClick="addBadge('social',1)"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>Social Sharing</button>
+		<button class="ui button" href="/bibs-server/badges/insights?event=${event.id}">Insights</button>
+		
     </div>
+    
+    <script>
+    	function addBadge(type, quantity) {
+    		var badge = {};
+    		badge.event = {};
+    		badge.event.id = ${event.id}
+    		var valid = true;
+    		if (type === 'photo') {
+    			badge.badgeTrigger = 'PHOTO_UPLOAD';
+    			if (quantity === 1) {
+    				badge.triggerQuantity = 1;
+    				badge.url = "http://i.imgur.com/nHc1Le8.png";
+    				badge.name = "Photo Upload";
+    				badge.description = "Upload a photo to this event";
+    			} else if(quantity === 3) {
+    				badge.triggerQuantity = 3;
+    				badge.url = "http://i.imgur.com/nHc1Le8.png";
+    				badge.name = "Photo Upload";
+    				badge.description = "Upload 3 photos to this event";
+    			} else if(quantity === 10) {
+    				badge.triggerQuantity = 10;
+    				badge.url = "http://i.imgur.com/nHc1Le8.png";
+    				badge.name = "Photo Upload";
+    				badge.description = "Upload 10 photos to this event";
+    			}
+    		} else if (type === 'result') {
+    			badge.badgeTrigger = 'CLAIM_RESULT';
+    			badge.url = "http://i.imgur.com/nHc1Le8.png";
+				badge.name = "Claim Result";
+				badge.description = "Claim a result in this event";
+    		} else if (type === 'social') {
+    			badge.badgeTrigger = 'SOCIAL_SHARE';
+    			badge.url = "http://i.imgur.com/nHc1Le8.png";
+				badge.name = "Social Sharing";
+				badge.description = "Tell your friends about this event on social media";
+    		}
+    		jQuery.ajax({
+                url: "/bibs-server/badges/create",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(badge),
+                complete: function(data) {
+                    window.location.reload();
+                }
+            })
+    	}
+    	
+    	window.onload = init;
+    	
+    	function init() {
+    	<c:forEach var="item" items="${commonBadges}">
+    		jQuery('#${item}').attr('class','ui disabled basic black button');
+    	</c:forEach>
+    	}
+    	
+    	function deactivate(id) {
+    		alert("deactivating:"+id);
+    	}
+    </script>
 </div>

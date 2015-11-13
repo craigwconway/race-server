@@ -10,7 +10,7 @@
 <definition extends="default" name="badges/create">
         <put-attribute name="body" value="/WEB-INF/views/badges/create.jspx"/>
     </definition>
-<definition extends="default" name="badges/update">
-        <put-attribute name="body" value="/WEB-INF/views/badges/update.jspx"/>
+<definition extends="default" name="badges/eventinsights">
+        <put-attribute name="body" value="/WEB-INF/views/badges/eventinsights.jspx"/>
     </definition>
 </tiles-definitions>
