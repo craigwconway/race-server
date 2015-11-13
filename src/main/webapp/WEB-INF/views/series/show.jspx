@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <div style="margin:5%">
+	    <h1 class="ui header">Current Series</h1>
+	    <div class="ui three stacking cards">
+			<c:forEach var="item" items="${series}">
+			<div class="ui card">
+				<div class="content">
+					<c:if test="${item.name != null}">
+					<div class="header">${item.name}</div>
+					</c:if>
+					<c:if test="${item.name == null }">
+					<div class="header">Unnamed Series</div>
+					</c:if>
+					<div class="meta">
+						<c:if test="${item.titleSponsor == null}">
+						<span class="right floated time">No Title Sponsor</span>
+						</c:if>
+						<c:if test="${item.titleSponsor != null }">
+						<span class="right floated time">${item.titleSponsor}</span>
+						</c:if>
+						<span class="category">Sponsor</span>
+					</div>
+					<div class="description">
+						<p>
+						<c:if test="${item.description == null }">
+						Manage your series
+						</c:if>
+						${item.description}
+						</p>
+					</div>
+				</div>
+				<div class="extra content">
+					<div class="right floated author">
+						<c:if test="${item.logo == null}">
+						<img class="ui small image" src="/bibs-server/resources/images/bibsicon.png"></img>
+						</c:if>
+						<c:if test="${item.logo != null}">
+						<img class="ui small image" src="${item.logo}"></img>
+						</c:if>
+						${eventCounts[item.id]} Events
+					</div>
+				</div>
+			</div>
+			</c:forEach>
+		</div>
+		<br></br>
+		<br></br>
+		<h1 class="ui header">Past Series</h1>
+		<c:if test="${pastSeries == null}">
+		<h3 class="ui header" style="margin-left:1%">No past series</h3>
+		</c:if>
+	</div>
+</div>

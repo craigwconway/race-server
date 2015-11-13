@@ -4,4 +4,7 @@
     <definition extends="default" name="series/list">
         <put-attribute name="body" value="/WEB-INF/views/series/list.jspx"/>
     </definition>
+    <definition extends="default" name="series/show">
+        <put-attribute name="body" value="/WEB-INF/views/series/show.jspx"/>
+    </definition>
 </tiles-definitions>
