@@ -565,6 +565,7 @@
             <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" /> first start <fmt:formatDate type="time" value="${eventDate}" /></div>
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
+                	<button type="button" class="ui basic black button" onClick="redirectBadges()"><i class="fa fa-certificate" style="margin-right:5px"><!--  --></i>Badges</button>
                     <button type="button" class="ui basic black button" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
                     <c:if test="${not empty eventTypes}"><button type="button" class="ui teal button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
                 </div>
@@ -1378,6 +1379,9 @@
         }
         function redirectManageReg(){
             window.location="/bibs-server/eventitems?event=${event.id}";
+        }
+        function redirectBadges(){
+            window.location="/bibs-server/badges/form";
         }
         function redirectSearchReg(){
             window.location="/bibs-server/registrations/search?event=${event.id}";

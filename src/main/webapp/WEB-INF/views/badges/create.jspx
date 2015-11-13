@@ -88,7 +88,7 @@
 		<button type="button" id="ten-photo" class="ui enabled basic black button" onClick="addBadge('photo',10)"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>10 Photos</button>
 		<button type="button" id="result-claim" class="ui enabled basic black button" onClick="addBadge('result',1)"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>Result Claim</button>
 		<button type="button" id="social-share" class="ui enabled basic black button" onClick="addBadge('social',1)"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>Social Sharing</button>
-		<button class="ui button" href="/bibs-server/badges/insights?event=${event.id}">Insights</button>
+		<button class="ui button" onClick="redirectInsights(${event.id})">Insights</button>
 		
     </div>
     
@@ -148,6 +148,10 @@
     	
     	function deactivate(id) {
     		alert("deactivating:"+id);
+    	}
+    	
+    	function redirectInsights(id) {
+    		window.location="/bibs-server/badges/eventinsights?eventid="+id;
     	}
     </script>
 </div>
