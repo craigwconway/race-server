@@ -213,10 +213,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ui red button" style="float:left" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui button" style="width:200px;margin-right:20px;" onclick="exportRegHandler(false)">
+					<button type="button" class="ui button" style="width:60px;margin-right:5px;" onclick="exportRegHandler(true, true)">
+                        Quick
+                    </button>
+                    <button type="button" class="ui button" style="width:200px;margin-right:20px;" onclick="exportRegHandler(false, false)">
                         <i class="fa fa-file-o" style="margin-right:7px"><!--  --></i>New Data Only
                     </button>
-                    <button type="button" class="ui button" style="width:150px;" onclick="exportRegHandler(true)">
+                    <button type="button" class="ui button" style="width:150px;" onclick="exportRegHandler(true, false)">
                         <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>All Data
                     </button>
                 </div>
@@ -1275,7 +1278,7 @@
         function closeModal(){
             jQuery('.modal').modal('hide');
         }
-        function exportRegHandler(all){
+        function exportRegHandler(all, quick){
             var typeString = "";
             for( var i in currentExportRegTypes ){
                 typeString += '&amp;type='+currentExportRegTypes[i];
@@ -1294,6 +1297,9 @@
             var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false" + typeString + optString;
             if(all){
                 callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true" + typeString + optString;
+            }
+            if(quick){
+            	callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true&amp;quick=true" + "&amp;type=TICKET" + optString;
             }
             window.location=callUrl;
         }
