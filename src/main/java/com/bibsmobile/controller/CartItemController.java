@@ -142,6 +142,7 @@ public class CartItemController {
         }
         headers += "Firstname, Lastname, Age, Gender, Email, Phone, Address, Zip Code, City, State, Emergency Contact, Emergency Contact Phone";
         headers += "\r\n";
+        response.getWriter().write(headers);
         for (CartItem cartItem : cartItems) {
         	System.out.println("Checking cartitem: " + cartItem.getId());
             if (BooleanUtils.isNotTrue(cartItem.getExported())) {
@@ -158,7 +159,7 @@ public class CartItemController {
             UserProfile userProfile = cartItem.getUserProfile();
             String str = format.format(cartItem.getCreated()) + ", " + cartItem.getEventCartItem().getType() + ", " + cartItem.getEventCartItem().getName() + ", " 
             		+ cartItem.getQuantity() + ", " + size + ", " + color + ", " + couponCode + ", " 
-                    + "$" + cartItem.getPrice()/100 + "." + cartItem.getPrice()%100 + ", " + categoryName + ", "
+                    + "$" + cartItem.getPrice() + ", " + categoryName + ", "
             		+ cart.isShared() + ", " + eventTypeName + ", ";
             if(bibnum == true) {
             	if(cartItem.getEventCartItem().getType() == EventCartItemTypeEnum.TICKET) {
@@ -175,7 +176,7 @@ public class CartItemController {
             if (userProfile != null) {
                 str += userProfile.getFirstname() + ", " + userProfile.getLastname() + ", " + userProfile.getAge() + ", "
                 		+ userProfile.getGender() + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", "
-                		+ userProfile.getAddressLine1() + ", " + userProfile.getZipCode() + ", " + userProfile.getCity() + ", "
+                		+ "\""+ userProfile.getAddressLine1() + "\"" + ", " + userProfile.getZipCode() + ", " + userProfile.getCity() + ", "
                 		+ userProfile.getState() + ", " + userProfile.getEmergencyContactName() + ", " + userProfile.getEmergencyContactPhone();
             }
             if(questions == true) {
