@@ -5,6 +5,8 @@ package com.bibsmobile.model;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -119,6 +121,25 @@ public class CustomRegFieldResponse {
 	 */
     @PersistenceContext
     transient EntityManager entityManager;	
+    
+    public static String generateExportString(Event event, List<CustomRegFieldResponse> responses, List<CustomRegField> fields) {
+    	String returnString = "";
+    	Map<CustomRegField, CustomRegFieldResponse> questionMap = new HashMap<CustomRegField, CustomRegFieldResponse>();
+    	for(CustomRegFieldResponse response : responses) {
+    		questionMap.put(response.getCustomRegField(), response);
+    	}
+    	for(CustomRegField field : fields) {
+    		if(!returnString.isEmpty()) {
+    			returnString +=",";
+    		}
+    		if(questionMap.get(field) == null) {
+    			returnString += "-";
+    		} else {
+    			returnString += questionMap.get(field).getResponse();
+    		}
+    	}
+    	return returnString;
+    }
     
 	/**
 	 * Hibernate Overhead -- Do not remove

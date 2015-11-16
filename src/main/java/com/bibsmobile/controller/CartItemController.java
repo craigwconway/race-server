@@ -2,6 +2,7 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegField;
 import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
@@ -118,8 +119,13 @@ public class CartItemController {
     public static void export(@RequestParam Long eventId, @RequestParam boolean all, HttpServletResponse response,
     		@RequestParam(value = "type") List <EventCartItemTypeEnum> types,
     		@RequestParam(value = "questions", defaultValue = "true") boolean questions,
-    		@RequestParam(value = "bibnum", defaultValue = "false") boolean bibnum) throws IOException {
+    		@RequestParam(value = "bibnum", defaultValue = "false") boolean bibnum,
+    		@RequestParam(value = "quick", defaultValue = "false") boolean quick) throws IOException {
         List<CartItem> cartItems = new ArrayList<>();
+        if(quick) {
+        	types = new ArrayList<EventCartItemTypeEnum> ();
+        	types.add(EventCartItemTypeEnum.TICKET);
+        }
         System.out.println("Handling export for types: " + types);
         Event event = Event.findEvent(eventId);
         if (event != null) {
@@ -136,12 +142,23 @@ public class CartItemController {
         
         response.setContentType("text/csv;charset=utf-8");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + "registrations.csv\"");
-        String headers = "Checkout Time, Ticket Type, Item, Quantity, Size, Color, Coupon Code, Raw Price, Price Option, Social Shared, Event Type,";
+        String headers = "Checkout Time, Ticket Type, Item, Quantity, Size, Color, Coupon Code, Raw Price, Price Option, Social Shared, ";
+        if(quick) {
+        	headers = "";
+        }
+        headers += "Event Type,";
         if(bibnum == true) {
         	headers += " Bib Number,";
         }
+        List<CustomRegField> fields = CustomRegField.findCustomRegFieldsByEvent(event).getResultList();
         headers += "Firstname, Lastname, Age, Gender, Email, Phone, Address, Zip Code, City, State, Emergency Contact, Emergency Contact Phone";
+        if(questions) {
+        	for(CustomRegField field : fields ) {
+        		headers += ", " + field.getQuestion();
+        	}
+        }
         headers += "\r\n";
+        response.getWriter().write(headers);
         for (CartItem cartItem : cartItems) {
         	System.out.println("Checking cartitem: " + cartItem.getId());
             if (BooleanUtils.isNotTrue(cartItem.getExported())) {
@@ -158,8 +175,12 @@ public class CartItemController {
             UserProfile userProfile = cartItem.getUserProfile();
             String str = format.format(cartItem.getCreated()) + ", " + cartItem.getEventCartItem().getType() + ", " + cartItem.getEventCartItem().getName() + ", " 
             		+ cartItem.getQuantity() + ", " + size + ", " + color + ", " + couponCode + ", " 
-                    + "$" + cartItem.getPrice()/100 + "." + cartItem.getPrice()%100 + ", " + categoryName + ", "
-            		+ cart.isShared() + ", " + eventTypeName + ", ";
+                    + "$" + cartItem.getPrice() + ", " + categoryName + ", "
+            		+ cart.isShared() + ", " ;
+            if(quick) {
+            	str="";
+            }
+                    str += eventTypeName + ", ";
             if(bibnum == true) {
             	if(cartItem.getEventCartItem().getType() == EventCartItemTypeEnum.TICKET) {
             		if (cartItem.getBib() == null) {
@@ -173,15 +194,21 @@ public class CartItemController {
             }
 
             if (userProfile != null) {
+            	String displayGender; 
+            	if(userProfile.getGender().equalsIgnoreCase("male")) {
+            		displayGender = "M";
+            	} else if(userProfile.getGender().equalsIgnoreCase("female")) {
+            		displayGender = "F";
+            	} else {
+            		displayGender = userProfile.getGender();
+            	}
                 str += userProfile.getFirstname() + ", " + userProfile.getLastname() + ", " + userProfile.getAge() + ", "
-                		+ userProfile.getGender() + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", "
-                		+ userProfile.getAddressLine1() + ", " + userProfile.getZipCode() + ", " + userProfile.getCity() + ", "
+                		+ displayGender + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", "
+                		+ userProfile.getAddressLine1().replace(",", "") + ", " + userProfile.getZipCode() + ", " + userProfile.getCity() + ", "
                 		+ userProfile.getState() + ", " + userProfile.getEmergencyContactName() + ", " + userProfile.getEmergencyContactPhone();
             }
             if(questions == true) {
-                for (CustomRegFieldResponse r : cart.getCustomRegFieldResponses()) {
-                    str += r.getCustomRegField().getQuestion() + ", " + r.getResponse() + ", ";
-                }
+            	str += ","+CustomRegFieldResponse.generateExportString(event, cart.getCustomRegFieldResponses(), fields);
             }
             str += "\r\n";
             response.getWriter().write(str);
