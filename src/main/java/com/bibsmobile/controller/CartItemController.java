@@ -194,9 +194,17 @@ public class CartItemController {
             }
 
             if (userProfile != null) {
+            	String displayGender; 
+            	if(userProfile.getGender().equalsIgnoreCase("male")) {
+            		displayGender = "M";
+            	} else if(userProfile.getGender().equalsIgnoreCase("female")) {
+            		displayGender = "F";
+            	} else {
+            		displayGender = userProfile.getGender();
+            	}
                 str += userProfile.getFirstname() + ", " + userProfile.getLastname() + ", " + userProfile.getAge() + ", "
-                		+ userProfile.getGender() + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", "
-                		+ "\""+ userProfile.getAddressLine1() + "\"" + ", " + userProfile.getZipCode() + ", " + userProfile.getCity() + ", "
+                		+ displayGender + ", " + userProfile.getEmail() + ", " + userProfile.getPhone() + ", "
+                		+ userProfile.getAddressLine1().replace(",", "") + ", " + userProfile.getZipCode() + ", " + userProfile.getCity() + ", "
                 		+ userProfile.getState() + ", " + userProfile.getEmergencyContactName() + ", " + userProfile.getEmergencyContactPhone();
             }
             if(questions == true) {

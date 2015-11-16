@@ -213,7 +213,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="ui red button" style="float:left" onclick="closeModal()">Cancel</button>
-					<button type="button" class="ui button" style="width:60px;margin-right:5px;" onclick="exportRegHandler(true, true)">
+					<button type="button" class="ui button" style="width:80px;margin-right:5px;" onclick="exportRegHandler(true, true)">
                         Quick
                     </button>
                     <button type="button" class="ui button" style="width:200px;margin-right:20px;" onclick="exportRegHandler(false, false)">
