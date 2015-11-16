@@ -208,7 +208,7 @@ public class CartItemController {
                 		+ userProfile.getState() + ", " + userProfile.getEmergencyContactName() + ", " + userProfile.getEmergencyContactPhone();
             }
             if(questions == true) {
-            	str += CustomRegFieldResponse.generateExportString(event, cart.getCustomRegFieldResponses(), fields);
+            	str += ","+CustomRegFieldResponse.generateExportString(event, cart.getCustomRegFieldResponses(), fields);
             }
             str += "\r\n";
             response.getWriter().write(str);
