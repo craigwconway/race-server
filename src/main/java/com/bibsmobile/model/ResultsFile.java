@@ -41,8 +41,12 @@ public class ResultsFile {
 
     @NotNull
     private String contentType;
+    
     @ManyToOne
     private Event event;
+    
+    @ManyToOne
+    private EventType eventType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "SS")

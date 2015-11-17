@@ -39,6 +39,7 @@ public class ResultsFileMapping {
     @ManyToOne
     private ResultsFile resultsFile;
     private boolean skipFirstRow;
+    @Column(length = 2000)
     private String map;
 
     @Transient
