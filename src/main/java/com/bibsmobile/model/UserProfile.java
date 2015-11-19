@@ -95,7 +95,7 @@ public class UserProfile implements UserDetails {
     private Set<UserProfile> friendRequests;
     
     @ManyToMany
-    private Set<Event> events = null;
+    private Set<Event> events = new HashSet<Event>();
 
     private String phone;
 

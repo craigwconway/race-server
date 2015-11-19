@@ -665,6 +665,15 @@ public class Event {
         return q;
     }
 
+    public static TypedQuery<Event> findEventsBySeriesEquals(Series series) {
+        if (series == null)
+            throw new IllegalArgumentException("The series argument is required");
+        EntityManager em = Event.entityManager();
+        TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.series = :series", Event.class);
+        q.setParameter("series", series);
+        return q;
+    }    
+    
     public static TypedQuery<Event> findEventsByStateEquals(String state, String sortFieldName, String sortOrder) {
         if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");

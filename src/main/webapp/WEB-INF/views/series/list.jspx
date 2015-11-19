@@ -6,7 +6,7 @@
 	    <h1 class="ui header">Current Series</h1>
 	    <div class="ui three stacking cards">
 			<c:forEach var="item" items="${series}">
-			<div class="ui card">
+			<div class="ui card" onClick="redirectSeries(${item.id})">
 				<div class="content">
 					<c:if test="${item.name != null}">
 					<div class="header">${item.name}</div>
@@ -53,4 +53,9 @@
 		<h3 class="ui header" style="margin-left:1%">No past series</h3>
 		</c:if>
 	</div>
+	<script>
+		function redirectSeries(id) {
+			window.location="/bibs-server/series/"+id;
+		}
+	</script>
 </div>

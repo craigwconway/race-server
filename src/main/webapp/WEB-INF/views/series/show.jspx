@@ -3,54 +3,47 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <div style="margin:5%">
-	    <h1 class="ui header">Current Series</h1>
-	    <div class="ui three stacking cards">
-			<c:forEach var="item" items="${series}">
-			<div class="ui card">
-				<div class="content">
-					<c:if test="${item.name != null}">
-					<div class="header">${item.name}</div>
-					</c:if>
-					<c:if test="${item.name == null }">
-					<div class="header">Unnamed Series</div>
-					</c:if>
-					<div class="meta">
-						<c:if test="${item.titleSponsor == null}">
-						<span class="right floated time">No Title Sponsor</span>
-						</c:if>
-						<c:if test="${item.titleSponsor != null }">
-						<span class="right floated time">${item.titleSponsor}</span>
-						</c:if>
-						<span class="category">Sponsor</span>
-					</div>
-					<div class="description">
-						<p>
-						<c:if test="${item.description == null }">
-						Manage your series
-						</c:if>
-						${item.description}
-						</p>
-					</div>
-				</div>
-				<div class="extra content">
-					<div class="right floated author">
-						<c:if test="${item.logo == null}">
-						<img class="ui small image" src="/bibs-server/resources/images/bibsicon.png"></img>
-						</c:if>
-						<c:if test="${item.logo != null}">
-						<img class="ui small image" src="${item.logo}"></img>
-						</c:if>
-						${eventCounts[item.id]} Events
-					</div>
-				</div>
-			</div>
+    	<h1 class="ui header">${series.name }</h1>
+    	Showing region:
+		<select name="region" id="region">
+                <option selected="selected" >All</option>
+                <option value="M">San Francisco</option>
+                <option value="F">Landfill</option>
+        </select>
+        <button type="button" class="ui basic black button" ><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>Region</button>
+        <button type="button" class="ui button" >Alerts</button>
+    	<table class="ui celled table">
+			<thead>
+				<tr>
+					<th>Event</th>
+					<th>Date</th>
+					<th>Athletes</th>
+				</tr>
+				</thead>
+			<tbody>
+			<c:forEach var="item" items="${events }">
+			<tr>
+				<td>
+				<div class="ui ribbon label">${item.name}</div>
+				</td>
+				<td>${item.timeStartLocal}</td>
+				<td>300</td>
+			</tr>
 			</c:forEach>
+		</tbody>
+		<tfoot>
+		<tr><th colspan="3">
+		<div class="ui right floated pagination menu">
+		<a class="icon item">
+		  <i class="fa fa-arrow-left"></i>
+		</a>
+		<a class="item">1</a>
+		<a class="icon item">
+		  <i class="fa fa-arrow-right"></i>
+		</a>
 		</div>
-		<br></br>
-		<br></br>
-		<h1 class="ui header">Past Series</h1>
-		<c:if test="${pastSeries == null}">
-		<h3 class="ui header" style="margin-left:1%">No past series</h3>
-		</c:if>
+		</th>
+		</tr></tfoot>
+		</table>
 	</div>
 </div>
