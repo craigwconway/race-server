@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.Badge;
@@ -42,10 +43,22 @@ public class SeriesController {
 	}
 	
 	@RequestMapping(value = "/{id}", produces = "text/html")
-	public String createForm(Model uiModel, @PathVariable("id") Long id) {
+	public String createForm(Model uiModel, @PathVariable("id") Long id,
+			@RequestParam(value = "region", required = false) Long regionId) {
 		Series series = Series.findSeries(id);
+
 		uiModel.addAttribute("series", series);
-		uiModel.addAttribute("events", Event.findEventsBySeriesEquals(series).getResultList());
+		uiModel.addAttribute("regions", SeriesRegion.findSeriesRegionsBySeries(series).getResultList());
+
+		if(regionId != null) {
+			SeriesRegion region = SeriesRegion.findSeries(regionId);
+			uiModel.addAttribute("region", region);
+			uiModel.addAttribute("events", Event.findEventsByRegionEquals(region).getResultList());
+			SeriesRegion.findSeries(regionId);
+		} else {
+			uiModel.addAttribute("events", Event.findEventsBySeriesEquals(series).getResultList());
+			uiModel.addAttribute("region", null);
+		}
 		return "series/show";
 	}
 	

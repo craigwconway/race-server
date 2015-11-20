@@ -5,10 +5,16 @@
     <div style="margin:5%">
     	<h1 class="ui header">${series.name }</h1>
     	Showing region:
-		<select name="region" id="region">
-                <option selected="selected" >All</option>
-                <option value="M">San Francisco</option>
-                <option value="F">Landfill</option>
+		<select class="ui search region" name="region" id="regionselector" onchange="if (this.selectedIndex) navigateRegion();">
+				<c:if test='${region == null}'>
+				<option selected="selected" value="">All</option>
+				</c:if>
+                <c:if test='${region != null}'>
+                <option value="">All</option>
+                </c:if>
+                <c:forEach var="item" items="${regions}">
+                <option value="${item.id }">${item.name}</option>
+                </c:forEach>
         </select>
         <button type="button" class="ui basic black button" ><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>Region</button>
         <button type="button" class="ui button" >Alerts</button>
@@ -46,4 +52,25 @@
 		</tr></tfoot>
 		</table>
 	</div>
+	
+<script>
+	window.onload = init();
+	
+	function init() {
+		<c:if test='${region != null}'>
+		jQuery("#regionselector").val(${region.id});
+		</c:if>
+	}
+	
+	function navigateRegion() {
+		var regionval = jQuery("#regionselector").val();
+		if(regionval === "") {
+			window.location = "/bibs-server/series/${series.id}";
+		} else {
+			window.location = "/bibs-server/series/${series.id}?region=" + regionval;
+		}
+	}
+	
+</script>
 </div>
+
