@@ -33,7 +33,7 @@
 				<div class="ui ribbon label">${item.name}</div>
 				</td>
 				<td>${item.timeStartLocal}</td>
-				<td>300</td>
+				<td>${athleteCounts[item.id]}</td>
 			</tr>
 			</c:forEach>
 		</tbody>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.Badge;
+import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Series;
 import com.bibsmobile.model.SeriesRegion;
 import com.bibsmobile.util.SpringJSONUtil;
@@ -49,14 +50,24 @@ public class SeriesController {
 
 		uiModel.addAttribute("series", series);
 		uiModel.addAttribute("regions", SeriesRegion.findSeriesRegionsBySeries(series).getResultList());
+		Map <Long, Long> athleteCounts = new HashMap<Long,Long>();
 
 		if(regionId != null) {
 			SeriesRegion region = SeriesRegion.findSeries(regionId);
 			uiModel.addAttribute("region", region);
-			uiModel.addAttribute("events", Event.findEventsByRegionEquals(region).getResultList());
-			SeriesRegion.findSeries(regionId);
+			List <Event> events = Event.findEventsByRegionEquals(region).getResultList();
+			uiModel.addAttribute("events", events);
+			for(Event event : events) {
+				athleteCounts.put(event.getId(), RaceResult.countFindRaceResultsByEvent(event));
+			}
+			uiModel.addAttribute("athleteCounts", athleteCounts);
 		} else {
-			uiModel.addAttribute("events", Event.findEventsBySeriesEquals(series).getResultList());
+			List <Event> events = Event.findEventsBySeriesEquals(series).getResultList();
+			uiModel.addAttribute("events", events);
+			for(Event event : events) {
+				athleteCounts.put(event.getId(), RaceResult.countFindRaceResultsByEvent(event));
+			}
+			uiModel.addAttribute("athleteCounts", athleteCounts);
 			uiModel.addAttribute("region", null);
 		}
 		return "series/show";
