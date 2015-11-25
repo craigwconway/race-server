@@ -38,7 +38,7 @@ public class AwardCategory implements Comparable{
 	public static final int GRANDMASTERS_MAX = MAX_AGE;
 
     @ManyToOne
-    private Event event;
+    private EventType eventType;
     
     private int sortOrder;
 	private String name;
@@ -184,12 +184,12 @@ public class AwardCategory implements Comparable{
         this.version = version;
     }
 
-	public Event getEvent() {
-        return this.event;
+	public EventType getEventType() {
+        return this.eventType;
     }
 
-	public void setEvent(Event event) {
-        this.event = event;
+	public void setEventType(EventType eventType) {
+        this.eventType = eventType;
     }
 
 	public int getSortOrder() {
@@ -240,7 +240,7 @@ public class AwardCategory implements Comparable{
         this.listSize = listSize;
     }
 	public String toJson() {
-        return new JSONSerializer().exclude("*.class","event").serialize(this);
+        return new JSONSerializer().exclude("*.class","eventType").serialize(this);
     }
 
 	public String toJson(boolean full) {
@@ -252,14 +252,14 @@ public class AwardCategory implements Comparable{
     }
 
 	public static String toJsonArray(Collection<AwardCategory> collection) {
-        return new JSONSerializer().exclude("*.class", "event").serialize(collection);
+        return new JSONSerializer().exclude("*.class", "eventType").serialize(collection);
     }
 
 	public static Collection<AwardCategory> fromJsonArray(String json) {
         return new JSONDeserializer<List<AwardCategory>>().use(null, ArrayList.class).use("values", AwardCategory.class).deserialize(json);
     }
 	
-	public static List<AwardCategory> createAgeGenderRankings(final Event event, int ageMin, int ageMax, int ageSpan, int listSize){
+	public static List<AwardCategory> createAgeGenderRankings(final EventType eventType, int ageMin, int ageMax, int ageSpan, int listSize){
 		List<AwardCategory> list = new ArrayList<AwardCategory>();
 		String[] genders = {"M","F"};
 		int i = 0;
@@ -267,7 +267,7 @@ public class AwardCategory implements Comparable{
 			int _ageMax = ageMin + ageSpan;
 			for(String gender:genders){
 				AwardCategory c = new AwardCategory();
-				c.setEvent(event);
+				c.setEventType(eventType);
 				c.setAgeMin(ageMin);
 				c.setAgeMax(_ageMax);
 				c.setGender(gender);
@@ -286,12 +286,12 @@ public class AwardCategory implements Comparable{
 		return list;
 	}
 	
-	public static List<AwardCategory> createDefaultMedals(final Event event){
+	public static List<AwardCategory> createDefaultMedals(final EventType eventType){
 		List<AwardCategory> list = new ArrayList<AwardCategory>();
 		int i = 0;
 		AwardCategory c = new AwardCategory();
 		c.setName("Top Males Overall");
-		c.setEvent(event);
+		c.setEventType(eventType);
 		c.setAgeMin(MIN_AGE);
 		c.setAgeMax(MAX_AGE);
 		c.setGender("M");
@@ -303,7 +303,7 @@ public class AwardCategory implements Comparable{
 		
 		c = new AwardCategory();
 		c.setName("Top Females Overall");
-		c.setEvent(event);
+		c.setEventType(eventType);
 		c.setAgeMin(MIN_AGE);
 		c.setAgeMax(MAX_AGE);
 		c.setGender("F");
@@ -315,7 +315,7 @@ public class AwardCategory implements Comparable{
 		
 		c = new AwardCategory();
 		c.setName("Top Male Masters");
-		c.setEvent(event);
+		c.setEventType(eventType);
 		c.setAgeMin(MASTERS_MIN);
 		c.setAgeMax(MASTERS_MAX);
 		c.setGender("M");
@@ -327,7 +327,7 @@ public class AwardCategory implements Comparable{
 		
 		c = new AwardCategory();
 		c.setName("Top Female Masters");
-		c.setEvent(event);
+		c.setEventType(eventType);
 		c.setAgeMin(MASTERS_MIN);
 		c.setAgeMax(MASTERS_MAX);
 		c.setGender("F");
@@ -339,7 +339,7 @@ public class AwardCategory implements Comparable{
 		
 		c = new AwardCategory();
 		c.setName("Top Male Grand Masters");
-		c.setEvent(event);
+		c.setEventType(eventType);
 		c.setAgeMin(GRANDMASTERS_MIN);
 		c.setAgeMax(GRANDMASTERS_MAX);
 		c.setGender("M");
@@ -351,7 +351,7 @@ public class AwardCategory implements Comparable{
 		
 		c = new AwardCategory();
 		c.setName("Top Female Grand Masters");
-		c.setEvent(event);
+		c.setEventType(eventType);
 		c.setAgeMin(GRANDMASTERS_MIN);
 		c.setAgeMax(GRANDMASTERS_MAX);
 		c.setGender("F");
@@ -364,19 +364,19 @@ public class AwardCategory implements Comparable{
 		return list;
 	}
 
-	public static List<AwardCategory> findByEvent(Event event) {
+	public static List<AwardCategory> findByEventType(EventType eventType) {
         EntityManager em = AwardCategory.entityManager();
-        String jpaQuery = "SELECT o FROM AwardCategory AS o WHERE o.event = :event";
+        String jpaQuery = "SELECT o FROM AwardCategory AS o WHERE o.eventType = :eventType";
         jpaQuery = jpaQuery + " ORDER BY o.sortOrder ASC";
         TypedQuery<AwardCategory> q = em.createQuery(jpaQuery, AwardCategory.class);
-        q.setParameter("event", event);
+        q.setParameter("eventType", eventType);
         return q.getResultList();
     }
 
 	@Transactional
 	public int removeAgeGenderRankingsByEvent(Event event) {
         EntityManager em = AwardCategory.entityManager();
-        String jpaQuery = "DELETE FROM AwardCategory AS o WHERE o.event = :event AND o.name NOT LIKE '"+AwardCategory.MEDAL_PREFIX+"%'";
+        String jpaQuery = "DELETE FROM AwardCategory AS o WHERE o.eventType = :eventType AND o.name NOT LIKE '"+AwardCategory.MEDAL_PREFIX+"%'";
         Query q = em.createQuery(jpaQuery);
         q.setParameter("event", event);
         return q.executeUpdate();

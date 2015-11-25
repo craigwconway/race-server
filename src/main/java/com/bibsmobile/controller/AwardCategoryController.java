@@ -19,6 +19,9 @@ import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
+
+
 @RequestMapping("/awardcategorys")
 @Controller
 public class AwardCategoryController {
@@ -38,23 +41,23 @@ public class AwardCategoryController {
         	awardCategory.setName(AwardCategory.MEDAL_PREFIX + awardCategory.getName());
         }
         
-        awardCategory.setSortOrder(AwardCategory.findByEvent(awardCategory.getEvent()).size());
+        awardCategory.setSortOrder(AwardCategory.findByEventType(awardCategory.getEventType()).size());
         
         awardCategory.persist();
         return (!awardCategory.isMedal()) 
-        		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEvent().getId()+"&gender="+awardCategory.getGender()
-        		: "redirect:/events/awards?event=" + awardCategory.getEvent().getId()+"&gender="+awardCategory.getGender();
+        		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender()
+        		: "redirect:/events/awards?event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender();
     }
 
 	@RequestMapping(params = "form", produces = "text/html")
-    public String createForm(@RequestParam(value = "event", required = true) long eventId, Model uiModel) {
-		Event event = Event.findEvent(eventId);
+    public String createForm(@RequestParam(value = "event", required = true) long eventTypeId, Model uiModel) {
+		EventType eventType = EventType.findEventType(eventTypeId);
 		AwardCategory a = new AwardCategory();
-		a.setSortOrder(AwardCategory.findByEvent(event).size());
+		a.setSortOrder(AwardCategory.findByEventType(eventType).size());
         populateEditForm(uiModel, a);
-        List<Event> events = new ArrayList<Event>();
-        events.add(event);
-        uiModel.addAttribute("events", events);
+        List<EventType> eventTypes = new ArrayList<EventType>();
+        eventTypes.add(eventType);
+        uiModel.addAttribute("eventTypes", eventTypes);
         return "awardcategorys/create";
     }
 	
@@ -73,28 +76,27 @@ public class AwardCategoryController {
         
         awardCategory.merge();
         return (!awardCategory.isMedal()) 
-        		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEvent().getId()+"&gender="+awardCategory.getGender()
-        		: "redirect:/events/awards?event=" + awardCategory.getEvent().getId()+"&gender="+awardCategory.getGender();
+        		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender()
+        		: "redirect:/events/awards?event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender();
      }
 	
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
 		AwardCategory cat = AwardCategory.findAwardCategory(id);
         populateEditForm(uiModel, cat);
-        List<Event> events = new ArrayList<Event>();
-        events.add(Event.findEvent(cat.getEvent().getId()));
-        uiModel.addAttribute("events", events);
+        List<EventType> eventTypes = new ArrayList<EventType>();
+        eventTypes.add(EventType.findEventType(cat.getEventType().getId()));
+        uiModel.addAttribute("eventTypes", eventTypes);
         return "awardcategorys/update";
     }
 
 	@RequestMapping(value = "/delete/{id}", produces = "text/html",headers = "Accept=application/json")
 	public String delete(@PathVariable("id") Long id) {
 		AwardCategory a = AwardCategory.findAwardCategory(id);
-		long eventId = a.getEvent().getId();
         a.remove();
         return (!a.isMedal()) 
-        		? "redirect:/events/ageGenderRankings?event=" + a.getEvent().getId()+"&gender="+a.getGender()
-        		: "redirect:/events/awards?event=" + a.getEvent().getId()+"&gender="+a.getGender();
+        		? "redirect:/events/ageGenderRankings?event=" + a.getEventType().getEvent().getId()+"&gender="+a.getGender()
+        		: "redirect:/events/awards?event=" + a.getEventType().getEvent().getId()+"&gender="+a.getGender();
     }
 
 	void populateEditForm(Model uiModel, AwardCategory awardCategory) {

@@ -12,10 +12,11 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import com.bibsmobile.controller.EventController;
 import com.bibsmobile.model.AwardCategoryResults;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
 
 public class PDFUtil {
-	public static PDDocument createColorMedalsPDF(Event event, List<AwardCategoryResults> list) {
+	public static PDDocument createColorMedalsPDF(EventType eventType, List<AwardCategoryResults> list) {
 		PDDocument document = new PDDocument();
 		try {
 			float yPos = 700;
@@ -38,7 +39,7 @@ public class PDFUtil {
 						contentStream.beginText();
 						contentStream.setFont(PDType1Font.HELVETICA,8);
 						contentStream.moveTextPositionByAmount(10, 10);
-						contentStream.drawString("Results for " +event.getName() + "  -- powered by bibs");
+						contentStream.drawString("Results for " +eventType.getTypeName() + "  -- powered by bibs");
 						contentStream.endText();
 						yPos=700;
 					}

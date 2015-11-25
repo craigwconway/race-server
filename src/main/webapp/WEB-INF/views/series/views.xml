@@ -7,4 +7,7 @@
     <definition extends="default" name="series/show">
         <put-attribute name="body" value="/WEB-INF/views/series/show.jspx"/>
     </definition>
+	<definition extends="default" name="series/alerts">
+        <put-attribute name="body" value="/WEB-INF/views/series/alerts.jspx"/>
+    </definition>
 </tiles-definitions>

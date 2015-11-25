@@ -211,7 +211,6 @@ public class EventController {
         System.out.println("localstart" + event.getTimeStartLocal() + ", start" + event.getTimeStart());
         // Generate a hashtag based on event name
         event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));        
-        event.setAwardsConfig(new EventAwardsConfig());
         event.persist();
         System.out.println("persisting event");
         // Add to usergroup:
@@ -237,11 +236,6 @@ public class EventController {
     		System.out.println("no logged in user");
     	}
         // default awards categories
-        AwardCategory.createDefaultMedals(event);
-        AwardCategory.createAgeGenderRankings(event, 
-        		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
-        		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
-
         return "redirect:/events/"
                 + encodeUrlPathSegment(event.getId().toString(),
                 httpServletRequest);
@@ -619,9 +613,12 @@ public class EventController {
     
     // Print awards
     @RequestMapping(value = "/printawards", method = RequestMethod.GET)
-    public static void printAwards(@RequestParam(value = "event", required = true) Long eventId, HttpServletResponse response) {
+    public static void printAwards(@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "type", required = true) Long eventTypeId,
+    		HttpServletResponse response) {
     	Event event = Event.findEvent(eventId);
-    	PDDocument doc = PDFUtil.createColorMedalsPDF(event, event.calculateMedals(event));
+    	EventType eventType = EventType.findEventType(eventTypeId);
+    	PDDocument doc = PDFUtil.createColorMedalsPDF(eventType, eventType.calculateMedals(eventType));
     	ByteArrayOutputStream baos = new ByteArrayOutputStream();
     	try {
     		doc.save(baos);
@@ -637,17 +634,17 @@ public class EventController {
     	}
     }
 
-    public static List<AwardCategoryResults> getClassRankings(long eventId){
+    public static List<AwardCategoryResults> getClassRankings(long eventTypeId){
     	List<AwardCategoryResults> list = new ArrayList<AwardCategoryResults>();
-    	Event event = Event.findEvent(eventId);
-    	String key = StringUtils.join("class",eventId);
+    	EventType eventType = EventType.findEventType(eventTypeId);
+    	String key = StringUtils.join("class",eventTypeId);
     	// check cached value
     	if(cache.containsKey(key)){
     		System.out.println("cahce hit");
     		list = (List<AwardCategoryResults>) cache.get(key);
     	}else{
     		System.out.println("cache miss");
-    		list = event.calculateRank(event);
+    		list = eventType.calculateRank(eventType);
 	    	for(AwardCategoryResults c:list){
 	    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
 	    	}
@@ -656,17 +653,17 @@ public class EventController {
     	return list;
     }    
     
-    public static List<AwardCategoryResults> getAwards(long eventId){
+    public static List<AwardCategoryResults> getAwards(long eventTypeId){
     	List<AwardCategoryResults> list = new ArrayList<AwardCategoryResults>();
-    	Event event = Event.findEvent(eventId);
-    	String key = StringUtils.join("awards",eventId,event.getAwardsConfig().isAllowMedalsInAgeGenderRankings());
+    	EventType eventType = EventType.findEventType(eventTypeId);
+    	String key = StringUtils.join("awards",eventTypeId,eventType.getAwardsConfig().isAllowMedalsInAgeGenderRankings());
     	// check cached value
     	if(cache.containsKey(key)){
     		System.out.println("cahce hit");
     		list = (List<AwardCategoryResults>) cache.get(key);
     	}else{
     		System.out.println("cache miss");
-    		list = event.calculateMedals(event);
+    		list = eventType.calculateMedals(eventType);
 	    	for(AwardCategoryResults c:list){
 	    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
 	    	}
@@ -698,18 +695,20 @@ public class EventController {
     @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
     public static String ageGenderRankings(
     		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "type", required = true) Long eventTypeId,
     		@RequestParam(value = "gender", required = false, defaultValue = "M") String gender,
     		Model uiModel) {
         uiModel.asMap().clear();
         uiModel.addAttribute("event", Event.findEvent(eventId));
-        uiModel.addAttribute("awardCategoryResults", getAgeGenderRankings(eventId, gender));
+        uiModel.addAttribute("eventType", EventType.findEventType(eventTypeId));
+        uiModel.addAttribute("awardCategoryResults", getAgeGenderRankings(eventTypeId, gender));
         return "events/ageGenderRankings";
     }
     
-    public static List<AwardCategoryResults> getAgeGenderRankings(long eventId, String gender){
+    public static List<AwardCategoryResults> getAgeGenderRankings(long eventTypeId, String gender){
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	Event event = Event.findEvent(eventId);
-    	String key = StringUtils.join("age_gender",eventId,gender);
+    	EventType eventType = EventType.findEventType(eventTypeId);
+    	String key = StringUtils.join("age_gender",eventTypeId,gender);
     	// check cached value
     	if(cache.containsKey(key)){
     		System.out.println("cache hit");
@@ -717,12 +716,12 @@ public class EventController {
     	}else{
     		System.out.println("cache miss");
     		
-	    	List<AwardCategory> list = event.getAwardCategorys();
+	    	List<AwardCategory> list = eventType.getAwardCategorys();
 	    	List<Long> medalsBibs = new ArrayList<Long>();
 	
 	    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
-	    	if(!event.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
-	        	for(AwardCategoryResults c:event.calculateMedals(event)){
+	    	if(!eventType.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
+	        	for(AwardCategoryResults c:eventType.calculateMedals(eventType)){
 	        		for(RaceResult r:c.getResults()){
 	        			medalsBibs.add(r.getBib());
 	        		}
@@ -730,10 +729,10 @@ public class EventController {
 	    	}
 	    	
 			// filter age/gender
-	    	for(AwardCategory c:event.getAwardCategorys()){
+	    	for(AwardCategory c:eventType.getAwardCategorys()){
 	    		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
 	    			results.add(new AwardCategoryResults(c,
-	    					event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
+	    					eventType.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
 	    		}
 	    	}
 	    	cache.put(key, results);
@@ -759,27 +758,31 @@ public class EventController {
     @RequestMapping(value = "/ageGenderRankings/update", method = RequestMethod.GET)
     public static String updateAgeGenderRankings(
     		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "type", required = true) Long eventTypeId,
     		@RequestParam(value = "gender", required = false, defaultValue = "M") String gender,
     		HttpServletRequest httpServletRequest) {
     	Event event = Event.findEvent(eventId);
-    	EventAwardsConfig awardsConfig = event.getAwardsConfig();
+    	EventType eventType = EventType.findEventType(eventTypeId);
+    	EventAwardsConfig awardsConfig = eventType.getAwardsConfig();
     	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
     	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
-    	event.setAwardsConfig(awardsConfig);
-    	event.merge();
+    	eventType.setAwardsConfig(awardsConfig);
+    	eventType.merge();
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
     }
 
     @RequestMapping(value = "/awards/update", method = RequestMethod.GET)
     public static String updateAwards(
     		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "type", required = true) Long eventTypeId,
     		HttpServletRequest httpServletRequest) {
     	Event event = Event.findEvent(eventId);
-    	EventAwardsConfig awardsConfig = event.getAwardsConfig();
+    	EventType eventType = EventType.findEventType(eventTypeId);
+    	EventAwardsConfig awardsConfig = eventType.getAwardsConfig();
     	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
     	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
-    	event.setAwardsConfig(awardsConfig);
-    	event.merge();
+    	eventType.setAwardsConfig(awardsConfig);
+    	eventType.merge();
         return "redirect:/events/awards?event="+eventId;
     }
 
@@ -787,6 +790,7 @@ public class EventController {
     @ResponseBody
     public static String byTimeOfficial(
             @RequestParam(value = "event", required = true) Long event,
+            @RequestParam(value = "type", required = false) Long type,
             @RequestParam(value = "gender", required = false, defaultValue = "") String gender,
             @RequestParam(value = "min", required = false, defaultValue = "0") int min,
             @RequestParam(value = "max", required = false, defaultValue = "0") int max,
@@ -794,7 +798,8 @@ public class EventController {
             @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
 
         Event e = Event.findEvent(event);
-        List<RaceResult> results = e.getAwards(gender, min, max, size);
+        EventType eventType = EventType.findEventType(type);
+        List<RaceResult> results = eventType.getAwards(gender, min, max, size);
         Collections.sort(results);
         return RaceResult.toJsonArray(results);
     }
@@ -1085,8 +1090,6 @@ public class EventController {
 			e.printStackTrace();
 			return "events/create";
 		}
-        event.setAwardsConfig(trueEvent.getAwardsConfig());
-        System.out.println(event.getAwardsConfig());
         uiModel.asMap().clear();
         event.merge();
         return "redirect:/events/" + this.encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
@@ -1657,28 +1660,31 @@ public class EventController {
     @RequestMapping(value = "/createAwardCategories", produces = "text/html")
     public String createAgeGenderRankings(
     		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "type") long eventTypeId,
     		@RequestParam(value = "ageMin") int ageMin,
     		@RequestParam(value = "ageMax") int ageMax,
     		@RequestParam(value = "ageRange") int ageRange,
     		@RequestParam(value = "listSize") int listSize,
     		Model uiModel){
     	Event event = Event.findEvent(eventId);
+    	EventType eventType = EventType.findEventType(eventTypeId);
     	// delete old categories
     	int deleted = new AwardCategory().removeAgeGenderRankingsByEvent(event);
     	System.out.println("DELETED CATS "+deleted);
     	// make new categories
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	List<AwardCategory> list = AwardCategory.createAgeGenderRankings(event, ageMin, ageMax, ageRange, listSize);
+    	List<AwardCategory> list = AwardCategory.createAgeGenderRankings(eventType, ageMin, ageMax, ageRange, listSize);
     	System.out.println("Creating new categories with:");
     	System.out.println("event: " + event + " ageMin: " + ageMin + " ageMax: " + ageMax + " ageRange: " + ageRange + " listSize:" + listSize);
     	for(AwardCategory c:list){
     		if(c.getGender().trim().isEmpty()){
-    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())));
+    			results.add(new AwardCategoryResults(c,eventType.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize())));
     		}
     	}
     	Collections.sort(results);
         uiModel.asMap().clear();
         uiModel.addAttribute("event", event);
+        uiModel.addAttribute("eventType", eventType);
         uiModel.addAttribute("awardCategoryResults", results);
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
@@ -1687,18 +1693,20 @@ public class EventController {
     @RequestMapping(value = "/updateListSize", produces = "text/html")
     public String createAgeGenderRankings(
     		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "type") long eventTypeId,
     		@RequestParam(value = "listSize") int listSize,
     		@RequestParam(value = "gender") String gender,
     		Model uiModel){
     	Event event = Event.findEvent(eventId);
+    	EventType eventType = EventType.findEventType(eventTypeId);
     	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	List<AwardCategory> list = event.getAwardCategorys();
+    	List<AwardCategory> list = eventType.getAwardCategorys();
     	for(AwardCategory c:list){
     		if(!c.isMedal()){
     			AwardCategory cat = AwardCategory.findAwardCategory(c.getId());
     			cat.setListSize(listSize);
     			cat.merge();
-    			results.add(new AwardCategoryResults(c,event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), cat.getListSize())));
+    			results.add(new AwardCategoryResults(c,eventType.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), cat.getListSize())));
     		}
     	}
     	Collections.sort(results);
@@ -1712,65 +1720,67 @@ public class EventController {
     @RequestMapping(value = "/overall", produces = "text/html")
     public String overallResults(
     		@RequestParam(value = "event") long eventId,
+    		@RequestParam(value = "type") long eventTypeId,
     		Model uiModel){
     	uiModel.asMap().clear();
         uiModel.addAttribute("event", Event.findEvent(eventId));
+        uiModel.addAttribute("eventType", EventType.findEventType(eventTypeId));
         uiModel.addAttribute("results", getResultsOverall(eventId));
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/overall";
     }
 
-    public static List<RaceResult> getResultsGender(long eventId, String gender){
-    	Event event = Event.findEvent(eventId);
+    public static List<RaceResult> getResultsGender(long eventTypeId, String gender){
+    	EventType eventType = EventType.findEventType(eventTypeId);
     	List<RaceResult> results = new ArrayList<RaceResult>();
-    	String key = StringUtils.join("gender", eventId, gender);
+    	String key = StringUtils.join("gender", eventTypeId, gender);
     	// check cached value
     	if(cache.containsKey(key)){
     		System.out.println("cache hit");
     		results = (ArrayList<RaceResult>) cache.get(key);   
     	}else{
     		System.out.println("cache miss");
-        	results = event.getAwards(gender, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
+        	results = eventType.getAwards(gender, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
         	cache.put(key, results);
-        	System.out.println("generating overall results for event ID: " + eventId);
+        	System.out.println("generating overall results for event Type ID: " + eventTypeId);
         	System.out.println(results);
     	}
     	return results;
     }    
     
-    public static List<RaceResult> getResultsOverall(long eventId){
-    	Event event = Event.findEvent(eventId);
+    public static List<RaceResult> getResultsOverall(long eventTypeId){
+    	EventType eventType = EventType.findEventType(eventTypeId);
     	List<RaceResult> results = new ArrayList<RaceResult>();
-    	String key = StringUtils.join("overall",eventId);
+    	String key = StringUtils.join("overall",eventTypeId);
     	// check cached value
     	if(cache.containsKey(key)){
     		System.out.println("cache hit");
     		results = (ArrayList<RaceResult>) cache.get(key);   
     	}else{
     		System.out.println("cache miss");
-        	results = event.getAwards(StringUtils.EMPTY, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
+        	results = eventType.getAwards(StringUtils.EMPTY, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
         	cache.put(key, results);
-        	System.out.println("generating overall results for event ID: " + eventId);
+        	System.out.println("generating overall results for event Type ID: " + eventTypeId);
         	System.out.println(results);
     	}
     	return results;
     }    
     
-    public static void clearAwardsCache(long eventId) {
+    public static void clearAwardsCache(long eventTypeId) {
     	System.out.println("Overall cache:");
-    	System.out.println(getResultsOverall(eventId));
-    	cache.remove(StringUtils.join("overall",eventId));
-    	cache.remove(StringUtils.join("class", eventId));
-    	cache.remove(StringUtils.join("age_gender", eventId, "M"));
-    	cache.remove(StringUtils.join("age_gender", eventId, "F"));
-    	cache.remove(StringUtils.join("gender", eventId, "M"));
-    	cache.remove(StringUtils.join("gender", eventId, "M"));
+    	System.out.println(getResultsOverall(eventTypeId));
+    	cache.remove(StringUtils.join("overall",eventTypeId));
+    	cache.remove(StringUtils.join("class", eventTypeId));
+    	cache.remove(StringUtils.join("age_gender", eventTypeId, "M"));
+    	cache.remove(StringUtils.join("age_gender", eventTypeId, "F"));
+    	cache.remove(StringUtils.join("gender", eventTypeId, "M"));
+    	cache.remove(StringUtils.join("gender", eventTypeId, "M"));
     }
     
-    public static int getResultOverall(long eventId, long bib){
+    public static int getResultOverall(long eventTypeId, long bib){
     	try{
-	    	for(int i=0;i<getResultsOverall(eventId).size();i++){
-	    		if(getResultsOverall(eventId).get(i).getBib()==bib) return i+1;
+	    	for(int i=0;i<getResultsOverall(eventTypeId).size();i++){
+	    		if(getResultsOverall(eventTypeId).get(i).getBib()==bib) return i+1;
 	    	}
     	} catch(Exception e) {
     		return 0;
@@ -1778,10 +1788,10 @@ public class EventController {
     	return 0;
     }
 
-    public static int getResultGender(long eventId, long bib, String gender){
+    public static int getResultGender(long eventTypeId, long bib, String gender){
     	try{
-	    	for(int i=0;i<getResultsGender(eventId, gender).size();i++){
-	    		if(getResultsGender(eventId, gender).get(i).getBib()==bib) return i+1;
+	    	for(int i=0;i<getResultsGender(eventTypeId, gender).size();i++){
+	    		if(getResultsGender(eventTypeId, gender).get(i).getBib()==bib) return i+1;
 	    	}
     	} catch(Exception e) {
     		return 0;

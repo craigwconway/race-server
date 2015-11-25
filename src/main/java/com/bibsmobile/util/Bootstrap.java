@@ -1,13 +1,16 @@
 package com.bibsmobile.util;
 
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.TimeZone;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAwardsConfig;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
@@ -81,20 +84,33 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent event) {
     	
     	if(Event.findAllEvents().isEmpty()){
-    	    
+    		TimeZone systemtz = TimeZone.getDefault();
+    		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+    		
             Event foo = new Event();
             foo.setName("Kings Canyon Critical Mass");
             foo.setCity("Kings Canyon");
             foo.setState("Colordo");
             foo.setGunTime(new DateTime().toDate());
             foo.setTimeStart(new DateTime().toDate());
-            foo.setAwardsConfig(new EventAwardsConfig());
+            foo.setTimeStartLocal(format.format(foo.getTimeStart()));
             foo.persist();
+            
+            EventType type = new EventType();
+            type.setEvent(foo);
+            type.setStartTime(new DateTime().toDate());
+            type.setTimeStartLocal(format.format(type.getStartTime()));
+            type.setDistance("5k");
+            type.setRacetype("Running");
+            type.setMeters(new Long(5000));
+            type.setTypeName("Run with the Lizards 5k");
+            type.persist();
             
             for(long i = 1; i < 300; i++){
             	RaceResult user = new RaceResult();
             	user.setBib(i);
             	user.setEvent(foo);
+            	user.setEventType(type);
             	user.setAge(generateRandomAge());
             	user.setGender( (i%2==0) ? "M" : "F");
             	user.setTimeofficial(Math.abs(
@@ -110,8 +126,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             
 
             // default awards categories
-            AwardCategory.createDefaultMedals(foo);
-            AwardCategory.createAgeGenderRankings(foo, 
+            AwardCategory.createDefaultMedals(type);
+            AwardCategory.createAgeGenderRankings(type, 
             		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
             		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
             

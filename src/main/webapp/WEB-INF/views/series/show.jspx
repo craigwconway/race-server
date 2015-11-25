@@ -17,7 +17,7 @@
                 </c:forEach>
         </select>
         <button type="button" class="ui basic black button" ><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>Region</button>
-        <button type="button" class="ui button" >Alerts</button>
+        <button type="button" class="ui button" onClick="nagivateAlerts()">Alerts</button>
     	<table class="ui celled table">
 			<thead>
 				<tr>
@@ -69,6 +69,10 @@
 		} else {
 			window.location = "/bibs-server/series/${series.id}?region=" + regionval;
 		}
+	}
+	
+	function navigateAlerts() {
+		window.location = "/bibs-server/series/alertsbyseries/${series.id}";
 	}
 	
 </script>

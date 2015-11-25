@@ -75,9 +75,6 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private Set<ResultsFile> resultsFiles;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
-    private List<AwardCategory> awardCategorys;
-
     @Field
     private String name;
 
@@ -140,12 +137,6 @@ public class Event {
 
     private String photo3;
     
-    /**
-     * Embedded object containing the EventAwardsConfig.
-     */
-    @Embedded
-    private EventAwardsConfig awardsConfig;
-
     @Embedded
     private EventPricing pricing = new EventPricing();
     
@@ -315,102 +306,8 @@ public class Event {
         return q;
     }
 
-    public List<RaceResult> getAwards(String gender, int min, int max, int size) {
-    	return getAwards( gender,  min,  max,  size, new ArrayList<Long>());
-    }
-
-    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<Long> excludeBibs) { 
-    	List<RaceResult> results = Event.findRaceResultsByAwardCategory(id,gender,min,max,1,999);
-    	Collections.sort(results);
-    	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
-    	for(RaceResult r : results){
-    		if(!excludeBibs.contains(r.getBib())){
-    			resultsFiltered.add(r);
-    		}
-    		if(resultsFiltered.size() == size){
-    			break;
-    		}
-    	}
-    	Collections.sort(resultsFiltered);
-    	return resultsFiltered;
-    }
-
     
-    public List<AwardCategoryResults> calculateRank(Event event){
-    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	
-		// filter medals
-		List<Long> awarded = new ArrayList<Long>();
-    	for(AwardCategory c:event.getAwardCategorys()){
-    		if(!c.isMedal()){
-    			List<RaceResult> rr = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), 9999, awarded);
-    			results.add(new AwardCategoryResults(c,rr));
-    			// track mdals, only 1 medal ppn
-    			for(RaceResult r:rr){
-        			awarded.add(r.getBib());
-    			}
-    		}
-    	}
-    	
-    	Collections.sort(results);
-    	return results;
-    }
-    
-    
-    public List<AwardCategoryResults> calculateMedals(Event event){
-    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	List<Long> mastersBibs = new ArrayList<Long>();
-    	
-    	// if not allow masters in overall, collect masters bibs, pass into non-masters
-    	if(!event.getAwardsConfig().isAllowMastersInNonMasters()){
-        	for(AwardCategory c:event.getAwardCategorys()){
-        		if(c.isMedal() && c.isMaster()){
-        			List<RaceResult> masters = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
-        			for(RaceResult m:masters){
-        				mastersBibs.add(m.getBib());
-        			}
-        		}
-        	}
-    	}
-    	
-		// filter medals
-		List<Long> awarded = new ArrayList<Long>();
-    	for(AwardCategory c:event.getAwardCategorys()){
-    		if(c.isMedal()){
-    			List<RaceResult> rr = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)
-    					: event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs);
-    			results.add(new AwardCategoryResults(c,rr));
-    			// track mdals, only 1 medal ppn
-    			for(RaceResult r:rr){
-        			awarded.add(r.getBib());
-        			mastersBibs.add(r.getBib());
-    			}
-    		}
-    	}
-    	
-    	Collections.sort(results);
-    	return results;
-    }
 
-    public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page, int size) {
-        if (min > max)
-            min = max;
-        String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
-        if (!gender.isEmpty()) HQL += " AND o.gender = :gender ";
-        if (min >= 0 && max > 0) HQL += "AND o.age >= :min AND o.age <= :max ) ";
-        HQL += " order by o.timeofficialdisplay asc";
-        EntityManager em = RaceResult.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
-        q.setParameter("event", Event.findEvent(event));
-        if (!gender.isEmpty()) q.setParameter("gender", gender);
-        if (min >= 0 && max > 0) {
-            q.setParameter("min", min);
-            q.setParameter("max", max);
-        }
-        q.setFirstResult((page - 1) * size);
-        q.setMaxResults(size);
-        return q.getResultList();
-    }
 
     public static List<RaceResult> findRaceResultsForAnnouncer(long event, int page, int size) {
         String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
@@ -935,13 +832,6 @@ public class Event {
         this.resultsFiles = resultsFiles;
     }
 
-    public List<AwardCategory> getAwardCategorys() {
-        return this.awardCategorys;
-    }
-
-    public void setAwardCategorys(List<AwardCategory> awardCategorys) {
-        this.awardCategorys = awardCategorys;
-    }
 
     public String getName() {
         return this.name;
@@ -1527,22 +1417,6 @@ public class Event {
 	}
 	public void setParking(String parking) {
 		this.parking = parking;
-	}
-
-	/**
-	 * This is an embedded entity inside of Event and can only be selected from its context.
-	 * @return the awardsConfig
-	 */
-	public EventAwardsConfig getAwardsConfig() {
-		return awardsConfig;
-	}
-
-	/**
-	 * This is an embedded entity inside of event and can only be set from its context.
-	 * @param awardsConfig the awardsConfig to set
-	 */
-	public void setAwardsConfig(EventAwardsConfig awardsConfig) {
-		this.awardsConfig = awardsConfig;
 	}
 
 	/**
