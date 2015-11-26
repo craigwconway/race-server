@@ -204,35 +204,35 @@
 		var gender = GetURLParameter("gender");
 		
 		window.onload=function(){
-			if(${event.awardsConfig.allowMedalsInAgeGenderRankings}){
+			if(${eventType.awardsConfig.allowMedalsInAgeGenderRankings}){
 				jQuery('#duplicate').prop('checked', true);
 			}
-			if(${event.awardsConfig.allowMastersInNonMasters}){
+			if(${eventType.awardsConfig.allowMastersInNonMasters}){
 				jQuery('#master').prop('checked', true);
 			}
 		}
 		
 		function update(){
-			var loc = "/bibs-server/events/ageGenderRankings/update?event="+eventid+"&amp;gender="+gender;
+			var loc = "/bibs-server/events/ageGenderRankings/update?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+gender;
 			if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
 			if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
 			window.location=loc;
 		}
 		
 		function printAwards(){
-			window.location = "/bibs-server/events/printclass?event="+eventid+"&amp;gender="+getParameterByName("gender");
+			window.location = "/bibs-server/events/printclass?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+getParameterByName("gender");
 		}
 		
 		function byGender(g){
-			window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+g;
+			window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+g;
 		}
 		
 		function awards(){
-			window.location = "/bibs-server/events/awards?event="+eventid;
+			window.location = "/bibs-server/events/awards?event="+eventid+"&amp;type="+${eventType.id};
 		}
 		
 		function overall(){
-			window.location = "/bibs-server/events/overall?event="+eventid;
+			window.location = "/bibs-server/events/overall?event="+eventid+"&amp;type="+${eventType.id};
 		}
 		
 		function getParameterByName(name) {

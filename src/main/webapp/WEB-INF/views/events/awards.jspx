@@ -179,19 +179,19 @@
 		}
 
 		function byGender(gender){
-			window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+gender;
+			window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+gender;
 		}
 
 		function awards(){
-			window.location = "/bibs-server/events/awards?event="+eventid;
+			window.location = "/bibs-server/events/awards?event="+eventid+"&amp;type="+${eventType.id};
 		}
 
 		function overall(){
-			window.location = "/bibs-server/events/overall?event="+eventid;
+			window.location = "/bibs-server/events/overall?event="+eventid+"&amp;type="+${eventType.id};
 		}
 
 		function printawards(){
-			window.location = "/bibs-server/events/printawards?event="+eventid;
+			window.location = "/bibs-server/events/printawards?event="+eventid+"&amp;type="+${eventType.id};
 		}		
 		
 		function deleteAwardCategory(id){
