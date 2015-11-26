@@ -604,10 +604,16 @@ public class EventController {
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
     public static String awards(
     		@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "type", required = false) Long eventTypeId,
     		Model uiModel) {
     	uiModel.asMap().clear();
+    	// If the event type is unknown, return the first event type in this event.
+    	Event event = Event.findEvent(eventId);
+    	EventType type;
+    	type = eventTypeId == null ? EventType.findEventTypesByEvent(event).get(0) : EventType.findEventType(eventTypeId);
         uiModel.addAttribute("event", Event.findEvent(eventId));
-        uiModel.addAttribute("awardCategoryResults", getAwards(eventId));
+        uiModel.addAttribute("eventType", type);
+        uiModel.addAttribute("awardCategoryResults", getAwards(type.getId()));
         return "events/awards";
     }   
     

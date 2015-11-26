@@ -148,10 +148,10 @@
 		var eventid = GetURLParameter("event");
 
 		window.onload=function(){
-			if(${event.awardsConfig.allowMedalsInAgeGenderRankings}){
+			if(${eventType.awardsConfig.allowMedalsInAgeGenderRankings}){
 				jQuery('#duplicate').prop('checked', true);
 			}
-			if(${event.awardsConfig.allowMastersInNonMasters}){
+			if(${eventType.awardsConfig.allowMastersInNonMasters}){
 				jQuery('#master').prop('checked', true);
 			}
 		}
