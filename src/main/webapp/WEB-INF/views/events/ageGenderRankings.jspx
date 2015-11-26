@@ -64,8 +64,8 @@
 	    <div class="info-container">
 		    <h2 class="ui icon header">
 		        <i class="fa fa-trophy fa-2x"><!--  --></i>
-		        <div class="content">Official Results
-		            <div class="sub header">Standings for ${event.name}</div>
+		        <div class="content">${event.name} Official Results
+		            <div class="sub header">Standings for ${eventType.typeName}</div>
 		        </div>
 		    </h2>
 
