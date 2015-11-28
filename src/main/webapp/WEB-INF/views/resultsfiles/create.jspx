@@ -47,13 +47,20 @@
                 </div>
             </h2>
             <select class="form-control" id="event-type" name="event"
-                    data-parsley-error-message="Please select an event.">
+                    data-parsley-error-message="Please select an event." style="display:none">
                 <option selected="selected" disabled="disabled">Select Event</option>
                 <c:forEach var="item" items="${events}">
                     <option value="${item.id}">${item}</option>
                 </c:forEach>
             </select>
-
+			<select class="form-control" id="type" name="eventType"
+                    data-parsley-error-message="Please select an event.">
+                <option selected="selected" disabled="disabled">Select Event</option>
+                <c:forEach var="item" items="${eventTypes}">
+                    <option value="${item.id}">${item.typeName}</option>
+                </c:forEach>
+            </select>
+			
             <div class="field">
                 <div class="ui action input">
                     <input type="text" id="filename" readonly="readonly"></input>
