@@ -2,6 +2,7 @@ package com.bibsmobile.controller;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegField;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
@@ -68,14 +69,19 @@ public class RegistrationsController {
         if (registrations == null)
             return null;
         float nrOfPages = (float) registrations.size() / count;
-
+        List<Cart> returnList = registrations.subList(start, Math.min(start + count, registrations.size()));
+        HashMap<Long, List<CustomRegField>> unansweredQuestions = new HashMap<Long, List<CustomRegField>>(); 
+        for(Cart c : returnList) {
+        	unansweredQuestions.put(c.getId(), RegistrationsUtil.getUnansweredQuestionsInCart(c));
+        }
         uiModel.addAttribute("eventId", eventId);
         uiModel.addAttribute("events", Event.findEventsForUser(user));
         uiModel.addAttribute("firstName", firstName);
         uiModel.addAttribute("lastName", lastName);
         uiModel.addAttribute("email", email);
         uiModel.addAttribute("invoiceId", invoiceId);
-        uiModel.addAttribute("registrations", registrations.subList(start, Math.min(start + count, registrations.size())));
+        uiModel.addAttribute("registrations", returnList);
+        uiModel.addAttribute("unanswered", unansweredQuestions);
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         
         return "registrations/search";

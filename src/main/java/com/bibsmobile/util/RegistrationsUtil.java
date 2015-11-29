@@ -2,6 +2,8 @@ package com.bibsmobile.util;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegField;
+import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.UserProfile;
@@ -16,6 +18,31 @@ public final class RegistrationsUtil {
     private RegistrationsUtil() {
         super();
     }
+    public static List <CustomRegField> getUnansweredQuestionsInCart(Cart c) {
+        List<CustomRegField> possibleFields = CustomRegField.findVisibleCustomRegFieldsByEvent(c.getEvent()).getResultList();
+        List<CustomRegField> returnFields = new LinkedList<CustomRegField>();
+        Set<Long> cartItemIds = new HashSet<Long>();
+        for(CartItem ci : c.getCartItems()) {
+        	cartItemIds.add(ci.getEventCartItem().getId());
+        }
+        for(CustomRegField field : possibleFields) {
+        	if(!field.isAllItems()) {
+        		for(Long id : field.getEventItemIds()) {
+        			if(cartItemIds.contains(id)) {
+        				returnFields.add(field);
+        				break;
+        			}
+        		}
+        	} else {
+        		returnFields.add(field);
+        	}
+        }
+        for(CustomRegFieldResponse response : c.getCustomRegFieldResponses()) {
+        	returnFields.remove(response.getCustomRegField());
+        }
+        return returnFields;
+    }
+
 
     public static CartItem findCartItemFromInvoice(String invoiceId, String firstName, String email) {
         // parse invoice ID
