@@ -300,7 +300,7 @@
                                     		value="${response.customRegField.id}"></input>
                                     	<input type="text" data-for="question"
                                     		class="custom-${item.id} question" style="display:none"
-                                    		value="${response.customRegField.question}"></input>
+                                    		value="${response.customRegField.safeQuestion}"></input>
                                     	<input type="text" data-for="response"
                                     		class="custom-${item.id} response" style="display:none"
                                     		value="${response.response}"> </input>
@@ -311,7 +311,7 @@
                                     		value="${unansweredQuestion.id}"></input>
                                     	<input type="text" data-for="question"
                                     		class="unanswered-${item.id} question" style="display:none"
-                                    		value="${unansweredQuestion.question}"></input>
+                                    		value="${unansweredQuestion.safeQuestion}"></input>
                                     </c:forEach>
                                 </tr>
                             </c:forEach>
