@@ -415,12 +415,25 @@
                 fieldCount++;
                 if( fieldCount % 7 === 0 ){
                     // purchase info
-                    var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartId + '"></tr>');
-                    var rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="name' + id + '-' + cartId + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="details' + id + '-' + cartId + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartId + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="price' + id + '-' + cartId + '"></td>')
-                    
+                    var idStr = 'row' + id + '-' + cartId;
+                    var row = jQuery('<tr></tr>').appendTo('#cartitem-table');
+                    	row.attr('id', idStr);
+                    var rowItem = jQuery('<td></td>').appendTo("#"+idStr);
+                    	rowItem.attr('class','receipt-item' + id);
+						rowItem.attr('id', 'name' + id + '-' + cartId);
+						
+						rowItem = jQuery('<td></td>').appendTo("#"+idStr);
+                    	rowItem.attr('class','receipt-item' + id);
+						rowItem.attr('id', 'details' + id + '-' + cartId);
+						
+						rowItem = jQuery('<td></td>').appendTo("#"+idStr);
+                    	rowItem.attr('class','receipt-item' + id + ' collapsing');
+						rowItem.attr('id', 'quantity' + id + '-' + cartId);
+						
+						rowItem = jQuery('<td></td>').appendTo("#"+idStr);
+                    	rowItem.attr('class','receipt-item' + id);
+						rowItem.attr('id', 'price' + id + '-' + cartId);
+						                    
                         jQuery('#name'+id+'-'+cartId).text(type + ": " + name);
                         if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartId).text(size + " " + color); }
                         jQuery('#quantity'+id+'-'+cartId).text(quantity);
@@ -428,11 +441,20 @@
 
                     // edit info
                     if( editable ){
-                        var row = jQuery("#edit-cartitem-table > table > tbody").append('<tr id="edit-row' + id + '-' + cartId + '"></tr>');
-                        var rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-name' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartId + '"></td>')
+                        var row = jQuery('<tr></tr>').appendTo('#edit-cartitem-table > table > tbody');
+                        	row.attr('id','edit-row' + id + '-' + cartId);
+                        var rowItem = jQuery('<td></td>').appendTo("#edit-row" + id + "-" + cartId);
+                        	rowItem.attr('class','receipt-item' + id);
+                        	rowItem.attr('id','edit-name' + id + '-' + cartId);
+                        var rowItem = jQuery('<td></td>').appendTo("#edit-row" + id + "-" + cartId);
+                        	rowItem.attr('class','receipt-item' + id);
+                        	rowItem.attr('id','edit-color' + id + '-' + cartId);
+                        var rowItem = jQuery('<td></td>').appendTo("#edit-row" + id + "-" + cartId);
+                        	rowItem.attr('class','receipt-item' + id + ' collapsing');
+                        	rowItem.attr('id','edit-quantity' + id + '-' + cartId);
+                            //rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartId + '"></td>')
+                            //rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartId + '"></td>')
+                            //rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartId + '"></td>')
                         jQuery('#edit-name'+id+'-'+cartId).text(type + ": " + name);
 
                         var sizeOpt = jQuery('.size-options-'+id).val();
@@ -473,22 +495,39 @@
                 fieldCount++;
                 if( fieldCount % 4 === 0 ){
                     // purchase info
-                    var row = jQuery("#questions-table").append('<tr id="row' + id + '-r-' + responseId + '"></tr>');
-                    var rowItem = jQuery("#row" + id + "-r-" + responseId).append('<td class="receipt-item' + id + '" id="question' + id + '-' + responseId + '"></td>')
-                        rowItem = jQuery("#row" + id + "-r-" + responseId).append('<td class="receipt-item' + id + '" id="response' + id + '-' + responseId + '"></td>')
+                    var questionIdString = id + '-r-' + responseId;
+                    var row = jQuery('<tr></tr>').appendTo("#questions-table");
+                    	row.attr('id', 'row' + questionIdString);
+                    var rowItem = jQuery('<td></td>').appendTo("#row" + id + "-r-" + responseId);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id', 'question'+questionIdString );
                     
-                        jQuery('#question'+id+'-'+responseId).text(question);
-                        jQuery('#response'+id+'-'+responseId).text(response);
+                    var rowItem = jQuery('<td></td>').appendTo("#row" + id + "-r-" + responseId);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id', 'response'+questionIdString );
+                    	
+                        jQuery('#question'+questionIdString).text(question);
+                        jQuery('#response'+questionIdString).text(response);
 
                     // edit info
-                    var row = jQuery("#edit-questions-table > table > tbody").append('<tr id="edit-row' + id + '-r-' + responseId + '"></tr>');
-                    var rowItem = jQuery("#edit-row" + id + "-r-" + responseId).append('<td class="receipt-item' + id + '" id="edit-question' + id + '-r-' + responseId + '"></td>')
-                        rowItem = jQuery("#edit-row" + id + "-r-" + responseId).append('<td class="receipt-item' + id + '" id="edit-answer' + id + '-r-' + responseId + '"></td>')
-                        
-                    var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-answer-' + id + '-r-' + responseId +'-q-'+ questionId + '" name="new-answer" placeholder="Response" value="' + response + '"></input></div></div>'
+                    var row = jQuery('<tr></tr>').appendTo("#edit-questions-table > table > tbody");
+                    	row.attr('id','edit-row' + questionIdString);
+                    var rowItem = jQuery('<td></td>').appendTo("#edit-row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id','edit-question' + questionIdString);
+                    
+                    var rowItem = jQuery('<td></td>').appendTo("#edit-row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id','edit-answer' + questionIdString);
+                    	
+                    var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-answer-PLACEHOLDER" name="new-answer" placeholder="Response" value="' + response + '"></input></div></div>'
+					
+                    jQuery('#edit-question'+questionIdString).text(question);
+                    
+                    jQuery('#edit-answer'+questionIdString).html(quantHtmlStr);
+                    jQuery('#new-answer-PLACEHOLDER').attr('id', 'new-answer-' + questionIdString);
+                    jQuery('#new-answer-'+questionIdString).attr('value',response);
 
-                    jQuery('#edit-question'+id+'-r-'+responseId).text(question);
-                    jQuery('#edit-answer'+id+'-r-'+responseId).html(quantHtmlStr);
                 }
             })
             // end questions
@@ -502,16 +541,33 @@
                 if( info == 'question' ){       unansweredText = jQuery(this).val();     }
                 fieldCount++;
                 if( fieldCount % 2 === 0 ){
-
+					
+                	var questionIdString = id + '-q-' + unansweredId;
                     // edit info
-                    var row = jQuery("#edit-unanswered-table > table > tbody").append('<tr id="edit-row' + id + '-q-' + unansweredId + '"></tr>');
-                    var rowItem = jQuery("#edit-row" + id + "-q-" + unansweredId).append('<td class="receipt-item' + id + '" id="edit-question' + id + '-q-' + unansweredId + '"></td>')
-                        rowItem = jQuery("#edit-row" + id + "-q-" + unansweredId).append('<td class="receipt-item' + id + '" id="edit-answer' + id + '-q-' + unansweredId + '"></td>')
+                    var row = jQuery('<tr></tr>').appendTo("#edit-unanswered-table > table > tbody");
+                    	row.attr('id','edit-row' + questionIdString);
+                    	
+                    var rowItem = jQuery('<td></td>').appendTo("#edit-row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id','edit-question' + questionIdString);
+                    	
+                    var rowItem = jQuery('<td></td>').appendTo("#edit-row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id','edit-answer' + questionIdString);
+                    
+                   	var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-answer-PLACEHOLDER" name="new-answer" placeholder="Response" value=""></input></div></div>'
+    					
+                    jQuery('#edit-question'+questionIdString).text(question);
                         
-                    var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-answer-' + id + '-r-' + 'ADDED' +'-q-'+ questionId + '" name="new-answer" placeholder="Add an answer (if desired)" value=""></input></div></div>'
+                   	jQuery('#edit-answer'+questionIdString).html(quantHtmlStr);
+                   	jQuery('#new-answer-PLACEHOLDER').attr('id', 'new-answer-' + questionIdString);
+                   // var rowItem = jQuery("#edit-row" + id + "-q-" + unansweredId).append('<td class="receipt-item' + id + '" id="edit-question' + id + '-q-' + unansweredId + '"></td>')
+                   //     rowItem = jQuery("#edit-row" + id + "-q-" + unansweredId).append('<td class="receipt-item' + id + '" id="edit-answer' + id + '-q-' + unansweredId + '"></td>')
+                        
+                    //var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-answer-' + id + '-r-' + 'ADDED' +'-q-'+ questionId + '" name="new-answer" placeholder="Add an answer (if desired)" value=""></input></div></div>'
 
-                    jQuery('#edit-question'+id+'-q-'+unansweredId).text(unansweredText);
-                    jQuery('#edit-answer'+id+'-q-'+unansweredId).html(quantHtmlStr);
+                    //jQuery('#edit-question'+id+'-q-'+unansweredId).text(unansweredText);
+                    //jQuery('#edit-answer'+id+'-q-'+unansweredId).html(quantHtmlStr);
                 }
             })
             // end unanswered
