@@ -76,6 +76,20 @@
                                 </table>
                             </div>
                         </div>
+						<div id="cart-questions">
+                            <div style="clear:both"><!--  --></div>
+                            <h3 class="ui header">Form Responses</h3>
+                            <div id="modal-answered"><!--  -->
+                                <table class="ui very basic table" id="questions-table" style="margin-top:0">
+                                    <thead>
+                                        <tr>
+                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Question</td>
+                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Answer</td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -171,6 +185,20 @@
                             <div id="edit-cart" data-parsley-validate="true"><!--  --></div>
                         </div>
                     </div>
+					<div style="clear:both;height:15px;width:100%;"><!--  --></div>
+                    <div class="ui purchase-menu accordion">
+                        <div class="ui tertiary attached segment title">Edit Custom Questions <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
+                        <div class="ui form edit-fields attached raised segment content">
+                            <div id="edit-questions" data-parsley-validate="true"><!--  --></div>
+                        </div>
+                    </div>
+                    <div style="clear:both;height:15px;width:100%;"><!--  --></div>
+                    <div class="ui purchase-menu accordion">
+                        <div class="ui tertiary attached segment title">Unanswered Questions (Warning: Deep) <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
+                        <div class="ui form edit-fields attached raised segment content">
+                            <div id="edit-unanswered" data-parsley-validate="true"><!--  --></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
@@ -263,6 +291,28 @@
                                                     value="${cartItem.eventCartItem.tshirtColors}"></input>
                                         </c:if>
                                     </c:forEach>
+                                    <c:forEach items="${item.customRegFieldResponses}" var="response">
+                                    	<input type="text" data-for="id"
+                                    		class="custom-${item.id} id" style="display:none"
+                                    		value="${response.id }"></input>
+                                    	<input type="text" data-for="questionid"
+                                    		class="custom-${item.id} questionid" style="display:none"
+                                    		value="${response.customRegField.id}"></input>
+                                    	<input type="text" data-for="question"
+                                    		class="custom-${item.id} question" style="display:none"
+                                    		value="${response.customRegField.safeQuestion}"></input>
+                                    	<input type="text" data-for="response"
+                                    		class="custom-${item.id} response" style="display:none"
+                                    		value="${response.response}"> </input>
+                                    </c:forEach>
+                                    <c:forEach items="${unanswered[item.id]}" var="unansweredQuestion">
+                                    	<input type="text" data-for="id"
+                                    		class="unanswered-${item.id} id" style="display:none"
+                                    		value="${unansweredQuestion.id}"></input>
+                                    	<input type="text" data-for="question"
+                                    		class="unanswered-${item.id} question" style="display:none"
+                                    		value="${unansweredQuestion.safeQuestion}"></input>
+                                    </c:forEach>
                                 </tr>
                             </c:forEach>
                         </tbody>
@@ -286,8 +336,26 @@
             jQuery("#edit-cartitem-table > table > thead > tr > td:nth-child(4)").text('Quantity');
             jQuery("#edit-cartitem-table > table").append('<tbody>');
 
+            // edit form
+            jQuery("#edit-questions").append('<div id="edit-questions-table">');
+            jQuery("#questions-table").clone().appendTo("#edit-questions-table");
+            jQuery("#edit-questions-table > #questions-table").removeAttr("id");
+            jQuery("#edit-questions-table > table > thead > tr > td:nth-child(1)").text('Question');
+            jQuery("#edit-questions-table > table > thead > tr > td:nth-child(2)").text('Answer');
+            jQuery("#edit-questions-table > table").append('<tbody>');
+            
+            // edit unanswered
+            jQuery("#edit-unanswered").append('<div id="edit-unanswered-table">');
+            jQuery("#questions-table").clone().appendTo("#edit-unanswered-table");
+            jQuery("#edit-unanswered-table > #questions-table").removeAttr("id");
+            jQuery("#edit-unanswered-table > table > thead > tr > td:nth-child(1)").text('Question');
+            jQuery("#edit-unanswered-table > table > thead > tr > td:nth-child(2)").text('Action');
+            jQuery("#edit-unanswered-table > table").append('<tbody>');
+
+            
             // purchase info
             jQuery("#cartitem-table").append('<tbody>');
+            jQuery("#questions-table").append('<tbody>');
         }
 
         var initIds = [];
@@ -310,13 +378,27 @@
             else if( jQuery(".gender-"+id).val() === 'Male' ){ jQuery("#modal-athlete").append('<i class="fa fa-mars"><!-- --></i>') }
             jQuery("#modal-transaction").text("B" + jQuery(".cartid-"+id).val() + "T" + jQuery(".stripe-"+id).val());
             jQuery("#cartitem-table > tbody").text("");
+            jQuery("#questions-table > tbody").text("");
             jQuery("#edit-cartitem-table > table > tbody").text("");
+            jQuery("#edit-questions-table > table > tbody").text("");
+            jQuery("#edit-unanswered-table > table > tbody").text("");
 
             /*  append cart items into list view  */
             var fieldCount = 0;     var cartId;
             var type;   var name;   var price;
             var size;   var color;  var quantity;
             var editable = false;   
+            
+            /*  Question id */
+            var questionId;
+            var responseId;
+            var question;
+            var response;
+            
+            /* Unanswered */
+            var unansweredId;
+            var unansweredText;
+            
 
             jQuery(".cartitem-"+id).each(function(){
                 var info = jQuery(this).attr("data-for");
@@ -336,12 +418,25 @@
                 fieldCount++;
                 if( fieldCount % 7 === 0 ){
                     // purchase info
-                    var row = jQuery("#cartitem-table").append('<tr id="row' + id + '-' + cartId + '"></tr>');
-                    var rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="name' + id + '-' + cartId + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="details' + id + '-' + cartId + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="quantity' + id + '-' + cartId + '"></td>')
-                        rowItem = jQuery("#row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="price' + id + '-' + cartId + '"></td>')
-                    
+                    var idStr = 'row' + id + '-' + cartId;
+                    var row = jQuery('<tr></tr>').appendTo('#cartitem-table');
+                    	row.attr('id', idStr);
+                    var rowItem = jQuery('<td></td>').appendTo("#"+idStr);
+                    	rowItem.attr('class','receipt-item' + id);
+						rowItem.attr('id', 'name' + id + '-' + cartId);
+						
+						rowItem = jQuery('<td></td>').appendTo("#"+idStr);
+                    	rowItem.attr('class','receipt-item' + id);
+						rowItem.attr('id', 'details' + id + '-' + cartId);
+						
+						rowItem = jQuery('<td></td>').appendTo("#"+idStr);
+                    	rowItem.attr('class','receipt-item' + id + ' collapsing');
+						rowItem.attr('id', 'quantity' + id + '-' + cartId);
+						
+						rowItem = jQuery('<td></td>').appendTo("#"+idStr);
+                    	rowItem.attr('class','receipt-item' + id);
+						rowItem.attr('id', 'price' + id + '-' + cartId);
+						                    
                         jQuery('#name'+id+'-'+cartId).text(type + ": " + name);
                         if(type !== 'Ticket'){ jQuery('#details'+id+'-'+cartId).text(size + " " + color); }
                         jQuery('#quantity'+id+'-'+cartId).text(quantity);
@@ -349,11 +444,20 @@
 
                     // edit info
                     if( editable ){
-                        var row = jQuery("#edit-cartitem-table > table > tbody").append('<tr id="edit-row' + id + '-' + cartId + '"></tr>');
-                        var rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-name' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartId + '"></td>')
-                            rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartId + '"></td>')
+                        var row = jQuery('<tr></tr>').appendTo('#edit-cartitem-table > table > tbody');
+                        	row.attr('id','edit-row' + id + '-' + cartId);
+                        var rowItem = jQuery('<td></td>').appendTo("#edit-row" + id + "-" + cartId);
+                        	rowItem.attr('class','receipt-item' + id);
+                        	rowItem.attr('id','edit-name' + id + '-' + cartId);
+                        var rowItem = jQuery('<td></td>').appendTo("#edit-row" + id + "-" + cartId);
+                        	rowItem.attr('class','receipt-item' + id);
+                        	rowItem.attr('id','edit-color' + id + '-' + cartId);
+                        var rowItem = jQuery('<td></td>').appendTo("#edit-row" + id + "-" + cartId);
+                        	rowItem.attr('class','receipt-item' + id + ' collapsing');
+                        	rowItem.attr('id','edit-quantity' + id + '-' + cartId);
+                            //rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-size' + id + '-' + cartId + '"></td>')
+                            //rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + '" id="edit-color' + id + '-' + cartId + '"></td>')
+                            //rowItem = jQuery("#edit-row" + id + "-" + cartId).append('<td class="receipt-item' + id + ' collapsing" id="edit-quantity' + id + '-' + cartId + '"></td>')
                         jQuery('#edit-name'+id+'-'+cartId).text(type + ": " + name);
 
                         var sizeOpt = jQuery('.size-options-'+id).val();
@@ -382,10 +486,104 @@
                     }
                 }
             })
+            // questions
+            fieldCount=0;
+            jQuery(".custom-"+id).each(function(){
+                var info = jQuery(this).attr("data-for");
+                console.log(jQuery(this).val());
+                if( info == 'id' ){         responseId = jQuery(this).val();     }
+                if( info == 'question' ){       question = jQuery(this).val();     }
+                if( info == 'questionid' ){       questionId = jQuery(this).val();     }
+                if( info == 'response' ){      response = jQuery(this).val();    }
+                fieldCount++;
+                if( fieldCount % 4 === 0 ){
+                    // purchase info
+                    var questionIdString = id + '-q-' + questionId;
+                    var row = jQuery('<tr></tr>').appendTo("#questions-table");
+                    	row.attr('id', 'row' + questionIdString);
+                    var rowItem = jQuery('<td></td>').appendTo("#row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id', 'question'+questionIdString );
+                    
+                    var rowItem = jQuery('<td></td>').appendTo("#row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id', 'response'+questionIdString );
+                    	
+                        jQuery('#question'+questionIdString).text(question);
+                        jQuery('#response'+questionIdString).text(response);
+
+                    // edit info
+                    var row = jQuery('<tr></tr>').appendTo("#edit-questions-table > table > tbody");
+                    	row.attr('id','edit-row' + questionIdString);
+                    var rowItem = jQuery('<td></td>').appendTo("#edit-row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id','edit-question' + questionIdString);
+                    
+                    var rowItem = jQuery('<td></td>').appendTo("#edit-row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id','edit-answer' + questionIdString);
+                    	
+                    var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-answer-PLACEHOLDER" name="new-answer" placeholder="Response" value="' + response + '"></input></div></div>'
+					
+                    jQuery('#edit-question'+questionIdString).text(question);
+                    
+                    jQuery('#edit-answer'+questionIdString).html(quantHtmlStr);
+                    jQuery('#new-answer-PLACEHOLDER').attr('id', 'new-answer-' + questionIdString);
+                    jQuery('#new-answer-'+questionIdString).attr('value',response);
+
+                }
+            })
+            // end questions
             
+            // unanswered
+            fieldCount=0;
+            jQuery(".unanswered-"+id).each(function(){
+                var info = jQuery(this).attr("data-for");
+                console.log(jQuery(this).val());
+                if( info == 'id' ){         unansweredId = jQuery(this).val();     }
+                if( info == 'question' ){       unansweredText = jQuery(this).val();     }
+                fieldCount++;
+                if( fieldCount % 2 === 0 ){
+					
+                	var questionIdString = id + '-q-' + unansweredId;
+                    // edit info
+                    var row = jQuery('<tr></tr>').appendTo("#edit-unanswered-table > table > tbody");
+                    	row.attr('id','edit-row' + questionIdString);
+                    	
+                    var rowItem = jQuery('<td></td>').appendTo("#edit-row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id','edit-question' + questionIdString);
+                    	
+                    var rowItem = jQuery('<td></td>').appendTo("#edit-row" + questionIdString);
+                    	rowItem.attr('class','receipt-item' + id);
+                    	rowItem.attr('id','edit-answer' + questionIdString);
+                    
+                   	var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-answer-PLACEHOLDER" name="new-answer" placeholder="Response" value=""></input></div></div>'
+    					
+                    jQuery('#edit-question'+questionIdString).text(unansweredText);
+                        
+                   	jQuery('#edit-answer'+questionIdString).html(quantHtmlStr);
+                   	var out2 = jQuery('#new-answer-PLACEHOLDER').attr('id', 'new-answer-' + questionIdString);
+                   // var rowItem = jQuery("#edit-row" + id + "-q-" + unansweredId).append('<td class="receipt-item' + id + '" id="edit-question' + id + '-q-' + unansweredId + '"></td>')
+                   //     rowItem = jQuery("#edit-row" + id + "-q-" + unansweredId).append('<td class="receipt-item' + id + '" id="edit-answer' + id + '-q-' + unansweredId + '"></td>')
+                        
+                    //var quantHtmlStr = '<div class="ui form"><div class="field"><input type="text" id="new-answer-' + id + '-r-' + 'ADDED' +'-q-'+ questionId + '" name="new-answer" placeholder="Add an answer (if desired)" value=""></input></div></div>'
+
+                    //jQuery('#edit-question'+id+'-q-'+unansweredId).text(unansweredText);
+                    //jQuery('#edit-answer'+id+'-q-'+unansweredId).html(quantHtmlStr);
+                }
+            })
+            // end unanswered
+            
+            
+            jQuery("#questions-table").append('</tbody>');
             jQuery("#cartitem-table").append('</tbody>');
             jQuery("#edit-cartitem-table > table").append('</tbody>');
             jQuery("#edit-cartitem-table").append('</div>');
+            jQuery("#edit-questions-table > table").append('</tbody>');
+            jQuery("#edit-questions-table").append('</div>');
+            jQuery("#edit-unanswered-table > table").append('</tbody>');
+            jQuery("#edit-unanswered-table").append('</div>');
         }
 
         function refundHandler(){
@@ -468,8 +666,10 @@
                 obj.user.emergencyContactName = jQuery("#edit-em-name").val();
                 obj.user.emergencyContactPhone = jQuery("#edit-em-phone").val();
                 obj.cartItems = [];
-
+                obj.customRegFieldResponses = [];
+				console.log('checking edit-cartitem-table')
                 jQuery("#edit-cartitem-table > table > tbody > tr").each(function(){
+                	console.log(this);
                     var cartObj = {};
                     var cartId = jQuery(this).attr("id");
                     var cartItemId = cartId.substring(cartId.lastIndexOf('-')+1, cartId.length);
@@ -482,8 +682,36 @@
                     
                     obj.cartItems.push(cartObj);
                 });
+                
+                jQuery("#edit-questions-table > table > tbody > tr").each(function(){
+                    var responseObj = {};
+                    var cartId = jQuery(this).attr("id");
+                    var questionId = cartId.substring(cartId.lastIndexOf('-')+1, cartId.length);
+                    responseObj.customRegField = {};
+                    responseObj.customRegField.id=parseInt(questionId);
 
-                console.log(obj);
+                    var cart = (cartId.substring(cartId.indexOf('-') + 1, cartId.length)).replace( /^\D+/g, '');
+                    responseObj.response  = jQuery('#new-answer-'+cart).val();
+                    
+                    obj.customRegFieldResponses.push(responseObj);
+                });
+                
+                jQuery("#edit-unanswered-table > table > tbody > tr").each(function(){
+                    var responseObj = {};
+                    var cartId = jQuery(this).attr("id");
+                    var questionId = cartId.substring(cartId.lastIndexOf('-')+1, cartId.length);
+                    responseObj.customRegField = {};
+                    responseObj.customRegField.id=parseInt(questionId);
+
+                    var cart = (cartId.substring(cartId.indexOf('-') + 1, cartId.length)).replace( /^\D+/g, '');
+                    responseObj.response  = jQuery('#new-answer-'+cart).val();
+                    if(responseObj.response !== null &amp;&amp; responseObj.response !== "") {
+                    	obj.customRegFieldResponses.push(responseObj);
+                    }
+                    
+                });
+
+                console.log(JSON.stringify(obj));
                 editHandler(obj);
                 jQuery("#footer-save").removeClass('disabled');
             }

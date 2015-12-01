@@ -26,6 +26,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,7 +114,15 @@ public class CustomRegField {
 	public void setEvent(Event event) {
 		this.event = event;
 	}
-
+	
+	/**
+	 * Hack, to be replaced with DTO in future:
+	 * @return XML escaped question
+	 */
+	public String getSafeQuestion() {
+		return StringEscapeUtils.escapeXml(question);
+	}
+	
 	/**
 	 * @return The question in this field. Appears as a string above the field.
 	 */

@@ -2,6 +2,8 @@ package com.bibsmobile.restapi;
 
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
+import com.bibsmobile.model.CustomRegField;
+import com.bibsmobile.model.CustomRegFieldResponse;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.UserProfile;
@@ -188,6 +190,15 @@ public class RegistrationsRestController {
 			tci.setUserProfile(trueCart.getUser());
 			tci.merge();
 			log.info("Updating cart item Id: " + tci.getId() + " Color: " + tci.getColor() + " Size: " + tci.getSize());
+        }
+        
+        for(CustomRegFieldResponse response : trueCart.getCustomRegFieldResponses()) {
+        	response.remove();
+        }
+        for(CustomRegFieldResponse response : cart.getCustomRegFieldResponses()) {
+        	response.setCart(trueCart);
+        	response.setCustomRegField(CustomRegField.findCustomRegField(response.getCustomRegField().getId()));
+        	response.persist();
         }
         /*
         if(null != cartItems) {
