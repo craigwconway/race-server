@@ -152,18 +152,18 @@ public class Event {
 
     private int running;
 
-    private boolean gunFired;
+    private boolean gunFired = false;
 
-    private boolean sync;
+    private boolean sync = false;
 
     private String syncId;
     
     @Field
     private String charity;
 
-    private boolean regEnabled;
+    private boolean regEnabled = false;
 
-    private boolean ticketTransferEnabled;
+    private boolean ticketTransferEnabled = false;
 
     private String ticketTransferCutoffLocal;
     
@@ -175,7 +175,7 @@ public class Event {
     
     private String topSharerReward;
     
-    private boolean live;
+    private boolean live = false;
     
     /**
      * Used by Event Directors to restrict one shirt per order with registration
@@ -185,7 +185,7 @@ public class Event {
     /**
      * Used by Event Directors to hide events they no longer want to see
      */
-    private boolean hidden;
+    private boolean hidden = false;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
