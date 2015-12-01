@@ -100,6 +100,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.SeriesRegion;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UploadFile;
 import com.bibsmobile.model.UserGroup;
@@ -548,6 +549,24 @@ public class EventController {
             log.error(e.getMessage(), e);
         }
         return rtn.toString();
+    }
+    
+    /**
+	 * @api {get} /events/region/:id Get Events by Series Region
+	 * @apiName Get Events by Series Region
+	 * @apiDescription Get events in a particular series region
+	 * @apiGroup events
+	 * @apiSuccess (200) {Object[]} events
+	 * @apiSuccess (200) {Number} events.id Id of event
+	 * @apiSuccess (200) {String} events.timeStartLocal Human formatted start time of event in local timezone
+	 * @apiSuccess (200) {Object[]} events.eventTypes array of event type objects describing the event
+	 * @apiSuccess (200) {String} events.name Name of event
+	 */
+    @RequestMapping(value = "/region/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public static ResponseEntity<String> byRegion(@PathVariable Long id) {
+        List<Event> events = Event.findEventsByRegionEquals(SeriesRegion.findSeries(id)).getResultList();
+        return new ResponseEntity<String>(Event.toJsonArray(events), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/future", method = RequestMethod.GET)
