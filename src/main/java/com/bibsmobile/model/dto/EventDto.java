@@ -13,6 +13,50 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class EventDto {
 	
+	/**
+	 * @apiDefine eventDto
+	 * @apiSuccess (200) {Number} id Id of event
+	 * @apiSuccess (200) {String} name Name of event
+	 * @apiSuccess (200) {String} timeStartLocal String containing local start time as: MM/dd/yyyy hh:mm:ss a
+	 * @apiSuccess (200) {String} address Street address of event
+	 * @apiSuccess (200) {String} city city of event
+	 * @apiSuccess (200) {String} state state of event
+	 * @apiSuccess (200) {String} country country of event
+	 * @apiSuccess (200) {String} charity Charity backed by event
+	 * @apiSuccess (200) {String} organization Organiziation throwing event
+	 * @apiSuccess (200) {String} photo URL of display photo for event
+	 * @apiSuccess (200) {Object[]} eventTypes Set of event types in this event
+	 * @apiSuccess (200) {Number} eventTypes.id of this event type
+	 * @apiSuccess (200) {String} eventTypes.typeName name of this event type
+	 * @apiSuccess (200) {String} eventTypes.distance distance of this event type
+	 * @apiSuccess (200) {String} eventTypes.racetype type of this event type
+	 * @apiSuccessExample Single Result Found
+	 * [
+	 * 	{
+	 * 		"id":1,
+	 * 		"name":"Kings Canyon Critical Mass",
+	 * 		"timeStartLocal":"12/01/2015 12:44:20 AM",
+	 * 		"charity":"Ancient Aliens",
+	 * 		"city":"San Francisco",
+	 * 		"state":"CA",
+	 * 		"address":"904 Haight St",
+	 * 		"country":"US",
+	 * 		"eventTypes":
+	 * 		[
+	 * 			{
+	 * 				"id":1,
+	 * 				"typeName":"Run with the Lizards 5k",
+	 * 				"distance":"5k",
+	 * 				"racetype":"Running",
+	 * 				"timeStartLocal":"12/01/2015 12:44:21 AM"
+	 * 			}
+	 * 		],
+	 * 		"organizer":null
+	 * 	}
+	 * ]
+	 */
+	
+	
 	EventDto(Event event) {
 		this.id = event.getId();
 		this.name = event.getName();
@@ -23,6 +67,7 @@ public class EventDto {
 		this.state = event.getState();
 		this.address = event.getAddress();
 		this.country = event.getCountry();
+		this.photo = event.getPhoto();
 		this.eventTypes = EventTypeDto.fromEventTypes(event.getEventTypes());
 	}
 	
@@ -43,6 +88,8 @@ public class EventDto {
 	private String address;
 	
 	private String country;
+	
+	private String photo;
 	
 	private Set <EventTypeDto> eventTypes;
 	
@@ -147,6 +194,13 @@ public class EventDto {
 	 */
 	public String getCountry() {
 		return country;
+	}
+	
+	/**
+	 * @return the photo
+	 */
+	public String getPhoto() {
+		return photo;
 	}
 
 	/**

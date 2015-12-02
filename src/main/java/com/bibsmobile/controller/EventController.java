@@ -557,11 +557,7 @@ public class EventController {
 	 * @apiName Get Events by Series Region
 	 * @apiDescription Get events in a particular series region
 	 * @apiGroup events
-	 * @apiSuccess (200) {Object[]} events
-	 * @apiSuccess (200) {Number} events.id Id of event
-	 * @apiSuccess (200) {String} events.timeStartLocal Human formatted start time of event in local timezone
-	 * @apiSuccess (200) {Object[]} events.eventTypes array of event type objects describing the event
-	 * @apiSuccess (200) {String} events.name Name of event
+	 * @apiUse eventDto
 	 */
     @RequestMapping(value = "/region/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -1404,6 +1400,36 @@ public class EventController {
         }
         return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
     }
+
+    /**
+	 * @api {get} /events/details/:id Get Event Details
+	 * @apiName Get Event Details
+	 * @apiDescription Get full details for a particular event
+	 * @apiGroup events
+	 * @apiSuccess (200) {Number} id Id of event
+	 * @apiSuccess (200) {String} timeStartLocal Human formatted start time of event in local timezone
+	 * @apiSuccess (200) {Date} timeStart unix timestamp for date
+	 * @apiSuccess (200) {Object[]} eventTypes eventTypes in event
+	 * @apiSuccess (200) {String} name Name of event
+	 * @apiSuccess (200) {String} registration URL Of registration for event
+	 * @apiSuccess (200) {String} photo URL of photo for event display
+	 */
+    @RequestMapping(value = "details/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showPublicJsonRest(@PathVariable("id") Long id) {
+        Event event = Event.findEvent(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (event == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
+    }    
+    
     
     @RequestMapping(value = "{1}/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
