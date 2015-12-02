@@ -60,6 +60,7 @@ public class EventDto {
 	EventDto(Event event) {
 		this.id = event.getId();
 		this.name = event.getName();
+		this.description = event.getDescription();
 		this.timeStartLocal = event.getTimeStartLocal();
 		this.organization = event.getOrganization();
 		this.charity = event.getCharity();
@@ -74,6 +75,8 @@ public class EventDto {
 	private Long id;
 	
 	private String name;
+	
+	private String description;
 	
 	private String timeStartLocal;
 	
@@ -144,7 +147,13 @@ public class EventDto {
 	public String getName() {
 		return name;
 	}
-
+	
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
 
 	/**
 	 * @return the timeStartLocal
