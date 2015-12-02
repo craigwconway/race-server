@@ -107,6 +107,7 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.dto.EventDto;
 import com.bibsmobile.model.wrapper.EventTypeTicketWrapper;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
@@ -566,7 +567,7 @@ public class EventController {
     @ResponseBody
     public static ResponseEntity<String> byRegion(@PathVariable Long id) {
         List<Event> events = Event.findEventsByRegionEquals(SeriesRegion.findSeries(id)).getResultList();
-        return new ResponseEntity<String>(Event.toJsonArray(events), HttpStatus.OK);
+        return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(events), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/future", method = RequestMethod.GET)
