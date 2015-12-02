@@ -82,6 +82,18 @@ public class RaceResultController {
         return raceResult.toJson();
     }
 
+    /**
+     * @api {get} /raceresults/search Search
+     * @apiName Search
+     * @apiParam {Number} Event Event to search from
+     * @apiParam {Number} [bib] Bib number to search for
+     * @apiParam {String} [name] First last or fullname to search
+     * @apiGroup raceresults
+     * @apiPermission none
+     * @apiDescription Search for a Race Result by event id and either first/last/fullname or bib
+     * @apiSuccess (200) {Object} RaceResult object returned
+     * @return
+     */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public String search(@RequestParam(value = "event", required = false, defaultValue = "0") Long event,
