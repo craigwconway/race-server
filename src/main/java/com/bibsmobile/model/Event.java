@@ -91,7 +91,7 @@ public class Event {
 	@ManyToOne
 	private SeriesRegion region;
 	
-    private int featured;
+    private int featured=0;
 
     private String address;
 

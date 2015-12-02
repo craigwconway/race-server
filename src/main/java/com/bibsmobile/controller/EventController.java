@@ -1423,10 +1423,6 @@ public class EventController {
         if (event == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        // check the rights the user has for event
-        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
-            return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
-        }
         return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
     }    
     
