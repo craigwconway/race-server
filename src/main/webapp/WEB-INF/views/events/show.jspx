@@ -262,7 +262,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="importAthletes" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="export-label" aria-hidden="true" style="display:none">
+    <div class="modal fade" id="importAthletes" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="import-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -754,6 +754,7 @@
             })
 
             jQuery('#exportAthletes-eventTypes').dropdown();
+            jQuery('#importAthletes-eventTypes').dropdown();
 
             jQuery('.message .close').on('click', function() {
                 jQuery(this).closest('.message').fadeOut();
@@ -1397,6 +1398,19 @@
                 window.location = callUrl;
             }
         }
+        
+        function importAthletesHandler(){
+            var type = jQuery('#importAthletes-eventTypes').dropdown('get value');
+            console.log(type);
+
+            var callUrl = "/bibs-server/resultsfiles?form&amp;event=${event.id}";
+            if(type !== null || type !== ""){
+                window.location = callUrl + '&amp;type=' + type;
+            }else{
+                window.location = callUrl;
+            }
+        }
+        
         function redirectBackup(){
             window.location="/bibs-server/events/exportBackup?event=${event.id}";
         }   
