@@ -11,6 +11,13 @@ import com.bibsmobile.model.EventType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * This is a data transfer object used in conjunction with {@link Event} objects. 
+ * This is for use in list views, and has information associated 
+ * with selecting an event to learn more about.
+ * @author galen
+ *
+ */
 public class EventDto {
 	
 	/**
@@ -56,7 +63,10 @@ public class EventDto {
 	 * ]
 	 */
 	
-	
+	/**
+	 * Constructs a DTO object from a raw {@link Event} object.
+	 * @param event
+	 */
 	EventDto(Event event) {
 		this.id = event.getId();
 		this.name = event.getName();

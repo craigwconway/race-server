@@ -5,6 +5,12 @@ import java.util.Set;
 
 import com.bibsmobile.model.EventType;
 
+/**
+ * This is a data transfer object used to give information about event types. 
+ * It may be used to represent many event types in a list view, or under an event.
+ * @author galen
+ *
+ */
 public class EventTypeDto {
 	
 	EventTypeDto(EventType eventType) {
