@@ -60,6 +60,13 @@ import flexjson.JSON;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
+/**
+ * This represents a single race or collection of races held on raceday by a director.
+ * This is a very large object, and will be slow in seriailization. To create json objects,
+ * it is highly recommended to use {@link com.bibsmobile.model.dto.EventDto} objects for this task.
+ * @author galen
+ *
+ */
 @Configurable
 @Entity
 @Indexed
@@ -152,8 +159,6 @@ public class Event {
 
     private int running;
 
-    private boolean gunFired = false;
-
     private boolean sync = false;
 
     private String syncId;
@@ -194,12 +199,6 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date regEnd;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
-    private Date gunTime;
-
-    private long gunTimeStart;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
@@ -493,8 +492,8 @@ public class Event {
         return new EqualsBuilder().append(this.address, rhs.address).append(this.city, rhs.city).append(this.state, rhs.state)
                 .append(this.country, rhs.country).append(this.location, rhs.location).append(this.zip, rhs.zip).append(this.courseRules, rhs.courseRules).append(this.hashtag, rhs.hashtag).append(this.created, rhs.created)
                 .append(this.description, rhs.description).append(this.donateUrl, rhs.donateUrl).append(this.email, rhs.email).append(this.facebookUrl1, rhs.facebookUrl1)
-                .append(this.featured, rhs.featured).append(this.general, rhs.general).append(this.gunFired, rhs.gunFired)
-                .append(this.gunTime, rhs.gunTime).append(this.gunTimeStart, rhs.gunTimeStart).append(this.id, rhs.id).append(this.latitude, rhs.latitude)
+                .append(this.featured, rhs.featured).append(this.general, rhs.general)
+                .append(this.id, rhs.id).append(this.latitude, rhs.latitude)
                 .append(this.longitude, rhs.longitude).append(this.name, rhs.name).append(this.organization, rhs.organization).append(this.parking, rhs.parking).append(this.phone, rhs.phone)
                 .append(this.photo, rhs.photo).append(this.photo2, rhs.photo2).append(this.photo3, rhs.photo3).append(this.photoUploadUrl, rhs.photoUploadUrl)
                 .append(this.regEnabled, rhs.regEnabled).append(this.regEnd, rhs.regEnd).append(this.regStart, rhs.regStart).append(this.registration, rhs.registration)
@@ -507,8 +506,8 @@ public class Event {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.address).append(this.city).append(this.state).append(this.country).append(this.location).append(this.zip).append(this.courseRules).append(this.hashtag).append(this.created).append(this.description)
-                .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.featured).append(this.general).append(this.gunFired)
-                .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.latitude).append(this.longitude).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
+                .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.featured).append(this.general)
+                .append(this.id).append(this.latitude).append(this.longitude).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
                 .append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.running).append(this.sync).append(this.syncId)
                 .append(this.timeStartLocal).append(this.timeStart).append(this.updated).append(this.waiver).append(this.website).toHashCode();
     }
@@ -1078,14 +1077,6 @@ public class Event {
         this.running = running;
     }
 
-    public boolean isGunFired() {
-        return this.gunFired;
-    }
-
-    public void setGunFired(boolean gunFired) {
-        this.gunFired = gunFired;
-    }
-
     public boolean isSync() {
         return this.sync;
     }
@@ -1124,22 +1115,6 @@ public class Event {
 
     public void setRegEnd(Date regEnd) {
         this.regEnd = regEnd;
-    }
-
-    public Date getGunTime() {
-        return this.gunTime;
-    }
-
-    public void setGunTime(Date gunTime) {
-        this.gunTime = gunTime;
-    }
-
-    public long getGunTimeStart() {
-        return this.gunTimeStart;
-    }
-
-    public void setGunTimeStart(long gunTimeStart) {
-        this.gunTimeStart = gunTimeStart;
     }
 
     public Date getCreated() {

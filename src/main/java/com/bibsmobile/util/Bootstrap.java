@@ -91,7 +91,6 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             foo.setName("Kings Canyon Critical Mass");
             foo.setCity("Kings Canyon");
             foo.setState("Colordo");
-            foo.setGunTime(new DateTime().toDate());
             foo.setTimeStart(new DateTime().toDate());
             foo.setTimeStartLocal(format.format(foo.getTimeStart()));
             foo.persist();
@@ -104,19 +103,39 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             type.setRacetype("Running");
             type.setMeters(new Long(5000));
             type.setTypeName("Run with the Lizards 5k");
+            type.setGunTime(new DateTime().toDate());
+            type.setGunFired(true);
             type.persist();
+            
+            EventType type2 = new EventType();
+            type2.setEvent(foo);
+            type2.setStartTime(new DateTime().toDate());
+            type2.setTimeStartLocal(format.format(type.getStartTime()));
+            type2.setDistance("1 mi");
+            type2.setRacetype("Running");
+            type2.setMeters(new Long(1760));
+            type2.setTypeName("Run with the Wizards 1 Miler");
+            type2.setGunTime(new DateTime().toDate());
+            type2.setGunFired(true);
+            type2.persist();
             
             for(long i = 1; i < 300; i++){
             	RaceResult user = new RaceResult();
             	user.setBib(i);
             	user.setEvent(foo);
-            	user.setEventType(type);
+            	if(i %3 == 0) {
+            		user.setEventType(type2);
+            	} else {
+            		user.setEventType(type);
+            	}
+            	
             	user.setAge(generateRandomAge());
             	user.setGender( (i%2==0) ? "M" : "F");
             	user.setTimeofficial(Math.abs(
-            			(int) new DateTime().plusMinutes(r.nextInt(60)).toDate().getTime()));
+            			 new DateTime().plusMinutes(r.nextInt(60)).plusMinutes(15).plusSeconds(10).plusSeconds(r.nextInt(39)).toDate().getTime()));
+            	user.setTimestart(user.getEventType().getGunTime().getTime());
             	user.setTimeofficialdisplay(
-            			RaceResult.toHumanTime(foo.getGunTime().getTime(), user.getTimeofficial()));
+            			RaceResult.toHumanTime(user.getTimestart(), user.getTimeofficial()));
             	user.setFirstname(generateRandomName());
             	user.setLastname(generateRandomName());
             	user.setCity("San Francisco");
@@ -128,6 +147,11 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             // default awards categories
             AwardCategory.createDefaultMedals(type);
             AwardCategory.createAgeGenderRankings(type, 
+            		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+            		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
+            
+            AwardCategory.createDefaultMedals(type2);
+            AwardCategory.createAgeGenderRankings(type2, 
             		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
             		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
             

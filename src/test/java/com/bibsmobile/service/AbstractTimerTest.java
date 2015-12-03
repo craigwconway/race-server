@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 
@@ -48,8 +49,10 @@ public class AbstractTimerTest {
 		AbstractTimer timer = new TestTimer();
 		long bibtime = System.currentTimeMillis();
 		Event event = new Event();
+		EventType eventType = new EventType();
 		RaceResult result = new RaceResult();
 		result.setEvent(event);
+		result.setEventType(eventType);
 		TimerConfig timerConfig = new TimerConfig();
 		timerConfig.setPosition(1);
 		// when
@@ -66,8 +69,10 @@ public class AbstractTimerTest {
 		AbstractTimer timer = new TestTimer();
 		long bibtime = System.currentTimeMillis();
 		Event event = new Event();
+		EventType eventType = new EventType();
 		RaceResult result = new RaceResult();
 		result.setEvent(event);
+		result.setEventType(eventType);
 		TimerConfig timerConfig = new TimerConfig();
 		timerConfig.setPosition(2);
 		// when
@@ -85,8 +90,10 @@ public class AbstractTimerTest {
 		AbstractTimer timer = new TestTimer();
 		long bibtime = System.currentTimeMillis();
 		Event event = new Event();
+		EventType eventType = new EventType();
 		RaceResult result = new RaceResult();
 		result.setEvent(event);
+		result.setEventType(eventType);
 		int position = 2;
 		String splits = "123,456";
 		result.setTimesplit(splits);

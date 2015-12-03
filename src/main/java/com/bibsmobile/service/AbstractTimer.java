@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.util.BuildTypeUtil;
@@ -77,14 +78,20 @@ public abstract class AbstractTimer implements Timer {
 			}
 			System.out.println(slog+" running events "+events.size() );
 			boolean foundEventForBib = false;
-			for(Event event:events){
+			List <EventType> eventTypes = new ArrayList <EventType>();
+			for(Event event : events) {
+				for(EventType eventType : event.getEventTypes()) {
+					eventTypes.add(eventType);
+				}
+			}
+			for(EventType eventType:eventTypes){
 				try{
 					// if event started
 
-					System.out.println(slog+" EVENT: "+event.getId() +" start:"+event.getTimeStart() +" gun:"+event.getGunTimeStart());
-					RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(event,bibnum).getSingleResult(); // throws exception
+					System.out.println(slog+" EVENT: "+eventType.getId() +" start:"+eventType.getStartTime() +" gun:"+eventType.getGunTime());
+					RaceResult result = RaceResult.findRaceResultsByEventAndBibEquals(eventType.getEvent(),bibnum).getSingleResult(); // throws exception
 					foundEventForBib = true;
-					result.setEvent(event);
+					result.setEventType(eventType);
 					System.out.println(slog+" RUNNER: "+result.getId()+ " start:" +result.getTimestart()+" finish:"+result.getTimeofficial() );
 					result.setTimed(true);
 					// timeout by previous time official
@@ -147,8 +154,8 @@ public abstract class AbstractTimer implements Timer {
 				}
 				result.setTimesplit(s.toString());				
 			}
-			long starttime = (result.getTimestart()==0 && null!=result.getEvent().getGunTime()) 
-					? result.getEvent().getGunTime().getTime() : result.getTimestart(); 
+			long starttime = (result.getTimestart()==0 && null!=result.getEventType().getGunTime()) 
+					? result.getEventType().getGunTime().getTime() : result.getTimestart(); 
 			result.setTimestart( starttime );
 			if(timerConfig.getPosition() == 1) {
 				result.setTimeofficial( bibtime );

@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
 import flexjson.JSONSerializer;
@@ -101,6 +102,14 @@ public class EventType {
      * Switch to automatically map registrations to event type
      */
     private boolean autoMapReg=false;
+    
+    private boolean gunFired = false;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
+    private Date gunTime;
+
+    private long gunTimeStart;
     
 
     /**
@@ -423,6 +432,46 @@ public class EventType {
 	public void setMeters(Long meters) {
 		this.meters = meters;
 	}
+	
+	/**
+	 * Switch for whether or not the gun is fired.
+	 * @return true if gun is fired, false otherwise.
+	 */
+    public boolean isGunFired() {
+        return this.gunFired;
+    }
+
+    /**
+     * Set switch for whether or not the gun is fired.
+     * @param gunFired boolean of value to set
+     */
+    public void setGunFired(boolean gunFired) {
+        this.gunFired = gunFired;
+    }
+	
+	/**
+	 * Returns gun fire time for this event type.
+	 * @return
+	 */
+    public Date getGunTime() {
+        return this.gunTime;
+    }
+
+    /**
+     * Sets gun fire time for this event type.
+     * @param gunTime
+     */
+    public void setGunTime(Date gunTime) {
+        this.gunTime = gunTime;
+    }
+
+    public long getGunTimeStart() {
+        return this.gunTimeStart;
+    }
+
+    public void setGunTimeStart(long gunTimeStart) {
+        this.gunTimeStart = gunTimeStart;
+    }
 	
 	/**
 	 * Get list of awards associated with this event type

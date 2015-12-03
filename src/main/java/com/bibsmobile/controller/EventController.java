@@ -425,10 +425,10 @@ public class EventController {
     @ResponseBody
     public static String timerGun(@RequestParam(value = "event", required = true) long event) {
         try {
-            Event e = Event.findEvent(event);
-            e.setGunFired(true);
-            e.setGunTime(new Date());
-            e.merge();
+            EventType eventType = EventType.findEventType(event);
+            eventType.setGunFired(true);
+            eventType.setGunTime(new Date());
+            eventType.merge();
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             return "false";
@@ -485,32 +485,6 @@ public class EventController {
             log.error(e.getMessage(), e);
         }
         return "false";
-    }
-    
-    @RequestMapping(value = "/manual", method = RequestMethod.GET)
-    @ResponseBody
-    public static String setTimeManual(@RequestParam(value = "event", required = true) long event_id, @RequestParam(value = "bib", required = true) long bib) {
-        RaceResult result = new RaceResult();
-        try {
-            long bibtime = System.currentTimeMillis();
-            Event event = Event.findEvent(event_id);
-            result = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
-            // bib vs chip start
-            long starttime = 0l;
-            if (result.getTimestart() > 0) {
-                starttime = result.getTimestart();
-            } else {
-                starttime = event.getGunTime().getTime();
-                result.setTimestart(starttime);
-            }
-            final String strTime = RaceResult.toHumanTime(starttime, bibtime);
-            result.setTimeofficial(bibtime);
-            result.setTimeofficialdisplay(strTime);
-            result.merge();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return result.toJson();
     }
 
     @RequestMapping(value = "/featured", method = RequestMethod.GET)
@@ -934,7 +908,7 @@ public class EventController {
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
-        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,split1,split2,split3,split4,split5,split6,split7,split8,split9,offset,rankoverall,rankgender,rankclass\r\n");
+        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,rankoverall,rankgender,rankclass\r\n");
         
         List<RaceResult> runners;
         if (type == null) {
@@ -944,42 +918,8 @@ public class EventController {
         }
         clearAwardsCache(event);
         for (RaceResult r : runners) {
-        	String splits = "0,0,0,0,0,0,0,0,0";
-        	if(null!=r.getTimesplit() && !r.getTimesplit().isEmpty()){
-        		if(r.getTimesplit().contains(",")) {
-            		splits = "";
-            		boolean fielderr = false;
-            		System.out.println("processing split: "+ r.getTimesplit());
-            		for(String s : r.getTimesplit().split(",")){
-            			System.out.println(s);
-            			if(fielderr || splits.length() > 0) splits += ",";
-            			if(s == null || s.equals("null") || s.isEmpty()) {
-            				fielderr = true;
-            			} else {
-            				splits += RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s));
-            				System.out.println("human time "+_event.getGunTime().getTime()+", "+s+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(s)));
-            			}
-            		}      			
-        		} else {
-        			if(StringUtils.isNumeric(r.getTimesplit())) {
-        				splits = RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(r.getTimesplit()));
-        				System.out.println("human time "+_event.getGunTime().getTime()+", "+r.getTimesplit()+" : "+RaceResult.toHumanTime(_event.getGunTime().getTime(), Long.valueOf(r.getTimesplit())));
-        				splits += ",0,0,0,0,0,0,0,0";
-        			}
-        		}
-        		String append = "";
-        		for(int i = splits.split(",").length; i < 9; i++) {
-        			append += ",00:00:00";
-        		}
-        		splits +=append;
-
-        	}
-        	long offset = _event.getGunTime() != null ? _event.getGunTime().getTime() : 0;
-        	if(BuildTypeUtil.usesLicensing()) {
-        		splits = r.isLicensed()? splits : "0,0,0,0,0,0,0,0,0";
-        	}
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
-                    + r.getGender() + "," + r.getAge()  +"," + splits+ "," + offset + "," + getResultOverall(r.getEvent().getId(), r.getBib()) + "," + getResultGender(r.getEvent().getId(), r.getBib(), r.getGender()) + "," + getClassRank(r.getEvent().getId(), r.getBib()) + "\r\n");
+                    + r.getGender() + "," + r.getAge()  +"," + getResultOverall(r.getEvent().getId(), r.getBib()) + "," + getResultGender(r.getEvent().getId(), r.getBib(), r.getGender()) + "," + getClassRank(r.getEvent().getId(), r.getBib()) + "\r\n");
         }
         outputwriter.flush();
         outputwriter.close();

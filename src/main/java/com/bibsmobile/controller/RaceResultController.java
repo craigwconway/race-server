@@ -418,13 +418,13 @@ public class RaceResultController {
         System.out.println(" Timestart:" + raceResult.getTimestart());
     	System.out.println("[RESULTS] Null get timestart, proceeding");
     	// We have a result without a chip time, we can compute the timeofficialdisplay
-    	if(null != raceResult.getEvent().getGunTime() && 0 < raceResult.getTimeofficial()) {
+    	if(null != raceResult.getEventType().getGunTime() && 0 < raceResult.getTimeofficial()) {
     		System.out.println("[RESULTS] Event details:");
     		System.out.println(raceResult.getEvent().toJson());
     		System.out.println("[RESULTS] Calculating new timeofficialdisplay:");
-    		System.out.println("[RESULTS] Event Gun Time Start: " + raceResult.getEvent().getGunTime().getTime() + " Time Official: " + raceResult.getTimeofficial());
+    		System.out.println("[RESULTS] Event Gun Time Start: " + raceResult.getEventType().getGunTime().getTime() + " Time Official: " + raceResult.getTimeofficial());
     		// There is a gun time in the event and a timeofficial set
-    		raceResult.setTimestart(raceResult.getEvent().getGunTime().getTime());
+    		raceResult.setTimestart(raceResult.getEventType().getGunTime().getTime());
     		System.out.println("[RESULTS] Computed gun time: " + raceResult.getTimeofficialdisplay());
     	}
     	// Add logic to handle timeofficialdisplay updates if we have a nontrivial timeofficialdisplay value:

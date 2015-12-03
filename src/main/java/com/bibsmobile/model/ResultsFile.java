@@ -27,6 +27,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * This is used to hold a single upload of a results file. It may be re-mapped and imported.
+ * To import, a user selects an event and an event type.
+ * @author galen
+ *
+ */
 @Configurable
 @Entity
 public class ResultsFile {
@@ -215,6 +221,14 @@ public class ResultsFile {
         this.event = event;
     }
 
+    public EventType getEventType() {
+        return this.eventType;
+    }
+
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
+    }
+    
     public Date getCreated() {
         return this.created;
     }
