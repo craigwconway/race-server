@@ -160,7 +160,7 @@
         }
 
 		function update(){
-			var loc = "/bibs-server/events/awards/update?event="+eventid;
+			var loc = "/bibs-server/events/awards/update?event="+eventid+"&amp;type=${eventType.id}";
 			if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
 			if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
 			window.location=loc;
