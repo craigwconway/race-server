@@ -84,9 +84,7 @@ public class AwardCategoryController {
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
 		AwardCategory cat = AwardCategory.findAwardCategory(id);
         populateEditForm(uiModel, cat);
-        List<EventType> eventTypes = new ArrayList<EventType>();
-        eventTypes.add(EventType.findEventType(cat.getEventType().getId()));
-        uiModel.addAttribute("eventTypes", eventTypes);
+        uiModel.addAttribute("eventType", cat.getEventType());
         return "awardcategorys/update";
     }
 
