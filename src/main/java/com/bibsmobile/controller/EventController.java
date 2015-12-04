@@ -1713,7 +1713,7 @@ public class EventController {
     	uiModel.asMap().clear();
         uiModel.addAttribute("event", Event.findEvent(eventId));
         uiModel.addAttribute("eventType", EventType.findEventType(eventTypeId));
-        uiModel.addAttribute("results", getResultsOverall(eventId));
+        uiModel.addAttribute("results", getResultsOverall(eventTypeId));
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/overall";
     }
