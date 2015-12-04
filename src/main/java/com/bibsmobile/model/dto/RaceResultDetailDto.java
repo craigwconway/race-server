@@ -31,6 +31,9 @@ public class RaceResultDetailDto {
 	 * @apiSuccess (200) {String} city City of origin of athlete
 	 * @apiSuccess (200) {String} timeofficialdisplay Official Time of athlete
 	 * @apiSuccess (200) {String} team Name of athlete's team
+	 * @apiSuccess (200) {Object[]} images Objects containing each of the images of the athlete
+	 * @apiSuccess (200) {Number} images.id id of race image
+	 * @apiSuccess (200) {String} images.filePath url of image to display
 	 * @apiSuccessExample Single Result Found
 	 * [
 	 * 	{
@@ -55,7 +58,7 @@ public class RaceResultDetailDto {
 	 */
 	
 	
-	RaceResultDetailDto(RaceResult result) {
+	public RaceResultDetailDto(RaceResult result) {
 		this.id = result.getId();
 		this.bib = result.getBib();
 		this.firstname = result.getFirstname();

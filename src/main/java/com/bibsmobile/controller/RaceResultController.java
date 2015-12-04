@@ -15,6 +15,7 @@ import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.dto.RaceResultDetailDto;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
@@ -521,11 +522,12 @@ public class RaceResultController {
     }
 
     /**
-     * @api {get} /raceresults/:id
+     * @api {get} /raceresults/:id Get Race Result Details
+     * @apiName Get Race Result Details
+     * @apiDescription Pass up an id to get a detailed description of a RaceResult
      * @apiGroup raceresults
      * @apiName getRaceResultById
-     * @apiParam {Number} id Id of raceresult to get
-     * @apiSuccess (200) {Object} raceResult Race Result JSON Object
+     * @apiUse raceResultDetailDto
      * @apiPermission none
      * @param id Long raceResult.id to get
      * @return JSON object of raceResult with HTTP 200, or HTTP 404 Not found
@@ -539,7 +541,7 @@ public class RaceResultController {
         if (raceResult == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(raceResult.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceResultDetailDto.fromRaceResultToDto(raceResult), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")
