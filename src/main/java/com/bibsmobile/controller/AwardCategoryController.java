@@ -28,14 +28,17 @@ public class AwardCategoryController {
 
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String create(@Valid AwardCategory awardCategory, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+		System.out.println("creating awardcategory");
         if (bindingResult.hasErrors()) {
         	System.out.println("caught errors");
         	System.out.println(bindingResult.getAllErrors());
             populateEditForm(uiModel, awardCategory);
             return "awardcategorys/create";
         }
+        System.out.println("clearing uimodel");
         uiModel.asMap().clear();
-
+        System.out.println("Award Category: type - " + awardCategory.getEventType().getTypeName() + " ages: " + awardCategory.getAgeMin() + " to " + awardCategory.getAgeMax()
+        		+ " Genders" + awardCategory.getGender());
         // hack for medals
         if(httpServletRequest.getParameterMap().containsKey("medal")){
         	awardCategory.setName(AwardCategory.MEDAL_PREFIX + awardCategory.getName());
@@ -44,6 +47,7 @@ public class AwardCategoryController {
         awardCategory.setSortOrder(AwardCategory.findByEventType(awardCategory.getEventType()).size());
         
         awardCategory.persist();
+        
         return (!awardCategory.isMedal()) 
         		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender()
         		: "redirect:/events/awards?event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender();
@@ -55,9 +59,8 @@ public class AwardCategoryController {
 		AwardCategory a = new AwardCategory();
 		a.setSortOrder(AwardCategory.findByEventType(eventType).size());
         populateEditForm(uiModel, a);
-        List<EventType> eventTypes = new ArrayList<EventType>();
-        eventTypes.add(eventType);
-        uiModel.addAttribute("eventTypes", eventTypes);
+        uiModel.addAttribute("event", eventType.getEvent());
+        uiModel.addAttribute("eventType", eventType);
         return "awardcategorys/create";
     }
 	
