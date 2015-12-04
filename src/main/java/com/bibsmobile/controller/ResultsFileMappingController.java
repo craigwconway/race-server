@@ -349,6 +349,7 @@ public class ResultsFileMappingController {
         System.out.println("ResultsFileMappingController saveRaceResult() "+fixedJson);
         RaceResult result = RaceResult.fromJsonToRaceResult(fixedJson);
         result.setEvent(event);
+        result.setEventType(eventType);
         result.setTimesplit(strSplits);
         System.out.println("ResultsFileMappingController splits2 "+result.getTimesplit());
         RaceResult exists = null;
