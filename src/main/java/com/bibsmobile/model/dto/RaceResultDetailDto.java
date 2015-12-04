@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +42,14 @@ public class RaceResultDetailDto {
 	 * 		"age":24,
 	 * 		"gender":"M",
 	 * 		"team": "Shrugrunners Run Club",
-	 * 		"timeofficialdisplay":"00:23:57"
+	 * 		"timeofficialdisplay":"00:23:57",
+	 * 		"images":
+	 * 		[
+	 * 			{
+	 * 				"id":1,
+	 * 				"filePath": "http://www.mtv.com/crop-images/2013/09/12/drake.jpg"
+	 * 			}
+	 * 		]
 	 * 	}
 	 * ]
 	 */
@@ -56,6 +64,10 @@ public class RaceResultDetailDto {
 		this.city = result.getCity();
 		this.timeofficialdisplay = result.getTimeofficialdisplay();
 		this.team = result.getTeam();
+		images = new ArrayList<RaceImageViewDto>();
+		for(RaceImage rawImage : result.getRaceImages()) {
+			images.add(new RaceImageViewDto(rawImage));
+		}
 	}
 	
 	private Long id;
@@ -66,6 +78,7 @@ public class RaceResultDetailDto {
 	private String city;
 	private String timeofficialdisplay;
 	private String team;
+	private List<RaceImageViewDto> images;
 		
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -160,5 +173,10 @@ public class RaceResultDetailDto {
 		return team;
 	}
 	
-	
+	/**
+	 * @return Race Image DTO versions of views containing this athlete.
+	 */
+	public List<RaceImageViewDto> getImages() {
+		return images;
+	}
 }
