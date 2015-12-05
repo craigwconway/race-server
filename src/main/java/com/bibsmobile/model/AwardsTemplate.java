@@ -4,6 +4,7 @@
 package com.bibsmobile.model;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,6 +46,8 @@ public class AwardsTemplate {
 	 */
 	@ManyToOne
 	UserProfile user;
+
+	EventAwardsConfig awardsConfig = new EventAwardsConfig();
 	
 	/**
 	 * Whether or not this template is a default awards template available for all users.
@@ -57,6 +60,90 @@ public class AwardsTemplate {
 	@OneToMany
 	List<AwardCategory> categories;
 	
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public UserProfile getUser() {
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(UserProfile user) {
+		this.user = user;
+	}
+
+	/**
+	 * @return the awardsConfig
+	 */
+	public EventAwardsConfig getAwardsConfig() {
+		return awardsConfig;
+	}
+
+	/**
+	 * @param awardsConfig the awardsConfig to set
+	 */
+	public void setAwardsConfig(EventAwardsConfig awardsConfig) {
+		this.awardsConfig = awardsConfig;
+	}
+
+	/**
+	 * @return the defaultTemplate
+	 */
+	public boolean isDefaultTemplate() {
+		return defaultTemplate;
+	}
+
+	/**
+	 * @param defaultTemplate the defaultTemplate to set
+	 */
+	public void setDefaultTemplate(boolean defaultTemplate) {
+		this.defaultTemplate = defaultTemplate;
+	}
+
+	/**
+	 * @return the categories
+	 */
+	public List<AwardCategory> getCategories() {
+		return categories;
+	}
+
+	/**
+	 * @param categories the categories to set
+	 */
+	public void setCategories(List<AwardCategory> categories) {
+		this.categories = categories;
+	}
+
 	@PersistenceContext
     transient EntityManager entityManager;
 
@@ -112,6 +199,42 @@ public class AwardsTemplate {
         this.entityManager.flush();
         return merged;
     }
+	
+	/**
+	 * Default Constructor
+	 */
+ 	private AwardsTemplate() {
+		
+	}
+	/**
+	 * This constructor creates a copy of an awards configuration from a given event type and passed in properties.
+	 * defaultStatus should be false unless this appears for all users.
+	 * @param type {@link EventType} object to copy
+	 * @param name String of the display name for this configuration
+	 * @param defaultStatus True if publicly visible
+	 * @param user User owning this awards template
+	 */
+	public AwardsTemplate(EventType type, String name, boolean defaultStatus, UserProfile user) {
+		List<AwardCategory> categories = new ArrayList<AwardCategory>();
+		this.setAwardsConfig(type.getAwardsConfig());
+		this.setName(name);
+		this.setDefaultTemplate(defaultStatus);
+		this.setUser(user);
+		for(AwardCategory category : type.getAwardCategorys()) {
+			AwardCategory newCategory = new AwardCategory();
+			newCategory.setListSize(category.getListSize());
+			newCategory.setAgeMin(category.getAgeMin());
+			newCategory.setAgeMax(category.getAgeMax());
+			newCategory.setMaster(category.isMaster());
+			newCategory.setMedal(category.isMedal());
+			newCategory.setName(category.getName());
+			newCategory.setSortOrder(category.getSortOrder());
+			newCategory.setVersion(1);
+			newCategory.setGender(category.getGender());
+			categories.add(newCategory);
+		}
+		this.setCategories(categories);
+	}
 	
     public static List<AwardsTemplate> findAwardsTemplatesForUser(UserProfile user) {
     	if(user == null) {

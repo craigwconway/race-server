@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,12 +16,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.AwardCategory;
+import com.bibsmobile.model.AwardsTemplate;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.SpringJSONUtil;
+import com.bibsmobile.util.UserProfileUtil;
 
 
 @RequestMapping("/awardcategorys")
@@ -63,6 +71,26 @@ public class AwardCategoryController {
         uiModel.addAttribute("eventType", eventType);
         return "awardcategorys/create";
     }
+
+	@RequestMapping(value = "/template/create", method = RequestMethod.POST, produces = "application/json")
+	@ResponseBody
+    public ResponseEntity <String> createTemplate(@RequestParam(value = "event", required = true) long eventTypeId,
+    		@RequestParam(value="name", required = true) String name,
+    		@RequestParam(value="default", defaultValue = "false") Boolean defaultStatus) {
+		EventType eventType = EventType.findEventType(eventTypeId);
+		UserProfile user = UserProfileUtil.getLoggedInUserProfile();
+		AwardsTemplate template = new AwardsTemplate(eventType, name, defaultStatus, user);
+		if (!PermissionsUtil.isSysAdmin(user)) {
+			template.setDefaultTemplate(false);
+		}
+		for(AwardCategory category : template.getCategories()) {
+			category.persist();
+		}
+		template.persist();
+		
+        return SpringJSONUtil.returnStatusMessage("created", HttpStatus.OK);
+        
+    }	
 	
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid AwardCategory awardCategory, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {

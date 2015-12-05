@@ -57,6 +57,7 @@
 				<button class="btn btn-primary btn-top"
 					onclick="create()" 
 					type="button"><i class="fa fa-plus" style="margin-left:0; margin-right:5px"><!--  --></i> Category</button>
+				<button class="btn btn-primary btn-top" href="#" data-toggle='modal' data-target='#saveModal'>Save Awards Template</button>
 				</sec:authorize>
 					
 				<button class="btn btn-success btn-top" 
@@ -143,7 +144,33 @@
 			</div>
 		</div>
 	</div>
-	
+	    <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="email-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="save-label">Save Awards Template</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui negative message" id="saveError" style="display:none">
+                        <i class="fa fa-times close" style="float:right"><!--  --></i>
+                        <div class="header">Error</div>
+                        <p><!--  --></p>
+                    </div>
+                    <div class="ui form" id="saveForm">
+                        <div class="required field">
+                            <label>Name</label>
+                            <input class="form-control" name="templateName" placeholder="Name"></input>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui green button post-email-button" onclick="saveCategories();return false;">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
 	<script>
 		var eventid = GetURLParameter("event");
 
@@ -192,8 +219,24 @@
 
 		function printawards(){
 			window.location = "/bibs-server/events/printawards?event="+eventid+"&amp;type="+${eventType.id};
-		}		
-		
+		}
+		function saveCategories(){
+			var name  = jQuery('#saveForm input[name="categoryName"]').val();
+			var request = jQuery.ajax({
+				url: "/bibs-server/awardcategorys/template/create?event=${eventType.id}&amp;name="+name,
+				type: 'POST',
+				contentType: 'application/json'
+			})
+			request.done(function( d ) {
+                jQuery("#saveModal").modal('hide');
+                alert("Your awards have been saved.");
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
+		}
+        function closeModal(){
+            jQuery('.modal').modal('hide');
+        }
 		function deleteAwardCategory(id){
 			if(confirm("Delete Award Category?")){
 				jQuery(".cat-"+id).remove();
