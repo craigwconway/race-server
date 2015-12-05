@@ -90,19 +90,25 @@ public class RaceResultController {
      * @apiParam {Number} Event Event to search from
      * @apiParam {Number} [bib] Bib number to search for
      * @apiParam {String} [name] First last or fullname to search
+     * @apiParam {Number} [page=1] Page of results to get
+     * @apiParam {Number} [size=10] Number of results per page
      * @apiGroup raceresults
      * @apiPermission none
-     * @apiDescription Search for a Race Result by event id and either first/last/fullname or bib
+     * @apiDescription Search for a Race Result by event id and either first/last/fullname or bib. Results are returned in pages of 10.
+     * If another page is requested
      * @apiSuccess (200) {Object} RaceResult object returned
      * @return
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public String search(@RequestParam(value = "event", required = false, defaultValue = "0") Long event,
-            @RequestParam(value = "name", required = false, defaultValue = "") String name, @RequestParam(value = "bib", required = false, defaultValue = "") Long bib) {
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "bib", required = false, defaultValue = "") Long bib,
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size){
         String rtn = "[]";
         try {
-            List<RaceResult> raceResults = RaceResult.search(event, name, bib);
+            List<RaceResult> raceResults = RaceResult.searchPaginated(event, name, bib, page, size);
             rtn = RaceResultViewDto.fromRaceResultsToDtoArray(raceResults);
         } catch (Exception e) {
             e.printStackTrace();
