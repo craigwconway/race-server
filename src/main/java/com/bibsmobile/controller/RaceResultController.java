@@ -94,8 +94,8 @@ public class RaceResultController {
      * @apiParam {Number} [size=10] Number of results per page
      * @apiGroup raceresults
      * @apiPermission none
-     * @apiDescription Search for a Race Result by event id and either first/last/fullname or bib. Results are returned in pages of 10.
-     * If another page is requested
+     * @apiDescription Search for a Race Result by event id and either first/last/fullname or bib. Results are returned in pages of 10
+     * and start from page number 1.
      * @apiSuccess (200) {Object} RaceResult object returned
      * @return
      */
