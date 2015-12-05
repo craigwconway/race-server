@@ -16,6 +16,7 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.dto.RaceResultDetailDto;
+import com.bibsmobile.model.dto.RaceResultViewDto;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
@@ -102,7 +103,7 @@ public class RaceResultController {
         String rtn = "[]";
         try {
             List<RaceResult> raceResults = RaceResult.search(event, name, bib);
-            rtn = RaceResult.toJsonArray(raceResults);
+            rtn = RaceResultViewDto.fromRaceResultsToDtoArray(raceResults);
         } catch (Exception e) {
             e.printStackTrace();
         }
