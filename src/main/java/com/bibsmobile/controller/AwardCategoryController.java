@@ -41,7 +41,7 @@ public class AwardCategoryController {
         		+ " Genders" + awardCategory.getGender());
         // hack for medals
         if(httpServletRequest.getParameterMap().containsKey("medal")){
-        	awardCategory.setName(AwardCategory.MEDAL_PREFIX + awardCategory.getName());
+        	awardCategory.setMedal(true);
         }
         
         awardCategory.setSortOrder(AwardCategory.findByEventType(awardCategory.getEventType()).size());
@@ -74,7 +74,7 @@ public class AwardCategoryController {
         
         // hack for medals
         if(httpServletRequest.getParameterMap().containsKey("medal")){
-        	awardCategory.setName(AwardCategory.MEDAL_PREFIX + awardCategory.getName());
+        	awardCategory.setMedal(true);
         }
         
         awardCategory.merge();

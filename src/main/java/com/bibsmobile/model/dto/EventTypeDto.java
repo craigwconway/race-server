@@ -13,7 +13,7 @@ import com.bibsmobile.model.EventType;
  */
 public class EventTypeDto {
 	
-	EventTypeDto(EventType eventType) {
+	public EventTypeDto(EventType eventType) {
 		this.id = eventType.getId();
 		this.typeName = eventType.getTypeName();
 		this.distance = eventType.getDistance();

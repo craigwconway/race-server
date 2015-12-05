@@ -43,6 +43,9 @@ import com.google.gson.JsonObject;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.auth0.jwt.internal.com.fasterxml.jackson.core.JsonGenerationException;
+import com.auth0.jwt.internal.com.fasterxml.jackson.databind.JsonMappingException;
+import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.PDFUtil;
 import com.bibsmobile.util.PermissionsUtil;
@@ -108,6 +111,7 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.dto.EventDto;
+import com.bibsmobile.model.dto.EventTypeDto;
 import com.bibsmobile.model.wrapper.EventTypeTicketWrapper;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
@@ -605,7 +609,24 @@ public class EventController {
         uiModel.addAttribute("eventType", type);
         uiModel.addAttribute("awardCategoryResults", getAwards(type.getId()));
         return "events/awards";
-    }   
+    }
+    
+    @RequestMapping(value = "/fullawards/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public static ResponseEntity<String> fullAwards(
+    		@PathVariable("id") Long id) {
+    	Event event = Event.findEvent(id);
+    	Map <EventTypeDto, List<AwardCategoryResults>> awardMap = new HashMap<EventTypeDto,List<AwardCategoryResults>>();
+    	for(EventType type : event.getEventTypes()) {
+    		awardMap.put(new EventTypeDto(type), getAwards(type.getId()));
+    	}
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	try {
+			return new ResponseEntity<String>(new JSONSerializer().serialize(awardMap),HttpStatus.OK);
+		} catch (Exception e) {
+			return SpringJSONUtil.returnErrorMessage(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    }
     
     // Print awards
     @RequestMapping(value = "/printawards", method = RequestMethod.GET)
@@ -642,7 +663,7 @@ public class EventController {
     		System.out.println("cache miss");
     		list = eventType.calculateRank(eventType);
 	    	for(AwardCategoryResults c:list){
-	    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
+	    		c.getCategory().setMedal(false); // hack
 	    	}
 	    	cache.put(key, list);
     	}
@@ -661,7 +682,7 @@ public class EventController {
     		System.out.println("cache miss");
     		list = eventType.calculateMedals(eventType);
 	    	for(AwardCategoryResults c:list){
-	    		c.getCategory().setName(c.getCategory().getName().replaceAll(AwardCategory.MEDAL_PREFIX, StringUtils.EMPTY)); // hack
+	    		c.getCategory().setMedal(false); // hack
 	    	}
 	    	cache.put(key, list);
     	}

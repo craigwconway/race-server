@@ -48,24 +48,20 @@ public class AwardCategory implements Comparable{
 	private int listSize;
 	
 	
-	// hack for medals verses age/gender ranking
-	public final static String MEDAL_PREFIX = "Medal: ";
-	private boolean medal; 
+	private boolean medal;
+	private boolean master;
 	public boolean isMedal(){
-		return name.startsWith(MEDAL_PREFIX);
+		return this.medal;
 	}
 	public void setMedal(boolean bool){
-		setName(bool ? MEDAL_PREFIX + name : name.replaceAll(MEDAL_PREFIX, ""));
+		this.medal = bool;
 	}
 	
-	// hack for masters vs other medals
-	public static final String MASTERS_TOKEN = "Master";
-	private boolean master;
 	public boolean isMaster(){
-		return name.toLowerCase().contains(MASTERS_TOKEN.toLowerCase());
+		return this.master;
 	}
 	public void setMaster(boolean bool){
-		setName(MASTERS_TOKEN + " " + getName());
+		this.master = bool;
 	}
 
 	public String toString() {
@@ -376,7 +372,7 @@ public class AwardCategory implements Comparable{
 	@Transactional
 	public int removeAgeGenderRankingsByEvent(Event event) {
         EntityManager em = AwardCategory.entityManager();
-        String jpaQuery = "DELETE FROM AwardCategory AS o WHERE o.eventType = :eventType AND o.name NOT LIKE '"+AwardCategory.MEDAL_PREFIX+"%'";
+        String jpaQuery = "DELETE FROM AwardCategory AS o WHERE o.eventType = :eventType AND o.medal = 0";
         Query q = em.createQuery(jpaQuery);
         q.setParameter("event", event);
         return q.executeUpdate();
