@@ -407,13 +407,17 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getResultList();
     }
 
-    public static List<RaceResult> searchPaginated(Long eventId, String name, Long bib, Integer page, Integer pageSize) {
+    public static List<RaceResult> searchPaginated(Long eventId, Long eventTypeId, String name, Long bib, Integer page, Integer pageSize) {
         EntityManager em = RaceResult.entityManager();
 
         Event event = new Event();
         if (null != eventId && eventId > 0)
             event = Event.findEvent(eventId);
-
+        
+        EventType eventType = null;
+        if (null != eventTypeId && eventTypeId > 0)
+        	eventType = EventType.findEventType(eventTypeId);
+        
         String firstname = "";
         String lastname = "";
         if (name.contains(" ")) {
@@ -426,6 +430,9 @@ public class RaceResult implements Comparable<RaceResult> {
         if (null != eventId && eventId > 0)
             HQL += " o.event = :event AND ";
 
+        if (null != eventTypeId && eventTypeId > 0)
+        	HQL += " o.eventType = :eventType AND ";
+        
         if (bib != null)
             HQL += " o.bib = :bib AND ";
 
@@ -437,11 +444,13 @@ public class RaceResult implements Comparable<RaceResult> {
             name += "%";
             HQL += " (LOWER(o.firstname) LIKE LOWER(:name) OR LOWER(o.lastname) LIKE LOWER(:name)) ";
         }
-
+        HQL += "ORDER BY (o.timeofficial - o.timestart) ASC";
         TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
 
         if (null != eventId && eventId > 0)
             q.setParameter("event", event);
+        if (null != eventTypeId && eventTypeId > 0)
+        	q.setParameter("eventType", eventType);
         if (bib != null)
             q.setParameter("bib", bib);
         if (!firstname.isEmpty() && !lastname.isEmpty()) {

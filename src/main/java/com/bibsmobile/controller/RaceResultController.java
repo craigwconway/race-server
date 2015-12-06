@@ -102,13 +102,14 @@ public class RaceResultController {
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public String search(@RequestParam(value = "event", required = false, defaultValue = "0") Long event,
+    		@RequestParam(value = "type", required = false) Long type,
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "bib", required = false, defaultValue = "") Long bib,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
     		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size){
         String rtn = "[]";
         try {
-            List<RaceResult> raceResults = RaceResult.searchPaginated(event, name, bib, page, size);
+            List<RaceResult> raceResults = RaceResult.searchPaginated(event, type, name, bib, page, size);
             rtn = RaceResultViewDto.fromRaceResultsToDtoArray(raceResults);
         } catch (Exception e) {
             e.printStackTrace();
