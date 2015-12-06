@@ -87,9 +87,11 @@ public class RaceResultController {
     /**
      * @api {get} /raceresults/search Search
      * @apiName Search
-     * @apiParam {Number} Event Event to search from
+     * @apiParam {Number} event Event to search from
+     * @apiParam {Number} type Event Type to search from
      * @apiParam {Number} [bib] Bib number to search for
      * @apiParam {String} [name] First last or fullname to search
+     * @apiParam {String=M,F} [gender] Gender to serch
      * @apiParam {Number} [page=1] Page of results to get
      * @apiParam {Number} [size=10] Number of results per page
      * @apiGroup raceresults
@@ -105,11 +107,12 @@ public class RaceResultController {
     		@RequestParam(value = "type", required = false) Long type,
             @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "bib", required = false, defaultValue = "") Long bib,
+            @RequestParam(value = "gender", required = false) String gender,
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
     		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size){
         String rtn = "[]";
         try {
-            List<RaceResult> raceResults = RaceResult.searchPaginated(event, type, name, bib, page, size);
+            List<RaceResult> raceResults = RaceResult.searchPaginated(event, type, name, bib, page, size, gender);
             rtn = RaceResultViewDto.fromRaceResultsToDtoArray(raceResults);
         } catch (Exception e) {
             e.printStackTrace();

@@ -52,6 +52,7 @@ public class RaceResultViewDto {
 		this.firstname = result.getFirstname();
 		this.lastname = result.getLastname();
 		this.age = result.getAge();
+		this.gender = result.getGender();
 		this.city = result.getCity();
 		this.timeofficialdisplay = result.getTimeofficialdisplay();
 		this.team = result.getTeam();
@@ -66,6 +67,8 @@ public class RaceResultViewDto {
 	private String lastname;
 	
 	private Integer age;
+	
+	private String gender;
 		
 	private String city;
 	
@@ -144,7 +147,14 @@ public class RaceResultViewDto {
 	public Integer getAge() {
 		return age;
 	}
-
+	
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+	
 	/**
 	 * @return the city
 	 */

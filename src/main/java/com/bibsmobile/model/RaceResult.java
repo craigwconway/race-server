@@ -407,9 +407,9 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getResultList();
     }
 
-    public static List<RaceResult> searchPaginated(Long eventId, Long eventTypeId, String name, Long bib, Integer page, Integer pageSize) {
+    public static List<RaceResult> searchPaginated(Long eventId, Long eventTypeId, String name, Long bib, Integer page, Integer pageSize, String gender) {
         EntityManager em = RaceResult.entityManager();
-
+        
         Event event = new Event();
         if (null != eventId && eventId > 0)
             event = Event.findEvent(eventId);
@@ -436,6 +436,11 @@ public class RaceResult implements Comparable<RaceResult> {
         if (bib != null)
             HQL += " o.bib = :bib AND ";
 
+        if(gender != null && gender.equalsIgnoreCase("M"))
+        	HQL += " o.gender = 'M' AND";
+        
+        if(gender != null && gender.equalsIgnoreCase("F"))
+        	HQL += " o.gender = 'F' AND";
         if (!firstname.isEmpty() && !lastname.isEmpty()) {
             firstname += "%";
             lastname += "%";
@@ -444,7 +449,11 @@ public class RaceResult implements Comparable<RaceResult> {
             name += "%";
             HQL += " (LOWER(o.firstname) LIKE LOWER(:name) OR LOWER(o.lastname) LIKE LOWER(:name)) ";
         }
+        if(HQL.endsWith("AND"))
+        	HQL = HQL.substring(0, HQL.length() - 3);
         HQL += "ORDER BY (o.timeofficial - o.timestart) ASC";
+        
+        System.out.println("HQL: " + HQL);
         TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
 
         if (null != eventId && eventId > 0)
