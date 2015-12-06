@@ -240,6 +240,6 @@ public class AwardsTemplate {
     	if(user == null) {
     		return entityManager().createQuery("SELECT o FROM AwardsTemplate o where o.defaultTemplate = 1", AwardsTemplate.class).getResultList();
     	}
-        return entityManager().createQuery("SELECT o FROM AwardsTemplates o where o.defaultTemplate = 1 OR o.user = :user", AwardsTemplate.class).setParameter("user",  user).getResultList();
+        return entityManager().createQuery("SELECT o FROM AwardsTemplate o where o.defaultTemplate = 1 OR o.user = :user", AwardsTemplate.class).setParameter("user",  user).getResultList();
     }
 }

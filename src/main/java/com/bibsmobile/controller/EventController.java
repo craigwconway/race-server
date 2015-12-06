@@ -89,6 +89,7 @@ import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.AwardCategoryResults;
+import com.bibsmobile.model.AwardsTemplate;
 import com.bibsmobile.model.Cart;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
@@ -594,6 +595,40 @@ public class EventController {
         return Event.toJsonArray(Event.findEventsByRunning());
     }
 
+    @RequestMapping(value = "/awards/applytemplate", method = RequestMethod.GET)
+    public static String applyAwardsTemplate(
+    		@RequestParam(value="type") Long eventTypeId,
+    		@RequestParam(value="template") Long templateId) {
+    	EventType type = EventType.findEventType(eventTypeId);
+    	AwardsTemplate template = AwardsTemplate.findAwardsTemplate(templateId);
+    	Event event = type.getEvent();
+    	if(!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+    		return "You are not authorized for this event";
+    	}
+    	clearAwardsCache(eventTypeId);
+    	type.setAwardsConfig(template.getAwardsConfig());
+    	//List<AwardCategory> categories = new ArrayList <AwardCategory>();
+    	//Clear old categories
+    	for(AwardCategory category : type.getAwardCategorys()) {
+    		category.remove();
+    	}
+    	type.setAwardCategorys(new ArrayList<AwardCategory>());
+    	for(AwardCategory category : template.getCategories()) {
+    		AwardCategory newCategory = new AwardCategory();
+    		newCategory.setListSize(category.getListSize());
+			newCategory.setAgeMin(category.getAgeMin());
+			newCategory.setAgeMax(category.getAgeMax());
+			newCategory.setMaster(category.isMaster());
+			newCategory.setMedal(category.isMedal());
+			newCategory.setName(category.getName());
+			newCategory.setSortOrder(category.getSortOrder());
+			newCategory.setVersion(1);
+			newCategory.setGender(category.getGender());
+			newCategory.setEventType(type);
+			newCategory.persist();
+    	}
+    	return "redirect:/events/awards?event="+event.getId()+"&type="+type.getId();
+    }
     // medals
     @RequestMapping(value = "/awards", method = RequestMethod.GET)
     public static String awards(
@@ -608,6 +643,7 @@ public class EventController {
         uiModel.addAttribute("event", Event.findEvent(eventId));
         uiModel.addAttribute("eventType", type);
         uiModel.addAttribute("awardCategoryResults", getAwards(type.getId()));
+        uiModel.addAttribute("templates", AwardsTemplate.findAwardsTemplatesForUser(UserProfileUtil.getLoggedInUserProfile()));
         return "events/awards";
     }
     
