@@ -36,10 +36,10 @@ import com.bibsmobile.util.UserProfileUtil;
 public class SyncController {
 
     /**
-     * @api {post} /eventlist/byuser Search
-     * @apiName Search
-     * @apiGroup eventalerts
-     * @apiDescription Get all alerts from an event
+     * @api {post} /eventlist/byuser Get Sync List
+     * @apiName Get Sync List
+     * @apiGroup sync
+     * @apiDescription Get a list of events that a user can sync to.
      * @apiParam {String} username Username to pull event list for
      * @apiUser eventDto
      * @return

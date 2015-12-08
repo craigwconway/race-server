@@ -28,6 +28,7 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.PictureHashtag;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.dto.RaceImageDetailsDto;
 import com.bibsmobile.service.UserProfileService;
 
 @RequestMapping("/raceimages")
@@ -94,6 +95,27 @@ public class RaceImageController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+
+    /**
+     * @api {get} /raceimages/details/:id Details
+     * @apiName Details
+     * @apigroup raceimages
+     * @apiDescription Get details for a single race image. This pulls information about athletes in the image
+     * and hashtags on the image.
+     * @apiUse raceImageDetailsDto
+     * @return
+     */
+    @RequestMapping(value = "/details/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
+        RaceImage raceImage = RaceImage.findRaceImage(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (raceImage == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(RaceImageDetailsDto.fromRaceImageToDto(raceImage), headers, HttpStatus.OK);
+    }    
     @Autowired
     UserProfileService userProfileService;
 
@@ -184,17 +206,6 @@ public class RaceImageController {
         return pathSegment;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
-        RaceImage raceImage = RaceImage.findRaceImage(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        if (raceImage == null) {
-            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(raceImage.toJson(), headers, HttpStatus.OK);
-    }
 
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
