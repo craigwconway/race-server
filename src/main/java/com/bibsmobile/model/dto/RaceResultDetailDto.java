@@ -63,6 +63,7 @@ public class RaceResultDetailDto {
 		this.bib = result.getBib();
 		this.firstname = result.getFirstname();
 		this.lastname = result.getLastname();
+		this.gender = result.getGender();
 		this.age = result.getAge();
 		this.city = result.getCity();
 		this.timeofficialdisplay = result.getTimeofficialdisplay();
@@ -79,6 +80,7 @@ public class RaceResultDetailDto {
 	private String lastname;
 	private Integer age;
 	private String city;
+	private String gender;
 	private String timeofficialdisplay;
 	private String team;
 	private List<RaceImageViewDto> images;
@@ -160,6 +162,13 @@ public class RaceResultDetailDto {
 	 */
 	public String getCity() {
 		return city;
+	}
+	
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
 	}
 
 	/**
