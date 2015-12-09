@@ -28,6 +28,7 @@ import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.dto.EventDto;
+import com.bibsmobile.model.dto.EventSyncDto;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.UserProfileUtil;
 
@@ -50,6 +51,14 @@ public class SyncController {
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
         List<Event> events = Event.findEventsForUser(user);
         return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(events), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/object/{id}")
+    @ResponseBody
+    public ResponseEntity<String> generateSyncObject(@PathVariable("id") Long id) {
+    	Event event = Event.findEvent(id);
+    	//TODO: Add security
+    	return new ResponseEntity<String> (EventSyncDto.fromEventToDto(event), HttpStatus.OK);
     }
 
 }

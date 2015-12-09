@@ -64,7 +64,7 @@ public class EventSyncDto {
 		this.timeStartLocal = event.getTimeStartLocal();
 		this.timeStart = event.getTimeStart();
 		this.timezone  = event.getTimezoneID();
-		this.eventTypes = EventTypeDto.fromEventTypes(event.getEventTypes());
+		this.eventTypes = EventTypeSyncDto.fromEventTypes(event.getEventTypes());
 	}
 	
 	private Long id;
@@ -77,7 +77,7 @@ public class EventSyncDto {
 	
 	private String timezone;
 	
-	private Set <EventTypeDto> eventTypes;
+	private Set <EventTypeSyncDto> eventTypes;
 	
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -142,7 +142,7 @@ public class EventSyncDto {
 	/**
 	 * @return the eventTypes
 	 */
-	public Set<EventTypeDto> getEventTypes() {
+	public Set<EventTypeSyncDto> getEventTypes() {
 		return eventTypes;
 	}
 	
