@@ -9,8 +9,8 @@ import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
 
 /**
- * This is a data transfer object used to give information about event types. 
- * It may be used to represent many event types in a list view, or under an event.
+ * This object is used to sync event types from the cloud into events in local systems.
+ * This can be used with timing races.
  * @author galen
  *
  */

@@ -53,7 +53,14 @@ public class SyncController {
         return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(events), HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/object/{id}")
+    /**
+     * @api {get} /sync/artifact/:id Sync Event Artifact
+     * @apiName Sync Event Artifact
+     * @apiGroup sync
+     * @apiDescription Load up the event artifact of a particular event to put into a system.
+     * @return
+     */
+    @RequestMapping(value = "/artifact/{id}")
     @ResponseBody
     public ResponseEntity<String> generateSyncObject(@PathVariable("id") Long id) {
     	Event event = Event.findEvent(id);
