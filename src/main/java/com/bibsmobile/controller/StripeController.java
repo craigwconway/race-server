@@ -230,7 +230,11 @@ public class StripeController {
             return new ResponseEntity<>("cart not found", HttpStatus.NOT_FOUND);
         if (c.getStatus() != Cart.NEW && c.getStatus() != Cart.SAVED)
             return new ResponseEntity<>("cart already processed", HttpStatus.BAD_REQUEST);
-
+        UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
+        if(loggedInUser == null) {
+        	return new ResponseEntity<>("Invalid User Data", HttpStatus.BAD_REQUEST);
+        }
+        System.out.println("[Stripe] Handling Charge for cart: " + c.getId() + ", Total: " + c.getTotal() + " User: " + loggedInUser.getEmail());
         // in try block, so we can reset cart on failure
         try {
             // set cart to processing, so it doesn't get messed with (cart
@@ -245,7 +249,6 @@ public class StripeController {
             // 1) no card token was submitted
             // 2) card should be remembered
             // failure if no card token provided and no customer saved
-            UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
             // HACK FOR CONFERENCE:
             if (loggedInUser != null) {
             	c.setUser(loggedInUser);
