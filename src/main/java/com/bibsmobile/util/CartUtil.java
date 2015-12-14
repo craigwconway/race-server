@@ -228,7 +228,7 @@ public final class CartUtil {
 				CustomRegFieldResponseOption uploadedOption = new CustomRegFieldResponseOption();
 				uploadedOption.setResponse(crfr.getResponse());
 				System.out.println("Reg Field Options: " + options);
-				if(!options.isEmpty() && options.contains(uploadedOption)) {
+				if(options != null && options.contains(uploadedOption)) {
 					List <CustomRegFieldResponseOption> optionsList = new ArrayList<CustomRegFieldResponseOption>(options);
 					for(CustomRegFieldResponseOption realOption : optionsList) {
 						if(realOption.equals(uploadedOption)) {

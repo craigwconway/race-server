@@ -255,8 +255,8 @@ public class CartRestController {
     }    
     
     /**
-     * @api {post} /rest/carts/questions
-     * @apiGroup restcarts
+     * @api {post} /rest/carts/questions Post Questions
+     * @apiGroup restcarts Post Questions
      * @apiName postQuestions
      * @apiParam {Object} cart Cart object containing questions
      * @apiParam {Number} cart.id Id of posted cart
