@@ -31,30 +31,24 @@ public class TimeSyncDto {
 	 */
 	
 	
-	public TimeSyncDto(RaceResult result) {
-		this.id = result.getId();
+	public TimeSyncDto(RaceResult result, long position, long time, Long eventTypeId) {
 		this.bib = result.getBib();
-		this.firstname = result.getFirstname();
-		this.lastname = result.getLastname();
-		this.age = result.getAge();
-		this.city = result.getCity();
-		this.timeofficialdisplay = result.getTimeofficialdisplay();
-		this.team = result.getTeam();
-		images = new ArrayList<RaceImageViewDto>();
-		for(RaceImage rawImage : result.getRaceImages()) {
-			images.add(new RaceImageViewDto(rawImage));
-		}
+		this.time = time;
+		this.position = position;
+		this.eventTypeId = eventTypeId;
+	}
+
+	public TimeSyncDto(long bib, long position, long time, Long eventTypeId) {
+		this.bib = bib;
+		this.time = time;
+		this.position = position;
+		this.eventTypeId = eventTypeId;
 	}
 	
-	private Long id;
 	private long bib;
-	private String firstname;
-	private String lastname;
-	private Integer age;
-	private String city;
-	private String timeofficialdisplay;
-	private String team;
-	private List<RaceImageViewDto> images;
+	private long position;
+	private long time;
+	private Long eventTypeId;
 		
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -67,25 +61,10 @@ public class TimeSyncDto {
 		}
 	}
 
-	public static String fromRaceResultToDto(RaceResult result ) {
+	public static String fromRaceResultToDto(RaceResult result, long position, long time, Long eventTypeId ) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			return mapper.writeValueAsString(new TimeSyncDto(result));
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}	
-	
-	public static String fromRaceResultsToDtoArray(Collection<RaceResult> results ) {
-		List <TimeSyncDto> dtos = new ArrayList <TimeSyncDto>();
-		for(RaceResult result : results) {
-			dtos.add(new TimeSyncDto(result));
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return mapper.writeValueAsString(dtos);
+			return mapper.writeValueAsString(new TimeSyncDto(result, position, time, eventTypeId));
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,65 +73,30 @@ public class TimeSyncDto {
 	}
 
 	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * @return the bib
+	 * @return the bib number of runner
 	 */
 	public long getBib() {
 		return bib;
 	}
-
+	
 	/**
-	 * @return the firstname
+	 * @return the time in ms timestamp
 	 */
-	public String getFirstname() {
-		return firstname;
-	}
-
-	/**
-	 * @return the lastname
-	 */
-	public String getLastname() {
-		return lastname;
-	}
-
-	/**
-	 * @return the age
-	 */
-	public Integer getAge() {
-		return age;
-	}
-
-	/**
-	 * @return the city
-	 */
-	public String getCity() {
-		return city;
-	}
-
-	/**
-	 * @return the timeofficialdisplay
-	 */
-	public String getTimeofficialdisplay() {
-		return timeofficialdisplay;
-	}
-
-	/**
-	 * @return the team
-	 */
-	public String getTeam() {
-		return team;
+	public long getTime() {
+		return time;
 	}
 	
 	/**
-	 * @return Race Image DTO versions of views containing this athlete.
+	 * @return Split position of reader. 0=start, 1=finish, 2=split1, 3=split2, etc.
 	 */
-	public List<RaceImageViewDto> getImages() {
-		return images;
+	public long getPosition() {
+		return position;
+	}
+	
+	/**
+	 * @return ID of cloud based event type to sync into
+	 */
+	public Long getEventTypeId() {
+		return eventTypeId;
 	}
 }

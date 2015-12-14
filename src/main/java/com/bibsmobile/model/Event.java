@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -161,7 +162,7 @@ public class Event {
 
     private boolean sync = false;
 
-    private String syncId;
+    private String syncId = UUID.randomUUID().toString();
     
     @Field
     private String charity;

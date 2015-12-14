@@ -63,6 +63,7 @@ public class EventSyncDto {
 		this.name = event.getName();
 		this.timeStartLocal = event.getTimeStartLocal();
 		this.timeStart = event.getTimeStart();
+		this.syncId = event.getSyncId();
 		this.timezone  = event.getTimezoneID();
 		this.eventTypes = EventTypeSyncDto.fromEventTypes(event.getEventTypes());
 	}
@@ -72,6 +73,8 @@ public class EventSyncDto {
 	private String name;
 	
 	private String timeStartLocal;
+	
+	private String syncId;
 	
 	private Date timeStart;
 	
@@ -137,6 +140,27 @@ public class EventSyncDto {
 	 */
 	public String getTimeStartLocal() {
 		return timeStartLocal;
+	}
+
+	/**
+	 * @return the syncId
+	 */
+	public String getSyncId() {
+		return syncId;
+	}
+
+	/**
+	 * @return the timeStart
+	 */
+	public Date getTimeStart() {
+		return timeStart;
+	}
+
+	/**
+	 * @return the timezone
+	 */
+	public String getTimezone() {
+		return timezone;
 	}
 
 	/**
