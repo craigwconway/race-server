@@ -27,6 +27,10 @@ public class TimeSyncContainerDto {
 	private long timestamp;
 	
 	private String macAddress;
+	
+	private String deviceName;
+	
+	private Long syncEventId;
 
 	private String syncId;
 	
@@ -54,6 +58,20 @@ public class TimeSyncContainerDto {
 	public String getMacAddress() {
 		return macAddress;
 	}
+	
+	/**
+	 * @return the deviceName
+	 */
+	public String getDeviceName() {
+		return deviceName;
+	}
+	
+	/**
+	 * @return the event ID to sync into
+	 */
+	public Long getSyncEventId() {
+		return syncEventId;
+	}
 
 	/**
 	 * @return the syncId
@@ -74,5 +92,9 @@ public class TimeSyncContainerDto {
 	 */
 	public List<TimeSyncDto> getTimes() {
 		return times;
+	}
+	
+	public void setTimes(List<TimeSyncDto> times) {
+		this.times=times;
 	}
 }

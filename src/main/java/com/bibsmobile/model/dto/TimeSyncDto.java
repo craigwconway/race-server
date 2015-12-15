@@ -22,7 +22,7 @@ public class TimeSyncDto {
 	 * @apiDefine timeSyncDto
 	 * @apiSuccess (200) {Number} bib Bib number of result
 	 * @apiSuccess (200) {Number} eventTypeId Id of cloud-based event type to sync into
-	 * @apiSuccess (200) {Number} timestamp ms timestamp of recorded time
+	 * @apiSuccess (200) {Number} time ms timestamp of recorded time
 	 * @apiSuccessExample Single Time
 	 * {
 	 * 	"bib":1,
@@ -30,7 +30,9 @@ public class TimeSyncDto {
 	 * }
 	 */
 	
-	
+	public TimeSyncDto() {
+		
+	}
 	public TimeSyncDto(RaceResult result, long position, long time, Long eventTypeId) {
 		this.bib = result.getBib();
 		this.time = time;
@@ -98,5 +100,33 @@ public class TimeSyncDto {
 	 */
 	public Long getEventTypeId() {
 		return eventTypeId;
+	}
+
+	/**
+	 * @param bib the bib to set
+	 */
+	public void setBib(long bib) {
+		this.bib = bib;
+	}
+
+	/**
+	 * @param position the position to set
+	 */
+	public void setPosition(long position) {
+		this.position = position;
+	}
+
+	/**
+	 * @param time the time to set
+	 */
+	public void setTime(long time) {
+		this.time = time;
+	}
+
+	/**
+	 * @param eventTypeId the eventTypeId to set
+	 */
+	public void setEventTypeId(Long eventTypeId) {
+		this.eventTypeId = eventTypeId;
 	}
 }
