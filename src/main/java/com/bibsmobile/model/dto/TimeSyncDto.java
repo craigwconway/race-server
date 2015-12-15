@@ -26,7 +26,7 @@ public class TimeSyncDto {
 	 * @apiSuccessExample Single Time
 	 * {
 	 * 	"bib":1,
-	 * 	"timestamp":144244242
+	 * 	"time":144244242
 	 * }
 	 */
 	

@@ -22,20 +22,59 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class TimeSyncContainerDto {
 
+	/**
+	 * @apiDefine timeSyncContainerDto
+	 * @apiParam {String=TEST,TIMER,MANUAL} mode Type of data synched to server
+	 * @apiParam {Number} timestamp ms timestamp from local system
+	 * @apiParam {String} macAddress MAC Address from local system
+	 * @apiParam {String} deviceName User configured device name for local system
+	 * @apiParam {Number} syncEventId Id of event to sync into
+	 * @apiParam {String} syncId code associated with this event used for synching
+	 * @apiParam {String} timezone string containing local timezone
+	 * @apiParam {Object[]} times A set of time objects to sync into this event
+	 * @apiParam {Number} times.bib bib to sync into
+	 * @apiParam {Number} times.time timestamp recorded
+	 * @apiParam {Number=0,1,2,...} times.position Split position of reader. 0=start, 1=finish, 2 = Split1, 3= Split 2, etc.
+	 */
+	
+	/**
+	 * Represents the format of data synched.
+	 */
 	private TimeSyncEnum mode;
 	
+	/**
+	 * Represents the timestamp from the origin system of the sync's creation
+	 */
 	private long timestamp;
 	
+	/**
+	 * Mac address of the synching system
+	 */
 	private String macAddress;
 	
+	/**
+	 * Given device name of the syncing system
+	 */
 	private String deviceName;
 	
+	/**
+	 * Event ID of the syncing system
+	 */
 	private Long syncEventId;
 
+	/**
+	 * Generated Sync code for the system
+	 */
 	private String syncId;
 	
+	/**
+	 * String listing timezone of the syncing system
+	 */
 	private String timezone;
 	
+	/**
+	 * A set of times collected from the syncing system
+	 */
 	private List<TimeSyncDto> times;
 
 	/**

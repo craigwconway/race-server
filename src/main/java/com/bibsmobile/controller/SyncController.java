@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.mockito.internal.verification.Times;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -104,6 +105,16 @@ public class SyncController {
     	
     }
     
+    /**
+     * @api {post} /sync/times Sync Times
+     * @apiName Sync Times
+     * @apiGroup sync
+     * @apiDescription Sync time objects from client to server. NOTE: This currently blocks until the service works correctly.
+     * @apiUse timeSyncContainerDto
+     * @param syncObject
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/times", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity <String> syncTimes(@RequestBody TimeSyncContainerDto syncObject,
