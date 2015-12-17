@@ -1009,10 +1009,11 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             jQuery('#putFieldForm input').val('');
 
-            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
+
+            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').startOf('hour'));
             
             jQuery("#removetime").click(function(){
-                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').startOf('hour'));
             });
 
             jQuery('#racetype-dropdown').dropdown('clear');
