@@ -589,6 +589,18 @@
                              listing is private <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
+                    <c:if test='${event.sync}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectDisableSync()">
+                             Sync Enabled <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${(!event.sync)}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectEnableSync()">
+                             Sync Disabled <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>                    
                 </c:if>
                 <div class="btn btn-warning btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
                     <i class="fa fa-edit"><!--  --></i>
@@ -1432,6 +1444,12 @@
         function redirectDisableLive(){
             window.location="/bibs-server/events/${event.id}/disablelive";
         }
+        function redirectEnableSync(){
+            window.location="/bibs-server/events/${event.id}/enablesync";
+        }
+        function redirectDisableSync(){
+            window.location="/bibs-server/events/${event.id}/disablesync";
+        }        
         function redirectManageReg(){
             window.location="/bibs-server/eventitems?event=${event.id}";
         }

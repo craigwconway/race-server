@@ -1941,8 +1941,54 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }
+    
+    /**
+     * @api /events/:id/enablesync Enable Sync
+     * @apiName Enable Sync
+     * @apiDescription Enables sync mode in the event with the given id for realtime communication with readers.
+     * Only event directors or sysadmins can enable sync.
+     * @return returns the event show view
+     */
+    @RequestMapping(value = "/{id}/enablesync", produces = "text/html")
+    public String enableSync(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
 
-    /*
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        event.setSync(true);
+        event.merge();
+        
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+        return "redirect:/events/" + event.getId();
+    }    
+
+    /**
+     * @api /events/:id/disablesync Disable Sync
+     * @apiName Disable Sync
+     * @apiDescription Disable sync mode in the event with the given id for realtime communication with readers.
+     * Only event directors or sysadmins can disable sync.
+     * @return returns the event show view
+     */
+    @RequestMapping(value = "/{id}/disablesync", produces = "text/html")
+    public String disableSync(@PathVariable("id") Long id, Model uiModel) {
+        Event event = Event.findEvent(id);
+
+        // check the rights the user has for event
+        if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
+            return null;
+        }
+
+        event.setSync(false);
+        event.merge();
+        
+        uiModel.addAttribute("build", BuildTypeUtil.getBuild());
+        return "redirect:/events/" + event.getId();
+    }    
+    
+    /**
      * Make event live
      * Events that are not live do not show up for non-sysadmin or owner users
      * Events that are live are returned in all queries that can target them
@@ -1964,7 +2010,7 @@ public class EventController {
         return "redirect:/events/" + event.getId();
     }    
 
-    /*
+    /**
      * Make event undead
      * Events that are not live do not show up for non-sysadmin or owner users
      * Events that are live are returned in all queries that can target them
