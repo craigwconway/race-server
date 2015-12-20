@@ -8,5 +8,5 @@ package com.bibsmobile.model;
  *
  */
 public enum TimeSyncEnum {
-	TEST, TIMER;
+	TEST, TIMER, MANUAL;
 }
