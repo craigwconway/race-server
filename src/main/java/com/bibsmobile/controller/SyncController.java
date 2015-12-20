@@ -78,7 +78,7 @@ public class SyncController {
     public ResponseEntity<String> generateSyncObject(@PathVariable("id") Long id) {
     	Event event = Event.findEvent(id);
     	//TODO: Add security
-    	return new ResponseEntity<String> (EventSyncDto.fromEventToDto(event), HttpStatus.OK);
+    	return new ResponseEntity<String> (EventSyncDto.fromEventToViewDto(event), HttpStatus.OK);
     }
 
     /**

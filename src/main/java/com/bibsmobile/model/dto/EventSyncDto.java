@@ -68,6 +68,15 @@ public class EventSyncDto {
 		this.eventTypes = EventTypeSyncDto.fromEventTypes(event.getEventTypes());
 	}
 	
+	EventSyncDto(Event event, boolean brief) {
+		this.id = event.getId();
+		this.name = event.getName();
+		this.timeStartLocal = event.getTimeStartLocal();
+		this.timeStart = event.getTimeStart();
+		this.syncId = event.getSyncId();
+		this.timezone  = event.getTimezoneID();
+	}
+	
 	private Long id;
 	
 	private String name;
@@ -102,7 +111,18 @@ public class EventSyncDto {
 			e.printStackTrace();
 			return null;
 		}
-	}	
+	}
+	
+	public static String fromEventToViewDto(Event event) {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(new EventSyncDto(event));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	public static String fromEventsToDtoArray(Collection<Event> events ) {
 		List <EventSyncDto> dtos = new ArrayList <EventSyncDto>();
