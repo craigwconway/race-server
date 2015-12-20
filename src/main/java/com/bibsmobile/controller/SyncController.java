@@ -142,7 +142,7 @@ public class SyncController {
     	}
     	List <Long> biblist = new LinkedList<Long>();
     	HashMap<Long, RaceResult> resultMap = new HashMap<Long, RaceResult>();
-    	if(syncObject.getTimes() == null) {
+    	if(syncObject.getTimes() == null || syncObject.getTimes().isEmpty()) {
     		syncReport.setStatus(TimeSyncStatusEnum.OK);
         	syncReport.persist();
         	// Finished with checks. Now, if it is test mode, save an entity of test type in the reports.
