@@ -139,6 +139,21 @@ public class EventSyncDto {
 		}
 	}
 
+	public static String fromEventsToShortDtoArray(Collection<Event> events ) {
+		List <EventSyncDto> dtos = new ArrayList <EventSyncDto>();
+		for(Event event : events) {
+			dtos.add(new EventSyncDto(event, true));
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(dtos);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * @return the id
 	 */

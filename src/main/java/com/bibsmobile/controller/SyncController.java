@@ -63,7 +63,7 @@ public class SyncController {
     public ResponseEntity<String> syncForUser(@RequestParam("username") String username) {
         UserProfile user = UserProfile.findUserProfilesByUsernameEquals(username).getSingleResult();
         List<Event> events = Event.findEventsForUser(user);
-        return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(events), HttpStatus.OK);
+        return new ResponseEntity<String>(EventSyncDto.fromEventsToShortDtoArray(events), HttpStatus.OK);
     }
     
     /**
