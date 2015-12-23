@@ -1378,6 +1378,7 @@ public class EventController {
         uiModel.addAttribute("lastMapping", latestMapping);
         uiModel.addAttribute("eventadmin", PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), e));
         uiModel.addAttribute("itemId", id);
+        uiModel.addAttribute("unassigned", RaceResult.countFindUnassignedRaceResultsByEvent(e));
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/show";
     }
