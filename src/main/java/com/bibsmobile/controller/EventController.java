@@ -1945,6 +1945,7 @@ public class EventController {
     
     /**
      * @api /events/:id/enablesync Enable Sync
+     * @apiGroup events
      * @apiName Enable Sync
      * @apiDescription Enables sync mode in the event with the given id for realtime communication with readers.
      * Only event directors or sysadmins can enable sync.
@@ -1969,6 +1970,7 @@ public class EventController {
     /**
      * @api /events/:id/disablesync Disable Sync
      * @apiName Disable Sync
+     * @apiGroup events
      * @apiDescription Disable sync mode in the event with the given id for realtime communication with readers.
      * Only event directors or sysadmins can disable sync.
      * @return returns the event show view
