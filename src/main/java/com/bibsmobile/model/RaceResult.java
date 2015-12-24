@@ -712,7 +712,7 @@ public class RaceResult implements Comparable<RaceResult> {
         return (q.getSingleResult());
     }    
  
-    public static List <RaceResult> findUnassignedRaceResultsByEventPaginated(Event event, int page) {
+    public static List <RaceResult> findUnassignedRaceResultsByEventPaginated(Event event, int page, int size) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
         if(page < 1) {
@@ -721,8 +721,8 @@ public class RaceResult implements Comparable<RaceResult> {
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.eventType is null ORDER by o.bib ASC", RaceResult.class);
         q.setParameter("event", event);
-        q.setFirstResult(10*(page-1));
-        q.setMaxResults(10);
+        q.setFirstResult(size*(page-1));
+        q.setMaxResults(size);
         return q.getResultList();
     }
     

@@ -340,6 +340,22 @@ public class RaceResultController {
         return "raceresults/list";
     }
 
+    @RequestMapping(value="/unassigned", produces = "text/html")
+    public static String manageUnassigned(
+    						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
+    						@RequestParam(value = "event", required = true) Long event, 
+    						Model uiModel) {
+        int sizeNo = size == null ? 10 : size.intValue();
+        float nrOfPages = 1;
+        Event e = Event.findEvent(event);
+        uiModel.addAttribute("raceresults", RaceResult.findUnassignedRaceResultsByEventPaginated(e, page, size));
+        nrOfPages = (float) RaceResult.countFindUnassignedRaceResultsByEvent(e) / sizeNo;
+        uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        // addDateTimeFormatPatterns(uiModel);
+        return "raceresults/unassigned";
+    }    
+    
     @RequestMapping(value = "/bibs", method = RequestMethod.GET, produces = "text/html")
     public static String bibs() {
 
