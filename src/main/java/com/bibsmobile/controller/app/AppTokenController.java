@@ -121,20 +121,149 @@ public class AppTokenController {
      * 		"firstname":"Galen",
      * 		"lastname":"Danziger"
      * 	}
+     * @apiParamExample {lua} Corona Minimal
+     * -- Network call requirements
+     * local json = require "json"
+     * local bibsAPI = "http://localhost:8080/bibs-server"
+     * -- Time Checker Requirements
+     * local os = require "os"
+     * -- Call Description
+     * -- Use the user credentials object to pass further app requests
+     * -- This is generated on login or register
+     * -- userCredentials.token holds the auth token
+     * -- userCredentials.granted holds the grant time
+     * -- userCredentials.expires holds the expiration time
+     * userCredentials = {}
+     * -- After the expiration time, the token must be refreshed by the regenerate token call
+     * -- See this sample check token refresh call that checks a credentials object:
+     * function needsRefresh(userCredentials)
+     * 	if(os.time('!*t') > userCredentials.expires) then
+     * 		return true
+     * 	else
+     * 		return false
+     * 	end
+     * end
+     * 
+     * -- Listener function for registration
+     * function registerListener(event)
+     * 	if (event.isError) then
+     * 		print ("cave out")
+     * 	else 
+     * 		print ( "cave in: " .. event.response )
+     * 		responseObj = json.decode(event.response)
+     * 		if(event.status == 201 and responseObj.status == "success") then
+     * 			userCredentials.token = event.responseHeaders["X-FacePunch"];
+     * 			userCredentials.granted = responseObj.time;
+     * 			userCredentials.expires = responseObj.expires;
+     * 			print("created a user at: " .. userCredentials.granted .. ".")
+     * 			print("App needs to refresh credentials after " .. userCredentials.expires)
+     * 			print("Token: " .. userCredentials.token)
+     * 		elseif(event.status == 400) then
+     * 			if (responseObj.error == "Duplicate") then
+     * 				print("You are trying to use credentials that already exist. Inform user.")
+     * 			elseif (responseObj.error == "NullUser") then
+     * 				print("You fucked up")
+     * 			elseif (responseObj.error == "MissingName") then
+     * 				print("User is missing a name")
+     * 			elseif (responseObj.error == "MissingCredentials") then
+     * 				print("User is missing a username or password")
+     * 			end
+     * 		end
+     * 	end
+     * end
+     * function RegisterUserMinimal(email, password, firstname, lastname)
+     * 	local headers = {}
+     * 	headers["Content-Type"] = "application/json"
+     * 	local params = {}
+     * 	local requestObj = {}
+     * 	requestObj.email = email;
+     * 	requestObj.password = password;
+     * 	requestObj.firstname = firstname;
+     * 	requestObj.lastname = lastname;
+     * 	params.headers = headers
+     * 	params.body = json.encode(requestObj);
+     * 	network.request( bibsAPI .. "/app/token/register" , "POST", registerListener, params )
+     * end
+     * RegisterUserMinimal("gedanziger@gmail.com", "punchpatrick", "Shrug", "Bot");
+     * @apiParamExample {lua} Corona With Gender
+     * -- Network call requirements
+     * local json = require "json"
+     * local bibsAPI = "http://localhost:8080/bibs-server"
+     * -- Time Checker Requirements
+     * local os = require "os"
+     * -- Call Description
+     * -- Use the user credentials object to pass further app requests
+     * -- This is generated on login or register
+     * -- userCredentials.token holds the auth token
+     * -- userCredentials.granted holds the grant time
+     * -- userCredentials.expires holds the expiration time
+     * userCredentials = {}
+     * -- After the expiration time, the token must be refreshed by the regenerate token call
+     * -- See this sample check token refresh call that checks a credentials object:
+     * function needsRefresh(userCredentials)
+     * 	if(os.time('!*t') > userCredentials.expires) then
+     * 		return true
+     * 	else
+     * 		return false
+     * 	end
+     * end
+     * 
+     * -- Listener function for registration
+     * function registerListener(event)
+     * 	if (event.isError) then
+     * 		print ("cave out")
+     * 	else 
+     * 		print ( "cave in: " .. event.response )
+     * 		responseObj = json.decode(event.response)
+     * 		if(event.status == 201 and responseObj.status == "success") then
+     * 			userCredentials.token = event.responseHeaders["X-FacePunch"];
+     * 			userCredentials.granted = responseObj.time;
+     * 			userCredentials.expires = responseObj.expires;
+     * 			print("created a user at: " .. userCredentials.granted .. ".")
+     * 			print("App needs to refresh credentials after " .. userCredentials.expires)
+     * 			print("Token: " .. userCredentials.token)
+     * 		elseif(event.status == 400) then
+     * 			if (responseObj.error == "Duplicate") then
+     * 				print("You are trying to use credentials that already exist. Inform user.")
+     * 			elseif (responseObj.error == "NullUser") then
+     * 				print("You fucked up")
+     * 			elseif (responseObj.error == "MissingName") then
+     * 				print("User is missing a name")
+     * 			elseif (responseObj.error == "MissingCredentials") then
+     * 				print("User is missing a username or password")
+     * 			end
+     * 		end
+     * 	end
+     * end
+     * function RegisterUserGender(email, password, firstname, lastname, gender)
+     * 	local headers = {}
+     * 	headers["Content-Type"] = "application/json"
+     * 	local params = {}
+     * 	local requestObj = {}
+     * 	requestObj.email = email;
+     * 	requestObj.password = password;
+     * 	requestObj.firstname = firstname;
+     * 	requestObj.lastname = lastname;
+     * 	requestObj.gender = gender;
+     * 	params.headers = headers
+     * 	params.body = json.encode(requestObj);
+     * 	network.request( bibsAPI .. "/app/token/register" , "POST", registerListener, params )
+     * end
+     * RegisterUserGender("gedanziger@gmail.com", "punchpatrick", "Shrug", "Bot", "M");
      * @apiErrorExample {json} Null User Submitted
      * HTTP 1.1 400 Bad Request
      * 	{
-     * 		"error":"Error - null user submitted"
+     * 		"error":"NullUser"
      * 	}
-     * @apiErrorExample {json} Username or password is Null
+     * @apiErrorExample {json} Email or password is Null
      * HTTP 1.1 400 Bad Request
      * 	{
-     * 		"error":"Missing email or password"
+     * 		"error":"MissingCredentials"
      * 	}
      * @apiErrorExample {json} Firstname / Lastname missing
      * HTTP 1.1 400 Bad Request
      * 	{
-     * 		"error":"Missing name"
+     * 		"error":"MissingName"
      * 	}
      * @apiErrorExample {json} Duplicate
      * HTTP 1.1 400 Bad Request
@@ -145,7 +274,7 @@ public class AppTokenController {
      * 	{
      * 		"time":123123123,
      * 		"status":"success",
-     * 		"exp":1441607658000
+     * 		"expires":1441607658000
      * 	}
      * @param response
      * @return
@@ -154,13 +283,13 @@ public class AppTokenController {
 	@ResponseBody
 	ResponseEntity<String> register(@RequestBody UserProfile user, HttpServletResponse response) {
 		if(user == null) {
-			return SpringJSONUtil.returnErrorMessage("Error - null user submitted", HttpStatus.BAD_REQUEST);
+			return SpringJSONUtil.returnErrorMessage("NullUser", HttpStatus.BAD_REQUEST);
 		}
 		if(user.getEmail() == null || user.getPassword() == null) {
-			return SpringJSONUtil.returnErrorMessage("Missing email or password", HttpStatus.BAD_REQUEST);
+			return SpringJSONUtil.returnErrorMessage("MissingCredentials", HttpStatus.BAD_REQUEST);
 		}
 		if(user.getFirstname() == null || user.getLastname() == null) {
-			return SpringJSONUtil.returnErrorMessage("Missing name", HttpStatus.BAD_REQUEST);
+			return SpringJSONUtil.returnErrorMessage("MissingName", HttpStatus.BAD_REQUEST);
 		}
 		if(UserProfile.countFindEnabledUserProfilesByEmailEquals(user.getEmail()) > 0) {
 			return SpringJSONUtil.returnErrorMessage("Duplicate", HttpStatus.BAD_REQUEST);
