@@ -533,32 +533,32 @@
                     <c:if test='${event.regEnabled}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectDisableReg()">
-                             registration is open <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             registration is open <i class="fa fa-check bibs-green" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${(!event.regEnabled)}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectEnableReg()">
-                             registration is closed <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             registration is closed <i class="fa fa-ban bibs-red" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${event.live}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectDisableLive()">
-                             listing is public <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             listing is public <i class="fa fa-check bibs-green" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                     <c:if test='${(!event.live)}'>
                         <div class="btn btn-default btn-sm" style="margin-right: 5px;"
                              onclick="redirectEnableLive()">
-                             listing is private <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             listing is private <i class="fa fa-lock bibs-red" style="margin-left:5px;"><!--  --></i>
                          </div>
                     </c:if>
                 </c:if>
-                <div class="btn btn-warning btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
+                <div class="btn bibs-bg-orange bibs-gray-1 btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
                     <i class="fa fa-edit"><!--  --></i>
                 </div>
-                <div class="btn btn-danger btn-sm" onclick="deleteEvent(); return false;">
+                <div class="btn bibs-bg-red bibs-gray-1 btn-sm" onclick="deleteEvent(); return false;">
                     <i class="fa fa-trash"><!--  --></i>
                 </div>
             </div>
@@ -569,7 +569,7 @@
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
                     <button type="button" class="ui basic black button" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
-                    <c:if test="${not empty eventTypes}"><button type="button" class="ui teal button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
+                    <c:if test="${not empty eventTypes}"><button type="button" class="ui bibs-bg-main-teal bibs-gray-1 button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
                 </div>
                 <c:if test="${not empty eventTypes}">
                     <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>

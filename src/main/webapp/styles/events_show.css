@@ -43,11 +43,11 @@ body{
     font-size: 0.85em;
 }
 h3.ui.header.event-type-header{
-    font-family: Quicksand;
+    font-family: Montserrat;
     font-weight: bold;
 }
 .event-name{
-    font-family: Quicksand;
+    font-family: Montserrat;
 	font-size: 2em;
 	font-weight: bold;
     line-height: 1.5em;
@@ -63,7 +63,7 @@ h3.ui.header.event-type-header{
 #event-time{
     width: 60%;
     margin-top: 5px;
-    font-family: Quicksand;
+    font-family: Montserrat;
     font-weight: bold;
 }
 #event-details{

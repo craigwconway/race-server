@@ -1,0 +1,194 @@
+/*	font imports	*/
+@font-face{
+	font-family: Montserrat;
+	src: url(montserrat/Montserrat-Regular.otf);
+}
+@font-face{
+	font-family: Montserrat;
+	src: url(montserrat/Montserrat-Light.otf);
+	font-weight:100;
+}
+@font-face{
+	font-family: Montserrat;
+	src: url(montserrat/Montserrat-Bold.otf);
+	font-weight:700;
+}
+@font-face{
+  font-family: Lato-Medium;
+  src: url(lato/Lato-Medium.ttf);
+  font-weight:700;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-MediumItalic.ttf);
+  font-weight:700;
+  font-style: italic;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-Thin.ttf);
+  font-weight:100;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-ThinItalic.ttf);
+  font-weight:400;
+  font-style: italic;
+}
+
+
+/*
+	logo colors
+*/
+/*	turquoise blue */
+.bibs-logo-lightblue{
+	color: rgba(83,199,225,1) !important;
+}
+/*	lochmara	*/
+.bibs-logo-darkblue{
+	color: rgba(7,111,183,1) !important;
+}
+
+/*
+	text shades
+*/
+/*	alabaster	*/
+.bibs-gray-1{
+	color: rgba(252,252,252,1) !important;
+}
+/*	seashell	*/
+.bibs-gray-2{
+	color: rgba(240,240,240,1) !important;
+}
+/*	gray		*/
+.bibs-gray-3{
+	color: rgba(137,137,137,1) !important;
+}
+/*	mine shaft	*/
+.bibs-gray-4{
+	color: rgba(66,66,66,1) !important;
+}
+/*	mine shaft2 */
+.bibs-gray-5{
+	color: rgba(42,42,42,1) !important;
+}
+
+/*
+	main triplet
+*/
+/*	rob roy		*/
+.bibs-main-yellow{
+	color: rgba(233,196,106,1) !important;
+}
+.bibs-bg-main-yellow{
+	background-color: rgba(233,196,106,1) !important;
+}
+/*	venice blue */
+.bibs-main-blue{
+	color: rgba(6,90,130,1) !important;
+}
+.bibs-bg-main-blue{
+	background-color: rgba(6,90,130,1) !important;
+}
+/*	lochinvar	*/
+.bibs-main-teal{
+	color: rgba(42,157,143,1) !important;
+}
+.bibs-bg-main-teal{
+	background-color: rgba(42,157,143,1) !important;
+}
+/*	cloud burst	*/
+.bibs-main-navy{
+	color: rgba(33,41,92,1) !important;
+}
+.bibs-bg-main-navy{
+	background-color: rgba(33,41,92,1) !important;
+}
+
+/*
+	secondary & darker
+*/
+/*	well read	*/
+.bibs-red{
+	color: rgba(195,66,63,1) !important;
+}
+.bibs-bg-red{
+	background-color: rgba(195,66,63,1) !important;
+}
+/*	tangerine	*/
+.bibs-orange{
+	color: rgba(241,143,1,1) !important;
+}
+.bibs-bg-orange{
+	background-color: rgba(241,143,1,1) !important;
+}
+/*	supernova	*/
+.bibs-yellow{
+	color: rgba(254,198,1,1) !important;
+}
+.bibs-bg-yellow{
+	background-color: rgba(254,198,1,1) !important;
+}
+/*	emerald		*/
+.bibs-green{
+	color: rgba(68,207,108,1) !important;
+}
+.bibs-bg-green{
+	background-color: rgba(68,207,108,1) !important;
+}
+/*	venice blue	*/
+.bibs-blue{
+	color: rgba(5,102,141,1) !important;
+}
+.bibs-bg-blue{
+	background-color: rgba(5,102,141,1) !important;
+}
+/*	oxford blue	*/
+.bibs-black{
+	color: rgba(41,47,54,1) !important;
+}
+.bibs-bg-black{
+	background-color: rgba(41,47,54,1) !important;
+}
+
+
+/*
+	tertiary & brighter
+*/
+/*	wild watermelon	*/
+.bibs-bright-red{
+	color: rgba(255,89,100,1) !important;
+}
+.bibs-bg-bright-red{
+	background-color: rgba(255,89,100,1) !important;
+}
+/*	gorse			*/
+.bibs-bright-yellow{
+	color: rgba(255,231,76,1) !important;
+}
+.bibs-bg-right-yellow{
+	background-color: rgba(255,231,76,1) !important;
+}
+/*	screamin green	*/
+.bibs-bright-green{
+	color: rgba(128,255,114,1) !important;
+}
+.bibs-bg-bright-green{
+	background-color: rgba(128,255,114,1) !important;
+}
+
+/*
+	light tones & overlays
+*/
+/*	pearl bush		*/
+.bibs-bg-pale-red{
+	background-color: rgba(221,209,199,1) !important;
+}
+/*	orinoco			*/
+.bibs-bg-pale-yellow{
+	background-color: rgba(234,248,191,1) !important;
+}
+/*	coriander		*/
+.bibs-bg-pale-green{
+	background-color: rgba(194,207,178,1) !important;
+}

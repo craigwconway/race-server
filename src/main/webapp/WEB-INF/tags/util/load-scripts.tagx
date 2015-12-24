@@ -68,6 +68,7 @@
   <spring:url value="/resources/styles/vis.min.css" var="vis_css_url" />
   <spring:url value="/resources/styles/nv.d3.min.css" var="nvd3_css_url" />
   <spring:url value="/resources/styles/so.css" var="so_url" />
+  <spring:url value="/resources/styles/bibs.css" var="bibs_url" />
   <!-- <spring:url value="/resources/styles/iThing.css" var="slider_css_url" /> -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="${bootstrap_url }" rel="stylesheet"/>
@@ -77,6 +78,7 @@
   <link href="${vis_css_url }" rel="stylesheet"/>
   <link href="${nvd3_css_url }" rel="stylesheet"/>
   <link href="${so_url }" rel="stylesheet"/>
+  <link href="${bibs_url }" rel="stylesheet"/>
   <!-- <link href="${jquery_ui_css_url }" rel="stylesheet"/> -->
   <!-- <link href="${slider_css_url }" rel="stylesheet"/> -->
 

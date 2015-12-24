@@ -59,7 +59,7 @@
 	.navbar-nav{ text-align: center; }
 }
 
-.navbar{ font-family: Open Sans; text-transform: lowercase; font-size: 1em;}
+.navbar{ font-family: 'Lato-Medium'; text-transform: lowercase; font-size: 1em;}
 .navbar-inverse { background-color: rgba(242, 242, 242, 0.5)}
 .navbar-inverse .navbar-nav>li { z-index: 1; }
 .navbar-inverse .navbar-nav>.active>a:hover,.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus { background-color: #0071BC}
