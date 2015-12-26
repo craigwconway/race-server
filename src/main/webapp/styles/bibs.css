@@ -9,7 +9,7 @@
 	font-weight:100;
 }
 @font-face{
-	font-family: Montserrat;
+	font-family: Montserrat-Bold;
 	src: url(montserrat/Montserrat-Bold.otf);
 	font-weight:700;
 }
@@ -35,7 +35,19 @@
   font-weight:400;
   font-style: italic;
 }
+@font-face{
+  font-family: Arvo;
+  src: url(arvo/Arvo-Regular.ttf);
+}
+@font-face{
+  font-family: Arvo-Bold;
+  src: url(arvo/Arvo-Bold.ttf);
+}
 
+h1,h2,h3,h4,h5,h6{
+	/*font-variant: small-caps !important;*/
+	font-family: 'Arvo-Bold' !important;
+}
 
 /*
 	logo colors
@@ -62,21 +74,36 @@
 .bibs-gray-1{
 	color: rgba(252,252,252,1) !important;
 }
+.bibs-bg-gray-1{
+	background-color: rgba(252,252,252,1) !important;
+}
 /*	seashell	*/
 .bibs-gray-2{
 	color: rgba(240,240,240,1) !important;
+}
+.bibs-bg-gray-2{
+	background-color: rgba(240,240,240,1) !important;
 }
 /*	gray		*/
 .bibs-gray-3{
 	color: rgba(137,137,137,1) !important;
 }
+.bibs-bg-gray-3{
+	background-color: rgba(137,137,137,1) !important;
+}
 /*	mine shaft	*/
 .bibs-gray-4{
 	color: rgba(66,66,66,1) !important;
 }
+.bibs-bg-gray-4{
+	background-color: rgba(66,66,66,1) !important;
+}
 /*	mine shaft2 */
 .bibs-gray-5{
 	color: rgba(42,42,42,1) !important;
+}
+.bibs-bg-gray-5{
+	background-color: rgba(42,42,42,1) !important;
 }
 
 /*
@@ -200,10 +227,13 @@
 }
 
 /*
-	other css shortcuts
+	other css mods
 */
 .small-caps{
 	font-variant: small-caps;
+}
+.all-caps{
+	text-transform: uppercase;
 }
 .round-border-white{
 	border-radius: 10px 10px 10px 10px;
@@ -220,6 +250,17 @@
 	font-size: 1em;
 	font-family: 'Lato';
 	display:none;
+}
+.basic-link{
+	text-decoration: none;
+}
+.emphasized-link{
+	text-decoration: underline;
+	cursor: pointer;
+}
+.emphasized{
+	font-family: 'Arvo-Bold' !important;
+	font-size: 1.2em;
 }
 
 /*
