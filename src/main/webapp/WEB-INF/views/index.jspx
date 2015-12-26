@@ -32,6 +32,10 @@
         <div class="welcome bibs-gray-1">
             <img class="ui tiny centered image" src="images/bibsicon.png"/>
             <div class="welcome-sub">bibs login</div>
+            <div class="ui bibs-bg-red error-segment segment">
+                <i class="fa fa-exclamation-circle left-icon"><!--  --></i>
+                Sorry, there was an error with your login! Please check your username or password.
+            </div>
             <form id="loginForm" method="POST" action="/bibs-server/resources/j_spring_security_check" name="f">
                 <span class="input">
                     <input class="input__field input__field--yoko" type="text" id="input-16" name="j_username" 
@@ -55,112 +59,112 @@
     </sec:authorize>
 
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-        <style>
-            body{
-                background-image: url('images/auth.jpg');
-                background-size: cover; background-repeat: no-repeat;
+    <style>
+        body{
+            background-image: url('images/auth.jpg');
+            background-size: cover; background-repeat: no-repeat;
+        }
+        a:link, a:visited, a:hover, a:active { text-decoration: none; color: rgba(30,30,30,1); }
+        .not-list.content{
+            height:100%;
+            vertical-align: middle;
+        }
+        .not-list:hover, .not-list:focus, .clear-btn:hover, .clear-btn:focus{
+            background: rgba(255,255,255,0.8);
+        }
+        .not-list:last-child{
+            border-bottom: none;
+            background: none;
+        }
+        .event-info{ font-weight:100; font-size:1.3em; }
+        .event-date{ line-height: 2.4em; vertical-align:middle; font-size:1.1em; font-weight:bold; }
+        .clear-btn{ padding: 5px; border: 1px solid rgba(30,30,30,0.5); background: rgba(255,255,255,0.5); text-align:center; }
+        @media (min-width: 1000px) {
+            .event-container{
+                margin-left: 35%;
+                margin-top:2%;
+                font-family:Quicksand;
             }
-            a:link, a:visited, a:hover, a:active { text-decoration: none; color: rgba(30,30,30,1); }
-            .not-list.content{
-                height:100%;
-                vertical-align: middle;
+            .not-list{
+                display: block;
+                margin: 1em;
+                padding: 1em;
+                height: 6em;
+                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
             }
-            .not-list:hover, .not-list:focus, .clear-btn:hover, .clear-btn:focus{
-                background: rgba(255,255,255,0.8);
+            .event-name{
+                display: inline-block;
+                font-size: 1.9em;
+                line-height: 1em;
+                overflow: hidden;
+                width: 450px;
+                text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                -ms-text-overflow: ellipsis;
+                white-space: nowrap;
             }
-            .not-list:last-child{
-                border-bottom: none;
-                background: none;
+        }
+        @media (max-width: 999px) and (min-width: 700px) {
+            .event-container{
+                margin-left: 30%;
+                margin-top:2%;
+                font-family:Quicksand;
             }
-            .event-info{ font-weight:100; font-size:1.3em; }
-            .event-date{ line-height: 2.4em; vertical-align:middle; font-size:1.1em; font-weight:bold; }
-            .clear-btn{ padding: 5px; border: 1px solid rgba(30,30,30,0.5); background: rgba(255,255,255,0.5); text-align:center; }
-            @media (min-width: 1000px) {
-                .event-container{
-                    margin-left: 35%;
-                    margin-top:2%;
-                    font-family:Quicksand;
-                }
-                .not-list{
-                    display: block;
-                    margin: 1em;
-                    padding: 1em;
-                    height: 6em;
-                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-                }
-                .event-name{
-                    display: inline-block;
-                    font-size: 1.9em;
-                    line-height: 1em;
-                    overflow: hidden;
-                    width: 450px;
-                    text-overflow: ellipsis;
-                    -o-text-overflow: ellipsis;
-                    -ms-text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
+            .not-list{
+                display: block;
+                margin: 1em;
+                padding: 1em;
+                height: 8em;
+                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
             }
-            @media (max-width: 999px) and (min-width: 700px) {
-                .event-container{
-                    margin-left: 30%;
-                    margin-top:2%;
-                    font-family:Quicksand;
-                }
-                .not-list{
-                    display: block;
-                    margin: 1em;
-                    padding: 1em;
-                    height: 8em;
-                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-                }
-                .event-name {
-                    font-size: 1.5em;
-                    line-height: 1.1em;
-                    display: inline-block;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    width: 400px;
-                    text-overflow: ellipsis;
-                    -o-text-overflow: ellipsis;
-                    -ms-text-overflow: ellipsis;
-                }
+            .event-name {
+                font-size: 1.5em;
+                line-height: 1.1em;
+                display: inline-block;
+                overflow: hidden;
+                white-space: nowrap;
+                width: 400px;
+                text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                -ms-text-overflow: ellipsis;
             }
-            @media (max-width: 699px){
-                .event-container{
-                    margin-left: 20%;
-                    margin-top:2%;
-                    font-family:Quicksand;
-                }
-                .not-list{
-                    display: block;
-                    margin: 1em;
-                    padding: 1em;
-                    height: 8em;
-                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-                }
-                .event-name {
-                    font-size: 1.5em;
-                    line-height: 1.1em;
-                    display: inline-block;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    width: 350px;
-                    text-overflow: ellipsis;
-                    -o-text-overflow: ellipsis;
-                    -ms-text-overflow: ellipsis;
-                }
+        }
+        @media (max-width: 699px){
+            .event-container{
+                margin-left: 20%;
+                margin-top:2%;
+                font-family:Quicksand;
             }
-            @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
-                .event-container{
-                    margin-left: 0%;
-                }
-                .event-name{ font-size: 1.5em; line-height: 1.1em; }
-                .event-info{ font-size: 1em; line-height: 1em; }
-                .not-list{
-                    height: 8.5em;
-                }
+            .not-list{
+                display: block;
+                margin: 1em;
+                padding: 1em;
+                height: 8em;
+                -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
             }
-        </style>
+            .event-name {
+                font-size: 1.5em;
+                line-height: 1.1em;
+                display: inline-block;
+                overflow: hidden;
+                white-space: nowrap;
+                width: 350px;
+                text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                -ms-text-overflow: ellipsis;
+            }
+        }
+        @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+            .event-container{
+                margin-left: 0%;
+            }
+            .event-name{ font-size: 1.5em; line-height: 1.1em; }
+            .event-info{ font-size: 1em; line-height: 1em; }
+            .not-list{
+                height: 8.5em;
+            }
+        }
+    </style>
     <page id="pl_com_bibsmobile_model_Event" items="${events}">
         <div class="event-container">
             <c:if test="${not empty events}">
@@ -244,6 +248,8 @@
 		    jQuery("#loginForm").show();
 		    jQuery('input[name="j_username"]').focus();
 		    jQuery('input[name="j_username"]').parent().tooltip("show");
+            jQuery('.error-segment').show();
+            jQuery('.error-segment').delay(5000).fadeOut('slow');
 	    }
 	    else{
 	    	jQuery('input[name="j_username"]').parent().removeClass("has-error");

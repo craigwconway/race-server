@@ -213,6 +213,14 @@
 	-moz-box-shadow: 0px 0px 1px 1px rgba(252,252,252,1);
 	box-shadow: 0px 0px 1px 1px rgba(252,252,252,1);
 }
+.left-icon{
+	margin-right: 5px;
+}
+.error-segment{
+	font-size: 1em;
+	font-family: 'Lato';
+	display:none;
+}
 
 /*
 	input overrides
@@ -269,18 +277,6 @@
 	display: block;
 	padding: 1.6em 0;
 	width: 100%;
-}
-
-.graphic {
-	position: absolute;
-	top: 0;
-	left: 0;
-	fill: none;
-}
-
-.icon {
-	color: #ddd;
-	font-size: 150%;
 }
 
 /* Yoko */

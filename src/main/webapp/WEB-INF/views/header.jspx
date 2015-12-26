@@ -135,7 +135,6 @@
 	    	jQuery('input[name="j_password"]').parent().addClass("has-error");
 		    jQuery("#loginForm").show();
 		    jQuery('input[name="j_username"]').focus();
-		    jQuery('input[name="j_username"]').parent().tooltip("show");
 	    }
 	    else{
 	    	jQuery('input[name="j_username"]').parent().removeClass("has-error");
