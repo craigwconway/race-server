@@ -4,27 +4,37 @@
     <sec:authorize access="not hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <style>
             body{
-                background-image: url('images/unauth.jpg');
+                background-image: url('images/header2-65.jpg');
                 background-size: cover;
+                background-position: center;
                 background-repeat: no-repeat;
             }
             .welcome {
-                margin-top:10%;
-                margin-left: 30%;
-                font-family:Quicksand;
+                position: absolute;
+                left: 50%;
+                margin-left: -200px;
+                top: 50%;
+                margin-top: -200px;
+                width: 400px;
+                height: 400px;
+                font-family: 'Montserrat';
                 font-weight:400;
-            }
-            .welcome-head {
-                font-size: 3.5em;
+                text-align: center;
             }
             .welcome-sub {
                 font-size: 1.8em;
+                margin-bottom: 20px;
             }
             @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
                 .welcome {
-                    margin-top: 10%;
-                    margin-left: 15%;
-                    font-family:Quicksand;
+                    position: absolute;
+                    left: 50%;
+                    margin-left: -200px;
+                    top: 50%;
+                    margin-top: -200px;
+                    width: 400px;
+                    height: 400px;
+                    font-family: 'Montserrat';
                     font-weight:400;
                 }
                 .welcome-head {
@@ -35,10 +45,23 @@
                 }
             }
         </style>
-        <div class="welcome">
-            <div class="welcome-head">Welcome</div>
-            <div class="welcome-sub">bibs control center</div>
+        <div class="welcome bibs-gray-1">
+            <img class="ui tiny centered image" src="images/bibsicon.png"/>
+            <div class="welcome-sub">bibs login</div>
+            <span class="input">
+                <input class="input__field input__field--yoko" type="text" id="input-16" />
+                <label class="input__label input__label--yoko" for="input-16">
+                    <span class="input__label-content input__label-content--yoko">Username</span>
+                </label>
+            </span>
+            <span class="input">
+                <input class="input__field input__field--yoko" type="password" id="input-17" />
+                <label class="input__label input__label--yoko" for="input-17">
+                    <span class="input__label-content input__label-content--yoko">Password</span>
+                </label>
+            </span>
         </div>
+
     </sec:authorize>
 
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -190,6 +213,34 @@
             var mom = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
             jQuery(this).text(mom);
         })
+
+        // trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+        if (!String.prototype.trim) {
+            (function() {
+                // Make sure we trim BOM and NBSP
+                var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+                String.prototype.trim = function() {
+                    return this.replace(rtrim, '');
+                };
+            })();
+        }
+        [].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach( function( inputEl ) {
+            // in case the input is already filled..
+            if( inputEl.value.trim() !== '' ) {
+                classie.add( inputEl.parentNode, 'input--filled' );
+            }
+            // events:
+            inputEl.addEventListener( 'focus', onInputFocus );
+            inputEl.addEventListener( 'blur', onInputBlur );
+        } );
+        function onInputFocus( ev ) {
+            classie.add( ev.target.parentNode, 'input--filled' );
+        }
+        function onInputBlur( ev ) {
+            if( ev.target.value.trim() === '' ) {
+                classie.remove( ev.target.parentNode, 'input--filled' );
+            }
+        }
     }
 
 	function initTooltip(){

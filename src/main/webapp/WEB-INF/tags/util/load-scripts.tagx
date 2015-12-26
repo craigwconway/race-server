@@ -18,6 +18,7 @@
 <spring:url value="/resources/scripts/d3.min.js" var="d3_url" />
 <spring:url value="/resources/scripts/nv.d3.min.js" var="nvd3_url" />
 <spring:url value="/resources/scripts/parsley.min.js" var="parsley_url" />
+<spring:url value="/resources/scripts/classie.js" var="classie_url" />
 
 <!-- <script src="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false">;//?</script> -->
 <script src="${moment_url}" type="text/javascript">;//?</script>
@@ -31,6 +32,7 @@
 <script src="${datepicker_url}" type="text/javascript">;//?</script>
 <script src="${vis_url}" type="text/javascript">;//?</script>
 <script src="${parsley_url}" type="text/javascript">;//?</script>
+<script src="${classie_url}" type="text/javascript">;//?</script>
 
 <!-- <script src="${jquery_ui_url}" type="text/javascript">;//?</script> -->
 <!-- <script src="${date_slider_handle_url}" type="text/javascript">;//?</script> -->
