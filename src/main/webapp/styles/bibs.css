@@ -44,9 +44,15 @@
 .bibs-logo-lightblue{
 	color: rgba(83,199,225,1) !important;
 }
+.bibs-bg-logo-lightblue{
+	background-color: rgba(83,199,225,1) !important;
+}
 /*	lochmara	*/
 .bibs-logo-darkblue{
 	color: rgba(7,111,183,1) !important;
+}
+.bibs-bg-logo-darkblue{
+	background-color: rgba(7,111,183,1) !important;
 }
 
 /*
@@ -279,6 +285,8 @@
 
 /* Yoko */
 .input__field--yoko {
+	font-family: 'Lato';
+	letter-spacing: 1px;
 	z-index: 10;
 	width: 100%;
 	background: transparent;

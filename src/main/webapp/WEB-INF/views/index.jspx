@@ -25,41 +25,31 @@
                 font-size: 1.8em;
                 margin-bottom: 20px;
             }
-            @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
-                .welcome {
-                    position: absolute;
-                    left: 50%;
-                    margin-left: -200px;
-                    top: 50%;
-                    margin-top: -200px;
-                    width: 400px;
-                    height: 400px;
-                    font-family: 'Montserrat';
-                    font-weight:400;
-                }
-                .welcome-head {
-                    font-size: 3em;
-                }
-                .welcome-sub {
-                    font-size: 1.5em;
-                }
+            .ui.button{
+                font-size: 1.3em;
             }
         </style>
         <div class="welcome bibs-gray-1">
             <img class="ui tiny centered image" src="images/bibsicon.png"/>
             <div class="welcome-sub">bibs login</div>
-            <span class="input">
-                <input class="input__field input__field--yoko" type="text" id="input-16" />
-                <label class="input__label input__label--yoko" for="input-16">
-                    <span class="input__label-content input__label-content--yoko">Username</span>
-                </label>
-            </span>
-            <span class="input">
-                <input class="input__field input__field--yoko" type="password" id="input-17" />
-                <label class="input__label input__label--yoko" for="input-17">
-                    <span class="input__label-content input__label-content--yoko">Password</span>
-                </label>
-            </span>
+            <form id="loginForm" method="POST" action="/bibs-server/resources/j_spring_security_check" name="f">
+                <span class="input">
+                    <input class="input__field input__field--yoko" type="text" id="input-16" name="j_username" 
+                        data-parsley-error-message="Please enter a username."
+                        data-parsley-required="true" />
+                    <label class="input__label input__label--yoko" for="input-16">
+                        <span class="input__label-content input__label-content--yoko">Username</span>
+                    </label>
+                </span>
+                <span class="input">
+                    <input class="input__field input__field--yoko" type="password" id="input-17" name="j_password" data-parsley-error-message="Please enter a password."
+                    data-parsley-required="true" />
+                    <label class="input__label input__label--yoko" for="input-17">
+                        <span class="input__label-content input__label-content--yoko">Password</span>
+                    </label>
+                </span>
+                <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" type="submit">login</button>
+            </form>
         </div>
 
     </sec:authorize>
