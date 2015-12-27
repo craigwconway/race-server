@@ -75,7 +75,7 @@
                         <div class="ui three column center aligned grid">
                             <div class="column">
                                 <div class="ui small statistic">
-                                    <div class="value bibs-main-teal">22</div>
+                                    <div class="value bibs-main-teal">${totalEvents}</div>
                                     <div class="label bibs-gray-4">Events</div>
                                 </div>
                             </div>
