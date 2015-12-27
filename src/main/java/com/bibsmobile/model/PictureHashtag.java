@@ -185,7 +185,7 @@ public class PictureHashtag {
     }
     
     public static PictureHashtag findPictureHashtagByString(String query) {
-    	List<PictureHashtag> hashtags = entityManager().createQuery("SELECT o FROM PictureHashtag o where o.picture_hashtag = :hashtag", PictureHashtag.class)
+    	List<PictureHashtag> hashtags = entityManager().createQuery("SELECT o FROM PictureHashtag o where o.pictureHashtag = :hashtag", PictureHashtag.class)
     			.setParameter("hashtag", query).setFirstResult(0).setMaxResults(1).getResultList();
     	if(hashtags == null || hashtags.isEmpty()) {
     		return null;

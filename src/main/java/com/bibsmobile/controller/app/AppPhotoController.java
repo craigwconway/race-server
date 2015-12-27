@@ -48,6 +48,66 @@ public class AppPhotoController {
 	 * 	"Content-Type": "Application/json",
 	 * 	"X-FacePunch": "YOUR.TOKEN.HERE"
 	 *  }
+	 * @apiParamExample {lua} Corona
+	 * function uploadPhotoListener(event)
+	 * 	if (event.isError) then
+	 * 		print ("cave out")
+	 * 	else 
+	 * 		print ( "cave in: " .. event.response )
+	 * 		responseObj = json.decode(event.response)
+	 * 		if(event.status == 200 and responseObj.status == "success") then
+	 * 			print("Success")
+	 * 		elseif(event.status == 400) then
+	 * 			if (responseObj.error == "MissingFilepath") then
+	 * 				print("URL not added")
+	 * 			elseif (responseObj.error == "EventNotFound") then
+	 * 				print("User is missing a name")
+	 * 			elseif(event.status == 403) then
+	 * 				print("Tell user to login")
+	 * 			end
+	 * 		end
+	 * 	end
+	 * end
+	 * userCredentials.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NDk0ODkyMjgzNTQsImlzcyI6ImJpYnMiLCJhdWQiOiI1IiwidXNlciI6eyJpZCI6NSwiZmlyc3ROYW1lIjoiR2FsZW4iLCJsYXN0TmFtZSI6IkRhbnppZ2VyIiwiZW1haWwiOiJnZWRhbnppZ2VyQGdtYWlsLmNvbSIsInBob25lIjpudWxsLCJ1c2VybmFtZSI6bnVsbCwicGFzc3dvcmQiOiJjMzQwMTFlYTA0ZjhlZGJjNTc0NjNiMjA5MjQ1YTI0ZDU1ZDgxZmU3ZWVmOTE2ZjI1ODNkNWU5MjdmNzlmZjlkYzlhZmU0MjRjNTAyMWU4MyJ9LCJpYXQiOjE0NTExOTIxOTU2NTB9.UhTdMFtI3VfmwUr6iYC3VIYeYWBNDZnud7Ly4DdkkDc"
+	 * -- This function assumes a userCredentials object has been initialized with a valid token
+	 * -- Upload Photo Function Definition
+	 * -- url -- String of url
+	 * -- event -- Number id of event
+	 * -- bibs -- Array of bib numbers
+	 * -- hashtags -- Array of hashtag strings
+	 * function UploadPhoto(url, event, bibs, hashtags)
+	 * 	local headers = {}
+	 * 	headers["Content-Type"] = "application/json"
+	 * 	headers["X-FacePunch"] = userCredentials.token
+	 * 	local params = {}
+	 * 	local requestObj = {}
+	 * 	requestObj.filePath = url;
+	 * 	requestObj.event = {};
+	 * 	requestObj.event.id = event;
+	 * 	results = {};
+	 * 	pictureHashtags = {};
+	 * 	if bibs ~= nil then
+	 * 		for entry = 1,#bibs do
+	 * 			local newObject = {}
+	 * 			newObject.bib = bibs[entry]
+	 * 			table.insert(results, newObject)
+	 * 		end
+	 * 	end
+	 * 	if hashtags ~= nil then
+	 * 		for entry =1, #hashtags do
+	 * 			local newObject = {}
+	 * 			newObject.pictureHashtag = hashtags[entry]
+	 * 			table.insert(pictureHashtags, newObject)
+	 * 		end
+	 * 	end
+	 * 	requestObj.raceResults = results;
+	 * 	requestObj.pictureHashtags = pictureHashtags;
+	 * 	params.headers = headers
+	 * 	params.body = json.encode(requestObj);
+	 * 	print("body:" .. params.body)
+	 * 	network.request( bibsAPI .. "/app/photos/create" , "POST", uploadPhotoListener, params )
+	 * end
+	 * UploadPhoto("http://canadalandshow.com/sites/default/files/field/image/drake-cover-990.jpeg", 1, {1,2,333} , {"facepunch", "shrug", "drake"});
 	 * @apiSuccess (200) {String} status status of the photo upload
 	 * @apiError (403) {String} UserNotAuthenticated The supplied authentication token is missing or invalid.
 	 * @apiError (400) {String} MissingFilepath The user has uploaded a missing photo
@@ -70,7 +130,7 @@ public class AppPhotoController {
 	 * @apiErrorExample {json} EventNotFound
 	 * HTTP/1.1 400 Bad Request
 	 * {
-	 * 	"error": "EventNotFOund"
+	 * 	"error": "EventNotFound"
 	 * }
 	 * @apiSampleRequest http://localhost:8080/bibs-server/app/photos/create
 	 */
@@ -93,7 +153,7 @@ public class AppPhotoController {
 		RaceImage saveImage = new RaceImage();
 		saveImage.setEvent(event);
 		saveImage.setFilePath(raceImage.getFilePath());
-		saveImage.setUserProfile(user);
+		saveImage.setUserProfile(UserProfile.findUserProfile(user.getId()));
 		Set<RaceResult> saveResults = new HashSet<RaceResult>();
 		Set<PictureHashtag> saveHashtags = new HashSet<PictureHashtag>();
 		for(RaceResult result : raceImage.getRaceResults()) {
@@ -107,7 +167,8 @@ public class AppPhotoController {
 					newResult.setEvent(event);
 					newResult.setBib(result.getBib());
 					newResult.persist();
-					saveResults.add(newResult);
+					newResult.flush();
+					saveResults.add(RaceResult.findRaceResult(newResult.getId()));
 				}
 			} 
 		}
@@ -120,7 +181,8 @@ public class AppPhotoController {
 					saveHashtag = new PictureHashtag();
 					saveHashtag.setPictureHashtag(hashtag.getPictureHashtag());
 					saveHashtag.persist();
-					saveHashtags.add(saveHashtag);
+					saveHashtag.flush();
+					saveHashtags.add(PictureHashtag.findPictureHashtag(saveHashtag.getId()));
 				}
 			} 
 		}
