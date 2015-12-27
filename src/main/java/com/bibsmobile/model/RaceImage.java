@@ -346,6 +346,18 @@ public class RaceImage {
         return q.getSingleResult();
     }
 
+    public static Long countFindRaceImagesByEventAndUser(Event event, UserProfile user) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        if (user == null)
+        	throw new IllegalArgumentException("The user argument is required");
+        EntityManager em = RaceImage.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceImage AS o WHERE o.event = :event AND o.user = :user", Long.class);
+        q.setParameter("event", event);
+        q.setParameter("user", user);
+        return q.getSingleResult();
+    }
+    
     public static TypedQuery<RaceImage> findRaceImagesByEvent(Event event) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
