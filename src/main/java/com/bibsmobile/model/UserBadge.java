@@ -28,12 +28,21 @@ public class UserBadge {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 	
+	/**
+	 * {@link Badge} object earned.
+	 */
 	@ManyToOne
 	private Badge badge;
 	
+	/**
+	 * {@link UserProfile user} that earned this badge.
+	 */
 	@ManyToOne
 	private UserProfile user;
 	
+	/**
+	 * Creation date of the badge.
+	 */
 	private Date created;
 	
 	/**
@@ -51,7 +60,7 @@ public class UserBadge {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id the to set
 	 */
 	public void setId(Long id) {
 		this.id = id;

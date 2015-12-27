@@ -130,6 +130,7 @@ public class Event {
 
     private String registration;
 
+    @Column(length = 2000)
     private String general;
 
     private String description;

@@ -139,7 +139,7 @@ public class ApplicationConversionServiceFactoryBean extends FormattingConversio
         return new Converter<UserGroup, String>() {
             @Override
             public String convert(UserGroup userGroup) {
-                return new StringBuilder().append(userGroup.getName()).append(' ').append(userGroup.getBibWrites()).toString();
+                return new StringBuilder().append(userGroup.getName()).toString();
             }
         };
     }

@@ -81,8 +81,9 @@ public class UserGroupController {
             return "usergroups/update";
         }
         UserGroup ugToUpdate = UserGroup.findUserGroup(userGroup.getId());
-        ugToUpdate.setBibWrites(userGroup.getBibWrites());
         ugToUpdate.setName(userGroup.getName());
+        ugToUpdate.setDescription(userGroup.getDescription());
+        ugToUpdate.setLogo(userGroup.getLogo());
         ugToUpdate.setGroupType(userGroup.getGroupType());
         uiModel.asMap().clear();
         ugToUpdate.merge();
