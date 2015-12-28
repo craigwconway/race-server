@@ -29,6 +29,7 @@ import com.bibsmobile.model.PictureHashtag;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.dto.RaceImageDetailsDto;
+import com.bibsmobile.model.dto.RaceImageViewDto;
 import com.bibsmobile.service.UserProfileService;
 
 @RequestMapping("/raceimages")
@@ -36,9 +37,9 @@ import com.bibsmobile.service.UserProfileService;
 public class RaceImageController {
 
 	/**
-	 * @api {get} /raceimages/api
+	 * @api {get} /raceimages/api API
 	 * @apiGroup raceimages
-	 * @apiName raceimagesapi
+	 * @apiName API
 	 * @apiParam {Number} raceId Id of event tagged in race image
 	 * @apiParam {String} filePath Location of image in online datastore
 	 * @apiParam {Number[]} [bib] Bib Numbers to tag in image
@@ -61,9 +62,9 @@ public class RaceImageController {
     }
 
     /**
-     * @api {get} /raceimages/search
+     * @api {get} /raceimages/search Search
      * @apiGroup raceimages
-     * @apiName raceimagesSearch
+     * @apiName Search
      * @apiParam {Number} eventId Id of event to search
      * @apiParam {Number} [bib] bib number of athlete to search
      * @apiParam {Number} [page=1] Page number for result pagination
@@ -89,7 +90,7 @@ public class RaceImageController {
                 raceImages = RaceImage.findRaceImagesByEvent(event).setFirstResult((page - 1) * size).setMaxResults(size).getResultList();
             }
             if (CollectionUtils.isNotEmpty(raceImages)) {
-                return new ResponseEntity<>(RaceImage.toJsonArray(raceImages), headers, HttpStatus.OK);
+                return new ResponseEntity<>(RaceImageViewDto.fromRaceImagesToDtoArray(raceImages), headers, HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
