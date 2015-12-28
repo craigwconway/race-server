@@ -20,6 +20,7 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -145,6 +146,9 @@ public class Event {
     private String photo2;
 
     private String photo3;
+    
+    @Enumerated
+    private PaymentProviderEnum provider;
     
     @Embedded
     private EventPricing pricing = new EventPricing();

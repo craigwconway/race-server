@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -41,48 +42,150 @@ import flexjson.JSONSerializer;
 @Entity
 public class Cart {
 
+	/**
+	 * New Cart. These can expire.
+	 */
     public static final int NEW = 0;
+    /**
+     * Saved Cart. Unused.
+     */
     public static final int SAVED = 1;
+    /**
+     * Processing cart. This cannot expire.
+     */
     public static final int PROCESSING = 2;
+    /**
+     * Complete cart. This cannot expire.
+     */
     public static final int COMPLETE = 3;
+    /**
+     * Cart refund requested. Unused.
+     */
     public static final int REFUND_REQUEST = 4;
+    /**
+     * Refunded cart. This cannot expire.
+     */
     public static final int REFUNDED = 5;
 
+    /**
+     * Expiration timeout in seconds.
+     */
     public static final int DEFAULT_TIMEOUT = 600;
 
+    /**
+     * {@link UserProfile User} paying for cart. This can be an anonymous user.
+     */
     @ManyToOne
     private UserProfile user;
 
+    /**
+     * Collection of {@link CartItem items} in cart.
+     */
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cart")
     private List<CartItem> cartItems;
 
+    /**
+     * Collection of {@link CustomRegFieldResponse responses} 
+     * to organizer defined {@link CustomRegField questions}.
+     */
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "cart")
     private List<CustomRegFieldResponse> customRegFieldResponses;
     
+    /**
+     * Payment processor for this cart.
+     */
+    @Enumerated
+    private PaymentProviderEnum processor;
+    /**
+     * Cart total before processing fee is applied.
+     */
     private long totalPreFee;
+    /**
+     * Total change in cart value due to custom questions.
+     */
     private long questions;
+    /**
+     * Cart Total.
+     */
     private long total;
+    /**
+     * Creation date of cart.
+     */
     private Date created;
+    /**
+     * Last update date of cart.
+     */
     private Date updated;
+    /**
+     * Status of cart. This is either {@link Cart#NEW NEW}, {@link Cart#PROCESSING PROCESSING},
+     * {@link Cart#COMPLETE COMPLETE} or {@link Cart#REFUNDED REFUNDED}.
+     */
     private int status;
+    /**
+     * Referral url generated on cart creation. This is used to credit users for
+     * referring other users.
+     */
     private String referralUrl;
+    /**
+     * Referring {@link Cart cart} object.
+     */
     @OneToOne
     private Cart referral;
+    /**
+     * Switch denoting whether or not this cart has been shared.
+     */
     private boolean shared;
+    /**
+     * Amount the total is modified by for social sharing discounts.
+     */
     private long referralDiscount;
+    /**
+     * Switch to denote the cart paid out.
+     */
+    private boolean paidOut = false;
+    /**
+     * Amount paid out to the user.
+     */
+    private long payoutAmount;
+    /**
+     * Amount held by the processor in this cart.
+     */
+    private long processorFee;
 
+    /**
+     * Coupon applied this cart. This does not modify prices in
+     * {@link EventCartItemTypeEnum#DONATION DONATION} type items.
+     */
     @ManyToOne
     private EventCartItemCoupon coupon;
 
+    /**
+     * Timeout set on this cart.
+     */
     private int timeout;
 
+    /**
+     * ID of stripe charge token associated with this cart.
+     */
     private String stripeChargeId;
+    /**
+     * ID of stripe refund token associated with this cart.
+     */
     private String stripeRefundId;
 
+    /**
+     * JSON Deserializer function for carts. This includes the associated {@link UserProfile user}.
+     * @param json JSON String to deserialize
+     * @return Deserialized JSON object.
+     */
     public static Cart fromJsonToCartWithUser(String json) {
         return new JSONDeserializer<Cart>().use(null, Cart.class).use("user", UserProfile.class).deserialize(json);
     }
 
+    /**
+     * This gets the {@link Event event} associated with the ticket in this cart.
+     * @return Event object
+     */
     public Event getEvent() {
         if (!this.getCartItems().isEmpty()) {
             return this.getCartItems().get(0).getEventCartItem().getEvent();
@@ -90,6 +193,10 @@ public class Cart {
         return null;
     }
 
+    /**
+     * Gets the {@link EventType event type} object associated with the ticket in this cart.
+     * @return
+     */
     public EventType getEventType() {
         if (!this.getCartItems().isEmpty()) {
             return this.getCartItems().get(0).getEventCartItem().getEventType();
@@ -97,10 +204,18 @@ public class Cart {
         return null;
     }
 
+    /**
+     * Gets the {@link #user} in this cart.
+     * @return {@link UserProfile} object performing the transaction. 
+     */
     public UserProfile getUser() {
         return this.user;
     }
 
+    /**
+     * Sets the {@link #user} in this cart.
+     * @param user {@link UserProfile} object performing the transaction.
+     */
     public void setUser(UserProfile user) {
         this.user = user;
     }
@@ -499,27 +614,49 @@ public class Cart {
         return q;
     }
 
+    /**
+     * Autogenerated ID in this cart. Serves as a primary key.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
+    /**
+     * Versioning number for this cart.
+     */
     @Version
     @Column(name = "version")
     private Integer version;
 
+    /**
+     * Gets the {@link #id} of this cart.
+     * @return ID of this cart.
+     */
     public Long getId() {
         return this.id;
     }
 
+    /**
+     * Sets the {@link #id} of the this cart.
+     * @param id Id to set
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Gets the {@link #version} number of this cart to handle updates.
+     * @return
+     */
     public Integer getVersion() {
         return this.version;
     }
 
+    /**
+     * Sets the {@link #version} number of this cart to handle updates.
+     * @param version
+     */
     public void setVersion(Integer version) {
         this.version = version;
     }
