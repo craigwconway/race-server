@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PreUpdate;
 import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 
@@ -173,6 +174,13 @@ public class Cart {
      */
     private String stripeRefundId;
 
+    
+    @PreUpdate
+    protected void onUpdate() {
+        if (this.created == null)
+            this.created = new Date();
+        this.updated = new Date();
+    }
     /**
      * JSON Deserializer function for carts. This includes the associated {@link UserProfile user}.
      * @param json JSON String to deserialize
