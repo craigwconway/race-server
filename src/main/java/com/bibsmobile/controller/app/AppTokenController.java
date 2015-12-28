@@ -2,6 +2,10 @@ package com.bibsmobile.controller.app;
 import java.util.Date;
 import java.util.HashSet;
 
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceException;
+import javax.persistence.QueryTimeoutException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +83,13 @@ public class AppTokenController {
 		if(user.getEmail() == null || user.getPassword() == null) {
 			return SpringJSONUtil.returnErrorMessage("Missing email or password", HttpStatus.BAD_REQUEST);
 		}
-		UserProfile trueUser = UserProfile.findEnabledUserProfilesByEmailEquals(user.getEmail()).getSingleResult();
+		UserProfile trueUser;
+		try{
+			trueUser = UserProfile.findEnabledUserProfilesByEmailEquals(user.getEmail()).setMaxResults(1).getResultList().get(0);
+		} catch(Exception e) {
+			return SpringJSONUtil.returnErrorMessage("NotFound", HttpStatus.NOT_FOUND);
+		}
+		 
 		System.out.println(trueUser.getEmail());
 		System.out.println(encoder.matches(user.getPassword(), trueUser.getPassword()));
 		JsonObject object = new JsonObject();
@@ -96,7 +106,7 @@ public class AppTokenController {
 			response.setHeader("X-FacePunch", token);
 			return new ResponseEntity<String>(object.toString(), HttpStatus.CREATED);
 		}
-		return SpringJSONUtil.returnErrorMessage("error", HttpStatus.BAD_REQUEST);
+		return SpringJSONUtil.returnErrorMessage("BadCredentials", HttpStatus.BAD_REQUEST);
 	}
 
     /**
