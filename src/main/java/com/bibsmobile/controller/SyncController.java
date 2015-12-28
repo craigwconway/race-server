@@ -150,9 +150,11 @@ public class SyncController {
     	}
     	for(TimeSyncDto timeObject :syncObject.getTimes()) {
     		biblist.add(timeObject.getBib());
+    		System.out.println("Syncing bib: " + timeObject.getBib());
     	}
     	List<RaceResult> results = RaceResult.findRaceResultsByEventAndMultipleBibs(event, biblist);
     	for(RaceResult result : results) {
+    		System.out.println("Found match for bib: " + result.getBib() + " with id: " + result.getId());
     		resultMap.put(result.getBib(), result);
     	}
     	for(TimeSyncDto timeObject :syncObject.getTimes()) {
@@ -161,6 +163,7 @@ public class SyncController {
     		if(result == null) {
     			result = new RaceResult();
     			result.setEvent(event);
+    			result.setBib(timeObject.getBib());
     			unassigned = true;
     		}
     		if(timeObject.getPosition() == 0) {
