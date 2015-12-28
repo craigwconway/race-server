@@ -386,6 +386,54 @@ public class Cart {
 		this.referralDiscount = referralDiscount;
 	}
 
+	/**
+	 * @return the processor
+	 */
+	public PaymentProviderEnum getProcessor() {
+		return processor;
+	}
+	/**
+	 * @param processor the processor to set
+	 */
+	public void setProcessor(PaymentProviderEnum processor) {
+		this.processor = processor;
+	}
+	/**
+	 * @return the paidOut
+	 */
+	public boolean isPaidOut() {
+		return paidOut;
+	}
+	/**
+	 * @param paidOut the paidOut to set
+	 */
+	public void setPaidOut(boolean paidOut) {
+		this.paidOut = paidOut;
+	}
+	/**
+	 * @return the payoutAmount
+	 */
+	public long getPayoutAmount() {
+		return payoutAmount;
+	}
+	/**
+	 * @param payoutAmount the payoutAmount to set
+	 */
+	public void setPayoutAmount(long payoutAmount) {
+		this.payoutAmount = payoutAmount;
+	}
+	/**
+	 * @return the processorFee
+	 */
+	public long getProcessorFee() {
+		return processorFee;
+	}
+	/**
+	 * @param processorFee the processorFee to set
+	 */
+	public void setProcessorFee(long processorFee) {
+		this.processorFee = processorFee;
+	}
 	@Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
