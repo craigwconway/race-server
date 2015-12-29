@@ -105,6 +105,7 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.SeriesRegion;
+import com.bibsmobile.model.SyncReport;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UploadFile;
 import com.bibsmobile.model.UserGroup;
@@ -981,6 +982,22 @@ public class EventController {
         outputwriter.flush();
         outputwriter.close();
 
+    }
+    
+    @RequestMapping(value ="/live")
+    public static String liveMode(Model uiModel,
+    		@RequestParam(value = "event", required=true) Long event) {
+    	Event e = Event.findEvent(event);
+    	List<EventType> types = EventType.findEventTypesByEvent(e);
+    	List<SyncReport> syncReports = SyncReport.findLatestReportsByEvent(e, 1, 5);
+    	List<EventTypeTicketWrapper> metatypes = new LinkedList <EventTypeTicketWrapper>();
+    	for(EventType type : types) {
+    		metatypes.add(new EventTypeTicketWrapper(type));
+    	}
+    	uiModel.addAttribute("event", e);
+    	uiModel.addAttribute("metatypes", metatypes);
+    	uiModel.addAttribute("syncReports", syncReports);
+    	return "events/live";
     }
 
     @RequestMapping(value = "/exportBackup", method = RequestMethod.GET)

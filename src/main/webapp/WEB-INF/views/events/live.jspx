@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <div style="margin:5%">
+    	<h1 class="ui header">${event.name } Live</h1>
+		<div class="ui negative small message">
+			<div class="header"><!--  --></div>
+    		Sync is not enabled for this event. You cannot receive any further data until it is.
+		</div>
+    	<table class="ui celled table">
+			<thead>
+				<tr>
+					<th>Source</th>
+					<th>Mode</th>
+					<th>Status</th>
+					<th>Times</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="item" items="${syncReports}">
+				<tr>  
+					<td>${item.deviceIpAddress}</td>
+					<td>${item.mode}</td>
+					<td>${item.status }</td>
+					<td>${item.numResults }</td>
+				 </tr>
+				</c:forEach>
+			</tbody>
+		<tfoot>
+		<tr><th colspan="4">
+		<div class="ui right floated pagination menu">
+		<a class="icon item">
+		  <i class="fa fa-arrow-left"></i>
+		</a>
+		<a class="item">1</a>
+		<a class="icon item">
+		  <i class="fa fa-arrow-right"></i>
+		</a>
+		</div>
+		</th>
+		</tr></tfoot>
+		</table>		
+    	<table class="ui celled table">
+			<thead>
+				<tr>
+					<th>Event</th>
+					<th>Gun Time</th>
+					<th>Athletes</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="item" items="${metatypes}">
+				<tr>  
+					<td>${item.type.typeName}</td>
+					<td>${item.gunTimeLocal}</td>
+					<td>${item.athletes }</td>
+				 </tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+	
+<script>
+	window.onload = init();
+	
+	function init() {
+		<c:if test='${region != null}'>
+		jQuery("#regionselector").val(${region.id});
+		</c:if>
+	}
+	
+	function navigateRegion() {
+		var regionval = jQuery("#regionselector").val();
+		if(regionval === "") {
+			window.location = "/bibs-server/series/${series.id}";
+		} else {
+			window.location = "/bibs-server/series/${series.id}?region=" + regionval;
+		}
+	}
+	
+	function navigateAlerts() {
+		window.location = "/bibs-server/series/alertsbyseries/${series.id}";
+	}
+	
+</script>
+</div>
+

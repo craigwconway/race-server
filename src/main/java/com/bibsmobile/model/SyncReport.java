@@ -168,6 +168,23 @@ public class SyncReport {
         return entityManager().find(SyncReport.class, id);
     }
 
+    /**
+     * Search for sync reports by a particular event with pagination.
+     * @param event event to get sync reports from
+     * @param page page number, indexed from 1
+     * @param size page size
+     * @return A List of SyncReport objects in this event
+     */
+    public static List<SyncReport> findLatestReportsByEvent(Event event, int page, int size) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = SyncReport.entityManager();
+        TypedQuery<SyncReport> q = em.createQuery("SELECT o FROM SyncReport AS o WHERE o.event = :event", SyncReport.class);
+        q.setParameter("event", event);
+        q.setFirstResult((page-1) * size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    } 
 
     /**
      * Search for sync reports by a particular event.
@@ -177,7 +194,7 @@ public class SyncReport {
     public static TypedQuery<SyncReport> findSyncReportsByEvent(Event event) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
-        EntityManager em = Event.entityManager();
+        EntityManager em = SyncReport.entityManager();
         TypedQuery<SyncReport> q = em.createQuery("SELECT o FROM SyncReport AS o WHERE o.event = :event", SyncReport.class);
         q.setParameter("event", event);
         return q;

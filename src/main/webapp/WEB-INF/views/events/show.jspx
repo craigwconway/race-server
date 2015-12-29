@@ -489,6 +489,7 @@
                                 <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px"><!--  --></i> Reports</a></li>
                             </c:if>
                             <li><a href="#" onclick="redirectAthletes();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> Athletes</a></li>
+                            <li><a href="#" onclick="redirectLive();return false;"><i class="fa fa-refresh" style="margin-right: 5px"><!--  --></i> Live</a></li>
                         </c:if>
                     </sec:authorize>
                     <li><a href="#" onclick="redirectAwards();return false;"><i class="fa fa-trophy" style="margin-right: 5px"><!--  --></i> Awards</a></li>
@@ -1290,6 +1291,9 @@
         }
         function redirectAthletes(){
             window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
+        }
+        function redirectLive(){
+            window.location="/bibs-server/events/live?event=${event.id}";
         }
         function redirectImport(){
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";

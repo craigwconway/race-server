@@ -3,6 +3,8 @@
  */
 package com.bibsmobile.model.wrapper;
 
+import java.text.SimpleDateFormat;
+
 import com.bibsmobile.model.EventCartItem;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
@@ -58,7 +60,16 @@ public class EventTypeTicketWrapper {
 		if(type == null) return 0;
 		if(type.getId() == null) return 0;
 		return RaceResult.countFindRaceResultsByEventType(type);
-
+	}
+	
+	public String getGunTimeLocal() {
+		if (type == null) return null;
+		if(type.getGunTime() == null) {
+			return "Not Fired";
+		}
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+		if(type.getEvent().getTimezone() != null) format.setTimeZone(type.getEvent().getTimezone());
+        return format.format(type.getGunTime());
 	}
 
 	/* (non-Javadoc)

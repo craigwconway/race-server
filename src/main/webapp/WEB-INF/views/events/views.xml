@@ -25,6 +25,9 @@
 <definition extends="default" name="events/overall">
         <put-attribute name="body" value="/WEB-INF/views/events/overall.jspx"/>
     </definition>
+<definition extends="default" name="events/live">
+        <put-attribute name="body" value="/WEB-INF/views/events/live.jspx"/>
+    </definition>    
 <definition extends="default" name="events/license">
         <put-attribute name="body" value="/WEB-INF/views/events/license.jspx"/>
     </definition>
