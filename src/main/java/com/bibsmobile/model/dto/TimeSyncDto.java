@@ -33,14 +33,14 @@ public class TimeSyncDto {
 	public TimeSyncDto() {
 		
 	}
-	public TimeSyncDto(RaceResult result, long position, long time, Long eventTypeId) {
+	public TimeSyncDto(RaceResult result, int position, long time, Long eventTypeId) {
 		this.bib = result.getBib();
 		this.time = time;
 		this.position = position;
 		this.eventTypeId = eventTypeId;
 	}
 
-	public TimeSyncDto(long bib, long position, long time, Long eventTypeId) {
+	public TimeSyncDto(long bib, int position, long time, Long eventTypeId) {
 		this.bib = bib;
 		this.time = time;
 		this.position = position;
@@ -48,7 +48,7 @@ public class TimeSyncDto {
 	}
 	
 	private long bib;
-	private long position;
+	private int position;
 	private long time;
 	private Long eventTypeId;
 		
@@ -63,7 +63,7 @@ public class TimeSyncDto {
 		}
 	}
 
-	public static String fromRaceResultToDto(RaceResult result, long position, long time, Long eventTypeId ) {
+	public static String fromRaceResultToDto(RaceResult result, int position, long time, Long eventTypeId ) {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return mapper.writeValueAsString(new TimeSyncDto(result, position, time, eventTypeId));
@@ -91,7 +91,7 @@ public class TimeSyncDto {
 	/**
 	 * @return Split position of reader. 0=start, 1=finish, 2=split1, 3=split2, etc.
 	 */
-	public long getPosition() {
+	public int getPosition() {
 		return position;
 	}
 	
@@ -112,7 +112,7 @@ public class TimeSyncDto {
 	/**
 	 * @param position the position to set
 	 */
-	public void setPosition(long position) {
+	public void setPosition(int position) {
 		this.position = position;
 	}
 

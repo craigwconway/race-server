@@ -34,11 +34,13 @@ import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.Split;
 import com.bibsmobile.model.SyncReport;
 import com.bibsmobile.model.TimeSyncStatusEnum;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.dto.EventDto;
 import com.bibsmobile.model.dto.EventSyncDto;
+import com.bibsmobile.model.dto.SyncReportDto;
 import com.bibsmobile.model.dto.TimeSyncContainerDto;
 import com.bibsmobile.model.dto.TimeSyncDto;
 import com.bibsmobile.service.UserProfileService;
@@ -93,15 +95,8 @@ public class SyncController {
     @RequestMapping(value = "/reports")
     @ResponseBody
     public ResponseEntity<String> getReports(@RequestParam("event") Long eventId) {
-    	ObjectMapper mapper = new ObjectMapper();
-    	try {
-    		List<SyncReport> syncs = SyncReport.findSyncReportsByEvent(Event.findEvent(eventId)).getResultList();
-			return new ResponseEntity<String>(mapper.writeValueAsString(syncs), HttpStatus.OK);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return SpringJSONUtil.returnErrorMessage("processing error", HttpStatus.BAD_REQUEST);
-		}
+    	List<SyncReport> syncs = SyncReport.findSyncReportsByEvent(Event.findEvent(eventId)).getResultList();
+		return new ResponseEntity<String>(SyncReportDto.fromSyncReportsToDtoArray(syncs), HttpStatus.OK);
     	
     }
     
@@ -170,6 +165,13 @@ public class SyncController {
     			result.setTimestart(timeObject.getTime());
     		} else if(timeObject.getPosition() == 1) {
     			result.setTimeofficial(timeObject.getTime());
+    		} else if(timeObject.getPosition() > 1) {
+    			Split splitTime = result.getSplits().get(timeObject.getPosition());
+    			if(splitTime == null) {
+    				splitTime = new Split();
+    			}
+    			splitTime.setTime(timeObject.getTime());
+    			result.getSplits().put(timeObject.getPosition(), splitTime);
     		}
     		if(unassigned) {
     			System.out.println("Persisting bib: " + result.getBib());
