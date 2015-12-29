@@ -3,6 +3,7 @@
  */
 package com.bibsmobile.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Configurable;
@@ -25,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.dto.TimeSyncContainerDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This represents a status report for a time synchronization to a local device.
@@ -49,6 +54,9 @@ public class SyncReport {
 	@JsonIgnore
 	private Event event;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date received;
+	
 	/**
 	 * {@link TimeSyncEnum} object denoting the type of data transfer.
 	 */
@@ -61,9 +69,9 @@ public class SyncReport {
 	private String deviceName;
 	
 	/**
-	 * Mac address associated with the device for synchronization.
+	 * Number of time objects synced.
 	 */
-	private String deviceMacAddress;
+	private int numResults;
 	
 	/**
 	 * Origin ip address of the device performing the synchronization.
@@ -89,11 +97,12 @@ public class SyncReport {
 	 * @param event Event to sync into
 	 */
 	public SyncReport(TimeSyncContainerDto syncObj, Event event, String address) {
-		this.deviceMacAddress = syncObj.getMacAddress();
 		this.deviceIpAddress = address;
 		this.deviceName = syncObj.getDeviceName();
 		this.mode = syncObj.getMode();
 		this.event = event;
+		this.numResults = syncObj.getTimes().size();
+		this.received = new Date();
 	}
 	
 	/**
@@ -213,10 +222,10 @@ public class SyncReport {
 	}
 
 	/**
-	 * @return the deviceMacAddress
+	 * @return the numResults
 	 */
-	public String getDeviceMacAddress() {
-		return deviceMacAddress;
+	public int getNumResults() {
+		return numResults;
 	}
 
 	/**
@@ -224,6 +233,10 @@ public class SyncReport {
 	 */
 	public String getDeviceIpAddress() {
 		return deviceIpAddress;
+	}
+	
+	public Date getReceived() {
+		return received;
 	}
 
 	/**
@@ -256,13 +269,6 @@ public class SyncReport {
 	}
 
 	/**
-	 * @param deviceMacAddress the deviceMacAddress to set
-	 */
-	public void setDeviceMacAddress(String deviceMacAddress) {
-		this.deviceMacAddress = deviceMacAddress;
-	}
-
-	/**
 	 * @param deviceIpAddress the deviceIpAddress to set
 	 */
 	public void setDeviceIpAddress(String deviceIpAddress) {
@@ -274,5 +280,10 @@ public class SyncReport {
 	 */
 	public void setStatus(TimeSyncStatusEnum status) {
 		this.status = status;
+	}
+	
+	public String toJson() throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(this);
 	}
 }

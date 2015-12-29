@@ -48,6 +48,11 @@ public class TimeSyncContainerDto {
 	private long timestamp;
 	
 	/**
+	 * Last time synced in this packet.
+	 */
+	private long lastTime;
+	
+	/**
 	 * Mac address of the synching system
 	 */
 	private String macAddress;
@@ -90,7 +95,14 @@ public class TimeSyncContainerDto {
 	public long getTimestamp() {
 		return timestamp;
 	}
-
+	
+	/**
+	 * @return the lastTime
+	 */
+	public long getLastTime() {
+		return lastTime;
+	}
+	
 	/**
 	 * @return the macAddress
 	 */
