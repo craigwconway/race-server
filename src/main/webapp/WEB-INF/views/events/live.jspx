@@ -4,10 +4,12 @@
     <jsp:output omit-xml-declaration="yes"/>
     <div style="margin:5%">
     	<h1 class="ui header">${event.name } Live</h1>
+    	<c:if test='${!event.sync}'>
 		<div class="ui negative small message">
 			<div class="header"><!--  --></div>
     		Sync is not enabled for this event. You cannot receive any further data until it is.
 		</div>
+		</c:if>
     	<table class="ui celled table">
 			<thead>
 				<tr>

@@ -179,7 +179,7 @@ public class SyncReport {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
         EntityManager em = SyncReport.entityManager();
-        TypedQuery<SyncReport> q = em.createQuery("SELECT o FROM SyncReport AS o WHERE o.event = :event", SyncReport.class);
+        TypedQuery<SyncReport> q = em.createQuery("SELECT o FROM SyncReport AS o WHERE o.event = :event ORDER by o.received DESC", SyncReport.class);
         q.setParameter("event", event);
         q.setFirstResult((page-1) * size);
         q.setMaxResults(size);
