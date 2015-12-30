@@ -56,7 +56,13 @@
 				<c:forEach var="item" items="${metatypes}">
 				<tr>  
 					<td>${item.type.typeName}</td>
-					<td>${item.gunTimeLocal}</td>
+					<td>
+						<c:if test='${item.type.gunFired}'>${item.gunTimeLocal}</c:if>
+						<c:if test='${!item.type.gunFired}'>
+						<button class="ui tiny button">Fire Now</button>
+						<button class="ui tiny button">Choose Time</button>
+						</c:if>
+					</td>
 					<td>${item.athletes }</td>
 					<td>${item.finished }</td>
 				 </tr>
