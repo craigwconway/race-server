@@ -52,10 +52,15 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Latitude;
 import org.hibernate.search.annotations.Longitude;
+import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.Spatial;
 import org.hibernate.search.annotations.SpatialMode;
+import org.hibernate.search.annotations.DateBridge;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.joda.time.DateTimeZone;
 
 import flexjson.JSON;
@@ -87,6 +92,8 @@ public class Event {
     @Field
     private String name;
 
+    @Field
+    @DateBridge(resolution = Resolution.DAY)
     @Temporal(TemporalType.TIMESTAMP)
     private Date timeStart;
 
@@ -120,6 +127,7 @@ public class Event {
     @Longitude
     private Double longitude;
 
+    @IndexedEmbedded
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private Set<EventType> eventTypes;
 
@@ -576,6 +584,16 @@ public class Event {
         return q;
     }    
 
+    public static TypedQuery<Event> findEventsBySeriesAndNameEquals(Series series, String name) {
+        if (series == null)
+            throw new IllegalArgumentException("The series argument is required");
+        EntityManager em = Event.entityManager();
+        TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.series = :series AND o.name = :name", Event.class);
+        q.setParameter("series", series);
+        q.setParameter("name", name);
+        return q;
+    }    
+    
     public static TypedQuery<Event> findEventsByRegionEquals(SeriesRegion region) {
         if (region == null)
             throw new IllegalArgumentException("The series argument is required");
@@ -755,6 +773,8 @@ public class Event {
 
         return q.getResultList();
     }    
+    
+    
     
     public static List<Event> findEventEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM Event o";

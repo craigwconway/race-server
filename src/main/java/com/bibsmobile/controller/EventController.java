@@ -60,6 +60,7 @@ import org.apache.http.HttpResponse;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.hibernate.Hibernate;
+import org.hibernate.search.jpa.Search;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,6 +105,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
+import com.bibsmobile.model.Series;
 import com.bibsmobile.model.SeriesRegion;
 import com.bibsmobile.model.SyncReport;
 import com.bibsmobile.model.TimerConfig;
@@ -1116,6 +1118,41 @@ public class EventController {
         return Event.toJsonArray(events.values());
     }
 
+    /**
+     * @api /events/search Search
+     * @apiName Search
+     * @apiGroup events
+     * @param startDate
+     * @param endDate
+     * @param name
+     * @param lowDistance
+     * @param highDistance
+     * @param racetypes
+     * @param distances
+     * @param series
+     * @param region
+     * @param longitude
+     * @param latitude
+     * @return
+     */
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> searchEvent(
+    		@RequestParam(value = "startdate", required = false) Date startDate,
+    		@RequestParam(value = "enddate", required = false) Date endDate,
+    		@RequestParam(value = "name", required = false) String name,
+    		@RequestParam(value = "lowdistance", required = false) Long lowDistance,
+    		@RequestParam(value = "highdistance", required = false) Long highDistance,
+    		@RequestParam(value = "racetype", required = false) List<String> racetypes,
+    		@RequestParam(value = "distance", required = false) List<String> distances,
+    		@RequestParam(value = "series", required = false) Long series,
+    		@RequestParam(value = "region", required = false) Long region,
+    		@RequestParam(value = "longitude", required = false) Long longitude,
+    		@RequestParam(value = "latitude", required = false) Long latitude) {
+    	
+    	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(Event.findEventsBySeriesAndNameEquals(Series.findSeries(series), name).getResultList()) ,HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "/search/webappsearch", method = RequestMethod.GET)
     @ResponseBody
     public String findByUserGroupandTime(

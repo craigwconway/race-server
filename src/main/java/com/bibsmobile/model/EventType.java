@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.search.annotations.Field;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,12 +57,14 @@ public class EventType {
      * Human Readable distance string describing this event type.
      */
     @NotNull
+    @Field
     private String distance;
     
     /**
      * Dropdown of race describing this event type
      */
     @NotNull
+    @Field
     private String racetype;
     
     /**
