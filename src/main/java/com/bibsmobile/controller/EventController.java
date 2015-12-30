@@ -351,9 +351,17 @@ public class EventController {
 
     @RequestMapping(value = "/gun", method = RequestMethod.POST)
     @ResponseBody
-    public static String timerGun(@RequestParam(value = "type", required = true) long type) {
+    public static String timerGun(@RequestParam(value = "type", required = true) long type,
+    		@RequestParam(value = "time", required = false) String timeLocal) {
         try {
-            EventType eventType = EventType.findEventType(type);
+        	EventType eventType = EventType.findEventType(type);
+        	if(!StringUtils.isEmpty(timeLocal)) {
+            	SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+                format.setTimeZone(eventType.getEvent().getTimezone());
+                eventType.setGunTime(format.parse(timeLocal));
+        	}
+
+            
             eventType.setGunFired(true);
             eventType.setGunTime(new Date());
             eventType.merge();
