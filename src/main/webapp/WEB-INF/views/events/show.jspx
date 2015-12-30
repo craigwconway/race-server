@@ -660,6 +660,13 @@
                         </tbody>
                     </table>
                 </c:if>
+                <c:if test='${unassigned>0 }'>
+				<div class="ui negative small message">
+					<div class="header"><!--  --></div>
+					<i class="fa fa-times close" style="float:right"><!--  --></i>
+					You have <b>${unassigned}</b> unassigned runner in this event.
+				</div>
+                </c:if>
                 <c:if test="${lastImport != null}">
                     <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
                     <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
