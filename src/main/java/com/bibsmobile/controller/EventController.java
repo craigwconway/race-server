@@ -1003,6 +1003,8 @@ public class EventController {
     	uiModel.addAttribute("metatypes", metatypes);
     	uiModel.addAttribute("syncReports", syncReports);
     	uiModel.addAttribute("syncPage", syncPage);
+    	uiModel.addAttribute("unassigned", RaceResult.countFindUnassignedRaceResultsByEvent(e));
+    	uiModel.addAttribute("unassignedFinished", RaceResult.countUnassignedCompleteRaceResults(e));
     	return "events/live";
     }
 

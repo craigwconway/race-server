@@ -61,6 +61,14 @@
 					<td>${item.finished }</td>
 				 </tr>
 				</c:forEach>
+				 <c:if test='${unassigned > 0}'>
+				<tr>  
+					<td>Unassigned Results</td>
+					<td>N/A</td>
+					<td>${unassigned }</td>
+					<td>${unassignedFinished }</td>
+				 </tr>				 
+				 </c:if>
 			</tbody>
 		</table>
 	</div>

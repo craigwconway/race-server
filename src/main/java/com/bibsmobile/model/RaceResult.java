@@ -710,6 +710,13 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getSingleResult();
     }
 
+    public static long countUnassignedCompleteRaceResults(Event event) {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event and rr.eventType is null and rr.timeofficial > 0", Long.class);
+        q.setParameter("event", event);
+        return q.getSingleResult();
+    }    
+    
     public static Long countFindUnassignedRaceResultsByEvent(Event event) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
