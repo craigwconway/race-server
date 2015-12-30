@@ -114,6 +114,7 @@ import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.dto.EventDto;
 import com.bibsmobile.model.dto.EventTypeDto;
+import com.bibsmobile.model.wrapper.EventTypeDataWrapper;
 import com.bibsmobile.model.wrapper.EventTypeTicketWrapper;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
@@ -986,17 +987,22 @@ public class EventController {
     
     @RequestMapping(value ="/live")
     public static String liveMode(Model uiModel,
-    		@RequestParam(value = "event", required=true) Long event) {
+    		@RequestParam(value = "event", required=true) Long event,
+    		@RequestParam(value = "syncpage", required=false, defaultValue="1") int syncPage) {
     	Event e = Event.findEvent(event);
+    	if(syncPage < 1) {
+    		syncPage = 1;
+    	}
     	List<EventType> types = EventType.findEventTypesByEvent(e);
-    	List<SyncReport> syncReports = SyncReport.findLatestReportsByEvent(e, 1, 5);
-    	List<EventTypeTicketWrapper> metatypes = new LinkedList <EventTypeTicketWrapper>();
+    	List<SyncReport> syncReports = SyncReport.findLatestReportsByEvent(e, syncPage, 8);
+    	List<EventTypeDataWrapper> metatypes = new LinkedList <EventTypeDataWrapper>();
     	for(EventType type : types) {
-    		metatypes.add(new EventTypeTicketWrapper(type));
+    		metatypes.add(new EventTypeDataWrapper(type));
     	}
     	uiModel.addAttribute("event", e);
     	uiModel.addAttribute("metatypes", metatypes);
     	uiModel.addAttribute("syncReports", syncReports);
+    	uiModel.addAttribute("syncPage", syncPage);
     	return "events/live";
     }
 

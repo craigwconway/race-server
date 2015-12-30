@@ -10,21 +10,36 @@ import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.RaceResult;
 
 /**
- * Generated wrapper for view of event types for analytics view.
- * Used to represent collections of {@link com.bibsmobile.model.EventType EventType} objects
- * and statistics on finishers for rendering in jspx.
+ * Generated wrapper for view of event types and tickets.
  * @author galen
- * @since 2015-12-29
  *
  */
-public class EventTypeDataWrapper {
+public class EventTypeTicketWrapper {
 	
+	private EventCartItem ticket;
 	private EventType type;
 	
-	public EventTypeDataWrapper(EventType type) {
+	public EventTypeTicketWrapper(EventType type) {
 		this.type = type;
 	}
 	
+	public EventTypeTicketWrapper(EventType type, EventCartItem ticket) {
+		this.type = type;
+		this.ticket = ticket;
+	}
+	
+	/**
+	 * @return the ticket
+	 */
+	public EventCartItem getTicket() {
+		return ticket;
+	}
+	/**
+	 * @param ticket the ticket to set
+	 */
+	public void setTicket(EventCartItem ticket) {
+		this.ticket = ticket;
+	}
 	/**
 	 * @return the type
 	 */
@@ -47,12 +62,6 @@ public class EventTypeDataWrapper {
 		return RaceResult.countFindRaceResultsByEventType(type);
 	}
 	
-	public long getFinished() {
-		if(type == null) return 0;
-		if(type.getId() == null) return 0;
-		return RaceResult.countRaceResultsCompleteByEventType(type);
-	}
-	
 	public String getGunTimeLocal() {
 		if (type == null) return null;
 		if(type.getGunTime() == null) {
@@ -68,7 +77,7 @@ public class EventTypeDataWrapper {
 	 */
 	@Override
 	public String toString() {
-		return "EventTypeTicketWrapper [type=" + type
+		return "EventTypeTicketWrapper [ticket=" + ticket + ", type=" + type
 				+ "]";
 	}
 	

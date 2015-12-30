@@ -702,6 +702,13 @@ public class RaceResult implements Comparable<RaceResult> {
         q.setParameter("lastname", lastname);
         return (q.getSingleResult());
     }
+    
+    public static long countRaceResultsCompleteByEventType(EventType eventType) {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.eventType = :eventType and rr.timeofficial > 0", Long.class);
+        q.setParameter("eventType", eventType);
+        return q.getSingleResult();
+    }
 
     public static Long countFindUnassignedRaceResultsByEvent(Event event) {
         if (event == null)
