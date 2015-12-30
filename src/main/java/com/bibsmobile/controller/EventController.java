@@ -1027,6 +1027,21 @@ public class EventController {
             return "events/update";
         }
         Event trueEvent = Event.findEvent(event.getId());
+        trueEvent.setName(event.getName());
+        trueEvent.setDescription(event.getDescription());
+        trueEvent.setTimeStartLocal(event.getTimeStartLocal());
+        trueEvent.setWebsite(event.getWebsite());
+        trueEvent.setPhone(event.getPhone());
+        trueEvent.setAddress(event.getAddress());
+        trueEvent.setCity(event.getCity());
+        trueEvent.setState(event.getState());
+        trueEvent.setCountry(event.getCountry());
+        trueEvent.setZip(event.getZip());
+        trueEvent.setLongitude(event.getLongitude());
+        trueEvent.setLatitude(event.getLatitude());
+        trueEvent.setCharity(event.getCharity());
+        trueEvent.setOrganization(event.getOrganization());
+        trueEvent.setTimezone(event.getTimezone());
         System.out.println("incoming localdate: " + event.getTimeStartLocal());
         //Handle Cascades
         try {
@@ -1034,13 +1049,13 @@ public class EventController {
             format.setTimeZone(event.getTimezone());
             Calendar timeStart = new GregorianCalendar();
 			timeStart.setTime(format.parse(event.getTimeStartLocal()));
-			event.setTimeStart(timeStart.getTime());
+			trueEvent.setTimeStart(timeStart.getTime());
 			Set<EventType> eventTypes = trueEvent.getEventTypes();
 			for(EventType eventType : eventTypes) {
 				eventType.setStartTime(format.parse(eventType.getTimeStartLocal()));
-				if(eventType.getStartTime().before( event.getTimeStart())) {
-					eventType.setTimeStartLocal(event.getTimeStartLocal());
-					eventType.setStartTime(format.parse(event.getTimeStartLocal()));
+				if(eventType.getStartTime().before( trueEvent.getTimeStart())) {
+					eventType.setTimeStartLocal(trueEvent.getTimeStartLocal());
+					eventType.setStartTime(format.parse(trueEvent.getTimeStartLocal()));
 				}
 				eventType.merge();
 			}
@@ -1057,8 +1072,8 @@ public class EventController {
 				}
 			}
 			if(trueEvent.getTicketTransferCutoffLocal() != null) {
-				event.setTicketTransferCutoff(format.parse(trueEvent.getTicketTransferCutoffLocal()));
-				event.setTicketTransferCutoffLocal(trueEvent.getTicketTransferCutoffLocal());
+				trueEvent.setTicketTransferCutoff(format.parse(trueEvent.getTicketTransferCutoffLocal()));
+				trueEvent.setTicketTransferCutoffLocal(trueEvent.getTicketTransferCutoffLocal());
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -1066,7 +1081,7 @@ public class EventController {
 			return "events/create";
 		}
         uiModel.asMap().clear();
-        event.merge();
+        trueEvent.merge();
         return "redirect:/events/" + this.encodeUrlPathSegment(event.getId().toString(), httpServletRequest);
     }
 
