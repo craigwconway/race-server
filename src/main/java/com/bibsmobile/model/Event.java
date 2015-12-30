@@ -65,7 +65,7 @@ import flexjson.JSONSerializer;
 /**
  * This represents a single race or collection of races held on raceday by a director.
  * This is a very large object, and will be slow in seriailization. To create json objects,
- * it is highly recommended to use {@link com.bibsmobile.model.dto.EventDto} objects for this task.
+ * it is highly recommended to use {@link com.bibsmobile.model.dto.EventDto EventDto} objects for this task.
  * @author galen
  *
  */
