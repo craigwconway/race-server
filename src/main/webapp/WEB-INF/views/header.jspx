@@ -18,7 +18,7 @@
     	<a href="/bibs-server" class="item">
     		<img class="ui mini image" src="images/bibsicon.png"/>
 		</a>
-    	<a onclick="redirectEventList();return false;" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
+    	<a href="/bibs-server" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
     	<a onclick="redirectAthleteList();return false;" class="item"><i class="fa fa-users left-icon icon"><!--  --></i> athletes</a>
   		<a href="${raceday_url}" class="item"><i class="fa fa-wifi left-icon icon"><!--  --></i> rfid</a>
   		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
