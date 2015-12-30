@@ -349,90 +349,11 @@ public class EventController {
         return result;
     }
 
-    /*public static String doDelete(String targetURL) {
-        URL url;
-        HttpURLConnection conn;
-        BufferedReader rd;
-        String line;
-        String result = "";
-        try {
-            log.info("doDelete " + targetURL);
-            url = new URL(targetURL);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("DELETE");
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            while ((line = rd.readLine()) != null) {
-                result += line;
-            }
-            rd.close();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-        return result;
-    }*/
-
-    @RequestMapping(value = "/cloud", method = RequestMethod.GET)
+    @RequestMapping(value = "/gun", method = RequestMethod.POST)
     @ResponseBody
-    public static String cloud(@RequestParam(value = "event", required = true) long eventId) {
-        final String serverUrl = "http://54.225.209.173:8080/bibs-server";
-        Event event = Event.findEvent(eventId);
+    public static String timerGun(@RequestParam(value = "type", required = true) long type) {
         try {
-            // client event id
-            // long _eventId = event.getId();
-
-            // find matching event
-            String eventSync = doGet(serverUrl + "/events/byname/" + event.getName().replace(" ", "%20"));
-            log.info("cloud " + eventSync);
-            Collection<Event> events = Event.fromJsonArrayToEvents(eventSync);
-            log.info("cloud matched " + events.size() + " events");
-            if (events.size() < 1)
-                return "eventnotfound";
-            Event event1 = events.iterator().next();
-            log.info("cloud " + event1.getId() + " " + event1.getName());
-            // login TODO
-            // remove server runners
-            EventController.doPost(serverUrl + "/events/" + event1.getId(), "_method=DELETE&x=7&y=10", false);
-            log.info("cloud delete " + event1.getId() + " " + event1.getName());
-            // loop through and add runners
-            // List<RaceResult> runners = Event.findRaceResults(_eventId, 1,
-            // 9999);
-            StringWriter json = new StringWriter();
-            int i = 0;
-            json.append("[");
-            for (RaceResult runner : event.getRaceResults()) {
-                if (i > 0)
-                    json.append(",");
-                i++;
-                json.append("{\"event\":").append(event1.toJson());
-                json.append(",\"firstname\":\"").append(runner.getFirstname());
-                json.append("\",\"lastname\":\"").append(runner.getLastname());
-                if (null != runner.getCity())
-                    json.append("\",\"city\":\"").append(runner.getCity());
-                if (null != runner.getState())
-                    json.append("\",\"state\":\"").append(runner.getState());
-                json.append("\",\"bib\":\"").append(String.valueOf(runner.getBib()));
-                json.append("\",\"age\":\"").append(String.valueOf(runner.getAge()));
-                json.append("\",\"gender\":\"").append(runner.getGender());
-                json.append("\",\"timeoverall\":\"").append(runner.getTimeofficialdisplay());
-                json.append("\"}");
-            }
-            json.append("]");
-            log.info("cloud sync: " + json);
-            EventController.doPost(serverUrl + "/raceresults/jsonArray", json.toString(), true);
-
-            log.info("cloud synced ");
-            return "true";
-        } catch (Exception ex) {
-            log.error(ex.getMessage(), ex);
-        }
-        return "false";
-    }
-
-    @RequestMapping(value = "/gun", method = RequestMethod.GET)
-    @ResponseBody
-    public static String timerGun(@RequestParam(value = "event", required = true) long event) {
-        try {
-            EventType eventType = EventType.findEventType(event);
+            EventType eventType = EventType.findEventType(type);
             eventType.setGunFired(true);
             eventType.setGunTime(new Date());
             eventType.merge();
