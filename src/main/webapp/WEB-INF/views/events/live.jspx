@@ -2,7 +2,7 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <div style="margin:5%">
+    <div style="margin:1% 5%">
     	<h1 class="ui header">${event.name } Live</h1>
     	<c:if test='${!event.sync}'>
 		<div class="ui negative small message">
@@ -60,7 +60,7 @@
 						<c:if test='${item.type.gunFired}'>${item.gunTimeLocal}</c:if>
 						<c:if test='${!item.type.gunFired}'>
 						<button class="ui tiny button">Fire Now</button>
-						<button class="ui tiny button">Choose Time</button>
+						<button data-id="${item.type.id}" class="ui tiny button livetime-button" onclick="openTimepicker(${item.type.id})"><input data-id="${item.type.id}" class="livetime-input" type="hidden"/> Choose Time</button>
 						</c:if>
 					</td>
 					<td>${item.athletes }</td>
@@ -83,9 +83,17 @@
 	window.onload = init();
 	
 	function init() {
+	    var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
+		console.log(eventStart);
 		<c:if test='${region != null}'>
 		jQuery("#regionselector").val(${region.id});
 		</c:if>
+		jQuery(".livetime-input")
+		    .datetimepicker({
+		        defaultDate: eventStart,
+		        useSeconds: true,
+		        sideBySide: true
+		    });
 	}
 	function pageLeft() {
 		window.location = "/bibs-server/events/live?event=${event.id}&amp;syncpage=${syncPage-1}";
@@ -96,6 +104,15 @@
 	
 	function navigateAlerts() {
 		window.location = "/bibs-server/series/alertsbyseries/${series.id}";
+	}
+
+	function openTimepicker(id) {
+		jQuery('.livetime-input').each(function(i,n){
+			var inputID = +jQuery(n).data('id');
+			if(inputID == id){
+				jQuery(n).data('DateTimePicker').show();				
+			}
+		})
 	}
 	
 </script>
