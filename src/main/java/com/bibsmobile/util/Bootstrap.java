@@ -89,8 +89,19 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     		
             Event foo = new Event();
             foo.setName("Kings Canyon Critical Mass");
-            foo.setCity("Kings Canyon");
-            foo.setState("Colordo");
+            foo.setCity("San Francisco");
+            foo.setDescription("Official Kings Canyon race! Volunteers along the course will distribute shrugs.");
+            foo.setAddress("904 Haight St");
+            foo.setOrganization("Bibs Athletic Events");
+            foo.setWebsite("http://mybibs.co");
+            foo.setZip("94117");
+            foo.setState("CA");
+            foo.setCountry("United States");
+            foo.setLongitude(-122.43723019999999);
+            foo.setLatitude(37.771276);
+            foo.setTimezone(systemtz);
+            foo.setPhone("9253602927");
+            foo.setCharity("American Red Cross");
             foo.setTimeStart(new DateTime().toDate());
             foo.setTimeStartLocal(format.format(foo.getTimeStart()));
             foo.persist();
