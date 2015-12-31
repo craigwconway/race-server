@@ -59,7 +59,7 @@
 					<td>
 						<c:if test='${item.type.gunFired}'>${item.gunTimeLocal}</c:if>
 						<c:if test='${!item.type.gunFired}'>
-						<button class="ui tiny button">Fire Now</button>
+						<button class="ui tiny button" onClick="fireGun(${item.type.id})">Fire Now</button>
 						<button data-id="${item.type.id}" class="ui tiny button livetime-button" onclick="openTimepicker(${item.type.id})"><input data-id="${item.type.id}" class="livetime-input" type="hidden"/> Choose Time</button>
 						</c:if>
 					</td>
@@ -97,7 +97,19 @@
 	}
 	function pageLeft() {
 		window.location = "/bibs-server/events/live?event=${event.id}&amp;syncpage=${syncPage-1}";
-	}	
+	}
+	function fireGun(id) {
+	    jQuery.ajax({
+	        url: "/bibs-server/events/gun?type="+id,
+	        type: "POST",
+	        contentType: "application/json",
+	        complete: function(data) {
+	        	console.log("ResponseData");
+	        	console.log(data)
+	        }
+	    })
+	}
+
 	function pageRight() {
 		window.location = "/bibs-server/events/live?event=${event.id}&amp;syncpage=${syncPage+1}";
 	}
