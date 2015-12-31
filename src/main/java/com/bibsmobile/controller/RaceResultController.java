@@ -465,21 +465,6 @@ public class RaceResultController {
         trueResult.setState(raceResult.getState());
         trueResult.setLaps(raceResult.getLaps());
         trueResult.setTimeofficialdisplay(raceResult.getTimeofficialdisplay());
-        
-        // New race result stuff here //
-        System.out.println("[RESULTS] Updating Chip Time");
-        System.out.println(" Timestart:" + raceResult.getTimestart());
-    	System.out.println("[RESULTS] Null get timestart, proceeding");
-    	// We have a result without a chip time, we can compute the timeofficialdisplay
-    	if(null != raceResult.getEventType().getGunTime() && 0 < raceResult.getTimeofficial()) {
-    		System.out.println("[RESULTS] Event details:");
-    		System.out.println(raceResult.getEvent().toJson());
-    		System.out.println("[RESULTS] Calculating new timeofficialdisplay:");
-    		System.out.println("[RESULTS] Event Gun Time Start: " + raceResult.getEventType().getGunTime().getTime() + " Time Official: " + raceResult.getTimeofficial());
-    		// There is a gun time in the event and a timeofficial set
-    		raceResult.setTimestart(raceResult.getEventType().getGunTime().getTime());
-    		System.out.println("[RESULTS] Computed gun time: " + raceResult.getTimeofficialdisplay());
-    	}
     	// Add logic to handle timeofficialdisplay updates if we have a nontrivial timeofficialdisplay value:
     	if("" != raceResult.valueOfTimeofficialdisplay()) {
     		DateFormat timeparser = new SimpleDateFormat("kk:mm:ss");
@@ -504,8 +489,8 @@ public class RaceResultController {
 				e.printStackTrace();
 			}
     	}
-		raceResult.merge();
-    	return "redirect:/raceresults/" + encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
+		trueResult.merge();
+    	return "redirect:/raceresults/" + encodeUrlPathSegment(trueResult.getId().toString(), httpServletRequest);
 
     }
     /**
