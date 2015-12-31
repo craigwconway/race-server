@@ -8,6 +8,7 @@ import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.model.DeviceInfo;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.Split;
 import com.bibsmobile.model.UserAuthorities;
@@ -422,7 +423,11 @@ public class RaceResultController {
     UserProfileService userProfileService;
 
     @RequestMapping(params = "form", produces = "text/html")
-    public String createForm(Model uiModel) {
+    public String createForm(Model uiModel, @RequestParam("event") Long eventId) {
+    	Event event = Event.findEvent(eventId);
+    	List<EventType> eventTypes = EventType.findEventTypesByEvent(event);
+    	uiModel.addAttribute("event", event);
+    	uiModel.addAttribute("eventTypes", eventTypes);
         this.populateEditForm(uiModel, new RaceResult());
         return "raceresults/create";
     }
@@ -430,7 +435,13 @@ public class RaceResultController {
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
     	// sketchy bait-and-switch because that's what bibs does
-        this.populateEditForm(uiModel, RaceResult.findRaceResult(id));
+    	RaceResult result = RaceResult.findRaceResult(id);
+    	Event event = result.getEvent();
+        List<EventType> eventTypes = EventType.findEventTypesByEvent(event);
+        EventType eventType = result.getEventType();
+        this.populateEditForm(uiModel, result);
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("eventTypes", eventTypes);
         return "raceresults/update";
     }
 
@@ -441,6 +452,20 @@ public class RaceResultController {
             return "raceresults/update";
         }
         uiModel.asMap().clear();
+        // Load true result from database, only modify fields on page.
+        RaceResult trueResult = RaceResult.findRaceResult(raceResult.getId());
+        trueResult.setFirstname(raceResult.getFirstname());
+        trueResult.setLastname(raceResult.getLastname());
+        trueResult.setAge(raceResult.getAge());
+        trueResult.setGender(raceResult.getGender());
+        trueResult.setBib(raceResult.getBib());
+        trueResult.setEventType(raceResult.getEventType());
+        trueResult.setTeam(raceResult.getTeam());
+        trueResult.setCity(raceResult.getCity());
+        trueResult.setState(raceResult.getState());
+        trueResult.setLaps(raceResult.getLaps());
+        trueResult.setTimeofficialdisplay(raceResult.getTimeofficialdisplay());
+        
         // New race result stuff here //
         System.out.println("[RESULTS] Updating Chip Time");
         System.out.println(" Timestart:" + raceResult.getTimestart());

@@ -96,16 +96,17 @@
                     <i class="fa fa-cog"><!--  --></i>
                     <div class="content">Edit Athlete
                         <div class="sub header">Provide the details for this athlete.</div>
+                        <div class="sub header">Event: ${event.name}</div>
                     </div>
                 </h2>
 
                 <div class="ui labeled input">
-                    <div class="ui blue label">Event</div>
-                        <select class="ui dropdown" id="event-type" name="event"
+                    <div class="ui blue label">Race</div>
+                        <select class="ui dropdown" id="event-type" name="eventType"
                                 data-parsley-error-message="Please select an event.">
-                            <option selected="selected" disabled="disabled">Select Event</option>
-                            <c:forEach var="item" items="${events}">
-                                <option value="${item.id}">${item}</option>
+                            <option selected="selected" disabled="disabled">Select Race</option>
+                            <c:forEach var="item" items="${eventTypes}">
+                                <option value="${item.id}">${item.typeName}</option>
                             </c:forEach>
                         </select>
                 </div>
@@ -125,8 +126,8 @@
                             <i class="fa fa-caret-down" style="float:right;margin-right:0;"><!--  --></i>
                             <div class="default text">Select Team</div>
                             <div class="menu">
-                                <c:forEach var="item" items="${usergroup}">
-                                    <div class="item" data-value="${item.id}">${item.name}</div>
+                                <c:forEach var="item" items="${teams}">
+                                    <div class="item" data-value="${item.name}">${item.name}</div>
                                 </c:forEach>
                             </div>
                         </div>
@@ -243,7 +244,7 @@
         };
 
         function initForm(){
-            jQuery('#event-type').dropdown('set selected', '${raceResult.event.id}');
+            jQuery('#event-type').dropdown('set selected', '${raceResult.eventType.id}');
             jQuery('#team-type').dropdown();
             jQuery('#gender-type').dropdown('set selected', '${raceResult.gender}');
         }
