@@ -13,6 +13,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.mockito.internal.verification.Times;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -135,6 +137,12 @@ public class SyncController {
     		syncReport.persist();
     		return SpringJSONUtil.returnErrorMessage("InvalidSyncCode", HttpStatus.UNAUTHORIZED);
     	}
+    	DateTimeZone zone;
+    	try{
+        	zone = DateTimeZone.forID(syncObject.getTimezone());
+    	} catch (Exception e) {
+    		return SpringJSONUtil.returnErrorMessage("InvalidTimezone", HttpStatus.BAD_REQUEST);
+    	}
     	List <Long> biblist = new LinkedList<Long>();
     	HashMap<Long, RaceResult> resultMap = new HashMap<Long, RaceResult>();
     	if(syncObject.getTimes() == null || syncObject.getTimes().isEmpty()) {
@@ -161,16 +169,18 @@ public class SyncController {
     			result.setBib(timeObject.getBib());
     			unassigned = true;
     		}
+    		DateTime convertedTime = new DateTime(timeObject.getTime(), zone);
+    		long convertedTimestamp = convertedTime.getMillis();
     		if(timeObject.getPosition() == 0) {
-    			result.setTimestart(timeObject.getTime());
+    			result.setTimestart(convertedTimestamp);
     		} else if(timeObject.getPosition() == 1) {
-    			result.setTimeofficial(timeObject.getTime());
+    			result.setTimeofficial(convertedTimestamp);
     		} else if(timeObject.getPosition() > 1) {
     			Split splitTime = result.getSplits().get(timeObject.getPosition());
     			if(splitTime == null) {
     				splitTime = new Split();
     			}
-    			splitTime.setTime(timeObject.getTime());
+    			splitTime.setTime(convertedTimestamp);
     			result.getSplits().put(timeObject.getPosition(), splitTime);
     		}
     		if(unassigned) {
