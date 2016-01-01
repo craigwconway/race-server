@@ -68,6 +68,8 @@ public class RaceResultDetailDto {
 		this.city = result.getCity();
 		this.timeofficialdisplay = result.getTimeofficialdisplay();
 		this.team = result.getTeam();
+		this.disqualified = result.isDisqualified();
+		this.claimed = (result.getUserProfile() != null);
 		if(result.getEventType() != null) {
 			this.eventType = new EventTypeDto(result.getEventType());
 			//Calculate pace time.
@@ -91,6 +93,8 @@ public class RaceResultDetailDto {
 	private String timeofficialdisplay;
 	private String timePace;
 	private String team;
+	private boolean claimed;
+	private boolean disqualified;
 	private EventTypeDto eventType;
 	private List<RaceImageViewDto> images;
 		
@@ -201,6 +205,20 @@ public class RaceResultDetailDto {
 		return team;
 	}
 	
+	/**
+	 * @return the claimed
+	 */
+	public boolean isClaimed() {
+		return claimed;
+	}
+
+	/**
+	 * @return the disqualified
+	 */
+	public boolean isDisqualified() {
+		return disqualified;
+	}
+
 	/**
 	 * @return the eventType
 	 */
