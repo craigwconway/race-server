@@ -72,5 +72,21 @@ public class EventService {
     			.matching(racetype)
     			.createQuery();
     	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
-    }    
+    }
+    
+    @Transactional
+    public List<Event> nameSearch(String name) {
+    	EntityManager em = emf.createEntityManager();
+    	FullTextEntityManager fullTextEntityManager = 
+    		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+    	em.getTransaction().begin();
+    	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
+    	
+    	org.apache.lucene.search.Query luceneQuery = builder.keyword()
+    			.fuzzy()
+    			.onField("name")
+    			.matching(name)
+    			.createQuery();
+    	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+    }   
 }
