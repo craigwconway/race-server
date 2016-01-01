@@ -77,6 +77,9 @@ public class RaceResultDetailDto {
 				this.timePace = RaceResult.paceToHumanTime(result.getTimestart(), result.getTimeofficial(), result.getEventType().getMeters());
 			}
 		}
+		if(result.getEvent() != null) {
+			this.event = new EventViewResultsDto(result.getEvent());
+		}
 		images = new ArrayList<RaceImageViewDto>();
 		for(RaceImage rawImage : result.getRaceImages()) {
 			images.add(new RaceImageViewDto(rawImage));
@@ -96,6 +99,7 @@ public class RaceResultDetailDto {
 	private boolean claimed;
 	private boolean disqualified;
 	private EventTypeDto eventType;
+	private EventViewResultsDto event;
 	private List<RaceImageViewDto> images;
 		
 	public String toJson() {
@@ -226,6 +230,13 @@ public class RaceResultDetailDto {
 		return eventType;
 	}
 	
+	/**
+	 * @return the event
+	 */
+	public EventViewResultsDto getEvent() {
+		return event;
+	}
+
 	/**
 	 * @return Race Image DTO versions of views containing this athlete.
 	 */
