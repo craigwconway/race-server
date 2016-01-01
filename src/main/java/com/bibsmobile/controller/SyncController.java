@@ -15,7 +15,6 @@ import javax.validation.Valid;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.mockito.internal.verification.Times;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

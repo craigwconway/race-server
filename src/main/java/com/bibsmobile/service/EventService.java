@@ -43,4 +43,34 @@ public class EventService {
     			.createQuery();
     	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
     }
+    
+    @Transactional
+    public List<Event> eventTypeDistanceSearch(String distance) {
+    	EntityManager em = emf.createEntityManager();
+    	FullTextEntityManager fullTextEntityManager = 
+    		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+    	em.getTransaction().begin();
+    	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
+    	
+    	org.apache.lucene.search.Query luceneQuery = builder.keyword()
+    			.onField("types.distance")
+    			.matching(distance)
+    			.createQuery();
+    	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+    }
+    
+    @Transactional
+    public List<Event> eventTypeRacetypeSearch(String racetype) {
+    	EntityManager em = emf.createEntityManager();
+    	FullTextEntityManager fullTextEntityManager = 
+    		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+    	em.getTransaction().begin();
+    	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
+    	
+    	org.apache.lucene.search.Query luceneQuery = builder.keyword()
+    			.onField("types.racetype")
+    			.matching(racetype)
+    			.createQuery();
+    	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+    }    
 }
