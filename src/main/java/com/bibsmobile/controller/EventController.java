@@ -1176,10 +1176,12 @@ public class EventController {
     		System.out.println(eventService.geospatialSearch(longitude, latitude, radius));
     	}
     	if(name != null) {
-    		// Perform Name search
+    		System.out.println(eventService.nameSearch(name));
     	}
     	if(distances != null) {
-    		// perform named distances search
+    		for(String distance : distances) {
+    			System.out.println(eventService.nameSearch(distance));
+    		}
     	} else if( lowDistance != null || highDistance != null) {
     		// perform numeric distances search
     	}

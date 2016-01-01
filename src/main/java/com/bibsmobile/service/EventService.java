@@ -88,5 +88,36 @@ public class EventService {
     			.matching(name)
     			.createQuery();
     	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
-    }   
+    }
+    
+    @Transactional
+    public List<Event> distanceRangeQuery(Long low, Long high) {
+    	EntityManager em = emf.createEntityManager();
+    	FullTextEntityManager fullTextEntityManager = 
+    		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+    	em.getTransaction().begin();
+    	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
+    	
+    	org.apache.lucene.search.Query luceneQuery;
+    	if(low == null) {
+    		luceneQuery = builder.range()
+    				.onField("types.meters")
+    				.below(high)
+    				.createQuery();
+    	} else if (high == null) {
+    		luceneQuery = builder.range()
+    				.onField("types.meters")
+    				.above(low)
+    				.createQuery();
+    	} else {
+    		luceneQuery = builder.range()
+    				.onField("types.meters")
+    				.from(low)
+    				.to(high)
+    				.createQuery();
+    	}
+
+    	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+    }
+    
 }
