@@ -1,7 +1,9 @@
 package com.bibsmobile.model;
 
 import java.security.NoSuchAlgorithmException;
+
 import org.apache.commons.codec.binary.Base64;
+
 import java.util.Date;
 
 import javax.crypto.KeyGenerator;
@@ -18,6 +20,9 @@ import javax.persistence.TemporalType;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
 * This holds a representation of a device as an ordroid. This is useful for
@@ -130,6 +135,17 @@ public class FuseDevice {
         return entityManager().find(FuseDevice.class, id);
     }
 	
+	public String toJson() {
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
     //
 	// -------------------------------------------
 	// -------------------------------------------

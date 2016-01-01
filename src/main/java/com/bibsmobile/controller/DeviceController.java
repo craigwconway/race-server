@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.Badge;
+import com.bibsmobile.model.FuseDevice;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Series;
 import com.bibsmobile.model.SeriesRegion;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * View and manage devices distributed through bibs.
@@ -74,18 +77,18 @@ public class DeviceController {
 	}
 	
 	/**
-	 * @api /devices/:id/regions Series Regions
+	 * @api /devices/create
 	 * @apiName Get Series Regions
 	 * @apiDescription Get Regions by Series
 	 * @apiGroup Series
 	 * @apiSuccess (200) {Object[]} region
 	 * @apiSuccess (200) {String} region.name
 	 */
-	@RequestMapping(value = "/{id}/regions", produces = "application/json")
-	public ResponseEntity<String> getRegionsBySeries(
-			@PathVariable("id") Long id) {
-		Series series = Series.findSeries(id);
-		List<SeriesRegion> regions = SeriesRegion.findSeriesRegionsBySeries(series).getResultList();
-		return SpringJSONUtil.returnObject(regions, HttpStatus.OK);
+	@RequestMapping(value = "/create", produces = "application/json")
+	public ResponseEntity<String> create() {
+		FuseDevice device = new FuseDevice("punchpatrick" + UUID.randomUUID());
+		device.persist();
+		device.flush();
+		return new ResponseEntity<String>(device.toJson(), HttpStatus.OK);
 	}
 }
