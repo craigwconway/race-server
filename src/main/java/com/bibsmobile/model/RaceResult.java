@@ -609,6 +609,42 @@ public class RaceResult implements Comparable<RaceResult> {
         return fromHumanTime(humanReadable) > 0 ? startTime + fromHumanTime(humanReadable) : 0;
     }
 
+    public static String paceToHumanTime(long start, long finish, long meters) {
+    	if(finish == 0){
+    		return "N/A";
+    	}
+        long l = finish - start;
+        
+        String rtn = "";
+        if(l < 0 || meters == 0) {
+        	return "N/A";
+        }
+        double units = ((double) meters)/1760;
+        long lAdjusted = (long) (l/units);
+        
+        int hours = (int) ((lAdjusted / 3600000));
+        int minutes = (int) ((lAdjusted / 60000) % 60);
+        int seconds = (int) ((lAdjusted / 1000) % 60);
+        // int millis = (int) (l%100);
+        if (hours > 0 && hours <= 9)
+            rtn = "0" + hours + ":";
+        else if (hours > 9)
+            rtn = hours + ":";
+        else if (hours == 0)
+            rtn = "00:";
+        if (minutes > 0 && minutes <= 9)
+            rtn = rtn + "0" + minutes;
+        else if (minutes > 9)
+            rtn = rtn + "" + minutes;
+        else if (minutes == 0)
+            rtn = rtn + "00";
+        if (seconds >= 0 && seconds <= 9)
+            rtn = rtn + ":0" + seconds;
+        else if (seconds > 9)
+            rtn = rtn + ":" + seconds;
+        return rtn;
+    }    
+    
     public static String toHumanTime(long start, long finish) {
     	if(finish == 0){
     		return "00:00:00";

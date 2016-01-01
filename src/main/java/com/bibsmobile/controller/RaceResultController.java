@@ -580,6 +580,29 @@ public class RaceResultController {
         }
         return new ResponseEntity<>(RaceResultDetailDto.fromRaceResultToDto(raceResult), headers, HttpStatus.OK);
     }
+    
+    /**
+     * @api {get} /raceresults/details/:id Get Race Result Details
+     * @apiName Get Race Result Details
+     * @apiDescription Pass up an id to get a detailed description of a RaceResult
+     * @apiGroup raceresults
+     * @apiName getRaceResultById
+     * @apiUse raceResultDetailDto
+     * @apiPermission none
+     * @param id Long raceResult.id to get
+     * @return JSON object of raceResult with HTTP 200, or HTTP 404 Not found
+     */
+    @RequestMapping(value = "/details/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showDetails(@PathVariable("id") Long id) {
+        RaceResult raceResult = RaceResult.findRaceResult(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (raceResult == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(RaceResultDetailDto.fromRaceResultToDto(raceResult), headers, HttpStatus.OK);
+    }
 
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody

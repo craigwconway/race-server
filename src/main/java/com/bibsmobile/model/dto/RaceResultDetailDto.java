@@ -68,6 +68,13 @@ public class RaceResultDetailDto {
 		this.city = result.getCity();
 		this.timeofficialdisplay = result.getTimeofficialdisplay();
 		this.team = result.getTeam();
+		if(result.getEventType() != null) {
+			this.eventType = new EventTypeDto(result.getEventType());
+			//Calculate pace time.
+			if(result.getEventType().getMeters() != null && result.getEventType().getMeters() > 0) {
+				this.timePace = RaceResult.paceToHumanTime(result.getTimestart(), result.getTimeofficial(), result.getEventType().getMeters());
+			}
+		}
 		images = new ArrayList<RaceImageViewDto>();
 		for(RaceImage rawImage : result.getRaceImages()) {
 			images.add(new RaceImageViewDto(rawImage));
@@ -82,7 +89,9 @@ public class RaceResultDetailDto {
 	private String city;
 	private String gender;
 	private String timeofficialdisplay;
+	private String timePace;
 	private String team;
+	private EventTypeDto eventType;
 	private List<RaceImageViewDto> images;
 		
 	public String toJson() {
@@ -177,12 +186,26 @@ public class RaceResultDetailDto {
 	public String getTimeofficialdisplay() {
 		return timeofficialdisplay;
 	}
+	
+	/**
+	 * @return the timePace
+	 */
+	public String getTimePace() {
+		return timePace;
+	}
 
 	/**
 	 * @return the team
 	 */
 	public String getTeam() {
 		return team;
+	}
+	
+	/**
+	 * @return the eventType
+	 */
+	public EventTypeDto getEventType() {
+		return eventType;
 	}
 	
 	/**
