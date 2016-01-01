@@ -59,8 +59,10 @@ import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.Spatial;
 import org.hibernate.search.annotations.SpatialMode;
 import org.hibernate.search.annotations.DateBridge;
+import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.Unit;
 import org.joda.time.DateTimeZone;
 
 import flexjson.JSON;
@@ -318,8 +320,6 @@ public class Event {
         q.setMaxResults(size);
         return q;
     }
-
-    
 
 
     public static List<RaceResult> findRaceResultsForAnnouncer(long event, int page, int size) {

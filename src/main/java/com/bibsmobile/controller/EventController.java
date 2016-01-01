@@ -61,6 +61,7 @@ import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.hibernate.Hibernate;
 import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,6 +122,7 @@ import com.bibsmobile.model.wrapper.EventTypeTicketWrapper;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
 import com.bibsmobile.service.BibTimeout;
+import com.bibsmobile.service.EventService;
 
 import flexjson.JSON;
 import flexjson.JSONDeserializer;
@@ -132,6 +134,9 @@ public class EventController {
 
     private static final Logger log = LoggerFactory.getLogger(EventController.class);
 
+    @Autowired
+    private EventService eventService;
+    
     @Autowired
     private JavaMailSenderImpl mailSender;
 
@@ -1146,8 +1151,9 @@ public class EventController {
      * @param distances
      * @param series
      * @param region
-     * @param longitude
-     * @param latitude
+     * @param longitude Latitude of point to search
+     * @param latitude Longitude of point to search
+     * @param radius Radius in KM to search
      * @return
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
@@ -1162,8 +1168,21 @@ public class EventController {
     		@RequestParam(value = "distance", required = false) List<String> distances,
     		@RequestParam(value = "series", required = false) Long series,
     		@RequestParam(value = "region", required = false) Long region,
-    		@RequestParam(value = "longitude", required = false) Long longitude,
-    		@RequestParam(value = "latitude", required = false) Long latitude) {
+    		@RequestParam(value = "longitude", required = false) Double longitude,
+    		@RequestParam(value = "latitude", required = false) Double latitude,
+    		@RequestParam(value = "radius", required = false, defaultValue = "50") Double radius) {
+
+    	if(longitude != null && latitude != null) {
+    		System.out.println(eventService.geospatialSearch(longitude, latitude, radius));
+    	}
+    	if(name != null) {
+    		// Perform Name search
+    	}
+    	if(distances != null) {
+    		// perform named distances search
+    	} else if( lowDistance != null || highDistance != null) {
+    		// perform numeric distances search
+    	}
     	
     	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(Event.findEventsBySeriesAndNameEquals(Series.findSeries(series), name).getResultList()) ,HttpStatus.OK);
     }
