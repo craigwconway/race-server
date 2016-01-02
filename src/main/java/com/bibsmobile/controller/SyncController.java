@@ -32,8 +32,10 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
+import com.bibsmobile.model.DeviceStatus;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.FuseDevice;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Split;
 import com.bibsmobile.model.SyncReport;
@@ -141,6 +143,15 @@ public class SyncController {
         	zone = DateTimeZone.forID(syncObject.getTimezone());
     	} catch (Exception e) {
     		return SpringJSONUtil.returnErrorMessage("InvalidTimezone", HttpStatus.BAD_REQUEST);
+    	}
+    	// Check if the there is a valid certificate given to the FuseDevice
+    	if(syncObject.getDeviceId() != null && syncObject.getSecret() != null) {
+    		FuseDevice device = FuseDevice.findFuseDevice(syncObject.getDeviceId());
+    		// Check if device is authorized
+    		if(device.getSecret() == syncObject.getSecret()) {
+    			DeviceStatus deviceStatus = new DeviceStatus(syncObject.getReaderStatus(), device);
+    			deviceStatus.persist();
+    		}
     	}
     	List <Long> biblist = new LinkedList<Long>();
     	HashMap<Long, RaceResult> resultMap = new HashMap<Long, RaceResult>();
