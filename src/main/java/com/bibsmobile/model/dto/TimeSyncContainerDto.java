@@ -5,10 +5,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.persistence.Enumerated;
+
 import java.util.Date;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.ReaderStatus;
 import com.bibsmobile.model.TimeSyncEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,6 +86,13 @@ public class TimeSyncContainerDto {
 	 */
 	private List<TimeSyncDto> times;
 
+	private Long deviceId;
+	
+	private String secret;
+	
+	@Enumerated
+	private ReaderStatus readerStatus;
+	
 	/**
 	 * @return return the mode
 	 */
@@ -145,7 +156,31 @@ public class TimeSyncContainerDto {
 		return times;
 	}
 	
+	// Fuse status classes
+	
+	
 	public void setTimes(List<TimeSyncDto> times) {
 		this.times=times;
+	}
+
+	/**
+	 * @return the deviceId
+	 */
+	public Long getDeviceId() {
+		return deviceId;
+	}
+
+	/**
+	 * @return the secret
+	 */
+	public String getSecret() {
+		return secret;
+	}
+
+	/**
+	 * @return the readerStatus
+	 */
+	public ReaderStatus getReaderStatus() {
+		return readerStatus;
 	}
 }
