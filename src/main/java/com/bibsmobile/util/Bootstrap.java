@@ -11,6 +11,7 @@ import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAwardsConfig;
 import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.FuseDevice;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.TimerConfig;
@@ -37,22 +38,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
+    
     private static UserAuthority userAuthority;
-    @Autowired
+
     private static UserAuthorities userAuthorities;
 
-    @Autowired
     private static UserProfile userProfile;
-
-    @Autowired
-    private static AwardCategory awardCategory;
-
-    @Autowired
-    private static TimerConfig timerConfig;
-
-    @Autowired
-    private static UserGroup userGroup;
     
     @Autowired
     private StandardPasswordEncoder encoder;
@@ -167,7 +158,14 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
             
         }
+    	
+    	if(FuseDevice.countFuseDevices() < 1) {
+        	FuseDevice fuseDevice = new FuseDevice("dirt");
+        	fuseDevice.setSecret("vn+KIMN1Ca6ouJgQ8rU0CluOyBrnKLs29oAgCluoIVk=");
+        	fuseDevice.persist();
+    	}
 
+    	
         // expire leftover carts at startup
         try {
             BaseJob.scheduleNow(CartExpiration.class);
