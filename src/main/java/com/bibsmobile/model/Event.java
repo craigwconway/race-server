@@ -58,6 +58,7 @@ import org.hibernate.search.annotations.Longitude;
 import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.Spatial;
 import org.hibernate.search.annotations.SpatialMode;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
@@ -103,6 +104,7 @@ public class Event {
 
     private TimeZone timezone;
   
+    @ContainedIn
 	@ManyToOne
 	private Series series;
 	

@@ -1166,7 +1166,7 @@ public class EventController {
     		@RequestParam(value = "highdistance", required = false) Long highDistance,
     		@RequestParam(value = "racetype", required = false) List<String> racetypes,
     		@RequestParam(value = "distance", required = false) List<String> distances,
-    		@RequestParam(value = "series", required = false) Long series,
+    		@RequestParam(value = "series", required = false) Long seriesId,
     		@RequestParam(value = "region", required = false) Long region,
     		@RequestParam(value = "longitude", required = false) Double longitude,
     		@RequestParam(value = "latitude", required = false) Double latitude,
@@ -1185,8 +1185,17 @@ public class EventController {
     	} else if( lowDistance != null || highDistance != null) {
     		// perform numeric distances search
     	}
+    	if(seriesId!= null) {
+    		Series series = Series.findSeries(seriesId);
+    		try{ 
+        		System.out.println(eventService.seriesQuery(series));
+    		} catch(Exception e)  {
+    			e.printStackTrace();
+    			System.out.println(e.getMessage());
+    		}
+    	}
     	
-    	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(Event.findEventsBySeriesAndNameEquals(Series.findSeries(series), name).getResultList()) ,HttpStatus.OK);
+    	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(Event.findEventsBySeriesAndNameEquals(Series.findSeries(seriesId), name).getResultList()) ,HttpStatus.OK);
     }
     
     @RequestMapping(value = "/search/webappsearch", method = RequestMethod.GET)
@@ -1945,6 +1954,7 @@ public class EventController {
 
         event.setRegEnabled(true);
         event.persist();
+        SlackUtil.logToggleRegistration(true, event.getName(), UserProfileUtil.getLoggedInUserProfile().getUsername());
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }
@@ -1965,7 +1975,7 @@ public class EventController {
         
         event.setRegEnabled(false);
         event.persist();
-        
+        SlackUtil.logToggleRegistration(false, event.getName(), UserProfileUtil.getLoggedInUserProfile().getUsername());
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }

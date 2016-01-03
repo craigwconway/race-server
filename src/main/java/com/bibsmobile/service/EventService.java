@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.Series;
 
 /**
  * Service for event business stuff
@@ -119,5 +120,20 @@ public class EventService {
 
     	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
     }
+
+    @Transactional
+    public List<Event> seriesQuery(Series series) {
+    	EntityManager em = emf.createEntityManager();
+    	FullTextEntityManager fullTextEntityManager = 
+    		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+    	em.getTransaction().begin();
+    	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
+    	org.apache.lucene.search.Query luceneQuery = builder.range()
+    			.onField("series.id")
+    			.from(series.getId())
+    			.to(series.getId())
+    			.createQuery();
+    	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+    }    
     
 }
