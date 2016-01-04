@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,9 +41,12 @@ import javax.ws.rs.PUT;
 
 import com.bibsmobile.util.MailgunUtil;
 import com.google.gson.JsonObject;
+import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.auth0.jwt.internal.com.fasterxml.jackson.core.JsonGenerationException;
 import com.auth0.jwt.internal.com.fasterxml.jackson.databind.JsonMappingException;
 import com.auth0.jwt.internal.com.fasterxml.jackson.databind.ObjectMapper;
@@ -1938,7 +1942,28 @@ public class EventController {
         event.persist();
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return waiver;
-    }    
+    }
+
+    @RequestMapping(value = "/{id}/signedwaiver", produces = "text/plain", method = RequestMethod.GET)
+    @ResponseBody
+    public String waiverSampleSigned(@PathVariable("id") Long id) {
+    	Event event = Event.findEvent(id);
+    	AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider());
+    	URL waiverURL;
+    	try {
+			 waiverURL = new URL(event.getWaiver());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "ERROR PARSING URL";
+		}
+    	GeneratePresignedUrlRequest generatePresignedUrlRequest = 
+    			new GeneratePresignedUrlRequest("bibs-events", waiverURL.getPath().substring(1));
+    	generatePresignedUrlRequest.setMethod(HttpMethod.GET); // Default.
+		generatePresignedUrlRequest.setExpiration(new Date(new Date().getTime() + 1000 * 60 * 10));
+		URL s = s3client.generatePresignedUrl(generatePresignedUrlRequest);
+		return s.toString();
+    }
     /*
      * Enable registration for an event
      * @return returns the event show view
