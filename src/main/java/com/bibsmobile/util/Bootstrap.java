@@ -97,6 +97,15 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             foo.setCharity("American Red Cross");
             foo.setTimeStart(new DateTime().toDate());
             foo.setTimeStartLocal(format.format(foo.getTimeStart()));
+            //Advanced Fields
+            foo.setParking("Parking is available in the lot at Divisadero and Scott. There is a $5 fee payable to the ranger.");
+            foo.setGeneral("This run is called King's Canyon to commemorate the trials of one hiker who"
+            		+ " shrugged his way across the wilderness preserve. It has a 5k run for runners and a 1 mile run for"
+            		+ " beginners. Volunteers from years past will haunt the course and distribute water at a halfway point for athletes.");
+            foo.setHashtag("runwithWOW");
+            foo.setCourseRules("Runners should stick to the trail and yeild to any horses or angry ghosts.");
+            
+            
             foo.persist();
             
             EventType type = new EventType();
