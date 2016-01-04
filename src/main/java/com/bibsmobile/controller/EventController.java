@@ -376,6 +376,10 @@ public class EventController {
             eventType.setGunFired(true);
             eventType.setGunTime(new Date());
             eventType.merge();
+            for(RaceResult r : RaceResult.findRaceResultsByEventType(eventType).getResultList()) {
+            	r.setTimestart(eventType.getGunTime().getTime());
+            	r.merge();
+            }
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             return "false";

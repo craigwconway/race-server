@@ -393,13 +393,13 @@ public class Event {
     }
 
     @Transactional
-    public static int updateRaceResultsStarttimeByByEvent(Event event, long time0, long time1) {
-        System.out.println("updateRaceResultsStarttimeByByEvent " + event + " " + time0 + " " + time1);
+    public static int updateRaceResultsGuntimeByByEvent(EventType eventType, long time) {
+        System.out.println("updateRaceResultsStarttimeByByEventType " + eventType + " " + time);
         EntityManager em = RaceResult.entityManager();
-        Query q = em.createQuery("UPDATE RaceResult SET timestart = :time1 WHERE event = :event AND " + " (timestart is null OR timestart = 0 OR timestart = :time0) ");
-        q.setParameter("event", event);
-        q.setParameter("time0", time0);
-        q.setParameter("time1", time1);
+        em.joinTransaction();
+        Query q = em.createQuery("UPDATE RaceResult SET timestart = :time WHERE eventType = :eventType");
+        q.setParameter("eventType", eventType);
+        q.setParameter("time", time);
         System.out.println("updateRaceResultsStarttimeByByEvent excuteUpdate");
         return q.executeUpdate();
     }
