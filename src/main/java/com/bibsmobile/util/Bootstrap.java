@@ -14,6 +14,8 @@ import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.FuseDevice;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.Series;
+import com.bibsmobile.model.SeriesRegion;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
@@ -145,7 +147,39 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             	user.persist();
             }
             
-
+            if(Series.findAllSeries().isEmpty()) {
+            	Series zapposRaceSeries = new Series();
+            	zapposRaceSeries.setName("Zappos Race Series");
+            	zapposRaceSeries.setTitleSponsor("Zappos");
+            	zapposRaceSeries.persist();
+            	Set <SeriesRegion> seriesRegions = new HashSet<SeriesRegion>();
+            	SeriesRegion sf = new SeriesRegion();
+            	sf.setName("San Francisco");
+            	seriesRegions.add(sf);
+            	SeriesRegion charlotte = new SeriesRegion();
+            	charlotte.setName("Charlotte");
+            	seriesRegions.add(charlotte);
+            	SeriesRegion ny = new SeriesRegion();
+            	ny.setName("New York");
+            	seriesRegions.add(ny);
+            	SeriesRegion boston = new SeriesRegion();
+            	boston.setName("Boston");
+            	seriesRegions.add(boston);
+            	SeriesRegion atlanta = new SeriesRegion();
+            	atlanta.setName("Atlanta");
+            	seriesRegions.add(atlanta);
+            	SeriesRegion portland = new SeriesRegion();
+            	portland.setName("Portland");
+            	seriesRegions.add(portland);
+            	SeriesRegion seattle = new SeriesRegion();
+            	seattle.setName("Seattle");
+            	seriesRegions.add(seattle);
+            	SeriesRegion austin = new SeriesRegion();
+            	austin.setName("Austin");
+            	seriesRegions.add(austin);
+            	zapposRaceSeries.setRegions(seriesRegions);
+            	zapposRaceSeries.merge();
+            }
             // default awards categories
             AwardCategory.createDefaultMedals(type);
             AwardCategory.createAgeGenderRankings(type, 
