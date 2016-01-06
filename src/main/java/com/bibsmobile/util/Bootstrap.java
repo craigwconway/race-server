@@ -1,15 +1,21 @@
 package com.bibsmobile.util;
 
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.TimeZone;
 
 import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventAwardsConfig;
+import com.bibsmobile.model.EventType;
+import com.bibsmobile.model.FuseDevice;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.Series;
+import com.bibsmobile.model.SeriesRegion;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
@@ -34,22 +40,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
+    
     private static UserAuthority userAuthority;
-    @Autowired
+
     private static UserAuthorities userAuthorities;
 
-    @Autowired
     private static UserProfile userProfile;
-
-    @Autowired
-    private static AwardCategory awardCategory;
-
-    @Autowired
-    private static TimerConfig timerConfig;
-
-    @Autowired
-    private static UserGroup userGroup;
     
     @Autowired
     private StandardPasswordEncoder encoder;
@@ -81,26 +77,78 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent event) {
     	
     	if(Event.findAllEvents().isEmpty()){
-    	    
+    		TimeZone systemtz = TimeZone.getDefault();
+    		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+    		
             Event foo = new Event();
             foo.setName("Kings Canyon Critical Mass");
-            foo.setCity("Kings Canyon");
-            foo.setState("Colordo");
-            foo.setGunTime(new DateTime().toDate());
+            foo.setCity("San Francisco");
+            foo.setDescription("Official Kings Canyon race! Volunteers along the course will distribute shrugs.");
+            foo.setAddress("904 Haight St");
+            foo.setOrganization("Bibs Athletic Events");
+            foo.setWebsite("http://mybibs.co");
+            foo.setZip("94117");
+            foo.setState("CA");
+            foo.setCountry("United States");
+            foo.setLongitude(-122.43723019999999);
+            foo.setLatitude(37.771276);
+            foo.setTimezone(systemtz);
+            foo.setPhone("9253602927");
+            foo.setCharity("American Red Cross");
             foo.setTimeStart(new DateTime().toDate());
-            foo.setAwardsConfig(new EventAwardsConfig());
+            foo.setTimeStartLocal(format.format(foo.getTimeStart()));
+            //Advanced Fields
+            foo.setParking("Parking is available in the lot at Divisadero and Scott. There is a $5 fee payable to the ranger.");
+            foo.setGeneral("This run is called King's Canyon to commemorate the trials of one hiker who"
+            		+ " shrugged his way across the wilderness preserve. It has a 5k run for runners and a 1 mile run for"
+            		+ " beginners. Volunteers from years past will haunt the course and distribute water at a halfway point for athletes.");
+            foo.setHashtag("runwithWOW");
+            foo.setCourseRules("Runners should stick to the trail and yeild to any horses or angry ghosts.");
+            
+            
             foo.persist();
+            
+            EventType type = new EventType();
+            type.setEvent(foo);
+            type.setStartTime(new DateTime().toDate());
+            type.setTimeStartLocal(format.format(type.getStartTime()));
+            type.setDistance("5k");
+            type.setRacetype("Running");
+            type.setMeters(new Long(5000));
+            type.setTypeName("Run with the Lizards 5k");
+            type.setGunTime(new DateTime().toDate());
+            type.setGunFired(true);
+            type.persist();
+            
+            EventType type2 = new EventType();
+            type2.setEvent(foo);
+            type2.setStartTime(new DateTime().toDate());
+            type2.setTimeStartLocal(format.format(type.getStartTime()));
+            type2.setDistance("1 mi");
+            type2.setRacetype("Running");
+            type2.setMeters(new Long(1760));
+            type2.setTypeName("Run with the Wizards 1 Miler");
+            type2.setGunTime(new DateTime().toDate());
+            type2.setGunFired(true);
+            type2.persist();
             
             for(long i = 1; i < 300; i++){
             	RaceResult user = new RaceResult();
             	user.setBib(i);
             	user.setEvent(foo);
+            	if(i %3 == 0) {
+            		user.setEventType(type2);
+            	} else {
+            		user.setEventType(type);
+            	}
+            	
             	user.setAge(generateRandomAge());
             	user.setGender( (i%2==0) ? "M" : "F");
             	user.setTimeofficial(Math.abs(
-            			(int) new DateTime().plusMinutes(r.nextInt(60)).toDate().getTime()));
+            			 new DateTime().plusMinutes(r.nextInt(60)).plusMinutes(15).plusSeconds(10).plusSeconds(r.nextInt(39)).toDate().getTime()));
+            	user.setTimestart(user.getEventType().getGunTime().getTime());
             	user.setTimeofficialdisplay(
-            			RaceResult.toHumanTime(foo.getGunTime().getTime(), user.getTimeofficial()));
+            			RaceResult.toHumanTime(user.getTimestart(), user.getTimeofficial()));
             	user.setFirstname(generateRandomName());
             	user.setLastname(generateRandomName());
             	user.setCity("San Francisco");
@@ -108,15 +156,59 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             	user.persist();
             }
             
-
+            if(Series.findAllSeries().isEmpty()) {
+            	Series zapposRaceSeries = new Series();
+            	zapposRaceSeries.setName("Zappos Race Series");
+            	zapposRaceSeries.setTitleSponsor("Zappos");
+            	zapposRaceSeries.persist();
+            	Set <SeriesRegion> seriesRegions = new HashSet<SeriesRegion>();
+            	SeriesRegion sf = new SeriesRegion();
+            	sf.setName("San Francisco");
+            	seriesRegions.add(sf);
+            	SeriesRegion charlotte = new SeriesRegion();
+            	charlotte.setName("Charlotte");
+            	seriesRegions.add(charlotte);
+            	SeriesRegion ny = new SeriesRegion();
+            	ny.setName("New York");
+            	seriesRegions.add(ny);
+            	SeriesRegion boston = new SeriesRegion();
+            	boston.setName("Boston");
+            	seriesRegions.add(boston);
+            	SeriesRegion atlanta = new SeriesRegion();
+            	atlanta.setName("Atlanta");
+            	seriesRegions.add(atlanta);
+            	SeriesRegion portland = new SeriesRegion();
+            	portland.setName("Portland");
+            	seriesRegions.add(portland);
+            	SeriesRegion seattle = new SeriesRegion();
+            	seattle.setName("Seattle");
+            	seriesRegions.add(seattle);
+            	SeriesRegion austin = new SeriesRegion();
+            	austin.setName("Austin");
+            	seriesRegions.add(austin);
+            	zapposRaceSeries.setRegions(seriesRegions);
+            	zapposRaceSeries.merge();
+            }
             // default awards categories
-            AwardCategory.createDefaultMedals(foo);
-            AwardCategory.createAgeGenderRankings(foo, 
+            AwardCategory.createDefaultMedals(type);
+            AwardCategory.createAgeGenderRankings(type, 
+            		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+            		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
+            
+            AwardCategory.createDefaultMedals(type2);
+            AwardCategory.createAgeGenderRankings(type2, 
             		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
             		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
             
         }
+    	
+    	if(FuseDevice.countFuseDevices() < 1) {
+        	FuseDevice fuseDevice = new FuseDevice("dirt");
+        	fuseDevice.setSecret("vn+KIMN1Ca6ouJgQ8rU0CluOyBrnKLs29oAgCluoIVk=");
+        	fuseDevice.persist();
+    	}
 
+    	
         // expire leftover carts at startup
         try {
             BaseJob.scheduleNow(CartExpiration.class);

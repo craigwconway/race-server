@@ -13,17 +13,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PrePersist;
@@ -49,16 +52,31 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Latitude;
 import org.hibernate.search.annotations.Longitude;
+import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.Spatial;
 import org.hibernate.search.annotations.SpatialMode;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.DateBridge;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.query.dsl.Unit;
 import org.joda.time.DateTimeZone;
 
 import flexjson.JSON;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
+/**
+ * This represents a single race or collection of races held on raceday by a director.
+ * This is a very large object, and will be slow in seriailization. To create json objects,
+ * it is highly recommended to use {@link com.bibsmobile.model.dto.EventDto EventDto} objects for this task.
+ * @author galen
+ *
+ */
 @Configurable
 @Entity
 @Indexed
@@ -74,20 +92,26 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private Set<ResultsFile> resultsFiles;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
-    private List<AwardCategory> awardCategorys;
-
     @Field
     private String name;
 
+    @Field
+    @DateBridge(resolution = Resolution.DAY)
     @Temporal(TemporalType.TIMESTAMP)
     private Date timeStart;
 
     private String timeStartLocal;
 
     private TimeZone timezone;
-    
-    private int featured;
+  
+    @ContainedIn
+	@ManyToOne
+	private Series series;
+	
+	@ManyToOne
+	private SeriesRegion region;
+	
+    private int featured=0;
 
     private String address;
 
@@ -107,6 +131,7 @@ public class Event {
     @Longitude
     private Double longitude;
 
+    @IndexedEmbedded
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private Set<EventType> eventTypes;
 
@@ -118,6 +143,7 @@ public class Event {
 
     private String registration;
 
+    @Column(length = 2000)
     private String general;
 
     private String description;
@@ -133,12 +159,9 @@ public class Event {
 
     private String photo3;
     
-    /**
-     * Embedded object containing the EventAwardsConfig.
-     */
-    @Embedded
-    private EventAwardsConfig awardsConfig;
-
+    @Enumerated
+    private PaymentProviderEnum provider;
+    
     @Embedded
     private EventPricing pricing = new EventPricing();
     
@@ -154,18 +177,16 @@ public class Event {
 
     private int running;
 
-    private boolean gunFired;
+    private boolean sync = false;
 
-    private boolean sync;
-
-    private String syncId;
+    private String syncId = UUID.randomUUID().toString();
     
     @Field
     private String charity;
 
-    private boolean regEnabled;
+    private boolean regEnabled = false;
 
-    private boolean ticketTransferEnabled;
+    private boolean ticketTransferEnabled = false;
 
     private String ticketTransferCutoffLocal;
     
@@ -177,7 +198,7 @@ public class Event {
     
     private String topSharerReward;
     
-    private boolean live;
+    private boolean live = false;
     
     /**
      * Used by Event Directors to restrict one shirt per order with registration
@@ -187,7 +208,7 @@ public class Event {
     /**
      * Used by Event Directors to hide events they no longer want to see
      */
-    private boolean hidden;
+    private boolean hidden = false;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
@@ -196,12 +217,6 @@ public class Event {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
     private Date regEnd;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
-    private Date gunTime;
-
-    private long gunTimeStart;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
@@ -308,102 +323,6 @@ public class Event {
         return q;
     }
 
-    public List<RaceResult> getAwards(String gender, int min, int max, int size) {
-    	return getAwards( gender,  min,  max,  size, new ArrayList<Long>());
-    }
-
-    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<Long> excludeBibs) { 
-    	List<RaceResult> results = Event.findRaceResultsByAwardCategory(id,gender,min,max,1,999);
-    	Collections.sort(results);
-    	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
-    	for(RaceResult r : results){
-    		if(!excludeBibs.contains(r.getBib())){
-    			resultsFiltered.add(r);
-    		}
-    		if(resultsFiltered.size() == size){
-    			break;
-    		}
-    	}
-    	Collections.sort(resultsFiltered);
-    	return resultsFiltered;
-    }
-
-    
-    public List<AwardCategoryResults> calculateRank(Event event){
-    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	
-		// filter medals
-		List<Long> awarded = new ArrayList<Long>();
-    	for(AwardCategory c:event.getAwardCategorys()){
-    		if(!c.isMedal()){
-    			List<RaceResult> rr = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), 9999, awarded);
-    			results.add(new AwardCategoryResults(c,rr));
-    			// track mdals, only 1 medal ppn
-    			for(RaceResult r:rr){
-        			awarded.add(r.getBib());
-    			}
-    		}
-    	}
-    	
-    	Collections.sort(results);
-    	return results;
-    }
-    
-    
-    public List<AwardCategoryResults> calculateMedals(Event event){
-    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	List<Long> mastersBibs = new ArrayList<Long>();
-    	
-    	// if not allow masters in overall, collect masters bibs, pass into non-masters
-    	if(!event.getAwardsConfig().isAllowMastersInNonMasters()){
-        	for(AwardCategory c:event.getAwardCategorys()){
-        		if(c.isMedal() && c.isMaster()){
-        			List<RaceResult> masters = event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
-        			for(RaceResult m:masters){
-        				mastersBibs.add(m.getBib());
-        			}
-        		}
-        	}
-    	}
-    	
-		// filter medals
-		List<Long> awarded = new ArrayList<Long>();
-    	for(AwardCategory c:event.getAwardCategorys()){
-    		if(c.isMedal()){
-    			List<RaceResult> rr = (c.isMaster()) ? event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)
-    					: event.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs);
-    			results.add(new AwardCategoryResults(c,rr));
-    			// track mdals, only 1 medal ppn
-    			for(RaceResult r:rr){
-        			awarded.add(r.getBib());
-        			mastersBibs.add(r.getBib());
-    			}
-    		}
-    	}
-    	
-    	Collections.sort(results);
-    	return results;
-    }
-
-    public static List<RaceResult> findRaceResultsByAwardCategory(long event, String gender, int min, int max, int page, int size) {
-        if (min > max)
-            min = max;
-        String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
-        if (!gender.isEmpty()) HQL += " AND o.gender = :gender ";
-        if (min >= 0 && max > 0) HQL += "AND o.age >= :min AND o.age <= :max ) ";
-        HQL += " order by o.timeofficialdisplay asc";
-        EntityManager em = RaceResult.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
-        q.setParameter("event", Event.findEvent(event));
-        if (!gender.isEmpty()) q.setParameter("gender", gender);
-        if (min >= 0 && max > 0) {
-            q.setParameter("min", min);
-            q.setParameter("max", max);
-        }
-        q.setFirstResult((page - 1) * size);
-        q.setMaxResults(size);
-        return q.getResultList();
-    }
 
     public static List<RaceResult> findRaceResultsForAnnouncer(long event, int page, int size) {
         String HQL = "SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.timeofficial > 0 ";
@@ -474,13 +393,13 @@ public class Event {
     }
 
     @Transactional
-    public static int updateRaceResultsStarttimeByByEvent(Event event, long time0, long time1) {
-        System.out.println("updateRaceResultsStarttimeByByEvent " + event + " " + time0 + " " + time1);
+    public static int updateRaceResultsGuntimeByByEvent(EventType eventType, long time) {
+        System.out.println("updateRaceResultsStarttimeByByEventType " + eventType + " " + time);
         EntityManager em = RaceResult.entityManager();
-        Query q = em.createQuery("UPDATE RaceResult SET timestart = :time1 WHERE event = :event AND " + " (timestart is null OR timestart = 0 OR timestart = :time0) ");
-        q.setParameter("event", event);
-        q.setParameter("time0", time0);
-        q.setParameter("time1", time1);
+        em.joinTransaction();
+        Query q = em.createQuery("UPDATE RaceResult SET timestart = :time WHERE eventType = :eventType");
+        q.setParameter("eventType", eventType);
+        q.setParameter("time", time);
         System.out.println("updateRaceResultsStarttimeByByEvent excuteUpdate");
         return q.executeUpdate();
     }
@@ -589,8 +508,8 @@ public class Event {
         return new EqualsBuilder().append(this.address, rhs.address).append(this.city, rhs.city).append(this.state, rhs.state)
                 .append(this.country, rhs.country).append(this.location, rhs.location).append(this.zip, rhs.zip).append(this.courseRules, rhs.courseRules).append(this.hashtag, rhs.hashtag).append(this.created, rhs.created)
                 .append(this.description, rhs.description).append(this.donateUrl, rhs.donateUrl).append(this.email, rhs.email).append(this.facebookUrl1, rhs.facebookUrl1)
-                .append(this.featured, rhs.featured).append(this.general, rhs.general).append(this.gunFired, rhs.gunFired)
-                .append(this.gunTime, rhs.gunTime).append(this.gunTimeStart, rhs.gunTimeStart).append(this.id, rhs.id).append(this.latitude, rhs.latitude)
+                .append(this.featured, rhs.featured).append(this.general, rhs.general)
+                .append(this.id, rhs.id).append(this.latitude, rhs.latitude)
                 .append(this.longitude, rhs.longitude).append(this.name, rhs.name).append(this.organization, rhs.organization).append(this.parking, rhs.parking).append(this.phone, rhs.phone)
                 .append(this.photo, rhs.photo).append(this.photo2, rhs.photo2).append(this.photo3, rhs.photo3).append(this.photoUploadUrl, rhs.photoUploadUrl)
                 .append(this.regEnabled, rhs.regEnabled).append(this.regEnd, rhs.regEnd).append(this.regStart, rhs.regStart).append(this.registration, rhs.registration)
@@ -603,8 +522,8 @@ public class Event {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(this.address).append(this.city).append(this.state).append(this.country).append(this.location).append(this.zip).append(this.courseRules).append(this.hashtag).append(this.created).append(this.description)
-                .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.featured).append(this.general).append(this.gunFired)
-                .append(this.gunTime).append(this.gunTimeStart).append(this.id).append(this.latitude).append(this.longitude).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
+                .append(this.donateUrl).append(this.email).append(this.facebookUrl1).append(this.featured).append(this.general)
+                .append(this.id).append(this.latitude).append(this.longitude).append(this.name).append(this.organization).append(this.parking).append(this.phone).append(this.photo).append(this.photo2)
                 .append(this.photo3).append(this.photoUploadUrl).append(this.regEnabled).append(this.regEnd).append(this.regStart).append(this.registration).append(this.running).append(this.sync).append(this.syncId)
                 .append(this.timeStartLocal).append(this.timeStart).append(this.updated).append(this.waiver).append(this.website).toHashCode();
     }
@@ -618,6 +537,15 @@ public class Event {
         return q.getSingleResult();
     }
 
+    public static Long countFindEventsBySeriesEquals(Series series) {
+        if (series == null)
+            throw new IllegalArgumentException("The state argument is required");
+        EntityManager em = Event.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM Event AS o WHERE o.series = :series", Long.class);
+        q.setParameter("series", series);
+        return q.getSingleResult();
+    }    
+    
     public static Long countFindEventsByStateEqualsAndCityEquals(String state, String city) {
         if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
@@ -649,6 +577,34 @@ public class Event {
         return q;
     }
 
+    public static TypedQuery<Event> findEventsBySeriesEquals(Series series) {
+        if (series == null)
+            throw new IllegalArgumentException("The series argument is required");
+        EntityManager em = Event.entityManager();
+        TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.series = :series", Event.class);
+        q.setParameter("series", series);
+        return q;
+    }    
+
+    public static TypedQuery<Event> findEventsBySeriesAndNameEquals(Series series, String name) {
+        if (series == null)
+            throw new IllegalArgumentException("The series argument is required");
+        EntityManager em = Event.entityManager();
+        TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.series = :series AND o.name = :name", Event.class);
+        q.setParameter("series", series);
+        q.setParameter("name", name);
+        return q;
+    }    
+    
+    public static TypedQuery<Event> findEventsByRegionEquals(SeriesRegion region) {
+        if (region == null)
+            throw new IllegalArgumentException("The series argument is required");
+        EntityManager em = Event.entityManager();
+        TypedQuery<Event> q = em.createQuery("SELECT o FROM Event AS o WHERE o.region = :region", Event.class);
+        q.setParameter("region", region);
+        return q;
+    }      
+    
     public static TypedQuery<Event> findEventsByStateEquals(String state, String sortFieldName, String sortOrder) {
         if (state == null || state.isEmpty())
             throw new IllegalArgumentException("The state argument is required");
@@ -834,6 +790,8 @@ public class Event {
         return q.getResultList();
     }    
     
+    
+    
     public static List<Event> findEventEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM Event o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
@@ -915,13 +873,6 @@ public class Event {
         this.resultsFiles = resultsFiles;
     }
 
-    public List<AwardCategory> getAwardCategorys() {
-        return this.awardCategorys;
-    }
-
-    public void setAwardCategorys(List<AwardCategory> awardCategorys) {
-        this.awardCategorys = awardCategorys;
-    }
 
     public String getName() {
         return this.name;
@@ -1168,14 +1119,6 @@ public class Event {
         this.running = running;
     }
 
-    public boolean isGunFired() {
-        return this.gunFired;
-    }
-
-    public void setGunFired(boolean gunFired) {
-        this.gunFired = gunFired;
-    }
-
     public boolean isSync() {
         return this.sync;
     }
@@ -1214,22 +1157,6 @@ public class Event {
 
     public void setRegEnd(Date regEnd) {
         this.regEnd = regEnd;
-    }
-
-    public Date getGunTime() {
-        return this.gunTime;
-    }
-
-    public void setGunTime(Date gunTime) {
-        this.gunTime = gunTime;
-    }
-
-    public long getGunTimeStart() {
-        return this.gunTimeStart;
-    }
-
-    public void setGunTimeStart(long gunTimeStart) {
-        this.gunTimeStart = gunTimeStart;
     }
 
     public Date getCreated() {
@@ -1507,22 +1434,6 @@ public class Event {
 	}
 	public void setParking(String parking) {
 		this.parking = parking;
-	}
-
-	/**
-	 * This is an embedded entity inside of Event and can only be selected from its context.
-	 * @return the awardsConfig
-	 */
-	public EventAwardsConfig getAwardsConfig() {
-		return awardsConfig;
-	}
-
-	/**
-	 * This is an embedded entity inside of event and can only be set from its context.
-	 * @param awardsConfig the awardsConfig to set
-	 */
-	public void setAwardsConfig(EventAwardsConfig awardsConfig) {
-		this.awardsConfig = awardsConfig;
 	}
 
 	/**

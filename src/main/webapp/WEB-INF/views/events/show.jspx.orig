@@ -1,0 +1,1622 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+    <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
+    <div class="modal fade" id="regButton" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
+                </div>
+                <div class="modal-body">
+                <div class="preview">Preview: 
+                    <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
+                </div>
+                Embed the code below to generate a bibs registration button:<br/>
+                <c:set var="reghtml" value='&lt;form action="${build.frontend}/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
+                <pre>${fn:escapeXml(reghtml)}</pre>
+                Link: <br/> <a href="${build.frontend}/registration/#/${event.id}">${build.frontend}/registration/#/${event.id}</a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="liveResults" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="live-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="live-label">Live Results Snippet</h4>
+                </div>
+                <div class="modal-body">
+                Copy the url below to share live results:<br/>
+                <c:set var="livehead" value='&lt;a href="${build.frontend}/webapp/#/raceday/ug/'/>
+                <c:set var="livetail" value='/t/1/events"&gt;&lt;/a&gt;'/>
+                <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="waiverModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="waiver-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="waiver-label">Waiver</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="waiver-content" name="waiver">Paste your waiver here.</textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui green button post-waiver-button" onclick="postWaiver()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="email-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="email-label">Email</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui negative message" id="emailError" style="display:none">
+                        <i class="fa fa-times close" style="float:right"><!--  --></i>
+                        <div class="header">Error</div>
+                        <p><!--  --></p>
+                    </div>
+                    <div class="ui form" id="emailForm">
+                        <div class="field">
+                            <label>Email by event type</label>
+                            <div class="ui fluid selection dropdown" id="event-type">
+                                <input type="hidden" name="type"><!--  --></input>
+                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                <div class="default text">Event Type (optional)</div>
+                                <div class="menu">
+                                    <c:forEach var="item" items="${eventTypes}">
+                                        <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="required field">
+                            <label>Subject</label>
+                            <input class="form-control" name="subject" placeholder="Subject"></input>
+                        </div>
+                        <div class="required field">
+                            <label>Body</label>
+                            <textarea class="form-control" name="body"><!--  --></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui green button post-email-button" onclick="sendEmail();return false;">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bibsModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="bibs-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="bibs-label">Manage Bib Numbers</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui info small message">
+                        <i class="fa fa-times fa-lg close" style="float:right"><!--  --></i>
+                        <div class="header"><!--  --></div>
+                        <ul class="list">
+                            <li>This feature will overwrite currently assigned bib numbers.</li>
+                            <li>To manually assign bib numbers, please do so via <strong>Export Registrations</strong> under the Registration tab.</li>
+                        </ul>
+                    </div>
+                    <div class="ui small negative message" id="bibsError" style="display:none">
+                        <i class="fa fa-times close" style="float:right"><!--  --></i>
+                        <div class="header">Error</div>
+                        <p><!--  --></p>
+                    </div>
+                    <div class="ui form" id="bibsForm">
+                        <div class="required field">
+                            <label>Select Event Type</label>
+                            <div class="ui fluid selection dropdown" id="event-type">
+                                <input type="hidden" name="type"><!--  --></input>
+                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                <div class="default text">Event Type</div>
+                                <div class="menu">
+                                    <c:forEach var="item" items="${eventTypes}">
+                                        <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                    </c:forEach>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <label>Bib Ranges (optional)</label>
+                            <div style="clear:both"><!--  --></div>
+                            <div class="field" style="padding-left:0">
+                                <label>Lowest Bib Number</label>
+                                <input class="form-control" type="number" min="1" id="lowbib" name="lowbib"></input>
+                            </div>
+                            <div class="field">
+                                <label>Highest Bib Number</label>
+                                <input class="form-control" type="number" min="2" id="highbib" name="highbib"><!--  --></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui red button post-bibs-button" onclick="assignBibs();return false;">Overwrite Bib Numbers</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exportReg" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="export-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="export-label">Export Registration</h4>
+                </div>
+                <div class="modal-body">
+                    <style>.ui.three.cards > .card:nth-child(3n+1){ clear:none; }
+                        .ui.three.cards{ outline: none; border: none; margin: 0 auto; width: 75%; text-align: center; }
+                        .ui.cards > .card > .content, .ui.card > .content:hover{ cursor: pointer; }
+                    </style>
+                    <div class="ui three cards" id="ticket-type">
+                        <div class="ui card" id="card-ticket" onclick="setExportRegType('TICKET')">
+                            <div class="content">
+                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
+                            </div>
+                        </div>
+                        <div class="ui card" id="card-tshirt" onclick="setExportRegType('T_SHIRT')">
+                            <div class="content">
+                                <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
+                            </div>
+                        </div>
+                        <div class="ui card" id="card-donation" onclick="setExportRegType('DONATION')">
+                            <div class="content">
+                                <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width:70%;margin:0 auto">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="questions"></input>
+                            <label style="width:100%;margin:0">Include custom questions?</label>
+                        </div>
+                    </div>
+                    <div style="clear:both"><!--  --></div>
+                    <div style="width:70%;margin:0 auto">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="bibnum"></input>
+                            <label style="width:100%;margin:0">Include bib numbers?</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui red button" style="float:left" onclick="closeModal()">Cancel</button>
+					<button type="button" class="ui button" style="width:80px;margin-right:5px;" onclick="exportRegHandler(true, true)">
+                        Quick
+                    </button>
+                    <button type="button" class="ui button" style="width:200px;margin-right:20px;" onclick="exportRegHandler(false, false)">
+                        <i class="fa fa-file-o" style="margin-right:7px"><!--  --></i>New Data Only
+                    </button>
+                    <button type="button" class="ui button" style="width:150px;" onclick="exportRegHandler(true, false)">
+                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>All Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exportAthletes" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="export-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="export-label">Export Athletes</h4>
+                </div>
+                <div class="modal-body">
+                    <h4 class="ui header">Export by Event Type (optional)</h4>
+                    <div class="row">
+                        <div class="ui selection compact dropdown" id="exportAthletes-eventTypes">
+                            <input type="hidden" name="type"><!--  --></input>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Export by Event Type (optional)</div>
+                            <div class="menu">
+                                <c:forEach var="item" items="${eventTypes}">
+                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="font-size: 0.9em;color:#808080">Default: Export all athletes</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui primary button" style="width:150px" onclick="exportAthletesHandler()">
+                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="importAthletes" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="import-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="export-label">Import Athletes</h4>
+                </div>
+                <div class="modal-body">
+                    <h4 class="ui header">Choose Event Type</h4>
+                    <div class="row">
+                        <div class="ui selection compact dropdown" id="importAthletes-eventTypes">
+                            <input type="hidden" name="type"><!--  --></input>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Event Type</div>
+                            <div class="menu">
+                                <c:forEach var="item" items="${eventTypes}">
+                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="font-size: 0.9em;color:#808080">Pick an event type to proceed</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
+                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addType" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="eventtype-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-times"></span></button>
+                    <h4 class="modal-title" id="eventtype-label">Manage Event Type</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="ui form" id="putFieldForm">
+                        <h3 class="ui dividing header">Logistics</h3>
+                        <div class="fields">
+                            <div class="twelve wide required field">
+                                <label style="width:100%" id="racetypes">Race Types</label>
+                                <div class="ui fluid search selection dropdown" id="racetype-dropdown">
+                                    <input type="hidden" name="raceType"><!--  --></input>
+                                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                    <div class="default text">Select Race Type</div>
+                                    <div class="menu">
+                                        <div class="item" data-value="Running">Running</div>
+                                        <div class="item" data-value="Swimming">Swimming</div>
+                                        <div class="item" data-value="Cycling">Cycling</div>
+                                        <div class="item" data-value="Mountain Biking">Mountain Biking</div>
+                                        <div class="item" data-value="Trail Run">Trail Run</div>
+                                        <div class="item" data-value="Mud Run">Mud Run</div>
+                                        <div class="item" data-value="Track and Field">Track and Field</div>
+                                        <div class="item" data-value="Triathlon">Triathlon</div>
+                                        <div class="item" data-value="Duathlon">Duathlon</div>
+                                        <div class="item" data-value="Ironman">Ironman</div>
+                                        <div class="item" data-value="Fun Run">Fun Run</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields" style="position:relative">
+                         <label id="distance" style="width:100%">Distance</label>	
+                            <div class="five wide inline required field" style="margin: 0.5em 0em 0em">
+                            
+                               
+                                <div class="ui fluid search selection dropdown" id="distance-dropdown">
+                                    <input type="hidden" name="dist"><!--  --></input>
+                                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                    <div class="default text">Select Distance</div>
+                                    <div class="menu">
+                                    	<div class="item" data-value="N/A">N/A</div>
+                                        <div class="item" data-value="5k">5k</div>
+                                        <div class="item" data-value="8k">8k</div>
+                                        <div class="item" data-value="10k">10k</div>
+                                        <div class="item" data-value="12k">12k</div>
+                                        <div class="item" data-value="15k">15k</div>
+                                        <div class="item" data-value="Half Marathon">Half Marathon</div>
+                                        <div class="item" data-value="Marathon">Marathon</div>
+                                        <div class="item" data-value="Sprint">Spring</div>
+                                        <div class="item" data-value="Olympic">Olympic</div>
+                                        <div class="item" data-value="Half">Half (Triathlon)</div>
+                                        <div class="item" data-value="Full">Full (Triathlon)</div>
+                                        <div class="item" data-value="Custom">Custom</div>
+                                    </div>
+                                </div>
+							</div>
+							<div class="one wide inline required field" style="margin: 0.5em 0em 0em">
+							<div class="ui vertical divider" style="height:33%; left:34%; top:75%">or</div>
+							</div>
+							<div class="ten wide inline required field" style="margin: 0.5em 0em 0em">
+   
+                                <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px"><!--  --></input>
+                                <div class="ui icon buttons" style="margin-left:10px">
+                                    <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
+                                    <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+                                    <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide required field">
+                                <label id="starttime">Start Time</label>
+                                <div class="ui action input">
+                                    <input  type="text" name="timeStartLocal"
+                                            class="form-control"
+                                            id="timedisp"
+                                            placeholder="Official Time (hh:mm)"
+                                            data-provide="datepicker"
+                                            data-date-format="h:mm a"
+                                            data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
+                                    <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fields">
+                            <div class="twelve wide field">
+                                <label style="width:100%">Event Type Name</label>
+                                <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="two fields post-event-type">
+                            <label style="width:100%">Assign Bib Ranges (optional)</label>
+                            <div style="clear:both"><!--  --></div>
+                            <div class="six wide field" style="padding-left:0">
+                                <label>Lowest Bib Number</label>
+                                <input class="form-control" type="number" min="1" id="etype-lowbib" name="lowbib"><!--  --></input>
+                            </div>
+                            <div class="six wide field">
+                                <label>Highest Bib Number</label>
+                                <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
+                            </div>
+                        </div>
+                        <div class="ui teal button" id="reg-details-btn" onclick="regDetails()">Disable Registration Details</div>
+                        <div id="reg-details-container" style="display:true;margin-top:20px">
+                            <h3 class="ui dividing header">Registration Details</h3>
+                            <div class="eight wide required field">
+                                <label style="width:100%">Price</label>
+                                <div class="ui labeled input">
+                                    <div class="ui label">$</div>
+                                    <input  type="number" name="price"
+                                            class="form-control"
+                                            placeholder="Base price"
+                                            min="0"
+                                            data-parsley-error-message="Invalid base price."
+                                            data-parsley-required="true"></input>
+                                </div>
+                            </div>
+                            <div class="eight wide field">
+                                <label style="width:100%">Max Participant Count</label>
+                                <input  type="number" name="available"
+                                    class="form-control" style="margin-top:5px"
+                                    placeholder="Max # of Participants"
+                                    min="1"
+                                    data-parsley-error-message="Invalid maximum number."
+                                    data-parsley-required="true"></input>
+                            </div>
+                            <div class="two fields">
+                                <label style="width:100%">Registration Window</label>
+                                <div class="required field">
+                                    <label>Open Date: </label>
+                                    <input  type="text" name="timeStartLocal"
+                                        id="ECIStart"
+                                        placeholder="Price start date"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                        data-parsley-error-message="Please specify a start date."
+                                        data-parsley-required="true"></input>
+                                </div>
+                                <div class="required field">
+                                    <label>Close Date: </label>
+                                    <input  type="text" name="timeEndLocal"
+                                        id="ECIEnd"
+                                        placeholder="Price end date"
+                                        data-provide="datepicker"
+                                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                        data-parsley-error-message="Please specify an end date."
+                                        data-parsley-required="true"></input>
+                                <div class="ui pointing label">
+      								Must end before your event starts
+    							</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui green button post-event-type" onclick="saveEventType(false)">Submit</button>
+                    <button type="button" class="ui red button put-event-type" style="display:none" onclick="saveEventType(null)">Remove</button>
+                    <button type="button" class="ui green button put-event-type" style="display:none" onclick="saveEventType(true)">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar event-navbar-inverse navbar-fixed-top" style="margin-top:50px">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="btn btn-default" class="navbar-toggle" data-toggle="collapse" data-target=".event-show-navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                </button>
+                <div class="navbar-brand">Event Settings</div>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse event-show-navbar" style="z-index: 1000;">
+                <ul class="nav navbar-nav">
+                    <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
+                    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                        <c:if test='${(eventadmin)}'>
+                            <c:if test='${(build.registration)}'>
+                                <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px"><!--  --></i> Reports</a></li>
+                            </c:if>
+                            <li><a href="#" onclick="redirectAthletes();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> Athletes</a></li>
+                            <li><a href="#" onclick="redirectLive();return false;"><i class="fa fa-refresh" style="margin-right: 5px"><!--  --></i> Live</a></li>
+                        </c:if>
+                    </sec:authorize>
+                    <li><a href="#" onclick="redirectAwards();return false;"><i class="fa fa-trophy" style="margin-right: 5px"><!--  --></i> Awards</a></li>
+                    <!-- <li class="disabled"><a href="#">Event Types</a></li> -->
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                    <c:if test='${(build.registration)}'>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px"><!--  --></i> Registration<span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
+                                    <li><a href="#" onclick="redirectEnableReg(); return false;">Open Registration</a></li>
+                                </c:if>
+                                <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
+                                    <li><a href="#" onclick="redirectDisableReg(); return false;">Close Registration</a></li>
+                                    <li><a href="#" onclick="redirectManageReg(); return false;">Registration Tools</a></li>
+                                    <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
+                                    <li><a href="#" data-toggle='modal' data-target='#exportReg'>Export Registrations</a></li>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                </c:if>
+                                <c:if test="${not empty eventTypes}">
+                                    <li><a href="#" data-toggle='modal' data-target='#bibsModal'>Assign Bib Numbers</a></li>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                </c:if>
+                                <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                                <c:if test='${(event.regEnabled)}'>
+                                    <li><a href="#" data-toggle='modal' data-target='#emailModal'>Send Email Announcement</a></li>
+                                <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                                </c:if>
+                                </sec:authorize>
+                                <li><a href="#" onclick="regUrl();return false;">Registration URL/Link</a></li>
+                                <li><a href="#" data-toggle='modal' data-target='#waiverModal'>Waiver</a></li>
+                            </ul>
+                        </li>
+                    </c:if>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-file-text" style="margin-right: 5px"><!--  --></i> Results<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" data-toggle='modal' data-target='#importAthletes'>Import</a></li>
+                            <li><a href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a></li>
+                            <c:if test="${dropboxUnlink == true}">
+                                <li><a href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a></li>
+                            </c:if>
+                            <li class="disabled"><a href="#">Import bibs file</a></li>
+                            <!-- DIVIDER --><li role="presentation" class="divider"></li><!-- DIVIDER -->
+                            <li><a href="#" data-toggle='modal' data-target='#exportAthletes'>Export</a></li>
+                            <li><a href="#" onclick="cloud();return false;">Cloud Sync</a></li>
+                            <c:if test="${lastImport != null}">
+                                <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
+                            </c:if>
+                            <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
+                            <!-- DIVIDER --><li role="presentation" class="divider show-live"></li><!-- DIVIDER -->
+                            
+                            <li class="show-live"><a href="#" onclick="liveUrl();return false;">Live Results Link</a></li>
+                        </ul>
+                    </li>
+                    </sec:authorize>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+<<<<<<< HEAD
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui very padded basic segment">
+        <jsp:useBean id="now" class="java.util.Date"/>
+        <fmt:parseDate value="${event.timeStartLocal}" pattern="MM/dd/yyyy hh:mm:ss a" var="eventDate"/>
+        <c:choose>
+            <c:when test="${eventDate le now}">
+                <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
+                    <i class="fa fa-bell left-icon"><!--  --></i>
+                    Congratulations on completing your event! You can now manage your race results, awards, athletes, and more.
+=======
+    <div class="white-overlay">
+        <c:if test='${(build.registration)}'>
+            <div class="map-container">
+                <div id="map"><!--  --></div>
+                <div class="map-canvas-warning"><small>If you can't see the map, please check your event settings!</small></div>
+            </div>
+        </c:if>
+        <c:if test='${(!build.registration)}'>
+            <div class="map-container"><!--  --></div>
+        </c:if>
+        <div class="info-container">
+            <div class="button-container">
+                <c:if test='${(build.registration)}'>
+                    <c:if test='${event.regEnabled}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectDisableReg()">
+                             registration is open <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${(!event.regEnabled)}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectEnableReg()">
+                             registration is closed <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${event.live}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectDisableLive()">
+                             listing is public <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${(!event.live)}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectEnableLive()">
+                             listing is private <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${event.sync}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectDisableSync()">
+                             Sync Enabled <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${(!event.sync)}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectEnableSync()">
+                             Sync Disabled <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>                    
+                </c:if>
+                <div class="btn btn-warning btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
+                    <i class="fa fa-edit"><!--  --></i>
+>>>>>>> galen-z200-awards
+                </div>
+            </c:when>
+            <c:otherwise>
+                <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
+                    <i class="fa fa-bell left-icon"><!--  --></i>
+                    You've created your event! Please don't forget to <a href="" class="emphasized emphasized-link">set-up registration</a> and additional event details.
+                </div>
+<<<<<<< HEAD
+                <c:if test='${(build.registration)}'>
+                    <div class="map-container">
+                        <div id="map"><!--  --></div>
+                        <div class="map-canvas-warning"><small>If you can't see the map, please check your event settings!</small></div>
+                    </div>
+                </c:if>
+                <c:if test='${(!build.registration)}'>
+                <div class="map-container"><!--  --></div>
+=======
+            </div>
+            <div class="event-name">${event.name}</div>
+            <div class="event-location">${event.city}, ${event.state}</div>
+            <fmt:parseDate value="${event.timeStartLocal}" pattern="MM/dd/yyyy hh:mm:ss a" var="eventDate"/>
+            <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" /> first start <fmt:formatDate type="time" value="${eventDate}" /></div>
+            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                <div class="button-container">
+                	<button type="button" class="ui basic black button" onClick="redirectBadges()"><i class="fa fa-certificate" style="margin-right:5px"><!--  --></i>Badges</button>
+                    <button type="button" class="ui basic black button" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <c:if test="${not empty eventTypes}"><button type="button" class="ui teal button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
+                </div>
+                <c:if test="${not empty eventTypes}">
+                    <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
+                    <table class="ui small compact stackable table">
+                        <thead><tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Distance</th>
+                            <th>Start Time</th>
+                            <th>Registration</th>
+                            <th># Registered</th>
+                            <th># Athletes</th>
+                        </tr></thead>
+                        <tbody>
+                            <c:forEach var="item" items="${metatype}">
+	                            <c:if test="${item.ticket != null }">
+		                            <tr class="eventtype-item" onclick="redirectTicket(${item.ticket.id})">    
+		                                <td>${item.type.typeName}</td>
+		                                <td>${item.type.racetype}</td>
+		                                <td>${item.type.distance}</td>
+		                                <td>${item.type.timeStartLocal}</td>
+		                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
+		                                <td>${item.ticket.purchased }</td>
+		                                <td>${item.athletes }</td>
+		                            </tr>
+	                            </c:if>
+	                            <c:if test="${item.ticket == null }">
+		                            <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">
+		                                <td>${item.type.typeName}</td>
+		                                <td>${item.type.racetype}</td>
+		                                <td>${item.type.distance}</td>
+		                                <td>${item.type.timeStartLocal}</td>
+		                                <td><div class="ui small button" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">Enable</div></td>
+		                                <td>N/A</td>
+		                                <td>${item.athletes }</td>
+	                            	</tr>
+	                            </c:if>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </c:if>
+                <c:if test='${unassigned>0 }'>
+				<div class="ui negative small message">
+					<div class="header"><!--  --></div>
+					<i class="fa fa-times close" style="float:right"><!--  --></i>
+					You have <b>${unassigned}</b> unassigned runner in this event.
+				</div>
+                </c:if>
+                <c:if test="${lastImport != null}">
+                    <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                    <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+>>>>>>> galen-z200-awards
+                </c:if>
+                <div class="button-container">
+                    <c:if test='${(build.registration)}'>
+                        <c:if test='${event.regEnabled}'>
+                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                                 onclick="redirectDisableReg()">
+                                 registration is open <i class="fa fa-check bibs-green" style="margin-left:5px;"><!--  --></i>
+                             </div>
+                        </c:if>
+                        <c:if test='${(!event.regEnabled)}'>
+                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                                 onclick="redirectEnableReg()">
+                                 registration is closed <i class="fa fa-ban bibs-red" style="margin-left:5px;"><!--  --></i>
+                             </div>
+                        </c:if>
+                        <c:if test='${event.live}'>
+                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                                 onclick="redirectDisableLive()">
+                                 listing is public <i class="fa fa-check bibs-green" style="margin-left:5px;"><!--  --></i>
+                             </div>
+                        </c:if>
+                        <c:if test='${(!event.live)}'>
+                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                                 onclick="redirectEnableLive()">
+                                 listing is private <i class="fa fa-lock bibs-red" style="margin-left:5px;"><!--  --></i>
+                             </div>
+                        </c:if>
+                    </c:if>
+                    <div class="btn bibs-bg-orange bibs-gray-1 btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
+                        <i class="fa fa-edit"><!--  --></i>
+                    </div>
+                    <div class="btn bibs-bg-red bibs-gray-1 btn-sm" onclick="deleteEvent(); return false;">
+                        <i class="fa fa-trash"><!--  --></i>
+                    </div>
+                </div>
+                <div class="event-info-box bibs-bg-main-blue bibs-gray-2">
+                    <div class="event-name">${event.name}</div>
+                    <div class="event-location">${event.city}, ${event.state}</div>
+                    <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" />
+                     <!-- first start <fmt:formatDate type="time" value="${eventDate}" /> -->
+                     </div>
+                </div>
+                <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                    <div class="button-container">
+                        <button type="button" class="ui basic black button" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                        <c:if test="${not empty eventTypes}"><button type="button" class="ui bibs-bg-main-teal bibs-gray-1 button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
+                    </div>
+                    <c:if test="${not empty eventTypes}">
+                        <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
+                        <table class="ui small compact stackable table">
+                            <thead><tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Distance</th>
+                                <th>Start Time</th>
+                                <th>Registration</th>
+                                <th># Registered</th>
+                                <th># Athletes</th>
+                            </tr></thead>
+                            <tbody>
+                                <c:forEach var="item" items="${metatype}">
+                                    <c:if test="${item.ticket != null }">
+                                        <tr class="eventtype-item" onclick="redirectTicket(${item.ticket.id})">    
+                                            <td>${item.type.typeName}</td>
+                                            <td>${item.type.racetype}</td>
+                                            <td>${item.type.distance}</td>
+                                            <td>${item.type.timeStartLocal}</td>
+                                            <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
+                                            <td>${item.ticket.purchased }</td>
+                                            <td>${item.athletes }</td>
+                                        </tr>
+                                    </c:if>
+                                    <c:if test="${item.ticket == null }">
+                                        <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">
+                                            <td>${item.type.typeName}</td>
+                                            <td>${item.type.racetype}</td>
+                                            <td>${item.type.distance}</td>
+                                            <td>${item.type.timeStartLocal}</td>
+                                            <td><div class="ui small button" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">Enable</div></td>
+                                            <td>N/A</td>
+                                            <td>${item.athletes }</td>
+                                        </tr>
+                                    </c:if>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:if>
+                    <c:if test="${lastImport != null}">
+                        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                        <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+                    </c:if>
+                </sec:authorize>
+                <!--  -->
+            </c:otherwise>
+        </c:choose>
+        </div>
+    </div>
+    </page>
+    <script>
+        window.onload = init;
+
+        function init(){
+            initInfo();
+            <c:if test='${(!build.rfid)}'>
+                initMap();
+            </c:if>
+        }
+
+        var distType;
+        function initInfo(){
+            localtime = eventStart.format('hh:mm:ss a');
+            jQuery('#displayLocal').text(localtime);
+
+            var momentRRTime = eventStart.startOf('hour');
+            jQuery("#timedisp").datetimepicker({
+                defaultDate: momentRRTime,
+                pickDate: false
+            });
+
+            initDateTimePickers();
+
+            jQuery('#lowbib').on('input', function(){
+                var low = jQuery("#lowbib").val();
+                var high = jQuery("#highbib").val();
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowbib").val(""); }
+                if( high !== "" ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#highbib").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery('#highbib').on('change', function(){
+                var low = jQuery("#lowbib").val();
+                var high = jQuery("#highbib").val();
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) ){ jQuery("#highbib").val("") }
+                if( low !== "" ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#lowbib").attr("max", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery('#etype-lowbib').on('input', function(){
+                var low = jQuery("#etype-lowbib").val();
+                var high = jQuery("#etype-highbib").val();
+                low = parseInt(low);
+                high = parseInt(high);
+
+                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#etype-lowbib").val(""); }
+                if( high !== "" ){
+                    if( low &gt;= high ){
+                        jQuery(this).val(high);
+                    }
+                    else{
+                        jQuery("#etype-highbib").attr("min", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery('#etype-highbib').on('change', function(){
+                var low = jQuery("#etype-lowbib").val();
+                var high = jQuery("#etype-highbib").val();
+                low = parseInt(low);
+                high = parseInt(high);
+                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#etype-highbib").val("") }
+                if( low !== "" ){
+                    if( high &lt;= low ){
+                        jQuery(this).val(low);
+                    }
+                    else{
+                        jQuery("#etype-lowbib").attr("max", jQuery(this).val());
+                    }
+                }
+            });
+
+            jQuery('.dist-btn').each(function(){
+                jQuery(this).click(function(){
+                    var id = jQuery(this).attr("id");
+                    jQuery(this).addClass('positive');
+                    jQuery(this).siblings().removeClass('positive');
+                    distType = id;
+                })
+            })
+
+            jQuery('#exportAthletes-eventTypes').dropdown();
+            jQuery('#importAthletes-eventTypes').dropdown();
+
+            jQuery('.message .close').on('click', function() {
+                jQuery(this).closest('.message').fadeOut();
+            });
+            jQuery(".ui.form .field > .selection.dropdown").dropdown();
+            jQuery('.ui.checkbox').checkbox();
+            getWebappId();
+            getWaiver();
+
+            jQuery('#addType').on('hidden.bs.modal', function(){
+                jQuery(this).find('input[type="text"],input[type="number"]').val('');
+                jQuery("#timedisp").data('DateTimePicker').setDate(eventStart.startOf('hour'));
+                jQuery('#racetype-dropdown').dropdown('clear');
+            });
+        }
+
+        function regDetails(){
+        	if(jQuery('#reg-details-btn').text() === "Enable Registration Details") {
+        		jQuery('#reg-details-btn').text("Disable Registration Details");
+        	} else{
+        		jQuery('#reg-details-btn').text("Enable Registration Details");
+        		jQuery('input[name="price"]').val("");
+                jQuery('input[name="available"]').val("");
+        	}
+            jQuery('#reg-details-container').toggle();
+        }
+
+        function saveEventType(put){
+            var dat = {};
+            var error = true;
+			
+            var saveType = "eventTypes";
+            var eventTypeUrl = "/bibs-server/eventtypes/";
+            var ajaxType = 'POST';
+	
+            //Check if we have valid ticket data
+            var price = jQuery('input[name="price"]').val();
+            var available = jQuery('input[name="available"]').val();
+            var timeStartLocal = jQuery('input[name="timeStartLocal"]').val();
+            var timeEndLocal = jQuery('input[name="timeEndLocal"]').val();
+            if( (currEventCartItemId != null &amp;&amp; currEventCartItemId != "") 
+            		|| (price != null &amp;&amp; price != "")
+            		|| (available != null &amp;&amp; available != "")) {
+            	saveType = "ticket";
+            }
+            	
+            
+            var typeName  = jQuery('input[name="typeName"]').val();
+            var distance  = jQuery('input[name="distance"]').val();
+            var dropdownDistance = jQuery('input[name="dist"]').val();
+            var distType  = null;
+            if( jQuery('#dist-m').hasClass('positive')  ){ distType = ' m';  }
+            if( jQuery('#dist-km').hasClass('positive') ){ distType = ' km'; }
+            if( jQuery('#dist-mi').hasClass('positive') ){ distType = ' mi'; }
+            var startTime = jQuery('input[name="timeStartLocal"]').val();
+            var raceType  = jQuery('input[name="raceType"]').val();
+            var lowbib = jQuery('#etype-lowbib').val();
+            var highbib = jQuery('#etype-highbib').val();
+
+            var parseDate = moment('${event.timeStartLocal}', 'MM/DD/YYYY h:mm:ss a');
+            var hour   = moment(startTime, "h:mm a").hour();
+            var minute = moment(startTime, "h:mm a").minute();
+
+            parseDate.set('hour', hour);
+            parseDate.set('minute', minute);
+            parseDate = parseDate.format('MM/DD/YYYY hh:mm:ss a');
+
+            if( (distance === "" &amp;&amp; dropdownDistance === "Custom") || (distance === "" &amp;&amp; dropdownDistance === "")  || (distance == "" &amp;&amp; dropdownDistance == "") || parseDate === "" || raceType === "" ){
+                error = true;
+                if( distance === "" ){
+                    jQuery('#distance').parent().addClass('error');
+                    jQuery('input[name="distance"]').on('keypress', function(){
+                        if(jQuery('input[name="distance"]').val().length > 0){
+                            jQuery('#distance').parent().removeClass('error');
+                        }
+                    })
+                }
+                if( parseDate === "" ){
+                    jQuery('#starttime').parent().addClass('error');
+                    jQuery('input[name="timeStartLocal"]').on('keypress', function(){
+                        if(jQuery('input[name="timeStartLocal"]').val().length > 0){
+                            jQuery('#starttime').parent().removeClass('error');
+                        }
+                    })
+                }
+                if( raceType === "" ){
+                    jQuery('#racetypes').parent().addClass('error');
+                    jQuery('input[name="raceType"]').on('change', function(){
+                        if(jQuery('input[name="raceType"]').val().length > 0){
+                            jQuery('#racetypes').parent().removeClass('error');
+                        }
+                    })
+                }
+                console.log(error);
+            }
+            else{
+            	if(saveType == "eventTypes") {	
+	                dat.event = {};
+	                dat.event.id = parseInt('${event.id}');
+	
+	                if( put || put === null){
+	                    eventTypeUrl = "/bibs-server/eventtypes/" + currEventTypeId;
+	                    ajaxType = 'PUT';
+	                    if( put === null ){
+	                        dat.event = null;
+	                    }
+	                }
+					console.log("[dropdownDistance: " + dropdownDistance + ", distance: " + distance + ",  distType: " + distType + "]");
+	                dat.typeName = typeName;
+	                if(dropdownDistance === "" || dropdownDistance === "Custom") {
+	                	dat.distance = distance + distType;
+	                } else {
+	                	dat.distance = dropdownDistance;
+	                }
+	                
+	                dat.timeStartLocal = parseDate;
+	                dat.racetype = raceType;
+	                if( lowbib  !== "" ){    dat.lowBib  = parseFloat(lowbib);     }
+	                if( highbib !== "" ){    dat.highBib = parseFloat(highbib);    }
+	
+	                jQuery('.post-event-type').prop('disabled', true);
+	                jQuery.ajax({
+	                    url: eventTypeUrl,
+	                    type: ajaxType,
+	                    contentType: "application/json",
+	                    data: JSON.stringify(dat),
+	                    complete: function(data) {
+	                        window.location.reload();
+	                    }
+	                })
+	        		
+            	} else {
+            		dat.event = {};
+            		dat.event.id = parseInt('${event.id}');
+            		dat.type = "TICKET";
+            		dat.name = distance;
+            		dat.price = price;
+            		//dat.timeStartLocal = parseDate;
+            		dat.timeStartLocal = jQuery('#ECIStart').val();
+            		dat.timeEndLocal = timeEndLocal;
+            		if (available == null || available == "") {
+            			dat.available = new Number(10000000);
+            		} else {
+            			dat.available = new Number(available);
+            		}
+            		
+            		var uploadUrl = "/bibs-server/eventitems/typeupdate"
+            		var uploadMethod = "POST"
+            			console.log("[dropdownDistance: " + dropdownDistance + ", distance: " + distance + ",  distType: " + distType + "]");
+            		if(currEventCartItemId != null &amp;&amp; currEventCartItemId != "") {
+            			dat.id = currEventCartItemId;
+            			//uploadUrl = "/bibs-server/eventitems/ticketupdate"
+            			//uploadMethod = "PUT"
+            		}
+            			
+            		
+            		dat.eventType = {};
+            		if(currEventTypeId != null &amp;&amp; currEventTypeId != "") {
+            			dat.eventType.id = currEventTypeId;
+            		}
+     				dat.eventType.event = {};
+            		dat.eventType.event.id = parseInt('${event.id}');
+            		dat.eventType.typeName = typeName;
+            		if(dropdownDistance === "" || dropdownDistance === "Custom") {
+	                	dat.eventType.distance = distance + distType;
+	                } else {
+	                	dat.eventType.distance = dropdownDistance;
+	                }
+            		dat.eventType.timeStartLocal = parseDate;
+            		dat.eventType.racetype = raceType;
+	                if( lowbib  !== "" ){    dat.eventType.lowBib  = parseFloat(lowbib);     }
+	                if( highbib !== "" ){    dat.eventType.highBib = parseFloat(highbib);    }
+            		
+	                jQuery('.post-event-type').prop('disabled', true);
+	                jQuery.ajax({
+	                    url: uploadUrl,
+	                    type: uploadMethod,
+	                    contentType: "application/json",
+	                    data: JSON.stringify(dat),
+	                    dataType: "json",
+	                    complete: function(data) {
+	                    	console.log("ResponseData");
+	                    	console.log(data)
+	                    	if(data != null &amp;&amp; data.responseJSON) {
+	                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status)
+	                    		console.log(window.location)
+	                    		jQuery('#addType').modal('hide');
+	                    		//window.location.href = "/bibs-server/eventitems/" + data.responseJSON.status
+	                    		redirectTicket(data.responseJSON.status);
+	                    	} else {
+		                        window.location.reload();
+	                    	}
+	                    }
+	                })
+            	}
+            }
+        }
+
+        function sendEmail(){
+            var subj  = jQuery('#emailForm input[name="subject"]').val();
+            var body  = jQuery('#emailForm textarea[name="body"]').val();
+            var etype = jQuery('#emailForm input[name="type"]').val();
+            var ready = false;
+
+            if( etype == "" || etype == null ){
+                etype = "";
+            }else{
+                etype = '&amp;type=' + parseInt(etype);
+            }
+            if( subj.length &lt; 5 || body.length &lt; 5 ){
+                jQuery('#emailError').show();
+                jQuery('#emailError > p').text("Your subject and body are required fields and must be longer than 5 characters.");
+                ready = false;
+            }else{
+                subj = encodeURIComponent(subj);
+                ready = true;
+            }
+            
+            if(ready){
+                jQuery('.post-email-button').prop('disabled', true);
+                var request = jQuery.ajax({
+                    url: '${event.id}/email?subject=' + subj + etype,
+                    type: 'POST',
+                    contentType: 'text/plain',
+                    data: body,
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })   
+                request.done(function( d ) {
+                    jQuery("#emailModal").modal('hide');
+                    alert("Your email has been sent!");
+                });
+                request.fail(function( jqXHR, textStatus ) {
+                });
+            }
+        }
+
+        function assignBibs(){
+            var etype   = jQuery('#bibsForm input[name="type"]').val();
+            var lowbib  = jQuery('#bibsForm input[name="lowbib"]').val();
+            var highbib = jQuery('#bibsForm input[name="highbib"]').val();
+            var ready = false;
+            if( etype !== "" ){
+                etype = parseInt(etype);
+                if( lowbib == "" &amp;&amp; highbib == "" ){
+                    ready = true;
+                }
+                else if( lowbib !== "" &amp;&amp; highbib !== "" ){
+                    lowbib = parseInt(lowbib);
+                    highbib = parseInt(highbib);
+                    ready = true;
+                }else{
+                    jQuery('#bibsError').show();
+                    jQuery('#bibsError > p').text("You must specify both the low and high values.");
+                }
+            }
+            else{
+                jQuery('#bibsError').show();
+                jQuery('#bibsError > p').text("You must specify an event type.");
+            }
+            if( ready ){
+                jQuery('#bibsError').hide();
+                jQuery('.post-bibs-button').prop('disabled', true);
+                var request = jQuery.ajax({
+                    url: '../eventtypes/associate/' + etype + '?lowbib=' + lowbib + '&amp;highbib=' + highbib + '&amp;force=true',
+                    type: 'POST',
+                    contentType: 'text/plain',
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })   
+                request.done(function( d ) {
+                    jQuery("#bibsModal").modal('hide');
+                });
+                request.fail(function( jqXHR, textStatus ) {
+                    /*  TODO    
+                        add error message for ranged error return   */
+                });
+            }
+        }
+
+        var initModal = false;
+
+        function addEventType(){
+            jQuery("#addType").modal('show');
+            jQuery(".post-event-type").show();
+            jQuery(".put-event-type").hide();
+            jQuery(".ui.form .field > .selection.dropdown").dropdown();
+            jQuery('#putFieldForm input').val('');
+
+
+            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').startOf('hour'));
+            
+            jQuery("#removetime").click(function(){
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').startOf('hour'));
+            });
+
+            jQuery('#racetype-dropdown').dropdown('clear');
+        }
+
+        var currEventTypeId;
+        var currEventCartItemId;
+        function editEventType(typeName, type, dist, raceTime, id, ticketId, ticketAvail, ticketStart, ticketEnd, ticketPrice){
+            currEventTypeId = id;
+            currEventCartItemId = ticketId;
+            jQuery('#reg-details-container').hide();
+            jQuery('#reg-details-btn').text("Enable Registration Details");
+            jQuery()
+            jQuery(".post-event-type").hide();
+            jQuery(".put-event-type").show();
+			if(ticketId != null) {
+				if(ticketAvail != null) jQuery('#putFieldForm input[name="available"]').val(ticketAvail);
+				jQuery('#putFieldForm input[name="price"]').val(ticketPrice);
+				jQuery('#putFieldForm input[name="timeStartLocal"]').val(ticketStart);
+				jQuery('#putFieldForm input[name="timeEndLocal"]').val(ticketEnd);
+			}
+            jQuery('#putFieldForm input[name="typeName"]').val(typeName);
+            jQuery('#putFieldForm input[name="raceType"]').val(type);
+            jQuery('#racetype-dropdown').dropdown("set selected", type);
+            
+            //Start of racetype init
+            jQuery('#dist-m').removeClass('positive');
+            jQuery('#dist-mi').removeClass('positive');
+            jQuery('#dist-km').removeClass('positive');
+            switch(dist) {
+            case "N/A":
+            	jQuery('#distance-dropdown').dropdown('set selected', "N/A");
+            	break;
+            case "5k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+            	break;
+            case "8k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+            	break;
+            case "10k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "10k");
+            	break;
+            case "15k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "15k");
+            	break;
+            case "Half Marathon":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Half Marathon");
+            	break;
+            case "Marathon":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Marathon");
+            	break;
+            case "Sprint":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Sprint");
+            	break;
+            case "Sprint":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Olympic");
+            	break;
+            case "Half":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Half");
+            	break;
+            case "Full":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Full");
+            	break;
+            default:
+            	jQuery('#distance-dropdown').dropdown('set selected', "Custom");
+            	var parseDist = dist.split(' ');
+            	jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+            	if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
+            	if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
+            	if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
+
+            }
+
+            var raceTime = moment(raceTime);
+            jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
+            jQuery("#removetime").click(function(){
+                jQuery("#timedisp").data('DateTimePicker').setDate(raceTime);
+            });
+
+            jQuery("#addType").modal('show');
+        }
+
+        function getWaiver(){
+            var request = jQuery.ajax({
+                url: '${event.waiver}',
+                type: "GET",
+                dataType: "text"
+            });
+            request.done(function( d ) {
+                jQuery(".waiver-content").val(decodeURIComponent(d).replace(/\+/g, " "));
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
+        }
+
+        function postWaiver(){
+            jQuery('.post-waiver-button').prop('disabled', true);
+            var content = jQuery(".waiver-content").val();
+            var request = jQuery.ajax({
+                url: "/bibs-server/events/${event.id}/waiver",
+                type: "POST",
+                dataType: "text",
+                data: content
+            });
+            request.done(function( d ) {
+                jQuery("#waiverModal").modal('hide');
+                window.location.reload();
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
+        }
+
+        function getWebappId(){
+            var id = "";
+            var request = jQuery.ajax({
+                url: "/bibs-server/events/webappid",
+                type: "GET",
+                dataType: "json"
+                });
+            request.done(function( d ) {
+                if( d !== "" || d !== null ){
+                    id = d;
+                }
+                if( d == "" ){
+                    jQuery(".show-live").hide();
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
+                jQuery(".show-live").hide();
+            });
+        }
+
+        function recreateNav(){
+            jQuery("#bs-example-navbar-collapse-1 ul:first-child").prepend(jQuery("#child-1").children());
+        }
+
+        function initMap(){
+            var latitude  = parseFloat('${event.latitude}');
+            var longitude = parseFloat('${event.longitude}');
+
+            L.mapbox.accessToken = 'pk.eyJ1IjoiYmlicyIsImEiOiJRcUxlU0ZFIn0.O_WdutmlIabHGa508B7Hlg';
+            var map = L.mapbox.map('map', 'mapbox.streets', {
+                zoomControl: true
+            }).setView([latitude, longitude], 14);
+
+            // add a marker:
+            var myLayer = L.mapbox.featureLayer().addTo(map);
+            var geojson = {
+                type: 'FeatureCollection',
+                features: [{
+                    type: 'Feature',
+                    properties: {
+                        title: decodeURI("${event.address}"),
+                        'marker-color': '#00dffc',
+                        'marker-symbol': 'star'
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [longitude, latitude]
+                    }
+                }]
+            };
+
+            myLayer.setGeoJSON(geojson);
+
+            // Disable drag and zoom handlers.
+            map.dragging.disable();
+            map.touchZoom.disable();
+            map.doubleClickZoom.disable();
+            map.scrollWheelZoom.disable();
+
+            // Disable tap handler, if present.
+            if (map.tap) map.tap.disable();
+
+            // fix map control UI bug
+            jQuery('.leaflet-control-zoom-in').text('');
+            jQuery('.leaflet-control-zoom-out').text('');
+        }
+
+        var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
+        function initDateTimePickers(){
+            jQuery("#ECIStart")
+                .datetimepicker({
+                    defaultDate: moment().startOf('day'),
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery("#ECIEnd")
+                .datetimepicker({
+                    defaultDate: eventStart,
+                    useSeconds: true,
+                    sideBySide: true
+                });
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+            jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
+
+            <!-- on change-ui -->
+            jQuery("#ECIStart").on("dp.change",function (e) {
+                jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+            });
+            jQuery("#ECIEnd").on("dp.change",function (e) {
+                jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+            });
+        }
+
+        function editForm(){
+            window.location="/bibs-server/events/${event.id}?form";
+        }
+        function deleteEvent(){
+            if( confirm('Are you sure you want to delete this item? This cannot be undone.') ){
+                jQuery.ajax({
+                    url: "/bibs-server/events/${event.id}",
+                    type: "DELETE",
+                    dataType: "json",
+                    complete: function() {
+                        window.location="/bibs-server/events";
+                    }
+                });
+            }
+        }
+        function redirectTicket(id){
+            window.location="/bibs-server/eventitems/" + id +"#info";
+        }
+        function redirectReport(){
+            window.location="/bibs-server/registrations/reports?event=${event.id}";
+        }
+        function redirectAthletes(){
+            window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
+        }
+        function redirectLive(){
+            window.location="/bibs-server/events/live?event=${event.id}";
+        }
+        function redirectImport(){
+            window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
+        }
+        function regUrl(){
+            jQuery("#regButton").modal('show');
+        }
+        function liveUrl(){
+            jQuery("#liveResults").modal('show');
+            var id = "";
+            var request = jQuery.ajax({
+                url: "/bibs-server/events/webappid",
+                type: "GET",
+                dataType: "json"
+                });
+            request.done(function( d ) {
+                if( d !== "" || d !== null ){
+                    id = d;
+                    jQuery("#liveid").text(id);
+                }
+            });
+            request.fail(function( jqXHR, textStatus ) {
+            });
+        }
+        function waiverModal(){
+            getWaiver();
+            jQuery("#waiverModal").modal('show');
+        }
+        function emailModal(){
+            jQuery('#emailModal').modal('show');
+        }
+        function bibsModal(){
+            jQuery('#bibsModal').modal('show');
+        }
+        function closeModal(){
+            jQuery('.modal').modal('hide');
+        }
+        function exportRegHandler(all, quick){
+            var typeString = "";
+            for( var i in currentExportRegTypes ){
+                typeString += '&amp;type='+currentExportRegTypes[i];
+            }
+            var optString = "";
+            if( jQuery('input[name="questions"]').prop('checked') ){
+                optString += '&amp;questions=true';
+            }else{
+                optString += '&amp;questions=false';
+            }
+            if( jQuery('input[name="bibnum"]').prop('checked') ){
+                optString += '&amp;bibnum=true';
+            }else{
+                optString += '&amp;bibnum=false';
+            }
+            var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false" + typeString + optString;
+            if(all){
+                callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true" + typeString + optString;
+            }
+            if(quick){
+            	callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true&amp;quick=true" + "&amp;type=TICKET" + optString;
+            }
+            window.location=callUrl;
+        }
+
+        var currentExportRegTypes = [];
+        function setExportRegType(val){
+            jQuery('#card-ticket > .content').attr('style', 'background:none');
+            jQuery('#card-tshirt > .content').attr('style', 'background:none');
+            jQuery('#card-donation > .content').attr('style', 'background:none');
+                        
+            if(currentExportRegTypes.indexOf(val) == -1){
+                currentExportRegTypes.push(val);
+            }else{
+                currentExportRegTypes.splice(currentExportRegTypes.indexOf(val), 1);
+            }
+
+            for( var i in currentExportRegTypes ){
+                switch(currentExportRegTypes[i]){
+                    case 'TICKET':
+                        jQuery('#card-ticket > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    case 'T_SHIRT':
+                        jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    case 'DONATION':
+                        jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        function redirectEventTypeDetail(id){
+            window.location="/bibs-server/eventitems/"+id +"#schedule";
+        }
+
+        function redirectDropboxImport(){
+            window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
+        }
+        function redirectDropboxDeauth(){
+            jQuery.ajax({
+                url: "/bibs-server/dropbox/deauth",
+                type: "POST",
+                dataType: "json",
+                complete: function() {
+                    window.location.reload();
+                }
+            });
+        }
+        function exportAthletesHandler(){
+            var type = jQuery('#exportAthletes-eventTypes').dropdown('get value');
+            console.log(type);
+
+            var callUrl = "/bibs-server/events/export?event=${event.id}";
+            if(type !== null || type !== ""){
+                window.location = callUrl + '&amp;type=' + type;
+            }else{
+                window.location = callUrl;
+            }
+        }
+        
+        function importAthletesHandler(){
+            var type = jQuery('#importAthletes-eventTypes').dropdown('get value');
+            console.log(type);
+
+            var callUrl = "/bibs-server/resultsfiles?form&amp;event=${event.id}";
+            if(type !== null || type !== ""){
+                window.location = callUrl + '&amp;type=' + type;
+            }else{
+                window.location = callUrl;
+            }
+        }
+        
+        function redirectBackup(){
+            window.location="/bibs-server/events/exportBackup?event=${event.id}";
+        }   
+        function redirectAwards(){
+            window.location="/bibs-server/events/awards?event=${event.id}";
+        }
+        function redirectChangeFileMapping(){
+            window.location="/bibs-server/resultsfilemappings/${lastMapping.id}?form";
+        }
+        function redirectEnableReg(){
+            window.location="/bibs-server/events/${event.id}/enablereg";
+        }
+        function redirectDisableReg(){
+            window.location="/bibs-server/events/${event.id}/disablereg";
+        }
+        function redirectEnableLive(){
+            window.location="/bibs-server/events/${event.id}/enablelive";
+        }
+        function redirectDisableLive(){
+            window.location="/bibs-server/events/${event.id}/disablelive";
+        }
+        function redirectEnableSync(){
+            window.location="/bibs-server/events/${event.id}/enablesync";
+        }
+        function redirectDisableSync(){
+            window.location="/bibs-server/events/${event.id}/disablesync";
+        }        
+        function redirectManageReg(){
+            window.location="/bibs-server/eventitems?event=${event.id}";
+        }
+        function redirectBadges(){
+            window.location="/bibs-server/badges/form";
+        }
+        function redirectSearchReg(){
+            window.location="/bibs-server/registrations/search?event=${event.id}";
+        }
+        function cloud(){
+            jQuery("#progress").show();
+            var r = jQuery.ajax({
+                url: "/bibs-server/events/cloud?event=${event.id}",
+                type: "GET",
+                dataType: "html"
+                });
+            r.done(function(data){
+                jQuery("#progress").hide();
+                if("true" == data){
+                    alert("Cloud Sync Complete.");
+                }else if("eventnotfound" == data){
+                    alert("Event not found.");
+                }else{
+                    alert("Cloud Sync Failed.");
+                }
+            });
+            r.fail(function( s,s ) {
+                jQuery("#progress").hide();
+            });
+        }
+    </script>
+    <c:if test='${(!build.rfid)}'>
+        <!-- <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" /> -->
+        <!-- <c:set var="geocomplete_url" value="/bibs-server/resources/scripts/jquery.geocomplete.js" /> -->
+        <!-- <script src="${geocomplete_url}" type="text/javascript"><jsp:text/></script> -->
+        <c:set var="mapbox" value="https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.js" />
+        <script src="${mapbox}" type="text/javascript"><jsp:text/></script>
+    </c:if>
+</div>

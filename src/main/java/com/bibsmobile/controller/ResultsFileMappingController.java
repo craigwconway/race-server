@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
@@ -224,6 +225,7 @@ public class ResultsFileMappingController {
         resultsImport.setRunDate(new Date());
         ResultsFileMapping resultsFileMapping = resultsImport.getResultsFileMapping();
         Event event = resultsImport.getResultsFile().getEvent();
+        EventType eventType = resultsImport.getResultsFile().getEventType();
         ResultsFile resultsFile = resultsImport.getResultsFile();
         resultsImport.setRunDate(new Date());
         File file = new File(resultsFile.getFilePath());
@@ -234,7 +236,7 @@ public class ResultsFileMappingController {
             String[] nextLine;
             if(resultsFileMapping.isSkipFirstRow() ) reader.readNext();
             while ((nextLine = reader.readNext()) != null) {
-                _this.saveRaceResult(resultsImport, event, nextLine, map);
+                _this.saveRaceResult(resultsImport, event, eventType, nextLine, map);
             }
             reader.close();
         } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls")
@@ -244,7 +246,7 @@ public class ResultsFileMappingController {
             Sheet sheet = wb.getSheetAt(0);
             for (int i = (resultsFileMapping.isSkipFirstRow() ? 1 : 0); i <= sheet.getLastRowNum(); i++) {
                 final String nextLine[] = csv.rowToCSV(sheet.getRow(i)).split(",");
-                _this.saveRaceResult(resultsImport, event, nextLine, map);
+                _this.saveRaceResult(resultsImport, event, eventType, nextLine, map);
             }
         }
         System.out.println("Done");
@@ -255,7 +257,7 @@ public class ResultsFileMappingController {
     	}.start(); // thread run
     }
 
-    public void saveRaceResult(ResultsImport resultsImport, Event event, String[] nextLine, String[] map) {
+    public void saveRaceResult(ResultsImport resultsImport, Event event, EventType eventType, String[] nextLine, String[] map) {
         if (/*nextLine.length != map.length ||*/ nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
@@ -285,34 +287,15 @@ public class ResultsFileMappingController {
             }else if(map[j].startsWith("custom")) {
             	// We have a custom mapping. Import into a custom field with a name given after the text custom:
             	String field = map[j].split("custom-",2)[1];
-            }else if(map[j].startsWith("timesplit-")) {
-            	String[] splitmapping = map[j].split("-");
-            	Split incomingSplit = new Split();
-            	if(splitmapping.length > 2) {
-                	if(splitmapping.length == 3) {
-                		incomingSplit.setName(splitmapping[2]);
-                	}
-                	incomingSplit.setTime(RaceResult.fromHumanTime(event.getGunTime().getTime(), nextLine[j]));
-                	splitMap.put(Integer.valueOf(splitmapping[1]), incomingSplit);           		
-            	}
             } else if(map[j].startsWith("split")){
             	try{
             		System.out.println("Import mapping: " + map[j] + " value: " + nextLine[j]);
 	            	int index = Integer.valueOf(map[j].replaceAll("split", ""))-1;
-	            	splits[index] = RaceResult.fromHumanTime(event.getGunTime().getTime(), nextLine[j]);
+	            	splits[index] = RaceResult.fromHumanTime(eventType.getGunTime().getTime(), nextLine[j]);
 	            	hasSplits = true;
             	}catch(Exception e){
             		e.printStackTrace();
             		System.out.println("split error "+e.getMessage());
-            	}
-            }else if(map[j].equals("offset")) {
-            	if(StringUtils.isNumeric(nextLine[j])) {
-            		try {
-            			offset = event.getGunTime().getTime() - Long.valueOf(nextLine[j]);
-            			hasOffset = true;
-            		} catch(Exception e) {
-            			System.out.println("offset error " + e.getMessage());
-            		}
             	}
             }else if(map[j].equals("timeofficial")) {
             	//Try to parse incoming time, base start time at event start
@@ -366,6 +349,7 @@ public class ResultsFileMappingController {
         System.out.println("ResultsFileMappingController saveRaceResult() "+fixedJson);
         RaceResult result = RaceResult.fromJsonToRaceResult(fixedJson);
         result.setEvent(event);
+        result.setEventType(eventType);
         result.setTimesplit(strSplits);
         System.out.println("ResultsFileMappingController splits2 "+result.getTimesplit());
         RaceResult exists = null;

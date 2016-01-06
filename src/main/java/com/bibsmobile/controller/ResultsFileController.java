@@ -28,6 +28,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
@@ -87,7 +88,7 @@ public class ResultsFileController {
             resultsFile.persist();
         }
 
-        System.out.println("file e=" + resultsFile.getEvent().getId());
+        System.out.println("file e=" + resultsFile.getEvent() + " type= " + resultsFile.getEventType());
         ResultsFileMapping mapping = new ResultsFileMapping();
         mapping.setResultsFile(resultsFile);
         mapping.setName(resultsFile.getName());
@@ -101,8 +102,15 @@ public class ResultsFileController {
     UserProfileService userProfileService;
 
     @RequestMapping(params = "form", produces = "text/html")
-    public String createForm(Model uiModel) {
-        this.populateEditForm(uiModel, new ResultsFile());
+    public String createForm(Model uiModel,
+    		@RequestParam("event") Long eventId,
+    		@RequestParam("type") Long typeId) {
+    	ResultsFile file = new ResultsFile();
+    	file.setEventType(EventType.findEventType(typeId));
+    	file.setEvent(Event.findEvent(eventId));
+    	uiModel.addAttribute("event", file.getEvent());
+    	uiModel.addAttribute("eventType", file.getEventType());
+        this.populateEditForm(uiModel, file);
         return "resultsfiles/create";
     }
 

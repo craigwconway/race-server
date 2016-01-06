@@ -6,7 +6,7 @@
 	<spring:url var="home" 			value="/" />
 	<spring:url var="raceday_url" 	value="/events/raceday" />
 	<spring:url var="reports_url" 	value="/registrations/reports" />
-	<spring:url var="license_url" 	value="/licensing" />
+	<spring:url var="series_url" 	value="/series" />
 	<spring:url var="users_url" 	value="/userprofiles?page=1&amp;size=10" />
 	<spring:url var="timers_url" 	value="/timers?page=1&amp;size=10" />
 	<spring:url var="login" 		value="/login" />

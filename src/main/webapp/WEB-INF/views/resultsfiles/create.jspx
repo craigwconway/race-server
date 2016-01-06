@@ -42,18 +42,10 @@
         <div class="ui form info-container">
             <h2 class="ui icon header">
                 <i class="fa fa-cog"><!--  --></i>
-                <div class="content">Import
-                    <div class="sub header">Select an event and results file to import.</div>
+                <div class="content">Import data for ${event.name }
+                    <div class="sub header">Select a file to import into ${eventType.typeName}</div>
                 </div>
             </h2>
-            <select class="form-control" id="event-type" name="event"
-                    data-parsley-error-message="Please select an event.">
-                <option selected="selected" disabled="disabled">Select Event</option>
-                <c:forEach var="item" items="${events}">
-                    <option value="${item.id}">${item}</option>
-                </c:forEach>
-            </select>
-
             <div class="field">
                 <div class="ui action input">
                     <input type="text" id="filename" readonly="readonly"></input>
@@ -63,7 +55,11 @@
                     </label>
                 </div>
                 <div class="meta" style="text-align:right">allowed: .csv, .txt, .xls (&lt;5MB)</div>
-            </div>    
+            </div> 
+        </div>
+        <div style="display:none">
+        	<input type="text" name="eventType" value="${eventType.id }"></input>
+        	<input type="text" name="event" value="${event.id }"></input>
         </div>
             <field:textarea field="filePath" id="c_com_bibsmobile_model_ResultsFile_filePath" render="false" required="true" z="user-managed"/>
             <field:input field="filesize" id="c_com_bibsmobile_model_ResultsFile_filesize" render="false" required="true" z="user-managed"/>
@@ -79,7 +75,7 @@
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_ResultsFile" render="${not empty dependencies}" z="91FLssB/ihm10hfS6M+6Xe7cztg="/>
     <script>
         // select event based on param
-        jQuery('[name=event]').val( GetURLParameter("event") );
+        //jQuery('[name=event]').val( GetURLParameter("event") );
 
         // grabbed code snippet from: https://github.com/Semantic-Org/Semantic-UI/issues/403
         var fileExtentionRange = '.csv .txt .xls';

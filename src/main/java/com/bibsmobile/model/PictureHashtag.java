@@ -183,6 +183,16 @@ public class PictureHashtag {
     public static List<PictureHashtag> findPictureHashtagEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM PictureHashtag o", PictureHashtag.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
+    
+    public static PictureHashtag findPictureHashtagByString(String query) {
+    	List<PictureHashtag> hashtags = entityManager().createQuery("SELECT o FROM PictureHashtag o where o.pictureHashtag = :hashtag", PictureHashtag.class)
+    			.setParameter("hashtag", query).setFirstResult(0).setMaxResults(1).getResultList();
+    	if(hashtags == null || hashtags.isEmpty()) {
+    		return null;
+    	} else {
+    		return hashtags.get(0);
+    	}
+    }
 
     public static List<PictureHashtag> findPictureHashtagEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM PictureHashtag o";

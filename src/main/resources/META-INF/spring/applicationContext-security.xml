@@ -20,7 +20,16 @@
 
     </http>
 
-
+	<beans:bean class="com.bibsmobile.filter.CustomTokenAuthenticationFilter"
+	    id="appTokenProcessingFilter">
+	    <beans:constructor-arg type="java.lang.String"><beans:value>/app/**</beans:value></beans:constructor-arg>
+	</beans:bean>
+	
+	<http auto-config="false" pattern="/app/**" use-expressions="true" create-session="stateless" entry-point-ref="appAuthenticationEntryPoint">
+		<intercept-url pattern="/app/token/generate" access="permitAll" />
+	    <custom-filter ref="appTokenProcessingFilter" position="FORM_LOGIN_FILTER"   />
+    	<intercept-url pattern="/app/**" access="permitAll" />
+	</http>
 
     <!-- HTTP security configurations -->
     <http auto-config="false" use-expressions="true">
@@ -56,7 +65,8 @@
 
         <!--         <intercept-url pattern="/monitoring" access="hasRole('ROLE_SYS_ADMIN')" /> -->
 
-        <intercept-url pattern="/**" access="isAuthenticated()" />
+        <intercept-url pattern="/^app" access="isAuthenticated()" />
+        <intercept-url pattern="/^app/**" access="isAuthenticated()" />
         <intercept-url pattern="/**" access="permitAll" />
         <logout logout-url="/resources/j_spring_security_logout" />
     </http>

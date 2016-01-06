@@ -18,6 +18,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
+import javax.persistence.JoinTable;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -83,6 +86,16 @@ public class UserProfile implements UserDetails {
 
     @OneToMany(mappedBy = "userProfile")
     private Set<RaceResult> raceResults;
+    
+    @ManyToMany
+    private List<UserProfile> friends = null;
+
+    @ManyToMany
+    @JoinTable(name="user_profile_friend_requests")
+    private Set<UserProfile> friendRequests;
+    
+    @ManyToMany
+    private Set<Event> events = new HashSet<Event>();
 
     private String phone;
 
@@ -97,12 +110,17 @@ public class UserProfile implements UserDetails {
     private String emergencyContactPhone;
 
     private String hearFrom;
+    
+    private int zapposPoints = 0;
 
     private String dropboxId;
 
     private String dropboxAccessToken;
 
     private String stripeCustomerId;
+    
+    @OneToMany(mappedBy="user")
+    private Set<UserBadge> badges;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "importUser")
     private Set<ResultsFile> resultsFiles;
@@ -194,6 +212,15 @@ public class UserProfile implements UserDetails {
             throw new IllegalArgumentException("The email argument is required");
         EntityManager em = UserProfile.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.email = :email AND o.username IS NOT NULL", Long.class);
+        q.setParameter("email", email);
+        return q.getSingleResult();
+    }
+    
+    public static Long countFindEnabledUserProfilesByEmailEquals(String email) {
+        if (email == null || email.isEmpty())
+            throw new IllegalArgumentException("The email argument is required");
+        EntityManager em = UserProfile.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.email = :email AND o.enabled = 1", Long.class);
         q.setParameter("email", email);
         return q.getSingleResult();
     }
@@ -459,7 +486,63 @@ public class UserProfile implements UserDetails {
         this.forgotPasswordCode = forgotPasswordCode;
     }
 
-    public static Long countFindUserProfilesByDropboxIdEquals(String dropboxId) {
+    /**
+	 * @return the friends
+	 */
+	public List<UserProfile> getFriends() {
+		return friends;
+	}
+
+	/**
+	 * @param friends the friends to set
+	 */
+	public void setFriends(List<UserProfile> friends) {
+		this.friends = friends;
+	}
+
+	/**
+	 * @return the friendRequests
+	 */
+	public Set<UserProfile> getFriendRequests() {
+		return friendRequests;
+	}
+
+	/**
+	 * @param friendRequests the friendRequests to set
+	 */
+	public void setFriendRequests(Set<UserProfile> friendRequests) {
+		this.friendRequests = friendRequests;
+	}
+
+	/**
+	 * @return the events
+	 */
+	public Set<Event> getEvents() {
+		return events;
+	}
+
+	/**
+	 * @param events the events to set
+	 */
+	public void setEvents(Set<Event> events) {
+		this.events = events;
+	}
+
+	/**
+	 * @return the badges
+	 */
+	public Set<UserBadge> getBadges() {
+		return badges;
+	}
+
+	/**
+	 * @param badges the badges to set
+	 */
+	public void setBadges(Set<UserBadge> badges) {
+		this.badges = badges;
+	}
+
+	public static Long countFindUserProfilesByDropboxIdEquals(String dropboxId) {
         if (dropboxId == null || dropboxId.isEmpty())
             throw new IllegalArgumentException("The dropboxId argument is required");
         EntityManager em = UserProfile.entityManager();
@@ -559,6 +642,25 @@ public class UserProfile implements UserDetails {
         TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.username = :username", UserProfile.class);
         q.setParameter("username", username);
         return q;
+    }
+    
+    public static TypedQuery<UserProfile> findEnabledUserProfilesByEmailEquals(String email) {
+        if (email == null || email.isEmpty())
+            throw new IllegalArgumentException("The username argument is required");
+        EntityManager em = UserProfile.entityManager();
+        TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.email = :email AND o.enabled = 1", UserProfile.class);
+        q.setParameter("email", email);
+        return q;
+    }
+    
+    public static UserProfile findFriendRequestForUserById(UserProfile user, Long id) {
+    	if (user == null || id == null) {
+    		throw new IllegalArgumentException("The user or id is null");
+    	}
+    	EntityManager em = UserProfile.entityManager();
+        TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile o inner join o.friendRequests WHERE o.id = :id", UserProfile.class);
+        q.setParameter("id", id);
+        return q.getSingleResult();
     }
 
     public static TypedQuery<UserProfile> findUserProfilesByUsernameEquals(String username, String sortFieldName, String sortOrder) {
@@ -698,4 +800,18 @@ public class UserProfile implements UserDetails {
     public void setVersion(Integer version) {
         this.version = version;
     }
+
+	/**
+	 * @return the zapposPoints
+	 */
+	public int getZapposPoints() {
+		return zapposPoints;
+	}
+
+	/**
+	 * @param zapposPoints the zapposPoints to set
+	 */
+	public void setZapposPoints(int zapposPoints) {
+		this.zapposPoints = zapposPoints;
+	}
 }

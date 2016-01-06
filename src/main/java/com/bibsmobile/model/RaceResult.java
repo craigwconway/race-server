@@ -50,6 +50,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -76,6 +77,7 @@ import flexjson.JSONSerializer;
  */
 @Entity
 @Configurable
+@Indexed
 public class RaceResult implements Comparable<RaceResult> {
 
 	/**
@@ -111,21 +113,21 @@ public class RaceResult implements Comparable<RaceResult> {
      * (Event, Bib) should represent a unique identifier for searches. This is an import field.
      */
     @NotNull
-    @Index(name="bib_index") // search field
+    @Field
     private long bib;
 
     /**
      * First name of runner (Can contain multiple names, all but the last name should go
      * here when imported from the fullname field). This is an import field.
      */
-    @Index(name="name_index") // search field
+    @Field // search field
     private String firstname;
 
     /**
      * Last name of runner. Last name of runner should go here when imported from the fullname field.
      * This is an import field.
      */
-    @Index(name="name_index") // search field
+    @Field // search field
     private String lastname;
 
     /**
@@ -147,6 +149,11 @@ public class RaceResult implements Comparable<RaceResult> {
      * Name of team that the runner belongs to. This is an import field.
      */
     private String team;
+    
+    /**
+     * Runner's Email. This is an import field.
+     */
+    private String email;
 
     /**
      * Number of laps completed by the runner.
@@ -402,6 +409,118 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getResultList();
     }
 
+    public static List<RaceResult> searchSeriesPaginated(Series series, String name, Integer page, Integer pageSize, String gender) {
+        EntityManager em = RaceResult.entityManager();
+
+        String firstname = "";
+        String lastname = "";
+        if (name.contains(" ")) {
+            firstname = name.split(" ")[0];
+            lastname = name.split(" ")[1];
+        }
+
+        String HQL = "SELECT o FROM RaceResult AS o join Event AS e on o.event = e.id join Series s on e.series = s.id WHERE series = :series AND";
+
+        if(gender != null && gender.equalsIgnoreCase("M"))
+        	HQL += " o.gender = 'M' AND";
+        
+        if(gender != null && gender.equalsIgnoreCase("F"))
+        	HQL += " o.gender = 'F' AND";
+        if (!firstname.isEmpty() && !lastname.isEmpty()) {
+            firstname += "%";
+            lastname += "%";
+            HQL += " LOWER(o.firstname) LIKE LOWER(:firstname) AND LOWER(o.lastname) LIKE LOWER(:lastname) ";
+        } else {
+            name += "%";
+            HQL += " (LOWER(o.firstname) LIKE LOWER(:name) OR LOWER(o.lastname) LIKE LOWER(:name)) ";
+        }
+        if(HQL.endsWith("AND"))
+        	HQL = HQL.substring(0, HQL.length() - 3);
+        HQL += "ORDER BY (o.timeofficial - o.timestart) ASC";
+        
+        System.out.println("HQL: " + HQL);
+        TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
+
+        q.setParameter("series", series);
+        if (!firstname.isEmpty() && !lastname.isEmpty()) {
+            q.setParameter("firstname", firstname);
+            q.setParameter("lastname", lastname);
+        } else {
+            q.setParameter("name", name);
+        }
+        q.setFirstResult((page-1) * 10);
+        q.setMaxResults(pageSize);
+
+        return q.getResultList();
+    }    
+    
+    public static List<RaceResult> searchPaginated(Long eventId, Long eventTypeId, String name, Long bib, Integer page, Integer pageSize, String gender) {
+        EntityManager em = RaceResult.entityManager();
+        
+        Event event = new Event();
+        if (null != eventId && eventId > 0)
+            event = Event.findEvent(eventId);
+        
+        EventType eventType = null;
+        if (null != eventTypeId && eventTypeId > 0)
+        	eventType = EventType.findEventType(eventTypeId);
+        
+        String firstname = "";
+        String lastname = "";
+        if (name.contains(" ")) {
+            firstname = name.split(" ")[0];
+            lastname = name.split(" ")[1];
+        }
+
+        String HQL = "SELECT o FROM RaceResult AS o WHERE ";
+
+        if (null != eventId && eventId > 0)
+            HQL += " o.event = :event AND ";
+
+        if (null != eventTypeId && eventTypeId > 0)
+        	HQL += " o.eventType = :eventType AND ";
+        
+        if (bib != null)
+            HQL += " o.bib = :bib AND ";
+
+        if(gender != null && gender.equalsIgnoreCase("M"))
+        	HQL += " o.gender = 'M' AND";
+        
+        if(gender != null && gender.equalsIgnoreCase("F"))
+        	HQL += " o.gender = 'F' AND";
+        if (!firstname.isEmpty() && !lastname.isEmpty()) {
+            firstname += "%";
+            lastname += "%";
+            HQL += " LOWER(o.firstname) LIKE LOWER(:firstname) AND LOWER(o.lastname) LIKE LOWER(:lastname) ";
+        } else {
+            name += "%";
+            HQL += " (LOWER(o.firstname) LIKE LOWER(:name) OR LOWER(o.lastname) LIKE LOWER(:name)) ";
+        }
+        if(HQL.endsWith("AND"))
+        	HQL = HQL.substring(0, HQL.length() - 3);
+        HQL += "ORDER BY (o.timeofficial - o.timestart) ASC";
+        
+        System.out.println("HQL: " + HQL);
+        TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
+
+        if (null != eventId && eventId > 0)
+            q.setParameter("event", event);
+        if (null != eventTypeId && eventTypeId > 0)
+        	q.setParameter("eventType", eventType);
+        if (bib != null)
+            q.setParameter("bib", bib);
+        if (!firstname.isEmpty() && !lastname.isEmpty()) {
+            q.setParameter("firstname", firstname);
+            q.setParameter("lastname", lastname);
+        } else {
+            q.setParameter("name", name);
+        }
+        q.setFirstResult((page-1) * 10);
+        q.setMaxResults(pageSize);
+
+        return q.getResultList();
+    }    
+    
     public static List<RaceResult> search(Long eventId, String name, Long bib) {
         EntityManager em = RaceResult.entityManager();
 
@@ -490,6 +609,42 @@ public class RaceResult implements Comparable<RaceResult> {
         return fromHumanTime(humanReadable) > 0 ? startTime + fromHumanTime(humanReadable) : 0;
     }
 
+    public static String paceToHumanTime(long start, long finish, long meters) {
+    	if(finish == 0){
+    		return "N/A";
+    	}
+        long l = finish - start;
+        
+        String rtn = "";
+        if(l < 0 || meters == 0) {
+        	return "N/A";
+        }
+        double units = ((double) meters)/1760;
+        long lAdjusted = (long) (l/units);
+        
+        int hours = (int) ((lAdjusted / 3600000));
+        int minutes = (int) ((lAdjusted / 60000) % 60);
+        int seconds = (int) ((lAdjusted / 1000) % 60);
+        // int millis = (int) (l%100);
+        if (hours > 0 && hours <= 9)
+            rtn = "0" + hours + ":";
+        else if (hours > 9)
+            rtn = hours + ":";
+        else if (hours == 0)
+            rtn = "00:";
+        if (minutes > 0 && minutes <= 9)
+            rtn = rtn + "0" + minutes;
+        else if (minutes > 9)
+            rtn = rtn + "" + minutes;
+        else if (minutes == 0)
+            rtn = rtn + "00";
+        if (seconds >= 0 && seconds <= 9)
+            rtn = rtn + ":0" + seconds;
+        else if (seconds > 9)
+            rtn = rtn + ":" + seconds;
+        return rtn;
+    }    
+    
     public static String toHumanTime(long start, long finish) {
     	if(finish == 0){
     		return "00:00:00";
@@ -630,7 +785,44 @@ public class RaceResult implements Comparable<RaceResult> {
         q.setParameter("lastname", lastname);
         return (q.getSingleResult());
     }
+    
+    public static long countRaceResultsCompleteByEventType(EventType eventType) {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.eventType = :eventType and rr.timeofficial > 0", Long.class);
+        q.setParameter("eventType", eventType);
+        return q.getSingleResult();
+    }
 
+    public static long countUnassignedCompleteRaceResults(Event event) {
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT Count(rr) FROM RaceResult rr WHERE rr.event = :event and rr.eventType is null and rr.timeofficial > 0", Long.class);
+        q.setParameter("event", event);
+        return q.getSingleResult();
+    }    
+    
+    public static Long countFindUnassignedRaceResultsByEvent(Event event) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event AND o.eventType is null", Long.class);
+        q.setParameter("event", event);
+        return (q.getSingleResult());
+    }    
+ 
+    public static List <RaceResult> findUnassignedRaceResultsByEventPaginated(Event event, int page, int size) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        if(page < 1) {
+        	page = 1;
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.eventType is null ORDER by o.bib ASC", RaceResult.class);
+        q.setParameter("event", event);
+        q.setFirstResult(size*(page-1));
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
+    
     public static TypedQuery<RaceResult> findRaceResultsByEvent(Event event) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
@@ -855,6 +1047,14 @@ public class RaceResult implements Comparable<RaceResult> {
         return entityManager().find(RaceResult.class, id);
     }
 
+    public static List<RaceResult> findRaceResultsByEventAndUser(Event event, UserProfile userProfile) {
+    	if(event == null || userProfile == null) {
+    		return null;
+    	}
+    	return entityManager().createQuery("SELECT o FROM RaceResult o WHERE o.event = :event AND o.userProfile = :userProfile", RaceResult.class)
+    			.setParameter("event", event).setParameter("userProfile", userProfile).getResultList();
+    }
+    
     public static List<RaceResult> findRaceResultEntries(int firstResult, int maxResults) {
         return entityManager().createQuery("SELECT o FROM RaceResult o", RaceResult.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
@@ -1178,6 +1378,20 @@ public class RaceResult implements Comparable<RaceResult> {
 	 */
 	public void setTeam(String team) {
 		this.team = team;
+	}
+
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	/**

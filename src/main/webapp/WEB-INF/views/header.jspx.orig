@@ -1,0 +1,63 @@
+<div id="header" xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<spring:url var="banner" 		value="/resources/images/bibsicon.png" />
+	<spring:url var="home" 			value="/" />
+	<spring:url var="raceday_url" 	value="/events/raceday" />
+	<spring:url var="reports_url" 	value="/registrations/reports" />
+	<spring:url var="series_url" 	value="/series" />
+	<spring:url var="users_url" 	value="/userprofiles?page=1&amp;size=10" />
+	<spring:url var="timers_url" 	value="/timers?page=1&amp;size=10" />
+	<spring:url var="login" 		value="/login" />
+	<spring:url var="logout" 		value="/resources/j_spring_security_logout" />
+	<spring:message code="button_home" var="home_label" htmlEscape="false" />
+
+    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+	<div class="ui visible left inverted vertical sidebar labeled icon small-caps menu">
+    	<a href="/bibs-server" class="item">
+    		<img class="ui mini image" src="images/bibsicon.png"/>
+		</a>
+    	<a href="/bibs-server" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
+    	<a onclick="redirectAthleteList();return false;" class="item"><i class="fa fa-users left-icon icon"><!--  --></i> athletes</a>
+  		<a href="${raceday_url}" class="item"><i class="fa fa-wifi left-icon icon"><!--  --></i> rfid</a>
+  		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+  	  		<a href="${timers_url}" class="item"><i class="fa fa-cog left-icon icon"><!--  --></i> settings</a>
+  			<a href="${license_url}" class="item"><i class="fa fa-bolt left-icon icon"><!--  --></i> licensing</a>
+  	  	</sec:authorize>
+    	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>
+	 </div>
+    </sec:authorize>
+	<script>
+	window.onload = init;
+
+	function init(){
+		initTooltip();
+	}
+
+	function initTooltip(){
+	    var url = window.location.href;
+	    var urllen = url.length;
+	    var ind = url.lastIndexOf("=");
+	    var eid = url.substring(ind+1, urllen);
+	    if( eid == 't' ){
+	    	jQuery('input[name="j_username"]').parent().addClass("has-error");
+	    	jQuery('input[name="j_password"]').parent().addClass("has-error");
+		    jQuery("#loginForm").show();
+		    jQuery('input[name="j_username"]').focus();
+	    }
+	    else{
+	    	jQuery('input[name="j_username"]').parent().removeClass("has-error");
+	    	jQuery('input[name="j_password"]').parent().removeClass("has-error");
+	    	return false;
+	    }
+	}
+
+	function redirectEventList(){
+	    window.location='/bibs-server/events?page=1&amp;size=10';
+	}
+	function redirectAthleteList(){
+	    window.location='/bibs-server/raceresults?/myresults';
+	}
+	</script>	
+</div>

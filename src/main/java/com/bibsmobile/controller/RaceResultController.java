@@ -8,6 +8,7 @@ import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.model.DeviceInfo;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.License;
 import com.bibsmobile.model.Split;
 import com.bibsmobile.model.UserAuthorities;
@@ -15,6 +16,8 @@ import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.dto.RaceResultDetailDto;
+import com.bibsmobile.model.dto.RaceResultViewDto;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
@@ -82,14 +85,36 @@ public class RaceResultController {
         return raceResult.toJson();
     }
 
+    /**
+     * @api {get} /raceresults/search Search
+     * @apiName Search
+     * @apiParam {Number} event Event to search from
+     * @apiParam {Number} type Event Type to search from
+     * @apiParam {Number} [bib] Bib number to search for
+     * @apiParam {String} [name] First last or fullname to search
+     * @apiParam {String=M,F} [gender] Gender to serch
+     * @apiParam {Number} [page=1] Page of results to get
+     * @apiParam {Number} [size=10] Number of results per page
+     * @apiGroup raceresults
+     * @apiPermission none
+     * @apiDescription Search for a Race Result by event id and either first/last/fullname or bib. Results are returned in pages of 10
+     * and start from page number 1.
+     * @apiSuccess (200) {Object} RaceResult object returned
+     * @return
+     */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public String search(@RequestParam(value = "event", required = false, defaultValue = "0") Long event,
-            @RequestParam(value = "name", required = false, defaultValue = "") String name, @RequestParam(value = "bib", required = false, defaultValue = "") Long bib) {
+    		@RequestParam(value = "type", required = false) Long type,
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "bib", required = false, defaultValue = "") Long bib,
+            @RequestParam(value = "gender", required = false) String gender,
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size){
         String rtn = "[]";
         try {
-            List<RaceResult> raceResults = RaceResult.search(event, name, bib);
-            rtn = RaceResult.toJsonArray(raceResults);
+            List<RaceResult> raceResults = RaceResult.searchPaginated(event, type, name, bib, page, size, gender);
+            rtn = RaceResultViewDto.fromRaceResultsToDtoArray(raceResults);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -316,6 +341,22 @@ public class RaceResultController {
         return "raceresults/list";
     }
 
+    @RequestMapping(value="/unassigned", produces = "text/html")
+    public static String manageUnassigned(
+    						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
+    						@RequestParam(value = "event", required = true) Long event, 
+    						Model uiModel) {
+        int sizeNo = size == null ? 10 : size.intValue();
+        float nrOfPages = 1;
+        Event e = Event.findEvent(event);
+        uiModel.addAttribute("raceresults", RaceResult.findUnassignedRaceResultsByEventPaginated(e, page, size));
+        nrOfPages = (float) RaceResult.countFindUnassignedRaceResultsByEvent(e) / sizeNo;
+        uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        // addDateTimeFormatPatterns(uiModel);
+        return "raceresults/unassigned";
+    }    
+    
     @RequestMapping(value = "/bibs", method = RequestMethod.GET, produces = "text/html")
     public static String bibs() {
 
@@ -382,7 +423,11 @@ public class RaceResultController {
     UserProfileService userProfileService;
 
     @RequestMapping(params = "form", produces = "text/html")
-    public String createForm(Model uiModel) {
+    public String createForm(Model uiModel, @RequestParam("event") Long eventId) {
+    	Event event = Event.findEvent(eventId);
+    	List<EventType> eventTypes = EventType.findEventTypesByEvent(event);
+    	uiModel.addAttribute("event", event);
+    	uiModel.addAttribute("eventTypes", eventTypes);
         this.populateEditForm(uiModel, new RaceResult());
         return "raceresults/create";
     }
@@ -390,7 +435,13 @@ public class RaceResultController {
     @RequestMapping(value = "/{id}", produces = "text/html")
     public String show(@PathVariable("id") Long id, Model uiModel) {
     	// sketchy bait-and-switch because that's what bibs does
-        this.populateEditForm(uiModel, RaceResult.findRaceResult(id));
+    	RaceResult result = RaceResult.findRaceResult(id);
+    	Event event = result.getEvent();
+        List<EventType> eventTypes = EventType.findEventTypesByEvent(event);
+        EventType eventType = result.getEventType();
+        this.populateEditForm(uiModel, result);
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("eventTypes", eventTypes);
         return "raceresults/update";
     }
 
@@ -401,20 +452,19 @@ public class RaceResultController {
             return "raceresults/update";
         }
         uiModel.asMap().clear();
-        // New race result stuff here //
-        System.out.println("[RESULTS] Updating Chip Time");
-        System.out.println(" Timestart:" + raceResult.getTimestart());
-    	System.out.println("[RESULTS] Null get timestart, proceeding");
-    	// We have a result without a chip time, we can compute the timeofficialdisplay
-    	if(null != raceResult.getEvent().getGunTime() && 0 < raceResult.getTimeofficial()) {
-    		System.out.println("[RESULTS] Event details:");
-    		System.out.println(raceResult.getEvent().toJson());
-    		System.out.println("[RESULTS] Calculating new timeofficialdisplay:");
-    		System.out.println("[RESULTS] Event Gun Time Start: " + raceResult.getEvent().getGunTime().getTime() + " Time Official: " + raceResult.getTimeofficial());
-    		// There is a gun time in the event and a timeofficial set
-    		raceResult.setTimestart(raceResult.getEvent().getGunTime().getTime());
-    		System.out.println("[RESULTS] Computed gun time: " + raceResult.getTimeofficialdisplay());
-    	}
+        // Load true result from database, only modify fields on page.
+        RaceResult trueResult = RaceResult.findRaceResult(raceResult.getId());
+        trueResult.setFirstname(raceResult.getFirstname());
+        trueResult.setLastname(raceResult.getLastname());
+        trueResult.setAge(raceResult.getAge());
+        trueResult.setGender(raceResult.getGender());
+        trueResult.setBib(raceResult.getBib());
+        trueResult.setEventType(raceResult.getEventType());
+        trueResult.setTeam(raceResult.getTeam());
+        trueResult.setCity(raceResult.getCity());
+        trueResult.setState(raceResult.getState());
+        trueResult.setLaps(raceResult.getLaps());
+        trueResult.setTimeofficialdisplay(raceResult.getTimeofficialdisplay());
     	// Add logic to handle timeofficialdisplay updates if we have a nontrivial timeofficialdisplay value:
     	if("" != raceResult.valueOfTimeofficialdisplay()) {
     		DateFormat timeparser = new SimpleDateFormat("kk:mm:ss");
@@ -439,8 +489,8 @@ public class RaceResultController {
 				e.printStackTrace();
 			}
     	}
-		raceResult.merge();
-    	return "redirect:/raceresults/" + encodeUrlPathSegment(raceResult.getId().toString(), httpServletRequest);
+		trueResult.merge();
+    	return "redirect:/raceresults/" + encodeUrlPathSegment(trueResult.getId().toString(), httpServletRequest);
 
     }
     /**
@@ -509,11 +559,12 @@ public class RaceResultController {
     }
 
     /**
-     * @api {get} /raceresults/:id
+     * @api {get} /raceresults/:id Get Race Result Details
+     * @apiName Get Race Result Details
+     * @apiDescription Pass up an id to get a detailed description of a RaceResult
      * @apiGroup raceresults
      * @apiName getRaceResultById
-     * @apiParam {Number} id Id of raceresult to get
-     * @apiSuccess (200) {Object} raceResult Race Result JSON Object
+     * @apiUse raceResultDetailDto
      * @apiPermission none
      * @param id Long raceResult.id to get
      * @return JSON object of raceResult with HTTP 200, or HTTP 404 Not found
@@ -527,7 +578,30 @@ public class RaceResultController {
         if (raceResult == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(raceResult.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(RaceResultDetailDto.fromRaceResultToDto(raceResult), headers, HttpStatus.OK);
+    }
+    
+    /**
+     * @api {get} /raceresults/details/:id Get Race Result Details
+     * @apiName Get Race Result Details
+     * @apiDescription Pass up an id to get a detailed description of a RaceResult
+     * @apiGroup raceresults
+     * @apiName getRaceResultById
+     * @apiUse raceResultDetailDto
+     * @apiPermission none
+     * @param id Long raceResult.id to get
+     * @return JSON object of raceResult with HTTP 200, or HTTP 404 Not found
+     */
+    @RequestMapping(value = "/details/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showDetails(@PathVariable("id") Long id) {
+        RaceResult raceResult = RaceResult.findRaceResult(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (raceResult == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(RaceResultDetailDto.fromRaceResultToDto(raceResult), headers, HttpStatus.OK);
     }
 
     @RequestMapping(headers = "Accept=application/json")

@@ -126,15 +126,15 @@
 	var gender = Math.max(0,GetURLParameter("gender"));
 
 	function awards(){
-		window.location = "/bibs-server/events/awards?event="+eventid;
+		window.location = "/bibs-server/events/awards?event="+eventid+"&amp;type=${eventType.id}";
 	}
 	
 	function overall(){
-		window.location = "/bibs-server/events/overall?event="+eventid;
+		window.location = "/bibs-server/events/overall?event="+eventid+"&amp;type=${eventType.id}";
 	}
 	
 	function byGender(g){
-		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;gender="+g;
+		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;type=${eventType.id}"+"&amp;gender="+g;
 	}
 
 	function getCustom(){

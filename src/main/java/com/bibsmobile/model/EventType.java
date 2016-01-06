@@ -1,11 +1,15 @@
 package com.bibsmobile.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
@@ -13,46 +17,115 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.search.annotations.Field;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
 import flexjson.JSONSerializer;
 
+/**
+ * EventType entity used to describe events on the server side. A running event will
+ * commonly consist of smaller events (for example, a 10k and a 5k at the same race).
+ * This object holds details for these smaller events, and is used for mapping results,
+ * adding tickets and managing awards for these smaller events.
+ * @author galen
+ *
+ */
 @Configurable
 @Entity
 public class EventType {
 
+	/**
+	 * Custom name describing this event type.
+	 * If left empty on creation, this is generated from
+	 * {@link #distance} and {@link #racetype}.
+	 */
     private String typeName;
     
+    /**
+     * Human Readable distance string describing this event type.
+     */
     @NotNull
+    @Field
     private String distance;
     
+    /**
+     * Dropdown of race describing this event type
+     */
     @NotNull
+    @Field
     private String racetype;
     
+    /**
+     * Number of meters in this race. Computed from {@link #distance}
+     */
     private Long meters;
     
+    /**
+     * Date Object holding the starting time of this event type
+     */
     @Temporal(TemporalType.TIMESTAMP)
     private Date startTime;
 
+    /**
+     * Human readable start time string, parsed to generate {@link #startTime}.
+     */
     private String timeStartLocal;
     
+    /**
+     * Event object containing this event type
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     private Event event;
     
+    /**
+     * Low bib for automatic registration mapping.
+     * Requires {@link #autoMapReg} to be set to true.
+     */
     private Long lowBib;
     
+    /**
+     * High bib for automatic registration mapping
+     * Requires {@link #autoMapReg} to be set to true.
+     */
     private Long highBib;
     
+    /**
+     * Switch to automatically map registrations to event type
+     */
     private boolean autoMapReg=false;
+    
+    private boolean gunFired = false;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "MM/dd/yyyy h:mm:ss aZ")
+    private Date gunTime;
+
+    private long gunTimeStart;
+    
+
+    /**
+     * Award categories mapped by this event type
+     */
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "eventType")
+    private List<AwardCategory> awardCategorys;
+    
+    /**
+     * Embedded object containing the EventAwardsConfig.
+     */
+    @Embedded
+    private EventAwardsConfig awardsConfig = new EventAwardsConfig();
 
     @PersistenceContext
     transient EntityManager entityManager;
@@ -218,7 +291,9 @@ public class EventType {
     }
 
     /**
-     * Starting time of the event type. Timezone is contained in the event object
+     * Sets property {@link #startTime}.
+     * Starting time of the event type. This is generated in combination with
+     * the timezone of the containing event.
      * @param startTime the starting time to set.
      */
     public void setStartTime(Date startTime) {
@@ -234,6 +309,7 @@ public class EventType {
 	}
 
 	/**
+	 * Sets property {@link #timeStartLocal}.
 	 * String containing the local starting time of the event type.
 	 * @param timeStartLocal the timeStartLocal to set
 	 */
@@ -359,4 +435,180 @@ public class EventType {
 	public void setMeters(Long meters) {
 		this.meters = meters;
 	}
+	
+	/**
+	 * Switch for whether or not the gun is fired.
+	 * @return true if gun is fired, false otherwise.
+	 */
+    public boolean isGunFired() {
+        return this.gunFired;
+    }
+
+    /**
+     * Set switch for whether or not the gun is fired.
+     * @param gunFired boolean of value to set
+     */
+    public void setGunFired(boolean gunFired) {
+        this.gunFired = gunFired;
+    }
+	
+	/**
+	 * Returns gun fire time for this event type.
+	 * @return
+	 */
+    public Date getGunTime() {
+        return this.gunTime;
+    }
+
+    /**
+     * Sets gun fire time for this event type.
+     * @param gunTime
+     */
+    public void setGunTime(Date gunTime) {
+        this.gunTime = gunTime;
+    }
+
+    public long getGunTimeStart() {
+        return this.gunTimeStart;
+    }
+
+    public void setGunTimeStart(long gunTimeStart) {
+        this.gunTimeStart = gunTimeStart;
+    }
+	
+	/**
+	 * Get list of awards associated with this event type
+	 * @return AwardCategory Objects mapped by thisevent type
+	 */
+    public List<AwardCategory> getAwardCategorys() {
+        return this.awardCategorys;
+    }
+
+    /**
+     * Set list of awards associated with this event type
+     * @param AwardCategories to map with this event type
+     */
+    public void setAwardCategorys(List<AwardCategory> awardCategorys) {
+        this.awardCategorys = awardCategorys;
+    }
+	
+	/**
+	 * This is an embedded entity inside of eventType and can only be selected from its context.
+	 * @return the awardsConfig
+	 */
+	public EventAwardsConfig getAwardsConfig() {
+		return awardsConfig;
+	}
+
+	/**
+	 * This is an embedded entity inside of eventType and can only be set from its context.
+	 * @param awardsConfig the awardsConfig to set
+	 */
+	public void setAwardsConfig(EventAwardsConfig awardsConfig) {
+		this.awardsConfig = awardsConfig;
+	}
+
+	/**
+	 * Used in awards calculation.
+	 * @param gender Gender to calculate, either "M" or "F".
+	 * @param min
+	 * @param max
+	 * @param size
+	 * @return
+	 */
+    public List<RaceResult> getAwards(String gender, int min, int max, int size) {
+    	return getAwards( gender,  min,  max,  size, new ArrayList<Long>());
+    }
+
+    public List<RaceResult> getAwards(String gender, int min, int max, int size, List<Long> excludeBibs) { 
+    	List<RaceResult> results = findRaceResultsByAwardCategory(id,gender,min,max,1,999);
+    	Collections.sort(results);
+    	List<RaceResult> resultsFiltered = new ArrayList<RaceResult>();
+    	for(RaceResult r : results){
+    		if(!excludeBibs.contains(r.getBib())){
+    			resultsFiltered.add(r);
+    		}
+    		if(resultsFiltered.size() == size){
+    			break;
+    		}
+    	}
+    	Collections.sort(resultsFiltered);
+    	return resultsFiltered;
+    }
+
+    public List<AwardCategoryResults> calculateRank(EventType eventType){
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	
+		// filter medals
+		List<Long> awarded = new ArrayList<Long>();
+    	for(AwardCategory c: eventType.getAwardCategorys()){
+    		if(!c.isMedal()){
+    			List<RaceResult> rr = eventType.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), 9999, awarded);
+    			results.add(new AwardCategoryResults(c,rr));
+    			// track mdals, only 1 medal ppn
+    			for(RaceResult r:rr){
+        			awarded.add(r.getBib());
+    			}
+    		}
+    	}
+    	
+    	Collections.sort(results);
+    	return results;
+    }
+    
+    
+    public List<AwardCategoryResults> calculateMedals(EventType eventType){
+    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
+    	List<Long> mastersBibs = new ArrayList<Long>();
+    	
+    	// if not allow masters in overall, collect masters bibs, pass into non-masters
+    	if(!eventType.getAwardsConfig().isAllowMastersInNonMasters()){
+        	for(AwardCategory c: eventType.getAwardCategorys()){
+        		if(c.isMedal() && c.isMaster()){
+        			List<RaceResult> masters = eventType.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize());
+        			for(RaceResult m:masters){
+        				mastersBibs.add(m.getBib());
+        			}
+        		}
+        	}
+    	}
+    	
+		// filter medals
+		List<Long> awarded = new ArrayList<Long>();
+    	for(AwardCategory c:eventType.getAwardCategorys()){
+    		if(c.isMedal()){
+    			List<RaceResult> rr = (c.isMaster()) ? eventType.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(),awarded)
+    					: eventType.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), mastersBibs);
+    			results.add(new AwardCategoryResults(c,rr));
+    			// track mdals, only 1 medal ppn
+    			for(RaceResult r:rr){
+        			awarded.add(r.getBib());
+        			mastersBibs.add(r.getBib());
+    			}
+    		}
+    	}
+    	
+    	Collections.sort(results);
+    	return results;
+    }
+
+    public static List<RaceResult> findRaceResultsByAwardCategory(long eventType, String gender, int min, int max, int page, int size) {
+        if (min > max)
+            min = max;
+        String HQL = "SELECT o FROM RaceResult AS o WHERE o.eventType = :eventType AND o.timeofficial > 0 ";
+        if (!gender.isEmpty()) HQL += " AND o.gender = :gender ";
+        if (min >= 0 && max > 0) HQL += "AND o.age >= :min AND o.age <= :max ) ";
+        HQL += " order by o.timeofficialdisplay asc";
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
+        q.setParameter("eventType", EventType.findEventType(eventType));
+        if (!gender.isEmpty()) q.setParameter("gender", gender);
+        if (min >= 0 && max > 0) {
+            q.setParameter("min", min);
+            q.setParameter("max", max);
+        }
+        q.setFirstResult((page - 1) * size);
+        q.setMaxResults(size);
+        return q.getResultList();
+    }
 }

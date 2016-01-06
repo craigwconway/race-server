@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="badges/list">
+        <put-attribute name="body" value="/WEB-INF/views/badges/list.jspx"/>
+    </definition>
+<definition extends="default" name="badges/show">
+        <put-attribute name="body" value="/WEB-INF/views/badges/show.jspx"/>
+    </definition>
+<definition extends="default" name="badges/create">
+        <put-attribute name="body" value="/WEB-INF/views/badges/create.jspx"/>
+    </definition>
+<definition extends="default" name="badges/eventinsights">
+        <put-attribute name="body" value="/WEB-INF/views/badges/eventinsights.jspx"/>
+    </definition>
+</tiles-definitions>

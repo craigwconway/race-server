@@ -28,6 +28,8 @@ import com.bibsmobile.model.Event;
 import com.bibsmobile.model.PictureHashtag;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.dto.RaceImageDetailsDto;
+import com.bibsmobile.model.dto.RaceImageViewDto;
 import com.bibsmobile.service.UserProfileService;
 
 @RequestMapping("/raceimages")
@@ -35,9 +37,9 @@ import com.bibsmobile.service.UserProfileService;
 public class RaceImageController {
 
 	/**
-	 * @api {get} /raceimages/api
+	 * @api {get} /raceimages/api API
 	 * @apiGroup raceimages
-	 * @apiName raceimagesapi
+	 * @apiName API
 	 * @apiParam {Number} raceId Id of event tagged in race image
 	 * @apiParam {String} filePath Location of image in online datastore
 	 * @apiParam {Number[]} [bib] Bib Numbers to tag in image
@@ -60,9 +62,9 @@ public class RaceImageController {
     }
 
     /**
-     * @api {get} /raceimages/search
+     * @api {get} /raceimages/search Search
      * @apiGroup raceimages
-     * @apiName raceimagesSearch
+     * @apiName Search
      * @apiParam {Number} eventId Id of event to search
      * @apiParam {Number} [bib] bib number of athlete to search
      * @apiParam {Number} [page=1] Page number for result pagination
@@ -88,12 +90,33 @@ public class RaceImageController {
                 raceImages = RaceImage.findRaceImagesByEvent(event).setFirstResult((page - 1) * size).setMaxResults(size).getResultList();
             }
             if (CollectionUtils.isNotEmpty(raceImages)) {
-                return new ResponseEntity<>(RaceImage.toJsonArray(raceImages), headers, HttpStatus.OK);
+                return new ResponseEntity<>(RaceImageViewDto.fromRaceImagesToDtoArray(raceImages), headers, HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+
+    /**
+     * @api {get} /raceimages/details/:id Details
+     * @apiName Details
+     * @apigroup raceimages
+     * @apiDescription Get details for a single race image. This pulls information about athletes in the image
+     * and hashtags on the image.
+     * @apiUse raceImageDetailsDto
+     * @return
+     */
+    @RequestMapping(value = "/details/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
+        RaceImage raceImage = RaceImage.findRaceImage(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json; charset=utf-8");
+        if (raceImage == null) {
+            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(RaceImageDetailsDto.fromRaceImageToDto(raceImage), headers, HttpStatus.OK);
+    }    
     @Autowired
     UserProfileService userProfileService;
 
@@ -184,17 +207,6 @@ public class RaceImageController {
         return pathSegment;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
-        RaceImage raceImage = RaceImage.findRaceImage(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        if (raceImage == null) {
-            return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(raceImage.toJson(), headers, HttpStatus.OK);
-    }
 
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody

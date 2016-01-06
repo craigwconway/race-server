@@ -55,6 +55,17 @@ public class SlackUtil {
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
 	}
 
+	public static void logToggleRegistration(boolean mode, String Eventname, String username) {
+		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+		JsonObject json = new JsonObject();
+		String message = getIP();
+		message += username + " has ";
+		message += (mode == true) ? "enabled " : "disabled ";
+		message += "registration in the event " + Eventname;
+		json.addProperty("text", message);
+		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
+	}	
+	
 	public static void logRegAddCoupon(EventCartItemCoupon coupon, String Eventname, String username) {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		JsonObject json = new JsonObject();

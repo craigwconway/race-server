@@ -262,6 +262,41 @@
         </div>
     </div>
 
+    <div class="modal fade" id="importAthletes" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="import-label" aria-hidden="true" style="display:none">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                    <h4 class="modal-title" id="export-label">Import Athletes</h4>
+                </div>
+                <div class="modal-body">
+                    <h4 class="ui header">Choose Event Type</h4>
+                    <div class="row">
+                        <div class="ui selection compact dropdown" id="importAthletes-eventTypes">
+                            <input type="hidden" name="type"><!--  --></input>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Event Type</div>
+                            <div class="menu">
+                                <c:forEach var="item" items="${eventTypes}">
+                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="font-size: 0.9em;color:#808080">Pick an event type to proceed</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+                    <button type="button" class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
+                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Import
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="addType" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="eventtype-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -454,6 +489,7 @@
                                 <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px"><!--  --></i> Reports</a></li>
                             </c:if>
                             <li><a href="#" onclick="redirectAthletes();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> Athletes</a></li>
+                            <li><a href="#" onclick="redirectLive();return false;"><i class="fa fa-refresh" style="margin-right: 5px"><!--  --></i> Live</a></li>
                         </c:if>
                     </sec:authorize>
                     <li><a href="#" onclick="redirectAwards();return false;"><i class="fa fa-trophy" style="margin-right: 5px"><!--  --></i> Awards</a></li>
@@ -493,7 +529,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-file-text" style="margin-right: 5px"><!--  --></i> Results<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" onclick="redirectImport();return false;">Import</a></li>
+                            <li><a href="#" data-toggle='modal' data-target='#importAthletes'>Import</a></li>
                             <li><a href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a></li>
                             <c:if test="${dropboxUnlink == true}">
                                 <li><a href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a></li>
@@ -533,6 +569,8 @@
                     <i class="fa fa-bell left-icon"><!--  --></i>
                     You've created your event! Please don't forget to <a href="" class="emphasized emphasized-link">set-up registration</a> and additional event details.
                 </div>
+            </c:otherwise>
+        </c:choose>
                 <c:if test='${(build.registration)}'>
                     <div class="map-container">
                         <div id="map"><!--  --></div>
@@ -568,6 +606,18 @@
                                  listing is private <i class="fa fa-lock bibs-red" style="margin-left:5px;"><!--  --></i>
                              </div>
                         </c:if>
+                        <c:if test='${event.sync}'>
+                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                                 onclick="redirectDisableSync()">
+                                 Sync Enabled <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                             </div>
+                        </c:if>
+                        <c:if test='${(!event.sync)}'>
+                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                                 onclick="redirectEnableSync()">
+                                 Sync Disabled <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                             </div>
+                        </c:if> 
                     </c:if>
                     <div class="btn bibs-bg-orange bibs-gray-1 btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
                         <i class="fa fa-edit"><!--  --></i>
@@ -634,8 +684,6 @@
                     </c:if>
                 </sec:authorize>
                 <!--  -->
-            </c:otherwise>
-        </c:choose>
         </div>
     </div>
     </page>
@@ -738,6 +786,7 @@
             })
 
             jQuery('#exportAthletes-eventTypes').dropdown();
+            jQuery('#importAthletes-eventTypes').dropdown();
 
             jQuery('.message .close').on('click', function() {
                 jQuery(this).closest('.message').fadeOut();
@@ -1263,6 +1312,9 @@
         function redirectAthletes(){
             window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
         }
+        function redirectLive(){
+            window.location="/bibs-server/events/live?event=${event.id}";
+        }
         function redirectImport(){
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
         }
@@ -1382,6 +1434,19 @@
                 window.location = callUrl;
             }
         }
+        
+        function importAthletesHandler(){
+            var type = jQuery('#importAthletes-eventTypes').dropdown('get value');
+            console.log(type);
+
+            var callUrl = "/bibs-server/resultsfiles?form&amp;event=${event.id}";
+            if(type !== null || type !== ""){
+                window.location = callUrl + '&amp;type=' + type;
+            }else{
+                window.location = callUrl;
+            }
+        }
+        
         function redirectBackup(){
             window.location="/bibs-server/events/exportBackup?event=${event.id}";
         }   
@@ -1403,8 +1468,17 @@
         function redirectDisableLive(){
             window.location="/bibs-server/events/${event.id}/disablelive";
         }
+        function redirectEnableSync(){
+            window.location="/bibs-server/events/${event.id}/enablesync";
+        }
+        function redirectDisableSync(){
+            window.location="/bibs-server/events/${event.id}/disablesync";
+        }        
         function redirectManageReg(){
             window.location="/bibs-server/eventitems?event=${event.id}";
+        }
+        function redirectBadges(){
+            window.location="/bibs-server/badges/form";
         }
         function redirectSearchReg(){
             window.location="/bibs-server/registrations/search?event=${event.id}";

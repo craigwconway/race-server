@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.7.2</slf4j.version>
 		<spring.version>3.2.2.RELEASE</spring.version>
-		<spring-security.version>3.1.0.RELEASE</spring-security.version>
+		<spring-security.version>3.1.7.RELEASE</spring-security.version>
 		<apache.tiles.version>2.2.2</apache.tiles.version>
 		<jetty.version>9.2.3.v20140905</jetty.version>
 		<tomcat.version>7.0.62</tomcat.version>
@@ -380,6 +380,11 @@
 			<version>3.2.1</version>
 		</dependency>
 		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>${spring-security.version}</version>
@@ -469,6 +474,11 @@
 			<version>1.1.1</version>
 		</dependency>
 		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>amazon-kinesis-producer</artifactId>
+			<version>0.9.0</version>
+		</dependency>		
+		<dependency>
 			<groupId>com.dropbox.core</groupId>
 			<artifactId>dropbox-core-sdk</artifactId>
 			<version>[1.7,1.8)</version>
@@ -519,6 +529,11 @@
 			<artifactId>jsp-2.1-glassfish</artifactId>
 			<version>2.1.v20100127</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sachinhandiekar</groupId>
+			<artifactId>jInstagram</artifactId>
+			<version>1.1.4</version>
 		</dependency>
 	</dependencies>
 	<build>
