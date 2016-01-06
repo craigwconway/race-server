@@ -17,6 +17,7 @@ import com.bibsmobile.model.FuseDevice;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Series;
 import com.bibsmobile.model.SeriesRegion;
+import com.bibsmobile.model.dto.FuseDeviceCertificate;
 import com.bibsmobile.util.SpringJSONUtil;
 
 import java.util.List;
@@ -91,4 +92,22 @@ public class DeviceController {
 		device.flush();
 		return new ResponseEntity<String>(device.toJson(), HttpStatus.OK);
 	}
+	
+	/**
+	 * @api /devices/cert/:id
+	 * @apiName Get Series Regions
+	 * @apiDescription Get Regions by Series
+	 * @apiGroup Series
+	 * @apiSuccess (200) {Object[]} region
+	 * @apiSuccess (200) {String} region.name
+	 */
+	@RequestMapping(value = "/cert/{id}", produces = "text/plain")
+	public ResponseEntity<String> getCert(@PathVariable("id") Long id) {
+		FuseDevice device = FuseDevice.findFuseDevice(id);
+		try{
+			return new ResponseEntity<String>( new FuseDeviceCertificate(device).createEncodedCert(), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<String>("error", HttpStatus.BAD_REQUEST);
+		}
+	}	
 }
