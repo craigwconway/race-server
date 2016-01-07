@@ -148,7 +148,7 @@ public class SyncController {
     	if(syncObject.getDeviceId() != null && syncObject.getSecret() != null) {
     		FuseDevice device = FuseDevice.findFuseDevice(syncObject.getDeviceId());
     		// Check if device is authorized
-    		if(device.getSecret() == syncObject.getSecret()) {
+    		if(device.getSecret().contentEquals(syncObject.getSecret())) {
     			DeviceStatus deviceStatus = new DeviceStatus(syncObject.getReaderStatus(), device);
     			deviceStatus.persist();
     		}
