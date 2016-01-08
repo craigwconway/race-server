@@ -932,6 +932,20 @@ public class EventController {
 
     }
     
+    @RequestMapping(value = "/teams/list")
+    @ResponseBody
+    public ResponseEntity<String> getTeamsByEvent(@RequestParam("event") Long eventId) {
+    	Event event = Event.findEvent(eventId);
+    	ObjectMapper mapper = new ObjectMapper();
+    	try {
+			return new ResponseEntity<String>(mapper.writeValueAsString(RaceResult.findTeamsInEvent(event)), HttpStatus.OK);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+    }
+    
     @RequestMapping(value ="/live")
     public static String liveMode(Model uiModel,
     		@RequestParam(value = "event", required=true) Long event,
