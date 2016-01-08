@@ -391,14 +391,14 @@
                     jQuery('#geoaddress').val(addr);
                 }
 
-                if( addr == "" ){
-                    var safeAddr = encodeURIComponent(misc);
-                    jQuery('#geoaddress').val(safeAddr);
-                }else{
-                    var safeAddr = encodeURIComponent(addr);
-                    jQuery('#geoaddress').val(safeAddr);
-                    console.log('address should be: ' + addr);
-                }
+                // if( addr == "" ){
+                    // var safeAddr = encodeURIComponent(misc);
+                    // jQuery('#geoaddress').val(safeAddr);
+                // }else{
+                    // var safeAddr = encodeURIComponent(addr);
+                    // jQuery('#geoaddress').val(safeAddr);
+                    // console.log('address should be: ' + addr);
+                // }
 
                 jQuery('#geocity').val(city);
                 jQuery('#geostate').val(state);
