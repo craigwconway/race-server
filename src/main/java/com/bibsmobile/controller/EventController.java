@@ -106,6 +106,7 @@ import com.bibsmobile.model.EventCartItemTypeEnum;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.EventUserGroupId;
+import com.bibsmobile.model.FuseDevice;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
@@ -119,8 +120,10 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.dto.DeviceStatusDisplayDto;
 import com.bibsmobile.model.dto.EventDto;
 import com.bibsmobile.model.dto.EventTypeDto;
+import com.bibsmobile.model.dto.SyncReportDto;
 import com.bibsmobile.model.wrapper.EventTypeDataWrapper;
 import com.bibsmobile.model.wrapper.EventTypeTicketWrapper;
 import com.bibsmobile.util.UserProfileUtil;
@@ -943,9 +946,11 @@ public class EventController {
     	for(EventType type : types) {
     		metatypes.add(new EventTypeDataWrapper(type));
     	}
+    	List<FuseDevice> devices = FuseDevice.findFuseDevicesForEvent(e);
+    	uiModel.addAttribute("devices", DeviceStatusDisplayDto.fromFuseDevicesToDtoArray(devices));
     	uiModel.addAttribute("event", e);
     	uiModel.addAttribute("metatypes", metatypes);
-    	uiModel.addAttribute("syncReports", syncReports);
+    	uiModel.addAttribute("syncReports", SyncReportDto.fromSyncReportsToRawDtoArray(syncReports));
     	uiModel.addAttribute("syncPage", syncPage);
     	uiModel.addAttribute("unassigned", RaceResult.countFindUnassignedRaceResultsByEvent(e));
     	uiModel.addAttribute("unassignedFinished", RaceResult.countUnassignedCompleteRaceResults(e));

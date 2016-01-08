@@ -121,6 +121,17 @@ public class SyncController {
     	System.out.println("[Sync] Recieved time sync from: " + request.getRemoteAddr() + " client: " + request.getRemoteHost()
     			+ " with mode: " + syncObject.getMode() + " and local timestamp: " + syncObject.getTimestamp());
     	
+    	FuseDevice device = null;
+    	// Check if the there is a valid certificate given to the FuseDevice
+    	if(syncObject.getDeviceId() != null && syncObject.getSecret() != null) {
+    		device = FuseDevice.findFuseDevice(syncObject.getDeviceId());
+    		// Check if device is authorized
+    		if(device.getSecret().contentEquals(syncObject.getSecret())) {
+    			DeviceStatus deviceStatus = new DeviceStatus(syncObject.getReaderStatus(), device);
+    			deviceStatus.persist();
+    		}
+    	}
+    	
     	//First check if the the event exists, sync codes are authorized and the event has syncing enabled.
     	if(syncObject.getSyncEventId() == null) {
     		return SpringJSONUtil.returnErrorMessage("NullEvent", HttpStatus.BAD_REQUEST);
@@ -129,7 +140,7 @@ public class SyncController {
     	if(event == null) {
     		return SpringJSONUtil.returnErrorMessage("EventNotFound", HttpStatus.BAD_REQUEST);
     	}
-    	SyncReport syncReport = new SyncReport(syncObject, event, request.getRemoteAddr());
+    	SyncReport syncReport = new SyncReport(syncObject, device, event, request.getRemoteAddr());
     	if(!event.isSync()) {
     		return SpringJSONUtil.returnErrorMessage("SyncDisabled", HttpStatus.UNAUTHORIZED);
     	}
@@ -144,15 +155,7 @@ public class SyncController {
     	} catch (Exception e) {
     		return SpringJSONUtil.returnErrorMessage("InvalidTimezone", HttpStatus.BAD_REQUEST);
     	}
-    	// Check if the there is a valid certificate given to the FuseDevice
-    	if(syncObject.getDeviceId() != null && syncObject.getSecret() != null) {
-    		FuseDevice device = FuseDevice.findFuseDevice(syncObject.getDeviceId());
-    		// Check if device is authorized
-    		if(device.getSecret().contentEquals(syncObject.getSecret())) {
-    			DeviceStatus deviceStatus = new DeviceStatus(syncObject.getReaderStatus(), device);
-    			deviceStatus.persist();
-    		}
-    	}
+
     	List <Long> biblist = new LinkedList<Long>();
     	HashMap<Long, RaceResult> resultMap = new HashMap<Long, RaceResult>();
     	if(syncObject.getTimes() == null || syncObject.getTimes().isEmpty()) {

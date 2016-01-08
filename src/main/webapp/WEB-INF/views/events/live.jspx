@@ -13,6 +13,7 @@
     	<table class="ui celled table">
 			<thead>
 				<tr>
+					<th>Time</th>
 					<th>Source</th>
 					<th>Mode</th>
 					<th>Status</th>
@@ -21,8 +22,9 @@
 			</thead>
 			<tbody>
 				<c:forEach var="item" items="${syncReports}">
-				<tr>  
-					<td>${item.deviceIpAddress}</td>
+				<tr>
+					<td>${item.received } </td>
+					<td>${item.deviceName}</td>
 					<td>${item.mode}</td>
 					<td>${item.status }</td>
 					<td>${item.numResults }</td>

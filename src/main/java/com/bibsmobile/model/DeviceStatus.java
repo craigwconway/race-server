@@ -160,6 +160,15 @@ public class DeviceStatus {
     public static long countDeviceStatuses() {
         return entityManager().createQuery("SELECT COUNT(o) FROM DeviceStatus o", Long.class).getSingleResult();
     }
+    
+    public static DeviceStatus getLatestStatusForDevice(FuseDevice device) {
+    	EntityManager em = entityManager();
+    	try {
+    		return em.createQuery("SELECT o from DeviceStatus o ORDER BY id DESC", DeviceStatus.class).setMaxResults(1).setFirstResult(0).getSingleResult();
+    	} catch (Exception e) {
+    		return null;
+    	}
+    }
 	// -------------------------------------------
 	// -------------------------------------------	
 	// -------------------------------------------

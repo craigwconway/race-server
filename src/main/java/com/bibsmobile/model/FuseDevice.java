@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.codec.binary.Base64;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -17,6 +18,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
@@ -158,6 +160,13 @@ public class FuseDevice {
 	
     public static long countFuseDevices() {
         return entityManager().createQuery("SELECT COUNT(o) FROM FuseDevice o", Long.class).getSingleResult();
+    }
+    
+    public static List<FuseDevice> findFuseDevicesForEvent(Event event) {
+    	EntityManager em = entityManager();
+    	TypedQuery q = em.createQuery("SELECT d from SyncReport r join r.device d where r.event = :event", FuseDevice.class);
+    	q.setParameter("event", event);
+    	return q.getResultList();
     }
 	// -------------------------------------------
 	// -------------------------------------------	

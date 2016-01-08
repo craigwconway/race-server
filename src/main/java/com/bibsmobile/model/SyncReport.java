@@ -64,9 +64,10 @@ public class SyncReport {
 	private TimeSyncEnum mode;
 	
 	/**
-	 * Custom user defined device name for synchronization.
+	 * FuseDevice supplying the update.
 	 */
-	private String deviceName;
+	@ManyToOne
+	private FuseDevice device;
 	
 	/**
 	 * Number of time objects synced.
@@ -96,9 +97,9 @@ public class SyncReport {
 	 * @param address Origin IP address of request
 	 * @param event Event to sync into
 	 */
-	public SyncReport(TimeSyncContainerDto syncObj, Event event, String address) {
+	public SyncReport(TimeSyncContainerDto syncObj, FuseDevice device, Event event, String address) {
 		this.deviceIpAddress = address;
-		this.deviceName = syncObj.getDeviceName();
+		this.device = device;
 		this.mode = syncObj.getMode();
 		this.event = event;
 		this.numResults = syncObj.getTimes().size();
@@ -234,8 +235,8 @@ public class SyncReport {
 	/**
 	 * @return the deviceName
 	 */
-	public String getDeviceName() {
-		return deviceName;
+	public FuseDevice getDevice() {
+		return device;
 	}
 
 	/**
@@ -281,8 +282,8 @@ public class SyncReport {
 	/**
 	 * @param deviceName the deviceName to set
 	 */
-	public void setDeviceName(String deviceName) {
-		this.deviceName = deviceName;
+	public void setDevice(FuseDevice device) {
+		this.device = device;
 	}
 
 	/**
