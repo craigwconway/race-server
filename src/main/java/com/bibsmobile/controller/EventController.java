@@ -947,7 +947,7 @@ public class EventController {
     		metatypes.add(new EventTypeDataWrapper(type));
     	}
     	List<FuseDevice> devices = FuseDevice.findFuseDevicesForEvent(e);
-    	uiModel.addAttribute("devices", DeviceStatusDisplayDto.fromFuseDevicesToDtoArray(devices));
+    	uiModel.addAttribute("devices", DeviceStatusDisplayDto.fromFuseDevicesToRawDtoArray(devices));
     	uiModel.addAttribute("event", e);
     	uiModel.addAttribute("metatypes", metatypes);
     	uiModel.addAttribute("syncReports", SyncReportDto.fromSyncReportsToRawDtoArray(syncReports));

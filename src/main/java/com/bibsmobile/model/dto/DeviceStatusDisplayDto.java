@@ -85,6 +85,14 @@ public class DeviceStatusDisplayDto {
 		this.lastStatus = status.getReaderStatus();
 		this.lastSeenTime = status.getCreated();
 	}
+
+	public static List<DeviceStatusDisplayDto> fromFuseDevicesToRawDtoArray(Collection<FuseDevice> devices ) {
+		List <DeviceStatusDisplayDto> dtos = new ArrayList <DeviceStatusDisplayDto>();
+		for(FuseDevice device : devices) {
+			dtos.add(new DeviceStatusDisplayDto(device));
+		}
+		return dtos;
+	}		
 	
 	public static String fromFuseDevicesToDtoArray(Collection<FuseDevice> devices ) {
 		List <DeviceStatusDisplayDto> dtos = new ArrayList <DeviceStatusDisplayDto>();

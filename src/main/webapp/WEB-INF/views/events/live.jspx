@@ -10,6 +10,7 @@
     		Sync is not enabled for this event. You cannot receive any further data until it is.
 		</div>
 		</c:if>
+		<h3 class="ui header">Reports</h3>
     	<table class="ui celled table">
 			<thead>
 				<tr>
@@ -22,17 +23,28 @@
 			</thead>
 			<tbody>
 				<c:forEach var="item" items="${syncReports}">
-				<tr>
+				<c:if test='${item.status=="OK"}'>
+				<tr class="positive">
+					<td>${item.received } </td>
+					<td>${item.deviceName}</td>
+					<td>${item.mode}</td>
+					<td>${item.status }</td>
+					<td>${item.numResults }</td>				
+				</tr>
+				</c:if>
+				<c:if test='${item.status!="OK"}'>
+				<tr class="error">
 					<td>${item.received } </td>
 					<td>${item.deviceName}</td>
 					<td>${item.mode}</td>
 					<td>${item.status }</td>
 					<td>${item.numResults }</td>
 				 </tr>
+				 </c:if>
 				</c:forEach>
 			</tbody>
 		<tfoot>
-		<tr><th colspan="4">
+		<tr><th colspan="5">
 		<div class="ui right floated pagination menu">
 		<a class="icon item" onClick="pageLeft()">
 		  <i class="fa fa-arrow-left"></i>
@@ -44,7 +56,8 @@
 		</div>
 		</th>
 		</tr></tfoot>
-		</table>		
+		</table>
+		<h3 class="ui header">Races</h3>	
     	<table class="ui celled table">
 			<thead>
 				<tr>
@@ -79,23 +92,24 @@
 				 </c:if>
 			</tbody>
 		</table>
-		<div class="ui cards">
-			<div class="card">
+		<h3 class="ui header">Devices</h3>
+		
+			<c:forEach var="item" items="${devices}">
+			<div class="ui card">
 				<div class="content">
-					<div class="header">Reader Name</div>
+					<div class="header">${item.name }</div>
+					<div class="meta">Last Seen: ${item.lastSeenTime }</div>
 					<div class="description">
-						Last seen at time.
+						Status: ${item.lastStatus }
+					</div>
+					<br></br>
+					<div class="ui bottom attached button">
+						<div class="fa fa-info-circle"> </div>
+						Details
 					</div>
 				</div>
-				<div class="extra content">
-					<div class="fa fa-play-circle-o">  Reading (Manual) </div>
-				</div>
-				<div class="ui bottom attached button">
-					<div class="fa fa-info-circle"></div>
-					Details
-				</div>
 			</div>
-		</div>
+			</c:forEach>
 	</div>
 	
 <script>
