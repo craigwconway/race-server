@@ -6,15 +6,16 @@
         <i class="fa fa-times fa-lg close" style="float:right"><!--  --></i>
         <div class="header"><!--  --></div>
         <ul class="list">
-            <li>Before completing the import, you can select labels for the rows from your data file.</li>
+            <div class="header">Before completing the import, you can select labels for the rows from your data file.</div>
             <li>When selecting the <strong>'Use Row 1 (Header)'</strong> option, please keep in mind that we cannot offer analytics for these fields.<br/>We can offer analytics however, if you can find the closest header label within the given dropdown options.</li>
+            <li><strong>Final Label Previews</strong> are not entirely accurate as we remove special characters such as apostrophes, question marks, or quotation marks, among others.</li>
         </ul>
     </div>
     <form:update id="fu_com_bibsmobile_model_ResultsFileMapping" modelAttribute="resultsFileMapping" path="/resultsfilemappings" versionField="Version" z="R3X/cwIg4xEsr85wWmQGIeqWb10=">
         <!-- <field:checkbox field="skipFirstRow" id="c_com_bibsmobile_model_ResultsFileMapping_skipFirstRow" z="8WIpOiReKgaJdQ7fDTyYizxq7xI="/> -->
         <div class="ui toggle checkbox" style="width:100%" id="checkboxSkip">
             <input type="checkbox" name="_skipFirstRow" />
-            <label style="width:100%"><span style="font-weight:bold">Skip Row 1 (Header) </span><div style="color:#C3423F;font-size:0.85em;">(Warning: Checking this box will ignore the Row 1 (Header) completely and will clear all your current settings for <b>'Use Row 1 (Header)'</b>)</div></label>
+            <label style="width:100%"><span style="font-weight:bold">Skip Row 1 (Header) </span><div style="color:#C3423F;font-size:0.85em;">(Warning: Checking this box will ignore the Row 1 (Header) completely and will clear all your current settings for <strong>'Use Row 1 (Header)'</strong>)</div></label>
         </div>
         <div class="ui toggle checkbox" style="width:100%" id="checkboxHeader">
             <input type="checkbox" name="header" />
@@ -156,6 +157,15 @@
                                 // displayDOM.text('--');
                             }
                         }else{
+                            var currentDropdown = jQuery(this);
+                            jQuery('.ui.dropdown').each(function(i,n){
+                                if(!jQuery(n).is(currentDropdown)){
+                                    var otherValue = jQuery(n).dropdown('get value');
+                                    if(otherValue == value){
+                                        jQuery(n).dropdown('set selected', '-');
+                                    }
+                                }
+                            })
                             displayDOM.text(item);
                         }
 
