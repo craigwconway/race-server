@@ -11,7 +11,15 @@
         </ul>
     </div>
     <form:update id="fu_com_bibsmobile_model_ResultsFileMapping" modelAttribute="resultsFileMapping" path="/resultsfilemappings" versionField="Version" z="R3X/cwIg4xEsr85wWmQGIeqWb10=">
-        <field:checkbox field="skipFirstRow" id="c_com_bibsmobile_model_ResultsFileMapping_skipFirstRow" z="8WIpOiReKgaJdQ7fDTyYizxq7xI="/>
+        <!-- <field:checkbox field="skipFirstRow" id="c_com_bibsmobile_model_ResultsFileMapping_skipFirstRow" z="8WIpOiReKgaJdQ7fDTyYizxq7xI="/> -->
+        <div class="ui toggle checkbox" style="width:100%" id="checkboxSkip">
+            <input type="checkbox" name="_skipFirstRow" />
+            <label style="width:100%"><span style="font-weight:bold">Skip Row 1 (Header) </span><div style="color:#C3423F;font-size:0.85em;">(Warning: Checking this box will ignore the Row 1 (Header) completely and will clear all your current settings for <b>'Use Row 1 (Header)'</b>)</div></label>
+        </div>
+        <div class="ui toggle checkbox" style="width:100%" id="checkboxHeader">
+            <input type="checkbox" name="header" />
+            <label style="width:100%"><span style="font-weight:bold">Use Row 1 (Header) for all fields </span><div style="color:#C3423F;font-size:0.85em;">(Warning: Checking this box will override all currently set dropdown selections.)</div></label>
+        </div>
         <div style="display:none;">
             <field:input field="map" id="c_com_bibsmobile_model_ResultsFileMapping_map" z="YI3m/nkGHkj1GZNBnG2xJbl2vck="/>
             <field:select field="resultsFile" id="c_com_bibsmobile_model_ResultsFileMapping_resultsFile" itemLabel="name" itemValue="id" items="${resultsfiles}" path="/resultsfiles" z="user-managed"/>
@@ -20,19 +28,17 @@
             <field:input field="options" id="c_com_bibsmobile_model_ResultsFileMapping_options" render="false" z="user-managed"/>
             <field:input field="name" id="c_com_bibsmobile_model_ResultsFileMapping_name" z="user-managed"/>
         </div>
-        <table>
-            <tr>
-                <td>
-                    <strong>Row 1</strong>
-                </td>
-                <td>
-                    <strong>Row 2</strong>
-                </td>
-                <td>
-                    <strong>Label</strong>
-                </td>
-            </tr>
+        <table class="ui very compact small table">
+            <thead>
+                <tr>
+                    <th class="four wide">Row 1</th>
+                    <th class="three wide">Row 2</th>
+                    <th class="three wide">Label</th>
+                    <th>Final Label Preview</th>
+                </tr>
+            </thead>
             <c:set value="${fn:length(resultsFileMapping.row2) }" var="size"/>
+            <tbody>
             <c:forEach items="${resultsFileMapping.row1}" var="cell" varStatus="i">
                 <tr class="${(i.index % 2 eq 0) ? 'row-alt' :''}">
                     <td>
@@ -44,25 +50,32 @@
 						</c:if>
                     </td>
                     <td>
-                        <select id="label-${ i.index }" onChange="javascript:helpSelect(this);">
-                            <option value="-">Ignore Row</option>
-                            <option value="==">Use Row 1 (Header)</option>
-                            <option value="++">Create New</option>
-                            <option disabled="disabled">──────────</option>
-                            <c:forEach items="${resultsFileMapping.options}" var="option">
-                                <c:choose>
-                                    <c:when test="${resultsFileMapping.selection[i.index] == option.key}">
-                                        <option selected="selected" value="${option.key}">${option.value}</option>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <option value="${option.key}">${option.value}</option>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:forEach>
-                        </select>
+                        <div class="ui selection dropdown" id="label-${ i.index }" onChange="javascript:helpSelect(this);" style="padding: 0.78571429em 1.2em">
+                            <input type="hidden" />
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="default text">Select Label</div>
+                            <div class="menu">
+                                <div class="item" data-value="-">Ignore Row</div>
+                                <div class="item" data-value="==">Use Row 1 (Header)</div>
+                                <div class="item" data-value="++">Create New</div>
+                                <div class="item" data-value="">───────</div>
+                                <c:forEach items="${resultsFileMapping.options}" var="option">
+                                    <c:choose>
+                                        <c:when test="${resultsFileMapping.selection[i.index] == option.key}">
+                                            <div class="item" data-value="${option.key}">${option.value}</div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="item" data-value="${option.key}">${option.value}</div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </div>
+                        </div>
                     </td>
+                    <td>--</td>
                 </tr>
             </c:forEach>
+            </tbody>
         </table>
         <field:simple field="resultsImport" id="c_com_bibsmobile_model_ResultsFileMapping_resultsImport" messageCode="entity_reference_not_managed" messageCodeAttribute="Results Import" render="false" z="user-managed"/>
     </form:update>
@@ -75,10 +88,13 @@
             if(value === '=='){
                 console.log('use header detected');
             }
-            console.log(value);
+            // console.log(value);
         }
     	jQuery( "#resultsFileMapping" ).submit(function( event ) {
     		var map = document.getElementById("_map_id");
+            var values = jQuery('input[name="map"]').val();
+            // console.log(values, map.value);
+            // return false;
     		if ( map.value.indexOf("bib") == -1 ) {
     			alert("Bib is a required field.");
     			return false;
@@ -88,12 +104,53 @@
             jQuery('.message .close').on('click', function() {
                 jQuery(this).closest('.message').fadeOut();
             });
+            jQuery('.ui.dropdown').dropdown('set selected', '-');
+            jQuery('.ui.dropdown').each(function(i,n){
+                jQuery(n).dropdown({
+                    onChange: function(){
+                        var displayDOM = jQuery(this).parent().siblings(':last-child');
+                        var value = jQuery(this).dropdown('get value');
+                        var item = jQuery(this).dropdown('get text');
+                        var content = jQuery(this).parent().siblings(':first-child').text();
+                        
+                        if(value === '=='){
+                            displayDOM.text(content);
+                        }else if(value === '-'){
+                            displayDOM.text('--');
+                        }else if(value !== '++'){
+                            
+                            displayDOM.text(item);
+                        }
+                    }
+                })                
+            })
+            jQuery('.ui.checkbox').checkbox({
+                onChecked: function(){
+                    var id = jQuery(this).parent().attr('id');
+                    if(id.indexOf('Header') > -1){
+                        jQuery('input[name="_skipFirstRow"]').prop('checked', false);
+                        jQuery('.ui.dropdown').each(function(i,n){
+                            jQuery(n).dropdown('set selected', '==');
+                        });
+                    }else if(id.indexOf('Skip') > -1){
+                        jQuery('input[name="header"]').prop('checked', false);
+                        jQuery('.ui.dropdown').each(function(i,n){
+                            var value = jQuery(n).dropdown('get value');
+                            if(value === '=='){
+                                jQuery(n).dropdown('set selected', '-');
+                            }
+                        });
+                    }
+                }
+            });
+            jQuery('input[name="_skipFirstRow"]').prop('checked', true);
+            // jQuery('#checkboxSkip').checkbox('set checked');
     		// console.log('ok');
     		for(var i=0;i&lt;20;i++){
     			// console.log('i='+1);
     			for(var j=1;j&lt;10;j++){
     				// console.log('j='+j);
-    				jQuery("#label-"+i).append('&lt;option value="split'+j+'"&gt;Split '+j+'&lt;/option&gt;');
+    				jQuery("#label-"+i).find('.menu').append('&lt;div class="item" data-value="split'+j+'"&gt;Split '+j+'&lt;/div&gt;');
     			}
     		}
     	});
