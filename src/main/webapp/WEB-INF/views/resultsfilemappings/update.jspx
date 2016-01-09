@@ -117,6 +117,7 @@
             jQuery('.ui.dropdown').dropdown('set selected', '-');
 
             var customList = [];
+            var allHeader = false;
             jQuery('.ui.dropdown').each(function(i,n){
                 jQuery(n).dropdown({
                     onChange: function(){
@@ -126,6 +127,8 @@
                         var content = jQuery(this).parent().siblings(':first-child').text();
                         
                         if(value === '=='){
+                            // jQuery('input[name="_skipFirstRow"]').prop('checked', 'false');
+                            jQuery('#checkboxSkip').checkbox('uncheck');
                             displayDOM.text(content);
                         }else if(value === '-'){
                             displayDOM.text('--');
@@ -155,6 +158,11 @@
                         }else{
                             displayDOM.text(item);
                         }
+
+                        if(allHeader &amp;&amp; value !== '=='){
+                            jQuery('#checkboxHeader').checkbox('uncheck');
+                            allHeader = false;
+                        }
                     }
                 })                
             })
@@ -166,6 +174,7 @@
                         jQuery('.ui.dropdown').each(function(i,n){
                             jQuery(n).dropdown('set selected', '==');
                         });
+                        allHeader = true;
                     }else if(id.indexOf('Skip') > -1){
                         jQuery('input[name="header"]').prop('checked', false);
                         jQuery('.ui.dropdown').each(function(i,n){
