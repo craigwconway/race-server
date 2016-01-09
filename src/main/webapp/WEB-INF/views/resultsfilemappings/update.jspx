@@ -50,7 +50,7 @@
 						</c:if>
                     </td>
                     <td>
-                        <div class="ui selection dropdown" id="label-${ i.index }" onChange="javascript:helpSelect(this);" style="padding: 0.78571429em 1.2em">
+                        <div class="ui selection dropdown" id="label-${ i.index }" style="padding: 0.78571429em 1.2em">
                             <input type="hidden" />
                             <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                             <div class="default text">Select Label</div>
@@ -58,17 +58,20 @@
                                 <div class="item" data-value="-">Ignore Row</div>
                                 <div class="item" data-value="==">Use Row 1 (Header)</div>
                                 <div class="item" data-value="++">Create New</div>
-                                <div class="item" data-value="">───────</div>
-                                <c:forEach items="${resultsFileMapping.options}" var="option">
-                                    <c:choose>
-                                        <c:when test="${resultsFileMapping.selection[i.index] == option.key}">
-                                            <div class="item" data-value="${option.key}">${option.value}</div>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <div class="item" data-value="${option.key}">${option.value}</div>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
+                                <div class="divider"><!--  --></div>
+                                <div class="item" data-value="bib">Bib</div>
+                                <div class="item" data-value="firstname">First Name</div>
+                                <div class="item" data-value="lastname">Last Name</div>
+                                <div class="item" data-value="age">Age</div>
+                                <div class="item" data-value="gender">Gender</div>
+                                <div class="item" data-value="team">Team</div>
+                                <div class="item" data-value="email">Email</div>
+                                <div class="item" data-value="laps">Laps</div>
+                                <div class="item" data-value="timeofficial">Official</div>
+                                <div class="item" data-value="city">City</div>
+                                <div class="item" data-value="state">State</div>
+                                <div class="item" data-value="country">Country</div>
+                                <div class="item" data-value="disqualified">Disqualified</div>
                             </div>
                         </div>
                     </td>
@@ -80,31 +83,40 @@
         <field:simple field="resultsImport" id="c_com_bibsmobile_model_ResultsFileMapping_resultsImport" messageCode="entity_reference_not_managed" messageCodeAttribute="Results Import" render="false" z="user-managed"/>
     </form:update>
 	<script>
-        function helpSelect(elem){
-            var value = jQuery(elem).val();
-            if(value === '++'){
-                console.log('custom value detected');
-            }
-            if(value === '=='){
-                console.log('use header detected');
-            }
-            // console.log(value);
-        }
     	jQuery( "#resultsFileMapping" ).submit(function( event ) {
-    		var map = document.getElementById("_map_id");
-            var values = jQuery('input[name="map"]').val();
+    		// var map = document.getElementById("_map_id");
+            var values = [];
             // console.log(values, map.value);
+            jQuery('.ui.dropdown').each(function(i,n){
+                var value = jQuery(n).dropdown('get value');
+                if(value == '=='){
+                    value = jQuery(n).parent().siblings(':last-child').text();
+                    value = value.replace(/^[ ]+|[ ]+$/g,'');   // trim leading/trailing spaces
+                }
+                var encoded = value.replace(/\s+/g, '-').toLowerCase();
+                    encoded = encoded.replace(/[\W_]+/g, '-');
+                    if(encoded.charAt(encoded.length - 1) == '-'){
+                        encoded = encoded.substring(0, encoded.length-1);
+                    }
+                values.push(encoded);
+            })
+            values.join();
+            console.log(values);
             // return false;
-    		if ( map.value.indexOf("bib") == -1 ) {
+    		if ( values.indexOf("bib") == -1 ) {
     			alert("Bib is a required field.");
     			return false;
-    		}
+    		}else{
+                jQuery('#_map_id').val(values);
+            }
     	});
         jQuery(function () {
             jQuery('.message .close').on('click', function() {
                 jQuery(this).closest('.message').fadeOut();
             });
             jQuery('.ui.dropdown').dropdown('set selected', '-');
+
+            var customList = [];
             jQuery('.ui.dropdown').each(function(i,n){
                 jQuery(n).dropdown({
                     onChange: function(){
@@ -117,8 +129,30 @@
                             displayDOM.text(content);
                         }else if(value === '-'){
                             displayDOM.text('--');
-                        }else if(value !== '++'){
-                            
+                        }else if(value === '++'){
+                            var prompt = window.prompt('Please enter your custom label. \n\nWarning: We cannot offer analytics on custom labels.','');
+                            if(prompt !== null &amp;&amp; prompt.length > 0){
+                                var encoded = prompt.replace(' ', '-').replace('\'', '').replace('\"', '');
+
+                                if(customList.indexOf(encoded) == -1){
+                                    displayDOM.text(prompt);
+                                    customList.push(encoded);
+
+                                    jQuery('.ui.dropdown').find('.menu').append('&lt;div class="item" data-value="' + encoded + '"&gt;'+prompt+'&lt;/div&gt;');
+                                    jQuery('.ui.dropdown').dropdown('refresh');
+                                    jQuery(this).dropdown('set selected', encoded);
+                                }else{
+                                    alert('This is a duplicate label!');
+                                    jQuery(this).dropdown('set selected', '-');
+                                    jQuery(this).dropdown('refresh');
+                                }
+                            }else{
+                                alert('Please enter a meaningful custom label. Your label must be at least one character in length.');
+                                jQuery(this).dropdown('set selected', '-');
+                                jQuery(this).dropdown('refresh');
+                                // displayDOM.text('--');
+                            }
+                        }else{
                             displayDOM.text(item);
                         }
                     }
