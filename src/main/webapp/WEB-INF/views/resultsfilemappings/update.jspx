@@ -154,7 +154,7 @@
                                 alert('Please enter a meaningful custom label. Your label must be at least one character in length.');
                                 jQuery(this).dropdown('set selected', '-');
                                 jQuery(this).dropdown('refresh');
-                                // displayDOM.text('--');
+                                displayDOM.text('--');
                             }
                         }else{
                             var currentDropdown = jQuery(this);
@@ -163,10 +163,27 @@
                                     var otherValue = jQuery(n).dropdown('get value');
                                     if(otherValue == value){
                                         jQuery(n).dropdown('set selected', '-');
+                                        jQuery(this).dropdown('refresh');
+                                        displayDOM.text('--');
                                     }
                                 }
                             })
                             displayDOM.text(item);
+                            if(value.indexOf('split') > -1){
+                                var datetime = jQuery(this).parent().siblings(':nth-child(2)').text();
+                                    datetime = datetime.replace(/^[ ]+|[ ]+$/g,'');
+
+                                var hms = new RegExp('([0-9]+):([0-5]?[0-9]):[0-5][0-9]');
+                                var ms  = new RegExp('([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]');
+                                if(hms.test(datetime) || ms.test(datetime)){
+                                    console.log('all passed');
+                                }else{
+                                    alert('Sorry, but you cannot select this label due to incorrect an incorrect time format in your data. Please select a custom label temporarily, then contact us for additional help!');
+                                    jQuery(this).dropdown('set selected', '-');
+                                    jQuery(this).dropdown('refresh');
+                                    displayDOM.text('--');
+                                }
+                            }
                         }
 
                         if(allHeader &amp;&amp; value !== '=='){
