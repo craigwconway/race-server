@@ -1021,6 +1021,12 @@ public class RaceResult implements Comparable<RaceResult> {
     	}
     }
     
+    public static List<String> findTeamsInEvent(Event e) {
+        EntityManager em = RaceResult.entityManager();
+        return em.createQuery("SELECT distinct r.team FROM RaceResult AS r where r.event = :event", String.class)
+        		.setParameter("event", e).getResultList();
+    }
+    
     public static List<RaceResult> findAllRaceResults(String sortFieldName, String sortOrder) {
         String jpaQuery = "SELECT o FROM RaceResult o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
