@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <h1 class="ui header">${usergroup.name }</h1>
+	${usergroup.description}
+	
+<script>
+	window.onload = init();
+	
+	function init() {
+		<c:if test='${region != null}'>
+		jQuery("#regionselector").val(${region.id});
+		</c:if>
+	}
+	
+	function navigateRegion() {
+		var regionval = jQuery("#regionselector").val();
+		if(regionval === "") {
+			window.location = "/bibs-server/series/${series.id}";
+		} else {
+			window.location = "/bibs-server/series/${series.id}?region=" + regionval;
+		}
+	}
+	
+	function navigateAlerts() {
+		window.location = "/bibs-server/series/alertsbyseries/${series.id}";
+	}
+	
+</script>
+</div>
+

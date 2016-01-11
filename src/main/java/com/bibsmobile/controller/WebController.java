@@ -51,8 +51,7 @@ public class WebController {
     @RequestMapping(value = "/org/{id}", produces = "text/html")
     public String org(@PathVariable("id") Long id, Model uiModel) {
         uiModel.addAttribute("usergroup", UserGroup.findUserGroup(id));
-        uiModel.addAttribute("itemId", id);
-        return "web/org";
+        return "r/org";
     }
     
     
