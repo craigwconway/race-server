@@ -1166,21 +1166,20 @@ public class EventController {
     }
 
     /**
-     * @api /events/search Search
+     * @api {get} /events/search Search
      * @apiName Search
      * @apiGroup events
-     * @param startDate
-     * @param endDate
-     * @param name
-     * @param lowDistance
-     * @param highDistance
-     * @param racetypes
-     * @param distances
-     * @param series
-     * @param region
-     * @param longitude Latitude of point to search
-     * @param latitude Longitude of point to search
-     * @param radius Radius in KM to search
+     * @apiParam {String} [startdate] Ending date to search. Unbounded if blank.
+     * @apiParam {String} [enddate] Starting date to search Unbounded if blank.
+     * @apiParam {String} [name] Name of event (Fuzzy matched)
+     * @apiParam {Number} [lowdistance] Low distance in meters. Cannot search both human readable and range.
+     * @apiParam {Number} [highdistance] High distance in meters. Cannot search both human readable and range.
+     * @apiParam {String} [racetype] Racetypes to search matching events (e.g. "Running", "Triathlon")
+     * @apiParam {String} [distance] Human-readable distance to search (e.g. "5k", "Half Marathon"). Cannot also search range.
+     * @apiParam {Number} [longitude] longitude of point to search around
+     * @apiParam {Number} [latitude] latitude of point to search around
+     * @apiParam {Number} [radius] in KM of search to perform
+     * @apiSampleRequest http://localhost:8080/bibs-server/events/search
      * @return
      */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
@@ -1191,8 +1190,8 @@ public class EventController {
     		@RequestParam(value = "name", required = false) String name,
     		@RequestParam(value = "lowdistance", required = false) Long lowDistance,
     		@RequestParam(value = "highdistance", required = false) Long highDistance,
-    		@RequestParam(value = "racetype", required = false) List<String> racetypes,
-    		@RequestParam(value = "distance", required = false) List<String> distances,
+    		@RequestParam(value = "racetype", required = false) String racetype,
+    		@RequestParam(value = "distance", required = false) String distance,
     		@RequestParam(value = "series", required = false) Long seriesId,
     		@RequestParam(value = "region", required = false) Long region,
     		@RequestParam(value = "longitude", required = false) Double longitude,
@@ -1205,10 +1204,8 @@ public class EventController {
     	if(name != null) {
     		System.out.println(eventService.nameSearch(name));
     	}
-    	if(distances != null) {
-    		for(String distance : distances) {
-    			System.out.println(eventService.nameSearch(distance));
-    		}
+    	if(distance != null) {
+			System.out.println(eventService.nameSearch(distance));
     	} else if( lowDistance != null || highDistance != null) {
     		// perform numeric distances search
     	}
