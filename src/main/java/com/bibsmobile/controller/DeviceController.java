@@ -8,11 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.Badge;
+import com.bibsmobile.model.DeviceInstruction;
 import com.bibsmobile.model.FuseDevice;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Series;
@@ -92,6 +95,23 @@ public class DeviceController {
 		device.flush();
 		return new ResponseEntity<String>(device.toJson(), HttpStatus.OK);
 	}
+
+	/**
+	 * @api /devices/:id/instructions/create
+	 * @apiName Get Series Regions
+	 * @apiDescription Get Regions by Series
+	 * @apiGroup Series
+	 * @apiSuccess (200) {Object[]} region
+	 * @apiSuccess (200) {String} region.name
+	 */
+	@RequestMapping(value = "/{id}/instructions/create", method = RequestMethod.POST, produces = "application/json")
+	public ResponseEntity<String> getCert(@PathVariable("id") Long id, 
+			@RequestBody DeviceInstruction instruction) {
+		FuseDevice device = FuseDevice.findFuseDevice(id);
+		DeviceInstruction command = new DeviceInstruction(instruction.getAction(), device);
+		command.persist();
+		return new ResponseEntity<String>(instruction.toJson(), HttpStatus.OK);
+	}	
 	
 	/**
 	 * @api /devices/cert/:id

@@ -74,7 +74,7 @@ public class DeviceInstruction {
 	 */
 	public DeviceInstruction(ReaderAction readerAction, FuseDevice device) {
 		this.created = new Date();
-		this.timeStart = new Date();
+		this.timeStart = this.created;
 		this.device = device;
 		this.action = readerAction;
 	}
