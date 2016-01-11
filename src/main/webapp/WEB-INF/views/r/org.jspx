@@ -17,29 +17,5 @@
 	</tr>
 	</c:forEach>
 	</table>
-
-<script>
-	window.onload = init();
-	
-	function init() {
-		<c:if test='${region != null}'>
-		jQuery("#regionselector").val(${region.id});
-		</c:if>
-	}
-	
-	function navigateRegion() {
-		var regionval = jQuery("#regionselector").val();
-		if(regionval === "") {
-			window.location = "/bibs-server/series/${series.id}";
-		} else {
-			window.location = "/bibs-server/series/${series.id}?region=" + regionval;
-		}
-	}
-	
-	function navigateAlerts() {
-		window.location = "/bibs-server/series/alertsbyseries/${series.id}";
-	}
-	
-</script>
 </div>
 
