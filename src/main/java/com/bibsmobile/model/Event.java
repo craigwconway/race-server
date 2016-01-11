@@ -752,6 +752,17 @@ public class Event {
         return q.getResultList();
     }
 
+    public static List<Event> findLiveEventsByUserGroup(UserGroup userGroup) {
+        // return all events for the sysadmin or unauthenticated users (can not edit anyways)
+        if (userGroup == null )
+            return null;
+
+        TypedQuery<Event> q = entityManager().createQuery("select e from Event e join e.eventUserGroups eug where eug.userGroup = :userGroup and e.live = 1", Event.class);
+        q.setParameter("userGroup", userGroup);
+
+        return q.getResultList();
+    }     
+    
     public static List<Event> findNonHiddenEventsForUser(UserProfile user, int firstResult, int maxResults, String sortFieldName, String sortOrder) {
         // return all events for the sysadmin or unauthenticated users (can not edit anyways)
         if (user == null || PermissionsUtil.isSysAdmin(user))
