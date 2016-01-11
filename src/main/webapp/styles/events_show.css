@@ -1,7 +1,8 @@
-body{
-    background-image: url('../images/auth.jpg');
-    background-size: cover; background-repeat: no-repeat;
+.event-info-box{
+    width: 400px;
+    padding: 15px;
 }
+
 .white-overlay{
     display: block;
     background: rgba(255,255,255,.8);
@@ -43,11 +44,11 @@ body{
     font-size: 0.85em;
 }
 h3.ui.header.event-type-header{
-    font-family: Quicksand;
+    font-family: Montserrat;
     font-weight: bold;
 }
 .event-name{
-    font-family: Quicksand;
+    font-family: Montserrat;
 	font-size: 2em;
 	font-weight: bold;
     line-height: 1.5em;
@@ -63,8 +64,7 @@ h3.ui.header.event-type-header{
 #event-time{
     width: 60%;
     margin-top: 5px;
-    font-family: Quicksand;
-    font-weight: bold;
+    font-family: Montserrat;
 }
 #event-details{
     width: 60%;

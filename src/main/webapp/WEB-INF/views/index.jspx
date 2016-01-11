@@ -1,168 +1,122 @@
 <div xmlns:spring="http://www.springframework.org/tags" xmlns:sec="http://www.springframework.org/security/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8" />
-    <jsp:output omit-xml-declaration="yes" />
-    <sec:authorize access="not hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-        <style>
-            body{
-                background-image: url('images/unauth.jpg');
-                background-size: cover;
-                background-repeat: no-repeat;
-            }
-            .welcome {
-                margin-top:10%;
-                margin-left: 30%;
-                font-family:Quicksand;
-                font-weight:400;
-            }
-            .welcome-head {
-                font-size: 3.5em;
-            }
-            .welcome-sub {
-                font-size: 1.8em;
-            }
-            @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
-                .welcome {
-                    margin-top: 10%;
-                    margin-left: 15%;
-                    font-family:Quicksand;
-                    font-weight:400;
-                }
-                .welcome-head {
-                    font-size: 3em;
-                }
-                .welcome-sub {
-                    font-size: 1.5em;
-                }
-            }
-        </style>
-        <div class="welcome">
-            <div class="welcome-head">Welcome</div>
-            <div class="welcome-sub">bibs control center</div>
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+<jsp:output omit-xml-declaration="yes" />
+<sec:authorize access="not hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+    <style>
+        .welcome {
+            position: absolute;
+            left: 50%;
+            margin-left: -200px;
+            top: 50%;
+            margin-top: -200px;
+            width: 400px;
+            height: 400px;
+            font-family: 'Montserrat';
+            font-weight:400;
+            text-align: center;
+        }
+        .welcome-sub {
+            margin-top: 15px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-family: 'Arvo';
+        }
+        .ui.button{
+            font-size: 1.3em;
+        }
+    </style>
+    <div class="welcome bibs-gray-1">
+        <img class="ui tiny centered image" src="images/bibsicon.png"/>
+        <div class="welcome-sub">bibs control panel</div>
+        <div class="ui bibs-bg-red error-segment segment">
+            <i class="fa fa-exclamation-circle left-icon"><!--  --></i>
+            Sorry, there was an error with your login! Please check your username or password.
         </div>
-    </sec:authorize>
+        <form id="loginForm" method="POST" action="/bibs-server/resources/j_spring_security_check" name="f">
+            <span class="input">
+                <input class="input__field input__field--yoko"
+                    type="text" name="j_username" 
+                    data-parsley-error-message="Please enter a username."
+                    data-parsley-required="true" />
+                <label class="input__label input__label--yoko">
+                    <span class="input__label-content input__label-content--yoko">Username</span>
+                </label>
+            </span>
+            <span class="input">
+                <input class="input__field input__field--yoko"
+                    type="password" name="j_password" data-parsley-error-message="Please enter a password."
+                data-parsley-required="true" />
+                <label class="input__label input__label--yoko">
+                    <span class="input__label-content input__label-content--yoko">Password</span>
+                </label>
+            </span>
+            <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" type="submit">login</button>
+        </form>
+    </div>
+</sec:authorize>
 
-    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-        <style>
-            body{
-                background-image: url('images/auth.jpg');
-                background-size: cover; background-repeat: no-repeat;
-            }
-            a:link, a:visited, a:hover, a:active { text-decoration: none; color: rgba(30,30,30,1); }
-            .not-list.content{
-                height:100%;
-                vertical-align: middle;
-            }
-            .not-list:hover, .not-list:focus, .clear-btn:hover, .clear-btn:focus{
-                background: rgba(255,255,255,0.8);
-            }
-            .not-list:last-child{
-                border-bottom: none;
-                background: none;
-            }
-            .event-info{ font-weight:100; font-size:1.3em; }
-            .event-date{ line-height: 2.4em; vertical-align:middle; font-size:1.1em; font-weight:bold; }
-            .clear-btn{ padding: 5px; border: 1px solid rgba(30,30,30,0.5); background: rgba(255,255,255,0.5); text-align:center; }
-            @media (min-width: 1000px) {
-                .event-container{
-                    margin-left: 35%;
-                    margin-top:2%;
-                    font-family:Quicksand;
-                }
-                .not-list{
-                    display: block;
-                    margin: 1em;
-                    padding: 1em;
-                    height: 6em;
-                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-                }
-                .event-name{
-                    display: inline-block;
-                    font-size: 1.9em;
-                    line-height: 1em;
-                    overflow: hidden;
-                    width: 450px;
-                    text-overflow: ellipsis;
-                    -o-text-overflow: ellipsis;
-                    -ms-text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-            }
-            @media (max-width: 999px) and (min-width: 700px) {
-                .event-container{
-                    margin-left: 30%;
-                    margin-top:2%;
-                    font-family:Quicksand;
-                }
-                .not-list{
-                    display: block;
-                    margin: 1em;
-                    padding: 1em;
-                    height: 8em;
-                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-                }
-                .event-name {
-                    font-size: 1.5em;
-                    line-height: 1.1em;
-                    display: inline-block;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    width: 400px;
-                    text-overflow: ellipsis;
-                    -o-text-overflow: ellipsis;
-                    -ms-text-overflow: ellipsis;
-                }
-            }
-            @media (max-width: 699px){
-                .event-container{
-                    margin-left: 20%;
-                    margin-top:2%;
-                    font-family:Quicksand;
-                }
-                .not-list{
-                    display: block;
-                    margin: 1em;
-                    padding: 1em;
-                    height: 8em;
-                    -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;cursor: pointer;
-                }
-                .event-name {
-                    font-size: 1.5em;
-                    line-height: 1.1em;
-                    display: inline-block;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    width: 350px;
-                    text-overflow: ellipsis;
-                    -o-text-overflow: ellipsis;
-                    -ms-text-overflow: ellipsis;
-                }
-            }
-            @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
-                .event-container{
-                    margin-left: 0%;
-                }
-                .event-name{ font-size: 1.5em; line-height: 1.1em; }
-                .event-info{ font-size: 1em; line-height: 1em; }
-                .not-list{
-                    height: 8.5em;
-                }
-            }
-        </style>
+<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <page id="pl_com_bibsmobile_model_Event" items="${events}">
-        <div class="event-container">
+        <div class="bibs-page bibs-bg-gray-1">
+            <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
+                <i class="fa fa-bell left-icon"><!--  --></i>
+                Upcoming Event: <a onclick="redirectEvent(${events[0].id})" class="emphasized emphasized-link bibs-gray-4">${events[0].name}</a> happening on <span class="event-date">${events[0].timeStart}</span>
+            </div>
+            <h1 class="ui horizontal divider header">
+                <i class="fa fa-globe left-icon"><!--  --></i>
+                Events
+            </h1>
             <c:if test="${not empty events}">
-                <c:forEach var="item" items="${events}">
-                    <a class="not-list" href="#" onclick="redirectEvent(${item.id})">
-                        <div class="col-md-9 col-sm-12 content"><span class="event-name">${item.name}</span><br/>
-                        <span class="event-info">${item.city}, ${item.state}</span></div>
-                        <div class="col-md-3 col-sm-12 event-date content">${item.timeStart}</div>
-                    </a>
-                </c:forEach>
-                <div class="not-list">
-                    <div class="row">
-                    <a href="#" onclick="redirectEventCreate()"><div class="col-md-offset-8 col-md-3 col-sm-offset-5 btn btn-default"><span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> event</span></div></a></div>
-                    <div class="row">
-                    <a href="#" onclick="redirectEventList()"><div class="col-md-offset-8 col-md-3 col-sm-offset-5 btn btn-default"><span>more events</span></div></a></div>
+                <div class="tri-container">
+                    <div class="tri-row-short stats-holder">
+                        <h3 class="ui header">
+                            Analytics
+                        </h3>
+                        <div class="ui three column center aligned grid">
+                            <div class="column">
+                                <div class="ui small statistic">
+                                    <div class="value bibs-main-teal">${totalEvents}</div>
+                                    <div class="label bibs-gray-4">Events</div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="ui small statistic">
+                                    <div class="value bibs-green">31,200</div>
+                                    <div class="label bibs-gray-4">Athletes</div>
+                                </div>
+                            </div>
+                            <div class="column">
+                                <div class="ui small statistic">
+                                    <div class="value bibs-main-blue">924</div>
+                                    <div class="label bibs-gray-4">Shares</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tri-row-tall map-holder"><!--  --></div>
+                    <div class="tri-col events-holder">
+                        <h3 class="ui header">Current Events</h3>
+                        <div class="ui middle aligned very relaxed divided list">
+                            <c:forEach var="item" items="${events}">
+                            <a  class="item"
+                                onclick="redirectEvent(${item.id})">
+                                <div class="left floated content">
+                                    <h4 class="header"><span class="event-name">${item.name}</span></h4>
+                                    <span class="event-info">${item.city}, ${item.state}</span>
+                                </div>
+                                <div class="right floated content">
+                                    <span class="event-date">${item.timeStart}</span>
+                                </div>
+                            </a>
+                            </c:forEach>
+                            <div class="item">
+                                <div class="right floated content">
+                                    <a onclick="redirectEventList()"><div class="ui bibs-bg-gray-4 bibs-gray-2 button"><i class="fa fa-forward" style="margin-right:5px"><!-- --></i> More</div></a>
+                                    <a onclick="redirectEventCreate()"><div class="ui bibs-bg-main-yellow bibs-gray-4 button"><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> New Event</div></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </c:if>
             <c:if test="${empty events}">
@@ -175,7 +129,7 @@
             </c:if>
         </div>
     </page>
-    </sec:authorize>
+</sec:authorize>
 
 <script>
     window.onload = function(){
@@ -190,6 +144,36 @@
             var mom = moment(str, "YYYY-MM-DD HH:mm:ss").format('MMM Do, YYYY');
             jQuery(this).text(mom);
         })
+
+        jQuery('#menu-events').addClass('active');
+
+        // trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+        if (!String.prototype.trim) {
+            (function() {
+                // Make sure we trim BOM and NBSP
+                var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+                String.prototype.trim = function() {
+                    return this.replace(rtrim, '');
+                };
+            })();
+        }
+        [].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach( function( inputEl ) {
+            // in case the input is already filled..
+            if( inputEl.value.trim() !== '' ) {
+                classie.add( inputEl.parentNode, 'input--filled' );
+            }
+            // events:
+            inputEl.addEventListener( 'focus', onInputFocus );
+            inputEl.addEventListener( 'blur', onInputBlur );
+        } );
+        function onInputFocus( ev ) {
+            classie.add( ev.target.parentNode, 'input--filled' );
+        }
+        function onInputBlur( ev ) {
+            if( ev.target.value.trim() === '' ) {
+                classie.remove( ev.target.parentNode, 'input--filled' );
+            }
+        }
     }
 
 	function initTooltip(){
@@ -203,6 +187,8 @@
 		    jQuery("#loginForm").show();
 		    jQuery('input[name="j_username"]').focus();
 		    jQuery('input[name="j_username"]').parent().tooltip("show");
+            jQuery('.error-segment').show();
+            jQuery('.error-segment').delay(5000).fadeOut('slow');
 	    }
 	    else{
 	    	jQuery('input[name="j_username"]').parent().removeClass("has-error");

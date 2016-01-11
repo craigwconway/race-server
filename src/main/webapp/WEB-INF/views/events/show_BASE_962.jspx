@@ -262,41 +262,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="importAthletes" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="import-label" aria-hidden="true" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
-                    <h4 class="modal-title" id="export-label">Import Athletes</h4>
-                </div>
-                <div class="modal-body">
-                    <h4 class="ui header">Choose Event Type</h4>
-                    <div class="row">
-                        <div class="ui selection compact dropdown" id="importAthletes-eventTypes">
-                            <input type="hidden" name="type"><!--  --></input>
-                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                            <div class="default text">Event Type</div>
-                            <div class="menu">
-                                <c:forEach var="item" items="${eventTypes}">
-                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
-                                </c:forEach>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div style="font-size: 0.9em;color:#808080">Pick an event type to proceed</div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
-                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Import
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade" id="addType" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="eventtype-label" aria-hidden="true" style="display:none">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -489,7 +454,6 @@
                                 <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px"><!--  --></i> Reports</a></li>
                             </c:if>
                             <li><a href="#" onclick="redirectAthletes();return false;"><i class="fa fa-users" style="margin-right: 5px"><!--  --></i> Athletes</a></li>
-                            <li><a href="#" onclick="redirectLive();return false;"><i class="fa fa-refresh" style="margin-right: 5px"><!--  --></i> Live</a></li>
                         </c:if>
                     </sec:authorize>
                     <li><a href="#" onclick="redirectAwards();return false;"><i class="fa fa-trophy" style="margin-right: 5px"><!--  --></i> Awards</a></li>
@@ -529,7 +493,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-file-text" style="margin-right: 5px"><!--  --></i> Results<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" data-toggle='modal' data-target='#importAthletes'>Import</a></li>
+                            <li><a href="#" onclick="redirectImport();return false;">Import</a></li>
                             <li><a href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a></li>
                             <c:if test="${dropboxUnlink == true}">
                                 <li><a href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a></li>
@@ -553,137 +517,105 @@
         </div>
     </nav>
     
-    <div class="bibs-page bibs-bg-gray-1">
-        <div class="ui very padded basic segment">
-        <jsp:useBean id="now" class="java.util.Date"/>
-        <fmt:parseDate value="${event.timeStartLocal}" pattern="MM/dd/yyyy hh:mm:ss a" var="eventDate"/>
-        <c:choose>
-            <c:when test="${eventDate le now}">
-                <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
-                    <i class="fa fa-bell left-icon"><!--  --></i>
-                    Congratulations on completing your event! You can now manage your race results, awards, athletes, and more.
-                </div>
-            </c:when>
-            <c:otherwise>
-                <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
-                    <i class="fa fa-bell left-icon"><!--  --></i>
-                    You've created your event! Please don't forget to <a href="" class="emphasized emphasized-link">set-up registration</a> and additional event details.
-                </div>
-            </c:otherwise>
-        </c:choose>
+    <div class="white-overlay">
+        <c:if test='${(build.registration)}'>
+            <div class="map-container">
+                <div id="map"><!--  --></div>
+                <div class="map-canvas-warning"><small>If you can't see the map, please check your event settings!</small></div>
+            </div>
+        </c:if>
+        <c:if test='${(!build.registration)}'>
+            <div class="map-container"><!--  --></div>
+        </c:if>
+        <div class="info-container">
+            <div class="button-container">
                 <c:if test='${(build.registration)}'>
-                    <div class="map-container">
-                        <div id="map"><!--  --></div>
-                        <div class="map-canvas-warning"><small>If you can't see the map, please check your event settings!</small></div>
-                    </div>
+                    <c:if test='${event.regEnabled}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectDisableReg()">
+                             registration is open <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${(!event.regEnabled)}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectEnableReg()">
+                             registration is closed <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${event.live}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectDisableLive()">
+                             listing is public <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
+                    <c:if test='${(!event.live)}'>
+                        <div class="btn btn-default btn-sm" style="margin-right: 5px;"
+                             onclick="redirectEnableLive()">
+                             listing is private <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
+                         </div>
+                    </c:if>
                 </c:if>
-                <c:if test='${(!build.registration)}'>
-                <div class="map-container"><!--  --></div>
-                </c:if>
+                <div class="btn btn-warning btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
+                    <i class="fa fa-edit"><!--  --></i>
+                </div>
+                <div class="btn btn-danger btn-sm" onclick="deleteEvent(); return false;">
+                    <i class="fa fa-trash"><!--  --></i>
+                </div>
+            </div>
+            <div class="event-name">${event.name}</div>
+            <div class="event-location">${event.city}, ${event.state}</div>
+            <fmt:parseDate value="${event.timeStartLocal}" pattern="MM/dd/yyyy hh:mm:ss a" var="eventDate"/>
+            <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" /> first start <fmt:formatDate type="time" value="${eventDate}" /></div>
+            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <div class="button-container">
-                    <c:if test='${(build.registration)}'>
-                        <c:if test='${event.regEnabled}'>
-                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
-                                 onclick="redirectDisableReg()">
-                                 registration is open <i class="fa fa-check bibs-green" style="margin-left:5px;"><!--  --></i>
-                             </div>
-                        </c:if>
-                        <c:if test='${(!event.regEnabled)}'>
-                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
-                                 onclick="redirectEnableReg()">
-                                 registration is closed <i class="fa fa-ban bibs-red" style="margin-left:5px;"><!--  --></i>
-                             </div>
-                        </c:if>
-                        <c:if test='${event.live}'>
-                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
-                                 onclick="redirectDisableLive()">
-                                 listing is public <i class="fa fa-check bibs-green" style="margin-left:5px;"><!--  --></i>
-                             </div>
-                        </c:if>
-                        <c:if test='${(!event.live)}'>
-                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
-                                 onclick="redirectEnableLive()">
-                                 listing is private <i class="fa fa-lock bibs-red" style="margin-left:5px;"><!--  --></i>
-                             </div>
-                        </c:if>
-                        <c:if test='${event.sync}'>
-                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
-                                 onclick="redirectDisableSync()">
-                                 Sync Enabled <i class="glyphicon glyphicon-ok" style="margin-left:5px;"><!--  --></i>
-                             </div>
-                        </c:if>
-                        <c:if test='${(!event.sync)}'>
-                            <div class="btn btn-default btn-sm" style="margin-right: 5px;"
-                                 onclick="redirectEnableSync()">
-                                 Sync Disabled <i class="glyphicon glyphicon-remove" style="margin-left:5px;"><!--  --></i>
-                             </div>
-                        </c:if> 
-                    </c:if>
-                    <div class="btn bibs-bg-orange bibs-gray-1 btn-sm" style="margin-right: 5px;" onclick="editForm(); return false;">
-                        <i class="fa fa-edit"><!--  --></i>
-                    </div>
-                    <div class="btn bibs-bg-red bibs-gray-1 btn-sm" onclick="deleteEvent(); return false;">
-                        <i class="fa fa-trash"><!--  --></i>
-                    </div>
+                    <button type="button" class="ui basic black button" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <c:if test="${not empty eventTypes}"><button type="button" class="ui teal button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
                 </div>
-                <div class="event-info-box bibs-bg-main-blue bibs-gray-2">
-                    <div class="event-name">${event.name}</div>
-                    <div class="event-location">${event.city}, ${event.state}</div>
-                    <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" />
-                     <!-- first start <fmt:formatDate type="time" value="${eventDate}" /> -->
-                     </div>
-                </div>
-                <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                    <div class="button-container">
-                        <button type="button" class="ui basic black button" data-toggle='modal' data-target='#addType'><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
-                        <c:if test="${not empty eventTypes}"><button type="button" class="ui bibs-bg-main-teal bibs-gray-1 button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
-                    </div>
-                    <c:if test="${not empty eventTypes}">
-                        <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
-                        <table class="ui small compact stackable table">
-                            <thead><tr>
-                                <th>Name</th>
-                                <th>Type</th>
-                                <th>Distance</th>
-                                <th>Start Time</th>
-                                <th>Registration</th>
-                                <th># Registered</th>
-                                <th># Athletes</th>
-                            </tr></thead>
-                            <tbody>
-                                <c:forEach var="item" items="${metatype}">
-                                    <c:if test="${item.ticket != null }">
-                                        <tr class="eventtype-item" onclick="redirectTicket(${item.ticket.id})">    
-                                            <td>${item.type.typeName}</td>
-                                            <td>${item.type.racetype}</td>
-                                            <td>${item.type.distance}</td>
-                                            <td>${item.type.timeStartLocal}</td>
-                                            <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
-                                            <td>${item.ticket.purchased }</td>
-                                            <td>${item.athletes }</td>
-                                        </tr>
-                                    </c:if>
-                                    <c:if test="${item.ticket == null }">
-                                        <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">
-                                            <td>${item.type.typeName}</td>
-                                            <td>${item.type.racetype}</td>
-                                            <td>${item.type.distance}</td>
-                                            <td>${item.type.timeStartLocal}</td>
-                                            <td><div class="ui small button" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">Enable</div></td>
-                                            <td>N/A</td>
-                                            <td>${item.athletes }</td>
-                                        </tr>
-                                    </c:if>
-                                </c:forEach>
-                            </tbody>
-                        </table>
-                    </c:if>
-                    <c:if test="${lastImport != null}">
-                        <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
-                        <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
-                    </c:if>
-                </sec:authorize>
-                <!--  -->
+                <c:if test="${not empty eventTypes}">
+                    <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
+                    <table class="ui small compact stackable table">
+                        <thead><tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Distance</th>
+                            <th>Start Time</th>
+                            <th>Registration</th>
+                            <th># Registered</th>
+                            <th># Athletes</th>
+                        </tr></thead>
+                        <tbody>
+                            <c:forEach var="item" items="${metatype}">
+	                            <c:if test="${item.ticket != null }">
+		                            <tr class="eventtype-item" onclick="redirectTicket(${item.ticket.id})">    
+		                                <td>${item.type.typeName}</td>
+		                                <td>${item.type.racetype}</td>
+		                                <td>${item.type.distance}</td>
+		                                <td>${item.type.timeStartLocal}</td>
+		                                <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
+		                                <td>${item.ticket.purchased }</td>
+		                                <td>${item.athletes }</td>
+		                            </tr>
+	                            </c:if>
+	                            <c:if test="${item.ticket == null }">
+		                            <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">
+		                                <td>${item.type.typeName}</td>
+		                                <td>${item.type.racetype}</td>
+		                                <td>${item.type.distance}</td>
+		                                <td>${item.type.timeStartLocal}</td>
+		                                <td><div class="ui small button" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">Enable</div></td>
+		                                <td>N/A</td>
+		                                <td>${item.athletes }</td>
+	                            	</tr>
+	                            </c:if>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </c:if>
+                <c:if test="${lastImport != null}">
+                    <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                    <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+                </c:if>
+            </sec:authorize>
         </div>
     </div>
     </page>
@@ -786,7 +718,6 @@
             })
 
             jQuery('#exportAthletes-eventTypes').dropdown();
-            jQuery('#importAthletes-eventTypes').dropdown();
 
             jQuery('.message .close').on('click', function() {
                 jQuery(this).closest('.message').fadeOut();
@@ -1078,11 +1009,10 @@
             jQuery(".ui.form .field > .selection.dropdown").dropdown();
             jQuery('#putFieldForm input').val('');
 
-
-            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').startOf('hour'));
+            jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
             
             jQuery("#removetime").click(function(){
-                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').startOf('hour'));
+                jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}').startOf('hour'));
             });
 
             jQuery('#racetype-dropdown').dropdown('clear');
@@ -1312,9 +1242,6 @@
         function redirectAthletes(){
             window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
         }
-        function redirectLive(){
-            window.location="/bibs-server/events/live?event=${event.id}";
-        }
         function redirectImport(){
             window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
         }
@@ -1434,19 +1361,6 @@
                 window.location = callUrl;
             }
         }
-        
-        function importAthletesHandler(){
-            var type = jQuery('#importAthletes-eventTypes').dropdown('get value');
-            console.log(type);
-
-            var callUrl = "/bibs-server/resultsfiles?form&amp;event=${event.id}";
-            if(type !== null || type !== ""){
-                window.location = callUrl + '&amp;type=' + type;
-            }else{
-                window.location = callUrl;
-            }
-        }
-        
         function redirectBackup(){
             window.location="/bibs-server/events/exportBackup?event=${event.id}";
         }   
@@ -1468,17 +1382,8 @@
         function redirectDisableLive(){
             window.location="/bibs-server/events/${event.id}/disablelive";
         }
-        function redirectEnableSync(){
-            window.location="/bibs-server/events/${event.id}/enablesync";
-        }
-        function redirectDisableSync(){
-            window.location="/bibs-server/events/${event.id}/disablesync";
-        }        
         function redirectManageReg(){
             window.location="/bibs-server/eventitems?event=${event.id}";
-        }
-        function redirectBadges(){
-            window.location="/bibs-server/badges/form";
         }
         function redirectSearchReg(){
             window.location="/bibs-server/registrations/search?event=${event.id}";

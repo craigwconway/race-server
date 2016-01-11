@@ -28,7 +28,6 @@
     	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>
 	 </div>
     </sec:authorize>
-
 	<script>
 	window.onload = init;
 

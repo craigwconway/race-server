@@ -1,0 +1,399 @@
+/*	font imports	*/
+@font-face{
+	font-family: Montserrat;
+	src: url(montserrat/Montserrat-Regular.otf);
+}
+@font-face{
+	font-family: Montserrat;
+	src: url(montserrat/Montserrat-Light.otf);
+	font-weight:100;
+}
+@font-face{
+	font-family: Montserrat-Bold;
+	src: url(montserrat/Montserrat-Bold.otf);
+	font-weight:700;
+}
+@font-face{
+  font-family: Lato-Medium;
+  src: url(lato/Lato-Medium.ttf);
+  font-weight:700;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-MediumItalic.ttf);
+  font-weight:700;
+  font-style: italic;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-Thin.ttf);
+  font-weight:100;
+}
+@font-face{
+  font-family: Lato;
+  src: url(lato/Lato-ThinItalic.ttf);
+  font-weight:400;
+  font-style: italic;
+}
+@font-face{
+  font-family: Arvo;
+  src: url(arvo/Arvo-Regular.ttf);
+}
+@font-face{
+  font-family: Arvo-Bold;
+  src: url(arvo/Arvo-Bold.ttf);
+}
+
+h1,h2,h3,h4,h5,h6{
+	/*font-variant: small-caps !important;*/
+	font-family: 'Arvo-Bold' !important;
+}
+
+/*
+	logo colors
+*/
+/*	turquoise blue */
+.bibs-logo-lightblue{
+	color: rgba(83,199,225,1) !important;
+}
+.bibs-bg-logo-lightblue{
+	background-color: rgba(83,199,225,1) !important;
+}
+/*	lochmara	*/
+.bibs-logo-darkblue{
+	color: rgba(7,111,183,1) !important;
+}
+.bibs-bg-logo-darkblue{
+	background-color: rgba(7,111,183,1) !important;
+}
+
+/*
+	text shades
+*/
+/*	alabaster	*/
+.bibs-gray-1{
+	color: rgba(252,252,252,1) !important;
+}
+.bibs-bg-gray-1{
+	background-color: rgba(252,252,252,1) !important;
+}
+/*	seashell	*/
+.bibs-gray-2{
+	color: rgba(240,240,240,1) !important;
+}
+.bibs-bg-gray-2{
+	background-color: rgba(240,240,240,1) !important;
+}
+/*	gray		*/
+.bibs-gray-3{
+	color: rgba(137,137,137,1) !important;
+}
+.bibs-bg-gray-3{
+	background-color: rgba(137,137,137,1) !important;
+}
+/*	mine shaft	*/
+.bibs-gray-4{
+	color: rgba(66,66,66,1) !important;
+}
+.bibs-bg-gray-4{
+	background-color: rgba(66,66,66,1) !important;
+}
+/*	mine shaft2 */
+.bibs-gray-5{
+	color: rgba(42,42,42,1) !important;
+}
+.bibs-bg-gray-5{
+	background-color: rgba(42,42,42,1) !important;
+}
+
+/*
+	main triplet
+*/
+/*	rob roy		*/
+.bibs-main-yellow{
+	color: rgba(233,196,106,1) !important;
+}
+.bibs-bg-main-yellow{
+	background-color: rgba(233,196,106,1) !important;
+}
+/*	venice blue */
+.bibs-main-blue{
+	color: rgba(6,90,130,1) !important;
+}
+.bibs-bg-main-blue{
+	background-color: rgba(6,90,130,1) !important;
+}
+/*	lochinvar	*/
+.bibs-main-teal{
+	color: rgba(42,157,143,1) !important;
+}
+.bibs-bg-main-teal{
+	background-color: rgba(42,157,143,1) !important;
+}
+/*	cloud burst	*/
+.bibs-main-navy{
+	color: rgba(33,41,92,1) !important;
+}
+.bibs-bg-main-navy{
+	background-color: rgba(33,41,92,1) !important;
+}
+
+/*
+	secondary & darker
+*/
+/*	well read	*/
+.bibs-red{
+	color: rgba(195,66,63,1) !important;
+}
+.bibs-bg-red{
+	background-color: rgba(195,66,63,1) !important;
+}
+/*	tangerine	*/
+.bibs-orange{
+	color: rgba(241,143,1,1) !important;
+}
+.bibs-bg-orange{
+	background-color: rgba(241,143,1,1) !important;
+}
+/*	supernova	*/
+.bibs-yellow{
+	color: rgba(254,198,1,1) !important;
+}
+.bibs-bg-yellow{
+	background-color: rgba(254,198,1,1) !important;
+}
+/*	emerald		*/
+.bibs-green{
+	color: rgba(68,207,108,1) !important;
+}
+.bibs-bg-green{
+	background-color: rgba(68,207,108,1) !important;
+}
+/*	venice blue	*/
+.bibs-blue{
+	color: rgba(5,102,141,1) !important;
+}
+.bibs-bg-blue{
+	background-color: rgba(5,102,141,1) !important;
+}
+/*	oxford blue	*/
+.bibs-black{
+	color: rgba(41,47,54,1) !important;
+}
+.bibs-bg-black{
+	background-color: rgba(41,47,54,1) !important;
+}
+
+
+/*
+	tertiary & brighter
+*/
+/*	wild watermelon	*/
+.bibs-bright-red{
+	color: rgba(255,89,100,1) !important;
+}
+.bibs-bg-bright-red{
+	background-color: rgba(255,89,100,1) !important;
+}
+/*	gorse			*/
+.bibs-bright-yellow{
+	color: rgba(255,231,76,1) !important;
+}
+.bibs-bg-right-yellow{
+	background-color: rgba(255,231,76,1) !important;
+}
+/*	screamin green	*/
+.bibs-bright-green{
+	color: rgba(128,255,114,1) !important;
+}
+.bibs-bg-bright-green{
+	background-color: rgba(128,255,114,1) !important;
+}
+
+/*
+	light tones & overlays
+*/
+/*	pearl bush		*/
+.bibs-bg-pale-red{
+	background-color: rgba(221,209,199,1) !important;
+}
+/*	orinoco			*/
+.bibs-bg-pale-yellow{
+	background-color: rgba(234,248,191,1) !important;
+}
+/*	coriander		*/
+.bibs-bg-pale-green{
+	background-color: rgba(194,207,178,1) !important;
+}
+
+/*
+	other css mods
+*/
+.small-caps{
+	font-variant: small-caps;
+}
+.all-caps{
+	text-transform: uppercase;
+}
+.round-border-white{
+	border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	-webkit-box-shadow: 0px 0px 1px 1px rgba(252,252,252,1);
+	-moz-box-shadow: 0px 0px 1px 1px rgba(252,252,252,1);
+	box-shadow: 0px 0px 1px 1px rgba(252,252,252,1);
+}
+.left-icon{
+	margin-right: 5px;
+}
+.error-segment{
+	font-size: 1em;
+	font-family: 'Lato';
+	display:none;
+}
+.basic-link{
+	text-decoration: none;
+}
+.emphasized-link{
+	text-decoration: underline;
+	cursor: pointer;
+}
+.emphasized{
+	font-family: 'Arvo-Bold' !important;
+	font-size: 1.2em;
+}
+
+/*
+	input overrides
+	https://github.com/codrops/TextInputEffects
+*/
+.input {
+	position: relative;
+	z-index: 1;
+	display: inline-block;
+	margin: 1em;
+	max-width: 400px;
+	width: calc(100% - 2em);
+	vertical-align: middle;
+}
+
+.input__field {
+	position: relative;
+	display: block;
+	float: right;
+	padding: 0.8em;
+	width: 60%;
+	border: none;
+	border-radius: 0;
+	background: #f0f0f0;
+	color: #aaa;
+	font-weight: bold;
+	-webkit-appearance: none; /* for box shadows to show on iOS */
+}
+
+.input__field:focus {
+	outline: none;
+}
+
+.input__label {
+	display: inline-block;
+	float: right;
+	padding: 0 1em;
+	width: 40%;
+	color: #6a7989;
+	font-weight: bold;
+	font-size: 0.9em;
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.input__label-content {
+	position: relative;
+	display: block;
+	padding: 1.6em 0;
+	width: 100%;
+}
+
+/* Yoko */
+.input__field--yoko {
+	font-family: 'Lato';
+	letter-spacing: 1px;
+	z-index: 10;
+	width: 100%;
+	background: transparent;
+	color: #f5f5f5;
+	opacity: 0;
+	-webkit-transition: opacity 0.3s;
+	transition: opacity 0.3s;
+}
+
+.input__label--yoko {
+	position: relative;
+	width: 100%;
+	color: rgba(252,252,252,1);
+	text-align: left;
+}
+
+.input__label--yoko::before {
+	content: '';
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	width: 100%;
+	height: 4em;
+	background: #21295C;
+	-webkit-transform: perspective(1000px) rotate3d(1, 0, 0, 90deg);
+	transform: perspective(1000px) rotate3d(1, 0, 0, 90deg);
+	-webkit-transform-origin: 50% 100%;
+	transform-origin: 50% 100%;
+	-webkit-transition: -webkit-transform 0.3s;
+	transition: transform 0.3s;
+}
+
+.input__label--yoko::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 0.25em;
+	background: #21295C;
+	-webkit-transform-origin: 50% 0%;
+	transform-origin: 50% 0%;
+	-webkit-transition: -webkit-transform 0.3s;
+	transition: transform 0.3s;
+}
+
+.input__label-content--yoko {
+	padding: 0.75em 0;
+}
+
+.input__field--yoko:focus,
+.input--filled .input__field--yoko {
+	opacity: 1;
+	-webkit-transition-delay: 0.3s;
+	transition-delay: 0.3s;
+}
+
+.input__field--yoko:focus + .input__label--yoko::before,
+.input--filled .input__label--yoko::before {
+	-webkit-transform: perspective(1000px) rotate3d(1, 0, 0, 0deg);
+	transform: perspective(1000px) rotate3d(1, 0, 0, 0deg);
+}
+
+.input__field--yoko:focus + .input__label--yoko,
+.input--filled .input__label--yoko {
+	pointer-events: none;
+}
+
+.input__field--yoko:focus + .input__label--yoko::after,
+.input--filled .input__label--yoko::after {
+	-webkit-transform: perspective(1000px) rotate3d(1, 0, 0, -90deg);
+	transform: perspective(1000px) rotate3d(1, 0, 0, -90deg);
+}

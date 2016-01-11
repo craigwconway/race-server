@@ -34,9 +34,11 @@ public class EveryoneHatesSpringController {
 		UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
 		if(PermissionsUtil.isSysAdmin(loggedInUser)) {
 			// Case: Sysadmin: the user is using this on raceday.
-			events = Event.findEventEntries(0, 3, "id", "DESC");			
+			events = Event.findEventEntries(0, 3, "id", "DESC");
+	        uiModel.addAttribute("totalEvents", Event.countFindNonHiddenEventsForUser(loggedInUser));
 		} else if(PermissionsUtil.isVaguelyEventAdmin(loggedInUser)) {
 			System.out.println("evenadmin detected");
+	        uiModel.addAttribute("totalEvents", Event.countFindNonHiddenEventsForUser(loggedInUser));
 			// Case: Eventadmin: the user is using this on the bibs website.
 			events = Event.findNonHiddenEventsForUser(loggedInUser, 0, 3, "id", "DESC");
 			System.out.println(events);
