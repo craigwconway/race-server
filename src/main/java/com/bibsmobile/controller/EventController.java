@@ -1179,6 +1179,8 @@ public class EventController {
      * @apiParam {Number} [longitude] longitude of point to search around
      * @apiParam {Number} [latitude] latitude of point to search around
      * @apiParam {Number} [radius] in KM of search to perform
+     * @apiParamExample {curl} cURL Name Search
+     * curl -X GET http://localhost:8080/bibs-server/events/search?name="king%20can"
      * @apiSampleRequest http://localhost:8080/bibs-server/events/search
      * @return
      */
@@ -1192,34 +1194,28 @@ public class EventController {
     		@RequestParam(value = "highdistance", required = false) Long highDistance,
     		@RequestParam(value = "racetype", required = false) String racetype,
     		@RequestParam(value = "distance", required = false) String distance,
-    		@RequestParam(value = "series", required = false) Long seriesId,
-    		@RequestParam(value = "region", required = false) Long region,
+    		@RequestParam(value = "series", required = false) String seriesSlug,
     		@RequestParam(value = "longitude", required = false) Double longitude,
     		@RequestParam(value = "latitude", required = false) Double latitude,
     		@RequestParam(value = "radius", required = false, defaultValue = "50") Double radius) {
 
+    	List <Event> results = null;
     	if(longitude != null && latitude != null) {
     		System.out.println(eventService.geospatialSearch(longitude, latitude, radius));
     	}
     	if(name != null) {
-    		System.out.println(eventService.nameSearch(name));
+    		results = eventService.nameSearch(name);
     	}
     	if(distance != null) {
 			System.out.println(eventService.nameSearch(distance));
     	} else if( lowDistance != null || highDistance != null) {
     		// perform numeric distances search
     	}
-    	if(seriesId!= null) {
-    		Series series = Series.findSeries(seriesId);
-    		try{ 
-        		System.out.println(eventService.seriesQuery(series));
-    		} catch(Exception e)  {
-    			e.printStackTrace();
-    			System.out.println(e.getMessage());
-    		}
-    	}
     	
-    	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(Event.findEventsBySeriesAndNameEquals(Series.findSeries(seriesId), name).getResultList()) ,HttpStatus.OK);
+    	if (results == null)
+    			results = new ArrayList<Event>();
+    	
+    	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(results) ,HttpStatus.OK);
     }
     
     @RequestMapping(value = "/search/webappsearch", method = RequestMethod.GET)
