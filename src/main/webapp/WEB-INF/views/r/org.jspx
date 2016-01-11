@@ -5,9 +5,19 @@
     <h1 class="ui header">${usergroup.name }</h1>
 	${usergroup.description}
 	<h3 class="ui header">Events</h3>
+	<table class="ui table">
 	<c:forEach var="item" items="${events}">
+	<tr>
+	<td>
 	${item.name }
+	</td>
+	<td>
+	${item.timeStartLocal }
+	</td>
+	</tr>
 	</c:forEach>
+	</table>
+
 <script>
 	window.onload = init();
 	
