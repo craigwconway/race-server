@@ -1,0 +1,38 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+
+
+<script type="text/javascript">$.noConflict();</script>
+
+  <jsp:output omit-xml-declaration="yes" />
+  
+  <!-- Import Favicon Variable -->
+  <spring:url value="/resources/images/bibsfavicon.png" var="favicon" />
+  <!-- Import Favicon Variable Implementation -->
+  <link rel="SHORTCUT ICON" href="${favicon}" />
+  
+  
+  
+  <!-- Import Stylesheets -->
+  <spring:url value="/resources/styles/outsiders/bootstrap.min.css" var="bootstrap_url" />
+  <spring:url value="/resources/styles/outsiders/semantic.css" var="semantic_css_url" />
+  <spring:url value="/resources/styles/outsiders/font-awesome.min.css" var="font_awesome_url"/>
+  <spring:url value="/resources/styles/outsiders/animate.min.css" var="animate_url"/>
+  <!-- Import Stylesheets Implementation -->
+  <link href="${bootstrap_url }" rel="stylesheet"/>
+  <link href="${semantic_css_url }" rel="stylesheet"/>
+  <link href="${ font_awesome_url}" rel="stylesheet"/>
+  <link href="${ animate_url}" rel="stylesheet"/>
+
+  
+  <!-- Roo shit -->
+  <spring:theme code="styleSheet" var="roo_css" />
+  <spring:url value="/${roo_css}" var="roo_css_url" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}" />
+
+  <!-- Get the user local from the page context (it was set by Spring MVC's locale resolver) -->
+  <c:set var="userLocale">
+    <c:set var="plocale">${pageContext.response.locale}</c:set>
+    <c:out value="${fn:replace(plocale, '_', '-')}" default="en" />
+  </c:set>
+
+</jsp:root>

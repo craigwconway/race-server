@@ -27,6 +27,8 @@ import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.RaceImage;
+import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupType;
@@ -48,7 +50,7 @@ public class WebController {
 	 * @param uiModel Model for rendering attributes on.
 	 * @return Rendered JSPX template.
 	 */
-    @RequestMapping(value = "/org/{id}", produces = "text/html")
+    @RequestMapping(value = "/o/{id}", produces = "text/html")
     public String org(@PathVariable("id") Long id, Model uiModel) {
     	UserGroup userGroup = UserGroup.findUserGroup(id);
     	List<Event> events = Event.findLiveEventsByUserGroup(userGroup);
@@ -58,7 +60,43 @@ public class WebController {
         return "r/org";
     }
     
+	/**
+	 * Render a view of an event.
+	 * @param id Event to render.
+	 * @param uiModel Model for rendering attributes on.
+	 * @return Rendered JSPX template.
+	 */
+    @RequestMapping(value = "/e/{id}", produces = "text/html")
+    public String event(@PathVariable("id") Long id, Model uiModel) {
+    	Event event = Event.findEvent(id);
+        uiModel.addAttribute("event", event);
+        return "r/event";
+    }
+
+	/**
+	 * Render a view of a result.
+	 * @param id Result to render.
+	 * @param uiModel Model for rendering attributes on.
+	 * @return Rendered JSPX template.
+	 */
+    @RequestMapping(value = "/r/{id}", produces = "text/html")
+    public String result(@PathVariable("id") Long id, Model uiModel) {
+    	RaceResult result = RaceResult.findRaceResult(id);
+        uiModel.addAttribute("result", result);
+        return "r/result";
+    }    
     
-    
+	/**
+	 * Render a view of an image.
+	 * @param id Image to render.
+	 * @param uiModel Model for rendering attributes on.
+	 * @return Rendered JSPX template.
+	 */
+    @RequestMapping(value = "/i/{id}", produces = "text/html")
+    public String photo(@PathVariable("id") Long id, Model uiModel) {
+    	RaceImage image = RaceImage.findRaceImage(id);
+        uiModel.addAttribute("image", image);
+        return "r/image";
+    }
     
 }

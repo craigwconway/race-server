@@ -8,25 +8,17 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=8" />	
-			
-		
-<!-- 		<spring:message code="application_name" var="app_name" htmlEscape="false"/> -->
-<!-- 		<title><spring:message code="welcome_h3" arguments="${app_name}" /></title> -->
-		<util:load-scripts />
+
+		 <util:load-outsider-scripts />
 
 		<title>bibs</title>
 	</head>
 	
   	<body style="margin:1%;">
-<!--    		<div id="wrapper"> -->
 		    <tiles:insertAttribute name="header" ignore="true" />
-<!-- 		    <tiles:insertAttribute name="menu" ignore="true" />    -->
-<!-- 		    <div id="main"> -->
 	<div style="margin-top:1%;">
 	    		<tiles:insertAttribute name="body"/> 
 	</div>
 		    	<tiles:insertAttribute name="footer" ignore="true"/>
-<!-- 		    </div> -->
-<!-- 		</div> -->
 	</body>
 </html>
