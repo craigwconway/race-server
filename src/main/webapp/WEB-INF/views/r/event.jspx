@@ -10,8 +10,8 @@
     
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/bibs-server/resources/scripts/outsiders/creative.css" type="text/css"> </link>
-    <link rel="stylesheet" href="/bibs-server/resources/scripts/outsiders/event.css" type="text/css"> </link>
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>
     
     <style>
       #map { height: 200px; width:250px; margin: 20px auto; }
@@ -19,8 +19,95 @@
         position: relative !important;
       }
     </style>
+    
+    
+        <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div id="back-btn"><i class="fa fa-arrow-left"></i></div>
+            </div>
 
-aaaa
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="/">Regions</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="//zapposraceseries.com">Directors</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <div id="region-header">
+                    <div><img id="region-logo" src="/bibs-server/images/bibsicon.png"/></div>
+                	<div id="region-title"></div>
+                	<div id="courses-labels"></div>
+            </div>
+            </div>
+        </div>
+    </header>
+    <section class="no-padding" id="events">
+        <div class="ui center aligned basic segment">
+            <div id="event">
+                <div id="map"></div>
+                <div class="event-day-of-week"></div>
+                <div class="event-date"></div>
+                <div class="event-time"></div>
+                <div class="ui divider" style="visibility:hidden;"></div>
+                <div class="description"></div>
+
+                <h5 class="ui header">General Info</h5>
+                <div class="general">Thirty minutes prior to gun time, all participants will be offered the opportunity to check their gear. Gear may consist of small personal items and articles of warm-up clothing. Please don't bring your Cartier watch because we will probably just keep it. Make sure to keep your bib, because we organize your gear in accordance with that number. Shouldn't be too difficult, because you'll need your bib to cross the finish line anyway.</div>
+
+                <div class="ui section divider"></div>
+
+                <h5 class="ui header">Parking</h5>
+                <div class="parking">The parking lot is located on site, and you can purchase a parking pass during registration.</div>
+
+                <div class="ui section divider"></div>
+
+                <h5 class="ui header waiver-header">Waiver</h5>
+                <div class="ui waiver-container">
+                    <div class="waiver" style="height:150px;overflow: auto">You can request a copy of the waiver via our email address, abc@def.ghi</div>
+                </div>
+
+                <div class="ui section divider"></div>
+
+                <h5 class="ui header">Additional Contact Info</h5>
+                <div class="contact"><span class="contact-email">Email: abc@def.ghi</span><br/><span class="contact-phone">Phone: 123-123-1234</span><br/><span class="contact-address">Corporate Address: 123 Folsom Dr., San Francisco, CA 94123</span><br/><span class="contact-website">Official Website: www.abc.xyz</span></div>
+
+            </div>
+            <div class="ui section divider"></div>
+            <div id="social">
+                <div class="social-header">Share with friends</div>
+                <i class="fa fa-facebook link icon" id="facebook-share-button"></i>
+                <a href="//twitter.com/share"><i class="fa fa-twitter link icon" id="twitter-share-button"></i></a>
+                <a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());"><i class="fa fa-pinterest-p link icon" id="pinterest-share-button"></i></a>
+            </div>
+            <div id="download">
+                <div class="ui section divider" id="eventloc-divider"></div>
+                <img class="ui centered image" style="width:50px;margin-bottom:10px" src="img/trophy.png"/>
+                <div class="download-header">Get the app and win prizes!</div>
+                <a href="//baytobreakers.com"><div class="ui zappos-bg-orange huge button" id="download-button">Download</div></a>
+            </div>
+        </div>
+    </section>
 
 
 </div>
