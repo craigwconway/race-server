@@ -66,24 +66,24 @@
                 <div class="description"><!--  --></div>
 
                 <h5 class="ui header">General Info</h5>
-                <div class="general">Thirty minutes prior to gun time, all participants will be offered the opportunity to check their gear. Gear may consist of small personal items and articles of warm-up clothing. Please don't bring your Cartier watch because we will probably just keep it. Make sure to keep your bib, because we organize your gear in accordance with that number. Shouldn't be too difficult, because you'll need your bib to cross the finish line anyway.</div>
+                <div class="general">${event.general }</div>
 
                 <div class="ui section divider"><!--   --></div>
 
                 <h5 class="ui header">Parking</h5>
-                <div class="parking">The parking lot is located on site, and you can purchase a parking pass during registration.</div>
+                <div class="parking">${event.parking}</div>
 
                 <div class="ui section divider"><!--   --></div>
 
                 <h5 class="ui header waiver-header">Waiver</h5>
                 <div class="ui waiver-container">
-                    <div class="waiver" style="height:150px;overflow: auto">You can request a copy of the waiver via our email address, abc@def.ghi</div>
+                    <div class="waiver" style="height:150px;overflow: auto">You can request a copy of the waiver via our email address, ${event.email }</div>
                 </div>
 
                 <div class="ui section divider"><!--   --></div>
 
                 <h5 class="ui header">Additional Contact Info</h5>
-                <div class="contact"><span class="contact-email">Email: abc@def.ghi</span><br/><span class="contact-phone">Phone: 123-123-1234</span><br/><span class="contact-address">Corporate Address: 123 Folsom Dr., San Francisco, CA 94123</span><br/><span class="contact-website">Official Website: www.abc.xyz</span></div>
+                <div class="contact"><span class="contact-phone">Phone: ${event.phone }</span><br/><span class="contact-address">Corporate Address: 123 Folsom Dr., San Francisco, CA 94123</span><br/><span class="contact-website">Official Website: ${event.website }</span></div>
 
             </div>
             <div class="ui section divider"><!--   --></div>
