@@ -65,16 +65,20 @@
                 <div class="ui divider" style="visibility:hidden;"><!--  --></div>
                 <div class="description">${event.description }</div>
 
+				<c:if test="${not empty event.general }">
                 <h5 class="ui header">General Info</h5>
                 <div class="general">${event.general }</div>
 
                 <div class="ui section divider"><!--   --></div>
-
+				</c:if>
+				
+				<c:if test="${not empty event.parking }">
                 <h5 class="ui header">Parking</h5>
                 <div class="parking">${event.parking}</div>
 
                 <div class="ui section divider"><!--   --></div>
-
+				</c:if>
+				
                 <h5 class="ui header waiver-header">Waiver</h5>
                 <div class="ui waiver-container">
                     <div class="waiver" style="height:150px;overflow: auto">You can request a copy of the waiver via our email address, ${event.email }</div>
