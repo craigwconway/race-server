@@ -74,6 +74,19 @@ public class WebController {
     }
 
 	/**
+	 * Render detailed info for event.
+	 * @param id Event to render.
+	 * @param uiModel Model for rendering attributes on.
+	 * @return Rendered JSPX template.
+	 */
+    @RequestMapping(value = "/e/{id}/info", produces = "text/html")
+    public String eventInfo(@PathVariable("id") Long id, Model uiModel) {
+    	Event event = Event.findEvent(id);
+        uiModel.addAttribute("event", event);
+        return "r/eventinfo";
+    }    
+    
+	/**
 	 * Render a view of a result.
 	 * @param id Result to render.
 	 * @param uiModel Model for rendering attributes on.

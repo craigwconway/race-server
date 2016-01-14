@@ -6,5 +6,8 @@
     </definition>
     <definition extends="outsiders" name="r/event">
         <put-attribute name="body" value="/WEB-INF/views/r/event.jspx"/>
+    </definition>
+    <definition extends="outsiders" name="r/eventinfo">
+        <put-attribute name="body" value="/WEB-INF/views/r/eventinfo.jspx"/>
     </definition>    
 </tiles-definitions>

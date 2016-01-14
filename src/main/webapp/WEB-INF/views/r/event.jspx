@@ -44,68 +44,99 @@
         </div>
     </nav>
 
-    <header>
+    <header class="region-1-bg">
         <div class="header-content">
             <div class="header-content-inner">
                 <div id="region-header">
                     <div><img id="region-logo" src="/bibs-server/images/bibsicon.png"/></div>
                 	<div id="region-title">${event.name }</div>
-                	<div id="courses-labels"><!--  --></div>
+                	<div id="courses-labels">
+                	<c:forEach var="item" items="${event.eventTypes }">
+                	<c:if test="${item.distance == '5k' }"><div class="ui zappos green label" id="label-template">5k</div></c:if>
+                	<c:if test="${item.distance == '10k' }"><div class="ui zappos yellow label" id="label-template">10k</div></c:if>
+                	<c:if test="${item.distance == 'Marathon' }"><div class="ui zappos yellow label" id="label-template">Marathon</div></c:if>
+                	<c:if test="${item.distance == 'Half Marathon' }"><div class="ui zappos yellow label" id="label-template">Half</div></c:if>
+                	<c:if test="${item.distance != '5k' &amp;&amp; item.distance != '10k' &amp;&amp; item.distance != 'Half Marathon' &amp;&amp; item.distance != 'Marathon'}">
+                	<div class="ui zappos yellow label" id="label-template">Other
+                	</div></c:if>
+                	</c:forEach>
+                	</div>
                 </div>
             </div>
         </div>
     </header>
     <section class="no-padding" id="events">
         <div class="ui center aligned basic segment">
-            <div id="event">
-                <div id="map"><!--   --></div>
-                <div class="event-day-of-week"><!--  --></div>
-                <div class="event-date"><!--  --></div>
-                <div class="event-time"><!--  --></div>
-                <div class="ui divider" style="visibility:hidden;"><!--  --></div>
-                <div class="description">${event.description }</div>
-
-				<c:if test="${not empty event.general }">
-                <h5 class="ui header">General Info</h5>
-                <div class="general">${event.general }</div>
-
-                <div class="ui section divider"><!--   --></div>
-				</c:if>
-				
-				<c:if test="${not empty event.parking }">
-                <h5 class="ui header">Parking</h5>
-                <div class="parking">${event.parking}</div>
-
-                <div class="ui section divider"><!--   --></div>
-				</c:if>
-				
-                <h5 class="ui header waiver-header">Waiver</h5>
-                <div class="ui waiver-container">
-                    <div class="waiver" style="height:150px;overflow: auto">You can request a copy of the waiver via our email address, ${event.email }</div>
+            <div class="ui three column center aligned grid" id="cards-container">
+                <div class="column">
+                    <div class="ui fluid region-1-bg card" id="info-btn">
+                        <div class="content">
+                            <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/course.png"><!--  --></img></div>
+                            <div class="description">Info</div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="ui section divider"><!--   --></div>
-
-                <h5 class="ui header">Additional Contact Info</h5>
-                <div class="contact"><span class="contact-phone">Phone: ${event.phone }</span><br/><span class="contact-address">Corporate Address: 123 Folsom Dr., San Francisco, CA 94123</span><br/><span class="contact-website">Official Website: ${event.website }</span></div>
-
+                <div class="column">
+                    <div class="ui fluid region-1-bg card" id="result-btn">
+                        <div class="content">
+                            <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/results.png"><!--  --></img></div>
+                            <div class="description">Results</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui fluid region-1-bg card" id="photo-btn">
+                        <div class="content">
+                            <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/camera.png"><!--  --></img></div>
+                            <div class="description">Photos</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="ui section divider"><!--   --></div>
+            <div id="cards-replacement">
+                <a id="info-link">Event Info</a>
+            </div>
+            <div id="event">
+                <div class="event-detail-container">
+                    <div class="event-countdown-column">
+                        <span class="event-countdown">
+                            <span class="event-countdown-num">123</span>
+                            <span class="event-countdown-unit">days</span>
+                        </span>
+                    </div>
+                    <div class="event-datetime-column">
+                        <div class="event-day-of-week"></div>
+                        <div class="event-date"></div>
+                        <div class="event-time"></div>
+                    </div>
+                </div>
+                <div class="event-early-container" style="display:none">
+                    <div class="event-day-of-week"></div>
+                    <div class="event-date"></div>
+                    <div class="event-time"></div>
+                </div>
+                <div style="clear:both"> </div>
+                <div class="ui section divider"></div>
+                <div class="event-location"></div>
+                <div class="event-city-state"></div>
+                <div class="ui section divider" id="eventloc-divider"></div>
+                <div class="description"></div>
+                <a href="//baytobreakers.com"><div class="ui zappos-bg-green huge button" id="reg-button">Register</div></a>
+            </div>
             <div id="social">
                 <div class="social-header">Share with friends</div>
-                <i class="fa fa-facebook link icon" id="facebook-share-button"><!--  --></i>
-                <a href="//twitter.com/share"><i class="fa fa-twitter link icon" id="twitter-share-button"><!--  --></i></a>
-                <a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());"><i class="fa fa-pinterest-p link icon" id="pinterest-share-button"><!--  --></i></a>
+                <i class="fa fa-facebook link icon" id="facebook-share-button"></i>
+                <a href="//twitter.com/share"><i class="fa fa-twitter link icon" id="twitter-share-button"></i></a>
+                <a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());"><i class="fa fa-pinterest-p link icon" id="pinterest-share-button"></i></a>
             </div>
             <div id="download">
-                <div class="ui section divider" id="eventloc-divider"><!--   --></div>
-                <!-- <img class="ui centered image" style="width:50px;margin-bottom:10px" src="img/trophy.png"/> -->
+                <div class="ui section divider" id="eventloc-divider"></div>
+                <img class="ui centered image" style="width:50px;margin-bottom:10px" src="/bibs-server/outsideres/img/trophy.png"/>
                 <div class="download-header">Get the app and win prizes!</div>
                 <a href="//baytobreakers.com"><div class="ui zappos-bg-orange huge button" id="download-button">Download</div></a>
             </div>
         </div>
-    </section>
-    <script>
+    </section>    <script>
         function goBack(){
             window.history.back();
         }
