@@ -1,0 +1,1345 @@
+/*!
+ * Start Bootstrap - Creative Bootstrap Theme (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+@font-face {font-family: 'Montserrat-Light';src: url('/bibs-server/resources/outsideres/fonts/Montserrat-Light.otf');}
+@font-face {font-family: 'Montserrat';src: url('/bibs-server/resources/outsideres/fonts/Montserrat-Regular.otf');}
+@font-face {font-family: 'Montserrat-Bold';src: url('/bibs-server/resources/outsideres/fonts/Montserrat-SemiBold.otf');}
+@font-face {font-family: 'Montserrat-Black';src: url('/bibs-server/resources/outsideres/fonts/Montserrat-Black.otf');}
+
+/*  
+    Zappos Design Requests
+*/
+.zappos-bg-green{
+    background-color: #4fb369 !important;
+}
+.zappos-bg-orange{
+    background-color: #e64f25 !important;
+}
+#back-btn{
+    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(20,0,0,1);
+    -moz-box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
+    box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    margin-left: 10px;
+    line-height: 30px;
+    text-align: center;
+    background: white;
+    cursor: pointer;
+    color: #000;
+}
+#back-btn i{
+    margin:0;
+}
+
+.navbar-default .navbar-toggle{
+    border-color: transparent;
+}
+
+.navbar-toggle{
+    margin: 8px;
+    padding: 8px;
+}
+
+.navbar-default .navbar-toggle .icon-bar{
+    background-color: #000;
+}
+
+.navbar-toggle .icon-bar{
+    height: 2px;
+}
+
+.navbar-toggle .icon-bar+.icon-bar{
+    margin-top: 5px;
+}
+
+#region-title{
+    font-family: 'Montserrat',Arial,sans-serif;
+    padding: 15px 15px;
+    margin-top: 2%;
+    display: inline-block;
+    clear: both;
+}
+
+#event-cards-container > .card > .content > .header{
+    font-family: 'Montserrat',Arial,sans-serif;
+    margin-bottom: 10px;
+}
+
+#event-cards-container > .card > .content > .description{
+    font-family: 'Montserrat-Light';
+    color: #64666A;
+}
+
+#event-cards-container > .card{
+    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(216,216,216,1);
+    -moz-box-shadow: 0px 0px 0px 2.5px rgba(216,216,216,1);
+    box-shadow: 0px 0px 0px 2.5px rgba(216,216,216,1);
+}
+
+.ui.label{
+    border-radius: 0;
+}
+
+.ui.zappos.orange.label{
+    background-color: #E84B12!important;
+    border-color: #E84B12!important;
+}
+
+.ui.zappos.purple.label{
+    background-color: #6531B3!important;
+    border-color: #6531B3!important;
+}
+
+.ui.zappos.blue.label{
+    background-color: #2a5da8!important;
+    border-color: #2a5da8!important;
+}
+
+.ui.zappos.babyblue.label{
+    background-color: #5D98C3!important;
+    border-color: #5D98C3!important;
+}
+
+.ui.zappos.yellow.label{
+    background-color: #E5A715!important;
+    border-color: #E5A715!important;
+}
+
+.ui.zappos.lightgreen.label{
+    background-color: #52B266!important;
+    border-color: #52B266!important;
+}
+
+.ui.zappos.red.label{
+    background-color: #D13017!important;
+    border-color: #D13017!important;
+}
+
+.ui.zappos.green.label{
+    background-color: #50823B!important;
+    border-color: #50823B!important;
+}
+
+span.event-starttime{
+    font-size: 1.1em;
+}
+
+.ui.header{
+    font-family: 'Montserrat', 'Arial', sans-serif !important;
+    color: #777777 !important;
+}
+h5.ui.header{
+    font-size: 1.2rem !important;
+    line-height: 2em !important;
+}
+.ui.button:not(#search-single-button){
+    font-family: 'Montserrat-Light' !important;
+    border-radius: 0 !important;
+}
+.ui.statistic>.label, .ui.statistics .statistic>.label{
+    font-family: 'Montserrat' !important;
+    text-transform: none;
+}
+.ui.card>.content>.header, .ui.cards>.card>.content>.header, .ui.list .list>.item .header, .ui.list>.item .header, .ui.accordion .title:not(.ui), .ui.menu, .ui.input input{
+    font-family: 'Montserrat' !important;
+}
+.ui.menu, input, .card, .ui.card>:first-child, .ui.cards>.card>:first-child{
+    border-radius: 0 !important;
+}
+.ui.vertical.menu{
+    box-shadow: none ! important;
+}
+#facebook-share-button, #twitter-share-button, #pinterest-share-button{
+    font-family: 'FontAwesome';
+    font-size: 2em;
+    margin: 0.7em;
+}
+#photo-search-bar > .ui.input{
+    width: 100%;
+}
+
+/*  
+    End Zappos Design Requests
+*/
+ 
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Montserrat-Light',Arial,sans-serif;
+    color: #777777;
+}
+
+hr {
+    max-width: 50px;
+    border-color: #254e7b;
+    border-width: 3px;
+}
+
+hr.light {
+    border-color: #fff;
+}
+
+a {
+    color: #254e7b;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+i{
+    margin-right: 5px;
+}
+
+a:hover,
+a:focus {
+    color: #eb3812;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Montserrat-SemiBold', 'Arial', sans-serif;
+}
+
+p {
+    margin-bottom: 20px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.bg-primary {
+    background-color: #254e7b;
+}
+
+.bg-dark {
+    color: #fff;
+    background-color: #222;
+}
+
+.text-faded {
+    color: rgba(255,255,255,.9);
+}
+
+section {
+    padding: 100px 0;
+}
+
+aside {
+    padding: 50px 0;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+.navbar-default {
+    border-color: rgba(34,34,34,.05);
+    font-family: 'Montserrat',Arial,sans-serif;
+    background-color: #fff;
+    letter-spacing: 1px;
+    font-weight: 400;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+.navbar-default .navbar-header .navbar-brand {
+    text-transform: uppercase;
+    font-family: 'Montserrat-Black',Arial,sans-serif;
+    color: #254e7b;
+    font-weight: 700;
+}
+
+.navbar-default .navbar-header .navbar-brand:hover,
+.navbar-default .navbar-header .navbar-brand:focus {
+    color: #14457b;
+}
+
+.navbar-default .nav > li>a,
+.navbar-default .nav>li>a:focus {
+    text-transform: uppercase;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #222;
+}
+
+.navbar-default .nav > li>a:hover,
+.navbar-default .nav>li>a:focus:hover {
+    color: #FCFCFC;
+}
+
+.navbar-default .nav > li.active>a,
+.navbar-default .nav>li.active>a:focus {
+    color: #FCFCFC!important;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.navbar-default .nav > li.active>a:hover,
+.navbar-default .nav>li.active>a:focus:hover {
+    background-color: transparent;
+}
+
+
+@media (min-device-width : 375px) and (max-device-width : 667px) and (width : 375px) and (height : 627px){
+    .ui.cards > .card, #single-result-card{
+        margin: 1em auto;
+        width: 100%;
+    }
+    .ui.statistics{
+        margin: 1em 2em;
+    }
+    .card-ad > .ui[class*="vertical rectangle"].ad{
+        max-height: 200px;
+    }
+
+    .desktop-ad{
+        display:none;
+    }
+}
+
+@media (min-device-width : 414px) and (max-device-width : 736px) {
+    .ui.cards > .card, #single-result-card{
+        margin: 1em auto;
+        width: 100%;
+    }
+    .ui.statistics{
+        margin: 1em 2em;
+    }
+    .card-ad > .ui[class*="vertical rectangle"].ad{
+        max-height: 200px;
+    }
+
+    .desktop-ad{
+        display:none;
+    }
+}
+
+@media(min-width:768px) {
+    .navbar-default {
+        border-color: rgba(255,255,255,.3);
+        background-color: transparent;
+    }
+
+    .navbar-default .navbar-header .navbar-brand {
+        color: rgba(255,255,255,.7);
+    }
+
+    .navbar-default .navbar-header .navbar-brand:hover,
+    .navbar-default .navbar-header .navbar-brand:focus {
+        color: #fff;
+    }
+
+    .navbar-default .nav > li>a,
+    .navbar-default .nav>li>a:focus {
+        color: rgba(255,255,255,.7);
+    }
+
+    .navbar-default .nav > li>a:hover,
+    .navbar-default .nav>li>a:focus:hover {
+        color: #fff;
+    }
+
+    .navbar-default.affix {
+        border-color: rgba(34,34,34,.05);
+        background-color: #fff;
+    }
+
+    .navbar-default.affix .navbar-header .navbar-brand {
+        font-size: 14px;
+        color: #254e7b;
+    }
+
+    .navbar-default.affix .navbar-header .navbar-brand:hover,
+    .navbar-default.affix .navbar-header .navbar-brand:focus {
+        color: #14457b;
+    }
+
+    .navbar-default.affix .nav > li>a,
+    .navbar-default.affix .nav>li>a:focus {
+        color: #222;
+    }
+
+    .navbar-default.affix .nav > li>a:hover,
+    .navbar-default.affix .nav>li>a:focus:hover {
+        color: #254e7b;
+    }
+
+    .mobile-ad{
+        display:none;
+    }
+}
+
+@media only screen and (min-device-width: 319px) and (max-device-width: 481px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    header .header-content{
+        top: 37%;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .navbar-brand {
+        font-size: 1em;
+    }   
+    .card-ad > .ui[class*="vertical rectangle"].ad{
+        max-height: 200px;
+    }
+
+    .desktop-ad{
+        display:none;
+    }
+}
+
+header {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    text-align: center;
+    color: #fff;
+    background-color: #0a334d;
+    /*background-image: url(../img/header4.jpg);*/
+    /*background-position: center;*/
+    /*-webkit-background-size: cover;*/
+    /*-moz-background-size: cover;*/
+    /*background-size: cover;*/
+    /*-o-background-size: cover;*/
+}
+
+/*.main-header{
+    background-color: rgba(42,93,168,1);
+}*/
+
+header .header-content {
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+    padding: 20px 15px;
+    text-align: center;
+}
+
+header .header-content .header-content-inner h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-weight: 700;
+}
+
+header .header-content .header-content-inner hr {
+    margin: 30px auto;
+}
+
+header .header-content .header-content-inner p {
+    margin-bottom: 50px;
+    font-size: 16px;
+    font-weight: 300;
+    color: rgba(255,255,255,.7);
+}
+
+#empty-result-message{
+    display: none;
+    width: 100%;
+    padding-top: 10%;
+    font-size: 1.2em;
+    color: #858585;
+}
+
+@media(min-width:768px),  only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
+    header {
+        min-height: 100%;
+    }
+
+    header .header-content {
+        position: absolute;
+        top: 50%;
+        padding: 0 50px;
+        -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    header .header-content .header-content-inner {
+        margin-right: auto;
+        margin-left: auto;
+        max-width: 1000px;
+    }
+
+    header .header-content .header-content-inner p {
+        margin-right: auto;
+        margin-left: auto;
+        max-width: 80%;
+        font-size: 18px;
+    }
+
+    .mobile-ad{
+        display:none;
+    }
+}
+
+.section-heading {
+    margin-top: 0;
+}
+
+.service-box {
+    margin: 50px auto 0;
+    max-width: 400px;
+}
+
+@media(min-width:992px), only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait){
+    .service-box {
+        margin: 20px auto 0;
+        max-width: 350px;
+    }
+
+    .mobile-ad{
+        display:none;
+    }
+}
+
+.service-box p {
+    margin-bottom: 0;
+}
+
+.portfolio-box {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    max-width: 650px;
+    height: 40vh;
+}
+@media(max-width:767px) {
+    .portfolio-box {
+        height: 25vh;
+    }
+    .card-ad > .ui[class*="vertical rectangle"].ad{
+        max-height: 200px;
+    }
+}
+
+.portfolio-box .portfolio-box-caption {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color: #fff;
+}
+
+/* override portfolio-box bg colors: */
+#zappos-logo{
+    width: 200px;
+}
+#region-logo{
+    width: 110px;
+}
+#region-header{
+    font-size: 26px;
+    font-weight: 700;
+    font-family: 'Montserrat','Helvetica Neue',Arial,sans-serif;
+}
+#region-1{  
+    /*  San Francisco   */
+    /*background-color: rgba(255,182,0, 0.9);*/
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    background-color: rgba(42,93,168,0.5);
+}
+#region-2{
+    /*  Portland   */
+    /*background-color: rgba(34,181,151,0.9);*/
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    background-color: rgba(209,48,23,0.5);
+}
+#region-3{
+    /*  Seattle   */
+    /*background-color: rgba(102,51,153,0.9);*/
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    background-color: rgba(82,178,102,0.5);
+}
+#region-4{
+    /*  New York   */
+    /*background-color: rgba(241,90,36,0.9);*/
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    background-color: rgba(232,75,18,0.5);
+}
+#region-5{
+    /*  Charlotte   */
+    /*background-color: rgba(193,39,45,0.9);*/
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    background-color: rgba(229,167,21,0.5);
+}
+#region-6{
+    /*  Atlanta   */
+    /*background-color: rgba(41,171,226,0.9);*/
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    background-color: rgba(93,152,195,0.5);
+}
+#region-7{
+    /*  Boston   */
+    /*background-color: rgba(255,143,125,0.9);*/
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    background-color: rgba(80,130,59,0.5);
+}
+#region-8{
+    /*  Austin   */
+    /*background-color: rgba(49,49,255,0.9);*/
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+    background-color: rgba(101,49,179,0.5);
+}
+
+/*  San Francisco  */
+.region-1-bg{           background-color: rgba(47,106,173,1) !important;  }
+.region-1-dark-bg{      background-color: rgba(34,77,141,1) !important;   }
+.region-1-font{         color:      rgba(47,106,173,1) !important;  }
+.region-1-dark-font{    color:      rgba(34,77,141,1) !important;   }
+/*  Portland  */
+.region-2-bg{           background-color: rgba(196,74,55,1) !important;   }
+.region-2-dark-bg{      background-color: rgba(168,57,48,1) !important;   }
+.region-2-font{         color:      rgba(196,74,55,1) !important;   }
+.region-2-dark-font{    color:      rgba(168,57,48,1) !important;   }
+/*  Seattle  */
+.region-3-bg{           background-color: rgba(106,171,103,1) !important; }
+.region-3-dark-bg{      background-color: rgba(68,133,67,1) !important;   }
+.region-3-font{         color:      rgba(106,171,103,1) !important; }
+.region-3-dark-font{    color:      rgba(68,133,67,1) !important;   }
+/*  New York  */
+.region-4-bg{           background-color: rgba(218,95,57,1) !important;   }
+.region-4-dark-bg{      background-color: rgba(199,87,55,1) !important;   }
+.region-4-font{         color:      rgba(218,95,57,1) !important;   }
+.region-4-dark-font{    color:      rgba(199,87,55,1) !important;   }
+/*  Charlotte  */
+.region-5-bg{           background-color: rgba(222,166,56,1) !important;  }
+.region-5-dark-bg{      background-color: rgba(200,129,56,1) !important;  }
+.region-5-font{         color:      rgba(222,166,56,1) !important;  }
+.region-5-dark-font{    color:      rgba(200,129,56,1) !important;  }
+/*  Atlanta  */
+.region-6-bg{           background-color: rgba(101,153,192,1) !important; }
+.region-6-dark-bg{      background-color: rgba(78,127,167,1) !important;  }
+.region-6-font{         color:      rgba(101,153,192,1) !important; }
+.region-6-dark-font{    color:      rgba(78,127,167,1) !important;  }
+/*  Boston  */
+.region-7-bg{           background-color: rgba(91,124,60,1) !important;   }
+.region-7-dark-bg{      background-color: rgba(75,100,51,1) !important;   }
+.region-7-font{         color:      rgba(91,124,60,1) !important;   }
+.region-7-dark-font{    color:      rgba(75,100,51,1) !important;   }
+/*  Austin  */
+.region-8-bg{           background-color: rgba(94,79,153,1) !important;   }
+.region-8-dark-bg{      background-color: rgba(45,46,101,1) !important;   }
+.region-8-font{         color:      rgba(94,79,153,1) !important;   }
+.region-8-dark-font{    color:      rgba(45,46,101,1) !important;   }
+
+#reg-button, #download-button{
+    margin-top: 25px;
+    font-family: 'Montserrat-Light';
+    color: #FFF;
+    border-radius: 0;
+    width: 200px;
+}
+
+.event-early-container{
+    width: 100%;
+}
+
+.event-detail-container{
+    width: 100%;
+    display: table;
+}
+
+.event-countdown-column{
+    width: 38%;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    width: 130px;
+    height: 130px;
+}
+.event-datetime-column{
+    width: 65%;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#countdown{
+    width: 100%;
+    max-width: 200px;
+    vertical-align: middle;
+}
+
+.event-day-of-week{
+    color: #AAAAAA;
+    line-height: 2em;
+}
+.event-date, .event-location, .event-city-state, .download-header{
+    font-size: 1.2em;
+    line-height: 1.5em;
+    font-family: 'Montserrat',Arial,sans-serif;
+}
+.event-time{
+    font-size: 1.2em;
+    font-family: 'Montserrat',Arial,sans-serif;
+}
+
+.portfolio-box .portfolio-box-caption .portfolio-box-caption-content {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    transform: translateY(-50%);
+}
+
+.portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-category,
+.portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-name {
+    padding: 0 15px;
+    font-family: 'Montserrat','Helvetica Neue',Arial,sans-serif;
+}
+
+.portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-category {
+    font-size: 1.5em;
+    font-weight: 900;
+    letter-spacing: 0;
+    display: inline-block;
+    padding: 8px 20px;
+}
+
+.portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-name {
+    font-size: 18px;
+}
+
+.portfolio-box:hover .portfolio-box-caption {
+    /*opacity: 1;*/
+}
+
+@media(min-width:768px) and (max-width:991px){
+    .portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-category {
+        font-size: 16px;
+    }
+
+    .portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-name {
+        font-size: 22px;
+    }
+}
+
+.call-to-action h2 {
+    margin: 0 auto 20px;
+}
+
+.text-primary {
+    color: #254e7b;
+}
+
+.no-gutter > [class*=col-] {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.btn-default {
+    border-color: #fff;
+    color: #222;
+    background-color: #fff;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default.focus,
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
+    border-color: #ededed;
+    color: #222;
+    background-color: #E5E5E5;
+}
+
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
+    background-image: none;
+}
+
+.btn-default.disabled,
+.btn-default[disabled],
+fieldset[disabled] .btn-default,
+.btn-default.disabled:hover,
+.btn-default[disabled]:hover,
+fieldset[disabled] .btn-default:hover,
+.btn-default.disabled:focus,
+.btn-default[disabled]:focus,
+fieldset[disabled] .btn-default:focus,
+.btn-default.disabled.focus,
+.btn-default[disabled].focus,
+fieldset[disabled] .btn-default.focus,
+.btn-default.disabled:active,
+.btn-default[disabled]:active,
+fieldset[disabled] .btn-default:active,
+.btn-default.disabled.active,
+.btn-default[disabled].active,
+fieldset[disabled] .btn-default.active {
+    border-color: #fff;
+    background-color: #fff;
+}
+
+.btn-default .badge {
+    color: #fff;
+    background-color: #222;
+}
+
+.btn-primary {
+    border-color: #254e7b;
+    color: #fff;
+    background-color: #254e7b;
+    -webkit-transition: all .35s;
+    -moz-transition: all .35s;
+    transition: all .35s;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+    border-color: #15416f;
+    color: #fff;
+    background-color: #254e7b;
+}
+
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+    background-image: none;
+}
+
+.btn-primary.disabled,
+.btn-primary[disabled],
+fieldset[disabled] .btn-primary,
+.btn-primary.disabled:hover,
+.btn-primary[disabled]:hover,
+fieldset[disabled] .btn-primary:hover,
+.btn-primary.disabled:focus,
+.btn-primary[disabled]:focus,
+fieldset[disabled] .btn-primary:focus,
+.btn-primary.disabled.focus,
+.btn-primary[disabled].focus,
+fieldset[disabled] .btn-primary.focus,
+.btn-primary.disabled:active,
+.btn-primary[disabled]:active,
+fieldset[disabled] .btn-primary:active,
+.btn-primary.disabled.active,
+.btn-primary[disabled].active,
+fieldset[disabled] .btn-primary.active {
+    border-color: #254e7b;
+    background-color: #254e7b;
+}
+
+.btn-primary .badge {
+    color: #254e7b;
+    background-color: #fff;
+}
+
+.btn {
+    border: 0;
+    border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; 
+    text-transform: uppercase;
+    font-family: 'Montserrat',Arial,sans-serif;
+    font-size: 1.2em;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.btn-xl {
+    padding: 15px 30px;
+}
+
+::-moz-selection {
+    text-shadow: none;
+    color: #fff;
+    background: #222;
+}
+
+::selection {
+    text-shadow: none;
+    color: #fff;
+    background: #222;
+}
+
+img::selection {
+    color: #fff;
+    background: 0 0;
+}
+
+img::-moz-selection {
+    color: #fff;
+    background: 0 0;
+}
+
+body {
+    webkit-tap-highlight-color: #222;
+}
+
+/*  iphone 5    */
+@media screen and (device-aspect-ratio: 40/71) {
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    #reg-button, #download-button{
+        width: 150px;
+        font-size: 1em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .event-date, .event-location, .event-city-state, .download-header{
+        font-size: 1.2em;
+        line-height: 1.1em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .event-time{
+        font-size: 1.2em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+/*  iphone 6    */
+@media screen and (device-aspect-ratio: 375/667) {
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    #reg-button, #download-button{
+        width: 150px;
+        font-size: 1em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .event-date, .event-location, .event-city-state, .download-header{
+        font-size: 1.2em;
+        line-height: 1.1em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .event-time{
+        font-size: 1.2em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+@media screen and (device-aspect-ratio: 16/9) {
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    #reg-button, #download-button{
+        width: 150px;
+        font-size: 1em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .event-date, .event-location, .event-city-state, .download-header{
+        font-size: 1.2em;
+        line-height: 1.1em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .event-time{
+        font-size: 1.2em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+/*  ldpi android    */
+@media only screen and (-webkit-device-pixel-ratio:.75){
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    .event-date, .event-location, .event-city-state, .download-header{
+        font-size: 1.2em;
+        line-height: 1.1em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    .event-time{
+        font-size: 1.2em;
+        font-family: 'Montserrat',Arial,sans-serif;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+/*  mdpi android    */
+@media only screen and (min-device-width : 480px) and (max-device-width : 800px) {
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+/*  hdpi android    */
+@media only screen and (-webkit-device-pixel-ratio:1.5){
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+/*  android phones (galaxy s3)  */
+@media screen and (device-width: 320px) and (device-height: 640px) and (-webkit-device-pixel-ratio: 2) {
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+/*  android phones (galaxy s4) */
+@media screen and (device-width: 320px) and (device-height: 640px) and (-webkit-device-pixel-ratio: 3) {
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+/*  android phones (galaxy s5, htc one)  */
+@media screen and (device-width: 360px) and (device-height: 640px) and (-webkit-device-pixel-ratio: 3) {
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
+    }
+    header .header-content{
+        padding-top: 40px;
+    }
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+
+@media (min-device-width: 800px){ 
+    header .header-content{
+        top: 45%;
+    }
+    header .header-content .header-content-inner{
+        max-width: 100%;
+    }
+    .container{
+        width: 100%;
+    }
+    #region-header {
+        font-size: 30px;
+        padding-top: 10%;
+    }
+    #events{
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 76%;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    #event > h4{
+        font-size: 2rem;
+    }
+
+    .mobile-ad{
+        display:none;
+    }
+}
+
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
+    #events{
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 82.9%;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .mobile-ad{
+        display:none;
+    }
+}
