@@ -49,7 +49,7 @@
             <div class="header-content-inner">
                 <div id="region-header">
                     <div><img id="region-logo" src="/bibs-server/images/bibsicon.png"/></div>
-                	<div id="region-title"><!--  --></div>
+                	<div id="region-title">${event.name }</div>
                 	<div id="courses-labels"><!--  --></div>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                 <div class="event-date"><!--  --></div>
                 <div class="event-time"><!--  --></div>
                 <div class="ui divider" style="visibility:hidden;"><!--  --></div>
-                <div class="description"><!--  --></div>
+                <div class="description">${event.description }</div>
 
                 <h5 class="ui header">General Info</h5>
                 <div class="general">${event.general }</div>
