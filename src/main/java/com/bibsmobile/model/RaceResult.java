@@ -45,6 +45,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.Hibernate;
@@ -691,6 +692,81 @@ public class RaceResult implements Comparable<RaceResult> {
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.eventType = :eventType", Long.class);
         q.setParameter("eventType", eventType);
         return q.getSingleResult();
+    }    
+
+    public static Long countFindValidRaceResultsByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.eventType = :eventType AND o.disqualified = 0", Long.class);
+        q.setParameter("eventType", eventType);
+        return q.getSingleResult();
+    }     
+    
+    public static Long countFindValidRaceResultsInGenderForType(EventType eventType, String gender) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        if (! (StringUtils.equalsIgnoreCase(gender, "M") || StringUtils.equalsIgnoreCase(gender, "F") ) ) {
+        	throw new IllegalArgumentException("The gender argument is required");
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.eventType = :eventType AND o.gender = :gender AND o.disqualified = 0", Long.class);
+        q.setParameter("eventType", eventType);
+        q.setParameter("gender", gender);
+        return q.getSingleResult();
+    }
+
+    public static Long findGenderRankingForResult(RaceResult r) {
+        if (r.getEventType() == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        if (! (StringUtils.equalsIgnoreCase(r.getGender(), "M") || StringUtils.equalsIgnoreCase(r.getGender(), "F") ) ) {
+        	throw new IllegalArgumentException("Result does not have a gender");
+        }
+        if(r.getTimeofficial() == 0 || r.getTimestart() == 0 || r.getTimeofficial() < r.getTimestart()) {
+        	throw new IllegalArgumentException("Result is missing a time");
+        }
+        long timediff = r.getTimeofficial() - r.getTimestart();
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o "
+        		+ "WHERE o.eventType = :eventType AND o.gender = :gender AND o.disqualified = 0"
+        		+ "AND (o.timeofficial - o.timestart) <= :timediff", Long.class);
+        q.setParameter("eventType", r.getEventType());
+        q.setParameter("gender", r.getGender());
+        q.setParameter("timediff", timediff);
+        return q.getSingleResult();
+    }    
+ 
+    public static Long findOverallRankingForResult(RaceResult r) {
+        if (r.getEventType() == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        if(r.getTimeofficial() == 0 || r.getTimestart() == 0 || r.getTimeofficial() < r.getTimestart()) {
+        	throw new IllegalArgumentException("Result is missing a time");
+        }
+        long timediff = r.getTimeofficial() - r.getTimestart();
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o "
+        		+ "WHERE o.eventType = :eventType AND o.disqualified = 0"
+        		+ "AND (o.timeofficial - o.timestart) <= :timediff", Long.class);
+        q.setParameter("eventType", r.getEventType());
+        q.setParameter("timediff", timediff);
+        return q.getSingleResult();
+    }
+    
+    public String computeGenderRanking() {
+    	try{
+    		return "" + RaceResult.findGenderRankingForResult(this) + " of " + RaceResult.countFindValidRaceResultsInGenderForType(this.getEventType(), this.gender);
+    	} catch (Exception e ) {
+    		e.printStackTrace();
+    		return "N/A";
+    	}
+    }
+
+    public String computeOverallRanking() {
+    	try{
+    		return "" + RaceResult.findOverallRankingForResult(this) + " of " + RaceResult.countFindValidRaceResultsByEventType(this.getEventType());
+    	} catch (Exception e ) {
+    		return "N/A";
+    	}
     }    
     
     public static Long countFindRaceResultsByEventAndBibEquals(Event event, long bib) {
