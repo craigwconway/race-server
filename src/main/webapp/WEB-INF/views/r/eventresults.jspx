@@ -71,7 +71,7 @@
     <div style="clear:both;"><!-- --></div>
     <section class="no-padding" id="events">
         <div class="ui center aligned basic segment">
-            <div class="ui fluid region-id-bg card" id="result-btn">
+            <div class="ui fluid region-1-bg card" id="result-btn">
                 <div class="content">
                     <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/results.png"></img></div>
                     <div class="description">Results</div>
@@ -84,12 +84,20 @@
                         <div class="ui vertical fluid accordion menu">
                             <div class="item">
                                 <a class="title">
-                                    <img class="dropdown icon"></img>
+                                    <i class="dropdown icon"></i>
                                     Search by Event Type
                                 </a>
                                 <div class="content">
                                     <div class="ui form">
                                         <div class="grouped fields" id="result-filter-etype">
+                                        	<c:forEach var="item" items="${event.eventTypes}">
+	                                        <div class="field" id="filter-etype-template" >
+	                                            <div class="ui radio checkbox">
+	                                                <input type="radio" name="etype" value="${item.id }"></input>
+	                                                <label>${item.typeName }</label>
+	                                            </div>
+	                                        </div>
+                                        	</c:forEach>
                                         </div>
                                         <div class="field" id="filter-etype-template" style="display:none">
                                             <div class="ui radio checkbox">

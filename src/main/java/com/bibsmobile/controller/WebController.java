@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
@@ -34,6 +36,7 @@ import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupType;
 import com.bibsmobile.model.dto.RaceResultDetailDto;
+import com.bibsmobile.model.dto.RaceResultViewDto;
 
 /**
  * This is a controller for unauthenticated webapp access of the main site.
@@ -130,12 +133,30 @@ public class WebController {
 	 * @return Rendered JSPX template.
 	 */
     @RequestMapping(value = "/e/{id}/results", produces = "text/html")
-    public String eventResults(@PathVariable("id") Long id, Model uiModel) {
+    public String eventResults(@PathVariable("id") Long id, Model uiModel,
+    		@RequestParam(value = "gender", required = false) String gender,
+    		@RequestParam(value = "type", required = false) Long eventTypeId,
+    		@RequestParam(value = "search", required = false) String search) {
     	try{
         	Event event = Event.findEvent(id);
         	if(event == null) {
         		return notFound();
         	}
+        	EventType eventType = null;
+        	if(eventTypeId == null) {
+        		if(!event.getEventTypes().isEmpty()) {
+        			uiModel.addAttribute("eventType", new ArrayList<EventType>(event.getEventTypes()).get(0));
+        		}
+        	}
+        	if(StringUtils.isEmpty(gender)) {
+        		uiModel.addAttribute("gender", "ALL");
+        	} else {
+        		uiModel.addAttribute("gender", gender);
+        	}
+        	if(!StringUtils.isEmpty(search)) {
+        		uiModel.addAttribute("search", search);
+        	}
+        	uiModel.addAttribute("results", RaceResultViewDto.fromRaceResultsToRawDtoArray(RaceResult.searchPaginated(event.getId(), eventTypeId, null, null, 1, 10, null)));
             uiModel.addAttribute("event", event);
             return "r/eventresults";    		
     	} catch (Exception e) {
