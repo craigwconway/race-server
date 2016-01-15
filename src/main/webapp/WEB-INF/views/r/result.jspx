@@ -72,13 +72,25 @@
                             <div class="ui two column center aligned grid">
                                 <div class="column">
                                     <div class="ui tiny blue statistic stat-rank">
-                                        <div class="value"><span class="runner-overall-rank">434</span> of <span class="runner-overall-count">3,322</span></div>
+                                    	<c:if test="${result.rankOverall != 'N/A' }">
+                                    	<c:set var="overall" value="${fn:split(result.rankOverall, ' of ')}" />
+                                        <div class="value"><span class="runner-overall-rank">${overall[0] }</span> of <span class="runner-overall-count">${overall[1] }</span></div>
+                                        </c:if>
+										<c:if test="${result.rankOverall == 'N/A' }">
+                                        <div class="value"><span class="runner-overall-rank">N/A</span></div>
+                                        </c:if>
                                         <div class="label">Overall Rank</div>
                                     </div>
                                 </div>
                                 <div class="column">
                                     <div class="ui tiny blue statistic stat-rank">
-                                        <div class="value"><span class="runner-gender-rank">12</span> of <span class="runner-gender-count">2300</span></div>
+										<c:if test="${result.rankGender != 'N/A' }">
+                                    	<c:set var="gender" value="${fn:split(result.rankGender, ' of ')}" />
+                                        <div class="value"><span class="runner-gender-rank">${gender[0] }</span> of <span class="runner-gender-count">${gender[1] }</span></div>
+                                        </c:if>
+										<c:if test="${result.rankGender == 'N/A' }">
+                                        <div class="value"><span class="runner-gender-rank">N/A</span></div>
+                                        </c:if>
                                         <div class="label">Gender Rank</div>
                                     </div>
                                 </div>
