@@ -332,7 +332,7 @@ aside {
     }
 
     .navbar-default .navbar-header .navbar-brand {
-        color: rgba(255,255,255,.7);
+        color: rgba(0,0,0,.7);
     }
 
     .navbar-default .navbar-header .navbar-brand:hover,
@@ -342,7 +342,7 @@ aside {
 
     .navbar-default .nav > li>a,
     .navbar-default .nav>li>a:focus {
-        color: rgba(255,255,255,.7);
+        color: rgba(0,0,0,.7);
     }
 
     .navbar-default .nav > li>a:hover,
@@ -406,7 +406,7 @@ header {
     width: 100%;
     min-height: auto;
     text-align: center;
-    color: #fff;
+    color: #222;
     background-color: #0a334d;
     /*background-image: url(../img/header4.jpg);*/
     /*background-position: center;*/
@@ -442,7 +442,7 @@ header .header-content .header-content-inner p {
     margin-bottom: 50px;
     font-size: 16px;
     font-weight: 300;
-    color: rgba(255,255,255,.7);
+    color: rgba(0,0,0,.7);
 }
 
 #empty-result-message{
@@ -462,9 +462,9 @@ header .header-content .header-content-inner p {
         position: absolute;
         top: 50%;
         padding: 0 50px;
-        -webkit-transform: translateY(-50%);
-        -ms-transform: translateY(-50%);
-        transform: translateY(-50%);
+        -webkit-transform: translateY(-30%);
+        -ms-transform: translateY(-30%);
+        transform: translateY(-30%);
     }
 
     header .header-content .header-content-inner {
@@ -532,7 +532,7 @@ header .header-content .header-content-inner p {
     width: 100%;
     height: 100%;
     text-align: center;
-    color: #fff;
+    color: #222;
 }
 
 /* override portfolio-box bg colors: */
@@ -1309,7 +1309,7 @@ body {
         padding-top: 10%;
     }
     #events{
-        margin-top: 20px;
+        margin-top: 130px;
         margin-left: auto;
         margin-right: auto;
         width: 76%;

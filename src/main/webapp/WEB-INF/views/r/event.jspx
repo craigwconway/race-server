@@ -69,7 +69,7 @@
         </div>
     </header>
     <div style="clear:both;"><!-- --></div>
-    <section class="no-padding" id="events">
+    <section id="events">
         <div class="ui center aligned basic segment">
             <div class="ui three column center aligned grid" id="cards-container">
                 <div class="column">

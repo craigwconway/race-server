@@ -7,7 +7,7 @@
 	<h3 class="ui header">Events</h3>
 	<table class="ui selectable table">
 		<c:forEach var="item" items="${events}">
-			<tr href="/bibs-server/r/e/${item.id}" style="cursor:pointer">
+			<tr href="/bibs-server/r/e/${item.id}" class="clickable-row" style="cursor:pointer">
 				<td>
 					${item.name }
 				</td>
