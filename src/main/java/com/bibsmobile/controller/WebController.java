@@ -33,6 +33,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupType;
+import com.bibsmobile.model.dto.RaceResultDetailDto;
 
 /**
  * This is a controller for unauthenticated webapp access of the main site.
@@ -136,7 +137,7 @@ public class WebController {
         		return notFound();
         	}
             uiModel.addAttribute("event", event);
-            return "r/eventinfo";    		
+            return "r/eventresults";    		
     	} catch (Exception e) {
     		return notFound();
     	}
@@ -151,7 +152,7 @@ public class WebController {
     @RequestMapping(value = "/r/{id}", produces = "text/html")
     public String result(@PathVariable("id") Long id, Model uiModel) {
     	RaceResult result = RaceResult.findRaceResult(id);
-        uiModel.addAttribute("result", result);
+        uiModel.addAttribute("result", new RaceResultDetailDto(result));
         return "r/result";
     }    
     
