@@ -137,7 +137,7 @@ public class WebController {
         		return notFound();
         	}
             uiModel.addAttribute("event", event);
-            return "r/eventinfo";    		
+            return "r/eventresults";    		
     	} catch (Exception e) {
     		return notFound();
     	}

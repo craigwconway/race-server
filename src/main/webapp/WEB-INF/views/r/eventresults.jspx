@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <!-- Custom Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'> </link>
+    <link href='//fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'> </link>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>
+    
+    <style>
+      #map { height: 200px; width:250px; margin: 20px auto; }
+      .mapboxgl-canvas{
+        position: relative !important;
+      }
+    </style>
+    
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                </button>
+                <div id="back-btn" onclick="goBack()"><img class="fa fa-arrow-left"><!--  --></img></div>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="/">Home</a>
+                    </li>
+                    <c:if test="${event.organizer != null }">
+                     <li>
+                        <a class="page-scroll" href="/bibs-server/r/o/${event.organizer.id}">Organizer</a>
+                    </li>                   
+                    </c:if>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="region-1-bg">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <div id="region-header">
+                    <div><img id="region-logo" src="/bibs-server/images/bibsicon.png"/></div>
+                	<div id="region-title">${event.name }</div>
+                	<div id="courses-labels">
+                	<c:forEach var="item" items="${event.eventTypes }">
+                	<c:if test="${item.distance == '5k' }"><div class="ui zappos green label" id="label-template">5k</div></c:if>
+                	<c:if test="${item.distance == '10k' }"><div class="ui zappos yellow label" id="label-template">10k</div></c:if>
+                	<c:if test="${item.distance == 'Marathon' }"><div class="ui zappos yellow label" id="label-template">Marathon</div></c:if>
+                	<c:if test="${item.distance == 'Half Marathon' }"><div class="ui zappos yellow label" id="label-template">Half</div></c:if>
+                	<c:if test="${item.distance != '5k' &amp;&amp; item.distance != '10k' &amp;&amp; item.distance != 'Half Marathon' &amp;&amp; item.distance != 'Marathon'}">
+                	<div class="ui zappos yellow label" id="label-template">Other
+                	</div></c:if>
+                	</c:forEach>
+                	</div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div style="clear:both;"><!-- --></div>
+    <section class="no-padding" id="events">
+        <div class="ui center aligned basic segment">
+            <div class="ui fluid region-id-bg card" id="result-btn">
+                <div class="content">
+                    <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/results.png"></img></div>
+                    <div class="description">Results</div>
+                </div>
+            </div>
+            <div id="event">
+                <h4 class="ui header"><div class="sub header date-elev"></div></h4>
+                <div class="ui two column centered grid container" id="search-type">
+                    <div class="sixteen wide column">
+                        <div class="ui vertical fluid accordion menu">
+                            <div class="item">
+                                <a class="title">
+                                    <img class="dropdown icon"></img>
+                                    Search by Event Type
+                                </a>
+                                <div class="content">
+                                    <div class="ui form">
+                                        <div class="grouped fields" id="result-filter-etype">
+                                        </div>
+                                        <div class="field" id="filter-etype-template" style="display:none">
+                                            <div class="ui radio checkbox">
+                                                <input type="radio" name="etype" value="0"></input>
+                                                <label>Event Type 1</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <a class="title">
+                                    <img class="dropdown icon"></img>
+                                    Search by Category
+                                </a>
+                                <div class="content">
+                                    <div class="ui form">
+                                        <div class="grouped fields" id="result-filter-radios">
+                                            <div class="field">
+                                                <div class="ui radio checkbox">
+                                                    <input type="radio" name="type" value="0" checked="checked"></input>
+                                                    <label>All Race Results</label>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="ui radio checkbox">
+                                                    <input type="radio" name="type" value="M"></input>
+                                                    <label>Top Male</label>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="ui radio checkbox">
+                                                    <input type="radio" name="type" value="F"></input>
+                                                    <label>Top Female</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <a class="title">
+                                  <i class="dropdown icon"></i>
+                                  Search by bib # or name
+                                </a>
+                                <div class="content">
+                                    <div class="ui search" id="search-user">
+                                        <div class="ui icon input">
+                                            <input type="text" name="bibsearch" placeholder="Search bib #, name..."></input>
+                                            <button class="circular ui tiny icon button" id="search-single-button"><i class="inverted circular icon fa fa-search"
+                                               style="font-family:'FontAwesome';top:5px;right:5px"></i></button>
+                                        </div>
+                                        <div class="results" style="height: 175px; overflow-y: auto"></div>
+                                        <a class="result" id="query-item-template" style="display:none">
+                                            <div class="content query-content">
+                                                <div class="title query-title"></div>
+                                                <div class="description query-description"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="results">
+                    <div id="category-result-container">
+                        <h4 class="ui horizontal divider header result-header">Results: Overall</h4>
+                        <div class="ui three stackable cards result-cards">
+                            <div class="card result-cards-first">
+                                <div class="ui first-place top attached label"><div class="icon award-banner"><i class="fa fa-trophy"></i> 1st Overall</div></div>
+                                <div class="content award-content">
+                                    <div class="header"></div>
+                                    <div class="description"></div>
+                                    <div class="ui blue small statistic stat-finish">
+                                        <div class="value"></div>
+                                        <div class="label"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card result-cards-second">
+                                <div class="ui second-place top attached label"><div class="icon award-banner"><i class="fa fa-trophy"></i> 2nd Overall</div></div>
+                                <div class="content award-content">
+                                    <div class="header"></div>
+                                    <div class="description"></div>
+                                    <div class="ui blue small statistic stat-finish">
+                                        <div class="value"></div>
+                                        <div class="label"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card result-cards-third">
+                                <div class="ui third-place top attached label"><div class="icon award-banner"><i class="fa fa-trophy"></i> 3rd Overall</div></div>
+                                <div class="content award-content">
+                                    <div class="header"></div>
+                                    <div class="description"></div>
+                                    <div class="ui blue small statistic stat-finish">
+                                        <div class="value"></div>
+                                        <div class="label"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui divider" style="visibility:hidden;"></div>
+                        <div class="ui divided relaxed list result-list">
+                        </div>
+                        <div class="item" id="result-list-item-header" style="display:none">
+                            <div class="right floated content">
+                                <div class="ui label">Finish Time</div>
+                            </div>
+                            <div class="content">
+                                <div class="header">Top 10 <span class="result-list-category-title">Overall</span></div>
+                                <div class="description"></div>
+                            </div>
+                        </div>
+                        <div class="item" id="result-list-item-template" style="display:none">
+                            <div class="left floated middle aligned content">
+                                <div class="ui circular large black label"><span class="result-list-item-place"></span></div>
+                            </div>
+                            <div class="right floated content">
+                                <div class="ui left pointing blue label"><span class="result-list-item-time">00:42:42</span></div>
+                            </div>
+                            <div class="content">
+                                <a class="header"><span class="result-list-item-name"></span>, <span class="result-list-item-age"></span>, <span class="result-list-item-gender"></span></a>
+                                <div class="description">Bib #<span class="result-list-item-bib">1</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="single-result-container" style="display:none">
+                        <h4 class="ui horizontal divider header">Single Result</h4>
+                        <div class="ui fluid card" id="single-result-card">
+                            <!-- <div class="image"> -->
+                                <!-- <img src="img/placeholder.png"> -->
+                            <!-- </div> -->
+                            <div class="ui blue top attached label">Bib #<span class="single-result-card-bib"></span></div>
+                            <div class="content">
+                                <div class="icon"><i class="fa fa-trophy fa-2x"></i></div>
+                                <div class="header"><span class="single-result-card-name"></span></div>
+                                <div class="description"><span class="single-result-card-age"></span>, <span class="single-result-card-gender"></span></div>
+                                <div class="ui purple small statistic stat-finish">
+                                    <div class="value"><span class="single-result-card-time"></span></div>
+                                    <div class="label">Finish Time</div>
+                                </div>
+                                <div class="ui two column center aligned grid">
+                                    <div class="column">
+                                        <div class="ui tiny blue statistic stat-rank">
+                                            <div class="value"><span class="single-result-card-overall-rank">434</span> of <span class="single-result-card-overall-count">3,322</span></div>
+                                            <div class="label">Overall Rank</div>
+                                        </div>
+                                    </div>
+                                    <div class="column">
+                                        <div class="ui tiny blue statistic stat-rank">
+                                            <div class="value"><span class="single-result-card-gender-rank">12</span> of <span class="single-result-card-gender-count">2300</span></div>
+                                            <div class="label">Gender Rank</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="single-result-card-images-container">
+                                    <h5 class="ui header">Photos with <span class="single-result-card-name"></span></h5>
+                                    <div class="ui tiny images single-result-card-images">
+                                      <img class="ui image" id="single-result-card-img-template" src="/bibs-server/outsideres/img/placeholder.png"></img>
+                                      <div class="ui teal tiny button" id="single-result-card-img-more" style="display:none;margin:0 auto;width:125px;">More Photos</div>
+                                    </div>
+                                </div>
+                                <div id="social">
+                                    <h5 class="ui horizontal divider header">Share <span class="single-result-card-name"></span>'s results!</h5>
+                                    <button class="ui facebook icon button">
+                                      <i class="fa fa-facebook"></i>
+                                    </button>
+                                    <button class="ui twitter icon button">
+                                      <i class="fa fa-twitter"></i>
+                                    </button>
+                                    <button class="ui google plus icon button">
+                                      <i class="fa fa-google-plus"></i>
+                                    </button>
+                                    <button class="ui youtube icon button">
+                                      <i class="fa fa-pinterest-p"></i>
+                                    </button>
+                                    <button class="ui instagram icon button">
+                                      <i class="fa fa-instagram"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="social">
+                <div class="social-header">Share with friends</div>
+                <img class="fa fa-facebook link icon" id="facebook-share-button"></img>
+                <a href="//twitter.com/share"><img class="fa fa-twitter link icon" id="twitter-share-button"></img></a>
+                <a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());"><i class="fa fa-pinterest-p link icon" id="pinterest-share-button"></i></a>
+            </div>
+        </div>
+    </section>
+        <script>
+        function goBack(){
+            window.history.back();
+        }
+        function goInfo(){
+        	window.location = "/bibs-server/r/e/${event.id}/info";
+        }
+        function goResults(){
+        	window.location = "/bibs-server/r/e/${event.id}/results";
+        }        
+    </script>
+</div>
+
