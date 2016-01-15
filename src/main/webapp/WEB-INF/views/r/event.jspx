@@ -36,9 +36,12 @@
                     <li>
                         <a class="page-scroll" href="/">Home</a>
                     </li>
-                    <li>
-                        <a class="page-scroll" href="//zapposraceseries.com">Organizer</a>
-                    </li>
+                    <c:if test="${event.organizer != null }">
+                     <li>
+                        <a class="page-scroll" href="/bibs-server/r/o/${event.organizer.id}">Organizer</a>
+                    </li>                   
+                    </c:if>
+
                 </ul>
             </div>
         </div>

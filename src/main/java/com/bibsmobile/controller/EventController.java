@@ -249,7 +249,9 @@ public class EventController {
 	    		        	System.out.println("adding eventusergroup id");
 	    		            EventUserGroup eventUserGroup = new EventUserGroup();
 	    		            eventUserGroup.setId(new EventUserGroupId(event, ug));
-	    		            eventUserGroup.persist();	    		        
+	    		            eventUserGroup.persist();
+	    		            event.setOrganizer(ug);
+	    		            event.merge();
 	    		        	}    	
 	    		        break;
     			}
