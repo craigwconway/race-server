@@ -1,6 +1,7 @@
 package com.bibsmobile.controller;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,19 @@ import com.bibsmobile.model.UserGroupType;
 @RequestMapping("/r")
 @Controller
 public class WebController {
+
+	/**
+	 * Render a webapp homepage.
+	 * @param id ID of organization to render.
+	 * @param uiModel Model for rendering attributes on.
+	 * @return Rendered JSPX template.
+	 */
+    @RequestMapping(value = "/", produces = "text/html")
+    public String home(Model uiModel) {
+    	List<Event> events = new ArrayList<Event>();
+        uiModel.addAttribute("events", events);
+        return "r/home";
+    }	
 	
 	/**
 	 * Render a view of an organizer profile.
@@ -52,12 +66,20 @@ public class WebController {
 	 */
     @RequestMapping(value = "/o/{id}", produces = "text/html")
     public String org(@PathVariable("id") Long id, Model uiModel) {
-    	UserGroup userGroup = UserGroup.findUserGroup(id);
-    	List<Event> events = Event.findLiveEventsByUserGroup(userGroup);
-    	System.out.println(events);
-        uiModel.addAttribute("usergroup", UserGroup.findUserGroup(id));
-        uiModel.addAttribute("events", events);
-        return "r/org";
+    	try{
+	    	UserGroup userGroup = UserGroup.findUserGroup(id);
+	    	if(userGroup == null) {
+	    		return notFound();
+	    	}
+	    	List<Event> events = Event.findLiveEventsByUserGroup(userGroup);
+	    	System.out.println(events);
+	        uiModel.addAttribute("usergroup", userGroup);
+	        uiModel.addAttribute("events", events);
+	        return "r/org";
+    	} catch (Exception e) {
+    		return notFound();
+    	}
+    	
     }
     
 	/**
@@ -68,9 +90,16 @@ public class WebController {
 	 */
     @RequestMapping(value = "/e/{id}", produces = "text/html")
     public String event(@PathVariable("id") Long id, Model uiModel) {
-    	Event event = Event.findEvent(id);
-        uiModel.addAttribute("event", event);
-        return "r/event";
+    	try{
+	    	Event event = Event.findEvent(id);
+	    	if(event == null) {
+	    		return notFound();
+	    	}
+	        uiModel.addAttribute("event", event);
+	        return "r/event";
+    	} catch (Exception e) {
+    		return notFound();
+    	}
     }
 
 	/**
@@ -81,9 +110,17 @@ public class WebController {
 	 */
     @RequestMapping(value = "/e/{id}/info", produces = "text/html")
     public String eventInfo(@PathVariable("id") Long id, Model uiModel) {
-    	Event event = Event.findEvent(id);
-        uiModel.addAttribute("event", event);
-        return "r/eventinfo";
+    	try{
+        	Event event = Event.findEvent(id);
+        	if(event == null) {
+        		return notFound();
+        	}
+            uiModel.addAttribute("event", event);
+            return "r/eventinfo";    		
+    	} catch (Exception e) {
+    		return notFound();
+    	}
+
     }    
     
 	/**
@@ -110,6 +147,10 @@ public class WebController {
     	RaceImage image = RaceImage.findRaceImage(id);
         uiModel.addAttribute("image", image);
         return "r/image";
+    }
+    
+    public String notFound() {
+    	return "r/notfound";
     }
     
 }

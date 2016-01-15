@@ -9,5 +9,11 @@
     </definition>
     <definition extends="outsiders" name="r/eventinfo">
         <put-attribute name="body" value="/WEB-INF/views/r/eventinfo.jspx"/>
-    </definition>    
+    </definition>
+	<definition extends="outsiders" name="r/home">
+        <put-attribute name="body" value="/WEB-INF/views/r/home.jspx"/>
+    </definition>
+	<definition extends="outsiders" name="r/notfound">
+        <put-attribute name="body" value="/WEB-INF/views/r/notfound.jspx"/>
+    </definition>        
 </tiles-definitions>
