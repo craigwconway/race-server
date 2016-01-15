@@ -21,6 +21,10 @@
             <input type="checkbox" name="header" />
             <label style="width:100%"><span style="font-weight:bold">Use Row 1 (Header) for all fields </span><div style="color:#C3423F;font-size:0.85em;">(Warning: Checking this box will override all currently set dropdown selections.)</div></label>
         </div>
+        <div class="ui toggle checkbox" style="width:100%" id="checkboxHeader">
+            <input type="checkbox" name="splitsDiscrete" />
+            <label style="width:100%"><span style="font-weight:bold">Split Times are cumulative </span><div style="color:#2A9D8F;font-size:0.85em;">(Check if this example applies to you: For 10 minutes per split, Split 1 is recorded as 10:00, Split 2 is recorded as 20:00 rather than 10:00.)</div></label>
+        </div>
         <div style="display:none;">
             <field:input field="map" id="c_com_bibsmobile_model_ResultsFileMapping_map" z="YI3m/nkGHkj1GZNBnG2xJbl2vck="/>
             <field:select field="resultsFile" id="c_com_bibsmobile_model_ResultsFileMapping_resultsFile" itemLabel="name" itemValue="id" items="${resultsfiles}" path="/resultsfiles" z="user-managed"/>
@@ -115,6 +119,7 @@
             jQuery('.message .close').on('click', function() {
                 jQuery(this).closest('.message').fadeOut();
             });
+            jQuery('input[name="_skipFirstRow"]').prop('checked', true);
             jQuery('.ui.dropdown').dropdown('set selected', '-');
 
             var customList = [];
@@ -213,7 +218,6 @@
                     }
                 }
             });
-            jQuery('input[name="_skipFirstRow"]').prop('checked', true);
             // jQuery('#checkboxSkip').checkbox('set checked');
     		// console.log('ok');
     		for(var i=0;i&lt;20;i++){
