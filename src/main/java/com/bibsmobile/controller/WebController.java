@@ -120,8 +120,27 @@ public class WebController {
     	} catch (Exception e) {
     		return notFound();
     	}
-
     }    
+
+	/**
+	 * Render detailed info for event.
+	 * @param id Event to render.
+	 * @param uiModel Model for rendering attributes on.
+	 * @return Rendered JSPX template.
+	 */
+    @RequestMapping(value = "/e/{id}/results", produces = "text/html")
+    public String eventResults(@PathVariable("id") Long id, Model uiModel) {
+    	try{
+        	Event event = Event.findEvent(id);
+        	if(event == null) {
+        		return notFound();
+        	}
+            uiModel.addAttribute("event", event);
+            return "r/eventinfo";    		
+    	} catch (Exception e) {
+    		return notFound();
+    	}
+    }     
     
 	/**
 	 * Render a view of a result.

@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="ui fluid region-1-dark-bg card" id="result-btn">
+                    <div class="ui fluid region-1-dark-bg card" id="result-btn" onclick="goResults()">
                         <div class="content">
                             <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/results.png"><!--  --></img></div>
                             <div class="description">Results</div>
@@ -144,6 +144,9 @@
         function goInfo(){
         	window.location = "/bibs-server/r/e/${event.id}/info";
         }
+        function goResults(){
+        	window.location = "/bibs-server/r/e/${event.id}/results";
+        }        
     </script>
 </div>
 
