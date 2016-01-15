@@ -4,6 +4,9 @@
     <definition extends="outsiders" name="r/org">
         <put-attribute name="body" value="/WEB-INF/views/r/org.jspx"/>
     </definition>
+    <definition extends="outsiders" name="r/result">
+        <put-attribute name="body" value="/WEB-INF/views/r/result.jspx"/>
+    </definition>
     <definition extends="outsiders" name="r/event">
         <put-attribute name="body" value="/WEB-INF/views/r/event.jspx"/>
     </definition>

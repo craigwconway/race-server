@@ -1463,13 +1463,7 @@ public class EventController {
 	 * @apiName Get Event Details
 	 * @apiDescription Get full details for a particular event
 	 * @apiGroup events
-	 * @apiSuccess (200) {Number} id Id of event
-	 * @apiSuccess (200) {String} timeStartLocal Human formatted start time of event in local timezone
-	 * @apiSuccess (200) {Date} timeStart unix timestamp for date
-	 * @apiSuccess (200) {Object[]} eventTypes eventTypes in event
-	 * @apiSuccess (200) {String} name Name of event
-	 * @apiSuccess (200) {String} registration URL Of registration for event
-	 * @apiSuccess (200) {String} photo URL of photo for event display
+	 * @apiUse eventDetailsDto
 	 */
     @RequestMapping(value = "details/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
