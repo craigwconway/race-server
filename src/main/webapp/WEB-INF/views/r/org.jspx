@@ -2,10 +2,10 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
 	<jsp:output omit-xml-declaration="yes"/>
-	<h1 class="ui header">${usergroup.name }</h1>
+	<h1 class="ui header">${usergroup.name}</h1>
 	${usergroup.description}
 	<h3 class="ui header">Events</h3>
-	<table class="ui selectable table">
+	<table class="ui selectable blue table">
 		<c:forEach var="item" items="${events}">
 			<tr href="/bibs-server/r/e/${item.id}" class="clickable-row" style="cursor:pointer">
 				<td>
