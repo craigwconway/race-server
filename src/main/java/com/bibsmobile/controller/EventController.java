@@ -121,6 +121,7 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.dto.DeviceStatusDisplayDto;
+import com.bibsmobile.model.dto.EventDetailsDto;
 import com.bibsmobile.model.dto.EventDto;
 import com.bibsmobile.model.dto.EventTypeDto;
 import com.bibsmobile.model.dto.SyncReportDto;
@@ -1479,7 +1480,7 @@ public class EventController {
         if (event == null) {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(event.toJson(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(EventDetailsDto.fromEventToDto(event), headers, HttpStatus.OK);
     }    
     
     
