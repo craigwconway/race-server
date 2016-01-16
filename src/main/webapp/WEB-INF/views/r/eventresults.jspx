@@ -278,7 +278,6 @@
         </div>
     </section>
     <script>
-        var api = 'http://ec2-52-34-90-144.us-west-2.compute.amazonaws.com/bibs-server';
         jQuery('.ui.accordion').accordion();
         jQuery('.ui.checkbox').checkbox();
 
@@ -286,7 +285,7 @@
 
         jQuery.ajax({
             context: this,
-            url: api + '/events/details/${event.id}',
+            url: '/bibs-server/events/details/${event.id}',
             error: function() {
                 console.log('error in retrieving events')
             },
@@ -346,7 +345,7 @@
 
                 jQuery.ajax({
                     context: this,
-                    url: api + '/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;gender=' + typeId,
+                    url: '/bibs-server/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;gender=' + typeId,
                     error: function() {
                         console.log('error in retrieving events')
                     },
@@ -400,7 +399,7 @@
                     // resultPromise = Events.getResultsByName(query);
                     resultPromise = jQuery.ajax({
                                         context: this,
-                                        url: api + '/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;name=' + query,
+                                        url: '/bibs-server/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;name=' + query,
                                         error: function() {
                                             console.log('error in retrieving events')
                                         },
@@ -413,7 +412,7 @@
                     // resultPromise = Events.getResultsByBib(query);
                     resultPromise = jQuery.ajax({
                                         context: this,
-                                        url: api + '/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;bib=' + query,
+                                        url: '/bibs-server/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;bib=' + query,
                                         error: function() {
                                             console.log('error in retrieving events')
                                         },
@@ -430,7 +429,7 @@
                     if(results !== null &amp;&amp; results !== undefined){
                         // renderSingleResult(result);
                         if(results.length == 1){
-                            window.location.href = serv + '/runner.html' + '?' + queryString + '&amp;' + results[0].bib;
+                            window.location.href = '/bibs-server/r/r/' + results[0].bib;
                         }else if(results.length > 1){
                             jQuery('.results').html('');
                             for(var i in results){
@@ -440,7 +439,7 @@
                                     jQuery(queryDOM).find('.query-description').text('Bib #' + results[i].bib);
                                     jQuery(queryDOM).removeAttr('id').show();
                                     (function(index){
-                                        jQuery(queryDOM).attr('href', serv + '/runner.html' + '?' + queryString + '&amp;' + results[index].bib);
+                                        jQuery(queryDOM).attr('href', '/bibs-server/r/r/' + results[index].bib);
                                     })(i);
                             }
                             jQuery('.results').addClass('transition visible');
