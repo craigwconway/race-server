@@ -11,13 +11,6 @@
     <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
     <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>
     
-    <style>
-      #map { height: 200px; width:250px; margin: 20px auto; }
-      .mapboxgl-canvas{
-        position: relative !important;
-      }
-    </style>
-    
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->

@@ -52,6 +52,12 @@
     </section>
     <section class="no-padding" id="events">
         <div class="ui center aligned basic segment">
+			<div class="ui fluid region-1-bg card" id="result-btn">
+				<div class="content">
+					<div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/course.png"/></div>
+					<div class="description">Info</div>
+                </div>
+			</div>
             <div id="event">
                 <div id="map"><!--   --></div>
                 <div class="event-day-of-week"><!--  --></div>
@@ -82,7 +88,7 @@
                 <div class="ui section divider"><!--   --></div>
 
                 <h5 class="ui header">Additional Contact Info</h5>
-                <div class="contact"><span class="contact-phone">Phone: ${event.phone }</span><br/><span class="contact-address">Corporate Address: 123 Folsom Dr., San Francisco, CA 94123</span><br/><span class="contact-website">Official Website: <a href="${event.website}">${event.website }</a></span></div>
+                <div class="contact"><span class="contact-phone">Phone: ${event.phone }</span><br/><span class="contact-website">Official Website: <a href="${event.website}">${event.website }</a></span></div>
 
             </div>
             <div class="ui section divider"><!--   --></div>
