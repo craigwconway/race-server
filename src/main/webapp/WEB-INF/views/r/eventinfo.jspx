@@ -98,12 +98,6 @@
                 <a href="//twitter.com/share"><i class="fa fa-twitter link icon" id="twitter-share-button"><!--  --></i></a>
                 <a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());"><i class="fa fa-pinterest-p link icon" id="pinterest-share-button"><!--  --></i></a>
             </div>
-            <div id="download">
-                <div class="ui section divider" id="eventloc-divider"><!--   --></div>
-                <!-- <img class="ui centered image" style="width:50px;margin-bottom:10px" src="img/trophy.png"/> -->
-                <div class="download-header">Get the app and win prizes!</div>
-                <a href="//baytobreakers.com"><div class="ui zappos-bg-orange huge button" id="download-button">Download</div></a>
-            </div>
         </div>
     </section>
     <script>
