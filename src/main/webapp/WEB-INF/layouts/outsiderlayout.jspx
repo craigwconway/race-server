@@ -14,9 +14,9 @@
 		<title>bibs</title>
 	</head>
 	
-  	<body style="margin:1%;">
+  	<body>
 		    <tiles:insertAttribute name="header" ignore="true" />
-	<div style="margin-top:1%;">
+	<div>
 	    		<tiles:insertAttribute name="body"/> 
 	</div>
 		    	<tiles:insertAttribute name="footer" ignore="true"/>
