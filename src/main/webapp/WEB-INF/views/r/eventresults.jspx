@@ -315,7 +315,7 @@
 
             jQuery('#result-filter-radios * .ui.checkbox').checkbox({
                 onChange: function(){
-                    var type = $(this).val();
+                    var type = jQuery(this).val();
                     renderCategoryResults(type);
                     if(type == 0){
                         jQuery('.result-header').text('Results: Overall');
