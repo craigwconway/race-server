@@ -3,14 +3,17 @@ package com.bibsmobile.controller;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,7 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupType;
 import com.bibsmobile.model.dto.RaceResultDetailDto;
 import com.bibsmobile.model.dto.RaceResultViewDto;
+import com.bibsmobile.service.EventService;
 
 /**
  * This is a controller for unauthenticated webapp access of the main site.
@@ -48,15 +52,28 @@ import com.bibsmobile.model.dto.RaceResultViewDto;
 @RequestMapping("/r")
 @Controller
 public class WebController {
+	public static final String SESSION_ATTR_LONGITUDE = "lon";
+	public static final String SESSION_ATTR_LATITUDE = "lat";
+	
+	@Autowired
+	EventService eventService;
 
-	/**
-	 * Render a webapp homepage.
-	 * @param id ID of organization to render.
-	 * @param uiModel Model for rendering attributes on.
-	 * @return Rendered JSPX template.
-	 */
-    @RequestMapping(value = "/", produces = "text/html")
-    public String home(Model uiModel) {
+    @RequestMapping(value = "", produces = "text/html")
+    public String home(Model uiModel, HttpServletRequest request,
+    		@RequestParam(value = "lon", required = false) Double longitude,
+    		@RequestParam(value = "lat", required = false) Double latitude,
+    		@RequestParam(value = "name", required = false) Long name,
+    		@RequestParam(value = "page", required = false, defaultValue ="1") int page) {
+    	// First, check for an existing session. We do not want to load a session for anonymous users.
+    	HttpSession session = request.getSession(false);
+    	if(longitude != null && latitude != null) {
+    		if(session == null) {
+    			session = request.getSession();
+    		}
+    		session.setAttribute(SESSION_ATTR_LONGITUDE, longitude);
+    		session.setAttribute(SESSION_ATTR_LATITUDE, latitude);
+    	}
+    	
     	List<Event> events = new ArrayList<Event>();
         uiModel.addAttribute("events", events);
         return "r/home";
