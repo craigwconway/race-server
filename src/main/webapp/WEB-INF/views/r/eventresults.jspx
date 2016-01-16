@@ -40,11 +40,11 @@
         </div>
     </nav>
 
-    <section class="region-1-bg-dark" id="banner">
+    <section class="region-1-dark-bg" id="banner">
         <div class="header-content">
             <div class="header-content-inner">
                 <div id="region-header">
-                    <div><img id="region-logo" src="/bibs-server/images/bibsicon.png"/></div>
+                    <div><img id="region-logo" src="/bibs-server/images/whitelogo.png"/></div>
                 	<div id="region-title">${event.name }</div>
                 	<div id="courses-labels">
                 	<c:forEach var="item" items="${event.eventTypes }">

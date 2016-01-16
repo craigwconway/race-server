@@ -40,11 +40,11 @@
         </div>
     </nav>
 
-    <section class="region-1-bg" id="banner">
+    <section class="region-1-dark-bg" id="banner">
         <div class="header-content">
             <div class="header-content-inner">
                 <div id="region-header">
-                    <div><img id="region-logo" src="/bibs-server/images/bibsicon.png"/></div>
+                    <div><img id="region-logo" src="/bibs-server/images/whitelogo.png"/></div>
                 	<div id="region-title">${event.name }</div>
                 	<div id="courses-labels">
                 	<c:forEach var="item" items="${event.eventTypes }">
@@ -66,7 +66,7 @@
         <div class="ui center aligned basic segment">
             <div class="ui three column center aligned grid" id="cards-container">
                 <div class="column">
-                    <div class="ui fluid region-1-dark-bg card" id="info-btn" onclick="goInfo()">
+                    <div class="ui fluid region-1-bg card" id="info-btn" onclick="goInfo()">
                         <div class="content">
                             <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/course.png"><!--  --></img></div>
                             <div class="description">Info</div>
@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="ui fluid region-1-dark-bg card" id="result-btn" onclick="goResults()">
+                    <div class="ui fluid region-1-bg card" id="result-btn" onclick="goResults()">
                         <div class="content">
                             <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/results.png"><!--  --></img></div>
                             <div class="description">Results</div>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <div class="ui fluid region-1-dark-bg card" id="photo-btn">
+                    <div class="ui fluid region-1-bg card" id="photo-btn">
                         <div class="content">
                             <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/camera.png"><!--  --></img></div>
                             <div class="description">Photos</div>
