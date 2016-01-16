@@ -44,14 +44,14 @@
         </div>
     </div>
     <div style="height:50px;width:100%"></div>
-    <header id="runner-header">
+    <section class="region-1-dark-bg" id="banner">
         <div id="region-header">
             <div class="ui tiny image">
                 <img src="/bibs-server/outsideres/img/Results_2X.png"/>
             </div>
             <div style="margin-top:15px;font-family:'Montserrat-Regular';font-size:1.5em;">Runner Details</div>
         </div>
-    </header>
+    </section>
     <section class="no-padding" id="events">
         <div class="ui center aligned basic segment">
             <div id="runner">
