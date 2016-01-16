@@ -11,13 +11,6 @@
     <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
     <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>
     
-    <style>
-      #map { height: 200px; width:250px; margin: 20px auto; }
-      .mapboxgl-canvas{
-        position: relative !important;
-      }
-    </style>
-    
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -59,9 +52,7 @@
                 	<c:if test="${item.distance == '10k' }"><div class="ui zappos yellow label" id="label-template">10k</div></c:if>
                 	<c:if test="${item.distance == 'Marathon' }"><div class="ui zappos yellow label" id="label-template">Marathon</div></c:if>
                 	<c:if test="${item.distance == 'Half Marathon' }"><div class="ui zappos yellow label" id="label-template">Half</div></c:if>
-                	<c:if test="${item.distance != '5k' &amp;&amp; item.distance != '10k' &amp;&amp; item.distance != 'Half Marathon' &amp;&amp; item.distance != 'Marathon'}">
-                	<div class="ui zappos yellow label" id="label-template">Other
-                	</div></c:if>
+                	<c:if test="${item.distance != '5k' &amp;&amp; item.distance != '10k' &amp;&amp; item.distance != 'Half Marathon' &amp;&amp; item.distance != 'Marathon'}"><div class="ui zappos yellow label" id="label-template">Other</div></c:if>
                 	</c:forEach>
                 	</div>
                 </div>
@@ -91,19 +82,13 @@
                                     <div class="ui form">
                                         <div class="grouped fields" id="result-filter-etype">
                                         	<c:forEach var="item" items="${event.eventTypes}">
-	                                        <div class="field" id="filter-etype-template" >
-	                                            <div class="ui radio checkbox">
-	                                                <input type="radio" name="etype" value="${item.id }"></input>
-	                                                <label>${item.typeName }</label>
-	                                            </div>
-	                                        </div>
+    	                                        <div class="field">
+    	                                            <div class="ui radio checkbox">
+    	                                                <input type="radio" name="etype" value="${item.id }"></input>
+    	                                                <label>${item.typeName }</label>
+    	                                            </div>
+    	                                        </div>
                                         	</c:forEach>
-                                        </div>
-                                        <div class="field" id="filter-etype-template" style="display:none">
-                                            <div class="ui radio checkbox">
-                                                <input type="radio" name="etype" value="0"/>
-                                                <label>Event Type 1</label>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -201,9 +186,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="ui divider" style="visibility:hidden;"></div>
-                        <div class="ui divided relaxed list result-list">
-                        </div>
+                        <div class="ui divider" style="visibility:hidden;"><!--   --></div>
+                        <div class="ui divided relaxed list result-list"><!--   --></div>
                         <div class="item" id="result-list-item-header" style="display:none">
                             <div class="right floated content">
                                 <div class="ui label">Finish Time</div>
@@ -293,7 +277,189 @@
             </div>
         </div>
     </section>
-        <script>
+    <script>
+        var api = 'http://ec2-52-34-90-144.us-west-2.compute.amazonaws.com/bibs-server';
+        jQuery('.ui.accordion').accordion();
+        jQuery('.ui.checkbox').checkbox();
+
+        var currentEventTypeID = null;
+
+        jQuery.ajax({
+            context: this,
+            url: api + '/events/details/${event.id}',
+            error: function() {
+                console.log('error in retrieving events')
+            },
+            success: function(data) {
+                this.currentEvent = data;
+                console.log(data);
+            },
+            type: 'GET'
+        }).then(function(eventInfo){
+            jQuery('#region-title').text(eventInfo.name);
+            jQuery('#single-result-container').hide();
+
+            if(eventInfo.timeStartLocal == null || eventInfo.timeStartLocal.length &lt; 1){
+                jQuery('#event').find('h4 > .date-elev').text('');
+            }else{
+                jQuery('#event').find('h4 > .date-elev').text(eventInfo.timeStartLocal);
+            }
+
+            jQuery('#result-filter-etype * .ui.checkbox').checkbox({
+                onChange: function(){
+                    var type = jQuery(this).val();
+                    currentEventTypeID = type;
+                    renderCategoryResults(null);
+                }
+            });
+
+            jQuery('#result-filter-radios * .ui.checkbox').checkbox({
+                onChange: function(){
+                    var type = $(this).val();
+                    renderCategoryResults(type);
+                    if(type == 0){
+                        jQuery('.result-header').text('Results: Overall');
+                    }else if(type == 'M'){
+                        jQuery('.result-header').text('Results: Overall Male');
+                    }else if(type == 'F'){
+                        jQuery('.result-header').text('Results: Overall Female');
+                    }
+                    jQuery('#single-result-container').hide();
+                }
+            });
+            jQuery('#search-single-button').bind('click', function(){
+                var query = jQuery('input[name="bibsearch"]').val();
+                if(query.length > 0){
+                    renderSearchResults(query);
+                }
+            });
+
+            jQuery('#result-filter-etype > .field:first-child').find('input').prop('checked', 'checked');
+            currentEventTypeID = jQuery('#result-filter-etype > .field:first-child').find('input').val();
+            renderCategoryResults(null);
+
+            function renderCategoryResults(typeId){
+                // Events.getResultsByGender(id)
+                if(typeId == null || typeId == 0){
+                    typeId = 'M&amp;gender=F';
+                }
+
+                jQuery.ajax({
+                    context: this,
+                    url: api + '/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;gender=' + typeId,
+                    error: function() {
+                        console.log('error in retrieving events')
+                    },
+                    success: function(data) {
+                        var results = JSON.parse(data);
+                        // console.log(results)
+
+                        jQuery('.result-list').html('');
+                        jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
+
+                        for(var i in results){
+                            var elem = results[i];
+
+                            if( i &lt; 3 ){
+                                var topThreeClassName = '';
+                                if(i == 0){
+                                    topThreeClassName = '.result-cards-first';
+                                }else if(i == 1){
+                                    topThreeClassName = '.result-cards-second';
+                                }else if(i == 2){
+                                    topThreeClassName = '.result-cards-third';
+                                }
+                                jQuery(topThreeClassName).find('.award-content').find('.header').text(elem.firstname + ' ' + elem.lastname);
+                                jQuery(topThreeClassName).find('.award-content').find('.description').text(elem.age + ', ' + elem.gender);
+                                jQuery(topThreeClassName).find('.stat-finish').find('.value').text(elem.timeofficialdisplay);
+                            }
+
+                            var place = +i+1;
+                            var resultDOM = jQuery('#result-list-item-template').clone().appendTo('.result-list');
+                                jQuery(resultDOM).find('.result-list-item-time').text(elem.timeofficialdisplay);
+                                jQuery(resultDOM).find('.result-list-item-name').text(elem.firstname + ' ' + elem.lastname);
+                                jQuery(resultDOM).find('.result-list-item-age').text(elem.age);
+                                jQuery(resultDOM).find('.result-list-item-gender').text(elem.gender);
+                                jQuery(resultDOM).find('.result-list-item-bib').text(elem.bib);
+                                jQuery(resultDOM).find('.result-list-item-place').text(place);
+                                (function(index){
+                                    jQuery(resultDOM).find('a').bind('click', function(){
+                                        console.log('redirect');
+                                    })
+                                })(i)
+                                jQuery(resultDOM).removeAttr('id').show();
+                        }
+                    },
+                    type: 'GET'
+                });
+            }
+
+            function renderSearchResults(query){
+                var resultPromise = null;
+                if(isNaN(query)){
+                    // resultPromise = Events.getResultsByName(query);
+                    resultPromise = jQuery.ajax({
+                                        context: this,
+                                        url: api + '/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;name=' + query,
+                                        error: function() {
+                                            console.log('error in retrieving events')
+                                        },
+                                        success: function(data) {
+                                            this.currentResult = data;
+                                        },
+                                        type: 'GET'
+                                    });
+                }else{
+                    // resultPromise = Events.getResultsByBib(query);
+                    resultPromise = jQuery.ajax({
+                                        context: this,
+                                        url: api + '/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;bib=' + query,
+                                        error: function() {
+                                            console.log('error in retrieving events')
+                                        },
+                                        success: function(data) {
+                                            this.currentResult = data;
+                                        },
+                                        type: 'GET'
+                                    });
+                }
+
+                resultPromise.then(function(data){
+                    var results = JSON.parse(data);
+
+                    if(results !== null &amp;&amp; results !== undefined){
+                        // renderSingleResult(result);
+                        if(results.length == 1){
+                            window.location.href = serv + '/runner.html' + '?' + queryString + '&amp;' + results[0].bib;
+                        }else if(results.length > 1){
+                            jQuery('.results').html('');
+                            for(var i in results){
+                                console.log(results[i]);
+                                var queryDOM = jQuery('#query-item-template').clone().appendTo('.results');
+                                    jQuery(queryDOM).find('.query-title').text(results[i].firstname + ' ' + results[i].lastname);
+                                    jQuery(queryDOM).find('.query-description').text('Bib #' + results[i].bib);
+                                    jQuery(queryDOM).removeAttr('id').show();
+                                    (function(index){
+                                        jQuery(queryDOM).attr('href', serv + '/runner.html' + '?' + queryString + '&amp;' + results[index].bib);
+                                    })(i);
+                            }
+                            jQuery('.results').addClass('transition visible');
+                            setTimeout(function(){
+                                jQuery('.results').removeClass('visible').addClass('hidden');
+                            }, 7000);
+                        }else if(results.length == 0){
+                            jQuery('#single-result-container').hide();
+                            alert("We couldn't find someone with that query. Please double-check the bib number or name!");
+                        }
+                    }else{
+                        jQuery('#single-result-container').hide();
+                        alert("We couldn't find someone with that query. Please double-check the bib number or name!");
+                    }
+                })
+            }
+        });
+
+
         function goBack(){
             window.history.back();
         }
