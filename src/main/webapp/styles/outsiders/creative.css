@@ -18,23 +18,17 @@
     background-color: #e64f25 !important;
 }
 #back-btn{
-    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1);
-    -moz-box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1);
-    box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1);
+    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(20,0,0,1);
+    -moz-box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
+    box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
     width: 30px;
     height: 30px;
     margin-top: 10px;
     margin-left: 10px;
     line-height: 30px;
     text-align: center;
-    background: transparent;
+    background: white;
     cursor: pointer;
-    color: #FFF;
-}
-.navbar-default.affix #back-btn{
-    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
-    -moz-box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
-    box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
     color: #000;
 }
 #back-btn i{
@@ -50,47 +44,8 @@
     padding: 8px;
 }
 
-.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover{
-    background-color: transparent;
-}
-
 .navbar-default .navbar-toggle .icon-bar{
-    background-color: #FFF;
-}
-.navbar-default.affix .navbar-toggle .icon-bar{
     background-color: #000;
-}
-
-.navbar-default .nav > li>a,
-.navbar-default .nav>li>a:focus {
-    text-transform: uppercase;
-    font-size: 1.1em;
-    font-weight: 700;
-    color: #222;
-}
-
-.navbar-default .nav > li>a:hover,
-.navbar-default .nav>li>a:focus:hover {
-    color: #FCFCFC;
-}
-
-.navbar-default .nav > li.active>a,
-.navbar-default .nav>li.active>a:focus {
-    color: #FCFCFC!important;
-    background-color: rgba(0,0,0,0.3);
-}
-
-.navbar-default .nav > li.active>a:hover,
-.navbar-default .nav>li.active>a:focus:hover {
-    background-color: transparent;
-}
-
-.navbar-default .navbar-collapse .nav > li > a{
-    color: rgba(255,255,255,.7);
-}
-
-.navbar-default.affix .navbar-collapse .nav > li > a{
-    color: rgba(0,0,0,.7);
 }
 
 .navbar-toggle .icon-bar{
@@ -189,9 +144,6 @@ h5.ui.header{
     font-family: 'Montserrat' !important;
     text-transform: none;
 }
-.ui.card{
-    box-shadow: none !important;
-}
 .ui.card>.content>.header, .ui.cards>.card>.content>.header, .ui.list .list>.item .header, .ui.list>.item .header, .ui.accordion .title:not(.ui), .ui.menu, .ui.input input{
     font-family: 'Montserrat' !important;
 }
@@ -199,7 +151,7 @@ h5.ui.header{
     border-radius: 0 !important;
 }
 .ui.vertical.menu{
-    box-shadow: none !important;
+    box-shadow: none ! important;
 }
 #facebook-share-button, #twitter-share-button, #pinterest-share-button{
     font-family: 'FontAwesome';
@@ -279,10 +231,6 @@ p {
     color: rgba(255,255,255,.9);
 }
 
-section {
-    padding: 100px 0;
-}
-
 aside {
     padding: 50px 0;
 }
@@ -313,6 +261,31 @@ aside {
 .navbar-default .navbar-header .navbar-brand:focus {
     color: #14457b;
 }
+
+.navbar-default .nav > li>a,
+.navbar-default .nav>li>a:focus {
+    text-transform: uppercase;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #222;
+}
+
+.navbar-default .nav > li>a:hover,
+.navbar-default .nav>li>a:focus:hover {
+    color: #FCFCFC;
+}
+
+.navbar-default .nav > li.active>a,
+.navbar-default .nav>li.active>a:focus {
+    color: #FCFCFC!important;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.navbar-default .nav > li.active>a:hover,
+.navbar-default .nav>li.active>a:focus:hover {
+    background-color: transparent;
+}
+
 
 @media (min-device-width : 375px) and (max-device-width : 667px) and (width : 375px) and (height : 627px){
     .ui.cards > .card, #single-result-card{
@@ -348,65 +321,62 @@ aside {
     }
 }
 
-.navbar-default {
-    border-color: rgba(255,255,255,.3);
-    background-color: transparent;
-}
-
-.navbar-default .navbar-header .navbar-brand {
-    color: rgba(255,255,255,.7);
-}
-
-.navbar-default .navbar-header .navbar-brand:hover,
-.navbar-default .navbar-header .navbar-brand:focus {
-    color: #fff;
-}
-
-.navbar-default .nav > li>a,
-.navbar-default .nav>li>a:focus {
-    color: rgba(255,255,255,.7);
-}
-
-.navbar-default .nav > li>a:hover,
-.navbar-default .nav>li>a:focus:hover {
-    color: #fff;
-}
-
-.navbar-default.affix {
-    border-color: rgba(34,34,34,.05);
-    background-color: #fff;
-}
-
-.navbar-default.affix .navbar-header .navbar-brand {
-    font-size: 14px;
-    color: #254e7b;
-}
-
-.navbar-default.affix .navbar-header .navbar-brand:hover,
-.navbar-default.affix .navbar-header .navbar-brand:focus {
-    color: #14457b;
-}
-
-.navbar-default.affix .nav > li>a,
-.navbar-default.affix .nav>li>a:focus {
-    color: #222;
-}
-
-.navbar-default.affix .nav > li>a:hover,
-.navbar-default.affix .nav>li>a:focus:hover {
-    color: #254e7b;
-}
-
 @media(min-width:768px) {
+    .navbar-default {
+        border-color: rgba(255,255,255,.3);
+        background-color: transparent;
+    }
+
+    .navbar-default .navbar-header .navbar-brand {
+        color: rgba(0,0,0,.7);
+    }
+
+    .navbar-default .navbar-header .navbar-brand:hover,
+    .navbar-default .navbar-header .navbar-brand:focus {
+        color: #fff;
+    }
+
+    .navbar-default .nav > li>a,
+    .navbar-default .nav>li>a:focus {
+        color: rgba(0,0,0,.7);
+    }
+
+    .navbar-default .nav > li>a:hover,
+    .navbar-default .nav>li>a:focus:hover {
+        color: #fff;
+    }
+
+    .navbar-default.affix {
+        border-color: rgba(34,34,34,.05);
+        background-color: #fff;
+    }
+
+    .navbar-default.affix .navbar-header .navbar-brand {
+        font-size: 14px;
+        color: #254e7b;
+    }
+
+    .navbar-default.affix .navbar-header .navbar-brand:hover,
+    .navbar-default.affix .navbar-header .navbar-brand:focus {
+        color: #14457b;
+    }
+
+    .navbar-default.affix .nav > li>a,
+    .navbar-default.affix .nav>li>a:focus {
+        color: #222;
+    }
+
+    .navbar-default.affix .nav > li>a:hover,
+    .navbar-default.affix .nav>li>a:focus:hover {
+        color: #254e7b;
+    }
+
     .mobile-ad{
         display:none;
     }
 }
 
 @media only screen and (min-device-width: 319px) and (max-device-width: 481px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
-    header .header-content{
-        top: 37%;
-    }
     #event-cards-container{
         margin-top: 10px;
         margin-bottom: 10px;
@@ -424,14 +394,12 @@ aside {
     }
 }
 
-header {
-    margin-top: -40px;
-    padding-top: 40px;
+#banner {
     position: relative;
     width: 100%;
     min-height: auto;
     text-align: center;
-    color: #fff;
+    color: #FFF;
     background-color: #0a334d;
     /*background-image: url(../img/header4.jpg);*/
     /*background-position: center;*/
@@ -445,25 +413,24 @@ header {
     background-color: rgba(42,93,168,1);
 }*/
 
-header .header-content {
+#banner .header-content {
     position: relative;
     width: 100%;
-    margin-top: 40px;
-    padding: 20px 15px;
+    padding-top: 40px;
     text-align: center;
 }
 
-header .header-content .header-content-inner h1 {
+#banner .header-content .header-content-inner h1 {
     margin-top: 0;
     margin-bottom: 0;
     font-weight: 700;
 }
 
-header .header-content .header-content-inner hr {
+#banner .header-content .header-content-inner hr {
     margin: 30px auto;
 }
 
-header .header-content .header-content-inner p {
+#banner .header-content .header-content-inner p {
     margin-bottom: 50px;
     font-size: 16px;
     font-weight: 300;
@@ -479,26 +446,24 @@ header .header-content .header-content-inner p {
 }
 
 @media(min-width:768px),  only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
-    header {
+    #banner {
         min-height: 100%;
     }
 
-    header .header-content {
-        position: absolute;
-        top: 50%;
-        padding: 0 50px;
-        -webkit-transform: translateY(-50%);
-        -ms-transform: translateY(-50%);
-        transform: translateY(-50%);
+    #banner .header-content {
+        padding-top: 60px;
+        -webkit-transform: translateY(-30%);
+        -ms-transform: translateY(-30%);
+        transform: translateY(-30%);
     }
 
-    header .header-content .header-content-inner {
+    #banner .header-content .header-content-inner {
         margin-right: auto;
         margin-left: auto;
         max-width: 1000px;
     }
 
-    header .header-content .header-content-inner p {
+    #banner .header-content .header-content-inner p {
         margin-right: auto;
         margin-left: auto;
         max-width: 80%;
@@ -557,7 +522,7 @@ header .header-content .header-content-inner p {
     width: 100%;
     height: 100%;
     text-align: center;
-    color: #fff;
+    color: #222;
 }
 
 /* override portfolio-box bg colors: */
@@ -938,10 +903,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -990,10 +955,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1041,10 +1006,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1093,10 +1058,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1139,10 +1104,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1176,10 +1141,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1213,10 +1178,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1250,10 +1215,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1287,10 +1252,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    header{
+    #banner{
         min-height: 30%;
     }
-    header .header-content{
+    #banner .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1320,10 +1285,7 @@ body {
 
 
 @media (min-device-width: 800px){ 
-    header .header-content{
-        top: 45%;
-    }
-    header .header-content .header-content-inner{
+    #banner .header-content .header-content-inner{
         max-width: 100%;
     }
     .container{

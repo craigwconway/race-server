@@ -47,7 +47,7 @@
         </div>
     </nav>
 
-    <header class="region-1-bg">
+    <section class="region-1-bg" id="banner">
         <div class="header-content">
             <div class="header-content-inner">
                 <div id="region-header">
@@ -67,7 +67,7 @@
                 </div>
             </div>
         </div>
-    </header>
+    </section>
     <div style="clear:both;"><!-- --></div>
     <section id="events">
         <div class="ui center aligned basic segment">
