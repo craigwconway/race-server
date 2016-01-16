@@ -3,7 +3,10 @@ package com.bibsmobile.controller;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,9 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Months;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -117,6 +123,19 @@ public class WebController {
 	    		return notFound();
 	    	}
 	        uiModel.addAttribute("event", event);
+	        uiModel.addAttribute("preEvent", new Date().before(event.getTimeStart()));
+	        if(new Date().before(event.getTimeStart())) {
+	        	DateTime current = new DateTime();
+	        	DateTime eventStart = new DateTime(event.getTimeStart());
+	        	if(Months.monthsBetween(current, eventStart).getMonths() > 0) {
+	        		uiModel.addAttribute("timeUnit", "months");
+	        		uiModel.addAttribute("timeBefore", Months.monthsBetween(current, eventStart).getMonths());
+	        	} else {
+	        		uiModel.addAttribute("timeUnit", "days");
+	        		uiModel.addAttribute("timeBefore", (Days.daysBetween(current, eventStart).getDays()));
+	        	}
+	        	
+	        }
 	        return "r/event";
     	} catch (Exception e) {
     		return notFound();
