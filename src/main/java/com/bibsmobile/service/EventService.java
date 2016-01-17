@@ -47,8 +47,17 @@ public class EventService {
     	if(criteria.getNameCriteria() != null) {
     		junction.must(addNameCriteria(builder, criteria.getNameCriteria()));
     	}
+    	junction.must(restrictVisiblity(builder));
     	org.apache.lucene.search.Query luceneQuery = junction.createQuery();
     	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+    }
+
+    public org.apache.lucene.search.Query restrictVisiblity(QueryBuilder builder) {
+    	org.apache.lucene.search.Query luceneQuery = builder
+    			.keyword().onField("live")
+    			.matching("true")
+    			.createQuery();
+    	return luceneQuery;
     }
     
     public org.apache.lucene.search.Query addGeospatialCriteria(QueryBuilder builder, GeospatialCriteria criteria) {
