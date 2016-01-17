@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.search.query.dsl.Unit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.Series;
+import com.bibsmobile.service.EventSearchCriteria.GeospatialCriteria;
+import com.bibsmobile.service.EventSearchCriteria.NameCriteria;
 
 /**
  * Service for event business stuff
@@ -30,35 +33,38 @@ public class EventService {
 	private EntityManagerFactory emf;
 
     @Transactional
-    public List<Event> compoundSearch(Double longitude, Double latitude, Double radius) {
+    public List<Event> compoundSearch(EventSearchCriteria criteria) {
     	EntityManager em = emf.createEntityManager();
     	FullTextEntityManager fullTextEntityManager = 
     		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
     	em.getTransaction().begin();
     	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
 
-    	org.apache.lucene.search.Query luceneQuery = builder
-    			.spatial().within(radius, Unit.KM)
-    			.ofLatitude(latitude)
-    			.andLongitude(longitude)
-    			.createQuery();
+    	BooleanJunction junction = builder.bool();
+    	if(criteria.getGeospatialCriteria() != null) {
+    		junction.must(addGeospatialCriteria(builder, criteria.getGeospatialCriteria()));
+    	}
+    	if(criteria.getNameCriteria() != null) {
+    		junction.must(addNameCriteria(builder, criteria.getNameCriteria()));
+    	}
+    	org.apache.lucene.search.Query luceneQuery = junction.createQuery();
     	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
     }
     
-    public org.apache.lucene.search.Query addGeospatialCriteria(QueryBuilder builder, double longitude, double latitude, double radius) {
+    public org.apache.lucene.search.Query addGeospatialCriteria(QueryBuilder builder, GeospatialCriteria criteria) {
     	org.apache.lucene.search.Query luceneQuery = builder
-    			.spatial().within(radius, Unit.KM)
-    			.ofLatitude(latitude)
-    			.andLongitude(longitude)
+    			.spatial().within(criteria.getRadius(), Unit.KM)
+    			.ofLatitude(criteria.getLongitude())
+    			.andLongitude(criteria.getLatitude())
     			.createQuery();
     	return luceneQuery;
     }
 
-    public org.apache.lucene.search.Query addNameCriteria(QueryBuilder builder, String name) {
+    public org.apache.lucene.search.Query addNameCriteria(QueryBuilder builder, NameCriteria criteria) {
     	org.apache.lucene.search.Query luceneQuery = builder.keyword()
     			.fuzzy()
     			.onField("name")
-    			.matching(name)
+    			.matching(criteria.getName())
     			.createQuery();
     	return luceneQuery;
     }    

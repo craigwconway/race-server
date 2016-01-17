@@ -46,6 +46,7 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupType;
 import com.bibsmobile.model.dto.RaceResultDetailDto;
 import com.bibsmobile.model.dto.RaceResultViewDto;
+import com.bibsmobile.service.EventSearchCriteria;
 import com.bibsmobile.service.EventService;
 
 /**
@@ -68,9 +69,11 @@ public class WebController {
     public String home(Model uiModel, HttpServletRequest request,
     		@RequestParam(value = "lon", required = false) Double longitude,
     		@RequestParam(value = "lat", required = false) Double latitude,
-    		@RequestParam(value = "name", required = false) Long name,
+    		@RequestParam(value = "name", required = false) String name,
     		@RequestParam(value = "page", required = false, defaultValue ="1") int page) {
     	// First, check for an existing session. We do not want to load a session for anonymous users.
+    	Double searchLon = longitude;
+    	Double searchLat = latitude;
     	HttpSession session = request.getSession(false);
     	if(longitude != null && latitude != null) {
     		if(session == null) {
@@ -79,7 +82,18 @@ public class WebController {
     		session.setAttribute(SESSION_ATTR_LONGITUDE, longitude);
     		session.setAttribute(SESSION_ATTR_LATITUDE, latitude);
     	}
-    	
+    	if(session != null) {
+    		searchLon = (Double) session.getAttribute(SESSION_ATTR_LONGITUDE);
+    		searchLat = (Double) session.getAttribute(SESSION_ATTR_LATITUDE);
+    	}
+    	EventSearchCriteria searchCriteria = new EventSearchCriteria();
+    	if(searchLon != null && searchLat != null) {
+    		searchCriteria.addGeospatialCriteria(searchLon, searchLat);
+    	}
+    	if(!StringUtils.isEmpty(name)) {
+    		searchCriteria.addNameCriteria(name);
+    	}
+    	System.out.println(eventService.compoundSearch(searchCriteria));
     	List<Event> events = new ArrayList<Event>();
         uiModel.addAttribute("events", events);
         return "r/home";

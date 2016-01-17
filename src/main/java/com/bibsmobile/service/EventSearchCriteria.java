@@ -91,6 +91,13 @@ public class EventSearchCriteria {
 	protected class RacetypeCriteria {
 		String racetype;
 		
+		/**
+		 * @return the racetype
+		 */
+		public String getRacetype() {
+			return racetype;
+		}
+
 		RacetypeCriteria(String racetype) {
 			this.racetype = racetype;
 		}
@@ -105,6 +112,20 @@ public class EventSearchCriteria {
 		Long lowDistance;
 		Long highDistance;
 		
+		/**
+		 * @return the lowDistance
+		 */
+		public Long getLowDistance() {
+			return lowDistance;
+		}
+
+		/**
+		 * @return the highDistance
+		 */
+		public Long getHighDistance() {
+			return highDistance;
+		}
+
 		DistanceRangeCriteria(Long lowDistance, Long highDistance) {
 			this.lowDistance = lowDistance;
 			this.highDistance = highDistance;
@@ -119,6 +140,13 @@ public class EventSearchCriteria {
 	protected class DistanceCriteria {
 		String distance;
 		
+		/**
+		 * @return the distance
+		 */
+		public String getDistance() {
+			return distance;
+		}
+
 		DistanceCriteria(String distance) {
 			this.distance = distance;
 		}
@@ -132,6 +160,13 @@ public class EventSearchCriteria {
 	protected class NameCriteria {
 		String name;
 		
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+
 		NameCriteria(String name) {
 			this.name = name;
 		}
@@ -147,6 +182,27 @@ public class EventSearchCriteria {
 		Double latitude;
 		Double radius;
 		
+		/**
+		 * @return the longitude
+		 */
+		public Double getLongitude() {
+			return longitude;
+		}
+
+		/**
+		 * @return the latitude
+		 */
+		public Double getLatitude() {
+			return latitude;
+		}
+
+		/**
+		 * @return the radius
+		 */
+		public Double getRadius() {
+			return radius;
+		}
+
 		GeospatialCriteria(Double longitude, Double latitude, Double radius) {
 			this.radius = radius;
 			this.longitude = longitude;
