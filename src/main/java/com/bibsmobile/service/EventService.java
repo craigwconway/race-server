@@ -28,7 +28,41 @@ public class EventService {
 	
 	@Autowired
 	private EntityManagerFactory emf;
-	
+
+    @Transactional
+    public List<Event> compoundSearch(Double longitude, Double latitude, Double radius) {
+    	EntityManager em = emf.createEntityManager();
+    	FullTextEntityManager fullTextEntityManager = 
+    		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+    	em.getTransaction().begin();
+    	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
+
+    	org.apache.lucene.search.Query luceneQuery = builder
+    			.spatial().within(radius, Unit.KM)
+    			.ofLatitude(latitude)
+    			.andLongitude(longitude)
+    			.createQuery();
+    	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+    }
+    
+    public org.apache.lucene.search.Query addGeospatialCriteria(QueryBuilder builder, double longitude, double latitude, double radius) {
+    	org.apache.lucene.search.Query luceneQuery = builder
+    			.spatial().within(radius, Unit.KM)
+    			.ofLatitude(latitude)
+    			.andLongitude(longitude)
+    			.createQuery();
+    	return luceneQuery;
+    }
+
+    public org.apache.lucene.search.Query addNameCriteria(QueryBuilder builder, String name) {
+    	org.apache.lucene.search.Query luceneQuery = builder.keyword()
+    			.fuzzy()
+    			.onField("name")
+    			.matching(name)
+    			.createQuery();
+    	return luceneQuery;
+    }    
+    
     @Transactional
     public List<Event> geospatialSearch(double longitude, double latitude, double radius) {
     	EntityManager em = emf.createEntityManager();

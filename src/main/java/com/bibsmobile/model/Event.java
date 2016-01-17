@@ -198,7 +198,8 @@ public class Event {
     
     private String topSharerReward;
     
-    private boolean live = false;
+    @Field
+    private boolean live = true;
     
     /**
      * Used by Event Directors to restrict one shirt per order with registration
