@@ -45,6 +45,9 @@ import flexjson.JSONSerializer;
 @SuppressWarnings("serial")
 public class UserProfile implements UserDetails {
 
+	/**
+	 * Firstname of user.
+	 */
     private String firstname;
 
     private String lastname;

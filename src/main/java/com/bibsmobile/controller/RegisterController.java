@@ -3,9 +3,14 @@
  */
 package com.bibsmobile.controller;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,16 +25,23 @@ import com.bibsmobile.model.Badge;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Series;
 import com.bibsmobile.model.SeriesRegion;
+import com.bibsmobile.model.UserAuthorities;
+import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
+import com.bibsmobile.model.UserGroup;
+import com.bibsmobile.model.UserGroupType;
+import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.dto.AccountCreationDto;
 import com.bibsmobile.util.SpringJSONUtil;
-import com.bibsmobile.util.UserProfileUtil;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Controls for creating badges to be given out in the series.
@@ -82,7 +94,64 @@ public class RegisterController {
 		user.setFirstname(account.getFirstname());
 		user.setLastname(account.getLastname());
 		
-		UserProfileUtil.createUser(user, UserAuthority.EVENT_ADMIN, account.getOrgName(), account.getOrgDescription());
+		//Create account:
+        List<UserAuthority> roleUserAuthorities = UserAuthority.findUserAuthoritysByAuthorityEquals(UserAuthority.EVENT_ADMIN).getResultList();
+        UserAuthority roleUserAuthority;
+        if (CollectionUtils.isEmpty(roleUserAuthorities)) {
+            roleUserAuthority = new UserAuthority();
+            roleUserAuthority.setAuthority(UserAuthority.EVENT_ADMIN);
+            roleUserAuthority.persist();
+        } else {
+            roleUserAuthority = roleUserAuthorities.get(0);
+        }
+        
+		UserAuthorities userAuthorities = new UserAuthorities();
+        UserAuthoritiesID id = new UserAuthoritiesID();
+        id.setUserAuthority(roleUserAuthority);
+        id.setUserProfile(user);
+        userAuthorities.setId(id);
+        Set<UserAuthorities> ua = new HashSet<UserAuthorities>();
+        try{ 
+            ua = user.getUserAuthorities();
+            ua = ua==null ? new HashSet<UserAuthorities>() : ua;
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
+       ua.add(userAuthorities);
+       user.setUserAuthorities(ua);
+       user.setAccountNonExpired(true);
+       user.setAccountNonLocked(true);
+       user.setEnabled(true);
+       user.setCredentialsNonExpired(true);
+
+        // save
+        user.persist();
+        userAuthorities.persist();
+
+        // associate with user group
+
+        UserGroup userGroup = new UserGroup();
+        userGroup.setName(account.getOrgName());
+        userGroup.setDescription(account.getOrgDescription());
+        userGroup.setGroupType(UserGroupType.COMPANY);
+
+        Set<UserGroupUserAuthority> userGroupUserAuthorities = new HashSet<>();
+
+        UserGroupUserAuthority userGroupUserAuthority = new UserGroupUserAuthority();
+        UserGroupUserAuthorityID userGroupUserAuthorityID = new UserGroupUserAuthorityID();
+        userGroupUserAuthorityID.setUserAuthorities(userAuthorities);
+        userGroupUserAuthorityID.setUserGroup(userGroup);
+        userGroupUserAuthority.setId(userGroupUserAuthorityID);
+
+        userGroupUserAuthorities.add(userGroupUserAuthority);
+
+        userGroup.setUserGroupUserAuthorities(userGroupUserAuthorities);
+
+        userGroup.persist();
+        userGroupUserAuthority.persist();
+
+		
+
 		return "register/created";
 	}
 	
@@ -94,5 +163,10 @@ public class RegisterController {
 			@RequestParam(value="password", required=false) String password) {
 		return "register/bankadd";
 	}
+	
+    private void authenticateRegisteredUser(UserProfile userProfile) {
+        Authentication auth = new UsernamePasswordAuthenticationToken(userProfile, null, userProfile.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+    }
 	
 }

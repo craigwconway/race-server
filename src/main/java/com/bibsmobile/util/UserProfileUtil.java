@@ -93,7 +93,18 @@ public final class UserProfileUtil {
         id.setUserAuthority(userAuthority);
         id.setUserProfile(userProfile);
         userAuthorities.setId(id);
-        userProfile.getUserAuthorities().add(userAuthorities);
+        Set<UserAuthorities> ua = new HashSet<UserAuthorities>();
+        try{ 
+            ua = userProfile.getUserAuthorities();
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
+       ua.add(userAuthorities);
+       userProfile.setUserAuthorities(ua);
+       userProfile.setAccountNonExpired(true);
+       userProfile.setAccountNonLocked(true);
+       userProfile.setEnabled(true);
+       userProfile.setCredentialsNonExpired(true);
 
         // save
         userProfile.persist();
