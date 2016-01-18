@@ -41,12 +41,15 @@ public class EventService {
     	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
 
     	BooleanJunction junction = builder.bool();
+    	// Add location search
     	if(criteria.getGeospatialCriteria() != null) {
     		junction.must(addGeospatialCriteria(builder, criteria.getGeospatialCriteria()));
     	}
+    	// Add name search
     	if(criteria.getNameCriteria() != null) {
     		junction.must(addNameCriteria(builder, criteria.getNameCriteria()));
     	}
+    	// Only search publicly listed events
     	junction.must(restrictVisiblity(builder));
     	org.apache.lucene.search.Query luceneQuery = junction.createQuery();
     	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
