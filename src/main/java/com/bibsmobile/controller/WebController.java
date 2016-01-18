@@ -69,6 +69,7 @@ public class WebController {
     public String home(Model uiModel, HttpServletRequest request,
     		@RequestParam(value = "lon", required = false) Double longitude,
     		@RequestParam(value = "lat", required = false) Double latitude,
+    		@RequestParam(value = "worldwide", required = false, defaultValue="false") boolean ignoreLocation,
     		@RequestParam(value = "name", required = false) String name,
     		@RequestParam(value = "page", required = false, defaultValue ="1") int page) {
     	// First, check for an existing session. We do not want to load a session for anonymous users.
@@ -87,14 +88,13 @@ public class WebController {
     		searchLat = (Double) session.getAttribute(SESSION_ATTR_LATITUDE);
     	}
     	EventSearchCriteria searchCriteria = new EventSearchCriteria();
-    	if(searchLon != null && searchLat != null) {
+    	if(searchLon != null && searchLat != null && !ignoreLocation) {
     		searchCriteria.addGeospatialCriteria(searchLon, searchLat);
     	}
     	if(!StringUtils.isEmpty(name)) {
     		searchCriteria.addNameCriteria(name);
     	}
-    	System.out.println(eventService.compoundSearch(searchCriteria));
-    	List<Event> events = new ArrayList<Event>();
+    	List<Event> events = eventService.compoundSearch(searchCriteria);
         uiModel.addAttribute("events", events);
         return "r/home";
     }	
