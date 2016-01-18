@@ -16,6 +16,15 @@
 			  </div>
 			  <div style="clear:both;"><!-- --></div>
 			  <br></br>
+			
+			<!-- Fields from previous part of flow -->
+			<div style="display:none">
+				<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
+				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
+				<input type="text" name="username" value="${account.username }"><!--  --></input>
+				<input type="text" name="password" value="${account.password }"><!--  --></input>
+			</div>  
+			  
 			  <input type="submit" value="Next" class="ui right floated inverted submit button" ><!--  --></input>
 		</form>
 		</div>
