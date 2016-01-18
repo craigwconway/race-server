@@ -150,7 +150,7 @@ public class RegisterController {
         userGroup.persist();
         userGroupUserAuthority.persist();
 
-		
+        authenticateRegisteredUser(user);
 
 		return "register/created";
 	}
