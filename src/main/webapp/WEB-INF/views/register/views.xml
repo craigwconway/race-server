@@ -13,4 +13,7 @@
     <definition extends="outsiders" name="register/fourth">
         <put-attribute name="body" value="/WEB-INF/views/register/fourth.jspx"/>
     </definition>
+    <definition extends="outsiders" name="register/created">
+        <put-attribute name="body" value="/WEB-INF/views/register/created.jspx"/>
+    </definition>
 </tiles-definitions>

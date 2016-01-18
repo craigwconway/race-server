@@ -6,25 +6,18 @@
 		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
 		<h2 class="ui inverted header">Get started with bibs!</h2>
 		<h3 class="ui inverted header">Describe your company to athletes.</h3>
-		  <div class="ui massive inverted input">
-		    <input type="text" placeholder="Company Name"> <!--  --></input>
-		  </div>
-		  <div class="ui inverted divider"><!--  --></div>
-		  <div class="ui inverted input">
-		    <textarea rows="4" style="width:290px" placeholder="Description"> <!--  --></textarea>
-		  </div>
-		  <div style="clear:both;"><!-- --></div>
-		  <br></br>
-		  <div class="ui left floated inverted submit button" onclick="stepBack()">Back</div>
-		  <div class="ui right floated inverted submit button" onclick="stepForward()">Next</div>
+		<form class="ui form" method="post" action="/bibs-server/register/fourth">
+			  <div class="ui massive inverted input">
+			    <input type="text" name="orgName" placeholder="Company Name"> <!--  --></input>
+			  </div>
+			  <div class="ui inverted divider"><!--  --></div>
+			  <div class="ui inverted input">
+			    <textarea name="orgDescription" rows="4" style="width:290px" placeholder="Description"> <!--  --></textarea>
+			  </div>
+			  <div style="clear:both;"><!-- --></div>
+			  <br></br>
+			  <input type="submit" value="Create" class="ui right floated inverted submit button"><!--  --></input>
+		  </form>
 		</div>
 	</div>
-	<script>
-	function stepForward() {
-		window.location = "/bibs-server/register/step4";
-	}
-	function stepBack() {
-		window.location = "/bibs-server/register/step3";
-	}
-	</script>
 </div>

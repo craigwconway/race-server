@@ -6,12 +6,13 @@
 		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
 		<h2 class="ui inverted header">Get started with bibs!</h2>
 		<h3 class="ui inverted header">Add some login info.</h3>
+		<form class="ui form" method="post" action="/bibs-server/register/second">
 		  <div class="ui massive inverted input">
-		    <input type="text" placeholder="Username"> <!--  --></input>
+		    <input type="text" name="username" placeholder="Username"> <!--  --></input>
 		  </div>
 		  <div class="ui inverted divider"><!--  --></div>
 		  <div class="ui massive inverted input">
-		    <input type="password" placeholder="Password"> <!--  --></input>
+		    <input type="password" name="password" placeholder="Password"> <!--  --></input>
 		  </div>
 		  <div class="ui inverted divider"><!--  --></div>
 		  <div class="ui massive inverted input">
@@ -19,16 +20,8 @@
 		  </div>
 		  <div style="clear:both;"><!-- --></div>
 		  <br></br>
-		  <div class="ui left floated inverted submit button" onclick="stepBack()">Back</div>
-		  <div class="ui right floated inverted submit button" onclick="stepForward()">Next</div>
+		  <input type="submit" value="Next" class="ui right floated inverted submit button"> <!--  --></input>
+		  </form>
 		</div>
 	</div>
-	<script>
-	function stepForward() {
-		window.location = "/bibs-server/register/step3";
-	}
-	function stepBack() {
-		window.location = "/bibs-server/register";
-	}
-	</script>
 </div>
