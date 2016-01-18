@@ -7,11 +7,11 @@
 		<h2 class="ui inverted header">Get started with bibs!</h2>
 		<h3 class="ui inverted header">Tell us how to reach you.</h3>
 		  <div class="ui massive inverted input">
-		    <input type="text" placeholder="email"> <!--  --></input>
+		    <input type="text" placeholder="Email"> <!--  --></input>
 		  </div>
 		  <div class="ui inverted divider"><!--  --></div>
 		  <div class="ui massive inverted input">
-		    <input type="text" placeholder="phone"> <!--  --></input>
+		    <input type="text" placeholder="Phone"> <!--  --></input>
 		  </div>
 		  <div style="clear:both;"><!-- --></div>
 		  <br></br>

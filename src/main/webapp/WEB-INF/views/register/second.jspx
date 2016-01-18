@@ -7,15 +7,15 @@
 		<h2 class="ui inverted header">Get started with bibs!</h2>
 		<h3 class="ui inverted header">Add some login info.</h3>
 		  <div class="ui massive inverted input">
-		    <input type="text" placeholder="username"> <!--  --></input>
+		    <input type="text" placeholder="Username"> <!--  --></input>
 		  </div>
 		  <div class="ui inverted divider"><!--  --></div>
 		  <div class="ui massive inverted input">
-		    <input type="password" placeholder="password"> <!--  --></input>
+		    <input type="password" placeholder="Password"> <!--  --></input>
 		  </div>
 		  <div class="ui inverted divider"><!--  --></div>
 		  <div class="ui massive inverted input">
-		    <input type="password" placeholder="confirm password"> <!--  --></input>
+		    <input type="password" placeholder="Confirm Password"> <!--  --></input>
 		  </div>
 		  <div style="clear:both;"><!-- --></div>
 		  <br></br>

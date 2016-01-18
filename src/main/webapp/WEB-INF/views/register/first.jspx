@@ -6,12 +6,12 @@
 		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
 		<h2 class="ui inverted header">Get started with bibs!</h2>
 		<h3 class="ui inverted header">Tell us a little about yourself.</h3>
-		  <div class="ui massive inverted input">
-		    <input type="text" placeholder="firstname"> <!--  --></input>
+		  <div class="ui massive inverted required input">
+		    <input type="text" placeholder="Firstname"> <!--  --></input>
 		  </div>
 		  <div class="ui inverted divider"><!--  --></div>
 		  <div class="ui massive inverted input">
-		    <input type="text" placeholder="lastname"> <!--  --></input>
+		    <input type="text" placeholder="Lastname"> <!--  --></input>
 		  </div>
 		  <div style="clear:both;"><!-- --></div>
 		  <br></br>
