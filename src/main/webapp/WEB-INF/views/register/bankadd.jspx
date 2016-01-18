@@ -2,26 +2,56 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+    <script type="text/javascript" src="https://js.stripe.com/v2/"><!-- --></script>
 	<div class="overlay" style="opacity:1;background-color:#0a334d;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;">
 		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
 		<h2 class="ui inverted header">Get started with bibs!</h2>
-		<h3 class="ui inverted header">This is a template form for adding your bank.</h3>
+		<h3 class="ui inverted header">Add you account details.</h3>
 		<div style="clear:both;"><!-- --></div>
-		<br></br>
-		<div class="ui center floated inverted submit button">Face Punch</div>
-		<div style="clear:both;"><!-- --></div>
-		<br></br>
-		Get punched in the face.
-		<div style="clear:both;"><!-- --></div>
-		<br></br>
-		<div class="ui inverted divider"><!--  --></div>
-		<br></br>
-		<div class="ui center floated inverted submit button">Meeting</div>
-		<div style="clear:both;"><!-- --></div>
-		<br></br>
-		Get trapped in an 4 hour long design meeting.
-		<div style="clear:both;"><!-- --></div>
-		<br></br>
+		<form action="" method="POST" id="payment-form">
+			<div class="form-row">
+			  <label>
+			    <span>Bank Location</span>
+			        <select data-stripe="country" class="country">
+			            <option value="US">United States</option>
+			        </select>
+			  </label>
+			</div>
+			<div class="form-row">
+			  <label>
+			    <span>Bank Location</span>
+			        <select data-stripe="account_holder_type" class="account_holder_type">
+			            <option value="individual">Individual</option>
+			            <option value="company">Company</option>
+			        </select>
+			  </label>
+			</div>
+			<div class="form-row">
+			  <label>
+			    <span>Name</span>
+			        <input type="text" size="9" data-stripe="name" class="name"/>
+			  </label>
+			</div>	
+			<div class="form-row">
+			  <label>
+			    <span>Routing Number</span>
+			        <input type="text" size="9" data-stripe="routingNumber" class="routingNumber"/>
+			  </label>
+			</div>
+	
+			<div class="form-row">
+			  <label>
+			    <span>Account Number</span>
+			        <input type="text" size="17" data-stripe="accountNumber" class="accountNumber"/>
+			  </label>
+			</div>
+			<div style="clear:both;"><!-- --></div>
+			<br></br>
+			These will be stored securely on a server at Stripe.
+			<div style="clear:both;"><!--  --></div>
+			  <br></br>
+			<button class="ui right floated inverted button" type="submit">Create</button>
+		</form>
 		</div>
 	</div>
 </div>
