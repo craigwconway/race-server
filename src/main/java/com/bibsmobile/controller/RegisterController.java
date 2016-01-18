@@ -67,4 +67,13 @@ public class RegisterController {
 		return "register/created";
 	}
 	
+	@RequestMapping(value = "/signupbank", method = RequestMethod.POST, produces = "text/html")
+	public String addAccount(Model uiModel, 
+			@RequestParam(value="id", required=false) Long userId,
+			@RequestParam(value="org", required=false) Long orgId,
+			@RequestParam(value="username", required=false) String username,
+			@RequestParam(value="password", required=false) String password) {
+		return "register/bankadd";
+	}
+	
 }

@@ -5,29 +5,21 @@
 	<div class="overlay" style="opacity:1;background-color:#0a334d;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;">
 		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
 		<h2 class="ui inverted header">Get started with bibs!</h2>
-		<h3 class="ui inverted header">Welcome to bibs.</h3>
+		<h3 class="ui inverted header">This is a template form for adding your bank.</h3>
 		<div style="clear:both;"><!-- --></div>
 		<br></br>
-		<form class="ui form" method="post" action="/bibs-server/register/signupbank">
-			<div style="display:none">
-				<input type="number" name="id"><!--  --></input>
-				<input type="number" name="org"><!--  --></input>
-				<input type="text" name="username"><!--  --></input>
-				<input type="text" name="password"><!--  --></input>
-			</div>
-			<input type="submit" value="Add Bank" class="ui center floated inverted submit button"><!--  --></input>
-		</form>
+		<div class="ui center floated inverted submit button">Face Punch</div>
 		<div style="clear:both;"><!-- --></div>
 		<br></br>
-		Add banking info to collect payments now.
+		Get punched in the face.
 		<div style="clear:both;"><!-- --></div>
 		<br></br>
 		<div class="ui inverted divider"><!--  --></div>
 		<br></br>
-		<div class="ui center floated inverted submit button">Intro</div>
+		<div class="ui center floated inverted submit button">Meeting</div>
 		<div style="clear:both;"><!-- --></div>
 		<br></br>
-		Skip this and check out the software.
+		Get trapped in an 4 hour long design meeting.
 		<div style="clear:both;"><!-- --></div>
 		<br></br>
 		</div>
