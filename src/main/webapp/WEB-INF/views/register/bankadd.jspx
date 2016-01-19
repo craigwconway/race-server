@@ -8,42 +8,42 @@
 		<h2 class="ui inverted header">Get started with bibs!</h2>
 		<h3 class="ui inverted header">Add you account details.</h3>
 		<div style="clear:both;"><!-- --></div>
-		<form action="" method="POST" id="payment-form">
-			<div class="form-row">
+		<form action="" method="POST" id="payment-form" class="ui inverted form">
+			<div class="field">
 			  <label>
 			    <span>Bank Location</span>
-			        <select data-stripe="country" class="country">
+			        <select data-stripe="country">
 			            <option value="US">United States</option>
 			        </select>
 			  </label>
 			</div>
-			<div class="form-row">
+			<div class="field">
 			  <label>
 			    <span>Bank Location</span>
-			        <select data-stripe="account_holder_type" class="account_holder_type">
+			  </label>
+			        <select data-stripe="account_holder_type">
 			            <option value="individual">Individual</option>
 			            <option value="company">Company</option>
 			        </select>
-			  </label>
 			</div>
-			<div class="form-row">
+			<div class="field">
 			  <label>
 			    <span>Name</span>
-			        <input type="text" size="9" data-stripe="name" class="name"/>
+			        <input type="text" size="9" data-stripe="name"/>
 			  </label>
 			</div>	
-			<div class="form-row">
+			<div class="field">
 			  <label>
 			    <span>Routing Number</span>
-			        <input type="text" size="9" data-stripe="routingNumber" class="routingNumber"/>
+			        <input type="text" size="9" data-stripe="routingNumber"/>
 			  </label>
 			</div>
 	
-			<div class="form-row">
+			<div class="field">
 			  <label>
 			    <span>Account Number</span>
-			        <input type="text" size="17" data-stripe="accountNumber" class="accountNumber"/>
 			  </label>
+			        <input type="text" size="17" data-stripe="accountNumber"/>
 			</div>
 			<div style="clear:both;"><!-- --></div>
 			<br></br>
