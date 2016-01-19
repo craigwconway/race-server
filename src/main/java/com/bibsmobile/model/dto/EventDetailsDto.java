@@ -33,6 +33,7 @@ public class EventDetailsDto {
 	 * @apiSuccess (200) {String} charity Charity backed by event
 	 * @apiSuccess (200) {String} organization Organiziation throwing event
 	 * @apiSuccess (200) {String} parking parking details at event
+	 * @apiSuccess (200) {String} website url of event's website
 	 * @apiSuccess (200) {String} general general info for event
 	 * @apiSuccess (200) {String} courseRules course rules at event
 	 * @apiSuccess (200) {String} photo URL of display photo for event
@@ -64,6 +65,7 @@ public class EventDetailsDto {
 	 * 		],
 	 * 		"organizer":null,
 	 * 		"description":"Ancient aliens run in King's Canyon",
+	 * 		"website":"http://mybibs.co",
 	 * 		"general":"This race raises awareness about ancient aliens",
 	 * 		"courseRules":"avoid the aliens",
 	 * 		"parking":"parking is available aboard the spacecraft",
@@ -85,6 +87,7 @@ public class EventDetailsDto {
 		this.organization = event.getOrganization();
 		this.charity = event.getCharity();
 		this.registration = event.getRegistration();
+		this.website = event.getWebsite();
 		this.general = event.getGeneral();
 		this.courseRules = event.getCourseRules();
 		this.phone = event.getPhone();
@@ -101,6 +104,8 @@ public class EventDetailsDto {
 	private String name;
 	
 	private String description;
+	
+	private String website;
 	
 	private String registration;
 	
@@ -191,6 +196,13 @@ public class EventDetailsDto {
 		return description;
 	}
 
+	/**
+	 * @return the website
+	 */
+	public String getWebsite() {
+		return website;
+	}	
+	
 	/**
 	 * @return the timeStartLocal
 	 */
