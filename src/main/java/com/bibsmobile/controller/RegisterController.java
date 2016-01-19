@@ -161,8 +161,18 @@ public class RegisterController {
 			@RequestParam(value="org", required=false) Long orgId,
 			@RequestParam(value="username", required=false) String username,
 			@RequestParam(value="password", required=false) String password) {
+		uiModel.addAttribute("orgId", orgId);
 		return "register/bankadd";
 	}
+
+	@RequestMapping(value = "/recipientadd", method = RequestMethod.POST, produces = "text/html")
+	public String addAccount(Model uiModel, 
+			@RequestParam(value="token") String stripeToken,
+			@RequestParam(value="org", required = false) Long orgId) {
+		System.out.println("Recieved a token, adding a recipient...");
+		
+		return "register/recipient";
+	}	
 	
     private void authenticateRegisteredUser(UserProfile userProfile) {
         Authentication auth = new UsernamePasswordAuthenticationToken(userProfile, null, userProfile.getAuthorities());
