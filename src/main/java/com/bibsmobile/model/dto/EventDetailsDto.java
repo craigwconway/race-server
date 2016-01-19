@@ -2,6 +2,7 @@ package com.bibsmobile.model.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -80,6 +81,7 @@ public class EventDetailsDto {
 		this.name = event.getName();
 		this.description = event.getDescription();
 		this.timeStartLocal = event.getTimeStartLocal();
+		this.timeStart = event.getTimeStart();
 		this.organization = event.getOrganization();
 		this.charity = event.getCharity();
 		this.registration = event.getRegistration();
@@ -111,6 +113,8 @@ public class EventDetailsDto {
 	private String parking;
 	
 	private String timeStartLocal;
+	
+	private Date timeStart;
 	
 	private String organization;
 	
@@ -249,6 +253,55 @@ public class EventDetailsDto {
 	 */
 	public Set<EventTypeDto> getEventTypes() {
 		return eventTypes;
+	}
+
+	/**
+	 * @return the registration
+	 */
+	public String getRegistration() {
+		return registration;
+	}
+
+	/**
+	 * @return the phone
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * @return the general
+	 */
+	public String getGeneral() {
+		return general;
+	}
+
+	/**
+	 * @return the courseRules
+	 */
+	public String getCourseRules() {
+		return courseRules;
+	}
+
+	/**
+	 * @return the parking
+	 */
+	public String getParking() {
+		return parking;
+	}
+
+	/**
+	 * @return the timeStart
+	 */
+	public Date getTimeStart() {
+		return timeStart;
+	}
+
+	/**
+	 * @return the organization
+	 */
+	public String getOrganization() {
+		return organization;
 	}
 	
 	
