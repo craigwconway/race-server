@@ -90,6 +90,7 @@ public class EventDetailsDto {
 		this.charity = event.getCharity();
 		this.registration = event.getRegistration();
 		this.website = event.getWebsite();
+		this.parking = event.getParking();
 		this.email = event.getEmail();
 		this.general = event.getGeneral();
 		this.courseRules = event.getCourseRules();
