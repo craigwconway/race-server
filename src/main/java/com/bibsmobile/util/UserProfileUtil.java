@@ -74,6 +74,69 @@ public final class UserProfileUtil {
     }
 
     /**
+     * create a user with given authorities
+     * @param userProfile
+     * @param authority
+     * @param userGroupName
+     * @param userGroupDescription
+     * @return
+     */
+    public static UserProfile createUser(UserProfile userProfile, String authority, String userGroupName, String userGroupDescription) {
+        // get the authority, fail if not found
+        UserAuthority userAuthority = UserAuthority.findUserAuthoritysByAuthorityEquals(authority).getSingleResult();
+        if (userAuthority == null)
+            throw new IllegalArgumentException("Invalid authority '" + authority + "'");
+
+        // associate user profile with the authority
+        UserAuthorities userAuthorities = new UserAuthorities();
+        UserAuthoritiesID id = new UserAuthoritiesID();
+        id.setUserAuthority(userAuthority);
+        id.setUserProfile(userProfile);
+        userAuthorities.setId(id);
+        Set<UserAuthorities> ua = new HashSet<UserAuthorities>();
+        try{ 
+            ua = userProfile.getUserAuthorities();
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
+       ua.add(userAuthorities);
+       userProfile.setUserAuthorities(ua);
+       userProfile.setAccountNonExpired(true);
+       userProfile.setAccountNonLocked(true);
+       userProfile.setEnabled(true);
+       userProfile.setCredentialsNonExpired(true);
+
+        // save
+        userProfile.persist();
+        userAuthorities.persist();
+
+        // associate with user group
+        if (StringUtils.isNotEmpty(userGroupName)) {
+            UserGroup userGroup = new UserGroup();
+            userGroup.setName(userGroupName);
+            userGroup.setDescription(userGroupDescription);
+            userGroup.setGroupType(UserGroupType.COMPANY);
+
+            Set<UserGroupUserAuthority> userGroupUserAuthorities = new HashSet<>();
+
+            UserGroupUserAuthority userGroupUserAuthority = new UserGroupUserAuthority();
+            UserGroupUserAuthorityID userGroupUserAuthorityID = new UserGroupUserAuthorityID();
+            userGroupUserAuthorityID.setUserAuthorities(userAuthorities);
+            userGroupUserAuthorityID.setUserGroup(userGroup);
+            userGroupUserAuthority.setId(userGroupUserAuthorityID);
+
+            userGroupUserAuthorities.add(userGroupUserAuthority);
+
+            userGroup.setUserGroupUserAuthorities(userGroupUserAuthorities);
+
+            userGroup.persist();
+            userGroupUserAuthority.persist();
+        }
+
+        return userProfile;
+    }    
+    
+    /**
      * create an user object while only copying safe properties of the user.
      * does not save the new user.
      * @param unsafeUser

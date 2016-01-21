@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <!-- Custom Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'> </link>
+    <link href='//fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'> </link>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>
+    
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                </button>
+                <div id="back-btn" onclick="goBack()"><i class="fa fa-arrow-left"><!--  --></i></div>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="/bibs-server/r">Home</a>
+                    </li>
+                    <c:if test="${event.organizer != null }">
+                     <li>
+                        <a class="page-scroll" href="/bibs-server/r/o/${event.organizer.id}">Organizer</a>
+                    </li>                   
+                    </c:if>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="region-1-dark-bg" id="banner">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <div id="region-header">
+                    <div><img id="region-logo" src="/bibs-server/images/whitelogo.png"/></div>
+                	<div id="region-title">${event.name }</div>
+                	<div id="courses-labels">
+                	<c:forEach var="item" items="${event.eventTypes }">
+                	<c:if test="${item.distance == '5k' }"><div class="ui zappos green label" id="label-template">5k</div></c:if>
+                	<c:if test="${item.distance == '10k' }"><div class="ui zappos yellow label" id="label-template">10k</div></c:if>
+                	<c:if test="${item.distance == 'Marathon' }"><div class="ui zappos yellow label" id="label-template">Marathon</div></c:if>
+                	<c:if test="${item.distance == 'Half Marathon' }"><div class="ui zappos yellow label" id="label-template">Half</div></c:if>
+                	<c:if test="${item.distance != '5k' &amp;&amp; item.distance != '10k' &amp;&amp; item.distance != 'Half Marathon' &amp;&amp; item.distance != 'Marathon'}">
+                	<div class="ui zappos yellow label" id="label-template">Other
+                	</div></c:if>
+                	</c:forEach>
+                	</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div style="clear:both;"><!-- --></div>
+    <section id="events">
+        <div class="ui center aligned basic segment">
+            <div class="ui three column center aligned grid" id="cards-container">
+                <div class="column">
+                    <div class="ui fluid region-1-bg card" id="info-btn" onclick="goInfo()">
+                        <div class="content">
+                            <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/course.png"><!--  --></img></div>
+                            <div class="description">Info</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui fluid region-1-bg card" id="result-btn" onclick="goResults()">
+                        <div class="content">
+                            <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/results.png"><!--  --></img></div>
+                            <div class="description">Results</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui fluid region-1-bg card" id="photo-btn">
+                        <div class="content">
+                            <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/camera.png"><!--  --></img></div>
+                            <div class="description">Photos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cards-replacement">
+                <a id="info-link">Event Info</a>
+            </div>
+            <div id="event">
+                <div class="event-detail-container">
+                	<c:if test="${preEvent }">
+                    <div class="event-countdown-column" style="background-image:url(/bibs-server/outsideres/img/clock-1.png)">
+                        <span class="event-countdown">
+                            <span class="event-countdown-num">${timeBefore } </span>
+                            <span class="event-countdown-unit">${timeUnit }</span>
+                        </span>
+                    </div>                	
+                	</c:if>
+
+                    <div class="event-datetime-column">
+                    ${event.timeStartLocal }
+                        <div class="event-day-of-week"><!--  --></div>
+                        <div class="event-date"><!--  --></div>
+                        <div class="event-time"><!--  --></div>
+                    </div>
+                </div>
+                <div class="event-early-container" style="display:none">
+                    <div class="event-day-of-week"><!--  --></div>
+                    <div class="event-date"><!--  --></div>
+                    <div class="event-time"><!--  --></div>
+                </div>
+                <div style="clear:both"> <!--  --></div>
+                <div class="ui section divider"><!--  --></div>
+                <div class="event-location">${event.address }</div>
+                <div class="event-city-state">${event.city} , ${event.state }</div>
+                <div class="ui section divider" id="eventloc-divider"><!--  --></div>
+                <div class="description"> ${event.description }</div>
+                <c:if test="${preEvent }">
+                <a href="/bibs-server/r/e/9999999"><div class="ui zappos-bg-green huge button" id="reg-button">Register</div></a>
+                </c:if> 
+            </div>
+            <div style="clear:both"> <!--  --></div>
+            <div id="social">
+                <div class="social-header">Share with friends</div>
+                <i class="fa fa-facebook link icon" id="facebook-share-button"><!--  --></i>
+                <a href="//twitter.com/share"><i class="fa fa-twitter link icon" id="twitter-share-button"><!--  --></i></a>
+                <a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());"><i class="fa fa-pinterest-p link icon" id="pinterest-share-button"><!--  --></i></a>
+            </div>
+        </div>
+    </section>
+	<script>
+        function goBack(){
+            window.history.back();
+        }
+        function goInfo(){
+        	window.location = "/bibs-server/r/e/${event.id}/info";
+        }
+        function goResults(){
+        	window.location = "/bibs-server/r/e/${event.id}/results";
+        }        
+    </script>
+</div>
+

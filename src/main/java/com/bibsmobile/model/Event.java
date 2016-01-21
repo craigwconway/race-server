@@ -198,7 +198,8 @@ public class Event {
     
     private String topSharerReward;
     
-    private boolean live = false;
+    @Field
+    private boolean live = true;
     
     /**
      * Used by Event Directors to restrict one shirt per order with registration
@@ -247,6 +248,9 @@ public class Event {
     @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "event")
     private List<EventUserGroup> eventUserGroups = new ArrayList<>();
 
+    @ManyToOne
+    private UserGroup organizer;
+    
     /**
      */
     private String waiver = "https://s3-us-west-2.amazonaws.com/galen-shennanigans-2/standard-waiver.txt";  
@@ -1248,7 +1252,15 @@ public class Event {
         this.eventUserGroups = eventUserGroups;
     }
 
-    /**
+    public UserGroup getOrganizer() {
+		return organizer;
+	}
+
+	public void setOrganizer(UserGroup organizer) {
+		this.organizer = organizer;
+	}
+
+	/**
      * Get waiver URL. When a waiver is posted as plaintext, it is uploaded to s3.
      * The bucket url is returned here. 
      * @return String containing bucket URL of waiver on S3.

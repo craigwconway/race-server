@@ -28,9 +28,13 @@ public class RaceResultDetailDto {
 	 * @apiSuccess (200) {String} lastname Last name of athlete
 	 * @apiSuccess (200) {Number} age Age of athlete
 	 * @apiSuccess (200) {String} gender Gender of athlete. Either M or F
+	 * @apiSuccess (200) {String="a of b","N/A"} rankGender Gender rank of race result. Either "a of b" or "N/A"
+	 * @apiSuccess (200) {String="a of b","N/A"} rankOverall Overall rank of race result. Either "a of b" or "N/A"
 	 * @apiSuccess (200) {String} city City of origin of athlete
 	 * @apiSuccess (200) {String} timeofficialdisplay Official Time of athlete
 	 * @apiSuccess (200) {String} team Name of athlete's team
+	 * @apiSuccess (200) {Boolean} disqualified Whether or not the runner has been disqualified
+	 * @apiSuccess (200) {Boolean} claimed Whether or not this result has been claimed
 	 * @apiSuccess (200) {Object[]} images Objects containing each of the images of the athlete
 	 * @apiSuccess (200) {Number} images.id id of race image
 	 * @apiSuccess (200) {String} images.filePath url of image to display
@@ -44,6 +48,8 @@ public class RaceResultDetailDto {
 	 * 		"city":"San Francisco",
 	 * 		"age":24,
 	 * 		"gender":"M",
+	 * 		"rankGender":"15 of 200",
+	 * 		"rankOverall":"33 of 299",
 	 * 		"team": "Shrugrunners Run Club",
 	 * 		"timeofficialdisplay":"00:23:57",
 	 * 		"images":
@@ -69,6 +75,8 @@ public class RaceResultDetailDto {
 		this.timeofficialdisplay = result.getTimeofficialdisplay();
 		this.team = result.getTeam();
 		this.disqualified = result.isDisqualified();
+		this.rankOverall = result.computeOverallRanking();
+		this.rankGender = result.computeGenderRanking();
 		this.claimed = (result.getUserProfile() != null);
 		if(result.getEventType() != null) {
 			this.eventType = new EventTypeDto(result.getEventType());
@@ -93,6 +101,8 @@ public class RaceResultDetailDto {
 	private Integer age;
 	private String city;
 	private String gender;
+	private String rankGender;
+	private String rankOverall;
 	private String timeofficialdisplay;
 	private String timePace;
 	private String team;
@@ -186,6 +196,20 @@ public class RaceResultDetailDto {
 	 */
 	public String getGender() {
 		return gender;
+	}
+	
+	/**
+	 * @return the gender ranking
+	 */
+	public String getRankGender() {
+		return rankGender;
+	}
+	
+	/**
+	 * @return the age ranking
+	 */
+	public String getRankOverall() {
+		return rankOverall;
 	}
 
 	/**

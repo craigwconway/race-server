@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -86,6 +87,7 @@ public class EventType {
     /**
      * Event object containing this event type
      */
+    @ContainedIn
     @ManyToOne(fetch = FetchType.LAZY)
     private Event event;
     

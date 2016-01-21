@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <!-- Custom Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'> </link>
+    <link href='//fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'> </link>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>
+    
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                    <span class="icon-bar"><!--  --></span>
+                </button>
+                <div id="back-btn" onclick="goBack()"><i class="fa fa-arrow-left"><!--  --></i></div>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="/bibs-server/r">Bibs Home</a>
+                    </li>
+                    <c:if test="${event.organizer != null }">
+                     <li>
+                        <a class="page-scroll" href="/bibs-server/r/o/${event.organizer.id}">Organizer Home</a>
+                    </li>                   
+                    </c:if>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="region-1-dark-bg" id="banner">
+        <div class="header-content">
+            <div class="header-content-inner">
+                <div id="region-header">
+                    <div><img id="region-logo" src="/bibs-server/images/whitelogo.png"/></div>
+                	<div id="region-title">${event.name }</div>
+                	<div id="courses-labels"><!--  --></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="no-padding" id="events">
+        <div class="ui center aligned basic segment">
+			<div class="ui fluid region-1-bg card" id="result-btn">
+				<div class="content">
+					<div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/course.png"/></div>
+					<div class="description">Info</div>
+                </div>
+			</div>
+            <div id="event">
+                <div id="map"><!--   --></div>
+                <div class="event-day-of-week"><!--  --></div>
+                <div class="event-date"><!--  --></div>
+                <div class="event-time"><!--  --></div>
+                <div class="ui divider" style="visibility:hidden;"><!--  --></div>
+                <div class="description">${event.description }</div>
+
+				<c:if test="${not empty event.general }">
+                <h5 class="ui header">General Info</h5>
+                <div class="general">${event.general }</div>
+
+                <div class="ui section divider"><!--   --></div>
+				</c:if>
+				
+				<c:if test="${not empty event.parking }">
+                <h5 class="ui header">Parking</h5>
+                <div class="parking">${event.parking}</div>
+
+                <div class="ui section divider"><!--   --></div>
+				</c:if>
+				
+                <h5 class="ui header waiver-header">Waiver</h5>
+                <div class="ui waiver-container">
+                    <div class="waiver" style="height:150px;overflow: auto">You can request a copy of the waiver via our email address, ${event.email }</div>
+                </div>
+
+                <div class="ui section divider"><!--   --></div>
+
+                <h5 class="ui header">Additional Contact Info</h5>
+                <div class="contact"><span class="contact-phone">Phone: ${event.phone }</span><br/><span class="contact-website">Official Website: <a href="${event.website}">${event.website }</a></span></div>
+
+            </div>
+            <div class="ui section divider"><!--   --></div>
+            <div id="social">
+                <div class="social-header">Share with friends</div>
+                <i class="fa fa-facebook link icon" id="facebook-share-button"><!--  --></i>
+                <a href="//twitter.com/share"><i class="fa fa-twitter link icon" id="twitter-share-button"><!--  --></i></a>
+                <a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());"><i class="fa fa-pinterest-p link icon" id="pinterest-share-button"><!--  --></i></a>
+            </div>
+        </div>
+    </section>
+    <script>
+        function goBack(){
+            window.history.back();
+        }
+    </script>
+</div>
+

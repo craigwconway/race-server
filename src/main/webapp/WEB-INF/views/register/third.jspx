@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+	<div class="overlay" style="opacity:1;background-color:#0a334d;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;">
+		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
+		<h2 class="ui inverted header">Get started with bibs!</h2>
+		<h3 class="ui inverted header">Tell us how to reach you.</h3>
+		<form class="ui form" method="post" action="/bibs-server/register/third">
+			  <div class="ui massive inverted input">
+			    <input type="text" name="email" placeholder="Email"> <!--  --></input>
+			  </div>
+			  <div class="ui inverted divider"><!--  --></div>
+			  <div class="ui massive inverted input">
+			    <input type="text" name="phone" placeholder="Phone"> <!--  --></input>
+			  </div>
+			  <div style="clear:both;"><!-- --></div>
+			  <br></br>
+			
+			<!-- Fields from previous part of flow -->
+			<div style="display:none">
+				<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
+				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
+				<input type="text" name="username" value="${account.username }"><!--  --></input>
+				<input type="text" name="password" value="${account.password }"><!--  --></input>
+			</div>  
+			  
+			  <input type="submit" value="Next" class="ui right floated inverted submit button" ><!--  --></input>
+		</form>
+		</div>
+	</div>
+</div>

@@ -97,6 +97,14 @@ public class RaceResultViewDto {
 			return null;
 		}
 	}	
+
+	public static List<RaceResultViewDto> fromRaceResultsToRawDtoArray(Collection<RaceResult> results ) {
+		List <RaceResultViewDto> dtos = new ArrayList <RaceResultViewDto>();
+		for(RaceResult result : results) {
+			dtos.add(new RaceResultViewDto(result));
+		}
+		return dtos;
+	}
 	
 	public static String fromRaceResultsToDtoArray(Collection<RaceResult> results ) {
 		List <RaceResultViewDto> dtos = new ArrayList <RaceResultViewDto>();

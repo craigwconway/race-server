@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="outsiders" name="register/first">
+        <put-attribute name="body" value="/WEB-INF/views/register/first.jspx"/>
+    </definition>
+    <definition extends="outsiders" name="register/second">
+        <put-attribute name="body" value="/WEB-INF/views/register/second.jspx"/>
+    </definition>
+    <definition extends="outsiders" name="register/third">
+        <put-attribute name="body" value="/WEB-INF/views/register/third.jspx"/>
+    </definition>
+    <definition extends="outsiders" name="register/fourth">
+        <put-attribute name="body" value="/WEB-INF/views/register/fourth.jspx"/>
+    </definition>
+    <definition extends="outsiders" name="register/created">
+        <put-attribute name="body" value="/WEB-INF/views/register/created.jspx"/>
+    </definition>
+    <definition extends="outsiders" name="register/bankadd">
+        <put-attribute name="body" value="/WEB-INF/views/register/bankadd.jspx"/>
+    </definition>
+</tiles-definitions>

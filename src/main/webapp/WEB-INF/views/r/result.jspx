@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <!-- Custom Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'> </link>
+    <link href='//fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'> </link>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>    
+    
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div id="back-btn"><i class="fa fa-arrow-left" onclick="goBack()"><!--  --></i></div>
+            </div>
+
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="/bibs-server/r">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <div class="ui modal image-modal">
+        <div class="image content">
+            <img class="image"></img>
+        </div>
+        <div class="actions">
+            <div class="ui button">Share</div>
+        </div>
+    </div>
+    <div style="height:50px;width:100%"></div>
+    <section class="region-1-dark-bg" id="banner">
+        <div id="region-header">
+            <div class="ui tiny image">
+                <img src="/bibs-server/outsideres/img/Results_2X.png"/>
+            </div>
+            <div style="margin-top:15px;font-family:'Montserrat-Regular';font-size:1.5em;">Runner Details</div>
+        </div>
+    </section>
+    <section class="no-padding" id="events">
+        <div class="ui center aligned basic segment">
+            <div id="runner">
+                <h4 class="ui header"><div class="sub header date-elev"></div></h4>
+                <div id="single-result-container">
+                    <div class="ui fluid card" id="single-result-card">
+                        <!-- <div class="image"> -->
+                            <!-- <img src="img/placeholder.png"> -->
+                        <!-- </div> -->
+                        <div class="ui blue top attached label">Bib #${result.bib}<span class="runner-bib"></span></div>
+                        <div class="content">
+                            <div class="header"><span class="runner-name">${result.firstname } ${result.lastname }</span></div>
+                            <div class="description"><span class="runner-age">${result.age }</span>, <span class="runner-gender">${result.gender }</span></div>
+                            <div class="ui purple small statistic stat-finish">
+                                <div class="value"><span class="runner-time">${result.timeofficialdisplay }</span></div>
+                                <div class="label">Finish Time</div>
+                            </div>
+                            <div class="ui two column center aligned grid">
+                                <div class="column">
+                                    <div class="ui tiny blue statistic stat-rank">
+                                    	<c:if test="${result.rankOverall != 'N/A' }">
+                                    	<c:set var="overall" value="${fn:split(result.rankOverall, ' of ')}" />
+                                        <div class="value"><span class="runner-overall-rank">${overall[0] }</span> of <span class="runner-overall-count">${overall[1] }</span></div>
+                                        </c:if>
+										<c:if test="${result.rankOverall == 'N/A' }">
+                                        <div class="value"><span class="runner-overall-rank">N/A</span></div>
+                                        </c:if>
+                                        <div class="label">Overall Rank</div>
+                                    </div>
+                                </div>
+                                <div class="column">
+                                    <div class="ui tiny blue statistic stat-rank">
+										<c:if test="${result.rankGender != 'N/A' }">
+                                    	<c:set var="gender" value="${fn:split(result.rankGender, ' of ')}" />
+                                        <div class="value"><span class="runner-gender-rank">${gender[0] }</span> of <span class="runner-gender-count">${gender[1] }</span></div>
+                                        </c:if>
+										<c:if test="${result.rankGender == 'N/A' }">
+                                        <div class="value"><span class="runner-gender-rank">N/A</span></div>
+                                        </c:if>
+                                        <div class="label">Gender Rank</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="runner-images-container">
+                            <div class="ui four column doubling centered grid container runner-images"></div>
+                        </div>
+                        <h5 class="ui header" id="runner-header-template" style="display:none">Photos with <span class="runner-name"></span></h5>
+                        <div class="column" id="image-template" style="display:none">
+                            <div class="ui segment">
+                                <img src="/bibs-server/outsideres/img/placeholder.png"></img>
+                            </div>
+                        </div>
+                        <div id="empty-result-message-template" style="display:none"><div>No photos were found!</div><div><button class="ui zappos green button" style="margin: 15px;">View All Event Photos</button></div>
+
+                        <div class="ui teal tiny button" id="runner-img-more" style="display:none;margin:0 auto;width:125px;">More Photos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="social">
+                <div class="social-header">Share with friends</div>
+                <i class="fa fa-facebook link icon" id="facebook-share-button"><!--  --></i>
+                <a href="//twitter.com/share"><i class="fa fa-twitter link icon" id="twitter-share-button"><!--  --></i></a>
+                <a href="javascript:void((function()%7Bvar%20e=document.createElement(&apos;script&apos;);e.setAttribute(&apos;type&apos;,&apos;text/javascript&apos;);e.setAttribute(&apos;charset&apos;,&apos;UTF-8&apos;);e.setAttribute(&apos;src&apos;,&apos;http://assets.pinterest.com/js/pinmarklet.js?r=&apos;+Math.random()*99999999);document.body.appendChild(e)%7D)());"><i class="fa fa-pinterest-p link icon" id="pinterest-share-button"><!--  --></i></a>
+            </div>
+        </div>
+    </section>
+    <script>
+    function goBack(){
+        window.history.back();
+    }
+    </script>
+</div>
+
