@@ -11,13 +11,29 @@
 		<button type="submit" class="ui center floated mini inverted teal button">Looking for a specific race?</button>
 		<button type="submit" class="ui center floated mini inverted green button">What about an organizer?</button>
 		<div style="clear:both;"><!-- --></div>
-		<br></br>		
-		Race 1
-		<br></br>
-		Race 2
-		<br></br>
-		Race 3
-		<br></br>
+		<div class="ui inverted items">
+			<c:forEach var="item" items="${events}">
+			<div class="ui inverted item">
+				<div class="image">
+					<c:if test="${item.photo == null }">
+					<img src="/bibs-server/outsideres/img/portfolio/${item.id %7 }.jpg"><!--  --></img>
+					</c:if>
+					<c:if test="${item.photo != null }">
+					<img  src="${item.photo }"><!--  --></img>
+					</c:if>		
+				</div>
+				<div class="content">
+					<a class="ui inverted header">${item.name }</a>
+					<div class="ui inverted meta">
+						<span class="start-time">
+						${item.timeStartLocal }
+						</span>
+					</div>
+				</div>
+			</div>			
+			</c:forEach>
+
+		</div>
 
 		<div style="clear:both;"><!-- --></div>
 		<button class="ui inverted fluid button">Show me more</button>

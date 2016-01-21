@@ -220,7 +220,6 @@
                     <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed"/>
                     <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" z="user-managed"/>
                     <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" z="user-managed"/>
-                    <field:input field="middlename" id="c_com_bibsmobile_model_RaceResult_middlename" z="user-managed"/>
                     <field:input field="rankoverall" id="c_com_bibsmobile_model_RaceResult_rankoverall" z="user-managed"/>
                     <field:input field="rankage" id="c_com_bibsmobile_model_RaceResult_rankage" z="user-managed"/>
                     <field:input field="rankgender" id="c_com_bibsmobile_model_RaceResult_rankgender" z="user-managed"/>

@@ -1397,7 +1397,7 @@ public class RaceResult implements Comparable<RaceResult> {
 	/**
 	 * @param timeofficialmanual the manual time string to set
 	 */
-	public void setTimeofficialimport(String timeofficialmanual) {
+	public void setTimeofficialmanual(String timeofficialmanual) {
 		this.timeofficialmanual = timeofficialmanual;
 	}
 

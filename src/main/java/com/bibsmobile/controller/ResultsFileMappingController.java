@@ -303,7 +303,7 @@ public class ResultsFileMappingController {
         		try {
         			String officialtime = "";
         			if (!json.toString().equals("{")) json.append(",");
-        			json.append("\"timedisplaymanual\"" + ":\"" + nextLine[j].trim() + "\"");
+        			json.append("\"timeofficialmanual\"" + ":\"" + nextLine[j].trim() + "\"");
         		} catch(Exception e) {
         			System.out.println(e);
         		}
@@ -338,8 +338,10 @@ public class ResultsFileMappingController {
         }
         json.append("}");
         String fixedJson = json.toString().replaceAll(",,",",");
+
         System.out.println("ResultsFileMappingController saveRaceResult() "+fixedJson);
         RaceResult result = RaceResult.fromJsonToRaceResult(fixedJson);
+        System.out.println("Saving result with bib: " + result.getBib() + " and import time of: " + result.getTimeofficialmanual());
         result.setEvent(event);
         result.setEventType(eventType);
         result.setTimesplit(strSplits);
