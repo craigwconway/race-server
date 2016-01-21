@@ -39,6 +39,7 @@ public class ResultsFileMapping {
     @ManyToOne
     private ResultsFile resultsFile;
     private boolean skipFirstRow;
+    private boolean header;
     @Column(length = 2000)
     private String map;
 
@@ -194,7 +195,15 @@ public class ResultsFileMapping {
         this.skipFirstRow = skipFirstRow;
     }
 
-    public String getMap() {
+    public boolean isHeader() {
+		return header;
+	}
+
+	public void setHeader(boolean header) {
+		this.header = header;
+	}
+
+	public String getMap() {
         return this.map;
     }
 

@@ -234,7 +234,7 @@ public class ResultsFileMappingController {
         		|| resultsFile.getFilePath().endsWith(".CSV") || resultsFile.getFilePath().endsWith(".TXT")) {
             CSVReader reader = new CSVReader(new FileReader(file));
             String[] nextLine;
-            if(resultsFileMapping.isSkipFirstRow() ) reader.readNext();
+            if(resultsFileMapping.isSkipFirstRow() || resultsFileMapping.isHeader()) reader.readNext();
             while ((nextLine = reader.readNext()) != null) {
                 _this.saveRaceResult(resultsImport, event, eventType, nextLine, map);
             }
@@ -299,22 +299,14 @@ public class ResultsFileMappingController {
             	}
             }else if(map[j].equals("timeofficial")) {
             	//Try to parse incoming time, base start time at event start
-            	if(BuildTypeUtil.usesRegistration()) {
             		//if we have a reg build, we should set timeofficial
-            		try {
-            			String officialtime = "";
-            			if (!json.toString().equals("{")) officialtime += (",");
-            			if(RaceResult.fromHumanTime(nextLine[j]) == 0) {
-            				throw new Exception("Invalid time, not mapped");
-            			}
-            			officialtime += "timeofficial:" + RaceResult.fromHumanTime(1, nextLine[j])+"," ;
-            			officialtime += "timestart:1,";
-            			officialtime += "timeofficialdisplay:\"" +nextLine[j] +"\"";
-            			json.append(officialtime);
-            		} catch(Exception e) {
-            			System.out.println(e);
-            		}
-            	}
+        		try {
+        			String officialtime = "";
+        			if (!json.toString().equals("{")) json.append(",");
+        			json.append("\"timedisplaymanual\"" + ":\"" + nextLine[j].trim() + "\"");
+        		} catch(Exception e) {
+        			System.out.println(e);
+        		}
             }else if(!(map[j].equals("age") || map[j].equals("laps"))) {
                 if (!json.toString().equals("{")) json.append(",");
             	json.append(map[j] + ":\"" + nextLine[j].trim() + "\"");
