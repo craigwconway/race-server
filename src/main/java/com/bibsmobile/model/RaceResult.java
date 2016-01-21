@@ -738,33 +738,31 @@ public class RaceResult implements Comparable<RaceResult> {
         if (! (StringUtils.equalsIgnoreCase(r.getGender(), "M") || StringUtils.equalsIgnoreCase(r.getGender(), "F") ) ) {
         	throw new IllegalArgumentException("Result does not have a gender");
         }
-        if(r.getTimeofficial() == 0 || r.getTimestart() == 0 || r.getTimeofficial() < r.getTimestart()) {
+        if(r.getTimediff() == 0) {
         	throw new IllegalArgumentException("Result is missing a time");
         }
-        long timediff = r.getTimeofficial() - r.getTimestart();
         EntityManager em = RaceResult.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o "
         		+ "WHERE o.eventType = :eventType AND o.gender = :gender AND o.disqualified = 0"
         		+ "AND o.timediff <= :timediff AND o.timediff > 0", Long.class);
         q.setParameter("eventType", r.getEventType());
         q.setParameter("gender", r.getGender());
-        q.setParameter("timediff", timediff);
+        q.setParameter("timediff", r.getTimediff());
         return q.getSingleResult();
     }    
  
     public static Long findOverallRankingForResult(RaceResult r) {
         if (r.getEventType() == null)
             throw new IllegalArgumentException("The eventType argument is required");
-        if(r.getTimeofficial() == 0 || r.getTimestart() == 0 || r.getTimeofficial() < r.getTimestart()) {
+        if(r.getTimediff() == 0) {
         	throw new IllegalArgumentException("Result is missing a time");
         }
-        long timediff = r.getTimeofficial() - r.getTimestart();
         EntityManager em = RaceResult.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o "
         		+ "WHERE o.eventType = :eventType AND o.disqualified = 0"
         		+ "AND o.timediff <= :timediff AND o.timediff > 0", Long.class);
         q.setParameter("eventType", r.getEventType());
-        q.setParameter("timediff", timediff);
+        q.setParameter("timediff", r.getTimediff());
         return q.getSingleResult();
     }
     
