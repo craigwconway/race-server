@@ -96,6 +96,7 @@ public class WebController {
     	}
     	List<Event> events = eventService.compoundSearch(searchCriteria);
         uiModel.addAttribute("events", events);
+        uiModel.addAttribute("page", page);
         return "r/home";
     }	
 	
