@@ -262,12 +262,18 @@ h1,h2,h3,h4,h5,h6{
 	font-family: 'Arvo-Bold' !important;
 	font-size: 1.2em;
 }
+.left-icon{
+	float: left;
+}
+.right-icon{
+	float: right;
+}
 
 /*
 	input overrides
 	https://github.com/codrops/TextInputEffects
 */
-.input {
+.bibs-input {
 	position: relative;
 	z-index: 1;
 	display: inline-block;

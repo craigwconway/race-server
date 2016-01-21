@@ -33,7 +33,7 @@
             Sorry, there was an error with your login! Please check your username or password.
         </div>
         <form id="loginForm" method="POST" action="/bibs-server/resources/j_spring_security_check" name="f">
-            <span class="input">
+            <span class="bibs-input">
                 <input class="input__field input__field--yoko"
                     type="text" name="j_username" 
                     data-parsley-error-message="Please enter a username."
@@ -42,7 +42,7 @@
                     <span class="input__label-content input__label-content--yoko">Username</span>
                 </label>
             </span>
-            <span class="input">
+            <span class="bibs-input">
                 <input class="input__field input__field--yoko"
                     type="password" name="j_password" data-parsley-error-message="Please enter a password."
                 data-parsley-required="true" />

@@ -62,7 +62,7 @@
   <link rel="SHORTCUT ICON" href="${favicon}" />
   
   
-  <spring:url value="/resources/styles/bootstrap.min.css" var="bootstrap_url" />
+  <spring:url value="/resources/styles/bootstrap-no-modal.min.css" var="bootstrap_url" />
   <spring:url value="/resources/styles/font-awesome/css/font-awesome.min.css" var="fontawesome_url" />
   <spring:url value="/resources/styles/bootstrap-datetimepicker.css" var="datepicker_css_url" />
   <spring:url value="/resources/styles/semantic.css" var="semantic_css_url" />

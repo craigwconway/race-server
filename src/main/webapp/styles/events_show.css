@@ -26,7 +26,6 @@
     float: right;
     width: 250px;
     height: auto;
-    margin-right: 5%;
     margin-top: 1%;
     text-align: right;
 }
@@ -71,7 +70,7 @@ h3.ui.header.event-type-header{
     margin-top: 50px;
 }
 #removetime{
-    padding: 0.2em;
+    padding: 0 0.8em;
 }
 .reglive-label{
     text-align:left;
