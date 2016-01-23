@@ -77,7 +77,7 @@
         }
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-    <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="addQuestionModal" aria-hidden="true">
+    <div class="ui long modal" id="addQuestion">
         <div class="modal-dialog" style="width:750px;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -200,7 +200,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addCoupon" tabindex="-1" role="dialog" aria-labelledby="addCouponModal" aria-hidden="true">
+    <div class="ui long modal" id="addCoupon">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -285,8 +285,8 @@
             </div>
         </div>
     </div>
-    <div class="white-overlay">
-        <div class="info-container">
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui very padded basic segment">
             <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
@@ -297,7 +297,7 @@
                 <div class="item" data-tab="ticket-menu">Transfers</div>
             </div>
             <div class="ui bottom attached active tab segment" data-tab="eci-menu">
-                <h3 class="ui icon header">
+                <h3 class="ui center aligned icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
                         Manage Products
@@ -313,7 +313,7 @@
                                     <label style="width:100%;text-align:left">Limit to 1 shirt per customer</label>
                                 </div>
                                 <div style="clear:both"><!--  --></div>
-                                <div class="pull-right">
+                                <div class="field">
                                     <button class="ui green button" id="shirtSaveButton" type="submit">Save</button>
                                 </div>
                             </div>
@@ -357,7 +357,7 @@
                             <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
                                 <div class="content">
                                     <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                    <div class="description">add a new shirt/donation</div>
+                                    <div class="description">Add a new shirt/donation</div>
                                     <div class="extra content">
                                         <div class="left floated"><span style="visibility:hidden">sold</span></div>
                                         <div class="right floated"><span style="visibility:hidden">$price</span></div>
@@ -382,7 +382,7 @@
                 </div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="share-menu">
-                <h3 class="ui icon header">
+                <h3 class="ui center aligned icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
                         Social Sharing Settings
@@ -420,13 +420,13 @@
                         </div>
                     </div>
                     <div style="clear:both"><!--  --></div>
-                    <div class="pull-right">
+                    <div class="field">
                         <button class="ui green button" id="socialSaveButton" type="submit">Save</button>
                     </div>
                 </form>
             </div>
             <div class="ui bottom attached tab segment" data-tab="form-menu">
-                <h3 class="ui icon header">
+                <h3 class="ui center aligned icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
                         Custom Forms
@@ -460,7 +460,7 @@
                         <div class="ui fluid card" onclick="addQuestionModal()" style="cursor:pointer">
                             <div class="content">
                                 <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                <div class="description">add a new question</div>
+                                <div class="description">Add a new question</div>
                                 <div class="extra content">
                                     <div class="left floated"><span style="visibility:hidden">sold</span></div>
                                     <div class="right floated"><span style="visibility:hidden">$price</span></div>
@@ -474,7 +474,7 @@
                 </div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="coupon-menu">
-                <h3 class="ui icon header">
+                <h3 class="ui center aligned icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
                         Coupons
@@ -505,7 +505,7 @@
                         <div class="ui fluid card" onclick="addCouponModal()" style="cursor:pointer">
                             <div class="content">
                                 <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                <div class="description">add a new coupon</div>
+                                <div class="description">Add a new coupon</div>
                                 <div class="extra content">
                                     <div class="left floated"><span style="visibility:hidden">sold</span></div>
                                     <div class="right floated"><span style="visibility:hidden">$price</span></div>
@@ -519,7 +519,7 @@
                 </div>
             </div>
             <div class="ui bottom attached tab segment" data-tab="ticket-menu">
-                <h3 class="ui icon header">
+                <h3 class="ui center aligned icon header">
                     <i class="fa fa-gear fa-2x"><!--  --></i>
                     <div class="content" style="margin-top:5px">
                         Ticket Transfer Settings
@@ -544,10 +544,10 @@
                                 data-parsley-error-message="Please specify an end date."
                                 data-parsley-required="true"></input>
                         </div>
-                    </div>
-                    <div style="clear:both"><!--  --></div>
-                    <div class="pull-right">
-                        <button class="ui green button" id="transferSaveButton" type="submit">Save</button>
+                        <div style="clear:both"><!--  --></div>
+                        <div class="field">
+                            <button class="ui green button" id="transferSaveButton" type="submit">Save</button>
+                        </div>
                     </div>
                 </form>
             </div>

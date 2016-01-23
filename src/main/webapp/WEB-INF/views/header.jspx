@@ -2,7 +2,7 @@
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 
-	<spring:url var="banner" 		value="/resources/images/bibsicon.png" />
+	<spring:url var="banner" 		value="/bibs-server/images/bibsicon.png" />
 	<spring:url var="home" 			value="/" />
 	<spring:url var="raceday_url" 	value="/events/raceday" />
 	<spring:url var="reports_url" 	value="/registrations/reports" />
@@ -16,7 +16,7 @@
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 	<div class="ui visible left inverted vertical sidebar labeled icon small-caps menu">
     	<a href="/bibs-server" class="item">
-    		<img class="ui mini image" src="images/bibsicon.png"/>
+    		<img class="ui mini image" style="margin:0 auto" src="/bibs-server/images/bibsicon.png"/>
 		</a>
     	<a href="/bibs-server" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
   		<a href="${raceday_url}" class="item"><i class="fa fa-wifi left-icon icon"><!--  --></i> rfid</a>
