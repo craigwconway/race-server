@@ -3,29 +3,29 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 	<div class="overlay" style="opacity:1;background-color:#0a334d;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;">
-		<div class="ui inverted center aligned segment" style="margin:0 auto; width:70%">
+		<div class="ui center aligned segment" style="margin:0 auto; width:70%">
 		<c:if test="${page eq 1 &amp;&amp; name == null}">
-		<h1 class="ui inverted header">Welcome to bibs.</h1>
-		<h3 class="ui inverted header">We found some races we thought you might be interested in.</h3>		
+		<h1 class="ui header">Welcome to bibs.</h1>
+		<h3 class="ui header">We found some races we thought you might be interested in.</h3>		
 		</c:if>
 		<c:if test="${name != null }">
-		<h3 class="ui inverted header">Here's what we could find for ${name }...</h3>		
+		<h3 class="ui header">Here's what we could find for ${name }...</h3>		
 		</c:if>
 		
-		<button type="submit" class="ui center floated mini inverted teal button" onclick="toggleEventSearch()">Looking for a specific race?</button>
-		<button type="submit" class="ui center floated mini inverted green button" onclick="toggleOrgSearch()">What about an organizer?</button>
+		<button type="submit" class="ui center floated mini teal button" onclick="toggleEventSearch()">Looking for a specific race?</button>
+		<button type="submit" class="ui center floated mini green button" onclick="toggleOrgSearch()">What about an organizer?</button>
 		<div style="clear:both;"><!-- --></div>
-		<div class="ui inverted input" id="organizer-search" style="display:none">
+		<div class="ui input" id="organizer-search" style="display:none">
 			<input id="org-search-field" placeholder="Organizer name"> <!--  --></input>
-			<button class="ui inverted submit button">Go</button>
+			<button class="ui submit button">Go</button>
 		</div>
 		<div style="clear:both;"><!--  --></div>
-		<div class="ui inverted input" id="event-search" style="display:none">
+		<div class="ui input" id="event-search" style="display:none">
 			<input id="event-search-field" placeholder="Event name"> <!--  --></input>
-			<button class="ui inverted submit button" onclick="searchEvents()">Go</button>
+			<button class="ui submit button" onclick="searchEvents()">Go</button>
 		</div>
 			<c:forEach var="item" items="${events}">
-			<h3 class="ui inverted header">${item.name }</h3>
+			<h3 class="ui header">${item.name }</h3>
 			<div>
 			<div class="ui large image">
 				<c:if test="${item.photo == null }">
@@ -40,7 +40,7 @@
 			</c:forEach>
 		<div style="clear:both;"><!-- --></div>
 		<br><!--  --></br>
-		<button class="ui inverted fluid button">Show me more</button>
+		<button class="ui fluid button">Show me more</button>
 		</div>
 	</div>
 	<script>
