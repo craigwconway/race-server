@@ -623,6 +623,13 @@
                                 Cloud sync disabled
                             </button>
                         </c:if>
+                        <c:if test="${not empty eventTypes}">
+                            <button class="ui bibs-bg-main-teal bibs-gray-1 button"
+                                    onclick="redirectManageReg()">
+                                <i  class="fa fa-wrench icon"><!--  --></i>
+                                Registration Tools
+                            </button>
+                        </c:if>
                         </div>
                     </c:if>
                 </div>
@@ -632,7 +639,6 @@
             <div class="row">
                 <div class="button-container" style="margin-top:-2rem;margin-left:1rem;">
                     <button class="ui basic black button" onClick="renderModal('eventType')"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
-                    <c:if test="${not empty eventTypes}"><button class="ui bibs-bg-main-teal bibs-gray-1 button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
                 </div>
             </div>
             <div class="row">

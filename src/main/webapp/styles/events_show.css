@@ -48,6 +48,10 @@
 .leaflet-top{
     z-index: 1 !important;
 }
+.ui.basic.buttons .button:last-child{
+    background-color: rgba(42,157,143,1) !important;
+    color: rgba(240,240,240,1) !important;
+}
 .ui.table thead th{
     font-size: 0.85em;
 }
