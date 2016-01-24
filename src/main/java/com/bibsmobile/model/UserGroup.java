@@ -26,6 +26,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +42,7 @@ import flexjson.JSONSerializer;
  */
 @Entity
 @Configurable
+@Indexed
 public class UserGroup {
 
 	/**
@@ -60,6 +63,7 @@ public class UserGroup {
     /**
      * Name of Organization. 255 characters max.
      */
+    @Field
     private String name;
     
     /**
