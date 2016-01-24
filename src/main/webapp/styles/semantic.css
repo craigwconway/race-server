@@ -24119,6 +24119,7 @@ Floated Menu / Item
 
 .ui.cards > .card .meta,
 .ui.card .meta {
+  font-family: 'Lato-Medium';
   font-size: 1em;
   color: rgba(0, 0, 0, 0.4);
 }

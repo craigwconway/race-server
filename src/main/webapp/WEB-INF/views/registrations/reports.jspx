@@ -48,6 +48,12 @@
             text-align: center;
         }
 
+        .ui.statistic > .label,
+        .card > .content > .description > .ui.statistic > .label{
+            font-variant: small-caps;
+            text-transform: lowercase;
+        }
+
         /*  d3 charts   */
         .d3-container{
             margin: 0 auto;
@@ -62,133 +68,125 @@
             height: 400px;
         }
     </style>
-    <div class="white-overlay">
-        <div class="info-container">
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui very padded basic segment">
             <div class="pull-left">
                <button class="ui orange button" onclick="onBack()" type="submit">Back</button>
             </div>
-            <div style="clear:both"><!--  --></div>
-            <div class="ui statistics five column grid">
-                <div class="five column centered row">
-                    <div class="column">
-                        <div class="purple large statistic">
-                            <div class="label">
-                                Total Sales
+            <div class="ui text container">
+                <div style="clear:both"><!--  --></div>
+                <div class="ui small statistics five column grid">
+                    <div class="five column centered row">
+                        <div class="column">
+                            <div class="purple large statistic">
+                                <div class="label">
+                                    Total Sales
+                                </div>
+                                <div class="value" id="total-sales"><!--  -->$0</div>
                             </div>
-                            <div class="value" id="total-sales"><!--  -->$0</div>
+                        </div>
+                    </div>
+                    <div class="five column centered row">
+                        <div class="column">
+                            <div class="yellow statistic">
+                                <div class="label">Tickets</div>
+                                <div class="value"><i class="fa fa-ticket"><!--  --></i>
+                                    <span id="total-tickets" style="margin-left:10px;">0</span>
+                                </div>
+                                <div class="meta"><span class="price" id="total-money-tickets"><!--  --></span></div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="teal statistic">
+                                <div class="label">T-shirts</div>
+                                <div class="value"><i class="fa fa-shirtsinbulk"><!--  --></i>
+                                    <span id="total-shirts" style="margin-left:10px;">0</span>
+                                </div>
+                                <div class="meta"><span class="price" id="total-money-shirts"><!--  --></span></div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="pink statistic">
+                                <div class="label">Donations</div>
+                                <div class="value"><i class="fa fa-gift"><!--  --></i>
+                                    <span id="total-donations" style="margin-left:10px;">0</span>
+                                </div>
+                                <div class="meta"><span class="price" id="total-money-donations"><!--  --></span></div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="small statistic">
+                                <div class="label" style="margin-top:-1.5em">Form Responses</div>
+                                <div class="value"><i class="fa fa-question"><!--  --></i>
+                                    <span id="total-questions" style="margin-left:10px;">-</span>
+                                </div>
+                                <div class="meta"><span class="price" id="total-money-questions"><!--  --></span></div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="blue small statistic">
+                                <div class="label">Shares</div>
+                                <div class="value"><i class="fa fa-share"><!--  --></i>
+                                    <span id="total-shares" style="margin-left:10px;">0</span>
+                                </div>
+                                <div class="meta"><span class="price" id="total-money-shares"><!--  --></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="five column centered row">
+                        <div class="column">
+                            <div class="red small statistic">
+                                <div class="label">
+                                    Coupons
+                                </div>
+                                <div class="value"><i class="fa fa-cut"><!--  --></i>
+                                    <span id="total-coupons" style="margin-left:10px;">0</span>
+                                </div>
+                                <div class="meta"><span class="price" id="total-money-coupons"><!--  --></span></div>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="red small statistic">
+                                <div class="label">
+                                    Refunded
+                                </div>
+                                <div class="value"><i class="fa fa-cart-arrow-down"><!--  --></i>
+                                    <span id="total-refund" style="margin-left:10px;">0</span>
+                                </div>
+                                <div class="meta"><span class="price" id="total-money-refund"><!--  --></span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="five column centered row">
-                    <div class="column">
-                        <div class="yellow small statistic">
-                            <div class="label">
-                                Tickets
-                            </div>
-                            <div class="value"><i class="fa fa-ticket"><!--  --></i>
-                                <span id="total-tickets" style="margin-left:10px;">0</span>
-                            </div>
-                            <div class="meta"><span class="price" id="total-money-tickets"><!--  --></span></div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="teal small statistic">
-                            <div class="label">
-                                T-shirts
-                            </div>
-                            <div class="value"><i class="fa fa-shirtsinbulk"><!--  --></i>
-                                <span id="total-shirts" style="margin-left:10px;">0</span>
-                            </div>
-                            <div class="meta"><span class="price" id="total-money-shirts"><!--  --></span></div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="pink small statistic">
-                            <div class="label">
-                                Donations
-                            </div>
-                            <div class="value"><i class="fa fa-gift"><!--  --></i>
-                                <span id="total-donations" style="margin-left:10px;">0</span>
-                            </div>
-                            <div class="meta"><span class="price" id="total-money-donations"><!--  --></span></div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="small statistic">
-                            <div class="label">
-                                Form Responses
-                            </div>
-                            <div class="value"><i class="fa fa-question"><!--  --></i>
-                                <span id="total-questions" style="margin-left:10px;">-</span>
-                            </div>
-                            <div class="meta"><span class="price" id="total-money-questions"><!--  --></span></div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="blue small statistic">
-                            <div class="label">
-                                Shares
-                            </div>
-                            <div class="value"><i class="fa fa-share"><!--  --></i>
-                                <span id="total-shares" style="margin-left:10px;">0</span>
-                            </div>
-                            <div class="meta"><span class="price" id="total-money-shares"><!--  --></span></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="five column centered row">
-                    <div class="column">
-                        <div class="red tiny statistic">
-                            <div class="label">
-                                Coupons
-                            </div>
-                            <div class="value"><i class="fa fa-cut"><!--  --></i>
-                                <span id="total-coupons" style="margin-left:10px;">0</span>
-                            </div>
-                            <div class="meta"><span class="price" id="total-money-coupons"><!--  --></span></div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="red tiny statistic">
-                            <div class="label">
-                                Refunded
-                            </div>
-                            <div class="value"><i class="fa fa-cart-arrow-down"><!--  --></i>
-                                <span id="total-refund" style="margin-left:10px;">0</span>
-                            </div>
-                            <div class="meta"><span class="price" id="total-money-refund"><!--  --></span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui four centered column grid" id="cartitems">
-                <div class="cartitem-card" style="display:none">
-                    <div class="four wide column">
-                        <div class="ui card">
-                           <div class="content">
-                             <div class="header">Cart Item Title</div>
-                             <div class="description">
-                               <div class="ui tiny yellow statistic">
-                                   <div class="label">
-                                       Purchased
+                <div class="ui four centered column grid" id="cartitems">
+                    <div class="cartitem-card" style="display:none">
+                        <div class="four wide column">
+                            <div class="ui card">
+                               <div class="content">
+                                 <div class="header" style="font-size:1.1em;">Cart Item Title</div>
+                                 <div class="description">
+                                   <div class="ui tiny yellow statistic">
+                                       <div class="label">
+                                           Purchased
+                                       </div>
+                                       <div class="value" ><i class="fa fa-ticket" style="margin-right:5px"><!--  --></i>
+                                           <span class="purchased-num">42</span>
+                                       </div>
                                    </div>
-                                   <div class="value" ><i class="fa fa-ticket" style="margin-right:5px"><!--  --></i>
-                                       <span class="purchased-num">42</span>
-                                   </div>
-                               </div>
-                             </div>
-                           </div><!-- 
-                           <div class="ui bottom attached button">
-                             <i class="fa fa-arrow-right"></i>
-                             See Details
-                           </div> -->
+                                 </div>
+                               </div><!-- 
+                               <div class="ui bottom attached button">
+                                 <i class="fa fa-arrow-right"></i>
+                                 See Details
+                               </div> -->
+                            </div>
                         </div>
+                     </div>
+                </div>
+                <div class="d3-container">
+                    <div id="chart">
+                        <svg><!--  --></svg>
                     </div>
-                 </div>
-            </div>
-            <div class="d3-container">
-                <div id="chart">
-                    <svg><!--  --></svg>
                 </div>
             </div>
     </div>
@@ -484,7 +482,7 @@
                         jQuery('#item'+i).find('.statistic').removeClass('yellow').addClass('pink');
                         jQuery('#item'+i).find('i').removeClass('fa-ticket').addClass('fa-gift');
                     }
-                    jQuery("#item"+i+" .header").html(d.name + '<div class="meta">Price: $' + d.price + '</div>');
+                    jQuery("#item"+i+" .header").html(d.name + '<div class="meta" style="font-size:0.8em;">Price: $' + d.price + '</div>');
                     jQuery("#item"+i+" .purchased-num").html(d.purchased);
                 })
 

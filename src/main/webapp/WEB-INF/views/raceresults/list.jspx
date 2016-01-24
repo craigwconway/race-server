@@ -167,8 +167,8 @@
        			});
         }
     </script>
-    <div class="white-overlay">
-        <div class="info-container">
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui very padded basic segment">
             <div class="pull-left">
                 <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()">
                     <option id="event-0" value="0">All Events</option>
