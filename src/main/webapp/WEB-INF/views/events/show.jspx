@@ -5,295 +5,239 @@
     <link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-    <div class="ui long modal" id="regButton" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-close"></span></button>
-                    <h4 class="modal-title" id="myModalLabel">Registration Button Snippet</h4>
-                </div>
-                <div class="modal-body">
-                <div class="preview">Preview: 
-                    <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
-                </div>
-                Embed the code below to generate a bibs registration button:<br/>
-                <c:set var="reghtml" value='&lt;form action="${build.frontend}/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
-                <pre>${fn:escapeXml(reghtml)}</pre>
-                Link: <br/> <a href="${build.frontend}/registration/#/${event.id}">${build.frontend}/registration/#/${event.id}</a>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
-                </div>
+    <div class="ui long modal" id="regButtonModal" style="display:none">
+        <div class="header">Registration Button Snippet</div>
+        <div class="content">
+            <div class="preview">Preview: 
+                <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
             </div>
+            Embed the code below to generate a bibs registration button:<br/>
+            <c:set var="reghtml" value='&lt;form action="${build.frontend}/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
+            <pre>${fn:escapeXml(reghtml)}</pre>
+            Link: <br/> <a href="${build.frontend}/registration/#/${event.id}">${build.frontend}/registration/#/${event.id}</a>
+        </div>
+        <div class="actions">
+            <div class="ui button" onclick="closeModal()">Close</div>
         </div>
     </div>
 
     <div class="ui long modal" id="liveResults" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-close"></span></button>
-                    <h4 class="modal-title" id="live-label">Live Results Snippet</h4>
-                </div>
-                <div class="modal-body">
-                Copy the url below to share live results:<br/>
-                <c:set var="livehead" value='&lt;a href="${build.frontend}/webapp/#/raceday/ug/'/>
-                <c:set var="livetail" value='/t/1/events"&gt;&lt;/a&gt;'/>
-                <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" onclick="closeModal()">Close</button>
-                </div>
-            </div>
+        <div class="header">Live Results Snippet</div>
+        <div class="content">
+            Copy the url below to share live results:<br/>
+            <c:set var="livehead" value='&lt;a href="${build.frontend}/webapp/#/raceday/ug/'/>
+            <c:set var="livetail" value='/t/1/events"&gt;&lt;/a&gt;'/>
+            <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
+        </div>
+        <div class="actions">
+            <div class="ui button" onclick="closeModal()">Close</div>
         </div>
     </div>
 
     <div class="ui long modal" id="waiverModal" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-close"></span></button>
-                    <h4 class="modal-title" id="waiver-label">Waiver</h4>
-                </div>
-                <div class="modal-body">
-                    <textarea class="waiver-content" name="waiver">Paste your waiver here.</textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui green button post-waiver-button" onclick="postWaiver()">Save</button>
-                </div>
-            </div>
+        <div class="header">Waiver</div>
+        <div class="content">
+            <textarea class="waiver-content" name="waiver">Paste your waiver here.</textarea>
+        </div>
+        <div class="actions">
+            <div class="ui button" onclick="closeModal()">Cancel</div>
+            <div class="ui green button post-waiver-button" onclick="postWaiver()">Save</div>
         </div>
     </div>
 
     <div class="ui long modal" id="emailModal" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-close"></span></button>
-                    <h4 class="modal-title" id="email-label">Email</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="ui negative message" id="emailError" style="display:none">
-                        <i class="fa fa-times close" style="float:right"><!--  --></i>
-                        <div class="header">Error</div>
-                        <p><!--  --></p>
-                    </div>
-                    <div class="ui form" id="emailForm">
-                        <div class="field">
-                            <label>Email by event type</label>
-                            <div class="ui fluid selection dropdown" id="event-type">
-                                <input type="hidden" name="type"><!--  --></input>
-                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                <div class="default text">Event Type (optional)</div>
-                                <div class="menu">
-                                    <c:forEach var="item" items="${eventTypes}">
-                                        <div class="item" data-value="${item.id}">${item.typeName}</div>
-                                    </c:forEach>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="required field">
-                            <label>Subject</label>
-                            <input class="form-control" name="subject" placeholder="Subject"></input>
-                        </div>
-                        <div class="required field">
-                            <label>Body</label>
-                            <textarea class="form-control" name="body"><!--  --></textarea>
+        <div class="header">Email</div>
+        <div class="content">
+            <div class="ui negative message" id="emailError" style="display:none">
+                <i class="fa fa-times close" style="float:right"><!--  --></i>
+                <div class="header">Error</div>
+                <p><!--  --></p>
+            </div>
+            <div class="ui form" id="emailForm">
+                <div class="field">
+                    <label>Email by event type</label>
+                    <div class="ui fluid selection dropdown" id="event-type">
+                        <input type="hidden" name="type"><!--  --></input>
+                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                        <div class="default text">Event Type (optional)</div>
+                        <div class="menu">
+                            <c:forEach var="item" items="${eventTypes}">
+                                <div class="item" data-value="${item.id}">${item.typeName}</div>
+                            </c:forEach>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui green button post-email-button" onclick="sendEmail();return false;">Send</button>
+                <div class="required field">
+                    <label>Subject</label>
+                    <input name="subject" placeholder="Subject"></input>
+                </div>
+                <div class="required field">
+                    <label>Body</label>
+                    <textarea name="body"><!--  --></textarea>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="ui long modal" id="bibsModal" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-close"></span></button>
-                    <h4 class="modal-title" id="bibs-label">Manage Bib Numbers</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="ui info small message">
-                        <i class="fa fa-times fa-lg close" style="float:right"><!--  --></i>
-                        <div class="header"><!--  --></div>
-                        <ul class="list">
-                            <li>This feature will overwrite currently assigned bib numbers.</li>
-                            <li>To manually assign bib numbers, please do so via <strong>Export Registrations</strong> under the Registration tab.</li>
-                        </ul>
-                    </div>
-                    <div class="ui small negative message" id="bibsError" style="display:none">
-                        <i class="fa fa-times close" style="float:right"><!--  --></i>
-                        <div class="header">Error</div>
-                        <p><!--  --></p>
-                    </div>
-                    <div class="ui form" id="bibsForm">
-                        <div class="required field">
-                            <label>Select Event Type</label>
-                            <div class="ui fluid selection dropdown" id="event-type">
-                                <input type="hidden" name="type"><!--  --></input>
-                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                <div class="default text">Event Type</div>
-                                <div class="menu">
-                                    <c:forEach var="item" items="${eventTypes}">
-                                        <div class="item" data-value="${item.id}">${item.typeName}</div>
-                                    </c:forEach>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <label>Bib Ranges (optional)</label>
-                            <div style="clear:both"><!--  --></div>
-                            <div class="field" style="padding-left:0">
-                                <label>Lowest Bib Number</label>
-                                <input class="form-control" type="number" min="1" id="lowbib" name="lowbib"></input>
-                            </div>
-                            <div class="field">
-                                <label>Highest Bib Number</label>
-                                <input class="form-control" type="number" min="2" id="highbib" name="highbib"><!--  --></input>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui red button post-bibs-button" onclick="assignBibs();return false;">Overwrite Bib Numbers</button>
-                </div>
-            </div>
+        <div class="actions">
+            <div class="ui button" onclick="closeModal()">Cancel</div>
+            <div class="ui green button post-email-button" onclick="sendEmail()">Send</div>
         </div>
     </div>
 
-    <div class="ui long modal" id="exportReg" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-close"></span></button>
-                    <h4 class="modal-title" id="export-label">Export Registration</h4>
+    <div class="ui small modal" id="bibsModal" style="display:none">
+        <div class="header">Manage Bib Numbers</div>
+        <div class="content">
+            <div class="ui info small message">
+                <i class="fa fa-close link right-icon"><!--  --></i>
+                <div class="header"><!--  --></div>
+                <ul class="list">
+                    <li>This feature will overwrite currently assigned bib numbers.</li>
+                    <li>To manually assign bib numbers, please do so via <strong>Export Registrations</strong> under the Registration tab.</li>
+                </ul>
+            </div>
+            <div class="ui small negative message" id="bibsError" style="display:none">
+                <i class="fa fa-times close" style="float:right"><!--  --></i>
+                <div class="header">Error</div>
+                <p><!--  --></p>
+            </div>
+            <form class="ui form" id="bibsForm">
+                <div class="required eight wide field">
+                    <label>Select Event Type</label>
+                    <div class="ui fluid selection dropdown" id="event-type">
+                        <input type="hidden" name="type"><!--  --></input>
+                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                        <div class="default text">Event Type</div>
+                        <div class="menu">
+                            <c:forEach var="item" items="${eventTypes}">
+                                <div class="item" data-value="${item.id}">${item.typeName}</div>
+                            </c:forEach>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <style>.ui.three.cards > .card:nth-child(3n+1){ clear:none; }
-                        .ui.three.cards{ outline: none; border: none; margin: 0 auto; width: 75%; text-align: center; }
-                        .ui.cards > .card > .content, .ui.card > .content:hover{ cursor: pointer; }
-                    </style>
-                    <div class="ui three cards" id="ticket-type">
-                        <div class="ui card" id="card-ticket" onclick="setExportRegType('TICKET')">
-                            <div class="content">
-                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
-                            </div>
-                        </div>
-                        <div class="ui card" id="card-tshirt" onclick="setExportRegType('T_SHIRT')">
-                            <div class="content">
-                                <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
-                            </div>
-                        </div>
-                        <div class="ui card" id="card-donation" onclick="setExportRegType('DONATION')">
-                            <div class="content">
-                                <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="width:70%;margin:0 auto">
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="questions"></input>
-                            <label style="width:100%;margin:0">Include custom questions?</label>
-                        </div>
-                    </div>
+                <label>Bib Ranges (optional)</label>
+                <div class="two fields">
                     <div style="clear:both"><!--  --></div>
-                    <div style="width:70%;margin:0 auto">
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="bibnum"></input>
-                            <label style="width:100%;margin:0">Include bib numbers?</label>
-                        </div>
+                    <div class="four wide field" style="padding-left:0">
+                        <label>Lowest Bib Number</label>
+                        <input class="form-control" type="number" min="1" id="lowbib" name="lowbib"></input>
+                    </div>
+                    <div class="four wide field">
+                        <label>Highest Bib Number</label>
+                        <input class="form-control" type="number" min="2" id="highbib" name="highbib"><!--  --></input>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui red button" style="float:left" onclick="closeModal()">Cancel</button>
-					<button type="button" class="ui button" style="width:80px;margin-right:5px;" onclick="exportRegHandler(true, true)">
-                        Quick
-                    </button>
-                    <button type="button" class="ui button" style="width:200px;margin-right:20px;" onclick="exportRegHandler(false, false)">
-                        <i class="fa fa-file-o" style="margin-right:7px"><!--  --></i>New Data Only
-                    </button>
-                    <button type="button" class="ui button" style="width:150px;" onclick="exportRegHandler(true, false)">
-                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>All Data
-                    </button>
-                </div>
-            </div>
+            </form>
+        </div>
+        <div class="actions">
+            <div class="ui button" onclick="closeModal()">Cancel</div>
+            <div class="ui red button post-bibs-button" onclick="assignBibs()">Overwrite Bib Numbers</div>
         </div>
     </div>
 
-    <div class="ui long modal" id="exportAthletes" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-close"></span></button>
-                    <h4 class="modal-title" id="export-label">Export Athletes</h4>
-                </div>
-                <div class="modal-body">
-                    <h4 class="ui header">Export by Event Type (optional)</h4>
-                    <div class="row">
-                        <div class="ui selection compact dropdown" id="exportAthletes-eventTypes">
-                            <input type="hidden" name="type"><!--  --></input>
-                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                            <div class="default text">Export by Event Type (optional)</div>
-                            <div class="menu">
-                                <c:forEach var="item" items="${eventTypes}">
-                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
-                                </c:forEach>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div style="font-size: 0.9em;color:#808080">Default: Export all athletes</div>
+    <div class="ui small modal" id="exportRegModal" style="display:none">
+        <div class="header">Export Registration</div>
+        <div class="content">
+            <style>.ui.three.cards > .card:nth-child(3n+1){ clear:none; }
+                .ui.three.cards{ outline: none; border: none; margin: 0 auto; width: 75%; text-align: center; }
+                .ui.cards > .card > .content, .ui.card > .content:hover{ cursor: pointer; }
+            </style>
+            <div class="ui three cards" id="ticket-type">
+                <div class="ui card" id="card-ticket" onclick="setExportRegType('TICKET')">
+                    <div class="content">
+                        <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui primary button" style="width:150px" onclick="exportAthletesHandler()">
-                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Export
-                    </button>
+                <div class="ui card" id="card-tshirt" onclick="setExportRegType('T_SHIRT')">
+                    <div class="content">
+                        <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
+                    </div>
+                </div>
+                <div class="ui card" id="card-donation" onclick="setExportRegType('DONATION')">
+                    <div class="content">
+                        <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
+                    </div>
+                </div>
+            </div>
+            <div style="width:70%;margin:0 auto">
+                <div class="ui toggle checkbox">
+                    <input type="checkbox" name="questions"></input>
+                    <label style="width:100%;margin:0">Include custom questions?</label>
+                </div>
+            </div>
+            <div style="clear:both"><!--  --></div>
+            <div style="width:70%;margin:0 auto">
+                <div class="ui toggle checkbox">
+                    <input type="checkbox" name="bibnum"></input>
+                    <label style="width:100%;margin:0">Include bib numbers?</label>
                 </div>
             </div>
         </div>
+        <div class="actions">
+            <div class="ui red button" style="float:left" onclick="closeModal()">Cancel</div>
+			<div class="ui bibs-bg-main-yellow bibs-gray-4 button" onclick="exportRegHandler(true, true)">
+                <i class="fa fa-star-o left-icon"><!--  --></i> Quick
+            </div>
+            <button class="ui bibs-bg-main-blue bibs-gray-2 button" onclick="exportRegHandler(false, false)">
+                <i class="fa fa-refresh left-icon"><!--  --></i> New Data Only
+            </button>
+            <button class="ui bibs-bg-main-navy bibs-gray-2 button" onclick="exportRegHandler(true, false)">
+                <i class="fa fa-files-o left-icon"><!--  --></i> All Data
+            </button>
+        </div>
     </div>
 
-    <div class="ui long modal" id="importAthletes" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-close"></span></button>
-                    <h4 class="modal-title" id="export-label">Import Athletes</h4>
-                </div>
-                <div class="modal-body">
-                    <h4 class="ui header">Choose Event Type</h4>
-                    <div class="row">
-                        <div class="ui selection compact dropdown" id="importAthletes-eventTypes">
-                            <input type="hidden" name="type"><!--  --></input>
-                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                            <div class="default text">Event Type</div>
-                            <div class="menu">
-                                <c:forEach var="item" items="${eventTypes}">
-                                    <div class="item" data-value="${item.id}">${item.typeName}</div>
-                                </c:forEach>
-                            </div>
-                        </div>
+    <div class="ui small modal" id="exportAthletesModal" style="display:none">
+        <div class="header">Export Athletes</div>
+        <div class="content">
+            <h4 class="ui header">Export by Event Type (optional)</h4>
+            <div class="row">
+                <div class="ui selection compact dropdown" id="exportAthletes-eventTypes">
+                    <input type="hidden" name="type"><!--  --></input>
+                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                    <div class="default text">Export by Event Type (optional)</div>
+                    <div class="menu">
+                        <c:forEach var="item" items="${eventTypes}">
+                            <div class="item" data-value="${item.id}">${item.typeName}</div>
+                        </c:forEach>
                     </div>
-                    <div class="row">
-                        <div style="font-size: 0.9em;color:#808080">Pick an event type to proceed</div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
-                        <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Import
-                    </button>
                 </div>
             </div>
+            <div class="row">
+                <div style="font-size: 0.9em;color:#808080">Default: Export all athletes</div>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui button" onclick="closeModal()">Cancel</div>
+            <button class="ui primary button" style="width:150px" onclick="exportAthletesHandler()">
+                <i class="fa fa-files-o"><!--  --></i>Export
+            </button>
+        </div>
+    </div>
+
+    <div class="ui small modal" id="importAthletesModal" style="display:none">
+        <div class="header">Import Athletes</div>
+        <div class="content">
+            <h4 class="ui header">Choose Event Type</h4>
+            <div class="row">
+                <div class="ui selection compact dropdown" id="importAthletes-eventTypes">
+                    <input type="hidden" name="type"><!--  --></input>
+                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                    <div class="default text">Event Type</div>
+                    <div class="menu">
+                        <c:forEach var="item" items="${eventTypes}">
+                            <div class="item" data-value="${item.id}">${item.typeName}</div>
+                        </c:forEach>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div style="font-size: 0.9em;color:#808080">Pick an event type to proceed</div>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui button" onclick="closeModal()">Cancel</div>
+            <button class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
+                <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Import
+            </button>
         </div>
     </div>
 
@@ -500,90 +444,6 @@
             <div class="ui green submit button put-event-type" style="display:none" onclick="saveEventType(true)">Save</div>
         </div>
     </div>
-
-    <!-- <nav class="navbar event-navbar-inverse navbar-fixed-top" style="margin-top:50px"> -->
-        <!-- <div class="container-fluid"> -->
-            <!-- <div class="navbar-header">
-                <button type="btn btn-default" class="navbar-toggle" data-toggle="collapse" data-target=".event-show-navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar">.</span>
-                    <span class="icon-bar">.</span>
-                    <span class="icon-bar">.</span>
-                </button>
-                <div class="navbar-brand">Event Settings</div>
-            </div> -->
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <!-- <div class="collapse navbar-collapse event-show-navbar" style="z-index: 1000;">
-                <ul class="nav navbar-nav">
-                    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                        <c:if test='${(eventadmin)}'>
-                            <c:if test='${(build.registration)}'>
-                                <li><a href="#" onclick="redirectReport();return false;"><i class="fa fa-line-chart" style="margin-right: 5px">.</i> Reports</a></li>
-                            </c:if>
-                            <li><a href="#" onclick="redirectAthletes();return false;"><i class="fa fa-users" style="margin-right: 5px">.</i> Athletes</a></li>
-                            <li><a href="#" onclick="redirectLive();return false;"><i class="fa fa-refresh" style="margin-right: 5px">.</i> Live</a></li>
-                        </c:if>
-                    </sec:authorize>
-                    <li><a href="#" onclick="redirectAwards();return false;"><i class="fa fa-trophy" style="margin-right: 5px">.</i> Awards</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                    <c:if test='${(build.registration)}'>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-check-square-o" style="margin-right: 5px">.</i> Registration<span class="caret">.</span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
-                                    <li><a href="#" onclick="redirectEnableReg(); return false;">Open Registration</a></li>
-                                </c:if>
-                                <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
-                                    <li><a href="#" onclick="redirectDisableReg(); return false;">Close Registration</a></li>
-                                    <li><a href="#" onclick="redirectManageReg(); return false;">Registration Tools</a></li>
-                                    <li><a href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a></li>
-                                    <li><a href="#" data-toggle='modal' data-target='#exportReg'>Export Registrations</a></li>
-                                    <li role="presentation" class="divider">.</li>
-                                </c:if>
-                                <c:if test="${not empty eventTypes}">
-                                    <li><a href="#" data-toggle='modal' data-target='#bibsModal'>Assign Bib Numbers</a></li>
-                                    <li role="presentation" class="divider">.</li>
-                                </c:if>
-                                <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                                <c:if test='${(event.regEnabled)}'>
-                                    <li><a href="#" data-toggle='modal' data-target='#emailModal'>Send Email Announcement</a></li>
-                                    <li role="presentation" class="divider">.</li>
-                                </c:if>
-                                </sec:authorize>
-                                <li><a href="#" onclick="regUrl();return false;">Registration URL/Link</a></li>
-                                <li><a href="#" data-toggle='modal' data-target='#waiverModal'>Waiver</a></li>
-                            </ul>
-                        </li>
-                    </c:if>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-file-text" style="margin-right: 5px">.</i> Results<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" data-toggle='modal' data-target='#importAthletes'>Import</a></li>
-                            <li><a href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a></li>
-                            <c:if test="${dropboxUnlink == true}">
-                                <li><a href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a></li>
-                            </c:if>
-                            <li class="disabled"><a href="#">Import bibs file</a></li>
-                                <li role="presentation" class="divider">.</li>
-                            <li><a href="#" data-toggle='modal' data-target='#exportAthletes'>Export</a></li>
-                            <li><a href="#" onclick="cloud();return false;">Cloud Sync</a></li>
-                            <c:if test="${lastImport != null}">
-                                <li><a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a></li>
-                            </c:if>
-                            <li><a href="#" onclick="redirectBackup();return false;">Export bibs file</a></li>
-                                <li role="presentation" class="divider show-live">.</li>
-                            
-                            <li class="show-live"><a href="#" onclick="liveUrl();return false;">Live Results Link</a></li>
-                        </ul>
-                    </li>
-                    </sec:authorize>
-                </ul>
-            </div> -->
-        <!-- </div> -->
-    <!-- </nav> -->
     
     <div class="bibs-page bibs-bg-gray-1">
         <div class="ui very padded basic segment">
@@ -601,7 +461,7 @@
                 <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
                     <i class="fa fa-bell left-icon"><!--  --></i>
                     <i class="fa fa-close link right-icon"><!--  --></i>
-                    You've created your event! You can now <a onclick="renderEventTypeModal('clean')" class="emphasized emphasized-link">add your first Event Type</a>!
+                    You've created your event! You can now <a onclick="renderModal('eventType')" class="emphasized emphasized-link">add your first Event Type</a>!
                 </div>
             </c:when>
             <c:otherwise>
@@ -645,21 +505,21 @@
                                 <a class="item" href="#" onclick="redirectDisableReg(); return false;">Close Registration</a>
                                 <a class="item" href="#" onclick="redirectManageReg(); return false;">Registration Tools</a>
                                 <a class="item" href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a>
-                                <a class="item" href="#" data-toggle='modal' data-target='#exportReg'>Export Registrations</a>
+                                <a class="item" href="#" onclick="renderModal('exportReg')">Export Registrations</a>
                                 <div class="divider"><!--  --></div>
                             </c:if>
                             <c:if test="${not empty eventTypes}">
-                                <a class="item" href="#" data-toggle='modal' data-target='#bibsModal'>Assign Bib Numbers</a>
+                                <a class="item" href="#" onclick="renderModal('bibs')">Assign Bib Numbers</a>
                                 <div class="divider"><!--  --></div>
                             </c:if>
                             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                             <c:if test='${(event.regEnabled)}'>
-                                <a class="item" href="#" data-toggle='modal' data-target='#emailModal'>Send Email Announcement</a>
+                                <a class="item" href="#" onclick="renderModal('email')">Send Email Announcement</a>
                                 <div class="divider"><!--  --></div>
                             </c:if>
                             </sec:authorize>
-                            <a class="item" href="#" onclick="regUrl();return false;">Registration URL/Link</a>
-                            <a class="item" href="#" data-toggle='modal' data-target='#waiverModal'>Waiver</a>
+                            <a class="item" href="#" onclick="renderModal('regButton');return false;">Registration URL/Link</a>
+                            <a class="item" href="#" onclick="renderModal('waiver')">Waiver</a>
                         </div>
                     </div>
                 </c:if>
@@ -667,14 +527,14 @@
                     <i class="fa fa-file-text icon"><!--  --></i> Results
                     <i class="fa fa-caret-down"><!--  --></i>
                     <div class="menu">
-                        <a class="item" href="#" data-toggle='modal' data-target='#importAthletes'>Import</a>
+                        <a class="item" href="#" onclick="renderModal('importAthletes')">Import</a>
                         <a class="item" href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a>
                         <c:if test="${dropboxUnlink == true}">
                             <a class="item" href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a>
                         </c:if>
                         <a class="disabled item" href="#">Import bibs file</a>
                         <div class="divider"><!--  --></div>
-                        <a class="item" href="#" data-toggle='modal' data-target='#exportAthletes'>Export</a>
+                        <a class="item" href="#" onclick="renderModal('exportAthletes')">Export</a>
                         <a class="item" href="#" onclick="cloud();return false;">Cloud Sync</a>
                         <c:if test="${lastImport != null}">
                             <a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a>
@@ -771,8 +631,8 @@
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
             <div class="row">
                 <div class="button-container" style="margin-top:-2rem;margin-left:1rem;">
-                    <button type="button" class="ui basic black button" onClick="renderEventTypeModal('clean')"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
-                    <c:if test="${not empty eventTypes}"><button type="button" class="ui bibs-bg-main-teal bibs-gray-1 button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
+                    <button class="ui basic black button" onClick="renderModal('eventType')"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
+                    <c:if test="${not empty eventTypes}"><button class="ui bibs-bg-main-teal bibs-gray-1 button" onclick="redirectManageReg(); return false;"><i class="fa fa-wrench" style="margin-right:5px"><!--  --></i>registration tools</button></c:if>
                 </div>
             </div>
             <div class="row">
@@ -837,7 +697,7 @@
             renderEventTypeModal('clean');
         </c:if>
 
-        jQuery('i.link.fa.fa-close').on('click', function() {
+        jQuery('i.link.fa.fa-close').off().on('click', function() {
             jQuery(this).closest('.segment').transition('fade');
         });
 
@@ -847,6 +707,18 @@
         <c:if test='${(!build.rfid)}'>
             initMap();
         </c:if>
+    }
+
+    function renderModal(type){
+        if(type !== 'eventType'){
+            jQuery('#'+type+'Modal').modal('show');
+        }else{
+            renderEventTypeModal('clean');
+        }
+
+        jQuery('i.link.fa.fa-close').off().on('click', function() {
+            jQuery(this).closest('.segment,.message').transition('fade');
+        });
     }
 
     function renderEventTypeModal(type){
@@ -1175,7 +1047,6 @@
 
                     }
                 }
-        			
         		
         		dat.eventType = {};
         		if(currEventTypeId != null &amp;&amp; currEventTypeId != "") {
@@ -1529,9 +1400,6 @@
     }
     function redirectImport(){
         window.location="/bibs-server/resultsfiles?form&amp;event=${event.id}";
-    }
-    function regUrl(){
-        jQuery("#regButton").modal('show');
     }
     function liveUrl(){
         jQuery("#liveResults").modal('show');
