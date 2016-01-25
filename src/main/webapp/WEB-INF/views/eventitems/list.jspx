@@ -336,7 +336,7 @@
                 </h3>
                 <form class="ui small form" id="shareForm" style="width:400px;margin:0 auto;">
                     <div class="field">
-                        <div class="ui toggle checkbox" id="share-check">
+                        <div class="ui slider checkbox" id="share-check">
                             <label style="width:100%"><b>Enable</b> discounts from social media sharing</label>
                             <input type="checkbox" name="socialSharingDiscounts"><!--  --></input>
                         </div>
