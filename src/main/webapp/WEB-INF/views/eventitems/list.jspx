@@ -55,211 +55,190 @@
     </style>
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
     <div class="ui long modal" id="addQuestion">
-        <div class="modal-dialog" style="width:750px;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
-                    <h4 class="modal-title" id="addQuestionModal">Add Question</h4>
+        <div class="header" id="addQuestionModal">Add Question</div>
+        <div class="content">
+            <div class="ui form" id="putFieldForm">
+                <input type="hidden" name="id"><!--  --></input>
+                <div class="required field">
+                    <label>Question</label>
+                    <input type="text" name="question" placeholder="What do you want to ask?"
+                           data-parsley-required="true"
+                           data-parsley-error-message="Please provide a question."><!--  --></input>
                 </div>
-                <div class="modal-body">
-                    <div class="ui form" id="putFieldForm">
-                        <input type="hidden" name="id"><!--  --></input>
-                        <div class="fields">
-                            <div class="twelve wide required field">
-                                <label>Question</label>
-                                <input type="text" name="question" placeholder="What do you want to ask?"
-                                       data-parsley-required="true"
-                                       data-parsley-error-message="Please provide a question."><!--  --></input>
-                            </div>
+                <div class="grouped fields">
+                    <label style="width:100%" for="responseType">Response Type</label>
+                    <div class="field">
+                        <div class="ui radio checkbox checked" id="radio-input">
+                            <input type="radio" checked="" name="responseType" value="input"><!--  --></input>
+                            <label>User Input</label>
                         </div>
-                        <div class="fields">
-                            <div class="twelve wide required field">
-                                <label for="responseType">Response Type</label>
-                                <div class="inline fields">
-                                    <div class="field">
-                                        <div class="ui radio checkbox checked" id="radio-input">
-                                            <input type="radio" checked="" name="responseType" value="input"><!--  --></input>
-                                            <label>User Input</label>
-                                        </div>
-                                    </div>
-                                    <div class="field">
-                                        <div class="ui radio checkbox" id="radio-dropdown">
-                                            <input type="radio" name="responseType" value="dropdown"><!--  --></input>
-                                            <label>Dropdown Menu</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox" id="radio-dropdown">
+                            <input type="radio" name="responseType" value="dropdown"><!--  --></input>
+                            <label>Dropdown Menu</label>
                         </div>
-                        <div class="fields" id="dropdown-field" style="display:none">
-                            <div class="eight wide field">
-                                <label style="width:100%">Add Dropdown Option</label>
-                                <div class="ui input" style="width:90%">
-                                    <input  type="text" id="custom-response-dropdown-input" placeholder="Add dropdown option"></input>
-                                </div>
-                                <span style="line-height:40px;padding-left:12px;font-size:1.5em;"> + </span>
-                            </div>
-                            <div class="seven wide field">
-                                <label style="width:100%">Attach Discount/Fee (Optional)</label>
-                                <div class="ui action input">
-                                    <input type="number" step="5" id="custom-price-dropdown-input" placeholder="&amp;dollar; Amount (i.e. -3.50 or 1.50)"></input>
-                                    <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus icon"><!--  --></i></div>
-                                </div>
-                            </div>
-                            <div style="clear:both"><!--  --></div>
-                            <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
+                    </div>
+                </div>
+                <div class="fields" id="dropdown-field" style="display:none">
+                    <div class="field">
+                        <label style="width:100%">Add Dropdown Option</label>
+                        <div class="ui input" style="width:300px">
+                            <input  type="text" id="custom-response-dropdown-input" placeholder="Add dropdown option"></input>
                         </div>
-                        <h4 class="ui horizontal header divider"><i class="fa fa-cogs"><!--  --></i> Options
-                        </h4>
-                        <div class="grouped fields">
-                            <div class="field">
-                                <div class="ui toggle checkbox" id="optional1">
-                                    <input type="checkbox" name="optional"><!--  --></input>
-                                    <label style="width:100%">Make this question optional</label>
-                                </div>
-                            </div>
-                            <div class="field" id="optional2">
-                                <div class="ui toggle checkbox">
-                                    <input type="checkbox" name="hidden"><!--  --></input>
-                                    <label style="width:100%">Archive (Hide from registration form)</label>
-                                </div>
-                            </div>
-                            <div class="fields">
-                                <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
-                                </label>
-                                <div class="field">
-                                    <div class="ui multiple selection dropdown" id="questionECI">
-                                        <i class="dropdown icon"><!--  --></i>
-                                        <input name="eventItems" type="hidden"><!--  --></input>
-                                        <c:if test="${empty eventcartitems}">
-                                            <div class="default text">No Current Products</div>
-                                        </c:if>
-                                        <c:if test="${not empty eventcartitems}">
-                                            <div class="default text">none</div>
-                                            <div class="menu" id="question-eci-options">
-                                                <c:forEach var="item" items="${eventcartitems}">
-                                                    <div class="item" data-value="${item.id}">${item.name}</div>
-                                                </c:forEach>
-                                            </div>
-                                        </c:if>
-                                    </div>
-                                    <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-close link icon"><!--  --></i></a>
-                                </div>
-                            </div>
-                            
+                    </div>
+                    <span style="line-height:5.4em;padding:0 5px;font-size:1.5em;"> &amp; </span>
+                    <div class="field">
+                        <label style="width:100%">Attach Discount/Fee (Optional)</label>
+                        <div class="ui action input" style="width:250px">
+                            <input type="number" step="5" id="custom-price-dropdown-input" placeholder="$ Amount (i.e. -3.50 or 1.50)"></input>
+                            <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus icon"><!--  --></i></div>
                         </div>
-                        <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
-                        </h4>
-                        <span id="placeholder-text">Please enter details for the custom question to see a preview.</span>
-                        <div id="question-preview" style="display:none">
-                            <div class="fields">
-                                <div class="field" style="width: 375px">
-                                    <label id="question-label" style="display:none"><!--  --></label>
-                                    <input id="type-input-selected" type="text" style="display:none"><!--  --></input>
-                                    <div class="ui selection dropdown" id="customQuestionsPreviewDropdown" style="display:none">
-                                        <input type="hidden"><!--  --></input>
-                                        <div class="default text">Select one</div>
-                                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                        <div class="menu" id="customQuestionsPreviewOptions"><!--  -->
-                                        </div>
-                                    </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
+                </div>
+                <h4 class="ui horizontal header divider"><i class="fa fa-cogs"><!--  --></i> Options
+                </h4>
+                <div class="grouped fields">
+                    <div class="field">
+                        <div class="ui toggle checkbox" id="optional1">
+                            <input type="checkbox" name="optional"><!--  --></input>
+                            <label style="width:100%">Make this question optional</label>
+                        </div>
+                    </div>
+                    <div class="field" id="optional2">
+                        <div class="ui toggle checkbox">
+                            <input type="checkbox" name="hidden"><!--  --></input>
+                            <label style="width:100%">Archive (Hide from registration form)</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
+                        </label>
+                        <div class="ui multiple selection dropdown" id="questionECI">
+                            <i class="dropdown icon"><!--  --></i>
+                            <input name="eventItems" type="hidden"><!--  --></input>
+                            <c:if test="${empty eventcartitems}">
+                                <div class="default text">No Current Products</div>
+                            </c:if>
+                            <c:if test="${not empty eventcartitems}">
+                                <div class="default text">none</div>
+                                <div class="menu" id="question-eci-options">
+                                    <c:forEach var="item" items="${eventcartitems}">
+                                        <div class="item" data-value="${item.id}">${item.name}</div>
+                                    </c:forEach>
+                                </div>
+                            </c:if>
+                        </div>
+                        <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-close link icon"><!--  --></i></a>
+                    </div>
+                    
+                </div>
+                <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
+                </h4>
+                <span id="placeholder-text">Please enter details for the custom question to see a preview.</span>
+                <div id="question-preview" style="display:none">
+                    <div class="fields">
+                        <div class="field" style="width: 375px">
+                            <label id="question-label" style="display:none"><!--  --></label>
+                            <input id="type-input-selected" type="text" style="display:none"><!--  --></input>
+                            <div class="ui selection dropdown" id="customQuestionsPreviewDropdown" style="display:none">
+                                <input type="hidden"><!--  --></input>
+                                <div class="default text">Select one</div>
+                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                                <div class="menu" id="customQuestionsPreviewOptions"><!--  -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" data-dismiss="modal">Close</button>
-                    <button type="button" class="ui green button post-question" onclick="saveQuestion(false)">Submit</button>
-                    <button type="button" class="ui red button put-question" style="display:none" onclick="deleteQuestion()">Remove</button>
-                    <button type="button" class="ui green button put-question" style="display:none" onclick="saveQuestion(true)">Save</button>
                 </div>
             </div>
         </div>
+        <div class="actions">
+            <button class="ui button" data-dismiss="modal">Close</button>
+            <button class="ui green button post-question" onclick="saveQuestion(false)">Submit</button>
+            <button class="ui red button put-question" style="display:none" onclick="deleteQuestion()">Remove</button>
+            <button class="ui green button put-question" style="display:none" onclick="saveQuestion(true)">Save</button>
+        </div>
     </div>
     <div class="ui long modal" id="addCoupon">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
-                    <h4 class="modal-title" id="addCouponModal">Add Coupon</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="ui form" id="couponForm">
-                        <div class="fields">
-                            <h4 class="ui header">
-                              <div class="content">
-                                <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit coupon to product: 
-                                    <div class="ui inline compact dropdown" id="couponECI" style="border: 1px rgba(39, 41, 43, 0.35) solid; padding: 8px; border-radius: 5px; margin-left: 10px;">
-                                      <div class="text">none</div>
-                                      <input type="hidden" name="eventItem"><!--  --></input>
-                                      <i class="fa fa-caret-down" style="margin-left:5px;"><!--  --></i>
-                                      <div class="menu" id="option-list-eci">
-                                        <c:if test="${empty eventcartitems}">
-                                            <div class="header">No Current Products</div>
+        <div class="header" id="addCouponModal">Add Coupon</div>
+        <div class="content">
+            <div class="ui form" id="couponForm">
+                <div class="fields">
+                    <h4 class="ui header">
+                      <div class="content">
+                        <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit coupon to product: 
+                            <div class="ui inline compact dropdown" id="couponECI" style="border: 1px rgba(39, 41, 43, 0.35) solid; padding: 8px; border-radius: 5px; margin-left: 10px;">
+                              <div class="text">none</div>
+                              <input type="hidden" name="eventItem"><!--  --></input>
+                              <i class="fa fa-caret-down" style="margin-left:5px;"><!--  --></i>
+                              <div class="menu" id="option-list-eci">
+                                <c:if test="${empty eventcartitems}">
+                                    <div class="header">No Current Products</div>
+                                </c:if>
+                                <c:if test="${not empty eventcartitems}">
+                                    <div class="header">Current Products</div>
+                                    <c:forEach var="item" items="${eventcartitems}">
+                                        <c:if test="${item.type == 'TICKET'}">
+                                            <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="yellow icon fa fa-ticket"><!--  --></i></div>${item.name}</div>
                                         </c:if>
-                                        <c:if test="${not empty eventcartitems}">
-                                            <div class="header">Current Products</div>
-                                            <c:forEach var="item" items="${eventcartitems}">
-                                                <c:if test="${item.type == 'TICKET'}">
-                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="yellow icon fa fa-ticket"><!--  --></i></div>${item.name}</div>
-                                                </c:if>
-                                                <c:if test="${item.type == 'T_SHIRT'}">
-                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="teal icon fa fa-shirtsinbulk"><!--  --></i></div>${item.name}</div>
-                                                </c:if>
-                                                <c:if test="${item.type == 'DONATION'}">
-                                                    <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="blue icon fa fa-heart-o"><!--  --></i></div>${item.name}</div>
-                                                </c:if>
-                                            </c:forEach>
+                                        <c:if test="${item.type == 'T_SHIRT'}">
+                                            <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="teal icon fa fa-shirtsinbulk"><!--  --></i></div>${item.name}</div>
                                         </c:if>
-                                      </div>
-                                    </div>
-                                </label>
+                                        <c:if test="${item.type == 'DONATION'}">
+                                            <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="blue icon fa fa-heart-o"><!--  --></i></div>${item.name}</div>
+                                        </c:if>
+                                    </c:forEach>
+                                </c:if>
                               </div>
-                            </h4>
-                        </div>
-                        <div class="fields">
-                            <div class="twelve wide field">
-                                <label style="width:100%">Coupon Code</label>
-                                <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
-                                       data-parsley-required="true" 
-                                       data-parsley-error-message="Please provide a coupon code."><!--  --></input>
                             </div>
-                        </div>
-                        <div class="fields" style="margin-top: 10px;">
-                            <label id="discount" style="width:100%;margin-left:0;padding-left:0;">Discount</label>
-                            <div class="twelve wide inline field" style="margin-left:0;padding-left:0;">
-                                <input type="text" name="discount" id="validate-discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
-                                <div class="ui icon buttons">
-                                    <div class="ui positive button disc-btn" id="disc-perc"><b>%</b></div>
-                                    <div class="ui button disc-btn" id="disc-curr"><b><i class="fa fa-usd"><!--  --></i></b></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="fields">
-                            <div class="twelve wide field">
-                                <label style="width:100%">Quantity</label>
-                                <input type="number" min="1" name="available" placeholder="Quantity"
-                                       data-parsley-required="true"
-                                       data-parsley-error-message="Please provide a quantity."><!--  --></input>
-                            </div>
-                        </div>
-                        <div class="ui negative message" id="coupon-error-percent" style="display:none">
-                            <i class="fa fa-close link icon"><!--  --></i>
-                            <div class="header">
-                                We can't allow that discount.
-                            </div>
-                            <p>Please select a discount up to 100%.</p>
+                        </label>
+                      </div>
+                    </h4>
+                </div>
+                <div class="fields">
+                    <div class="twelve wide field">
+                        <label style="width:100%">Coupon Code</label>
+                        <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
+                               data-parsley-required="true" 
+                               data-parsley-error-message="Please provide a coupon code."><!--  --></input>
+                    </div>
+                </div>
+                <div class="fields" style="margin-top: 10px;">
+                    <label id="discount" style="width:100%;margin-left:0;padding-left:0;">Discount</label>
+                    <div class="twelve wide inline field" style="margin-left:0;padding-left:0;">
+                        <input type="text" name="discount" id="validate-discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
+                        <div class="ui icon buttons">
+                            <div class="ui positive button disc-btn" id="disc-perc"><b>%</b></div>
+                            <div class="ui button disc-btn" id="disc-curr"><b><i class="fa fa-usd"><!--  --></i></b></div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" data-dismiss="modal">Close</button>
-                    <button type="button" class="ui green button post-coupon" onclick="saveCoupon(false)">Submit</button>
-                    <button type="button" class="ui red button put-coupon" style="display:none" onclick="deleteCoupon()">Remove</button>
-                    <button type="button" class="ui green button put-coupon" style="display:none" onclick="saveCoupon(true)">Save</button>
+                <div class="fields">
+                    <div class="twelve wide field">
+                        <label style="width:100%">Quantity</label>
+                        <input type="number" min="1" name="available" placeholder="Quantity"
+                               data-parsley-required="true"
+                               data-parsley-error-message="Please provide a quantity."><!--  --></input>
+                    </div>
+                </div>
+                <div class="ui negative message" id="coupon-error-percent" style="display:none">
+                    <i class="fa fa-close link icon"><!--  --></i>
+                    <div class="header">
+                        We can't allow that discount.
+                    </div>
+                    <p>Please select a discount up to 100%.</p>
                 </div>
             </div>
+        </div>
+        <div class="actions">
+            <button class="ui button" onclick="">Close</button>
+            <button class="ui green button post-coupon" onclick="saveCoupon(false)">Submit</button>
+            <button class="ui red button put-coupon" style="display:none" onclick="deleteCoupon()">Remove</button>
+            <button class="ui green button put-coupon" style="display:none" onclick="saveCoupon(true)">Save</button>
         </div>
     </div>
     <div class="bibs-page bibs-bg-gray-1">
@@ -745,7 +724,7 @@
                 }else{
                     error = true;
                     jQuery('#coupon-error-percent').show();
-                    jQuery('.fa.fa-times').click(function(){
+                    jQuery('.fa.fa-close').click(function(){
                         jQuery(this).parent().hide();
                     });
                 }
@@ -803,7 +782,7 @@
                     currOptionsObjList.push(optionObj);
                 }
 
-                jQuery('#option-list').append('<li><div class="ui label" data-index="' + (currOptionsObjList.length-1) + '" onclick="removeDropdownOption(this)">' + opt + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
+                jQuery('#option-list').append('<li><div class="ui label" data-index="' + (currOptionsObjList.length-1) + '" onclick="removeDropdownOption(this)">' + opt + feeString + '<i class="fa fa-close icon"><!-- --></i></div></li>');
 
                 // add to sample dropdown for user
                 jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + opt + feeString + '</div>');
