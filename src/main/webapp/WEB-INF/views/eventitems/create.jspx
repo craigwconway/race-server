@@ -1,528 +1,478 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <style>
-        body{
-            background-image: url('images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .ui.form.info-container{
-            margin: 0 auto;
-            width: 400px;
-            font-weight: 400;
-            color: #292929;
-        }
-        .ui.form .fields{
-            margin-bottom: -5px;
-        }
-        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
-            margin-bottom: 5px;
-        }
-        .ui.form input, .ui.form textarea, .ui.form select, .ui.fluid.dropdown, #demo>input{
-            width: 400px;
-            margin: 5px auto; 
-        }
-        .ui.labeled.input {
-            display: table;
-            margin: 5px auto;
-            text-align: left;
-            width: 400px;
-        }
-        .ui.labeled.input > .label {
-            width: 20%;
-        }
-        .ui.form select{
-            height: 38px;
-            font-size: 1em;
-        }
-        .ui.form textarea{
-            height: 0;
-            min-height: 5em;
-        }
-        .submit{
-            margin: 0 auto;
-            width: 400px;
-            text-align: right;
-        }
-        .ui.two.cards > .card:nth-child(2n+1){
-            clear:none;
-        }
-        .ui.form input[type="number"]{
-            height: 38px;
-        }
-        .ui.three.cards{
-            outline: none;
-            border: none;
-        }
-        .ui.cards > .card > .content, .ui.card > .content:hover{
-            cursor: pointer;
-        }
-        #event-type > .text:not(.default) {
-          font-weight: bold;
-        }
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-          -webkit-appearance: none; 
-          margin: 0; 
-        }
-    </style>
-    <div class="white-overlay">
-        <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
-            <div class="ui form info-container">
-                <h2 class="ui icon header">
-                    <i class="fa fa-cog"><!--  --></i>
-                    <div class="content">Add Product
-                        <div class="sub header">Provide the details for this product.</div>
-                    </div>
-                </h2>
-                <div style="clear:both"><!--  --></div>
-                <div class="ui two cards" id="ticket-type">
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<style>
+    .submit{
+        margin: 0 auto;
+        width: 400px;
+        text-align: right;
+    }
+    .ui.form input[type="number"]{
+        height: 38px;
+    }
+    .ui.three.cards{
+        outline: none;
+        border: none;
+    }
+    .ui.cards > .card > .content, .ui.card > .content:hover{
+        cursor: pointer;
+    }
+    #event-type > .text:not(.default) {
+      font-weight: bold;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+</style>
+<div class="bibs-page bibs-bg-gray-1">
+    <form:create id="fc_com_bibsmobile_model_EventCartItem" modelAttribute="eventCartItem" path="/eventitems" render="${empty dependencies}" z="FlaZ02aSfO2teok1KllT14UZS5M=">
+    <div class="ui very padded basic segment">
+        <div class="ui form" style="width:700px;margin:0 auto">
+            <h2 class="ui icon center aligned header">
+                <i class="fa fa-cog"><!--  --></i>
+                <div class="content">Add Product
+                    <div class="sub header">Provide the details for this product.</div>
+                </div>
+            </h2>
+            <div class="field">
+                <div class="ui four cards" id="ticket-type">
                     <input type="hidden" name="type"
-                        data-parsley-error-message="Please select a product type."
+                            data-parsley-error-message="Please select a product type."
+                            data-parsley-required="true"><!--  --></input>
+                    <div class="ui card" id="card-tshirt" onclick="cardHandler('T_SHIRT')">
+                        <div class="content">
+                            <div class="ui teal center aligned header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
+                        </div>
+                    </div>
+                    <div class="ui card" id="card-donation" onclick="cardHandler('DONATION')">
+                        <div class="content">
+                            <div class="ui blue center aligned header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <input  type="text" name="name"
+                        placeholder="Product name"
+                        data-parsley-error-message="Please enter a product name."
+                        data-parsley-required="true"></input>
+            </div>
+            <div class="field">
+                <textarea   name="description" rows="2"
+                            placeholder="Product description"><!-- --></textarea>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label style="width:100%">Purchase Window Opens: </label>
+                    <input  type="text" name="timeStartLocal" id="ECIStart"
+                        placeholder="Start date"
+                        data-provide="datepicker"
+                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                        data-parsley-error-message="Please specify a start date."
+                        data-parsley-required="true"></input>
+                </div>
+                <div class="field">
+                    <label style="width:100%">Purchase Window Closes: </label>
+                    <input  type="text" name="timeEndLocal" id="ECIEnd"
+                        placeholder="End date"
+                        data-provide="datepicker"
+                        data-date-format="MM/DD/YYYY hh:mm:ss a"
+                        data-parsley-error-message="Please specify an end date."
+                        data-parsley-required="true"></input>
+                </div>
+            </div>
+            <div style="display:none">
+                <input id="eventStartDate" value="${event.timeStartLocal}"></input>
+            </div>
+            <div class="field shirt-settings" style="display:none">
+                <label>Sizes</label>
+                <div class="ui basic buttons">
+                    <div class="ui toggle button" id="size-0" onclick="updateShirt('XXS')">XXS</div>
+                    <div class="ui toggle button" id="size-1" onclick="updateShirt('XS')">XS</div>
+                    <div class="ui toggle button" id="size-2" onclick="updateShirt('S')">S</div>
+                    <div class="ui toggle button" id="size-3" onclick="updateShirt('M')">M</div>
+                    <div class="ui toggle button" id="size-4" onclick="updateShirt('L')">L</div>
+                    <div class="ui toggle button" id="size-5" onclick="updateShirt('XL')">XL</div>
+                    <div class="ui toggle button" id="size-6" onclick="updateShirt('2XL')">2XL</div>
+                    <div class="ui toggle button" id="size-7" onclick="updateShirt('3XL')">3XL</div>
+                    <span style="display:none">
+                        <input  class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xxs"
+                                data-parsley-mincheck="1" data-parsley-error-message="Please select at least one size."></input>
+                        <input  class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xs"></input>
+                        <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-s"></input>
+                        <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-m"></input>
+                        <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-l"></input>
+                        <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xl"></input>
+                        <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xl2"></input>
+                        <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xl3"></input>
+                    </span>
+                </div>
+            </div>
+            <div style="display:none"><input type="text" name="tshirtSizes"></input></div>
+            <div class="field shirt-settings" style="display:none">
+                <label>Colors</label>
+                <div class="ui basic buttons">
+                    <div class="ui toggle button" id="color-black" onclick="updateShirt('black')">black</div>
+                    <div class="ui toggle button" id="color-white" onclick="updateShirt('white')">white</div>
+                    <div class="ui toggle button" id="color-red" onclick="updateShirt('red')">red</div>
+                    <div class="ui toggle button" id="color-yellow" onclick="updateShirt('yellow')">yellow</div>
+                    <div class="ui toggle button" id="color-green" onclick="updateShirt('green')">green</div>
+                    <div class="ui toggle button" id="color-blue" onclick="updateShirt('blue')">blue</div>
+                    <div class="ui toggle button" id="color-teal" onclick="updateShirt('teal')">teal</div>
+                    <div class="ui toggle button" id="color-purple" onclick="updateShirt('purple')">purple</div>
+                    <div class="ui toggle button" id="color-none" onclick="updateShirt('none')">n/a</div>
+                    <span style="display:none">
+                        <input  class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-black"
+                                data-parsley-mincheck="1" data-parsley-error-message="Please select at least one color."></input>
+                        <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-white"></input>
+                        <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-red"></input>
+                        <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-yellow"></input>
+                        <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-green"></input>
+                        <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-blue"></input>
+                        <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-teal"></input>
+                        <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-purple"></input>
+                        <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-none"></input>
+                    </span>
+                </div>
+            </div>
+            <div style="display:none"><input type="text" name="tshirtColors"></input></div>
+            <div class="field not-donation not-shirt">
+                <div class="ui fluid selection required dropdown" id="gender-type">
+                    <input type="hidden" name="gender" 
+                        data-parsley-error-message="Please select a gender."
                         data-parsley-required="true"><!--  --></input>
-                    <div class="card" id="card-tshirt" onclick="cardHandler('T_SHIRT')">
-                        <div class="content">
-                            <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
-                        </div>
-                    </div>
-                    <div class="card" id="card-donation" onclick="cardHandler('DONATION')">
-                        <div class="content">
-                            <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
-                        </div>
+                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                    <div class="default text">Gender</div>
+                    <div class="menu">
+                        <div class="item" data-value="MALE_AND_FEMALE">Both</div>
+                        <div class="item" data-value="MALE">Male</div>
+                        <div class="item" data-value="FEMALE">Female</div>
                     </div>
                 </div>
-                <div style="clear:both"><!--  --></div>
-                <div class="form-fields">
-                    <input  type="text" name="name"
-                            class="form-control"
-                            placeholder="Product name"
-                            data-parsley-error-message="Please enter a product name."
-                            data-parsley-required="true"></input>
-                    <textarea  name="description"
-                        class="form-control" rows="2"
-                        placeholder="Product description"><!-- --></textarea>
+                <div    style="display:none;margin-bottom:5px;" id="gender-error"
+                        class="has-error filled">
+                    <span class="parsley-custom-error-message">Please select a gender.</span>
                 </div>
-                <div class="form-fields">
-                    <div class="two fields">
-                        <div class="field">
-                            <label style="width:100%">Purchase Window Opens: </label>
-                            <input  type="text" name="timeStartLocal"
-                                id="ECIStart"
-                                placeholder="Start date"
-                                data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY hh:mm:ss a"
-                                data-parsley-error-message="Please specify a start date."
-                                data-parsley-required="true"></input>
-                        </div>
-                        <div class="field">
-                            <label style="width:100%">Purchase Window Closes: </label>
-                            <input  type="text" name="timeEndLocal"
-                                id="ECIEnd"
-                                placeholder="End date"
-                                data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY hh:mm:ss a"
-                                data-parsley-error-message="Please specify an end date."
-                                data-parsley-required="true"></input>
-                        </div>
-                    </div>
-                    <div style="display:none">
-                        <input id="eventStartDate" value="${event.timeStartLocal}"></input>
-                    </div>
-                    <div class="ui labeled input shirt-settings" style="display:none">
-                        <div class="ui blue label">Sizes</div>
-                        <div class="ui active buttons">
-                            <div class="ui toggle button" id="size-0" onclick="updateShirt('XXS')">XXS</div>
-                            <div class="ui toggle button" id="size-1" onclick="updateShirt('XS')">XS</div>
-                            <div class="ui toggle button" id="size-2" onclick="updateShirt('S')">S</div>
-                            <div class="ui toggle button" id="size-3" onclick="updateShirt('M')">M</div>
-                            <div class="ui toggle button" id="size-4" onclick="updateShirt('L')">L</div>
-                            <div class="ui toggle button" id="size-5" onclick="updateShirt('XL')">XL</div>
-                            <div class="ui toggle button" id="size-6" onclick="updateShirt('2XL')">2XL</div>
-                            <div class="ui toggle button" id="size-7" onclick="updateShirt('3XL')">3XL</div>
-                            <span style="display:none">
-                                <input  class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xxs"
-                                        data-parsley-mincheck="1" data-parsley-error-message="Please select at least one size."></input>
-                                <input  class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xs"></input>
-                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-s"></input>
-                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-m"></input>
-                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-l"></input>
-                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xl"></input>
-                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xl2"></input>
-                                <input class="size-boxes" style="display:none" name="sizes" type="checkbox" id="box-xl3"></input>
-                            </span>
-                        </div>
-                    </div>
-                    <div style="display:none"><input type="text" name="tshirtSizes"></input></div>
-                    <div class="ui labeled input shirt-settings" style="display:none">
-                        <div class="ui blue label">Colors</div>
-                        <div class="ui active buttons">
-                            <div class="ui toggle black basic button" id="color-black" onclick="updateShirt('black')">black</div>
-                            <div class="ui toggle black basic button" id="color-white" onclick="updateShirt('white')">white</div>
-                            <div class="ui toggle red basic button" id="color-red" onclick="updateShirt('red')">red</div>
-                            <div class="ui toggle yellow basic button" id="color-yellow" onclick="updateShirt('yellow')">yellow</div>
-                            <div class="ui toggle green basic button" id="color-green" onclick="updateShirt('green')">green</div>
-                            <div class="ui toggle blue basic button" id="color-blue" onclick="updateShirt('blue')">blue</div>
-                            <div class="ui toggle teal basic button" id="color-teal" onclick="updateShirt('teal')">teal</div>
-                            <div class="ui toggle purple basic button" id="color-purple" onclick="updateShirt('purple')">purple</div>
-                            <div class="ui toggle black basic button" id="color-none" onclick="updateShirt('none')">n/a</div>
-                            <span style="display:none">
-                                <input  class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-black"
-                                        data-parsley-mincheck="1" data-parsley-error-message="Please select at least one color."></input>
-                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-white"></input>
-                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-red"></input>
-                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-yellow"></input>
-                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-green"></input>
-                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-blue"></input>
-                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-teal"></input>
-                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-purple"></input>
-                                <input class="color-boxes" style="display:none" name="colors" type="checkbox" id="box-none"></input>
-                            </span>
-                        </div>
-                    </div>
-                    <div style="display:none"><input type="text" name="tshirtColors"></input></div>
-                    <div class="form-fields not-donation not-shirt">
-                        <div class="ui fluid selection required dropdown" id="gender-type">
-                            <input type="hidden" name="gender" 
-                                data-parsley-error-message="Please select a gender."
-                                data-parsley-required="true"><!--  --></input>
-                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                            <div class="default text">Gender</div>
-                            <div class="menu">
-                                <div class="item" data-value="MALE_AND_FEMALE">Both</div>
-                                <div class="item" data-value="MALE">Male</div>
-                                <div class="item" data-value="FEMALE">Female</div>
-                            </div>
-                        </div>
-                        <div    style="display:none;margin-bottom:5px;" id="gender-error"
-                                class="has-error filled">
-                            <span class="parsley-custom-error-message">Please select a gender.</span>
-                        </div>
-                    </div>
-                    <div class="two fields not-donation not-shirt">
-                        <div class="field">
-                            <label><!--  --></label>
-                            <input  type="number" name="minAge"
-                                    id="lowAge"
-                                    placeholder="Min Age"
-                                    min="1"
-                                    max="120"
-                                    data-parsley-error-message="Invalid age."
-                                    data-parsley-required="true"
-                                    value=""></input>
-                        </div>
-                        <div class="field">
-                            <label><!--  --></label>
-                            <input  type="number" name="maxAge"
-                                    id="highAge"
-                                    placeholder="Max Age"
-                                    min="1"
-                                    max="120"
-                                    data-parsley-error-message="Invalid age."
-                                    data-parsley-required="true"
-                                    value=""></input>
-                        </div>
-                    </div>
-                    <div class="ui labeled input not-donation">
+            </div>
+            <div class="two fields not-donation not-shirt">
+                <div class="field">
+                    <label><!--  --></label>
+                    <input  type="number" name="minAge"
+                            id="lowAge"
+                            placeholder="Min Age"
+                            min="1"
+                            max="120"
+                            data-parsley-error-message="Invalid age."
+                            data-parsley-required="true"
+                            value=""></input>
+                </div>
+                <div class="field">
+                    <label><!--  --></label>
+                    <input  type="number" name="maxAge"
+                            id="highAge"
+                            placeholder="Max Age"
+                            min="1"
+                            max="120"
+                            data-parsley-error-message="Invalid age."
+                            data-parsley-required="true"
+                            value=""></input>
+                </div>
+            </div>
+            <div class="two fields not-donation">
+                <div class="field">
+                    <div class="ui labeled input">
                         <div class="ui label">$</div>
                         <input  type="number" name="price"
-                                class="form-control"
-                                placeholder="Base price"
-                                min="0"
+                                placeholder="Base price" min="0"
                                 data-parsley-error-message="Invalid base price."
                                 data-parsley-required="true"></input>
                     </div>
+                </div>
+                <div class="field">
                     <input  type="number" name="available"
-                            class="form-control not-donation" style="margin-top:5px"
-                            placeholder="Quantity"
-                            min="1"
+                            placeholder="Quantity" min="1"
                             data-parsley-error-message="Invalid maximum quantity."
                             data-parsley-required="true"></input>
                 </div>
             </div>
+        </div>
 
-            <!-- required fields not displayed for user -->
-            <div style="display:none">
-                <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
-                <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
-                <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
-            </div>
-        </form:create>
-    
-        <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
+        <!-- required fields not displayed for user -->
+        <div style="display:none">
+            <field:input field="event" id="c_com_bibsmobile_model_EventCartItem_event" z="user-managed"/>
+            <field:checkbox field="timeLimit" id="c_com_bibsmobile_model_EventCartItem_timeLimit" z="Di+bFwSR+5Z35Etm2JJC2BVldsg="/>
+            <field:input field="priceChanges" id="c_com_bibsmobile_model_EventCartItem_priceChanges" z="user-managed"/>
+        </div>
     </div>
-    <script>
-        window.onload = function(){
-            parseEventId();
-            setValidation();
-            initDateTimePickers();
-            jQuery('.ui.button').state();
-            jQuery('#card-tshirt > .content').attr('style', 'background: #F0F0F0');
-            jQuery('#event-type').dropdown();
-            jQuery('#gender-type').dropdown();
-            jQuery('.ui.checkbox').checkbox();
+    </form:create>
+    
+    <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventCartItem" render="${not empty dependencies}" z="nxkByicvUFX6CvUJutyX7nAFtew="/>
+</div>
+<script>
+    window.onload = function(){
+        parseEventId();
+        setValidation();
+        initDateTimePickers();
+        jQuery('.ui.button').state();
+        jQuery('#card-tshirt > .content').attr('style', 'background: #F0F0F0');
+        jQuery('#event-type').dropdown();
+        jQuery('#gender-type').dropdown();
+        jQuery('.ui.checkbox').checkbox();
 
-            jQuery('input[name="type"]').val('T_SHIRT');
-            jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
-            jQuery('#card-donation > .content').attr('style', 'background:none');
-            jQuery(".ticket-settings").hide();
-            jQuery(".shirt-settings").show();
-            jQuery('.not-donation').show();
-            jQuery('.not-shirt').hide();
-            jQuery("#box-black").attr("data-parsley-required", true);
-            jQuery("#box-xs").attr("data-parsley-required", true);
-            jQuery('input[name="minAge"]').val(1);
-            jQuery('input[name="maxAge"]').val(120);
-            jQuery('input[name="price"]').val("");
-            jQuery('input[name="available"]').val("");
-            jQuery('#etype-error').hide();
+        jQuery('input[name="type"]').val('T_SHIRT');
+        jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
+        jQuery('#card-donation > .content').attr('style', 'background:none');
+        jQuery(".ticket-settings").hide();
+        jQuery(".shirt-settings").show();
+        jQuery('.not-donation').show();
+        jQuery('.not-shirt').hide();
+        jQuery("#box-black").attr("data-parsley-required", true);
+        jQuery("#box-xs").attr("data-parsley-required", true);
+        jQuery('input[name="minAge"]').val(1);
+        jQuery('input[name="maxAge"]').val(120);
+        jQuery('input[name="price"]').val("");
+        jQuery('input[name="available"]').val("");
+        jQuery('#etype-error').hide();
+    }
+
+    function cardHandler(val){
+        jQuery('input[name="type"]').val(val);
+        jQuery('.has-error').each(function(i,e){
+            jQuery(e).text("");
+        })
+        switch(val){
+            case 'T_SHIRT':
+                jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
+                jQuery('#card-donation > .content').attr('style', 'background:none');
+                jQuery(".ticket-settings").hide();
+                jQuery(".shirt-settings").show();
+                jQuery('.not-donation').show();
+                jQuery('.not-shirt').hide();
+                jQuery("#box-black").attr("data-parsley-required", true);
+                jQuery("#box-xs").attr("data-parsley-required", true);
+                jQuery('input[name="minAge"]').val(1);
+                jQuery('input[name="maxAge"]').val(120);
+                jQuery('input[name="price"]').val("");
+                jQuery('input[name="available"]').val("");
+                jQuery('#etype-error').hide();
+                break;
+            case 'DONATION':
+                jQuery('#card-tshirt > .content').attr('style', 'background:none');
+                jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
+                jQuery(".ticket-settings").hide();
+                jQuery(".shirt-settings").hide();
+                jQuery(".not-donation").hide();
+                jQuery("#box-black").attr("data-parsley-required", false);
+                jQuery("#box-xs").attr("data-parsley-required", false);
+                jQuery('input[name="minAge"]').val(1);
+                jQuery('input[name="maxAge"]').val(120);
+                jQuery('input[name="price"]').val(1);
+                jQuery('input[name="available"]').val(1000000000);
+                jQuery('#etype-error').hide();
+                break;
+            default:
+                break;
         }
+    }
 
-        function cardHandler(val){
-            jQuery('input[name="type"]').val(val);
-            jQuery('.has-error').each(function(i,e){
-                jQuery(e).text("");
-            })
-            switch(val){
-                case 'T_SHIRT':
-                    jQuery('#card-tshirt > .content').attr('style', 'background:#F0F0F0');
-                    jQuery('#card-donation > .content').attr('style', 'background:none');
-                    jQuery(".ticket-settings").hide();
-                    jQuery(".shirt-settings").show();
-                    jQuery('.not-donation').show();
-                    jQuery('.not-shirt').hide();
-                    jQuery("#box-black").attr("data-parsley-required", true);
-                    jQuery("#box-xs").attr("data-parsley-required", true);
-                    jQuery('input[name="minAge"]').val(1);
-                    jQuery('input[name="maxAge"]').val(120);
-                    jQuery('input[name="price"]').val("");
-                    jQuery('input[name="available"]').val("");
-                    jQuery('#etype-error').hide();
-                    break;
-                case 'DONATION':
-                    jQuery('#card-tshirt > .content').attr('style', 'background:none');
-                    jQuery('#card-donation > .content').attr('style', 'background:#F0F0F0');
-                    jQuery(".ticket-settings").hide();
-                    jQuery(".shirt-settings").hide();
-                    jQuery(".not-donation").hide();
-                    jQuery("#box-black").attr("data-parsley-required", false);
-                    jQuery("#box-xs").attr("data-parsley-required", false);
-                    jQuery('input[name="minAge"]').val(1);
-                    jQuery('input[name="maxAge"]').val(120);
-                    jQuery('input[name="price"]').val(1);
-                    jQuery('input[name="available"]').val(1000000000);
-                    jQuery('#etype-error').hide();
-                    break;
-                default:
-                    break;
-            }
-        }
+    function parseEventId(){
+        var url = window.location.href;
+        var urllen = url.length;
+        var ind = url.lastIndexOf("=");
+        var eid = url.substring(ind+1, urllen);
+        jQuery("#_event_id").val(eid);
+    }
 
-        function parseEventId(){
-            var url = window.location.href;
-            var urllen = url.length;
-            var ind = url.lastIndexOf("=");
-            var eid = url.substring(ind+1, urllen);
-            jQuery("#_event_id").val(eid);
-        }
+    var proceedD = false;
+    var proceedE = false;
+    var proceedG = false;
+    function setValidation(){
+        var test = false;
 
-        var proceedD = false;
-        var proceedE = false;
-        var proceedG = false;
-        function setValidation(){
-            var test = false;
+        // normal parsley
+        jQuery('#eventCartItem').parsley({
+            errorsWrapper: '<div class="has-error"></div>',
+            errorTemplate: '<span></span>'
+        });
 
-            // normal parsley
-            jQuery('#eventCartItem').parsley({
-                errorsWrapper: '<div class="has-error"></div>',
-                errorTemplate: '<span></span>'
-            });
-
-            jQuery('#proceed').click(function(){
-                var startDateVal = jQuery('#ECIStart').val();
-                var endDateVal = jQuery('#ECIEnd').val();
-                var startMoment = moment(startDateVal, 'MM/DD/YYYY hh:mm:ss a');
-                var startMomentStr = startMoment.format("MM/DD/YYYY hh:mm:ss a");
-                var endMoment = moment(endDateVal, 'MM/DD/YYYY hh:mm:ss a');
-                var endMomentStr = endMoment.format("MM/DD/YYYY hh:mm:ss a");
-                if(startMoment.isAfter(moment('${event.timeStartLocal}'))){
-                    jQuery('#proceed').prop('disabled', true);
-                    alert('You\'ve selected an Purchase Window Open Date (' + startMomentStr + ') that is past your event\'s starting time (' + '${event.timeStartLocal}' + '). We\'ve adjusted your Purchase Window Open Date to be the current time.');
-                    jQuery('#ECIStart').data('DateTimePicker').setDate(moment());
-                    proceedD = false;
-                    jQuery('#proceed').prop('disabled', false);
-                }
-                if(endMoment.isAfter(moment('${event.timeStartLocal}'))){
-                    jQuery('#proceed').prop('disabled', true);
-                    alert('You\'ve selected a Purchase Window Close Date (' + endMomentStr + ') that is past your event\'s starting time (' + startMomentStr + '). We\'ve adjusted your Purchase Window Close Date to be your event\'s starting time.');
-                    jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
-                    proceedD = false;
-                    jQuery('#proceed').prop('disabled', false);
-                }else if(endMoment.isBefore(moment()) &amp;&amp; moment('${event.timeStartLocal}').isAfter(moment())){
-                    jQuery('#proceed').prop('disabled', true);
-                    alert('You\'ve selected a Purchase Window Close Date (' + endMomentStr + ') that is before today, which means no one can purchase this item currently. We\'ve adjusted your Purchase Window Close Date to be your event\'s starting time.');
-                    jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
-                    proceedD = false;
-                    jQuery('#proceed').prop('disabled', false);
-                 }
-
-                if(startMoment.isBefore(moment('${event.timeStartLocal}')) &amp;&amp; endMoment.isBefore(moment('${event.timeStartLocal}'))){
-                    proceedD = true;
-                }
-                if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
-                    jQuery('.size-boxes').each(function(){
-                        jQuery('.size-boxes').removeAttr('name');
-                    });
-                    jQuery('.color-boxes').each(function(){
-                        jQuery('.size-boxes').removeAttr('name');
-                    });
-                    jQuery("#eventCartItem").submit();
-                }
-            });
-
-            jQuery("#lowAge").on('input', function(){
-                var low = jQuery("#lowAge").val();
-                var high = jQuery("#highAge").val();
-                low = parseInt(low);
-                high = parseInt(high);
-
-                if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
-                if( high !== "" ){
-                    if( low &gt;= high ){
-                        jQuery(this).val(high);
-                    }
-                    else{
-                        jQuery("#highAge").attr("min", jQuery(this).val());
-                    }
-                }
-            });
-
-            jQuery("#highAge").on('change', function(){
-                var low = jQuery("#lowAge").val();
-                var high = jQuery("#highAge").val();
-                low = parseInt(low);
-                high = parseInt(high);
-                if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
-                if( low !== "" ){
-                    if( high &lt;= low ){
-                        jQuery(this).val(low);
-                    }
-                    else{
-                        jQuery("#lowAge").attr("max", jQuery(this).val());
-                    }
-                }
-            });
-
-            jQuery('#eventCartItem').on('submit', function(e){
-                // e.preventDefault();
+        jQuery('#proceed').click(function(){
+            var startDateVal = jQuery('#ECIStart').val();
+            var endDateVal = jQuery('#ECIEnd').val();
+            var startMoment = moment(startDateVal, 'MM/DD/YYYY hh:mm:ss a');
+            var startMomentStr = startMoment.format("MM/DD/YYYY hh:mm:ss a");
+            var endMoment = moment(endDateVal, 'MM/DD/YYYY hh:mm:ss a');
+            var endMomentStr = endMoment.format("MM/DD/YYYY hh:mm:ss a");
+            if(startMoment.isAfter(moment('${event.timeStartLocal}'))){
                 jQuery('#proceed').prop('disabled', true);
-            });
-        }
-
-        var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
-        function initDateTimePickers(){
-            jQuery("#ECIStart")
-                .datetimepicker({
-                    defaultDate: moment().startOf('day'),
-                    useSeconds: true,
-                    sideBySide: true
-                });
-            jQuery("#ECIEnd")
-                .datetimepicker({
-                    defaultDate: eventStart,
-                    useSeconds: true,
-                    sideBySide: true
-                });
-            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
-            jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
-
-            <!-- on change-ui -->
-            jQuery("#ECIStart").on("dp.change",function (e) {
-                jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
-            });
-            jQuery("#ECIEnd").on("dp.change",function (e) {
-                jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
-            });
-        }
-
-        var xs = false; var sm = false; var md = false; var lg = false; var xl = false;
-        var xxs = false; var xl2 = false; var xl3 = false;
-        var blk = false; var wht = false; var red = false; var yel = false;
-        var grn = false; var blue = false; var teal = false; var purp = false; var none = false;
-        function resetColors(){
-            blk = false; wht = false; red = false; yel = false;
-            grn = false; blue = false; teal = false; purp = false;
-            jQuery('#color-black').removeClass('active');
-            jQuery('#color-white').removeClass('active');
-            jQuery('#color-red').removeClass('active');
-            jQuery('#color-yellow').removeClass('active');
-            jQuery('#color-green').removeClass('active');
-            jQuery('#color-blue').removeClass('active');
-            jQuery('#color-teal').removeClass('active');
-            jQuery('#color-purple').removeClass('active');
-            console.log('resetting colors..')
-        }
-        function resetNone(){
-            none = false;
-            jQuery('#color-none').removeClass('active');
-        }
-        function updateShirt(val){
-            switch(val) {
-                case 'XXS':     xxs  = !xxs;    jQuery("#box-xxs").click();       break;
-                case 'XS':      xs   = !xs;     jQuery("#box-xs").click();        break;
-                case 'S':       sm   = !sm;     jQuery("#box-s").click();         break;
-                case 'M':       md   = !md;     jQuery("#box-m").click();         break;
-                case 'L':       lg   = !lg;     jQuery("#box-l").click();         break;
-                case 'XL':      xl   = !xl;     jQuery("#box-xl").click();        break;
-                case '2XL':
-                case 'XXL':     xl2  = !xl2;    jQuery("#box-xl2").click();       break;
-                case '3XL':     
-                case 'XXXL':    xl3  = !xl3;    jQuery("#box-xl3").click();       break;
-                case 'black':   blk  = !blk;    jQuery("#box-black").click();     resetNone(); break;
-                case 'white':   wht  = !wht;    jQuery("#box-white").click();     resetNone(); break;
-                case 'red':     red  = !red;    jQuery("#box-red").click();       resetNone(); break;
-                case 'yellow':  yel  = !yel;    jQuery("#box-yellow").click();    resetNone(); break;
-                case 'green':   grn  = !grn;    jQuery("#box-green").click();     resetNone(); break;
-                case 'blue':    blue = !blue;   jQuery("#box-blue").click();      resetNone(); break;
-                case 'teal':    teal = !teal;   jQuery("#box-teal").click();      resetNone(); break;
-                case 'purple':  purp = !purp;   jQuery("#box-purple").click();    resetNone(); break;
-                case 'none':    none = !none;   jQuery("#box-none").click();      
-                                resetColors();
-                                break;
-                default: break;
+                alert('You\'ve selected an Purchase Window Open Date (' + startMomentStr + ') that is past your event\'s starting time (' + '${event.timeStartLocal}' + '). We\'ve adjusted your Purchase Window Open Date to be the current time.');
+                jQuery('#ECIStart').data('DateTimePicker').setDate(moment());
+                proceedD = false;
+                jQuery('#proceed').prop('disabled', false);
             }
-            var sizes = ""; var colors = "";
-            if(xxs){  sizes  += "XXS,"; }
-            if(xs){   sizes  += "XS,"; }
-            if(sm){   sizes  += "S,"; }
-            if(md){   sizes  += "M,"; }
-            if(lg){   sizes  += "L,"; }
-            if(xl){   sizes  += "XL,"; }
-            if(xl2){  sizes  += "XXL,"; }
-            if(xl3){  sizes  += "XXXL,"; }
-            if(blk){  colors += "Black,"; }
-            if(wht){  colors += "White,"; }
-            if(red){  colors += "Red,"; }
-            if(yel){  colors += "Yellow,"; }
-            if(grn){  colors += "Green,"; }
-            if(blue){ colors += "Blue,"; }
-            if(teal){ colors += "Teal,"; }
-            if(purp){ colors += "Purple,"; }
-            if(none){ colors += "N/A,"; }
-            if( sizes.length > 1 ){ sizes = sizes.substr(0, sizes.length-1); }
-            if( colors.length > 1 ){ colors = colors.substr(0, colors.length-1); }
-            jQuery('input[name="tshirtSizes"]').val(sizes);
-            jQuery('input[name="tshirtColors"]').val(colors);
+            if(endMoment.isAfter(moment('${event.timeStartLocal}'))){
+                jQuery('#proceed').prop('disabled', true);
+                alert('You\'ve selected a Purchase Window Close Date (' + endMomentStr + ') that is past your event\'s starting time (' + startMomentStr + '). We\'ve adjusted your Purchase Window Close Date to be your event\'s starting time.');
+                jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
+                proceedD = false;
+                jQuery('#proceed').prop('disabled', false);
+            }else if(endMoment.isBefore(moment()) &amp;&amp; moment('${event.timeStartLocal}').isAfter(moment())){
+                jQuery('#proceed').prop('disabled', true);
+                alert('You\'ve selected a Purchase Window Close Date (' + endMomentStr + ') that is before today, which means no one can purchase this item currently. We\'ve adjusted your Purchase Window Close Date to be your event\'s starting time.');
+                jQuery('#ECIEnd').data('DateTimePicker').setDate(moment('${event.timeStartLocal}'));
+                proceedD = false;
+                jQuery('#proceed').prop('disabled', false);
+             }
+
+            if(startMoment.isBefore(moment('${event.timeStartLocal}')) &amp;&amp; endMoment.isBefore(moment('${event.timeStartLocal}'))){
+                proceedD = true;
+            }
+            if( proceedD &amp;&amp; proceedE &amp;&amp; proceedG ){
+                jQuery('.size-boxes').each(function(){
+                    jQuery('.size-boxes').removeAttr('name');
+                });
+                jQuery('.color-boxes').each(function(){
+                    jQuery('.size-boxes').removeAttr('name');
+                });
+                jQuery("#eventCartItem").submit();
+            }
+        });
+
+        jQuery("#lowAge").on('input', function(){
+            var low = jQuery("#lowAge").val();
+            var high = jQuery("#highAge").val();
+            low = parseInt(low);
+            high = parseInt(high);
+
+            if( (low == "") || (low == 0) || (isNaN(low)) ){ jQuery("#lowAge").val(""); }
+            if( high !== "" ){
+                if( low &gt;= high ){
+                    jQuery(this).val(high);
+                }
+                else{
+                    jQuery("#highAge").attr("min", jQuery(this).val());
+                }
+            }
+        });
+
+        jQuery("#highAge").on('change', function(){
+            var low = jQuery("#lowAge").val();
+            var high = jQuery("#highAge").val();
+            low = parseInt(low);
+            high = parseInt(high);
+            if( (high == "") || (high == 0) || (isNaN(low)) ){ jQuery("#highAge").val("") }
+            if( low !== "" ){
+                if( high &lt;= low ){
+                    jQuery(this).val(low);
+                }
+                else{
+                    jQuery("#lowAge").attr("max", jQuery(this).val());
+                }
+            }
+        });
+
+        jQuery('#eventCartItem').on('submit', function(e){
+            // e.preventDefault();
+            jQuery('#proceed').prop('disabled', true);
+        });
+    }
+
+    var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a');
+    function initDateTimePickers(){
+        jQuery("#ECIStart")
+            .datetimepicker({
+                defaultDate: moment().startOf('day'),
+                useSeconds: true,
+                sideBySide: true
+            });
+        jQuery("#ECIEnd")
+            .datetimepicker({
+                defaultDate: eventStart,
+                useSeconds: true,
+                sideBySide: true
+            });
+        jQuery('#ECIEnd').data("DateTimePicker").setMinDate(jQuery("#ECIStart").data("DateTimePicker").getDate());
+        jQuery('#ECIEnd').data("DateTimePicker").setMaxDate(eventStart);
+
+        <!-- on change-ui -->
+        jQuery("#ECIStart").on("dp.change",function (e) {
+            jQuery('#ECIEnd').data("DateTimePicker").setMinDate(e.date);
+        });
+        jQuery("#ECIEnd").on("dp.change",function (e) {
+            jQuery('#ECIStart').data("DateTimePicker").setMaxDate(e.date);
+        });
+    }
+
+    var xs = false; var sm = false; var md = false; var lg = false; var xl = false;
+    var xxs = false; var xl2 = false; var xl3 = false;
+    var blk = false; var wht = false; var red = false; var yel = false;
+    var grn = false; var blue = false; var teal = false; var purp = false; var none = false;
+    function resetColors(){
+        blk = false; wht = false; red = false; yel = false;
+        grn = false; blue = false; teal = false; purp = false;
+        jQuery('#color-black').removeClass('active');
+        jQuery('#color-white').removeClass('active');
+        jQuery('#color-red').removeClass('active');
+        jQuery('#color-yellow').removeClass('active');
+        jQuery('#color-green').removeClass('active');
+        jQuery('#color-blue').removeClass('active');
+        jQuery('#color-teal').removeClass('active');
+        jQuery('#color-purple').removeClass('active');
+        console.log('resetting colors..')
+    }
+    function resetNone(){
+        none = false;
+        jQuery('#color-none').removeClass('active');
+    }
+    function updateShirt(val){
+        switch(val) {
+            case 'XXS':     xxs  = !xxs;    jQuery("#box-xxs").click();       break;
+            case 'XS':      xs   = !xs;     jQuery("#box-xs").click();        break;
+            case 'S':       sm   = !sm;     jQuery("#box-s").click();         break;
+            case 'M':       md   = !md;     jQuery("#box-m").click();         break;
+            case 'L':       lg   = !lg;     jQuery("#box-l").click();         break;
+            case 'XL':      xl   = !xl;     jQuery("#box-xl").click();        break;
+            case '2XL':
+            case 'XXL':     xl2  = !xl2;    jQuery("#box-xl2").click();       break;
+            case '3XL':     
+            case 'XXXL':    xl3  = !xl3;    jQuery("#box-xl3").click();       break;
+            case 'black':   blk  = !blk;    jQuery("#box-black").click();     resetNone(); break;
+            case 'white':   wht  = !wht;    jQuery("#box-white").click();     resetNone(); break;
+            case 'red':     red  = !red;    jQuery("#box-red").click();       resetNone(); break;
+            case 'yellow':  yel  = !yel;    jQuery("#box-yellow").click();    resetNone(); break;
+            case 'green':   grn  = !grn;    jQuery("#box-green").click();     resetNone(); break;
+            case 'blue':    blue = !blue;   jQuery("#box-blue").click();      resetNone(); break;
+            case 'teal':    teal = !teal;   jQuery("#box-teal").click();      resetNone(); break;
+            case 'purple':  purp = !purp;   jQuery("#box-purple").click();    resetNone(); break;
+            case 'none':    none = !none;   jQuery("#box-none").click();      
+                            resetColors();
+                            break;
+            default: break;
         }
-    </script>
+        var sizes = ""; var colors = "";
+        if(xxs){  sizes  += "XXS,"; }
+        if(xs){   sizes  += "XS,"; }
+        if(sm){   sizes  += "S,"; }
+        if(md){   sizes  += "M,"; }
+        if(lg){   sizes  += "L,"; }
+        if(xl){   sizes  += "XL,"; }
+        if(xl2){  sizes  += "XXL,"; }
+        if(xl3){  sizes  += "XXXL,"; }
+        if(blk){  colors += "Black,"; }
+        if(wht){  colors += "White,"; }
+        if(red){  colors += "Red,"; }
+        if(yel){  colors += "Yellow,"; }
+        if(grn){  colors += "Green,"; }
+        if(blue){ colors += "Blue,"; }
+        if(teal){ colors += "Teal,"; }
+        if(purp){ colors += "Purple,"; }
+        if(none){ colors += "N/A,"; }
+        if( sizes.length > 1 ){ sizes = sizes.substr(0, sizes.length-1); }
+        if( colors.length > 1 ){ colors = colors.substr(0, colors.length-1); }
+        jQuery('input[name="tshirtSizes"]').val(sizes);
+        jQuery('input[name="tshirtColors"]').val(colors);
+    }
+</script>
 </div>
