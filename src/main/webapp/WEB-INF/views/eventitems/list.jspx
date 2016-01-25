@@ -3,31 +3,8 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-        body{
-            background-image: url('images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 102%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 4%;
-            padding-left: 2%;
-        }
-        .info-container{
-            margin: 0 auto;
-            width: 80%;
-            font-size: 1.2em;
-            font-weight: 100;
-            line-height: 27px;
-            color: #292929;
+        .ui.card > .content > .header + .description{
             text-align: center;
-        }
-        i{
-            margin-right: 5px;
         }
         .x-btn{
             margin-left: 5px;
@@ -126,7 +103,7 @@
                                 <label style="width:100%">Attach Discount/Fee (Optional)</label>
                                 <div class="ui action input">
                                     <input type="number" step="5" id="custom-price-dropdown-input" placeholder="&amp;dollar; Amount (i.e. -3.50 or 1.50)"></input>
-                                    <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus"><!--  --></i></div>
+                                    <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus icon"><!--  --></i></div>
                                 </div>
                             </div>
                             <div style="clear:both"><!--  --></div>
@@ -166,7 +143,7 @@
                                             </div>
                                         </c:if>
                                     </div>
-                                    <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-times" style="margin-left:5px;margin-right:0;"><!--  --></i></a>
+                                    <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-close link icon"><!--  --></i></a>
                                 </div>
                             </div>
                             
@@ -268,7 +245,7 @@
                             </div>
                         </div>
                         <div class="ui negative message" id="coupon-error-percent" style="display:none">
-                            <i class="fa fa-times" style="float:right;font-size: 1.2em;"><!--  --></i>
+                            <i class="fa fa-close link icon"><!--  --></i>
                             <div class="header">
                                 We can't allow that discount.
                             </div>
@@ -287,7 +264,7 @@
     </div>
     <div class="bibs-page bibs-bg-gray-1">
         <div class="ui very padded basic segment">
-            <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
+            <div class="pull-left"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
             <div style="clear:both"><!--  --></div>
             <div class="ui top attached tabular menu">
                 <div class="active item" data-tab="eci-menu">Products</div>
@@ -320,7 +297,7 @@
                         </form>
                         <h3 class="ui dividing header">Current Products</h3>
                     </c:if>
-                    <div class="ui four doubling cards">
+                    <div class="ui five doubling cards">
                         <c:if test="${not empty eventcartitems}">
                             <c:forEach var="item" items="${eventcartitems}">
                                 <div class="ui fluid card">
@@ -348,7 +325,7 @@
                                         </c:if>
                                     </div>
                                     <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
-                                        <i class="fa fa-external-link"><!--  --></i>View Details
+                                        <i class="fa fa-external-link icon"><!--  --></i>View Details
                                     </div>
                                 </div>
                             </c:forEach>
@@ -364,7 +341,7 @@
                                     </div>
                                 </div>
                                 <div class="ui bottom attached button">
-                                    <i class="fa fa-plus"><!--  --></i> shirt/donation
+                                    <i class="fa fa-plus icon"><!--  --></i> Shirt/Donation
                                 </div>
                             </div>
                         </c:if>
@@ -389,34 +366,32 @@
                         <div class="sub header">Allow registrants to receive discounts by sharing on social media.</div>
                     </div>
                 </h3>
-                <form class="ui small form" id="shareForm">
-                    <div class="fields">
-                        <div class="twelve wide field">
-                            <div class="ui toggle checkbox" id="share-check">
-                                <label style="width:100%"><b>Enable</b> discounts from social media sharing</label>
-                                <input type="checkbox" name="socialSharingDiscounts"><!--  --></input>
-                            </div>
+                <form class="ui small form" id="shareForm" style="width:400px;margin:0 auto;">
+                    <div class="field">
+                        <div class="ui toggle checkbox" id="share-check">
+                            <label style="width:100%"><b>Enable</b> discounts from social media sharing</label>
+                            <input type="checkbox" name="socialSharingDiscounts"><!--  --></input>
                         </div>
-                        <div class="six wide field" id="share-amount" style="display:none">
-                            <label>Discount Amount (min: $1.00)</label>
-                            <div class="ui labeled input">
-                                <div class="ui label" style="cursor:default">$</div>
-                                <input  type="number" step="0.05" min="1" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
-                                        name="socialSharingDiscountAmount"
-                                        placeholder="Discount"
-                                        data-parsley-error-message="Please enter a valid discount amount."
-                                        data-parsley-required="true"></input>
-                            </div>
+                    </div>
+                    <div class="field" id="share-amount" style="display:none">
+                        <label>Discount Amount (min: $1.00)</label>
+                        <div class="ui labeled input">
+                            <div class="ui label" style="cursor:default">$</div>
+                            <input  type="number" step="0.05" min="1" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
+                                    name="socialSharingDiscountAmount"
+                                    placeholder="Discount"
+                                    data-parsley-error-message="Please enter a valid discount amount."
+                                    data-parsley-required="true"></input>
                         </div>
-                        <div class="eight wide required field" id="share-msg" style="display:none">
-                            <label>Top Sharer Reward Description</label>
-                            <div class="ui required input">
-                                <input  type="text"
-                                        name="topSharerReward"
-                                        placeholder="i.e. Top sharer gets a free limited edition hoodie!"
-                                        data-parsley-error-message="Please provide a reward description for the top sharer."
-                                        data-parsley-required="true"></input>
-                            </div>
+                    </div>
+                    <div class="required field" id="share-msg" style="display:none">
+                        <label>Top Sharer Reward Description</label>
+                        <div class="ui required input">
+                            <input  type="text"
+                                    name="topSharerReward"
+                                    placeholder="i.e. Top sharer gets a free limited edition hoodie!"
+                                    data-parsley-error-message="Please provide a reward description for the top sharer."
+                                    data-parsley-required="true"></input>
                         </div>
                     </div>
                     <div style="clear:both"><!--  --></div>
@@ -452,7 +427,7 @@
                                         </div>
                                     </div>
                                     <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responses}', ${item.eventItemIds})">
-                                        <i class="fa fa-external-link"><!--  --></i>View Details
+                                        <i class="fa fa-external-link icon"><!--  --></i>View Details
                                     </div>
                                 </div>
                             </c:forEach>
@@ -467,7 +442,7 @@
                                 </div>
                             </div>
                             <div class="ui bottom attached button">
-                                <i class="fa fa-plus"><!--  --></i> question
+                                <i class="fa fa-plus icon"><!--  --></i> Question
                             </div>
                         </div>
                     </div>
@@ -497,7 +472,7 @@
                                         <div class="right floated">${coupon.available} available</div>
                                     </div>
                                     <div class="ui bottom attached button" onclick="couponDetail('${coupon.id}', '${coupon.code}', '${coupon.discountRelative}', '${coupon.discountAbsolute}', '${coupon.available}', '${coupon.item.id}')">
-                                        <i class="fa fa-external-link"><!--  --></i>View Details
+                                        <i class="fa fa-external-link icon"><!--  --></i>View Details
                                     </div>
                                 </div>
                             </c:forEach>
@@ -512,7 +487,7 @@
                                 </div>
                             </div>
                             <div class="ui bottom attached button">
-                                <i class="fa fa-plus"><!--  --></i> coupon
+                                <i class="fa fa-plus icon"><!--  --></i> Coupon
                             </div>
                         </div>
                     </div>
@@ -526,29 +501,25 @@
                         <div class="sub header">Allow users to transfer tickets to others.</div>
                     </div>
                 </h3>
-                <form class="ui small form" id="transferForm">
-                    <div class="fields">
-                        <div class="twelve wide field">
-                            <div class="ui toggle checkbox">
-                                <label><b>Enable</b> ticket transfer</label>
-                                <input type="radio" name="ticketTransferEnabled"><!--  --></input>
-                            </div>
+                <form class="ui small form" id="transferForm" style="width:500px; margin:0 auto">
+                    <div class="field">
+                        <div class="ui slider checkbox">
+                            <label style="width:100%"><b>Enable</b> ticket transfer</label>
+                            <input type="checkbox" name="ticketTransferEnabled"><!--  --></input>
                         </div>
-                        <div class="six wide field">
-                            <label>Transfer cutoff date</label>
-                            <input  type="text" name="ticketTransferCutoff"
+                    </div>
+                    <div class="field">
+                        <label>Transfer cutoff date</label>
+                        <input  type="text" name="ticketTransferCutoff"
                                 id="cutoff-date"
                                 placeholder="Transfer cutoff date"
                                 data-provide="datepicker"
                                 data-date-format="MM/DD/YYYY h:mm:ss a"
                                 data-parsley-error-message="Please specify an end date."
                                 data-parsley-required="true"></input>
-                        </div>
-                        <div style="clear:both"><!--  --></div>
-                        <div class="field">
-                            <button class="ui green button" id="transferSaveButton" type="submit">Save</button>
-                        </div>
                     </div>
+                    <div style="clear:both"><!--  --></div>
+                    <button class="ui green button" id="transferSaveButton" type="submit">Save</button>
                 </form>
             </div>
         </div>
