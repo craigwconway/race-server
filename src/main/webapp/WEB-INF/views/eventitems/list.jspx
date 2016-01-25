@@ -377,7 +377,7 @@
                     </div>
                 </h3>
                 <div class="content">
-                    <div class="ui four doubling cards">
+                    <div class="ui five doubling cards">
                         <c:if test="${not empty customregfields}">
                             <div>Added Questions:</div>
                             <c:forEach var="item" items="${customregfields}">
@@ -425,7 +425,7 @@
                     </div>
                 </h3>
                 <div class="content">
-                    <div class="ui four doubling cards">
+                    <div class="ui five doubling cards">
                         <c:if test="${not empty eventcoupons}">
                             <br/>
                             <c:forEach var="coupon" items="${eventcoupons}">
