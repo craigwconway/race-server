@@ -5,7 +5,7 @@
 <style>
     .submit{
         margin: 0 auto;
-        width: 400px;
+        width: 700px;
         text-align: right;
     }
     .ui.form input[type="number"]{
@@ -38,7 +38,7 @@
                 </div>
             </h2>
             <div class="field">
-                <div class="ui four cards" id="ticket-type">
+                <div class="ui two cards" id="ticket-type">
                     <input type="hidden" name="type"
                             data-parsley-error-message="Please select a product type."
                             data-parsley-required="true"><!--  --></input>
