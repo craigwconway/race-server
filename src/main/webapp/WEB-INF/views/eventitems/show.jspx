@@ -7,22 +7,6 @@
             background-image: url('../images/auth.jpg');
             background-size: cover; background-repeat: no-repeat;
         }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .info-container{
-            margin: 0 auto;
-            width: 500px;
-            font-weight: 100;
-            color: #292929;
-        }
         .quicklinks{
             margin: 0 auto;
             width: 500px;
@@ -32,44 +16,42 @@
             text-align: left;
         }
         .ui.horizontal.labels .label, .ui.horizontal.label{
-            width: 25%;
+            width: 130px;
             margin-right: 15px;
         }
     </style>
-    <div class="white-overlay">
-        <div style="width:500px; margin: 0 auto;">
-            <div class="pull-left">
-                <button class="btn btn-default btn-top" onclick="onBack()" type="button">Back</button>
-                <a href="/bibs-server/eventitems/${eventcartitem.id}?form" title="Edit"><div class="ui icon yellow button"><i style="margin-right:0" class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
-                        <a href="javascript:deleteProduct(${eventcartitem.id})" title="Delete"><div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div></a>
-            </div>
-            <div class="pull-right">
-                <button class="btn btn-default btn-top" onclick="priceChanges()" type="button">Ticket Types</button>
-            </div>
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment" style="width:75%;margin:0 auto">
+        <div class="pull-left">
+            <button class="ui orange button" onclick="onBack()">Back</button>
+        </div>
+        <div class="pull-right">
+            <a href="/bibs-server/eventitems/${eventcartitem.id}?form" title="Edit"><div class="ui icon yellow button"><i class="fa fa-pencil fa-inverse"><!--  --></i></div></a>
+            <a href="javascript:deleteProduct(${eventcartitem.id})" title="Delete"><div class="ui icon red button"><i class="fa fa-trash"><!--  --></i></div></a>
+            <button class="ui bibs-bg-main-blue bibs-gray-1 button" onclick="priceChanges()" type="button">Ticket Types</button>
         </div>
         <div style="clear:both"></div>
-        <div class="info-container">
-            <h2 class="ui icon header" style="margin-top:10px">
-                <c:if test="${eventcartitem.type == 'TICKET'}">
-                    <div class="ui yellow header"><i class="fa fa-ticket fa-2x"><!--  --></i></div>
-                </c:if>
-                <c:if test="${eventcartitem.type == 'T_SHIRT'}">
-                    <div class="ui teal header"><i class="fa fa-shirtsinbulk fa-2x"><!--  --></i></div>
-                </c:if>
-                <c:if test="${eventcartitem.type == 'DONATION'}">
-                    <div class="ui blue header"><i class="fa fa-heart-o fa-2x"><!--  --></i></div>
-                </c:if>
-                <div class="content">${eventcartitem.event}
-                    <div class="sub header">${eventcartitem.name}</div>
-                </div>
-            </h2>
-            <div class="meta">
-                ${eventcartitem.description}
+        <h2 class="ui icon center aligned header" style="margin-top:10px">
+            <c:if test="${eventcartitem.type == 'TICKET'}">
+                <div class="ui yellow header"><i class="fa fa-ticket fa-2x"><!--  --></i></div>
+            </c:if>
+            <c:if test="${eventcartitem.type == 'T_SHIRT'}">
+                <div class="ui teal header"><i class="fa fa-shirtsinbulk fa-2x"><!--  --></i></div>
+            </c:if>
+            <c:if test="${eventcartitem.type == 'DONATION'}">
+                <div class="ui blue header"><i class="fa fa-heart-o fa-2x"><!--  --></i></div>
+            </c:if>
+            <div class="content">${eventcartitem.event}
+                <div class="sub header">${eventcartitem.name}</div>
             </div>
-            <h4 class="ui horizontal header divider">
-                Details
-            </h4>
-            <div class="ui very relaxed list">
+        </h2>
+        <div class="description">
+            ${eventcartitem.description}
+        </div>
+        <h4 class="ui horizontal header divider">
+            Details
+        </h4>
+        <div class="ui very relaxed list">
             <c:if test="${eventcartitem.type == 'T_SHIRT'}">
               <div class="item">
                 <div class="ui blue horizontal label">Sizes</div>${eventcartitem.tshirtSizes}
@@ -78,44 +60,44 @@
                 <div class="ui blue horizontal label">Colors</div>${eventcartitem.tshirtColors}
               </div>
             </c:if>
-              <div class="item">
+            <div class="item">
                 <div class="ui blue horizontal label">Base Price</div>${eventcartitem.price}
-              </div>
-              <div class="item">
+            </div>
+            <div class="item">
                 <div class="ui blue horizontal label">Start Time</div>${eventcartitem.timeStartLocal}
-              </div>
-              <div class="item">
+            </div>
+            <div class="item">
                 <div class="ui blue horizontal label">End Time</div>${eventcartitem.timeEndLocal}
-              </div>
-              <div class="item">
+            </div>
+            <div class="item">
                 <div class="ui blue horizontal label">Age Group</div>${eventcartitem.minAge} to ${eventcartitem.maxAge}
-              </div>
             </div>
         </div>
     </div>
-    <script>
-        function onBack(){
-            window.location="/bibs-server/eventitems?event=${eventcartitem.event.id}";
+</div>
+<script>
+    function onBack(){
+        window.location="/bibs-server/eventitems?event=${eventcartitem.event.id}";
+    }
+    function priceChanges(){
+        window.location="/bibs-server/eventitemspricechanges?eventitem=${eventcartitem.id}";
+    }
+    function deleteProduct(id){
+        if(confirm("Delete Product?")){
+            jQuery(".cat-"+id).remove();
+            sendDelete(id);
         }
-        function priceChanges(){
-            window.location="/bibs-server/eventitemspricechanges?eventitem=${eventcartitem.id}";
-        }
-        function deleteProduct(id){
-            if(confirm("Delete Product?")){
-                jQuery(".cat-"+id).remove();
-                sendDelete(id);
+    }
+    function sendDelete(id){    
+        var request = jQuery.ajax({
+            url: "/bibs-server/eventitems/"+id,
+            type: "DELETE",
+            dataType: "json",
+            data: { "id": id },
+            complete: function() {
+                onBack();
             }
-        }
-        function sendDelete(id){    
-            var request = jQuery.ajax({
-                url: "/bibs-server/eventitems/"+id,
-                type: "DELETE",
-                dataType: "json",
-                data: { "id": id },
-                complete: function() {
-                    onBack();
-                }
-            });
-        }
-    </script>
+        });
+    }
+</script>
 </div>

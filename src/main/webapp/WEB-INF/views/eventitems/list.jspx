@@ -1,963 +1,661 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <style>
-        .ui.card > .content > .header + .description{
-            text-align: center;
-        }
-        .ui.cards > .card > .content > .header{
-            text-align: left;
-        }
-        h2,h3{
-            margin-left: 0;
-            padding-left:0;
-        }
-        .ui.form{
-            text-align: left;
-            margin: auto 5%;
-        }
-        .ui.form .field > label, .ui.form .inline.fields .field > label, .ui.form .inline.fields > label{
-            font-size: 1em;
-            width: 150px;
-            margin: 1em 0em 1em;
-        }
-        .ui.menu .item{
-            cursor: pointer;
-        }
-        label#question-label{
-            width:100%;
-        }
-        .ui.labels .label, .ui.label{
-            cursor: pointer;
-            margin-bottom: 2px;
-        }
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-          -webkit-appearance: none; 
-          margin: 0; 
-        }
-        .ui.form .field > label, .ui.form .inline.fields .field > label, .ui.form .inline.fields > label{
-            font-size: 1em;
-            width: 100%;
-            margin: 1em 0em 0.5em;
-        }
-        .ui.form input:not([type]), .ui.form input[type="text"], .ui.form input[type="email"], .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="password"], .ui.form input[type="number"], .ui.form input[type="url"], .ui.form input[type="tel"]{
-            font-weight: 400;
-        }
-    </style>
-    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-    <div class="ui long modal" id="addQuestion">
-        <div class="header" id="addQuestionModal">Add Question</div>
-        <div class="content">
-            <div class="ui form" id="putFieldForm">
-                <input type="hidden" name="id"><!--  --></input>
-                <div class="required field">
-                    <label>Question</label>
-                    <input type="text" name="question" placeholder="What do you want to ask?"
-                           data-parsley-required="true"
-                           data-parsley-error-message="Please provide a question."><!--  --></input>
-                </div>
-                <div class="grouped fields">
-                    <label style="width:100%" for="responseType">Response Type</label>
-                    <div class="field">
-                        <div class="ui radio checkbox checked" id="radio-input">
-                            <input type="radio" checked="" name="responseType" value="input"><!--  --></input>
-                            <label>User Input</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox" id="radio-dropdown">
-                            <input type="radio" name="responseType" value="dropdown"><!--  --></input>
-                            <label>Dropdown Menu</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="fields" id="dropdown-field" style="display:none">
-                    <div class="field">
-                        <label style="width:100%">Add Dropdown Option</label>
-                        <div class="ui input" style="width:300px">
-                            <input  type="text" id="custom-response-dropdown-input" placeholder="Add dropdown option"></input>
-                        </div>
-                    </div>
-                    <span style="line-height:5.4em;padding:0 5px;font-size:1.5em;"> &amp; </span>
-                    <div class="field">
-                        <label style="width:100%">Attach Discount/Fee (Optional)</label>
-                        <div class="ui action input" style="width:250px">
-                            <input type="number" step="5" id="custom-price-dropdown-input" placeholder="$ Amount (i.e. -3.50 or 1.50)"></input>
-                            <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus icon"><!--  --></i></div>
-                        </div>
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<style>
+    .ui.card > .content > .header > i{
+        margin-right:5px;
+    }
+    .ui.card > .content > .header + .description{
+        text-align: center;
+    }
+    .ui.cards > .card > .content > .header{
+        text-align: left;
+    }
+    h2,h3{
+        margin-left: 0;
+        padding-left:0;
+    }
+    .ui.form{
+        text-align: left;
+        margin: auto 5%;
+    }
+    .ui.form .field > label, .ui.form .inline.fields .field > label, .ui.form .inline.fields > label{
+        font-size: 1em;
+        width: 150px;
+        margin: 1em 0em 1em;
+    }
+    .ui.menu .item{
+        cursor: pointer;
+    }
+    label#question-label{
+        width:100%;
+    }
+    .ui.labels .label, .ui.label{
+        cursor: pointer;
+        margin-bottom: 2px;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    .ui.form .field > label, .ui.form .inline.fields .field > label, .ui.form .inline.fields > label{
+        font-size: 1em;
+        width: 100%;
+        margin: 1em 0em 0.5em;
+    }
+    .ui.form input:not([type]), .ui.form input[type="text"], .ui.form input[type="email"], .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="password"], .ui.form input[type="number"], .ui.form input[type="url"], .ui.form input[type="tel"]{
+        font-weight: 400;
+    }
+</style>
+<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+<div class="ui long modal" id="addQuestion">
+    <div class="header" id="addQuestionModal">Add Question</div>
+    <div class="content">
+        <div class="ui form" id="putFieldForm">
+            <input type="hidden" name="id"><!--  --></input>
+            <div class="required field">
+                <label>Question</label>
+                <input type="text" name="question" placeholder="What do you want to ask?"
+                       data-parsley-required="true"
+                       data-parsley-error-message="Please provide a question."><!--  --></input>
+            </div>
+            <div class="grouped fields">
+                <label style="width:100%" for="responseType">Response Type</label>
+                <div class="field">
+                    <div class="ui radio checkbox checked" id="radio-input">
+                        <input type="radio" checked="" name="responseType" value="input"><!--  --></input>
+                        <label>User Input</label>
                     </div>
                 </div>
                 <div class="field">
-                    <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
+                    <div class="ui radio checkbox" id="radio-dropdown">
+                        <input type="radio" name="responseType" value="dropdown"><!--  --></input>
+                        <label>Dropdown Menu</label>
+                    </div>
                 </div>
-                <h4 class="ui horizontal header divider"><i class="fa fa-cogs"><!--  --></i> Options
-                </h4>
-                <div class="grouped fields">
-                    <div class="field">
-                        <div class="ui toggle checkbox" id="optional1">
-                            <input type="checkbox" name="optional"><!--  --></input>
-                            <label style="width:100%">Make this question optional</label>
+            </div>
+            <div class="fields" id="dropdown-field" style="display:none">
+                <div class="field">
+                    <label style="width:100%">Add Dropdown Option</label>
+                    <div class="ui input" style="width:300px">
+                        <input  type="text" id="custom-response-dropdown-input" placeholder="Add dropdown option"></input>
+                    </div>
+                </div>
+                <span style="line-height:5.4em;padding:0 5px;font-size:1.5em;"> &amp; </span>
+                <div class="field">
+                    <label style="width:100%">Attach Discount/Fee (Optional)</label>
+                    <div class="ui action input" style="width:250px">
+                        <input type="number" step="5" id="custom-price-dropdown-input" placeholder="$ Amount (i.e. -3.50 or 1.50)"></input>
+                        <div class="ui icon button" onclick="addDropdownOption()"><i class="fa fa-plus icon"><!--  --></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <ul id="option-list" style="width:90%; list-style-type: none;padding-left:0;margin-left:0"><!--  --></ul>
+            </div>
+            <h4 class="ui horizontal header divider"><i class="fa fa-cogs"><!--  --></i> Options
+            </h4>
+            <div class="grouped fields">
+                <div class="field">
+                    <div class="ui toggle checkbox" id="optional1">
+                        <input type="checkbox" name="optional"><!--  --></input>
+                        <label style="width:100%">Make this question optional</label>
+                    </div>
+                </div>
+                <div class="field" id="optional2">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="hidden"><!--  --></input>
+                        <label style="width:100%">Archive (Hide from registration form)</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
+                    </label>
+                    <div class="ui multiple selection dropdown" id="questionECI">
+                        <i class="dropdown icon"><!--  --></i>
+                        <input name="eventItems" type="hidden"><!--  --></input>
+                        <c:if test="${empty eventcartitems}">
+                            <div class="default text">No Current Products</div>
+                        </c:if>
+                        <c:if test="${not empty eventcartitems}">
+                            <div class="default text">none</div>
+                            <div class="menu" id="question-eci-options">
+                                <c:forEach var="item" items="${eventcartitems}">
+                                    <div class="item" data-value="${item.id}">${item.name}</div>
+                                </c:forEach>
+                            </div>
+                        </c:if>
+                    </div>
+                    <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-close link icon"><!--  --></i></a>
+                </div>
+                
+            </div>
+            <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
+            </h4>
+            <span id="placeholder-text">Please enter details for the custom question to see a preview.</span>
+            <div id="question-preview" style="display:none">
+                <div class="fields">
+                    <div class="field" style="width: 375px">
+                        <label id="question-label" style="display:none"><!--  --></label>
+                        <input id="type-input-selected" type="text" style="display:none"><!--  --></input>
+                        <div class="ui selection dropdown" id="customQuestionsPreviewDropdown" style="display:none">
+                            <input type="hidden"><!--  --></input>
+                            <div class="default text">Select one</div>
+                            <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                            <div class="menu" id="customQuestionsPreviewOptions"><!--  -->
+                            </div>
                         </div>
                     </div>
-                    <div class="field" id="optional2">
-                        <div class="ui toggle checkbox">
-                            <input type="checkbox" name="hidden"><!--  --></input>
-                            <label style="width:100%">Archive (Hide from registration form)</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit question to products: 
-                        </label>
-                        <div class="ui multiple selection dropdown" id="questionECI">
-                            <i class="dropdown icon"><!--  --></i>
-                            <input name="eventItems" type="hidden"><!--  --></input>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="ui button" onclick="closeModal('Question')">Close</button>
+        <button class="ui green button post-question" onclick="saveQuestion(false)">Submit</button>
+        <button class="ui red button put-question" style="display:none" onclick="deleteQuestion()">Remove</button>
+        <button class="ui green button put-question" style="display:none" onclick="saveQuestion(true)">Save</button>
+    </div>
+</div>
+<div class="ui long modal" id="addCoupon">
+    <div class="header" id="addCouponModal">Add Coupon</div>
+    <div class="content">
+        <div class="ui form" id="couponForm">
+            <div class="twelve wide field">
+                <h4 class="ui header">
+                  <div class="content">
+                    <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit coupon to product: 
+                        <div class="ui inline compact dropdown" id="couponECI" style="border: 1px rgba(39, 41, 43, 0.35) solid; padding: 8px; border-radius: 5px; margin-left: 10px;">
+                          <div class="text">none</div>
+                          <input type="hidden" name="eventItem"><!--  --></input>
+                          <i class="fa fa-caret-down" style="margin-left:5px;"><!--  --></i>
+                          <div class="menu" id="option-list-eci">
                             <c:if test="${empty eventcartitems}">
-                                <div class="default text">No Current Products</div>
+                                <div class="header">No Current Products</div>
                             </c:if>
                             <c:if test="${not empty eventcartitems}">
-                                <div class="default text">none</div>
-                                <div class="menu" id="question-eci-options">
-                                    <c:forEach var="item" items="${eventcartitems}">
-                                        <div class="item" data-value="${item.id}">${item.name}</div>
-                                    </c:forEach>
-                                </div>
+                                <div class="header">Current Products</div>
+                                <c:forEach var="item" items="${eventcartitems}">
+                                    <c:if test="${item.type == 'TICKET'}">
+                                        <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="yellow icon fa fa-ticket"><!--  --></i></div>${item.name}</div>
+                                    </c:if>
+                                    <c:if test="${item.type == 'T_SHIRT'}">
+                                        <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="teal icon fa fa-shirtsinbulk"><!--  --></i></div>${item.name}</div>
+                                    </c:if>
+                                    <c:if test="${item.type == 'DONATION'}">
+                                        <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="blue icon fa fa-heart-o"><!--  --></i></div>${item.name}</div>
+                                    </c:if>
+                                </c:forEach>
                             </c:if>
+                          </div>
                         </div>
-                        <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-close link icon"><!--  --></i></a>
-                    </div>
-                    
-                </div>
-                <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
+                    </label>
+                  </div>
                 </h4>
-                <span id="placeholder-text">Please enter details for the custom question to see a preview.</span>
-                <div id="question-preview" style="display:none">
-                    <div class="fields">
-                        <div class="field" style="width: 375px">
-                            <label id="question-label" style="display:none"><!--  --></label>
-                            <input id="type-input-selected" type="text" style="display:none"><!--  --></input>
-                            <div class="ui selection dropdown" id="customQuestionsPreviewDropdown" style="display:none">
-                                <input type="hidden"><!--  --></input>
-                                <div class="default text">Select one</div>
-                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                <div class="menu" id="customQuestionsPreviewOptions"><!--  -->
-                                </div>
-                            </div>
-                        </div>
+            </div>
+            <div class="field">
+                <label style="width:100%">Coupon Code</label>
+                <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
+                       data-parsley-required="true" 
+                       data-parsley-error-message="Please provide a coupon code."><!--  --></input>
+            </div>
+            <div class="fields">
+                <div class="eight wide inline field">
+                    <label id="discount" style="width:100%;margin:1em 0em 0.5em">Discount</label>
+                    <input type="text" name="discount" id="validate-discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
+                    <div class="ui icon buttons" style="margin-left:5px;">
+                        <div class="ui positive button disc-btn" id="disc-perc"><b>%</b></div>
+                        <div class="ui button disc-btn" id="disc-curr"><b><i class="fa fa-usd"><!--  --></i></b></div>
                     </div>
                 </div>
+                <div class="ui negative message" id="coupon-error-percent" style="display:none">
+                    <i class="fa fa-close link icon"><!--  --></i>
+                    <div class="header">
+                        We can't allow that discount.
+                    </div>
+                    <p>Please select a discount up to 100%.</p>
+                </div>
+                <div class="four wide field">
+                    <label style="width:100%">Quantity</label>
+                    <input type="number" min="1" name="available" placeholder="Quantity"
+                           data-parsley-required="true"
+                           data-parsley-error-message="Please provide a quantity."><!--  --></input>
+                </div>
             </div>
-        </div>
-        <div class="actions">
-            <button class="ui button" onclick="closeModal('Question')">Close</button>
-            <button class="ui green button post-question" onclick="saveQuestion(false)">Submit</button>
-            <button class="ui red button put-question" style="display:none" onclick="deleteQuestion()">Remove</button>
-            <button class="ui green button put-question" style="display:none" onclick="saveQuestion(true)">Save</button>
         </div>
     </div>
-    <div class="ui long modal" id="addCoupon">
-        <div class="header" id="addCouponModal">Add Coupon</div>
-        <div class="content">
-            <div class="ui form" id="couponForm">
-                <div class="twelve wide field">
-                    <h4 class="ui header">
-                      <div class="content">
-                        <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit coupon to product: 
-                            <div class="ui inline compact dropdown" id="couponECI" style="border: 1px rgba(39, 41, 43, 0.35) solid; padding: 8px; border-radius: 5px; margin-left: 10px;">
-                              <div class="text">none</div>
-                              <input type="hidden" name="eventItem"><!--  --></input>
-                              <i class="fa fa-caret-down" style="margin-left:5px;"><!--  --></i>
-                              <div class="menu" id="option-list-eci">
-                                <c:if test="${empty eventcartitems}">
-                                    <div class="header">No Current Products</div>
-                                </c:if>
-                                <c:if test="${not empty eventcartitems}">
-                                    <div class="header">Current Products</div>
-                                    <c:forEach var="item" items="${eventcartitems}">
-                                        <c:if test="${item.type == 'TICKET'}">
-                                            <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="yellow icon fa fa-ticket"><!--  --></i></div>${item.name}</div>
-                                        </c:if>
-                                        <c:if test="${item.type == 'T_SHIRT'}">
-                                            <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="teal icon fa fa-shirtsinbulk"><!--  --></i></div>${item.name}</div>
-                                        </c:if>
-                                        <c:if test="${item.type == 'DONATION'}">
-                                            <div class="item" data-value="${item.id}"><div class="icon"><i style="font-family: FontAwesome" class="blue icon fa fa-heart-o"><!--  --></i></div>${item.name}</div>
-                                        </c:if>
-                                    </c:forEach>
-                                </c:if>
-                              </div>
-                            </div>
-                        </label>
-                      </div>
-                    </h4>
-                </div>
-                <div class="field">
-                    <label style="width:100%">Coupon Code</label>
-                    <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
-                           data-parsley-required="true" 
-                           data-parsley-error-message="Please provide a coupon code."><!--  --></input>
-                </div>
-                <div class="fields">
-                    <div class="eight wide inline field">
-                        <label id="discount" style="width:100%;margin:1em 0em 0.5em">Discount</label>
-                        <input type="text" name="discount" id="validate-discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
-                        <div class="ui icon buttons" style="margin-left:5px;">
-                            <div class="ui positive button disc-btn" id="disc-perc"><b>%</b></div>
-                            <div class="ui button disc-btn" id="disc-curr"><b><i class="fa fa-usd"><!--  --></i></b></div>
-                        </div>
-                    </div>
-                    <div class="ui negative message" id="coupon-error-percent" style="display:none">
-                        <i class="fa fa-close link icon"><!--  --></i>
-                        <div class="header">
-                            We can't allow that discount.
-                        </div>
-                        <p>Please select a discount up to 100%.</p>
-                    </div>
-                    <div class="four wide field">
-                        <label style="width:100%">Quantity</label>
-                        <input type="number" min="1" name="available" placeholder="Quantity"
-                               data-parsley-required="true"
-                               data-parsley-error-message="Please provide a quantity."><!--  --></input>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="actions">
-            <button class="ui button" onclick="closeModal('Coupon')">Close</button>
-            <button class="ui green button post-coupon" onclick="saveCoupon(false)">Submit</button>
-            <button class="ui red button put-coupon" style="display:none" onclick="deleteCoupon()">Remove</button>
-            <button class="ui green button put-coupon" style="display:none" onclick="saveCoupon(true)">Save</button>
-        </div>
+    <div class="actions">
+        <button class="ui button" onclick="closeModal('Coupon')">Close</button>
+        <button class="ui green button post-coupon" onclick="saveCoupon(false)">Submit</button>
+        <button class="ui red button put-coupon" style="display:none" onclick="deleteCoupon()">Remove</button>
+        <button class="ui green button put-coupon" style="display:none" onclick="saveCoupon(true)">Save</button>
     </div>
-    <div class="bibs-page bibs-bg-gray-1">
-        <div class="ui very padded basic segment">
-            <div class="pull-left"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
-            <div style="clear:both"><!--  --></div>
-            <div class="ui top attached tabular menu">
-                <div class="active item" data-tab="eci-menu">Products</div>
-                <div class="item" data-tab="share-menu">Social Sharing</div>
-                <div class="item" data-tab="form-menu">Custom Forms</div>
-                <div class="item" data-tab="coupon-menu">Coupons</div>
-                <div class="item" data-tab="ticket-menu">Transfers</div>
-            </div>
-            <div class="ui bottom attached active tab segment" data-tab="eci-menu">
-                <h3 class="ui center aligned icon header">
-                    <i class="fa fa-gear fa-2x"><!--  --></i>
-                    <div class="content" style="margin-top:5px">
-                        Manage Products
-                        <div class="sub header">Manage your event cart items for ${ event.name }.</div>
-                    </div>
-                </h3>
-                <div class="content">
-                    <c:if test="${shirt}">
-                        <form class="ui small form" id="shirtsLimitedForm">
-                            <div class="ui basic segment">
-                                <div class="ui toggle checkbox shirt-settings" style="width:100%">
-                                    <input type="checkbox" name="shirtsLimited"><!--  --></input>
-                                    <label style="width:100%;text-align:left">Limit to 1 shirt per customer</label>
+</div>
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment">
+        <div class="pull-left"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
+        <div style="clear:both"><!--  --></div>
+        <div class="ui top attached tabular menu">
+            <div class="active item" data-tab="eci-menu">Products</div>
+            <div class="item" data-tab="share-menu">Social Sharing</div>
+            <div class="item" data-tab="form-menu">Custom Forms</div>
+            <div class="item" data-tab="coupon-menu">Coupons</div>
+            <div class="item" data-tab="ticket-menu">Transfers</div>
+        </div>
+        <div class="ui bottom attached active tab segment" data-tab="eci-menu">
+            <h3 class="ui center aligned icon header">
+                <i class="fa fa-gear fa-2x"><!--  --></i>
+                <div class="content" style="margin-top:5px">
+                    Manage Products
+                    <div class="sub header">Manage your event cart items for ${ event.name }.</div>
+                </div>
+            </h3>
+            <div class="content">
+                <c:if test="${shirt}">
+                    <form class="ui small form" id="shirtsLimitedForm">
+                        <div class="ui basic segment">
+                            <div class="ui slider checkbox shirt-settings" style="width:100%">
+                                <input type="checkbox" name="shirtsLimited"><!--  --></input>
+                                <label style="width:100%;text-align:left">Limit to 1 shirt per customer</label>
+                            </div>
+                            <div style="clear:both"><!--  --></div>
+                            <div class="field">
+                                <button class="ui green button" id="shirtSaveButton" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                    <h3 class="ui dividing header">Current Products</h3>
+                </c:if>
+                <div class="ui five doubling cards">
+                    <c:if test="${not empty eventcartitems}">
+                        <c:forEach var="item" items="${eventcartitems}">
+                            <div class="ui fluid card">
+                                <div class="content">
+                                    <c:if test="${item.type == 'TICKET'}">
+                                        <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
+                                    </c:if>
+                                    <c:if test="${item.type == 'T_SHIRT'}">
+                                        <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
+                                    </c:if>
+                                    <c:if test="${item.type == 'DONATION'}">
+                                        <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
+                                    </c:if>
+                                    <div class="description">${item.description}
+                                    </div>
                                 </div>
-                                <div style="clear:both"><!--  --></div>
-                                <div class="field">
-                                    <button class="ui green button" id="shirtSaveButton" type="submit">Save</button>
+                                <div class="extra content">
+                                    <c:if test="${item.type != 'DONATION'}">
+                                        <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
+                                        <div class="right floated">$${item.price}</div>
+                                    </c:if>
+                                    <c:if test="${item.type == 'DONATION'}">
+                                        <div class="left floated">${item.purchased} donations</div>
+                                        <div class="right floated">$${item.price * item.purchased}</div>
+                                    </c:if>
+                                </div>
+                                <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
+                                    <i class="fa fa-external-link icon"><!--  --></i>View Details
                                 </div>
                             </div>
-                        </form>
-                        <h3 class="ui dividing header">Current Products</h3>
+                        </c:forEach>
                     </c:if>
-                    <div class="ui five doubling cards">
-                        <c:if test="${not empty eventcartitems}">
-                            <c:forEach var="item" items="${eventcartitems}">
-                                <div class="ui fluid card">
-                                    <div class="content">
-                                        <c:if test="${item.type == 'TICKET'}">
-                                            <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i>${item.name}</div>
-                                        </c:if>
-                                        <c:if test="${item.type == 'T_SHIRT'}">
-                                            <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i>${item.name}</div>
-                                        </c:if>
-                                        <c:if test="${item.type == 'DONATION'}">
-                                            <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i>${item.name}</div>
-                                        </c:if>
-                                        <div class="description">${item.description}
-                                        </div>
-                                    </div>
-                                    <div class="extra content">
-                                        <c:if test="${item.type != 'DONATION'}">
-                                            <div class="left floated">${item.purchased}/${item.available + item.purchased} sold</div>
-                                            <div class="right floated">$${item.price}</div>
-                                        </c:if>
-                                        <c:if test="${item.type == 'DONATION'}">
-                                            <div class="left floated">${item.purchased} donations</div>
-                                            <div class="right floated">$${item.price * item.purchased}</div>
-                                        </c:if>
-                                    </div>
-                                    <div class="ui bottom attached button" onclick="redirectItemDetail(${item.id})">
-                                        <i class="fa fa-external-link icon"><!--  --></i>View Details
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </c:if>
-                        <c:if test="${not empty event.eventTypes}">
-                            <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
-                                <div class="content">
-                                    <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                    <div class="description">Add a new shirt/donation</div>
-                                    <div class="extra content">
-                                        <div class="left floated"><span style="visibility:hidden">sold</span></div>
-                                        <div class="right floated"><span style="visibility:hidden">$price</span></div>
-                                    </div>
-                                </div>
-                                <div class="ui bottom attached button">
-                                    <i class="fa fa-plus icon"><!--  --></i> Shirt/Donation
-                                </div>
-                            </div>
-                        </c:if>
-                        <c:if test="${empty event.eventTypes}">
-                            <a class="red card" href="/bibs-server/events/${event.id}">
-                                <div class="content">
-                                    <div class="header">Warning:</div>
-                                    <div class="description">
-                                        <p style="text-align:left">You currently have no event types. Click here to go back and add an event type.</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </c:if>
-                    </div>
-                </div>
-            </div>
-            <div class="ui bottom attached tab segment" data-tab="share-menu">
-                <h3 class="ui center aligned icon header">
-                    <i class="fa fa-gear fa-2x"><!--  --></i>
-                    <div class="content" style="margin-top:5px">
-                        Social Sharing Settings
-                        <div class="sub header">Allow registrants to receive discounts by sharing on social media.</div>
-                    </div>
-                </h3>
-                <form class="ui small form" id="shareForm" style="width:400px;margin:0 auto;">
-                    <div class="field">
-                        <div class="ui slider checkbox" id="share-check">
-                            <label style="width:100%"><b>Enable</b> discounts from social media sharing</label>
-                            <input type="checkbox" name="socialSharingDiscounts"><!--  --></input>
-                        </div>
-                    </div>
-                    <div class="field" id="share-amount" style="display:none">
-                        <label>Discount Amount (min: $1.00)</label>
-                        <div class="ui labeled input">
-                            <div class="ui label" style="cursor:default">$</div>
-                            <input  type="number" step="0.05" min="1" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
-                                    name="socialSharingDiscountAmount"
-                                    placeholder="Discount"
-                                    data-parsley-error-message="Please enter a valid discount amount."
-                                    data-parsley-required="true"></input>
-                        </div>
-                    </div>
-                    <div class="required field" id="share-msg" style="display:none">
-                        <label>Top Sharer Reward Description</label>
-                        <div class="ui required input">
-                            <input  type="text"
-                                    name="topSharerReward"
-                                    placeholder="i.e. Top sharer gets a free limited edition hoodie!"
-                                    data-parsley-error-message="Please provide a reward description for the top sharer."
-                                    data-parsley-required="true"></input>
-                        </div>
-                    </div>
-                    <div style="clear:both"><!--  --></div>
-                    <div class="field">
-                        <button class="ui green button" id="socialSaveButton" type="submit">Save</button>
-                    </div>
-                </form>
-            </div>
-            <div class="ui bottom attached tab segment" data-tab="form-menu">
-                <h3 class="ui center aligned icon header">
-                    <i class="fa fa-gear fa-2x"><!--  --></i>
-                    <div class="content" style="margin-top:5px">
-                        Custom Forms
-                        <div class="sub header">Add custom form questions for user registration.</div>
-                    </div>
-                </h3>
-                <div class="content">
-                    <div class="ui five doubling cards">
-                        <c:if test="${not empty customregfields}">
-                            <div>Added Questions:</div>
-                            <c:forEach var="item" items="${customregfields}">
-                                <div class="ui fluid card">
-                                    <div class="content">
-                                        <div class="ui yellow header" style="text-align:center"><i class="fa fa-question"><!--  --></i></div>
-                                        <div class="description">${item.question}</div>
-                                        <div class="extra content"> 
-                                            <c:if test="${empty item.responseSet}">Response Type: user input</c:if>
-                                            <c:if test="${not empty item.responseSet}">Dropdown Options: 
-                                                <c:forEach var="dropdown" items="${item.responseSet}">
-                                                    <p>${dropdown.response}: $${dropdown.price/100}</p>
-                                                </c:forEach>
-                                            </c:if>
-                                        </div>
-                                    </div>
-                                    <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responses}', ${item.eventItemIds})">
-                                        <i class="fa fa-external-link icon"><!--  --></i>View Details
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </c:if>
-                        <div class="ui fluid card" onclick="addQuestionModal()" style="cursor:pointer">
+                    <c:if test="${not empty event.eventTypes}">
+                        <div class="ui fluid card" onclick="addItem()" style="cursor:pointer">
                             <div class="content">
                                 <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                <div class="description">Add a new question</div>
+                                <div class="description">Add a new shirt/donation</div>
                                 <div class="extra content">
                                     <div class="left floated"><span style="visibility:hidden">sold</span></div>
                                     <div class="right floated"><span style="visibility:hidden">$price</span></div>
                                 </div>
                             </div>
                             <div class="ui bottom attached button">
-                                <i class="fa fa-plus icon"><!--  --></i> Question
+                                <i class="fa fa-plus icon"><!--  --></i> Shirt/Donation
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui bottom attached tab segment" data-tab="coupon-menu">
-                <h3 class="ui center aligned icon header">
-                    <i class="fa fa-gear fa-2x"><!--  --></i>
-                    <div class="content" style="margin-top:5px">
-                        Coupons
-                        <div class="sub header">Manage coupons for ${event.name}.</div>
-                    </div>
-                </h3>
-                <div class="content">
-                    <div class="ui five doubling cards">
-                        <c:if test="${not empty eventcoupons}">
-                            <br/>
-                            <c:forEach var="coupon" items="${eventcoupons}">
-                                <div class="ui fluid card">
-                                    <div class="content">
-                                        <div class="ui blue header" style="text-align:center;text-transform:uppercase"><i class="fa fa-cart-arrow-down"><!--  --></i><br/>${coupon.code}</div>
-                                        <div class="description"><c:if test="${not empty coupon.discountRelative}">- ${coupon.discountRelative}%</c:if>
-                                        <fmt:setLocale value="en_US"/>
-                                        <c:if test="${not empty coupon.discountAbsolute}"><fmt:formatNumber value="${coupon.discountAbsolute/100}" type="currency"/></c:if></div>
-                                    </div>
-                                    <div class="extra content" style="color:#767676">
-                                        <div class="right floated">${coupon.available} available</div>
-                                    </div>
-                                    <div class="ui bottom attached button" onclick="couponDetail('${coupon.id}', '${coupon.code}', '${coupon.discountRelative}', '${coupon.discountAbsolute}', '${coupon.available}', '${coupon.item.id}')">
-                                        <i class="fa fa-external-link icon"><!--  --></i>View Details
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </c:if>
-                        <div class="ui fluid card" onclick="addCouponModal()" style="cursor:pointer">
+                    </c:if>
+                    <c:if test="${empty event.eventTypes}">
+                        <a class="red card" href="/bibs-server/events/${event.id}">
                             <div class="content">
-                                <div class="ui header"><span style="visibility:hidden">name</span></div>
-                                <div class="description">Add a new coupon</div>
-                                <div class="extra content">
-                                    <div class="left floated"><span style="visibility:hidden">sold</span></div>
-                                    <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                                <div class="header">Warning:</div>
+                                <div class="description">
+                                    <p style="text-align:left">You currently have no event types. Click here to go back and add an event type.</p>
                                 </div>
                             </div>
-                            <div class="ui bottom attached button">
-                                <i class="fa fa-plus icon"><!--  --></i> Coupon
-                            </div>
-                        </div>
-                    </div>
+                        </a>
+                    </c:if>
                 </div>
             </div>
-            <div class="ui bottom attached tab segment" data-tab="ticket-menu">
-                <h3 class="ui center aligned icon header">
-                    <i class="fa fa-gear fa-2x"><!--  --></i>
-                    <div class="content" style="margin-top:5px">
-                        Ticket Transfer Settings
-                        <div class="sub header">Allow users to transfer tickets to others.</div>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="share-menu">
+            <h3 class="ui center aligned icon header">
+                <i class="fa fa-gear fa-2x"><!--  --></i>
+                <div class="content" style="margin-top:5px">
+                    Social Sharing Settings
+                    <div class="sub header">Allow registrants to receive discounts by sharing on social media.</div>
+                </div>
+            </h3>
+            <form class="ui small form" id="shareForm" style="width:400px;margin:0 auto;">
+                <div class="field">
+                    <div class="ui slider checkbox" id="share-check">
+                        <label style="width:100%"><b>Enable</b> discounts from social media sharing</label>
+                        <input type="checkbox" name="socialSharingDiscounts"><!--  --></input>
                     </div>
-                </h3>
-                <form class="ui small form" id="transferForm" style="width:500px; margin:0 auto">
-                    <div class="field">
-                        <div class="ui slider checkbox">
-                            <label style="width:100%"><b>Enable</b> ticket transfer</label>
-                            <input type="checkbox" name="ticketTransferEnabled"><!--  --></input>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>Transfer cutoff date</label>
-                        <input  type="text" name="ticketTransferCutoff"
-                                id="cutoff-date"
-                                placeholder="Transfer cutoff date"
-                                data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY h:mm:ss a"
-                                data-parsley-error-message="Please specify an end date."
+                </div>
+                <div class="field" id="share-amount" style="display:none">
+                    <label>Discount Amount (min: $1.00)</label>
+                    <div class="ui labeled input">
+                        <div class="ui label" style="cursor:default">$</div>
+                        <input  type="number" step="0.05" min="1" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
+                                name="socialSharingDiscountAmount"
+                                placeholder="Discount"
+                                data-parsley-error-message="Please enter a valid discount amount."
                                 data-parsley-required="true"></input>
                     </div>
-                    <div style="clear:both"><!--  --></div>
-                    <button class="ui green button" id="transferSaveButton" type="submit">Save</button>
-                </form>
+                </div>
+                <div class="required field" id="share-msg" style="display:none">
+                    <label>Top Sharer Reward Description</label>
+                    <div class="ui required input">
+                        <input  type="text"
+                                name="topSharerReward"
+                                placeholder="i.e. Top sharer gets a free limited edition hoodie!"
+                                data-parsley-error-message="Please provide a reward description for the top sharer."
+                                data-parsley-required="true"></input>
+                    </div>
+                </div>
+                <div style="clear:both"><!--  --></div>
+                <div class="field">
+                    <button class="ui green button" id="socialSaveButton" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="form-menu">
+            <h3 class="ui center aligned icon header">
+                <i class="fa fa-gear fa-2x"><!--  --></i>
+                <div class="content" style="margin-top:5px">
+                    Custom Forms
+                    <div class="sub header">Add custom form questions for user registration.</div>
+                </div>
+            </h3>
+            <div class="content">
+                <div class="ui five doubling cards">
+                    <c:if test="${not empty customregfields}">
+                        <div>Added Questions:</div>
+                        <c:forEach var="item" items="${customregfields}">
+                            <div class="ui fluid card">
+                                <div class="content">
+                                    <div class="ui yellow header" style="text-align:center"><i class="fa fa-question"><!--  --></i></div>
+                                    <div class="description">${item.question}</div>
+                                    <div class="extra content"> 
+                                        <c:if test="${empty item.responseSet}">Response Type: user input</c:if>
+                                        <c:if test="${not empty item.responseSet}">Dropdown Options: 
+                                            <c:forEach var="dropdown" items="${item.responseSet}">
+                                                <p>${dropdown.response}: $${dropdown.price/100}</p>
+                                            </c:forEach>
+                                        </c:if>
+                                    </div>
+                                </div>
+                                <div class="ui bottom attached button" onclick="questionDetail(${item.id}, ${item.event.id}, ${item.optional}, ${item.hidden}, '${item.question}', '${item.responses}', ${item.eventItemIds})">
+                                    <i class="fa fa-external-link icon"><!--  --></i>View Details
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </c:if>
+                    <div class="ui fluid card" onclick="addQuestionModal()" style="cursor:pointer">
+                        <div class="content">
+                            <div class="ui header"><span style="visibility:hidden">name</span></div>
+                            <div class="description">Add a new question</div>
+                            <div class="extra content">
+                                <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                            </div>
+                        </div>
+                        <div class="ui bottom attached button">
+                            <i class="fa fa-plus icon"><!--  --></i> Question
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="ui bottom attached tab segment" data-tab="coupon-menu">
+            <h3 class="ui center aligned icon header">
+                <i class="fa fa-gear fa-2x"><!--  --></i>
+                <div class="content" style="margin-top:5px">
+                    Coupons
+                    <div class="sub header">Manage coupons for ${event.name}.</div>
+                </div>
+            </h3>
+            <div class="content">
+                <div class="ui five doubling cards">
+                    <c:if test="${not empty eventcoupons}">
+                        <br/>
+                        <c:forEach var="coupon" items="${eventcoupons}">
+                            <div class="ui fluid card">
+                                <div class="content">
+                                    <div class="ui blue header" style="text-align:center;text-transform:uppercase"><i class="fa fa-cart-arrow-down"><!--  --></i><br/>${coupon.code}</div>
+                                    <div class="description"><c:if test="${not empty coupon.discountRelative}">- ${coupon.discountRelative}%</c:if>
+                                    <fmt:setLocale value="en_US"/>
+                                    <c:if test="${not empty coupon.discountAbsolute}"><fmt:formatNumber value="${coupon.discountAbsolute/100}" type="currency"/></c:if></div>
+                                </div>
+                                <div class="extra content" style="color:#767676">
+                                    <div class="right floated">${coupon.available} available</div>
+                                </div>
+                                <div class="ui bottom attached button" onclick="couponDetail('${coupon.id}', '${coupon.code}', '${coupon.discountRelative}', '${coupon.discountAbsolute}', '${coupon.available}', '${coupon.item.id}')">
+                                    <i class="fa fa-external-link icon"><!--  --></i>View Details
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </c:if>
+                    <div class="ui fluid card" onclick="addCouponModal()" style="cursor:pointer">
+                        <div class="content">
+                            <div class="ui header"><span style="visibility:hidden">name</span></div>
+                            <div class="description">Add a new coupon</div>
+                            <div class="extra content">
+                                <div class="left floated"><span style="visibility:hidden">sold</span></div>
+                                <div class="right floated"><span style="visibility:hidden">$price</span></div>
+                            </div>
+                        </div>
+                        <div class="ui bottom attached button">
+                            <i class="fa fa-plus icon"><!--  --></i> Coupon
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="ticket-menu">
+            <h3 class="ui center aligned icon header">
+                <i class="fa fa-gear fa-2x"><!--  --></i>
+                <div class="content" style="margin-top:5px">
+                    Ticket Transfer Settings
+                    <div class="sub header">Allow users to transfer tickets to others.</div>
+                </div>
+            </h3>
+            <form class="ui small form" id="transferForm" style="width:500px; margin:0 auto">
+                <div class="field">
+                    <div class="ui slider checkbox">
+                        <label style="width:100%"><b>Enable</b> ticket transfer</label>
+                        <input type="checkbox" name="ticketTransferEnabled"><!--  --></input>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Transfer cutoff date</label>
+                    <input  type="text" name="ticketTransferCutoff"
+                            id="cutoff-date"
+                            placeholder="Transfer cutoff date"
+                            data-provide="datepicker"
+                            data-date-format="MM/DD/YYYY h:mm:ss a"
+                            data-parsley-error-message="Please specify an end date."
+                            data-parsley-required="true"></input>
+                </div>
+                <div style="clear:both"><!--  --></div>
+                <button class="ui green button" id="transferSaveButton" type="submit">Save</button>
+            </form>
+        </div>
     </div>
-    </sec:authorize>
-    <script>
-        var currOptionsObjList = [];
-        var domList = [];
+</div>
+</sec:authorize>
+<script>
+    var currOptionsObjList = [];
+    var domList = [];
 
-        window.onload = function(){
-            // initialize semantic-ui elements
-            jQuery('#couponECI, #questionECI, #customQuestionsPreviewDropdown').dropdown();
-            jQuery('.menu .item').tab();
-            jQuery('.ui.checkbox').checkbox();
-            jQuery('.disc-btn').each(function(){
-                jQuery(this).click(function(){
-                    var id = jQuery(this).attr("id");
-                    jQuery(this).addClass('positive');
-                    jQuery(this).siblings().removeClass('positive');
-                    distType = id;
-                })
+    window.onload = function(){
+        // initialize semantic-ui elements
+        jQuery('#couponECI, #questionECI, #customQuestionsPreviewDropdown').dropdown();
+        jQuery('.menu .item').tab();
+        jQuery('.ui.checkbox').checkbox();
+        jQuery('.disc-btn').each(function(){
+            jQuery(this).click(function(){
+                var id = jQuery(this).attr("id");
+                jQuery(this).addClass('positive');
+                jQuery(this).siblings().removeClass('positive');
+                distType = id;
             })
+        })
 
-            jQuery('#addQuestion').modal({
-                onShow: function() {
-                    var responseSet = '';
-                    var currOptionsObjList = [];
-                    jQuery(this).find('input[type="text"]').val('');
-                    jQuery('#customQuestionsPreviewDropdown').dropdown('set text', 'Select one')
-                    jQuery('#customQuestionsPreviewOptions').text('');
-                    jQuery('#option-list').text('');
-                    jQuery('input[name="optional"]').prop('checked', false);
-                    jQuery('input[name="hidden"]').prop('checked', false);
-                    jQuery('#question-preview').hide();
-                    jQuery('#questionECI').dropdown('restore defaults');
-                }
+        jQuery('#addQuestion').modal({
+            onShow: function() {
+                var responseSet = '';
+                var currOptionsObjList = [];
+                jQuery(this).find('input[type="text"]').val('');
+                jQuery('#customQuestionsPreviewDropdown').dropdown('set text', 'Select one')
+                jQuery('#customQuestionsPreviewOptions').text('');
+                jQuery('#option-list').text('');
+                jQuery('input[name="optional"]').prop('checked', false);
+                jQuery('input[name="hidden"]').prop('checked', false);
+                jQuery('#question-preview').hide();
+                jQuery('#questionECI').dropdown('restore defaults');
+            }
+        });
+
+        jQuery('#addCoupon').modal({
+            onShow: function() {
+                jQuery('#couponECI').dropdown('clear');
+                jQuery('#couponECI').dropdown('set text', 'none');
+                jQuery(this).find('input[type="text"],input[type="number"]').val('');
+            }
+        });
+
+        var transfer = '${event.ticketTransferEnabled}';
+        var transferDate = '${event.ticketTransferCutoffLocal}';
+        var def = moment();
+
+        if( transfer == 'true' ){
+            jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
+        }
+        if( transferDate !== 'null' || transferDate !== "" ){
+            def = moment(transferDate, 'MM/DD/YYYY h:mm:ss a');
+        }
+
+        jQuery("#cutoff-date")
+            .datetimepicker({
+                defaultDate: def,
+                useSeconds: false
             });
 
-            jQuery('#addCoupon').modal({
-                onShow: function() {
-                    jQuery('#couponECI').dropdown('clear');
-                    jQuery('#couponECI').dropdown('set text', 'none');
-                    jQuery(this).find('input[type="text"],input[type="number"]').val('');
-                }
-            });
+        jQuery('#cutoff-date').data("DateTimePicker").setMinDate(moment());
 
-            var transfer = '${event.ticketTransferEnabled}';
-            var transferDate = '${event.ticketTransferCutoffLocal}';
-            var def = moment();
 
-            if( transfer == 'true' ){
-                jQuery('input[name="ticketTransferEnabled"]').prop("checked", true);
+        shareHandler();
+        transferHandler();
+        limitShirtHandler();
+        customFormTab();
+    }
+
+    function closeModal(type){
+        jQuery('#add' + type).modal('hide');
+    }
+
+    function addCouponModal(){
+        jQuery("#addCoupon").modal('show');
+        validateDiscount();
+        jQuery(".put-coupon").hide();
+        jQuery(".post-coupon").show();
+    }
+
+    var currCouponId;
+    function couponDetail(id, code, discountRel, discountAbs, avail, eci){
+        currCouponId = id;
+        jQuery("#addCoupon").modal('show');
+        jQuery(".post-coupon").hide();
+        jQuery(".put-coupon").show();
+
+        var obj = {};
+        var eid = '${event.id}';
+
+        if( eid.length > 0 ){       var eobj = {};
+                                    eobj.id = parseInt(eid);
+                                    obj.event = eobj;        }
+        jQuery('input[name="couponcode"]').val(code);
+        if( discountRel === null || discountRel === "" ){
+            jQuery('input[name="discount"]').val(discountAbs/100);
+            jQuery('#disc-curr').addClass('positive');
+            jQuery('#disc-perc').removeClass('positive');
+        }
+        else if( discountAbs === null || discountAbs === "" ){
+            jQuery('input[name="discount"]').val(discountRel);
+            jQuery('#disc-perc').addClass('positive');
+            jQuery('#disc-curr').removeClass('positive');
+        }
+        jQuery('input[name="available"]').val(avail);
+        jQuery('#couponECI').dropdown('set selected', eci);
+        jQuery('input[name="eventItem"]').val(eci);
+    }
+
+    function validateDiscount() {
+        jQuery('#validate-discount').keyup(function(){
+            var val = jQuery(this).val();
+            if(isNaN(val)){
+                 val = val.replace(/[^0-9\.]/g,'');
+                 if(val.split('.').length>2) 
+                     val = val.replace(/\.+$/,"");
             }
-            if( transferDate !== 'null' || transferDate !== "" ){
-                def = moment(transferDate, 'MM/DD/YYYY h:mm:ss a');
-            }
+            jQuery(this).val(val); 
+        })
+    }
 
-            jQuery("#cutoff-date")
-                .datetimepicker({
-                    defaultDate: def,
-                    useSeconds: false
-                });
+    function deleteCoupon(){
+        var error = true;
 
-            jQuery('#cutoff-date').data("DateTimePicker").setMinDate(moment());
-
-
-            shareHandler();
-            transferHandler();
-            limitShirtHandler();
-            customFormTab();
+        var questUrl = "/bibs-server/eventcoupons";
+        var questType = 'PUT';
+        var id = currCouponId;
+        if( id !== "" &amp;&amp; id !== null ){
+            questUrl = questUrl + "/" + id;
+        }
+        else{
+            alert("Something went wrong while trying to save this coupon.");
+            window.location.reload();
         }
 
-        function closeModal(type){
-            jQuery('#add' + type).modal('hide');
+        var obj = {};
+        obj.event = null;
+
+        var couponcode = jQuery('input[name="couponcode"]').val();
+        var discount = jQuery('input[name="discount"]').val();
+        var available = jQuery('input[name="available"]').val();
+
+        if( couponcode.length > 0 ){ obj.code = couponcode; }
+        if( available.length > 0 ){  obj.available = parseInt(available); }
+
+        var discountAbsolute = null;
+        var discountRelative = null;
+        if( jQuery('#disc-curr').hasClass('positive') ){
+            if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
+                // convert to cents
+                discount = parseFloat(discount) * 100;
+            }
+            obj.discountAbsolute = discount;
         }
+        if( jQuery('#disc-perc').hasClass('positive') ){ obj.discountRelative = parseFloat(discount); }
 
-        function addCouponModal(){
-            jQuery("#addCoupon").modal('show');
-            validateDiscount();
-            jQuery(".put-coupon").hide();
-            jQuery(".post-coupon").show();
+        if( obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
+            error = true;
         }
-
-        var currCouponId;
-        function couponDetail(id, code, discountRel, discountAbs, avail, eci){
-            currCouponId = id;
-            jQuery("#addCoupon").modal('show');
-            jQuery(".post-coupon").hide();
-            jQuery(".put-coupon").show();
-
-            var obj = {};
-            var eid = '${event.id}';
-
-            if( eid.length > 0 ){       var eobj = {};
-                                        eobj.id = parseInt(eid);
-                                        obj.event = eobj;        }
-            jQuery('input[name="couponcode"]').val(code);
-            if( discountRel === null || discountRel === "" ){
-                jQuery('input[name="discount"]').val(discountAbs/100);
-                jQuery('#disc-curr').addClass('positive');
-                jQuery('#disc-perc').removeClass('positive');
-            }
-            else if( discountAbs === null || discountAbs === "" ){
-                jQuery('input[name="discount"]').val(discountRel);
-                jQuery('#disc-perc').addClass('positive');
-                jQuery('#disc-curr').removeClass('positive');
-            }
-            jQuery('input[name="available"]').val(avail);
-            jQuery('#couponECI').dropdown('set selected', eci);
-            jQuery('input[name="eventItem"]').val(eci);
-        }
-
-        function validateDiscount() {
-            jQuery('#validate-discount').keyup(function(){
-                var val = jQuery(this).val();
-                if(isNaN(val)){
-                     val = val.replace(/[^0-9\.]/g,'');
-                     if(val.split('.').length>2) 
-                         val = val.replace(/\.+$/,"");
-                }
-                jQuery(this).val(val); 
-            })
-        }
-
-        function deleteCoupon(){
-            var error = true;
-
-            var questUrl = "/bibs-server/eventcoupons";
-            var questType = 'PUT';
-            var id = currCouponId;
-            if( id !== "" &amp;&amp; id !== null ){
-                questUrl = questUrl + "/" + id;
-            }
-            else{
-                alert("Something went wrong while trying to save this coupon.");
-                window.location.reload();
-            }
-
-            var obj = {};
-            obj.event = null;
-
-            var couponcode = jQuery('input[name="couponcode"]').val();
-            var discount = jQuery('input[name="discount"]').val();
-            var available = jQuery('input[name="available"]').val();
-
-            if( couponcode.length > 0 ){ obj.code = couponcode; }
-            if( available.length > 0 ){  obj.available = parseInt(available); }
-
-            var discountAbsolute = null;
-            var discountRelative = null;
-            if( jQuery('#disc-curr').hasClass('positive') ){
-                if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
-                    // convert to cents
-                    discount = parseFloat(discount) * 100;
-                }
-                obj.discountAbsolute = discount;
-            }
-            if( jQuery('#disc-perc').hasClass('positive') ){ obj.discountRelative = parseFloat(discount); }
-
-            if( obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
-                error = true;
-            }
-            else{
-                console.log(obj);
-                if( confirm('Are you sure you want to delete this coupon? This cannot be undone.') ){
-                    jQuery.ajax({
-                        url: questUrl,
-                        type: questType,
-                        contentType: "application/json",
-                        data: JSON.stringify(obj),
-                        dataType: "json",
-                        complete: function(data) {
-                            window.location.reload();
-                        }
-                    })
-                }
-            }
-        }
-
-        function saveCoupon(put){
-            var error = true;
-
-            var questUrl = "/bibs-server/eventcoupons";
-            var questType = 'POST';
-            if( put ){
-                var id = currCouponId;
-                if( id !== "" &amp;&amp; id !== null ){
-                    questType = 'PUT';
-                    questUrl = questUrl + "/" + id;
-                }
-                else{
-                    alert("Something went wrong while trying to save this coupon.");
-                    window.location.reload();
-                }
-            }
-
-            var obj = {};
-            var eid = '${event.id}';
-            var eci = jQuery('input[name="eventItem"]').val();
-            var couponcode = jQuery('input[name="couponcode"]').val();
-            var discount = jQuery('input[name="discount"]').val();
-            var available = jQuery('input[name="available"]').val();
-
-            if( eid.length > 0 ){       var eobj = {};
-                                        eobj.id = parseInt(eid);
-                                        obj.event = eobj;        }
-            if( couponcode.length > 0 ){ obj.code = couponcode; }
-            if( available.length > 0 ){  obj.available = parseInt(available); }
-            if( eci !== null || eci !== "" ){
-                var item = {};
-                item.id = parseInt(eci);
-                obj.item = item;
-            }
-
-            var discountAbsolute = null;
-            var discountRelative = null;
-            if( jQuery('#disc-curr').hasClass('positive') ){
-                jQuery('#coupon-error-percent').hide();
-                error = false;
-                if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
-                    // convert to cents
-                    discount = parseFloat(discount) * 100;
-                }
-                obj.discountAbsolute = discount * 100;
-            }
-            if( jQuery('#disc-perc').hasClass('positive') ){
-                if(parseFloat(discount) &lt;= 100){
-                    obj.discountRelative = parseFloat(discount);
-                    jQuery('#coupon-error-percent').hide();
-                    error = false;
-                }else{
-                    error = true;
-                    jQuery('#coupon-error-percent').show();
-                    jQuery('.fa.fa-close').click(function(){
-                        jQuery(this).parent().hide();
-                    });
-                }
-            }
-
-            if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
-                error = true;
-            }
-            else{
-                if(!error){
-                    console.log(obj);
-                    jQuery('.post-coupon, .put-coupon').prop('disabled', true);
-                    jQuery.ajax({
-                        url: questUrl,
-                        type: questType,
-                        contentType: "application/json",
-                        data: JSON.stringify(obj),
-                        dataType: "json",
-                        complete: function(data) {
-                            window.location.reload();
-                        }
-                    })
-                }
-            }
-        }
-
-        function addQuestionModal(){
-            jQuery("#addQuestion").modal('show');
-            jQuery(".put-question").hide();
-            jQuery(".post-question").show();
-        }
-
-        function addDropdownOption(){
-            jQuery('#customQuestionsPreviewDropdown').dropdown();
-            var opt = jQuery("#custom-response-dropdown-input").val();
-            var fee = jQuery("#custom-price-dropdown-input").val();
-
-            if( opt.length > 0 ){
-                var optionObj = {};
-                optionObj.response = opt;
-                var feeString = "";
-                if(fee.length > 0){
-                    optionObj.price = fee * 100;
-                    if(parseFloat(fee) &lt; 0){
-                        feeString = ' (-&amp;dollar;' + parseFloat(fee).toFixed(2) * -1 + ' discount)';
-                    }else if(parseFloat(fee) > 0){
-                        feeString = ' (&amp;dollar;' + parseFloat(fee).toFixed(2) + ' fee)';
-                    }else{
-                        feeString = 0;
-                    }
-                }else{
-                    optionObj.price = 0;
-                }
-                if(optionObj.hasOwnProperty('response') &amp;&amp; optionObj.hasOwnProperty('price')){
-                    currOptionsObjList.push(optionObj);
-                }
-
-                jQuery('#option-list').append('<li><div class="ui label" data-index="' + (currOptionsObjList.length-1) + '" onclick="removeDropdownOption(this)">' + opt + feeString + '<i class="fa fa-close icon"><!-- --></i></div></li>');
-
-                // add to sample dropdown for user
-                jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + opt + feeString + '</div>');
-                jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
-
-                // clear UI
-                jQuery('#custom-response-dropdown-input').val("");
-                jQuery('#custom-price-dropdown-input').val("");
-            }
-        }
-
-        function removeDropdownOption(o){
-            var index = parseInt(jQuery(o).data('index'));
-            currOptionsObjList.splice(index, 1);
-
-            jQuery("#customQuestionsPreviewOptions").html("");
-            jQuery('#custom-response-dropdown-input').val("");
-            jQuery('#option-list').html("");
-            currOptionsObjList.forEach(function(el, i, ary){
-                if( el.price &lt; 0 ){
-                    feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
-                }else if(el.price > 0){
-                    feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
-                }else{
-                    feeString = '';
-                }
-                jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
-                jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
-            })
-            jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
-        }
-
-        var currQuestionId;
-        function questionDetail(id, eid, optional, hidden, question, responseSet, eci){
-            jQuery("#addQuestion").modal('show');
-            jQuery(".post-question").hide();
-            jQuery(".put-question").show();
-
-            currQuestionId = id;
-            jQuery('input[name="id"]').val(id);
-            jQuery('input[name="question"]').val(question);
-
-            if( responseSet.length > 0  &amp;&amp; responseSet !== 'null' ){
-                jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
-                jQuery("#dropdown-field").show();
-                jQuery('#customQuestionsPreviewDropdown').dropdown();
-                
-                jQuery('#custom-response-dropdown-input').val("");
-                jQuery("#customQuestionsPreviewOptions").html("");
-                //var parsed = responseSet.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-
-                    var parsed = responseSet.replace(/'/g, '"');
-                    console.log("preparsed")
-                    console.log(parsed)
-                    parsed = parsed.replace(/qFq/g, '"');
-                    console.log("parsed:")
-                    console.log(parsed)
-                var parsedObjList = JSON.parse(parsed);
-                currOptionsObjList = parsedObjList;
-                parsedObjList.forEach(function(el, i, ary){
-                    if( el.price &lt; 0 ){
-                        feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
-                    }else if(el.price > 0){
-                        feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
-                    }else{
-                        feeString = '';
-                    }
-                    jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
-                    jQuery('#customQuestionsPreviewDropdown').dropdown();
-
-                    jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
-                    jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
-                    jQuery('#custom-response-dropdown-input').val("");
-                })
-                jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
-                
-                jQuery("#type-input-selected").hide();
-                jQuery("#customQuestionsPreviewDropdown").show();
-            }
-            else{
-                jQuery("#dropdown-field").hide();
-                jQuery("#customQuestionsPreviewDropdown").hide();
-                jQuery("#type-input-selected").show();
-                jQuery('#radio-input').checkbox('check');
-            }
-
-            if(optional){
-                jQuery('#optional1').addClass('checked');
-                jQuery('input[name="optional"]').prop('checked', true);
-            }
-
-            if(hidden){
-                jQuery('#optional2').addClass('checked');
-                jQuery('input[name="hidden"]').prop('checked', true);
-            }
-
-            eci.forEach(function(n,i){
-                jQuery('#questionECI').dropdown('set selected', n);
-            })
-
-            if( (question !== null || question !== "") ){
-                jQuery("#question-preview").show();
-                jQuery("#question-label").text(question);
-                jQuery("#question-label").show();
-                jQuery("#placeholder-text").hide();
-            }
-        }
-
-        function deleteQuestion(){
-            var id = jQuery('input[name="id"]').val();
-            if( id !== "" &amp;&amp; id !== null ){
-                if( confirm('Are you sure you want to delete this question? This cannot be undone.') ){
-                    jQuery.ajax({
-                        url: "/bibs-server/regfields/" + id,
-                        type: "DELETE",
-                        dataType: "json",
-                        complete: function() {
-                            window.location.reload();
-                        }
-                    });
-                }
-            }
-            else{
-                alert("Something went wrong while trying to delete this question.");
-                window.location.reload();
-            }
-        }
-
-        function saveQuestion(put){
-            var error = true;
-
-            var questUrl = "/bibs-server/regfields";
-            var questType = 'POST';
-            if( put ){
-                var id = currQuestionId;
-                if( id !== "" &amp;&amp; id !== null ){
-                    questType = 'PUT';
-                    questUrl = questUrl + "/" + id;
-                }
-                else{
-                    alert("Something went wrong while trying to save this question.");
-                    window.location.reload();
-                }
-            }
-
-            var obj = {};
-            var eid = '${event.id}';
-            var question = jQuery('input[name="question"]').val();
-            var eventItems = {};
-            var eciList = jQuery('input[name="eventItems"]').val();
-            if( eciList !== null &amp;&amp; eciList !== "" ){
-                eciList = eciList.split(',');
-                obj.eventItems = eciList.map(function(item){
-                    var obj = {};
-                    obj.id = parseInt(item);
-                    return obj;
-                });
-            }
-            var option = jQuery('input[name="optional"]').prop('checked');
-            var hidden = jQuery('input[name="hidden"]').prop('checked');
-            obj.optional = option;
-            obj.hidden = hidden;
-
-            if( eid.length > 0 ){       var eobj = {};
-                                        eobj.id = parseInt(eid);
-                                        obj.event = eobj;        }
-            if( question.length > 0 ){  obj.question = question; }
-
-            if( currOptionsObjList.length > 0 ){
-                obj.responseSet = currOptionsObjList;
-            }else{
-                obj.responseSet = null;
-            }
-
-            if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('question') === false || obj.hasOwnProperty('responseSet') === false ){
-                error = true;
-            }
-            else{
+        else{
+            console.log(obj);
+            if( confirm('Are you sure you want to delete this coupon? This cannot be undone.') ){
                 jQuery.ajax({
                     url: questUrl,
                     type: questType,
@@ -970,167 +668,472 @@
                 })
             }
         }
+    }
 
-        var responseType = 'input';
-        function customFormTab(){
-            jQuery("#type-input-selected").show();
+    function saveCoupon(put){
+        var error = true;
 
-            jQuery('input[name="question"]').keyup(function(){
-                var question = jQuery('input[name="question"]').val();
-                jQuery("#question-label").text(question);
+        var questUrl = "/bibs-server/eventcoupons";
+        var questType = 'POST';
+        if( put ){
+            var id = currCouponId;
+            if( id !== "" &amp;&amp; id !== null ){
+                questType = 'PUT';
+                questUrl = questUrl + "/" + id;
+            }
+            else{
+                alert("Something went wrong while trying to save this coupon.");
+                window.location.reload();
+            }
+        }
 
-                if( (question !== null || question !== "") ){
-                    jQuery("#question-preview").show();
-                    jQuery("#question-label").show();
-                    jQuery("#placeholder-text").hide();
+        var obj = {};
+        var eid = '${event.id}';
+        var eci = jQuery('input[name="eventItem"]').val();
+        var couponcode = jQuery('input[name="couponcode"]').val();
+        var discount = jQuery('input[name="discount"]').val();
+        var available = jQuery('input[name="available"]').val();
+
+        if( eid.length > 0 ){       var eobj = {};
+                                    eobj.id = parseInt(eid);
+                                    obj.event = eobj;        }
+        if( couponcode.length > 0 ){ obj.code = couponcode; }
+        if( available.length > 0 ){  obj.available = parseInt(available); }
+        if( eci !== null || eci !== "" ){
+            var item = {};
+            item.id = parseInt(eci);
+            obj.item = item;
+        }
+
+        var discountAbsolute = null;
+        var discountRelative = null;
+        if( jQuery('#disc-curr').hasClass('positive') ){
+            jQuery('#coupon-error-percent').hide();
+            error = false;
+            if( discount.length > 0 &amp;&amp; discount.indexOf('.') > -1 ){
+                // convert to cents
+                discount = parseFloat(discount) * 100;
+            }
+            obj.discountAbsolute = discount * 100;
+        }
+        if( jQuery('#disc-perc').hasClass('positive') ){
+            if(parseFloat(discount) &lt;= 100){
+                obj.discountRelative = parseFloat(discount);
+                jQuery('#coupon-error-percent').hide();
+                error = false;
+            }else{
+                error = true;
+                jQuery('#coupon-error-percent').show();
+                jQuery('.fa.fa-close').click(function(){
+                    jQuery(this).parent().hide();
+                });
+            }
+        }
+
+        if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('code') === false || obj.hasOwnProperty('available') === false ){
+            error = true;
+        }
+        else{
+            if(!error){
+                console.log(obj);
+                jQuery('.post-coupon, .put-coupon').prop('disabled', true);
+                jQuery.ajax({
+                    url: questUrl,
+                    type: questType,
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    complete: function(data) {
+                        window.location.reload();
+                    }
+                })
+            }
+        }
+    }
+
+    function addQuestionModal(){
+        jQuery("#addQuestion").modal('show');
+        jQuery(".put-question").hide();
+        jQuery(".post-question").show();
+    }
+
+    function addDropdownOption(){
+        jQuery('#customQuestionsPreviewDropdown').dropdown();
+        var opt = jQuery("#custom-response-dropdown-input").val();
+        var fee = jQuery("#custom-price-dropdown-input").val();
+
+        if( opt.length > 0 ){
+            var optionObj = {};
+            optionObj.response = opt;
+            var feeString = "";
+            if(fee.length > 0){
+                optionObj.price = fee * 100;
+                if(parseFloat(fee) &lt; 0){
+                    feeString = ' (-&amp;dollar;' + parseFloat(fee).toFixed(2) * -1 + ' discount)';
+                }else if(parseFloat(fee) > 0){
+                    feeString = ' (&amp;dollar;' + parseFloat(fee).toFixed(2) + ' fee)';
+                }else{
+                    feeString = 0;
                 }
-                else{
-                    jQuery("#question-preview").hide();
-                    jQuery("#question-label").hide();
-                    jQuery("#placeholder-text").show();
+            }else{
+                optionObj.price = 0;
+            }
+            if(optionObj.hasOwnProperty('response') &amp;&amp; optionObj.hasOwnProperty('price')){
+                currOptionsObjList.push(optionObj);
+            }
+
+            jQuery('#option-list').append('<li><div class="ui label" data-index="' + (currOptionsObjList.length-1) + '" onclick="removeDropdownOption(this)">' + opt + feeString + '<i class="fa fa-close icon"><!-- --></i></div></li>');
+
+            // add to sample dropdown for user
+            jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + opt + feeString + '</div>');
+            jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+
+            // clear UI
+            jQuery('#custom-response-dropdown-input').val("");
+            jQuery('#custom-price-dropdown-input').val("");
+        }
+    }
+
+    function removeDropdownOption(o){
+        var index = parseInt(jQuery(o).data('index'));
+        currOptionsObjList.splice(index, 1);
+
+        jQuery("#customQuestionsPreviewOptions").html("");
+        jQuery('#custom-response-dropdown-input').val("");
+        jQuery('#option-list').html("");
+        currOptionsObjList.forEach(function(el, i, ary){
+            if( el.price &lt; 0 ){
+                feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
+            }else if(el.price > 0){
+                feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
+            }else{
+                feeString = '';
+            }
+            jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
+            jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
+        })
+        jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+    }
+
+    var currQuestionId;
+    function questionDetail(id, eid, optional, hidden, question, responseSet, eci){
+        jQuery("#addQuestion").modal('show');
+        jQuery(".post-question").hide();
+        jQuery(".put-question").show();
+
+        currQuestionId = id;
+        jQuery('input[name="id"]').val(id);
+        jQuery('input[name="question"]').val(question);
+
+        if( responseSet.length > 0  &amp;&amp; responseSet !== 'null' ){
+            jQuery('input[name="responseType"][value="dropdown"]').prop('checked', true);
+            jQuery("#dropdown-field").show();
+            jQuery('#customQuestionsPreviewDropdown').dropdown();
+            
+            jQuery('#custom-response-dropdown-input').val("");
+            jQuery("#customQuestionsPreviewOptions").html("");
+            //var parsed = responseSet.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+
+                var parsed = responseSet.replace(/'/g, '"');
+                console.log("preparsed")
+                console.log(parsed)
+                parsed = parsed.replace(/qFq/g, '"');
+                console.log("parsed:")
+                console.log(parsed)
+            var parsedObjList = JSON.parse(parsed);
+            currOptionsObjList = parsedObjList;
+            parsedObjList.forEach(function(el, i, ary){
+                if( el.price &lt; 0 ){
+                    feeString = ' (-&amp;dollar;' + (el.price/100).toFixed(2) * -1 + ' discount)';
+                }else if(el.price > 0){
+                    feeString = ' (&amp;dollar;' + (el.price/100).toFixed(2) + ' fee)';
+                }else{
+                    feeString = '';
+                }
+                jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + el.response + feeString + '</div>');
+                jQuery('#customQuestionsPreviewDropdown').dropdown();
+
+                jQuery('#option-list').append('<li><div class="ui label" data-index="' + i + '" onclick="removeDropdownOption(this)">' + el.response + feeString + '<i class="x-btn fa fa-remove"></i></div></li>');
+                jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+                jQuery('#custom-response-dropdown-input').val("");
+            })
+            jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+            
+            jQuery("#type-input-selected").hide();
+            jQuery("#customQuestionsPreviewDropdown").show();
+        }
+        else{
+            jQuery("#dropdown-field").hide();
+            jQuery("#customQuestionsPreviewDropdown").hide();
+            jQuery("#type-input-selected").show();
+            jQuery('#radio-input').checkbox('check');
+        }
+
+        if(optional){
+            jQuery('#optional1').addClass('checked');
+            jQuery('input[name="optional"]').prop('checked', true);
+        }
+
+        if(hidden){
+            jQuery('#optional2').addClass('checked');
+            jQuery('input[name="hidden"]').prop('checked', true);
+        }
+
+        eci.forEach(function(n,i){
+            jQuery('#questionECI').dropdown('set selected', n);
+        })
+
+        if( (question !== null || question !== "") ){
+            jQuery("#question-preview").show();
+            jQuery("#question-label").text(question);
+            jQuery("#question-label").show();
+            jQuery("#placeholder-text").hide();
+        }
+    }
+
+    function deleteQuestion(){
+        var id = jQuery('input[name="id"]').val();
+        if( id !== "" &amp;&amp; id !== null ){
+            if( confirm('Are you sure you want to delete this question? This cannot be undone.') ){
+                jQuery.ajax({
+                    url: "/bibs-server/regfields/" + id,
+                    type: "DELETE",
+                    dataType: "json",
+                    complete: function() {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+        else{
+            alert("Something went wrong while trying to delete this question.");
+            window.location.reload();
+        }
+    }
+
+    function saveQuestion(put){
+        var error = true;
+
+        var questUrl = "/bibs-server/regfields";
+        var questType = 'POST';
+        if( put ){
+            var id = currQuestionId;
+            if( id !== "" &amp;&amp; id !== null ){
+                questType = 'PUT';
+                questUrl = questUrl + "/" + id;
+            }
+            else{
+                alert("Something went wrong while trying to save this question.");
+                window.location.reload();
+            }
+        }
+
+        var obj = {};
+        var eid = '${event.id}';
+        var question = jQuery('input[name="question"]').val();
+        var eventItems = {};
+        var eciList = jQuery('input[name="eventItems"]').val();
+        if( eciList !== null &amp;&amp; eciList !== "" ){
+            eciList = eciList.split(',');
+            obj.eventItems = eciList.map(function(item){
+                var obj = {};
+                obj.id = parseInt(item);
+                return obj;
+            });
+        }
+        var option = jQuery('input[name="optional"]').prop('checked');
+        var hidden = jQuery('input[name="hidden"]').prop('checked');
+        obj.optional = option;
+        obj.hidden = hidden;
+
+        if( eid.length > 0 ){       var eobj = {};
+                                    eobj.id = parseInt(eid);
+                                    obj.event = eobj;        }
+        if( question.length > 0 ){  obj.question = question; }
+
+        if( currOptionsObjList.length > 0 ){
+            obj.responseSet = currOptionsObjList;
+        }else{
+            obj.responseSet = null;
+        }
+
+        if( obj.hasOwnProperty('event') === false || obj.hasOwnProperty('question') === false || obj.hasOwnProperty('responseSet') === false ){
+            error = true;
+        }
+        else{
+            jQuery.ajax({
+                url: questUrl,
+                type: questType,
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                complete: function(data) {
+                    window.location.reload();
                 }
             })
+        }
+    }
 
-            jQuery('input[name="responseType"]').on('change', function() {
-                // populate preview
-                var type = jQuery('input[name="responseType"]:checked').val();
-                if( type == 'dropdown' ){
-                    responseType = 'dropdown';
-                    jQuery("#dropdown-field").show();
-                    jQuery("#customQuestionsPreviewDropdown").show();
-                    jQuery("#type-input-selected").hide();
-                }
-                else{
-                    responseType = 'input';
-                    jQuery("#dropdown-field").hide();
-                    jQuery("#customQuestionsPreviewDropdown").hide();
-                    jQuery("#type-input-selected").show();
-                }
-            });
+    var responseType = 'input';
+    function customFormTab(){
+        jQuery("#type-input-selected").show();
+
+        jQuery('input[name="question"]').keyup(function(){
+            var question = jQuery('input[name="question"]').val();
+            jQuery("#question-label").text(question);
+
+            if( (question !== null || question !== "") ){
+                jQuery("#question-preview").show();
+                jQuery("#question-label").show();
+                jQuery("#placeholder-text").hide();
+            }
+            else{
+                jQuery("#question-preview").hide();
+                jQuery("#question-label").hide();
+                jQuery("#placeholder-text").show();
+            }
+        })
+
+        jQuery('input[name="responseType"]').on('change', function() {
+            // populate preview
+            var type = jQuery('input[name="responseType"]:checked').val();
+            if( type == 'dropdown' ){
+                responseType = 'dropdown';
+                jQuery("#dropdown-field").show();
+                jQuery("#customQuestionsPreviewDropdown").show();
+                jQuery("#type-input-selected").hide();
+            }
+            else{
+                responseType = 'input';
+                jQuery("#dropdown-field").hide();
+                jQuery("#customQuestionsPreviewDropdown").hide();
+                jQuery("#type-input-selected").show();
+            }
+        });
+    }
+
+    function shareHandler(){
+        var share = '${event.socialSharingDiscounts}';
+        var shareAmount = '${event.socialSharingDiscountAmount}';
+        var rewardMsg = decodeURI("${event.topSharerReward}");
+
+        if( share == 'true' ){
+            jQuery('input[name="socialSharingDiscounts"]').prop("checked", true);
+            jQuery('#share-amount').show();
+            jQuery('#share-msg').show();
+        }
+        if( shareAmount !== 'null' || shareAmount !== "" ){
+            jQuery('input[name="socialSharingDiscountAmount"]').val(shareAmount/100);
+        }
+        if( rewardMsg !== 'null' || rewardMsg !== "" ){
+            jQuery('input[name="topSharerReward"]').val(rewardMsg);
         }
 
-        function shareHandler(){
-            var share = '${event.socialSharingDiscounts}';
-            var shareAmount = '${event.socialSharingDiscountAmount}';
-            var rewardMsg = decodeURI("${event.topSharerReward}");
+        jQuery('#shareForm').parsley({
+            errorsWrapper: '<div class="has-error"></div>',
+            errorTemplate: '<span></span>'
+        });
 
-            if( share == 'true' ){
-                jQuery('input[name="socialSharingDiscounts"]').prop("checked", true);
+        jQuery('input[name="socialSharingDiscounts"]').change(function() {
+            if(jQuery(this).prop('checked')){
                 jQuery('#share-amount').show();
                 jQuery('#share-msg').show();
+            }else{
+                jQuery('#share-amount').hide();
+                jQuery('#share-msg').hide();
             }
-            if( shareAmount !== 'null' || shareAmount !== "" ){
-                jQuery('input[name="socialSharingDiscountAmount"]').val(shareAmount/100);
-            }
-            if( rewardMsg !== 'null' || rewardMsg !== "" ){
-                jQuery('input[name="topSharerReward"]').val(rewardMsg);
-            }
+        });
 
-            jQuery('#shareForm').parsley({
-                errorsWrapper: '<div class="has-error"></div>',
-                errorTemplate: '<span></span>'
-            });
+        jQuery("#shareForm").submit(function() {
+            var share = jQuery('input[name="socialSharingDiscounts"]').prop("checked");
+            var shareAmount = jQuery('input[name="socialSharingDiscountAmount"]').val();
+            var shareMsg = jQuery('input[name="topSharerReward"]').val();
 
-            jQuery('input[name="socialSharingDiscounts"]').change(function() {
-                if(jQuery(this).prop('checked')){
-                    jQuery('#share-amount').show();
-                    jQuery('#share-msg').show();
-                }else{
-                    jQuery('#share-amount').hide();
-                    jQuery('#share-msg').hide();
+            shareAmount = parseFloat(shareAmount)*100;
+
+            var obj = {};
+            obj.socialSharingDiscounts = share;
+            obj.socialSharingDiscountAmount = shareAmount;
+            obj.topSharerReward = encodeURIComponent(shareMsg);
+
+            jQuery('#socialSaveButton').prop('disabled', true).text('Saving...');
+
+            jQuery.ajax({
+                url: "/bibs-server/events/${event.id}/socialsharing",
+                type: "PUT",
+                data: JSON.stringify(obj),
+                dataType: 'json',
+                contentType: 'application/json',
+                complete: function() {
+                    window.location.reload();
                 }
             });
 
-            jQuery("#shareForm").submit(function() {
-                var share = jQuery('input[name="socialSharingDiscounts"]').prop("checked");
-                var shareAmount = jQuery('input[name="socialSharingDiscountAmount"]').val();
-                var shareMsg = jQuery('input[name="topSharerReward"]').val();
+            return false; // avoid to execute the actual submit of the form.
+        });
+    }
 
-                shareAmount = parseFloat(shareAmount)*100;
+    function transferHandler(){
+                    
+        jQuery('#transferForm').parsley({
+            errorsWrapper: '<div class="has-error"></div>',
+            errorTemplate: '<span></span>'
+        });
 
-                var obj = {};
-                obj.socialSharingDiscounts = share;
-                obj.socialSharingDiscountAmount = shareAmount;
-                obj.topSharerReward = encodeURIComponent(shareMsg);
+        jQuery("#transferForm").submit(function() {
+            var transfer = jQuery('input[name="ticketTransferEnabled"]').prop("checked");
+            var transferDate = jQuery('input[name="ticketTransferCutoff"]').val();
 
-                jQuery('#socialSaveButton').prop('disabled', true).text('Saving...');
+            jQuery('#transferSaveButton').prop('disabled', true).text('Saving...');
 
-                jQuery.ajax({
-                    url: "/bibs-server/events/${event.id}/socialsharing",
-                    type: "PUT",
-                    data: JSON.stringify(obj),
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    complete: function() {
-                        window.location.reload();
-                    }
-                });
-
-                return false; // avoid to execute the actual submit of the form.
-            });
-        }
-
-        function transferHandler(){
-                        
-            jQuery('#transferForm').parsley({
-                errorsWrapper: '<div class="has-error"></div>',
-                errorTemplate: '<span></span>'
+            jQuery.ajax({
+                url: "/bibs-server/events/${event.id}/tickettransfer" + "?tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
+                type: "PUT",
+                dataType: "text/html",
+                complete: function() {
+                    window.location.reload();
+                }
             });
 
-            jQuery("#transferForm").submit(function() {
-                var transfer = jQuery('input[name="ticketTransferEnabled"]').prop("checked");
-                var transferDate = jQuery('input[name="ticketTransferCutoff"]').val();
+            return false; // avoid to execute the actual submit of the form.
+        });
+    }
 
-                jQuery('#transferSaveButton').prop('disabled', true).text('Saving...');
+    function limitShirtHandler(){
+        var shirtsLimited = '${event.shirtsLimited}';
 
-                jQuery.ajax({
-                    url: "/bibs-server/events/${event.id}/tickettransfer" + "?tickettransferenabled="+transfer+"&amp;tickettransfercutoff="+encodeURIComponent(transferDate),
-                    type: "PUT",
-                    dataType: "text/html",
-                    complete: function() {
-                        window.location.reload();
-                    }
-                });
+        if( shirtsLimited == 'true' ){
+            jQuery('input[name="shirtsLimited"]').prop("checked", true);
+        }
 
-                return false; // avoid to execute the actual submit of the form.
+        jQuery("#shirtsLimitedForm").submit(function() {
+            var shirtsLimited = jQuery('input[name="shirtsLimited"]').prop("checked");
+            jQuery('#shirtSaveButton').prop('disabled', true).text('Saving...');
+
+            jQuery.ajax({
+                url: "/bibs-server/events/${event.id}/regsettings" + "?shirtslimited="+shirtsLimited,
+                type: "PUT",
+                dataType: "text/html",
+                complete: function() {
+                    window.location.reload();
+                }
             });
-        }
 
-        function limitShirtHandler(){
-            var shirtsLimited = '${event.shirtsLimited}';
+            return false; // avoid to execute the actual submit of the form.
+        });
+    }
 
-            if( shirtsLimited == 'true' ){
-                jQuery('input[name="shirtsLimited"]').prop("checked", true);
-            }
-
-            jQuery("#shirtsLimitedForm").submit(function() {
-                var shirtsLimited = jQuery('input[name="shirtsLimited"]').prop("checked");
-                jQuery('#shirtSaveButton').prop('disabled', true).text('Saving...');
-
-                jQuery.ajax({
-                    url: "/bibs-server/events/${event.id}/regsettings" + "?shirtslimited="+shirtsLimited,
-                    type: "PUT",
-                    dataType: "text/html",
-                    complete: function() {
-                        window.location.reload();
-                    }
-                });
-
-                return false; // avoid to execute the actual submit of the form.
-            });
-        }
-
-        function onBack(){
-            window.location="/bibs-server/events/${event.id}";
-        }
-        function redirectItemDetail(id){
-            window.location="/bibs-server/eventitems/"+id;
-        }
-        function addItem(){
-            window.location="/bibs-server/eventitems?form&amp;event=${event.id}";
-        }
-        function addToCart(item){
-            window.location = "/bibs-server/carts/item/" + item + "/updatequantity?quantity=1";
-        }
-    </script>
+    function onBack(){
+        window.location="/bibs-server/events/${event.id}";
+    }
+    function redirectItemDetail(id){
+        window.location="/bibs-server/eventitems/"+id;
+    }
+    function addItem(){
+        window.location="/bibs-server/eventitems?form&amp;event=${event.id}";
+    }
+    function addToCart(item){
+        window.location = "/bibs-server/carts/item/" + item + "/updatequantity?quantity=1";
+    }
+</script>
 </div>
