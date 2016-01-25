@@ -5,7 +5,7 @@
     <link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
     <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
     <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
-    <div class="ui long modal" id="regButtonModal" style="display:none">
+    <div class="ui small modal" id="regButtonModal" style="display:none">
         <div class="header">Registration Button Snippet</div>
         <div class="content">
             <div class="preview">Preview: 
@@ -157,17 +157,15 @@
                     </div>
                 </div>
             </div>
-            <div style="width:70%;margin:0 auto">
-                <div class="ui toggle checkbox">
+            <div style="width:400px;margin:0 auto;">
+                <div class="ui slider checkbox">
                     <input type="checkbox" name="questions"></input>
-                    <label style="width:100%;margin:0">Include custom questions?</label>
+                    <label style="width:100%;">Include custom questions?</label>
                 </div>
-            </div>
-            <div style="clear:both"><!--  --></div>
-            <div style="width:70%;margin:0 auto">
-                <div class="ui toggle checkbox">
+                <div style="clear:both"><!--   --></div>
+                <div class="ui slider checkbox">
                     <input type="checkbox" name="bibnum"></input>
-                    <label style="width:100%;margin:0">Include bib numbers?</label>
+                    <label style="width:100%;">Include bib numbers?</label>
                 </div>
             </div>
         </div>
@@ -190,10 +188,10 @@
         <div class="content">
             <h4 class="ui header">Export by Event Type (optional)</h4>
             <div class="row">
-                <div class="ui selection compact dropdown" id="exportAthletes-eventTypes">
+                <div class="ui selection dropdown" id="exportAthletes-eventTypes">
                     <input type="hidden" name="type"><!--  --></input>
                     <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                    <div class="default text">Export by Event Type (optional)</div>
+                    <div class="default text">Event Type (optional)</div>
                     <div class="menu">
                         <c:forEach var="item" items="${eventTypes}">
                             <div class="item" data-value="${item.id}">${item.typeName}</div>
@@ -208,7 +206,7 @@
         <div class="actions">
             <div class="ui button" onclick="closeModal()">Cancel</div>
             <button class="ui primary button" style="width:150px" onclick="exportAthletesHandler()">
-                <i class="fa fa-files-o"><!--  --></i>Export
+                <i class="fa fa-files-o icon"><!--  --></i>Export
             </button>
         </div>
     </div>
@@ -218,7 +216,7 @@
         <div class="content">
             <h4 class="ui header">Choose Event Type</h4>
             <div class="row">
-                <div class="ui selection compact dropdown" id="importAthletes-eventTypes">
+                <div class="ui selection dropdown" id="importAthletes-eventTypes">
                     <input type="hidden" name="type"><!--  --></input>
                     <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                     <div class="default text">Event Type</div>
@@ -236,7 +234,7 @@
         <div class="actions">
             <div class="ui button" onclick="closeModal()">Cancel</div>
             <button class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
-                <i class="fa fa-files-o" style="margin-right:7px"><!--  --></i>Import
+                <i class="fa fa-files-o icon"><!--  --></i>Import
             </button>
         </div>
     </div>
@@ -718,6 +716,9 @@
     function renderModal(type){
         if(type !== 'eventType'){
             jQuery('#'+type+'Modal').modal('show');
+            if(type == 'exportReg'){
+                jQuery('#'+type+'Modal').find('.ui.checkbox').checkbox();
+            }
         }else{
             renderEventTypeModal('clean');
         }
