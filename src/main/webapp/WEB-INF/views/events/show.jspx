@@ -425,11 +425,10 @@
                                         data-date-format="MM/DD/YYYY hh:mm:ss a"
                                         data-parsley-error-message="Please specify an end date."
                                         data-parsley-required="true"></input>
-                            <div class="ui pointing label">
-    								Must end before your event starts
-    						</div>
+                                <div class="ui pointing label">
+        								Must end before your event starts
+        						</div>
                             </div>
-
                         </div>
                     </div>
                 </form>
@@ -525,14 +524,14 @@
                     <i class="fa fa-file-text icon"><!--  --></i> Results
                     <i class="fa fa-caret-down"><!--  --></i>
                     <div class="menu">
-                        <a class="item" href="#" onclick="renderModal('importAthletes')">Import</a>
+                        <a class="item" href="#" onclick="renderModal('importAthletes')">Import Athletes</a>
                         <a class="item" href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a>
                         <c:if test="${dropboxUnlink == true}">
                             <a class="item" href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a>
                         </c:if>
                         <a class="disabled item" href="#">Import bibs file</a>
                         <div class="divider"><!--  --></div>
-                        <a class="item" href="#" onclick="renderModal('exportAthletes')">Export</a>
+                        <a class="item" href="#" onclick="renderModal('exportAthletes')">Export Athletes</a>
                         <a class="item" href="#" onclick="cloud();return false;">Cloud Sync</a>
                         <c:if test="${lastImport != null}">
                             <a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a>

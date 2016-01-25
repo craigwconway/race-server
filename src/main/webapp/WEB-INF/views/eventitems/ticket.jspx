@@ -1,347 +1,270 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:spring="http://www.springframework.org/tags" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <link href='/bibs-server/resources/styles/metricsgraphics.css' rel='stylesheet' />
-    <style>
-        body{
-            background-image: url('../images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 102%;
-            margin-top: -2%;
-            margin-left: -1%;
-            margin-right: -3%;
-            padding-top: 2%;
-            padding-bottom: 4%;
-        }
-        .info-container{
-            margin: 0 15%;
-            width: auto;
-            font-weight: 400;
-            line-height: 27px;
-            color: #292929;
-            text-align: center;
-        }
-        .ui.form .form-fields{
-            margin-bottom: 5px;
-        }
-        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
-            margin-bottom: 5px;
-        }
-        .ui.labeled.input {
-            display: table;
-            margin: 5px auto;
-            text-align: left;
-            width: 400px;
-        }
-        .ui.labeled.input > .label {
-            width: 32%;
-            font-weight: 300;
-        }
-        .ui.form select{
-            padding: 0.42em 1em;
-            height: 35px;
-        }
-        .ui.menu .item{
-            cursor: pointer;
-        }
-        #schedule-list > .item{
-            line-height: 2em;
-        }
-        #racetype-dropdown{
-            padding: 0.78571429em 1em 0.78571429em 1em;
-        }
-        .ui.toggle.checkbox{
-            margin-left: 10px;
-        }
-        i{
-            margin-right: 5px;
-        }
-        .mg-chart-title{
-            font-size: 1.2em;
-        }
-        .ui.form input[type="number"]{
-            padding: 0.5em 1em;
-        }
-        .ui.sortable.table thead th:after{
-            font-family: 'FontAwesome'
-        }
-        ul{
-            margin: 0;
-        }
-        li{
-            list-style-type: none;
-            margin-left: 10px;
-        }
-        #_title_pl_com_bibsmobile_model_EventCartItemPriceChange_id{
-            display:none;
-        }
-        #schedule-tab{
-            padding: 2em 1em;
-        }
-        #addTypeForm{
-            margin: 0 auto;
-            width: 70%;
-        }
-        #addSchedForm{
-            margin: 0 auto;
-            width: 90%;
-        }
-        .sched{
-            font-weight: bold;
-        }
-    </style>
-    <div class="modal fade" id="editTicketTypeModal" tabindex="-1" role="dialog" aria-labelledby="editTicketType-label" aria-hidden="true" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-times"></span></button>
-                    <h4 class="modal-title" id="editTicketType-label">Edit Ticket Type</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="ui form" style="width:400px">
-                        <div class="ui labeled input">
-                            <div class="ui blue label">Ticket Type Title</div>
-                            <input  type="text" name="categoryName"
-                                    data-for="categoryName"
-                                    class="input-form category-field"
-                                    placeholder="e.g. Early Bird"
-                                    data-parsley-group="category"
-                                    data-parsley-required="true"
-                                    data-parsley-error-message="Please specify a ticket type title."></input>
-                        </div>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">$</div>
-                            <input  type="number" data-for="base"
-                                    class="category-field" name="price"
-                                    placeholder="Base price"
-                                    min="0"
-                                    data-parsley-group="category"
-                                    data-parsley-error-message="Invalid base price."
-                                    data-parsley-required="true"></input>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui red button" onclick="removeTicketType()">Remove</button>
-                    <button type="button" class="ui green button" onclick="saveTicketType()">Save</button>
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<link href='/bibs-server/resources/styles/metricsgraphics.css' rel='stylesheet' />
+<style>
+    #removetime{
+        padding-bottom:8px;
+    }
+    .ui.menu .item{
+        cursor: pointer;
+    }
+    #schedule-list > .item{
+        line-height: 2em;
+    }
+    .mg-chart-title{
+        font-size: 1.2em;
+    }
+    .ui.sortable.table thead th:after{
+        font-family: 'FontAwesome'
+    }
+    #_title_pl_com_bibsmobile_model_EventCartItemPriceChange_id{
+        display:none;
+    }
+    #schedule-tab{
+        padding: 2em 1em;
+    }
+    #addTypeForm{
+        margin: 0 auto;
+        width: 70%;
+    }
+    #addSchedForm{
+        margin: 0 auto;
+        width: 90%;
+    }
+    .sched{
+        font-weight: bold;
+    }
+</style>
+<div class="ui small modal" id="editTicketTypeModal" style="display:none">
+    <div class="header">Edit Ticket Type</div>
+    <div class="content">
+        <div class="ui form" style="width:400px">
+            <div class="field">
+                <label>Ticket Type Title</label>
+                <input  type="text" name="categoryName"
+                        data-for="categoryName"
+                        class="input-form category-field"
+                        placeholder="e.g. Early Bird"
+                        data-parsley-group="category"
+                        data-parsley-required="true"
+                        data-parsley-error-message="Please specify a ticket type title."></input>
+            </div>
+            <div class="field">
+                <div class="ui labeled input">
+                    <div class="ui blue label">$</div>
+                    <input  type="number" data-for="base"
+                            class="category-field" name="price"
+                            placeholder="Base price"
+                            min="0"
+                            data-parsley-group="category"
+                            data-parsley-error-message="Invalid base price."
+                            data-parsley-required="true"></input>
                 </div>
             </div>
         </div>
     </div>
+    <div class="actions">
+        <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+        <button type="button" class="ui red button" onclick="removeTicketType()">Remove</button>
+        <button type="button" class="ui green button" onclick="saveTicketType()">Save</button>
+    </div>
+</div>
 
-    <div class="modal fade" id="editScheduleModal" tabindex="-1" role="dialog" aria-labelledby="editSchedule-label" aria-hidden="true" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-times"></span></button>
-                    <h4 class="modal-title" id="editSchedule-label">Edit Price Schedule</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="ui form" id="editSchedForm" style="width:400px">
-                        <div class="field">
-                        Price Change Begin Date: <input  type="text" name="dateStartLocal"
-                                class="form-control" id="editPriceSchedulePicker"
-                                placeholder="Price start date"
-                                data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY h:mm:ss a"></input>
-                        </div>
-                        <div class="field">
-                            <div class="ui labeled input" style="margin: 0 auto">
-                                <div class="ui blue label">$</div>
-                                <input  type="number" data-for="base" style="padding: 0.7em 1em"
-                                        class="category-field" name="price"
-                                        placeholder="Amount"
-                                        min="0"
-                                        data-parsley-error-message="Invalid base price."
-                                        data-parsley-required="true"></input>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui red button" onclick="removeSingleSchedule()">Remove</button>
-                    <button type="button" class="ui green button" onclick="saveSingleSchedule()">Save</button>
+<div class="ui small modal" id="editScheduleModal" style="display:none">
+    <div class="header">Edit Price Schedule</div>
+    <div class="content">
+        <div class="ui form" id="editSchedForm" style="width:400px">
+            <div class="field">
+            Price Change Begin Date:
+            <input  type="text" name="dateStartLocal"
+                    id="editPriceSchedulePicker"
+                    placeholder="Price start date"
+                    data-provide="datepicker"
+                    data-date-format="MM/DD/YYYY h:mm:ss a"></input>
+            </div>
+            <div class="field">
+                <div class="ui labeled input" style="margin: 0 auto">
+                    <div class="ui label">$</div>
+                    <input  type="number" data-for="base" style="padding: 0.7em 1em"
+                            class="category-field" name="price"
+                            placeholder="Amount"
+                            min="0"
+                            data-parsley-error-message="Invalid base price."
+                            data-parsley-required="true"></input>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="modal fade" id="createSchedulesModal" tabindex="-1" role="dialog" aria-labelledby="createSchedules-label" aria-hidden="true" style="display:none">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="closeModal()" aria-label="Close"><span aria-hidden="true" class="fa fa-times"></span></button>
-                    <h4 class="modal-title" id="createSchedules-label">Edit Price Schedule</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="ui form" id="addSchedForm">
-                        <div class="required field">
-                        Price Change Begin Date: <input  type="text" name="dateStartLocal"
-                                class="form-control" id="scheduleStartDate"
-                                placeholder="Price start date"
-                                data-provide="datepicker"
-                                data-date-format="MM/DD/YYYY h:mm:ss a"></input>
-                        </div>
-                        <h4 class="ui header"><i class="fa fa-exclamation-circle"><!--  --></i> Update Price for selected Ticket Types: </h4>
-                        <div class="field">
-                            <div class="ui inline fluid multiple search selection dropdown" id="ticketTypeListDropdown" style="border: 1px rgba(39, 41, 43, 0.3) solid; padding: 8px; border-radius: 5px;">
-                                <div class="text">select ticket type</div>
-                                <input type="hidden" name="ticketList"><!--  --></input>
-                                <i class="fa fa-caret-down" style="margin-left:5px;float:right;line-height:2em;"><!--  --></i>
-                                <div class="menu" id="ticketTypeListDropdownMenu" style="width:inherit"><!--  -->
-                                    <div class="item" id="dropdown-item-template" style="display:none"><!--  --></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <div class="ui inline fluid dropdown" id="scheduleTypeDropdown" style="border: 1px rgba(39, 41, 43, 0.3) solid; padding: 8px; border-radius: 5px;">
-                                    <div class="text">increase/decrease/set to</div>
-                                    <input type="hidden" name="type"><!--  --></input>
-                                    <i class="fa fa-caret-down" style="margin-left:5px;float:right;"><!--  --></i>
-                                    <div class="menu" id="scheduleTypeDropdownMenu" style="width:inherit;">
-                                        <div class="item" data-value="0"><i style="font-family:FontAwesome" class="icon fa fa-hand-o-right"><!--  --></i>set price to</div>
-                                        <div class="item" data-value="1"><i style="font-family:FontAwesome" class="icon fa fa-hand-o-up"><!--  --></i>increase by</div>
-                                        <div class="item" data-value="-1"><i style="font-family:FontAwesome" class="icon fa fa-hand-o-down"><!--  --></i>decrease by</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui labeled input" style="margin: 0 auto">
-                                    <div class="ui blue label">$</div>
-                                    <input  type="number" data-for="base" style="padding: 0.7em 1em"
-                                            class="category-field" name="price"
-                                            placeholder="Amount"
-                                            min="0" step="0.1"
-                                            data-parsley-error-message="Invalid base price."
-                                            data-parsley-required="true"></input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
-                    <button type="button" class="ui green button" onclick="saveSchedules()">Save</button>
-                </div>
-            </div>
-        </div>
+    <div class="actions">
+        <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+        <button type="button" class="ui red button" onclick="removeSingleSchedule()">Remove</button>
+        <button type="button" class="ui green button" onclick="saveSingleSchedule()">Save</button>
     </div>
-    <div class="white-overlay">
-        <div class="info-container">
-            <div class="pull-left"><button class="btn btn-default" onclick="onBack()" type="submit">Back</button></div>
-            <div style="clear:both"><!--  --></div>
-            <div class="ui top attached tabular menu">
-                <div class="active item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
-                <div class="item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
-            </div>
-            <div class="ui bottom attached active tab segment" data-tab="logistics-menu">
-                <form class="ui form" id="logisticsForm" style="width:576px;margin:0 auto;text-align:left">
-                    <h3 class="ui header" style="width: 100%">
-                        <div class="content" style="margin-top:5px">
-                            Logistics Settings
-                            <div class="sub header">Maintain Event Logistics for this Event Type.</div>
-                        </div>
-                    </h3>
-                    <div class="fields">
-                        <div class="ten wide required field">
-                            <label style="width:100%" id="racetypes">Race Types</label>
-                            <div class="ui fluid search selection dropdown" id="racetype-dropdown">
-                                <input type="hidden" name="raceType"><!--  --></input>
-                                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                                <div class="default text">Select Race Type</div>
-                                <div class="menu">
-                                    <div class="item" data-value="Running">Running</div>
-                                    <div class="item" data-value="Swimming">Swimming</div>
-                                    <div class="item" data-value="Cycling">Cycling</div>
-                                    <div class="item" data-value="Mountain Biking">Mountain Biking</div>
-                                    <div class="item" data-value="Trail Run">Trail Run</div>
-                                    <div class="item" data-value="Mud Run">Mud Run</div>
-                                    <div class="item" data-value="Track and Field">Track and Field</div>
-                                    <div class="item" data-value="Triathlon">Triathlon</div>
-                                    <div class="item" data-value="Duathlon">Duathlon</div>
-                                    <div class="item" data-value="Ironman">Ironman</div>
-                                    <div class="item" data-value="Fun Run">Fun Run</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-					<div class="fields" style="position:relative">
-						<label id="distance" style="width:100%">Distance</label>	
-						<div class="five wide inline required field" style="margin: 0.5em 0em 0em">
-							<div class="ui fluid search selection dropdown" id="distance-dropdown">
-								<input type="hidden" name="dist"><!--  --></input>
-								<i class="fa fa-caret-down" style="float:right"><!--  --></i>
-								<div class="default text">Select Distance</div>
-								<div class="menu">
-									<div class="item" data-value="N/A">N/A</div>
-									<div class="item" data-value="5k">5k</div>
-									<div class="item" data-value="8k">8k</div>
-									<div class="item" data-value="10k">10k</div>
-									<div class="item" data-value="12k">12k</div>
-									<div class="item" data-value="15k">15k</div>
-									<div class="item" data-value="Half Marathon">Half Marathon</div>
-									<div class="item" data-value="Marathon">Marathon</div>
-									<div class="item" data-value="Sprint">Spring</div>
-									<div class="item" data-value="Olympic">Olympic</div>
-									<div class="item" data-value="Half">Half (Triathlon)</div>
-									<div class="item" data-value="Full">Full (Triathlon)</div>
-									<div class="item" data-value="Custom">Custom</div>
-								</div>
-							</div>
-						</div>
-						<div class="one wide inline required field" style="margin: 0.5em 0em 0em">
-							<div class="ui vertical divider" style="height:33%; left:34%; top:75%">or</div>
-						</div>
-						<div class="ten wide inline required field" style="margin: 0.5em 0em 0em">
-							<input type="number" name="distance" placeholder="Distance" min="0" style="width: 100px"><!--  --></input>
-							<div class="ui icon buttons" style="margin-left:10px">
-								<div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
-								<div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
-								<div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
-							</div>
-						</div>
-					</div>
-                    <div class="fields">
-                        <div class="ten wide required field">
-                            <label id="starttime">Start Time</label>
-                            <div class="ui action input">
-                                <input  type="text" name="timeStartLocal"
-                                        class="form-control"
-                                        id="timedisp"
-                                        placeholder="Official Time (hh:mm)"
-                                        data-provide="datepicker"
-                                        data-date-format="h:mm a"
-                                        data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
-                                <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="fields">
-                        <div class="ten wide field">
-                            <label style="width:100%">Event Type Name</label>
-                            <input type="text" name="typeName" placeholder="Event Type Name" value="${eventtype.typeName}"><!--  --></input>
-                        </div>
-                    </div>
-                    <div style="clear:both"><!--  --></div>
-                    <h3 class="ui header" style="width: 100%">
-                        <div class="content" style="margin-top:5px">
-                            Registration Details
-                            <div class="sub header">Maintain Registration Details for this Event Type.</div>
-                        </div>
-                    </h3>
+</div>
 
-                    <div class="ten wide required field">
+<div class="ui modal" id="createSchedulesModal" style="display:none">
+    <div class="header">Edit Price Schedule</div>
+    <div class="content">
+        <div class="ui form" id="addSchedForm">
+            <div class="required field">
+            Price Change Begin Date: <input  type="text" name="dateStartLocal"
+                    class="form-control" id="scheduleStartDate"
+                    placeholder="Price start date"
+                    data-provide="datepicker"
+                    data-date-format="MM/DD/YYYY h:mm:ss a"></input>
+            </div>
+            <h4 class="ui header"><i class="fa fa-exclamation-circle"><!--  --></i> Update Price for selected Ticket Types: </h4>
+            <div class="field">
+                <div class="ui inline fluid multiple search selection dropdown" id="ticketTypeListDropdown" style="border: 1px rgba(39, 41, 43, 0.3) solid; padding: 8px; border-radius: 5px;">
+                    <div class="text">select ticket type</div>
+                    <input type="hidden" name="ticketList"><!--  --></input>
+                    <i class="fa fa-caret-down" style="margin-left:5px;float:right;line-height:2em;"><!--  --></i>
+                    <div class="menu" id="ticketTypeListDropdownMenu" style="width:inherit"><!--  -->
+                        <div class="item" id="dropdown-item-template" style="display:none"><!--  --></div>
+                    </div>
+                </div>
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <div class="ui inline fluid dropdown" id="scheduleTypeDropdown" style="border: 1px rgba(39, 41, 43, 0.3) solid; padding: 8px; border-radius: 5px;">
+                        <div class="text">increase/decrease/set to</div>
+                        <input type="hidden" name="type"><!--  --></input>
+                        <i class="fa fa-caret-down" style="margin-left:5px;float:right;"><!--  --></i>
+                        <div class="menu" id="scheduleTypeDropdownMenu" style="width:inherit;">
+                            <div class="item" data-value="0"><i style="font-family:FontAwesome" class="icon fa fa-hand-o-right"><!--  --></i>set price to</div>
+                            <div class="item" data-value="1"><i style="font-family:FontAwesome" class="icon fa fa-hand-o-up"><!--  --></i>increase by</div>
+                            <div class="item" data-value="-1"><i style="font-family:FontAwesome" class="icon fa fa-hand-o-down"><!--  --></i>decrease by</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui labeled input" style="margin: 0 auto">
+                        <div class="ui label">$</div>
+                        <input  type="number" data-for="base" style="padding: 0.7em 1em"
+                                class="category-field" name="price"
+                                placeholder="Amount"
+                                min="0" step="0.1"
+                                data-parsley-error-message="Invalid base price."
+                                data-parsley-required="true"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+        <button type="button" class="ui green button" onclick="saveSchedules()">Save</button>
+    </div>
+</div>
+
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment">
+        <div class="pull-left"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
+        <div style="clear:both"><!--  --></div>
+        <div class="ui top attached tabular menu">
+            <div class="active item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
+            <div class="item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
+        </div>
+        <div class="ui bottom attached active tab segment" data-tab="logistics-menu">
+            <form class="ui form" id="logisticsForm" style="width:700px;margin:3% auto;">
+                <h3 class="ui center aligned header">
+                    <div class="content">
+                        Logistics Settings
+                        <div class="sub header">Maintain Event Logistics for this Event Type.</div>
+                    </div>
+                </h3>
+                <div class="eight wide required field">
+                    <label style="width:100%" id="racetypes">Select Race Type</label>
+                    <div class="ui fluid search selection dropdown" id="racetype-dropdown">
+                        <input type="hidden" name="raceType"><!--  --></input>
+                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                        <div class="default text">Race Type</div>
+                        <div class="menu">
+                            <div class="item" data-value="Running">Running</div>
+                            <div class="item" data-value="Swimming">Swimming</div>
+                            <div class="item" data-value="Cycling">Cycling</div>
+                            <div class="item" data-value="Mountain Biking">Mountain Biking</div>
+                            <div class="item" data-value="Trail Run">Trail Run</div>
+                            <div class="item" data-value="Mud Run">Mud Run</div>
+                            <div class="item" data-value="Track and Field">Track and Field</div>
+                            <div class="item" data-value="Triathlon">Triathlon</div>
+                            <div class="item" data-value="Duathlon">Duathlon</div>
+                            <div class="item" data-value="Ironman">Ironman</div>
+                            <div class="item" data-value="Fun Run">Fun Run</div>
+                        </div>
+                    </div>
+                </div>
+                <label id="distance">Distance</label>   
+                <div class="fields" style="position:relative">
+                    <div class="four wide required field" style="padding-right:0">
+                        <div class="ui fluid search selection dropdown" id="distance-dropdown">
+                            <input type="hidden" name="dist"/>
+                            <i class="fa fa-caret-down right-icon"><!--  --></i>
+                            <div class="default text">Preset Distance</div>
+                            <div class="menu">
+                                <div class="item" data-value="N/A">N/A</div>
+                                <div class="item" data-value="5k">5k</div>
+                                <div class="item" data-value="8k">8k</div>
+                                <div class="item" data-value="10k">10k</div>
+                                <div class="item" data-value="12k">12k</div>
+                                <div class="item" data-value="15k">15k</div>
+                                <div class="item" data-value="Half Marathon">Half Marathon</div>
+                                <div class="item" data-value="Marathon">Marathon</div>
+                                <div class="item" data-value="Sprint">Spring</div>
+                                <div class="item" data-value="Olympic">Olympic</div>
+                                <div class="item" data-value="Half">Half (Triathlon)</div>
+                                <div class="item" data-value="Full">Full (Triathlon)</div>
+                                <div class="item" data-value="Custom">Custom</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="one wide inline required field">
+                        <div class="ui vertical divider" style="height: 25%;left: 28%;top: 38%;">or</div>
+                    </div>
+                    <div class="ten wide inline required field">
+                        <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px" />
+                        <div class="ui icon buttons" style="margin-left:10px">
+                            <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
+                            <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+                            <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fields">
+                    <div class="eight wide required field">
+                        <label id="starttime">Start Time</label>
+                        <div class="ui action input">
+                            <input  type="text" name="timeStartLocal"
+                                    class="form-control"
+                                    id="timedisp"
+                                    placeholder="Official Time (hh:mm)"
+                                    data-provide="datepicker"
+                                    data-date-format="h:mm a"
+                                    data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
+                            <div class="ui icon button" id="removetime"><span class="fa fa-close bibs-red"></span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fields">
+                    <div class="eight wide field">
+                        <label style="width:100%">Event Type Name</label>
+                        <input type="text" name="typeName" placeholder="Event Type Name" value="${eventtype.typeName}"><!--  --></input>
+                    </div>
+                </div>
+                <div style="clear:both"><!--  --></div>
+                <h3 class="ui center aligned header" style="width: 100%">
+                    <div class="content" style="margin-top:5px">
+                        Registration Details
+                        <div class="sub header">Maintain Registration Details for this Event Type.</div>
+                    </div>
+                </h3>
+                <div class="two fields">
+                    <div class="four wide required field">
                         <label style="width:100%">Price</label>
                         <div class="ui labeled input">
-                            <div class="ui label" style="width:50px">$</div>
+                            <div class="ui label" style="padding-bottom:0">$</div>
                             <input  type="number" name="price"
                                     class="form-control"
                                     placeholder="Base price"
@@ -350,7 +273,7 @@
                                     data-parsley-required="true"></input>
                         </div>
                     </div>
-                    <div class="ten wide field">
+                    <div class="four wide field">
                         <label style="width:100%">Max Participant Count</label>
                         <input  type="number" name="available"
                             class="form-control" style="margin-top:5px"
@@ -359,78 +282,82 @@
                             data-parsley-error-message="Invalid maximum number."
                             data-parsley-required="true"></input>
                     </div>
-                    <div class="two fields">
-                        <label style="width:100%">Registration Window</label>
-                        <div class="required field">
-                            <label>Open Date: </label>
-                            <input  type="text" name="timeStartLocal"
+                </div>
+                <label style="width:100%">Registration Window</label>
+                <div class="two fields">
+                    <div class="eight wide required field">
+                        <label>Open Date: </label>
+                        <input  type="text" name="timeStartLocal"
                                 id="logisticsStartDate"
                                 placeholder="Price start date"
                                 data-provide="datepicker"
                                 data-date-format="MM/DD/YYYY hh:mm:ss a"
                                 data-parsley-error-message="Please specify a start date."
                                 data-parsley-required="true"></input>
-                        </div>
-                        <div class="required field">
-                            <label>Close Date: </label>
-                            <input  type="text" name="timeEndLocal"
+                    </div>
+                    <div class="eight wide required field">
+                        <label>Close Date: </label>
+                        <input  type="text" name="timeEndLocal"
                                 id="logisticsEndDate"
                                 placeholder="Price end date"
                                 data-provide="datepicker"
                                 data-date-format="MM/DD/YYYY hh:mm:ss a"
                                 data-parsley-error-message="Please specify an end date."
                                 data-parsley-required="true"></input>
+                        <div class="ui pointing label">
+                                Must end before your event starts
                         </div>
                     </div>
-
-                    <div class="row" style="margin-top:25px;">
-                        <div class="pull-left">
-                            <button class="ui red button" onClick="deleteItemAndType(${eventcartitem.id})">Purge Event Type</button>
-                            <div class="ui left pointing label">
-                                This will remove ALL data associated with this Event Type.
-                            </div>
+                </div>
+                <div class="row" style="margin-top:25px;">
+                    <div class="pull-left">
+                        <button class="ui red button" onClick="deleteItemAndType(${eventcartitem.id})">Purge Event Type</button>
+                        <div class="ui left pointing label">
+                            This will remove ALL data associated with this Event Type.
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="pull-left">
-                            <button class="ui basic red button" onClick="deleteItem(${eventcartitem.id})">Remove Registration</button>
-                            <div class="ui left pointing label" style="text-align:left">
-                                This will disable and remove ALL data for this registration.
-                            </div>
+                </div>
+                <div class="row">
+                    <div class="pull-left">
+                        <button class="ui basic red button" onClick="deleteItem(${eventcartitem.id})">Remove Registration</button>
+                        <div class="ui left pointing label" style="text-align:left">
+                            This will disable and remove ALL data for this registration.
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="pull-right">
-                            <button class="ui green button" onClick="updateEventTypeAndTicket(${eventtype.id}, ${eventcartitem.id })">Save</button>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="pull-right">
+                        <button class="ui green button" onClick="updateEventTypeAndTicket(${eventtype.id}, ${eventcartitem.id })">Save</button>
                     </div>
-                </form>
+                </div>
+            </form>
+        </div>
+        <div class="ui bottom attached tab segment" id="schedule-tab" data-tab="schedule-menu">
+            <div class="ui yellow message" id="notify">
+                <i class="fa fa-close link icon"><!--  --></i>
+                <i class="fa fa-question-circle icon" id="notify-icon"><!--  --></i><span id="notify-msg"><b>Ticket Types</b> will create purchasable tickets for people registering for ${eventtype.typeName}.<br/>You can also add <b>Price Schedules</b> to modify the price of a Ticket Type for a duration of time.<br/><br/>For example, you can have a Ticket Type titled <em>"Youth Discount (ID Required)"</em>,<br/> where the Price Schedule will be cheaper than General Admission by <em>$10</em> for <em>two months</em>.</span>
             </div>
-            <div class="ui bottom attached tab segment" id="schedule-tab" data-tab="schedule-menu">
-                <div class="ui yellow message" id="notify">
-                    <i class="close fa fa-times"><!--  --></i>
-                    <i class="fa fa-question-circle" id="notify-icon"><!--  --></i><span id="notify-msg"><b>Ticket Types</b> will create purchasable tickets for people registering for ${eventtype.typeName}.<br/>You can also add <b>Price Schedules</b> to modify the price of a Ticket Type for a duration of time.<br/>For example, you can have a Ticket Type titled <em>"Youth Discount (ID Required)"</em>,<br/> where the Price Schedule will be cheaper than General Admission by <em>$10</em> for <em>two months</em>.</span>
-                </div>
-                <div class="ui yellow message" id="notify-save" style="display:none">
-                    <i class="close fa fa-times"><!--  --></i>
-                    <i class="fa fa-question-circle" id="notify-icon"><!--  --></i>You have unsaved information. Your changes will be lost if you press 'Back' or close your browser, unless you <a href="#saveTTPC">save</a>. You can also make all your changes first and then save.
-                </div>
-                <h3 class="ui horizontal header divider"><i class="fa fa-ticket"><!--  --></i>Ticket Types</h3>
-                <div class="ui basic text segment" style="width:70%;margin:0 auto">
-                    <form id="addTypeForm" class="ui form" data-parsley-validate="data-parsley-vaidate">
-                        <h3 class="ui small header">Add a purchasable ticket for ${eventtype.typeName}.</h3>
+            <div class="ui yellow message" id="notify-save" style="display:none">
+                <i class="fa fa-close link left-icon"><!--  --></i>
+                <i class="fa fa-question-circle" id="notify-icon"><!--  --></i>You have unsaved information. Your changes will be lost if you press 'Back' or close your browser, unless you <a href="#saveTTPC">save</a>. You can also make all your changes first and then save.
+            </div>
+            <h3 class="ui horizontal header divider"><i class="fa fa-ticket"><!--  --></i>Ticket Types</h3>
+            <div class="ui basic text segment" style="width:70%;margin:0 auto">
+                <form id="addTypeForm" class="ui form" data-parsley-validate="data-parsley-vaidate">
+                    <h3 class="ui small header">Add a purchasable ticket for ${eventtype.typeName}.</h3>
+                    <div class="field">
+                        <label>Ticket Type Title</label>
+                        <input  type="text" name="categoryName"
+                                data-for="categoryName"
+                                class="input-form category-field"
+                                placeholder="e.g. Early Bird"
+                                data-parsley-group="category"
+                                data-parsley-required="true"
+                                data-parsley-error-message="Please specify a ticket type title."></input>
+                    </div>
+                    <div class="field">
                         <div class="ui labeled input">
-                            <div class="ui blue label">Ticket Type Title</div>
-                            <input  type="text" name="categoryName"
-                                    data-for="categoryName"
-                                    class="input-form category-field"
-                                    placeholder="e.g. Early Bird"
-                                    data-parsley-group="category"
-                                    data-parsley-required="true"
-                                    data-parsley-error-message="Please specify a ticket type title."></input>
-                        </div>
-                        <div class="ui labeled input">
-                            <div class="ui blue label">$</div>
+                            <div class="ui label">$</div>
                             <input  type="number" data-for="base"
                                     class="category-field" id="eci-base-price"
                                     placeholder="Base price"
@@ -439,642 +366,606 @@
                                     data-parsley-error-message="Invalid base price."
                                     data-parsley-required="true"></input>
                         </div>
-                        <div class="ui success message" id="add-type-success" style="margin:5px auto;display:none"><i class="close fa fa-times"><!--  --></i>
-                            <div class="header">Successfully added a ticket type.</div>
-                            <p class="content">You can now add a price schedule below, or simply save your progress with the button at the bottom of the page.</p>
+                    </div>
+                    <div class="ui success message" id="add-type-success" style="margin:5px auto;display:none"><i class="fa fa-close link icon"><!--  --></i>
+                        <div class="header">Successfully added a ticket type.</div>
+                        <p class="content">You can now add a price schedule below, or simply save your progress with the button at the bottom of the page.</p>
+                    </div>
+                    <div class="ui negative message" id="add-type-error" style="margin:5px auto;display:none"><i class="fa fa-close link icon"><!--  --></i>
+                        <div class="header">This is a duplicate ticket type.</div>
+                        <p class="content">Please enter a different name, or try instead adding a Price Schedule below.</p>
+                    </div>
+                    <div class="pull-right"><button class="ui small basic blue button" onclick="addTicketType()" type="button"><i class="fa fa-plus"><!--  --></i> Ticket Type</button></div>
+                </form>
+                <div style="clear:both;width:100%;height:15px"><!--  --></div>
+                <div class="ui four doubling cards" id="ticket-cards">
+                    <div class="ui fluid card" id="card-template" style="display:none">
+                        <div class="content">
+                            <div class="ui yellow header"><i class="fa fa-ticket icon"><!--  --></i><span class="card-category">General Admission</span></div>
                         </div>
-                        <div class="ui negative message" id="add-type-error" style="margin:5px auto;display:none"><i class="close fa fa-times"><!--  --></i>
-                            <div class="header">This is a duplicate ticket type.</div>
-                            <p class="content">Please enter a different name, or try instead adding a Price Schedule below.</p>
-                        </div>
-                        <div class="pull-right"><button class="ui small basic blue button" onclick="addTicketType()" type="button"><i class="fa fa-plus"><!--  --></i> Ticket Type</button></div>
-                    </form>
-                    <div style="clear:both"><!--  --></div>
-                    <div class="ui four doubling cards" id="ticket-cards">
-                        <div class="ui fluid card" id="card-template" style="display:none">
-                            <div class="content">
-                                <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><span class="card-category">General Admission</span></div>
-                            </div>
-                            <div class="extra content">Base Price: $<span class="card-price">30</span></div>
-                            <div class="ui bottom attached button card-edit-button">
-                                <i class="fa fa-edit"><!--  --></i>Edit
-                            </div>
+                        <div class="extra content">Base Price: $<span class="card-price">30</span></div>
+                        <div class="ui bottom attached button card-edit-button">
+                            <i class="fa fa-edit icon"><!--  --></i>Edit
                         </div>
                     </div>
                 </div>
-                <div class="ui basic text segment" id="schedule-main-container" style="text-align:left;width:70%;margin:0 auto">
-                    <h3 class="ui horizontal header divider">
-                        <i class="fa fa-calendar"><!--  --></i>
-                        Price Schedules
-                    </h3>
-                    <div class="ui divided list" id="schedule-list" style="display:none">
-                        <c:if test="${not empty eventitempricechanges}">
-                        <c:forEach var="item" items="${eventitempricechanges}">
-                            <div class="item" data-id="${item.id}" data-category="${item.categoryName}">
-                                <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
-                                <span class="sched sched-date">${item.dateStartLocal}</span> - <span class="sched sched-name">${item.categoryName}</span> $<span class="sched sched-price">${item.price}</span>.
-                            </div>
-                        </c:forEach>
-                        </c:if>
-                        <c:if test="${empty eventitempricechanges}">
-                            <div class="item" data-id="${eventcartitem.id}" data-category="General Admission">
-                                <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
-                                <span class="sched sched-date">${eventcartitem.timeStartLocal}</span> - <span class="sched sched-name">General Admission</span> $<span class="sched sched-price">${eventcartitem.price}</span>.
-                            </div>
-                        </c:if>
-                    </div>
-                    <div class="pull-right">
-                        <div class="tiny ui basic blue icon button" style="margin: 5px auto"
-                            id="addScheduleButton" onclick="addSchedule()">
-                            <i class="fa fa-plus" style="margin-right:5px"><!--  --></i> Add Price Schedule
-                        </div>
-                    </div>
-                    <table class="ui small celled sortable structured table" id="schedule-table">
-                        <thead>
-                            <tr>
-                                <th rowspan="3">Ticket Type Name</th>
-                                <th rowspan="3">Start Date</th>
-                                <th rowspan="1">Price ($)</th>
-                                <th colspan="1"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr id="row-main-template" style="display:none">
-                                <td rowspan="1"><span class="name">Beta Team</span></td>
-                                <td><span class="date">Project 1</span></td>
-                                <td><span class="price">52</span></td>
-                                <td><div class="tiny ui icon button row-edit-button"><i class="fa fa-edit"><!--  --></i>Edit</div></td>
-                            </tr>
-                            <tr id="row-sched-template" style="display:none">
-                                <td><span class="date">Project 2</span></td>
-                                <td><span class="price">42</span></td>
-                                <td><div class="tiny ui icon button row-edit-button"><i class="fa fa-edit"><!--  --></i>Edit</div></td>
-                            </tr>
-                            <tr style="display:none">
-                                <td>Project 3</td>
-                                <td>21</td>
-                                <td><!--  --></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div id="schedule-graph" style="margin: 0 auto"><!--  --></div>
-                    <div class="legend" style="text-align:center"><!--  --></div>
-                </div>
-                <div class="clearfix"><!--  --></div>
-                <div class="pull-right"><button class="ui green button" id="saveTTPC" onclick="saveTicketSettings()" type="button">Save</button></div>
             </div>
+            <div class="ui basic text segment" id="schedule-main-container" style="text-align:left;width:70%;margin:0 auto">
+                <h3 class="ui horizontal header divider">
+                    <i class="fa fa-calendar"><!--  --></i>
+                    Price Schedules
+                </h3>
+                <div class="ui divided list" id="schedule-list" style="display:none">
+                    <c:if test="${not empty eventitempricechanges}">
+                    <c:forEach var="item" items="${eventitempricechanges}">
+                        <div class="item" data-id="${item.id}" data-category="${item.categoryName}">
+                            <div class="right floated tiny ui red icon button"><i class="fa fa-close link icon"><!--  --></i></div>
+                            <span class="sched sched-date">${item.dateStartLocal}</span> - <span class="sched sched-name">${item.categoryName}</span> $<span class="sched sched-price">${item.price}</span>.
+                        </div>
+                    </c:forEach>
+                    </c:if>
+                    <c:if test="${empty eventitempricechanges}">
+                        <div class="item" data-id="${eventcartitem.id}" data-category="General Admission">
+                            <div class="right floated tiny ui red icon button"><i class="fa fa-times" style="margin-right:0"><!--  --></i></div>
+                            <span class="sched sched-date">${eventcartitem.timeStartLocal}</span> - <span class="sched sched-name">General Admission</span> $<span class="sched sched-price">${eventcartitem.price}</span>.
+                        </div>
+                    </c:if>
+                </div>
+                <div class="pull-right">
+                    <div class="tiny ui basic blue icon button" style="margin: 5px auto"
+                        id="addScheduleButton" onclick="addSchedule()">
+                        <i class="fa fa-plus" style="margin-right:5px"><!--  --></i> Add Price Schedule
+                    </div>
+                </div>
+                <table class="ui small celled sortable structured table" id="schedule-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="3">Ticket Type Name</th>
+                            <th rowspan="3">Start Date</th>
+                            <th rowspan="1">Price ($)</th>
+                            <th colspan="1"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="row-main-template" style="display:none">
+                            <td rowspan="1"><span class="name">Beta Team</span></td>
+                            <td><span class="date">Project 1</span></td>
+                            <td><span class="price">52</span></td>
+                            <td><div class="tiny ui button row-edit-button"><i class="fa fa-edit icon"><!--  --></i>Edit</div></td>
+                        </tr>
+                        <tr id="row-sched-template" style="display:none">
+                            <td><span class="date">Project 2</span></td>
+                            <td><span class="price">42</span></td>
+                            <td><div class="tiny ui button row-edit-button"><i class="fa fa-edit icon"><!--  --></i>Edit</div></td>
+                        </tr>
+                        <tr style="display:none">
+                            <td>Project 3</td>
+                            <td>21</td>
+                            <td><!--  --></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div id="schedule-graph" style="margin: 0 auto"><!--  --></div>
+                <div class="legend" style="text-align:center"><!--  --></div>
+            </div>
+            <div class="clearfix"><!--  --></div>
+            <div class="pull-right"><button class="ui green button" id="saveTTPC" onclick="saveTicketSettings()" type="button">Save</button></div>
         </div>
     </div>
-    <script src="/bibs-server/resources/scripts/metricsgraphics.js" type="text/javascript"><jsp:text/></script>
-    <script>
-        Logistics = function(){
-            this.raceType = null;
-            this.distance = null;
-            this.distType = null;
-            this.itemStart = null;
-            this.itemStartM = null;
-            this.typeName = null;
-            this.lowbib = null;
-            this.highbib = null;
-            this.price = null;
-            this.available = null;
-            this.openDate = null;
-            this.closeDate = null;
-            this.openDateM = null;
-            this.closeDateM = null;
+</div>
+<script src="/bibs-server/resources/scripts/metricsgraphics.js" type="text/javascript"><jsp:text/></script>
+<script>
+    Logistics = function(){
+        this.raceType = null;
+        this.distance = null;
+        this.distType = null;
+        this.itemStart = null;
+        this.itemStartM = null;
+        this.typeName = null;
+        this.lowbib = null;
+        this.highbib = null;
+        this.price = null;
+        this.available = null;
+        this.openDate = null;
+        this.closeDate = null;
+        this.openDateM = null;
+        this.closeDateM = null;
 
-            this.init = function(){
-                // eventtype variables
-                this.rt = '${eventtype.racetype}';
-                this.dist = '${eventtype.distance}';
-                this.itemStart = '${eventtype.timeStartLocal}';
-                this.itemStartM = moment(this.itemStart, 'MM/DD/YYYY hh:mm:ss a')
-                this.typeName = '${eventtype.typeName}';
-                this.lowbib = parseInt('${eventtype.lowBib}');
-                this.highbib = parseInt('${eventtype.highBib}');
+        this.init = function(){
+            // eventtype variables
+            this.rt = '${eventtype.racetype}';
+            this.dist = '${eventtype.distance}';
+            this.itemStart = '${eventtype.timeStartLocal}';
+            this.itemStartM = moment(this.itemStart, 'MM/DD/YYYY hh:mm:ss a')
+            this.typeName = '${eventtype.typeName}';
+            this.lowbib = parseInt('${eventtype.lowBib}');
+            this.highbib = parseInt('${eventtype.highBib}');
 
-                // eventcartitem variables
-                this.price = '${eventcartitem.price}';
-                this.available = parseInt('${eventcartitem.available}');
-                this.purchased = parseInt('${eventcartitem.purchased}');
-                this.openDate = '${eventcartitem.timeStartLocal}';
-                this.closeDate = '${eventcartitem.timeEndLocal}';
-                this.openDateM = moment(this.openDate, 'MM/DD/YYYY hh:mm:ss a')
-                this.closeDateM = moment(this.closeDate, 'MM/DD/YYYY hh:mm:ss a')
-                this.updateInputValues();
-            }
-
-            this.updateInputValues = function(){
-                jQuery('#logisticsForm input[name="raceType"]').val(this.rt);
-                jQuery('#racetype-dropdown').dropdown('set selected', this.rt);
-
-                jQuery('#timedisp').data('DateTimePicker').setDate(this.itemStartM);
-
-                //Initialize Distance
-                switch(this.dist) {
-                case "N/A":
-                	jQuery('#distance-dropdown').dropdown('set selected', "N/A");
-                	break;
-                case "5k":
-                	jQuery('#distance-dropdown').dropdown('set selected', "5k");
-                	break;
-                case "8k":
-                	jQuery('#distance-dropdown').dropdown('set selected', "8k");
-                	break;
-                case "10k":
-                	jQuery('#distance-dropdown').dropdown('set selected', "10k");
-                	break;
-                case "15k":
-                	jQuery('#distance-dropdown').dropdown('set selected', "15k");
-                	break;
-                case "Half Marathon":
-                	jQuery('#distance-dropdown').dropdown('set selected', "Half Marathon");
-                	break;
-                case "Marathon":
-                	jQuery('#distance-dropdown').dropdown('set selected', "Marathon");
-                	break;
-                case "Sprint":
-                	jQuery('#distance-dropdown').dropdown('set selected', "Sprint");
-                	break;
-                case "Olympic":
-                	jQuery('#distance-dropdown').dropdown('set selected', "Olympic");
-                	break;
-                case "Half":
-                	jQuery('#distance-dropdown').dropdown('set selected', "Half");
-                	break;
-                case "Full":
-                	jQuery('#distance-dropdown').dropdown('set selected', "Full");
-                	break;
-                default:
-                	jQuery('#distance-dropdown').dropdown('set selected', "Custom");
-                	//var parseDist = dist.split(' ');
-                	//jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
-                	//if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
-                	//if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
-                	//if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
-                	var parseDist = this.dist.split(' ');
-                    this.distType = parseDist[1];
-                    jQuery('#logisticsForm input[name="distance"]').val(parseDist[0]);
-                    jQuery('#dist-' + this.distType).addClass('positive');
-                }
-                
-
-                jQuery('#logisticsForm input[name="price"]').val(this.price);
-                // parseInt('${eventcartitem.available}') + parseInt('${eventcartitem.purchased}')
-                jQuery('#logisticsForm input[name="available"]').val(this.available + this.purchased);
-                jQuery('#logisticsStartDate').data('DateTimePicker').setDate(this.openDateM);
-                jQuery('#logisticsEndDate').data('DateTimePicker').setDate(this.closeDateM);
-            }
+            // eventcartitem variables
+            this.price = '${eventcartitem.price}';
+            this.available = parseInt('${eventcartitem.available}');
+            this.purchased = parseInt('${eventcartitem.purchased}');
+            this.openDate = '${eventcartitem.timeStartLocal}';
+            this.closeDate = '${eventcartitem.timeEndLocal}';
+            this.openDateM = moment(this.openDate, 'MM/DD/YYYY hh:mm:ss a')
+            this.closeDateM = moment(this.closeDate, 'MM/DD/YYYY hh:mm:ss a')
+            this.updateInputValues();
         }
 
-        var currentTicketIndex = 0;
-        var currentScheduleIndex = 0;
-        var ticketAry = [];
-        var ticketObjects = {};
-        Ticket = function(id, name, base){
-            this.id = id;
+        this.updateInputValues = function(){
+            jQuery('#logisticsForm input[name="raceType"]').val(this.rt);
+            jQuery('#racetype-dropdown').dropdown('set selected', this.rt);
+
+            jQuery('#timedisp').data('DateTimePicker').setDate(this.itemStartM);
+
+            //Initialize Distance
+            switch(this.dist) {
+            case "N/A":
+            	jQuery('#distance-dropdown').dropdown('set selected', "N/A");
+            	break;
+            case "5k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "5k");
+            	break;
+            case "8k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "8k");
+            	break;
+            case "10k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "10k");
+            	break;
+            case "15k":
+            	jQuery('#distance-dropdown').dropdown('set selected', "15k");
+            	break;
+            case "Half Marathon":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Half Marathon");
+            	break;
+            case "Marathon":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Marathon");
+            	break;
+            case "Sprint":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Sprint");
+            	break;
+            case "Olympic":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Olympic");
+            	break;
+            case "Half":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Half");
+            	break;
+            case "Full":
+            	jQuery('#distance-dropdown').dropdown('set selected', "Full");
+            	break;
+            default:
+            	jQuery('#distance-dropdown').dropdown('set selected', "Custom");
+            	//var parseDist = dist.split(' ');
+            	//jQuery('#putFieldForm input[name="distance"]').val(parseDist[0]);
+            	//if( parseDist[1] === 'm' ){  jQuery('#dist-m').addClass('positive'); }
+            	//if( parseDist[1] === 'mi' ){ jQuery('#dist-mi').addClass('positive'); }
+            	//if( parseDist[1] === 'km' ){ jQuery('#dist-km').addClass('positive'); }
+            	var parseDist = this.dist.split(' ');
+                this.distType = parseDist[1];
+                jQuery('#logisticsForm input[name="distance"]').val(parseDist[0]);
+                jQuery('#dist-' + this.distType).addClass('positive');
+            }
+            
+
+            jQuery('#logisticsForm input[name="price"]').val(this.price);
+            // parseInt('${eventcartitem.available}') + parseInt('${eventcartitem.purchased}')
+            jQuery('#logisticsForm input[name="available"]').val(this.available + this.purchased);
+            jQuery('#logisticsStartDate').data('DateTimePicker').setDate(this.openDateM);
+            jQuery('#logisticsEndDate').data('DateTimePicker').setDate(this.closeDateM);
+        }
+    }
+
+    var currentTicketIndex = 0;
+    var currentScheduleIndex = 0;
+    var ticketAry = [];
+    var ticketObjects = {};
+    Ticket = function(id, name, base){
+        this.id = id;
+        this.name = name;
+        this.base = +base;
+        this.cardDOM = null;
+        this.dropdownDOM = null;
+        this.scheduleList = [];
+        this.scheduleId = null;
+        this.render = function(){
+            this.renderCard();
+            this.renderScheduleDropdownItem();
+        }
+        this.renderCard = function(){
+            // console.log('rendering a card with', this.name);
+            if(this.cardDOM == null){
+                this.cardDOM = jQuery('#card-template').clone().appendTo('#ticket-cards')
+                    .removeAttr('id', 'card-template')
+                    .attr('id', 'card-' + this.id)
+                    .data('name', this.name);
+            }
+            jQuery(this.cardDOM).find('.card-category').text(this.name);
+            jQuery(this.cardDOM).find('.card-price').text(this.base);
+            jQuery(this.cardDOM).find('.card-edit-button').attr('onclick', 'editTicketType(' + this.id + ')')
+            jQuery(this.cardDOM).show();
+        }
+        this.renderScheduleDropdownItem = function(){
+            // console.log('rendering schedule item with', this.name);
+            if(this.dropdownDOM == null){
+                this.dropdownDOM = jQuery("#dropdown-item-template").clone().appendTo('#ticketTypeListDropdownMenu')
+                    .removeAttr('id', 'dropdown-item-template');
+            }
+            this.dropdownDOM.text(this.name);
+            this.dropdownDOM.show();
+            jQuery('#ticketTypeListDropdown').dropdown('refresh');
+        }
+        this.renderTable = function(){
+            jQuery('#schedule-table tbody .ticket-' + this.id).remove();
+            var headerDOM = jQuery('#row-main-template').clone()
+                        .appendTo('#schedule-table tbody')
+                        .removeAttr('id', 'row-main-template')
+                        .addClass('ticket-' + this.id)
+                        .addClass('main-' + this.id);
+            var parsedDate = moment(this.scheduleList[0].startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a')
+            headerDOM.find('.name').text(this.name);
+            headerDOM.find('.date').text(parsedDate);
+            headerDOM.find('.price').text(this.scheduleList[0].price);
+            headerDOM.find('.row-edit-button').attr('onclick', 'editSchedule(false,' + this.id + ',' + this.scheduleList[0].id + ')');
+            headerDOM.show();
+
+            var reverseList = this.scheduleList.reverse();
+            for(var i in reverseList){
+                var schedule = reverseList[i];
+                var rowDOM = null;
+                if(i &lt; reverseList.length-1){
+                    rowDOM = jQuery('#row-sched-template').clone()
+                        .insertAfter('.ticket-' + this.id + '.main-' + this.id)
+                        .addClass('ticket-' + this.id)
+                        .addClass('sched-' + schedule.id);
+                    var parsedDate = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a')
+                    rowDOM.find('.name').text(this.name);
+                    rowDOM.find('.date').text(parsedDate);
+                    rowDOM.find('.price').text(schedule.price);
+                    rowDOM.find('.row-edit-button').attr('onclick', 'editSchedule(false,' + this.id + ',' + schedule.id + ')');
+                    rowDOM.show();
+                }
+            }
+        }
+        this.update = function(name, base){
             this.name = name;
-            this.base = +base;
-            this.cardDOM = null;
-            this.dropdownDOM = null;
-            this.scheduleList = [];
-            this.scheduleId = null;
-            this.render = function(){
-                this.renderCard();
-                this.renderScheduleDropdownItem();
+            this.base = base;
+            if(this.scheduleList.length == 1){
+                this.scheduleList[0].price = this.base;
             }
-            this.renderCard = function(){
-                if(this.cardDOM == null){
-                    this.cardDOM = jQuery('#card-template').clone().appendTo('#ticket-cards')
-                        .removeAttr('id', 'card-template')
-                        .attr('id', 'card-' + this.id)
-                        .data('name', this.name);
-                }
-                jQuery(this.cardDOM).find('.card-category').text(this.name);
-                jQuery(this.cardDOM).find('.card-price').text(this.base);
-                jQuery(this.cardDOM).find('.card-edit-button').attr('onclick', 'editTicketType(' + this.id + ')')
-                jQuery(this.cardDOM).show();
+        }
+        this.updateStartDate = function(date){
+            jQuery('#schedule-table tbody .ticket-'+this.id+'.main-'+this.id).find('.date').text(date);
+        }
+        this.destroy = function(){
+            if(this.cardDOM !== null){
+                jQuery(this.cardDOM).remove();
             }
-            this.renderScheduleDropdownItem = function(){
-                if(this.dropdownDOM == null){
-                    this.dropdownDOM = jQuery("#dropdown-item-template").clone().appendTo('#ticketTypeListDropdownMenu')
-                        .removeAttr('id', 'dropdown-item-template');
-                }
-                this.dropdownDOM.text(this.name);
-                this.dropdownDOM.show();
+            jQuery('#schedule-table tbody').find('.ticket-' + this.id).remove();
+            if(this.dropdownDOM !== null){
+                jQuery(this.dropdownDOM).remove();
                 jQuery('#ticketTypeListDropdown').dropdown('refresh');
             }
-            this.renderTable = function(){
-                jQuery('#schedule-table tbody .ticket-' + this.id).remove();
-                var headerDOM = jQuery('#row-main-template').clone()
-                            .appendTo('#schedule-table tbody')
-                            .removeAttr('id', 'row-main-template')
-                            .addClass('ticket-' + this.id)
-                            .addClass('main-' + this.id);
-                var parsedDate = moment(this.scheduleList[0].startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a')
-                headerDOM.find('.name').text(this.name);
-                headerDOM.find('.date').text(parsedDate);
-                headerDOM.find('.price').text(this.scheduleList[0].price);
-                headerDOM.find('.row-edit-button').attr('onclick', 'editSchedule(false,' + this.id + ',' + this.scheduleList[0].id + ')');
-                headerDOM.show();
-
-                var reverseList = this.scheduleList.reverse();
-                for(var i in reverseList){
-                    var schedule = reverseList[i];
-                    var rowDOM = null;
-                    if(i &lt; reverseList.length-1){
-                        rowDOM = jQuery('#row-sched-template').clone()
-                            .insertAfter('.ticket-' + this.id + '.main-' + this.id)
-                            .addClass('ticket-' + this.id)
-                            .addClass('sched-' + schedule.id);
-                        var parsedDate = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a')
-                        rowDOM.find('.name').text(this.name);
-                        rowDOM.find('.date').text(parsedDate);
-                        rowDOM.find('.price').text(schedule.price);
-                        rowDOM.find('.row-edit-button').attr('onclick', 'editSchedule(false,' + this.id + ',' + schedule.id + ')');
-                        rowDOM.show();
-                    }
-                }
-            }
-            this.update = function(name, base){
-                this.name = name;
-                this.base = base;
-                if(this.scheduleList.length == 1){
-                    this.scheduleList[0].price = this.base;
-                }
-            }
-            this.updateStartDate = function(date){
-                jQuery('#schedule-table tbody .ticket-'+this.id+'.main-'+this.id).find('.date').text(date);
-            }
-            this.destroy = function(){
-                if(this.cardDOM !== null){
-                    jQuery(this.cardDOM).remove();
-                }
-                jQuery('#schedule-table tbody').find('.ticket-' + this.id).remove();
-                if(this.dropdownDOM !== null){
-                    jQuery(this.dropdownDOM).remove();
-                    jQuery('#ticketTypeListDropdown').dropdown('refresh');
-                }
-                delete this;
-            }
-            this.addToSchedule = function(schedule){
-                this.scheduleList.push(schedule);
-                this.scheduleList.sort(function(a,b){
-                    return moment(a.startDate, 'MM/DD/YYYY h:mm:ss a').isAfter(moment(b.startDate, 'MM/DD/YYYY h:mm:ss a'));
-                })
-
-                this.renderTable();
-                jQuery('.ticket-'+this.id+'.main-'+this.id).find('td:first-child').attr('rowspan', this.scheduleList.length);
-            }
+            delete this;
         }
+        this.addToSchedule = function(schedule){
+            this.scheduleList.push(schedule);
+            this.scheduleList.sort(function(a,b){
+                return moment(a.startDate, 'MM/DD/YYYY h:mm:ss a').isAfter(moment(b.startDate, 'MM/DD/YYYY h:mm:ss a'));
+            })
 
-        var scheduleAry = [];
-        var scheduleObjects = {};
-        Schedule = function(id, ticketId, startDate, price){
-            this.id = +id;
-            this.ticketId = +ticketId;
-            this.startDate = startDate;
+            this.renderTable();
+            jQuery('.ticket-'+this.id+'.main-'+this.id).find('td:first-child').attr('rowspan', this.scheduleList.length);
+        }
+    }
+
+    var scheduleAry = [];
+    var scheduleObjects = {};
+    Schedule = function(id, ticketId, startDate, price){
+        this.id = +id;
+        this.ticketId = +ticketId;
+        this.startDate = startDate;
+        this.price = +price;
+        this.cascadeBasePrice = function(price){
+            this.price = price;
+        }
+        this.update = function(date, price){
+            this.startDate = date;
             this.price = +price;
-            this.cascadeBasePrice = function(price){
-                this.price = price;
-            }
-            this.update = function(date, price){
-                this.startDate = date;
-                this.price = +price;
-            }
-            this.destroy = function(){
-                console.log('destroy called on:', this);
-                var scheduleList = ticketObjects[this.ticketId].scheduleList;
-
-                for(var i in scheduleList){
-                    if(scheduleList[i].id == this.id){
-                        ticketObjects[this.ticketId].scheduleList.splice(i, 1);
-                        ticketObjects[this.ticketId].renderTable();
-                        jQuery('#schedule-table tbody').find('.ticket-'+this.ticketId+'.main-'+this.ticketId).find('td:first-child').attr('rowspan', ticketObjects[this.ticketId].scheduleList.length);
-                    }
-                }
-
-                delete scheduleObjects[this.id];
-                delete this;
-            }
         }
+        this.destroy = function(){
+            console.log('destroy called on:', this);
+            var scheduleList = ticketObjects[this.ticketId].scheduleList;
 
-        window.onload = function(){
-            initUIElements();
-
-            var logistics = new Logistics();
-            logistics.init();
-
-            initTicketList();
-        }
-
-        var saved = false;
-        var alerted = false;
-        window.onbeforeunload = function() {
-            if(!alerted &amp;&amp; !saved){
-                return "If you have unsaved changes in either tabs on this page, your changes will be lost.";
-            }
-        }
-
-        function initUIElements(){
-            jQuery('.menu .item').tab();
-            jQuery('.ui.accordion').accordion();
-            jQuery('.ui.checkbox').checkbox();
-            jQuery('#ticketTypeListDropdown, #scheduleTypeDropdown').dropdown();
-            jQuery('.message .close').on('click', function() {
-                jQuery(this).closest('.message').fadeOut();
-            });
-            jQuery(".ui.form .field > .selection.dropdown").dropdown();
-            jQuery('.dist-btn').each(function(){
-                jQuery(this).click(function(){
-                    var id = jQuery(this).attr("id");
-                    jQuery(this).addClass('positive');
-                    jQuery(this).siblings().removeClass('positive');
-                    distType = id;
-                })
-            });
-
-            jQuery('#dist-m').removeClass('positive');
-            jQuery('#dist-mi').removeClass('positive');
-            jQuery('#dist-km').removeClass('positive');
-
-            initDateTimePickers();
-            jQuery("#removetime").click(function(){
-                jQuery("#timedisp").data('DateTimePicker').setDate('');
-            });
-        }
-
-        function initTicketList(){
-            jQuery('#schedule-list > .item').each(function(){
-                var name = jQuery(this).data('category');
-                var price = jQuery(this).find('.sched-price').text();
-                var schedDate = jQuery(this).find('.sched-date').text();
-                schedDate = moment(schedDate, 'MM/DD/YYYY h:mm:ss a');
-
-                var schedule = null;
-                // check to make sure the names aren't duplicates
-                if(!ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
-                    var ticket = new Ticket(ticketAry.length, name, price);
-                    ticketObjects[ticketAry.length] = ticket;
-                    ticketAry.push(ticket);
-                    schedule = new Schedule(scheduleAry.length, +ticket.id, schedDate, price);
-                    scheduleObjects[scheduleAry.length] = schedule;
-                    scheduleAry.push(schedule);
-                    
-                    ticket.scheduleId = schedule.id;
-                    ticket.render();
-                    ticketAry[schedule.ticketId].addToSchedule(schedule);
-                }else{
-                    // find matching name in ticketAry, get its id = ticket.id
-                    for( var i in ticketAry ){
-                        if(ticketAry[i].name == name){
-                            schedule = new Schedule(scheduleAry.length, i, schedDate, price);
-                            scheduleObjects[scheduleAry.length] = schedule;
-                            scheduleAry.push(schedule);
-                            ticketAry[i].scheduleId = schedule.id;
-                            ticketAry[schedule.ticketId].addToSchedule(schedule);
-                            break;
-                        }
-                    }
-                }
-            })
-            
-            if(ticketAry.length > 0){
-                renderScheduleGraph();
-            }
-        }
-
-        function addTicketType(){
-            if(true === jQuery("#addTypeForm").parsley().validate('category')){
-                jQuery('#add-type-error').hide();
-                var name = jQuery('#addTypeForm input[name="categoryName"]').val();
-                var price = jQuery('#eci-base-price').val();
-                var addError = false;
-                for(var i in ticketObjects){
-                    ticket = ticketObjects[i];
-                    if(ticket.name.toLowerCase() == name.toLowerCase()){
-                        addError = true;
-                    }
-                }
-                if( addError ){
-                    jQuery('#add-type-error').show();
-                    jQuery('#add-type-success').hide();
-                    console.log(ticketAry)
-                    console.log('found duplicate');
-                }else{
-                    jQuery('#add-type-error').hide();
-                    jQuery('#add-type-success').show();
-                    jQuery("#add-type-success").delay(5000).fadeOut('slow');
-                    var ticket = new Ticket(ticketAry.length, name, price);
-                    var schedule = new Schedule(scheduleAry.length, ticket.id, moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a'), price);
-                    ticket.scheduleId = schedule.id;
-
-                    ticket.addToSchedule(schedule);
-                    ticket.render();
-
-                    ticketObjects[ticketAry.length] = ticket;
-                    scheduleObjects[scheduleAry.length] = schedule;
-                    ticketAry.push(ticket);
-                    scheduleAry.push(schedule);
-                    
-                    jQuery('#addTypeForm input[name="categoryName"]').val('').focus();
-                    jQuery('#notify-save').show();
-                }
-                console.log('tickets:', ticketObjects)
-                console.log('schedules:', scheduleObjects)
-                if(ticketAry.length > 0){
-                    renderScheduleGraph();
-                    jQuery('#schedule-main-container').show();
-                }
-            }
-        }
-
-        function editTicketType(id){
-            currentTicketIndex = id;
-            var ticket = null;
-
-            ticket = ticketObjects[id];
-            // console.log('current ticketAry', ticketAry);
-            // console.log('current ticketObjects', ticketObjects);
-            // console.log('current ticket', ticket);
-
-            jQuery('#editTicketTypeModal input[name="categoryName"]').val(ticket.name);
-            jQuery('#editTicketTypeModal input[name="price"]').val(ticket.base);
-            jQuery('#editTicketTypeModal').modal('show');
-        }
-
-        function saveTicketType(){
-            var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
-            var price = jQuery('#editTicketTypeModal input[name="price"]').val();
-            ticketAry[currentTicketIndex].update(name, price);
-            ticketObjects[currentTicketIndex].update(name, price);
-            ticketObjects[currentTicketIndex].render();
-            ticketObjects[currentTicketIndex].renderTable();
-
-            renderScheduleGraph();
-            closeModal();
-        }
-
-        function removeTicketType(){
-            ticketObjects[currentTicketIndex].destroy();
-            delete ticketObjects[currentTicketIndex];
-            if(Object.keys(ticketObjects).length > 0){
-                renderScheduleGraph();
-            }else{
-                ticketAry.length = 0;
-                scheduleAry.length = 0;
-                jQuery('#schedule-main-container').hide();
-            }
-            closeModal();
-            currentTicketIndex = null;
-            currentScheduleIndex = null;
-        }
-
-        function addSchedule(){
-            jQuery('#add-sched-error').hide();
-            jQuery('#createSchedulesModal').modal('show');
-        }
-
-        function editSchedule(ticketHeader, ticketId, scheduleId){
-            currentScheduleIndex = scheduleId;
-            currentTicketIndex = ticketId;
-
-            var schedule = scheduleObjects[scheduleId];
-            var ticket = ticketObjects[schedule.ticketId];
-            var scheduleList = ticket.scheduleList;
             for(var i in scheduleList){
-                if(scheduleList[i].id == scheduleId){
-                    schedule = scheduleList[i];
+                if(scheduleList[i].id == this.id){
+                    ticketObjects[this.ticketId].scheduleList.splice(i, 1);
+                    ticketObjects[this.ticketId].renderTable();
+                    jQuery('#schedule-table tbody').find('.ticket-'+this.ticketId+'.main-'+this.ticketId).find('td:first-child').attr('rowspan', ticketObjects[this.ticketId].scheduleList.length);
                 }
             }
-            
-            console.log('edit schedule:', schedule);
-            var dateObj = schedule.startDate;
-            dateObj = moment(dateObj, 'MM/DD/YYYY h:mm:ss a');
 
-            jQuery('#editPriceSchedulePicker').data('DateTimePicker').setDate(dateObj);
-            jQuery('#editSchedForm input[name="price"]').val(schedule.price);
-
-            jQuery('#editScheduleModal').modal('show');
+            delete scheduleObjects[this.id];
+            delete this;
         }
+    }
 
-        function saveSchedules(){
-            var date = jQuery('#addSchedForm input[name="dateStartLocal"]').val();
-            var priceDelta = jQuery('#addSchedForm input[name="price"]').val();
-            var ticketList = jQuery('#addSchedForm input[name="ticketList"]').val();
-            var changeType = jQuery('#addSchedForm input[name="type"]').val();
-            
-            // get nearest date that's before currently specified date
-            var ticket = null;
-            var bestDate = null;
-            ticketList = ticketList.split(',');
+    window.onload = function(){
+        initUIElements();
 
-            var prevent = false;
+        var logistics = new Logistics();
+        logistics.init();
 
-            // loop through selected tickets (which are returned by name)
-            ticketList.forEach(function(id, i, ary){
-                for(var i in ticketAry){
-                    if((id).toLowerCase() == (ticketAry[i].name).toLowerCase()){
-                        ticket = ticketAry[i];
-                    }
-                }
+        initTicketList();
+    }
 
-                // check duplicate dates in all current schedules for this ticket
-                var specifiedDate = moment(date, 'MM/DD/YYYY h:mm:ss a');
-                var schedules = ticket.scheduleList; 
-                var latestValidSchedule = schedules[0];
+    var saved = false;
+    var alerted = false;
+    window.onbeforeunload = function() {
+        if(!alerted &amp;&amp; !saved){
+            return "If you have unsaved changes in either tabs on this page, your changes will be lost.";
+        }
+    }
 
-                console.log('check all schedules reversed:', schedules.reverse())
-                for(var index in schedules.reverse()){
-                    if(specifiedDate.isSame(moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a'), 'second')){
-                        alert('Price Change Date overlapped with ' + id + '. Please remove the ticket type or choose another date!');
-                        prevent = true;
-                        break;
-                    }else{
-                        if(moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a').isBefore(specifiedDate)){
-                            latestValidSchedule = schedules[index];
-                        }
-                    }
-                }
+    function initUIElements(){
+        jQuery('.menu .item').tab();
+        jQuery('.ui.accordion').accordion();
+        jQuery('.ui.checkbox').checkbox();
+        jQuery('#ticketTypeListDropdown, #scheduleTypeDropdown').dropdown();
+        jQuery('i.link.fa.fa-close').on('click', function() {
+            jQuery(this).closest('.message').fadeOut();
+        });
 
-                if(!prevent){
-                    var closestTicketId = latestValidSchedule.ticketId;
-                    var updatedPrice = priceDelta;
-                    if(changeType > 0){
-                        console.log('need to calculate new price:', latestValidSchedule.price, +priceDelta);
-                        updatedPrice = latestValidSchedule.price + +priceDelta;
-                    }else if(changeType &lt; 0){
-                        updatedPrice = latestValidSchedule.price - +priceDelta;
-                        if(updatedPrice &lt; 0){
-                            updatedPrice = 0;
-                        }
-                    }
-
-                    // if date error, prevent user from adding 
-                    var schedule = new Schedule(scheduleAry.length, closestTicketId, specifiedDate, updatedPrice);
-
-                    scheduleObjects[scheduleAry.length] = schedule;
-                    scheduleAry.push(schedule);
-                    ticketAry[schedule.ticketId].addToSchedule(schedule);
-                }
+        jQuery(".ui.form .field > .selection.dropdown").dropdown();
+        jQuery('.dist-btn').each(function(){
+            jQuery(this).click(function(){
+                var id = jQuery(this).attr("id");
+                jQuery(this).addClass('positive');
+                jQuery(this).siblings().removeClass('positive');
+                distType = id;
             })
-            if(!prevent){
+        });
+
+        jQuery('#dist-m').removeClass('positive');
+        jQuery('#dist-mi').removeClass('positive');
+        jQuery('#dist-km').removeClass('positive');
+
+        initDateTimePickers();
+        jQuery("#removetime").click(function(){
+            jQuery("#timedisp").data('DateTimePicker').setDate('');
+        });
+    }
+
+    function initTicketList(){
+        jQuery('#schedule-list > .item').each(function(){
+            var name = jQuery(this).data('category');
+            var price = jQuery(this).find('.sched-price').text();
+            var schedDate = jQuery(this).find('.sched-date').text();
+            schedDate = moment(schedDate, 'MM/DD/YYYY h:mm:ss a');
+
+            var schedule = null;
+            // check to make sure the names aren't duplicates
+            if(!ticketAry.some(function(el){ return (el.name).toLowerCase() == (name).toLowerCase(); })){
+                var ticket = new Ticket(ticketAry.length, name, price);
+                ticketObjects[ticketAry.length] = ticket;
+                ticketAry.push(ticket);
+                schedule = new Schedule(scheduleAry.length, +ticket.id, schedDate, price);
+                scheduleObjects[scheduleAry.length] = schedule;
+                scheduleAry.push(schedule);
+                
+                ticket.scheduleId = schedule.id;
+                ticket.render();
+                ticketAry[schedule.ticketId].addToSchedule(schedule);
+            }else{
+                // find matching name in ticketAry, get its id = ticket.id
+                for( var i in ticketAry ){
+                    if(ticketAry[i].name == name){
+                        schedule = new Schedule(scheduleAry.length, i, schedDate, price);
+                        scheduleObjects[scheduleAry.length] = schedule;
+                        scheduleAry.push(schedule);
+                        ticketAry[i].scheduleId = schedule.id;
+                        ticketAry[schedule.ticketId].addToSchedule(schedule);
+                        break;
+                    }
+                }
+            }
+        })
+        
+        if(ticketAry.length > 0){
+            renderScheduleGraph();
+        }
+    }
+
+    function addTicketType(){
+        if(true === jQuery("#addTypeForm").parsley().validate('category')){
+            jQuery('#add-type-error').hide();
+            var name = jQuery('#addTypeForm input[name="categoryName"]').val();
+            var price = jQuery('#eci-base-price').val();
+            var addError = false;
+            for(var i in ticketObjects){
+                ticket = ticketObjects[i];
+                if(ticket.name.toLowerCase() == name.toLowerCase()){
+                    addError = true;
+                }
+            }
+            if( addError ){
+                jQuery('#add-type-error').show();
+                jQuery('#add-type-success').hide();
+                console.log(ticketAry)
+                console.log('found duplicate');
+            }else{
+                jQuery('#add-type-error').hide();
+                jQuery('#add-type-success').show();
+                jQuery("#add-type-success").delay(5000).fadeOut('slow');
+                var ticket = new Ticket(ticketAry.length, name, price);
+                var schedule = new Schedule(scheduleAry.length, ticket.id, moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a'), price);
+                ticket.scheduleId = schedule.id;
+
+                ticket.addToSchedule(schedule);
+                ticket.render();
+
+                ticketObjects[ticketAry.length] = ticket;
+                scheduleObjects[scheduleAry.length] = schedule;
+                ticketAry.push(ticket);
+                scheduleAry.push(schedule);
+                
+                jQuery('#addTypeForm input[name="categoryName"]').val('').focus();
+                jQuery('#notify-save').show();
+            }
+            console.log('tickets:', ticketObjects)
+            console.log('schedules:', scheduleObjects)
+            if(ticketAry.length > 0){
                 renderScheduleGraph();
-                closeModal();
+                jQuery('#schedule-main-container').show();
             }
         }
+    }
 
-        function saveSingleSchedule(){
-            var date = jQuery('#editSchedForm input[name="dateStartLocal"]').val();
-            var price = jQuery('#editSchedForm input[name="price"]').val();
-            var error = false;
+    function editTicketType(id){
+        currentTicketIndex = id;
+        var ticket = null;
 
-            date = moment(date, 'MM/DD/YYYY h:mm:ss a');
-            if(!date.isValid()){
-                alert("This date is invalid! Please enter a valid date.");
-                error = true;
-                return;
-            }else{
-                var schedule = scheduleObjects[currentScheduleIndex];
-                var ticket = ticketObjects[schedule.ticketId];
-                var scheduleList = ticket.scheduleList;
-                var index = null;
-                for(var i in scheduleList){
-                    if(scheduleList[i].id == currentScheduleIndex){
-                        schedule = scheduleList[i];
-                        index = i;
+        ticket = ticketObjects[id];
+        // console.log('current ticketAry', ticketAry);
+        // console.log('current ticketObjects', ticketObjects);
+        // console.log('current ticket', ticket);
+
+        jQuery('#editTicketTypeModal input[name="categoryName"]').val(ticket.name);
+        jQuery('#editTicketTypeModal input[name="price"]').val(ticket.base);
+        jQuery('#editTicketTypeModal').modal('show');
+    }
+
+    function saveTicketType(){
+        var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
+        var price = jQuery('#editTicketTypeModal input[name="price"]').val();
+        ticketAry[currentTicketIndex].update(name, price);
+        ticketObjects[currentTicketIndex].update(name, price);
+        ticketObjects[currentTicketIndex].render();
+        ticketObjects[currentTicketIndex].renderTable();
+
+        renderScheduleGraph();
+        closeModal();
+    }
+
+    function removeTicketType(){
+        ticketObjects[currentTicketIndex].destroy();
+        delete ticketObjects[currentTicketIndex];
+        if(Object.keys(ticketObjects).length > 0){
+            renderScheduleGraph();
+        }else{
+            ticketAry.length = 0;
+            scheduleAry.length = 0;
+            jQuery('#schedule-main-container').hide();
+        }
+        closeModal();
+        currentTicketIndex = null;
+        currentScheduleIndex = null;
+    }
+
+    function addSchedule(){
+        jQuery('#add-sched-error').hide();
+        jQuery('#createSchedulesModal').modal('show');
+    }
+
+    function editSchedule(ticketHeader, ticketId, scheduleId){
+        currentScheduleIndex = scheduleId;
+        currentTicketIndex = ticketId;
+
+        var schedule = scheduleObjects[scheduleId];
+        var ticket = ticketObjects[schedule.ticketId];
+        var scheduleList = ticket.scheduleList;
+        for(var i in scheduleList){
+            if(scheduleList[i].id == scheduleId){
+                schedule = scheduleList[i];
+            }
+        }
+        
+        console.log('edit schedule:', schedule);
+        var dateObj = schedule.startDate;
+        dateObj = moment(dateObj, 'MM/DD/YYYY h:mm:ss a');
+
+        jQuery('#editPriceSchedulePicker').data('DateTimePicker').setDate(dateObj);
+        jQuery('#editSchedForm input[name="price"]').val(schedule.price);
+
+        jQuery('#editScheduleModal').modal('show');
+    }
+
+    function saveSchedules(){
+        var date = jQuery('#addSchedForm input[name="dateStartLocal"]').val();
+        var priceDelta = jQuery('#addSchedForm input[name="price"]').val();
+        var ticketList = jQuery('#addSchedForm input[name="ticketList"]').val();
+        var changeType = jQuery('#addSchedForm input[name="type"]').val();
+        
+        // get nearest date that's before currently specified date
+        var ticket = null;
+        var bestDate = null;
+        ticketList = ticketList.split(',');
+
+        var prevent = false;
+
+        // loop through selected tickets (which are returned by name)
+        ticketList.forEach(function(id, i, ary){
+            for(var i in ticketAry){
+                if((id).toLowerCase() == (ticketAry[i].name).toLowerCase()){
+                    ticket = ticketAry[i];
+                }
+            }
+
+            // check duplicate dates in all current schedules for this ticket
+            var specifiedDate = moment(date, 'MM/DD/YYYY h:mm:ss a');
+            var schedules = ticket.scheduleList; 
+            var latestValidSchedule = schedules[0];
+
+            console.log('check all schedules reversed:', schedules.reverse())
+            for(var index in schedules.reverse()){
+                if(specifiedDate.isSame(moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a'), 'second')){
+                    alert('Price Change Date overlapped with ' + id + '. Please remove the ticket type or choose another date!');
+                    prevent = true;
+                    break;
+                }else{
+                    if(moment(schedules[index].startDate, 'MM/DD/YYYY h:mm:ss a').isBefore(specifiedDate)){
+                        latestValidSchedule = schedules[index];
+                    }
+                }
+            }
+
+            if(!prevent){
+                var closestTicketId = latestValidSchedule.ticketId;
+                var updatedPrice = priceDelta;
+                if(changeType > 0){
+                    console.log('need to calculate new price:', latestValidSchedule.price, +priceDelta);
+                    updatedPrice = latestValidSchedule.price + +priceDelta;
+                }else if(changeType &lt; 0){
+                    updatedPrice = latestValidSchedule.price - +priceDelta;
+                    if(updatedPrice &lt; 0){
+                        updatedPrice = 0;
                     }
                 }
 
-                ticketObjects[schedule.ticketId].scheduleList[index].update(date.format('MM/DD/YYYY h:mm:ss a'), price);
-                if(schedule.mainRow == true){
-                    ticketObjects[schedule.ticketId].update(ticket.name, schedule.price);
-                }
-            }
+                // if date error, prevent user from adding 
+                var schedule = new Schedule(scheduleAry.length, closestTicketId, specifiedDate, updatedPrice);
 
-            ticketObjects[schedule.ticketId].render();
+                scheduleObjects[scheduleAry.length] = schedule;
+                scheduleAry.push(schedule);
+                ticketAry[schedule.ticketId].addToSchedule(schedule);
+            }
+        })
+        if(!prevent){
             renderScheduleGraph();
             closeModal();
         }
+    }
 
-        function saveTicketType(){
-            var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
-            var price = jQuery('#editTicketTypeModal input[name="price"]').val();
-            ticketObjects[currentTicketIndex].update(name, +price);
-            ticketAry[currentTicketIndex].update(name, +price);
-            ticketObjects[currentTicketIndex].render();
-            ticketObjects[currentTicketIndex].renderTable();
+    function saveSingleSchedule(){
+        var date = jQuery('#editSchedForm input[name="dateStartLocal"]').val();
+        var price = jQuery('#editSchedForm input[name="price"]').val();
+        var error = false;
 
-            if(ticketAry.length > 0){
-                renderScheduleGraph();                
-            }
-
-            currentTicketIndex = null;
-            currentScheduleIndex = null;
-            closeModal();
-        }
-
-        function removeSingleSchedule(){
+        date = moment(date, 'MM/DD/YYYY h:mm:ss a');
+        if(!date.isValid()){
+            alert("This date is invalid! Please enter a valid date.");
+            error = true;
+            return;
+        }else{
             var schedule = scheduleObjects[currentScheduleIndex];
             var ticket = ticketObjects[schedule.ticketId];
             var scheduleList = ticket.scheduleList;
@@ -1086,337 +977,377 @@
                 }
             }
 
-            if(ticket.scheduleList.length == 1){
-                currentTicketIndex = schedule.ticketId;
-                removeTicketType();
-            }else{
-                ticketAry[currentTicketIndex].destroy();
+            ticketObjects[schedule.ticketId].scheduleList[index].update(date.format('MM/DD/YYYY h:mm:ss a'), price);
+            if(schedule.mainRow == true){
+                ticketObjects[schedule.ticketId].update(ticket.name, schedule.price);
             }
-
-            if(ticketAry.length > 0){
-                renderScheduleGraph();
-            }
-
-            for(var i in scheduleAry){
-                if(scheduleAry[i].id == currentScheduleIndex){
-                    scheduleAry.splice(i, 1);
-                }
-            }
-            currentTicketIndex = null;
-            currentScheduleIndex = null;
-            closeModal();
         }
 
-        var graphData = [];
-        var graphLegend = [];
-        function renderScheduleGraph(){
-            var dataset = [];
-            var legend = [];
+        ticketObjects[schedule.ticketId].render();
+        renderScheduleGraph();
+        closeModal();
+    }
 
-            console.log('convert to graph data', ticketObjects);
-            for(var key in ticketObjects){
-                var ticket = ticketObjects[key];
-                var ticketType = [];
-                legend.push(ticket.name);
-                var schedules = ticket.scheduleList;
-                var lastValue = schedules[0].price;
-                for(var i in schedules.reverse()){
-                    var sched = schedules[i];
-                    var obj = {};
-                    obj.date = moment(sched.startDate, 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
-                    obj.value = sched.price;
-                    ticketType.push(obj);
-                }
-                // add final date
-                var lastVal = {};
-                lastVal.date = moment('${eventcartitem.timeEndLocal}', 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
-                lastVal.value = lastValue;
-                ticketType.push(lastVal);
+    function saveTicketType(){
+        var name = jQuery('#editTicketTypeModal input[name="categoryName"]').val();
+        var price = jQuery('#editTicketTypeModal input[name="price"]').val();
+        ticketObjects[currentTicketIndex].update(name, +price);
+        ticketAry[currentTicketIndex].update(name, +price);
+        ticketObjects[currentTicketIndex].render();
+        ticketObjects[currentTicketIndex].renderTable();
 
-                dataset.push(ticketType);
-            }
-
-            graphData.length = 0;
-            graphLegend.length = 0;
-            graphData = dataset;
-            graphLegend = legend;
-            console.log('converted data', dataset);
-            initPriceScheduleVisualization();
+        if(ticketAry.length > 0){
+            renderScheduleGraph();                
         }
 
-        function saveTicketSettings(){
-            var postObjList = [];
-            var eci = { id: +'${eventcartitem.id}' };
+        currentTicketIndex = null;
+        currentScheduleIndex = null;
+        closeModal();
+    }
 
-            for(var i in ticketAry){
-                var schedules = ticketAry[i].scheduleList;
-                schedules.forEach(function(el, index, ary){
-                    var postObj = {};
-                    postObj.eventCartItem = eci;
-                    postObj.categoryName = ticketAry[i].name;
-                    postObj.price = el.price;
-                    console.log('double-check schedule element:', el)
-                    var schedule = el;
-                    if( index &lt; ary.length-1 ){
-                        postObj.dateStartLocal = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
-                        var tempEndDate = moment(ary[index+1].startDate, 'MM/DD/YYYY h:mm:ss a');
-                        postObj.dateEndLocal = tempEndDate.subtract(1,'s').format('MM/DD/YYYY h:mm:ss a');
-                    }
-                    if( index == ary.length-1 ){
-                        postObj.dateStartLocal = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
-                        postObj.dateEndLocal = eventCartEndDate;
-                    }
-                    postObjList.push(postObj);
-                })
+    function removeSingleSchedule(){
+        var schedule = scheduleObjects[currentScheduleIndex];
+        var ticket = ticketObjects[schedule.ticketId];
+        var scheduleList = ticket.scheduleList;
+        var index = null;
+        for(var i in scheduleList){
+            if(scheduleList[i].id == currentScheduleIndex){
+                schedule = scheduleList[i];
+                index = i;
             }
-            
-            if(postObjList.length == 0){
+        }
+
+        if(ticket.scheduleList.length == 1){
+            currentTicketIndex = schedule.ticketId;
+            removeTicketType();
+        }else{
+            ticketAry[currentTicketIndex].destroy();
+        }
+
+        if(ticketAry.length > 0){
+            renderScheduleGraph();
+        }
+
+        for(var i in scheduleAry){
+            if(scheduleAry[i].id == currentScheduleIndex){
+                scheduleAry.splice(i, 1);
+            }
+        }
+        currentTicketIndex = null;
+        currentScheduleIndex = null;
+        closeModal();
+    }
+
+    var graphData = [];
+    var graphLegend = [];
+    function renderScheduleGraph(){
+        var dataset = [];
+        var legend = [];
+
+        console.log('convert to graph data', ticketObjects);
+        for(var key in ticketObjects){
+            var ticket = ticketObjects[key];
+            var ticketType = [];
+            legend.push(ticket.name);
+            var schedules = ticket.scheduleList;
+            var lastValue = schedules[0].price;
+            for(var i in schedules.reverse()){
+                var sched = schedules[i];
+                var obj = {};
+                obj.date = moment(sched.startDate, 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
+                obj.value = sched.price;
+                ticketType.push(obj);
+            }
+            // add final date
+            var lastVal = {};
+            lastVal.date = moment('${eventcartitem.timeEndLocal}', 'MM/DD/YYYY h:mm:ss a').format('YYYY-MM-DD');
+            lastVal.value = lastValue;
+            ticketType.push(lastVal);
+
+            dataset.push(ticketType);
+        }
+
+        graphData.length = 0;
+        graphLegend.length = 0;
+        graphData = dataset;
+        graphLegend = legend;
+        console.log('converted data', dataset);
+        initPriceScheduleVisualization();
+    }
+
+    function saveTicketSettings(){
+        var postObjList = [];
+        var eci = { id: +'${eventcartitem.id}' };
+
+        for(var i in ticketAry){
+            var schedules = ticketAry[i].scheduleList;
+            schedules.forEach(function(el, index, ary){
                 var postObj = {};
                 postObj.eventCartItem = eci;
-                postObj.categoryName = 'General Admission';
-                postObj.price = +'${eventcartitem.price}';
-                postObj.dateStartLocal = moment(eventCartStartDate, 'YYYY-MM-DDThh:mm:ss.SSSZ').format('MM/DD/YYYY h:mm:ss a');
-                postObjList.push(postObj);
-                alert('You haven\'t indicated any Ticket Types. We created for you one default Ticket Type called "General Admission".');
-            }
-            jQuery.ajax({
-                url: "/bibs-server/eventitemspricechanges/jsonArraySmart",
-                contentType: 'application/json',
-                type: 'POST',
-                dataType: 'json',
-                data: JSON.stringify(postObjList),
-                complete: function(data) {
-                    console.log('finished');
-                    saved = true;
-                    alert('Your changes have been saved!');
-                    jQuery('#saveTTPC').prop('disabled', true).text('Saving...');
-                    window.location.reload();
+                postObj.categoryName = ticketAry[i].name;
+                postObj.price = el.price;
+                console.log('double-check schedule element:', el)
+                var schedule = el;
+                if( index &lt; ary.length-1 ){
+                    postObj.dateStartLocal = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+                    var tempEndDate = moment(ary[index+1].startDate, 'MM/DD/YYYY h:mm:ss a');
+                    postObj.dateEndLocal = tempEndDate.subtract(1,'s').format('MM/DD/YYYY h:mm:ss a');
                 }
-            });
-        }
-
-        function initPriceScheduleVisualization(){
-            for (var i = 0; i &lt; graphData.length; i++) {
-                graphData[i] = MG.convert.date(graphData[i], 'date');
-            }
-
-            MG.data_graphic({
-                title: "Price Schedules Graph",
-                description: "All ticket types' price schedules can be viewed here. The last date reflects the registratin window's closing date.",
-                data: graphData,
-                width: 600,
-                height: 200,
-                right: 40,
-                target: '#schedule-graph',
-                legend: graphLegend,
-                legend_target: '.legend',
-                yax_units: '$',
-                x_extended_ticks: true
-            });
-        }
-
-        var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
-        var eventCartStartDate = moment('${eventcartitem.timeStartLocal}', 'YYYY-MM-DD hh:mm:ss.S').format('MM/DD/YYYY h:mm:ss a');
-        var eventCartEndDate = moment('${eventcartitem.timeEndLocal}', 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
-        eventStart = moment(eventStart, 'MM/DD/YYYY h:mm:ss a');
-        eventCartStartDate = moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a');
-        function initDateTimePickers(){
-            jQuery("#timedisp").datetimepicker({
-                pickDate: false
-            });
-
-            jQuery('#scheduleStartDate')
-                .datetimepicker({
-                    // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
-                    useSeconds: true,
-                    sideBySide: true
-                });
-
-            jQuery('#editPriceSchedulePicker')
-                .datetimepicker({
-                    // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
-                    useSeconds: true,
-                    sideBySide: true
-                });
-
-            jQuery("#logisticsStartDate")
-                .datetimepicker({
-                    defaultDate: moment().startOf('day'),
-                    useSeconds: true,
-                    sideBySide: true
-                });
-            jQuery("#logisticsEndDate")
-                .datetimepicker({
-                    defaultDate: eventStart,
-                    useSeconds: true,
-                    sideBySide: true
-                });
-
-            jQuery('#scheduleStartDate').data('DateTimePicker').setMinDate(eventCartStartDate);
-            jQuery('#scheduleStartDate').data('DateTimePicker').setMaxDate(eventCartEndDate);
-            jQuery('#editPriceSchedulePicker').data('DateTimePicker').setMinDate(eventCartStartDate);
-            jQuery('#editPriceSchedulePicker').data('DateTimePicker').setMaxDate(eventCartEndDate);
-            jQuery('#logisticsEndDate').data("DateTimePicker").setMinDate(jQuery("#logisticsStartDate").data("DateTimePicker").getDate());
-            jQuery('#logisticsEndDate').data("DateTimePicker").setMaxDate(eventStart);
-
-            <!-- on change-ui -->
-            jQuery("#logisticsStartDate").on("dp.change",function (e) {
-                jQuery('#logisticsEndDate').data("DateTimePicker").setMinDate(e.date);
-            });
-            jQuery("#logisticsEndDate").on("dp.change",function (e) {
-                jQuery('#logisticsStartDate').data("DateTimePicker").setMaxDate(e.date);
-            });
-        }
-
-        function closeModal(){
-            jQuery('.modal').modal('hide');
-        }
-
-        function onBack(){
-            alerted = false;
-            saved = false;
-            window.location="/bibs-server/eventitems?event=${event.id}";
+                if( index == ary.length-1 ){
+                    postObj.dateStartLocal = moment(schedule.startDate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+                    postObj.dateEndLocal = eventCartEndDate;
+                }
+                postObjList.push(postObj);
+            })
         }
         
-        function deleteItem(id){
-            if(confirm("This will disable and remove all registration information. This includes purchase data for this Event Type, and you will no longer be able to access receipts for this Event Type. Your changes made from this page will not be saved and cannot be restored. Are you sure you want to do this? We recommend that you DON'T DO THIS.")){
-                jQuery(".cat-"+id).remove();
-                sendDeleteItem(id);
+        if(postObjList.length == 0){
+            var postObj = {};
+            postObj.eventCartItem = eci;
+            postObj.categoryName = 'General Admission';
+            postObj.price = +'${eventcartitem.price}';
+            postObj.dateStartLocal = moment(eventCartStartDate, 'YYYY-MM-DDThh:mm:ss.SSSZ').format('MM/DD/YYYY h:mm:ss a');
+            postObjList.push(postObj);
+            alert('You haven\'t indicated any Ticket Types. We created for you one default Ticket Type called "General Admission".');
+        }
+        jQuery.ajax({
+            url: "/bibs-server/eventitemspricechanges/jsonArraySmart",
+            contentType: 'application/json',
+            type: 'POST',
+            dataType: 'json',
+            data: JSON.stringify(postObjList),
+            complete: function(data) {
+                console.log('finished');
+                saved = true;
+                alert('Your changes have been saved!');
+                jQuery('#saveTTPC').prop('disabled', true).text('Saving...');
+                window.location.reload();
             }
+        });
+    }
+
+    function initPriceScheduleVisualization(){
+        for (var i = 0; i &lt; graphData.length; i++) {
+            graphData[i] = MG.convert.date(graphData[i], 'date');
         }
-        function sendDeleteItem(id){ 
-            var request = jQuery.ajax({
-                url: "/bibs-server/eventitems/ticketremove/"+id,
-                type: "DELETE",
-                dataType: "json",
-                data: { "id": id },
-                complete: function() {
-                    alerted = true;
-                    onBack();
-                }
+
+        MG.data_graphic({
+            title: "Price Schedules Graph",
+            description: "All ticket types' price schedules can be viewed here. The last date reflects the registratin window's closing date.",
+            data: graphData,
+            width: 600,
+            height: 200,
+            right: 40,
+            target: '#schedule-graph',
+            legend: graphLegend,
+            legend_target: '.legend',
+            yax_units: '$',
+            x_extended_ticks: true
+        });
+    }
+
+    var eventStart = moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+    var eventCartStartDate = moment('${eventcartitem.timeStartLocal}', 'YYYY-MM-DD hh:mm:ss.S').format('MM/DD/YYYY h:mm:ss a');
+    var eventCartEndDate = moment('${eventcartitem.timeEndLocal}', 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY h:mm:ss a');
+    eventStart = moment(eventStart, 'MM/DD/YYYY h:mm:ss a');
+    eventCartStartDate = moment(eventCartStartDate, 'MM/DD/YYYY h:mm:ss a');
+    function initDateTimePickers(){
+        jQuery("#timedisp").datetimepicker({
+            pickDate: false
+        });
+
+        jQuery('#scheduleStartDate')
+            .datetimepicker({
+                // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
+                useSeconds: true,
+                sideBySide: true
             });
+
+        jQuery('#editPriceSchedulePicker')
+            .datetimepicker({
+                // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
+                useSeconds: true,
+                sideBySide: true
+            });
+
+        jQuery("#logisticsStartDate")
+            .datetimepicker({
+                defaultDate: moment().startOf('day'),
+                useSeconds: true,
+                sideBySide: true
+            });
+        jQuery("#logisticsEndDate")
+            .datetimepicker({
+                defaultDate: eventStart,
+                useSeconds: true,
+                sideBySide: true
+            });
+
+        jQuery('#scheduleStartDate').data('DateTimePicker').setMinDate(eventCartStartDate);
+        jQuery('#scheduleStartDate').data('DateTimePicker').setMaxDate(eventCartEndDate);
+        jQuery('#editPriceSchedulePicker').data('DateTimePicker').setMinDate(eventCartStartDate);
+        jQuery('#editPriceSchedulePicker').data('DateTimePicker').setMaxDate(eventCartEndDate);
+        jQuery('#logisticsEndDate').data("DateTimePicker").setMinDate(jQuery("#logisticsStartDate").data("DateTimePicker").getDate());
+        jQuery('#logisticsEndDate').data("DateTimePicker").setMaxDate(eventStart);
+
+        <!-- on change-ui -->
+        jQuery("#logisticsStartDate").on("dp.change",function (e) {
+            jQuery('#logisticsEndDate').data("DateTimePicker").setMinDate(e.date);
+        });
+        jQuery("#logisticsEndDate").on("dp.change",function (e) {
+            jQuery('#logisticsStartDate').data("DateTimePicker").setMaxDate(e.date);
+        });
+    }
+
+    function closeModal(){
+        jQuery('.modal').modal('hide');
+    }
+
+    function onBack(){
+        alerted = false;
+        saved = false;
+        window.location="/bibs-server/eventitems?event=${event.id}";
+    }
+    
+    function deleteItem(id){
+        if(confirm("This will disable and remove all registration information. This includes purchase data for this Event Type, and you will no longer be able to access receipts for this Event Type. Your changes made from this page will not be saved and cannot be restored. Are you sure you want to do this? We recommend that you DON'T DO THIS.")){
+            jQuery(".cat-"+id).remove();
+            sendDeleteItem(id);
         }
-        function deleteItemAndType(id){
-            if(confirm("This will remove ALL data associated with this Event Type, and cannot be restored. This includes all registration information, athlete information and their results, reports, analytics, etc. relating to this Event Type. Are you sure you want to do this? We recommend that you DON'T DO THIS.")){
-                jQuery(".cat-"+id).remove();
-                sendDeleteItemAndType(id);
+    }
+    function sendDeleteItem(id){ 
+        var request = jQuery.ajax({
+            url: "/bibs-server/eventitems/ticketremove/"+id,
+            type: "DELETE",
+            dataType: "json",
+            data: { "id": id },
+            complete: function() {
+                alerted = true;
+                onBack();
             }
+        });
+    }
+    function deleteItemAndType(id){
+        if(confirm("This will remove ALL data associated with this Event Type, and cannot be restored. This includes all registration information, athlete information and their results, reports, analytics, etc. relating to this Event Type. Are you sure you want to do this? We recommend that you DON'T DO THIS.")){
+            jQuery(".cat-"+id).remove();
+            sendDeleteItemAndType(id);
         }
-        function sendDeleteItemAndType(id){    
-            var request = jQuery.ajax({
-                url: "/bibs-server/eventitems/fullremove/"+id,
-                type: "DELETE",
-                dataType: "json",
-                data: { "id": id },
-                complete: function() {
-                    alerted = true;
-                    onBack();
-                }
-            });
-        }
-        function updateEventTypeAndTicket(eventTypeId, eventCartItemId) {
-        	var dat = {};
-        	
-        	//Grab raw form values
-            var price = jQuery('#logisticsForm input[name="price"]').val();
-            var typeName = jQuery('#logisticsForm input[name="typeName"]').val();
-            var raceType = jQuery('#logisticsForm input[name="raceType"]').val();
-            var available = jQuery('input[name="available"]').val();
-            var timeStartLocal = jQuery('#logisticsStartDate').val();
-            var timeEndLocal = jQuery('#logisticsForm input[name="timeEndLocal"]').val();
-            var startTime = jQuery('#timedisp').val();
-            var distance  = jQuery('#logisticsForm input[name="distance"]').val();
-            var dropdownDistance = jQuery('#logisticsForm input[name="dist"]').val();
-            var distType  = null;
-            if( jQuery('#dist-m').hasClass('positive')  ){ distType = ' m';  }
-            if( jQuery('#dist-km').hasClass('positive') ){ distType = ' km'; }
-            if( jQuery('#dist-mi').hasClass('positive') ){ distType = ' mi'; }
-            
-            //Make smarter
-            var parseDate = moment('${event.timeStartLocal}', 'MM/DD/YYYY h:mm:ss a');
-            var hour   = moment(startTime, "h:mm a").hour();
-            var minute = moment(startTime, "h:mm a").minute();
-			
-            parseDate.set('hour', hour);
-            parseDate.set('minute', minute);
-            parseDate = parseDate.format('MM/DD/YYYY hh:mm:ss a');
-			console.log('[price: ' + price + ', available: ' + available + ', timeStartLocal: ' + timeStartLocal + ', timeEndLocal: ' + timeEndLocal + ']')
-			
-            if( (distance === "" &amp;&amp; dropdownDistance === "Custom") || (distance === "" &amp;&amp; dropdownDistance === "")  || (distance == "" &amp;&amp; dropdownDistance == "") || parseDate === "" || raceType === "" ){
-                error = true;
-                if( distance === "" ){
-                    jQuery('#distance').parent().addClass('error');
-                    jQuery('input[name="distance"]').on('keypress', function(){
-                        if(jQuery('input[name="distance"]').val().length > 0){
-                            jQuery('#distance').parent().removeClass('error');
-                        }
-                    })
-                }
-                if( parseDate === "" ){
-                    jQuery('#starttime').parent().addClass('error');
-                    jQuery('input[name="timeStartLocal"]').on('keypress', function(){
-                        if(jQuery('input[name="timeStartLocal"]').val().length > 0){
-                            jQuery('#starttime').parent().removeClass('error');
-                        }
-                    })
-                }
-                if( raceType === "" ){
-                    jQuery('#racetypes').parent().addClass('error');
-                    jQuery('input[name="raceType"]').on('change', function(){
-                        if(jQuery('input[name="raceType"]').val().length > 0){
-                            jQuery('#racetypes').parent().removeClass('error');
-                        }
-                    })
-                }
-                console.log(error);
-            } else {
-            	dat.event = {};
-        		dat.event.id = parseInt('${event.id}');
-        		dat.type = "TICKET";
-        		dat.name = typeName;
-        		dat.price = price;
-        		//dat.timeStartLocal = parseDate;
-        		dat.timeStartLocal = timeStartLocal;
-        		dat.timeEndLocal = timeEndLocal;
-        		if (available == null || available == "") {
-        			dat.available = new Number(10000000);
-        		} else {
-        			dat.available = new Number(available);
-        		}
-        		var uploadUrl = "/bibs-server/eventitems/typeupdate"
-            	var uploadMethod = "PUT"
-            	dat.id = new Number(eventCartItemId);
-        		dat.eventType = {};
-        		dat.eventType.id = eventTypeId;
-        		dat.eventType.event = {};
-        		dat.eventType.event.id = parseInt('${event.id}');
-        		dat.eventType.typeName = typeName;
-        		if(dropdownDistance === "" || dropdownDistance === "Custom") {
-                	dat.eventType.distance = distance + distType;
-                } else {
-                	dat.eventType.distance = dropdownDistance;
-                }
-        		dat.eventType.timeStartLocal = parseDate;
-        		dat.eventType.racetype = raceType;
-        		
-        		jQuery.ajax({
-                    url: uploadUrl,
-                    type: uploadMethod,
-                    contentType: "application/json",
-                    data: JSON.stringify(dat),
-                    dataType: "json",
-                    complete: function(data) {
-                        saved = true;
-                        console.log("ResponseData");
-                        console.log(data)
-                        if(data != null &amp;&amp; data.responseJSON) {
-                            console.log("/bibs-server/eventitems/" + data.responseJSON.status);
-                            console.log(window.location);
-                            alert('Your changes have been saved!');
-                    	}
+    }
+    function sendDeleteItemAndType(id){    
+        var request = jQuery.ajax({
+            url: "/bibs-server/eventitems/fullremove/"+id,
+            type: "DELETE",
+            dataType: "json",
+            data: { "id": id },
+            complete: function() {
+                alerted = true;
+                onBack();
+            }
+        });
+    }
+    function updateEventTypeAndTicket(eventTypeId, eventCartItemId) {
+    	var dat = {};
+    	
+    	//Grab raw form values
+        var price = jQuery('#logisticsForm input[name="price"]').val();
+        var typeName = jQuery('#logisticsForm input[name="typeName"]').val();
+        var raceType = jQuery('#logisticsForm input[name="raceType"]').val();
+        var available = jQuery('input[name="available"]').val();
+        var timeStartLocal = jQuery('#logisticsStartDate').val();
+        var timeEndLocal = jQuery('#logisticsForm input[name="timeEndLocal"]').val();
+        var startTime = jQuery('#timedisp').val();
+        var distance  = jQuery('#logisticsForm input[name="distance"]').val();
+        var dropdownDistance = jQuery('#logisticsForm input[name="dist"]').val();
+        var distType  = null;
+        if( jQuery('#dist-m').hasClass('positive')  ){ distType = ' m';  }
+        if( jQuery('#dist-km').hasClass('positive') ){ distType = ' km'; }
+        if( jQuery('#dist-mi').hasClass('positive') ){ distType = ' mi'; }
+        
+        //Make smarter
+        var parseDate = moment('${event.timeStartLocal}', 'MM/DD/YYYY h:mm:ss a');
+        var hour   = moment(startTime, "h:mm a").hour();
+        var minute = moment(startTime, "h:mm a").minute();
+		
+        parseDate.set('hour', hour);
+        parseDate.set('minute', minute);
+        parseDate = parseDate.format('MM/DD/YYYY hh:mm:ss a');
+		console.log('[price: ' + price + ', available: ' + available + ', timeStartLocal: ' + timeStartLocal + ', timeEndLocal: ' + timeEndLocal + ']')
+		
+        if( (distance === "" &amp;&amp; dropdownDistance === "Custom") || (distance === "" &amp;&amp; dropdownDistance === "")  || (distance == "" &amp;&amp; dropdownDistance == "") || parseDate === "" || raceType === "" ){
+            error = true;
+            if( distance === "" ){
+                jQuery('#distance').parent().addClass('error');
+                jQuery('input[name="distance"]').on('keypress', function(){
+                    if(jQuery('input[name="distance"]').val().length > 0){
+                        jQuery('#distance').parent().removeClass('error');
                     }
                 })
             }
+            if( parseDate === "" ){
+                jQuery('#starttime').parent().addClass('error');
+                jQuery('input[name="timeStartLocal"]').on('keypress', function(){
+                    if(jQuery('input[name="timeStartLocal"]').val().length > 0){
+                        jQuery('#starttime').parent().removeClass('error');
+                    }
+                })
+            }
+            if( raceType === "" ){
+                jQuery('#racetypes').parent().addClass('error');
+                jQuery('input[name="raceType"]').on('change', function(){
+                    if(jQuery('input[name="raceType"]').val().length > 0){
+                        jQuery('#racetypes').parent().removeClass('error');
+                    }
+                })
+            }
+            console.log(error);
+        } else {
+        	dat.event = {};
+    		dat.event.id = parseInt('${event.id}');
+    		dat.type = "TICKET";
+    		dat.name = typeName;
+    		dat.price = price;
+    		//dat.timeStartLocal = parseDate;
+    		dat.timeStartLocal = timeStartLocal;
+    		dat.timeEndLocal = timeEndLocal;
+    		if (available == null || available == "") {
+    			dat.available = new Number(10000000);
+    		} else {
+    			dat.available = new Number(available);
+    		}
+    		var uploadUrl = "/bibs-server/eventitems/typeupdate"
+        	var uploadMethod = "PUT"
+        	dat.id = new Number(eventCartItemId);
+    		dat.eventType = {};
+    		dat.eventType.id = eventTypeId;
+    		dat.eventType.event = {};
+    		dat.eventType.event.id = parseInt('${event.id}');
+    		dat.eventType.typeName = typeName;
+    		if(dropdownDistance === "" || dropdownDistance === "Custom") {
+            	dat.eventType.distance = distance + distType;
+            } else {
+            	dat.eventType.distance = dropdownDistance;
+            }
+    		dat.eventType.timeStartLocal = parseDate;
+    		dat.eventType.racetype = raceType;
+    		
+    		jQuery.ajax({
+                url: uploadUrl,
+                type: uploadMethod,
+                contentType: "application/json",
+                data: JSON.stringify(dat),
+                dataType: "json",
+                complete: function(data) {
+                    saved = true;
+                    console.log("ResponseData");
+                    console.log(data)
+                    if(data != null &amp;&amp; data.responseJSON) {
+                        console.log("/bibs-server/eventitems/" + data.responseJSON.status);
+                        console.log(window.location);
+                        alert('Your changes have been saved!');
+                	}
+                }
+            })
         }
-    </script>
+    }
+</script>
 </div>
