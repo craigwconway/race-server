@@ -6,13 +6,6 @@
         .ui.card > .content > .header + .description{
             text-align: center;
         }
-        .x-btn{
-            margin-left: 5px;
-            margin-right: 0px;
-        }
-        .x-btn:hover{
-            cursor: pointer;
-        }
         .ui.cards > .card > .content > .header{
             text-align: left;
         }
@@ -157,7 +150,7 @@
             </div>
         </div>
         <div class="actions">
-            <button class="ui button" data-dismiss="modal">Close</button>
+            <button class="ui button" onclick="closeModal('Question')">Close</button>
             <button class="ui green button post-question" onclick="saveQuestion(false)">Submit</button>
             <button class="ui red button put-question" style="display:none" onclick="deleteQuestion()">Remove</button>
             <button class="ui green button put-question" style="display:none" onclick="saveQuestion(true)">Save</button>
@@ -167,7 +160,7 @@
         <div class="header" id="addCouponModal">Add Coupon</div>
         <div class="content">
             <div class="ui form" id="couponForm">
-                <div class="fields">
+                <div class="twelve wide field">
                     <h4 class="ui header">
                       <div class="content">
                         <label style="width:100%;"><i class="fa fa-exclamation-circle"><!--  --></i> Limit coupon to product: 
@@ -199,43 +192,39 @@
                       </div>
                     </h4>
                 </div>
-                <div class="fields">
-                    <div class="twelve wide field">
-                        <label style="width:100%">Coupon Code</label>
-                        <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
-                               data-parsley-required="true" 
-                               data-parsley-error-message="Please provide a coupon code."><!--  --></input>
-                    </div>
+                <div class="field">
+                    <label style="width:100%">Coupon Code</label>
+                    <input type="text" name="couponcode" placeholder="Coupon Code" style="text-transform:uppercase"
+                           data-parsley-required="true" 
+                           data-parsley-error-message="Please provide a coupon code."><!--  --></input>
                 </div>
-                <div class="fields" style="margin-top: 10px;">
-                    <label id="discount" style="width:100%;margin-left:0;padding-left:0;">Discount</label>
-                    <div class="twelve wide inline field" style="margin-left:0;padding-left:0;">
+                <div class="fields">
+                    <div class="eight wide inline field">
+                        <label id="discount" style="width:100%;margin:1em 0em 0.5em">Discount</label>
                         <input type="text" name="discount" id="validate-discount" placeholder="Discount Amount" style="font-size:1em;"><!--  --></input>
-                        <div class="ui icon buttons">
+                        <div class="ui icon buttons" style="margin-left:5px;">
                             <div class="ui positive button disc-btn" id="disc-perc"><b>%</b></div>
                             <div class="ui button disc-btn" id="disc-curr"><b><i class="fa fa-usd"><!--  --></i></b></div>
                         </div>
                     </div>
-                </div>
-                <div class="fields">
-                    <div class="twelve wide field">
+                    <div class="ui negative message" id="coupon-error-percent" style="display:none">
+                        <i class="fa fa-close link icon"><!--  --></i>
+                        <div class="header">
+                            We can't allow that discount.
+                        </div>
+                        <p>Please select a discount up to 100%.</p>
+                    </div>
+                    <div class="four wide field">
                         <label style="width:100%">Quantity</label>
                         <input type="number" min="1" name="available" placeholder="Quantity"
                                data-parsley-required="true"
                                data-parsley-error-message="Please provide a quantity."><!--  --></input>
                     </div>
                 </div>
-                <div class="ui negative message" id="coupon-error-percent" style="display:none">
-                    <i class="fa fa-close link icon"><!--  --></i>
-                    <div class="header">
-                        We can't allow that discount.
-                    </div>
-                    <p>Please select a discount up to 100%.</p>
-                </div>
             </div>
         </div>
         <div class="actions">
-            <button class="ui button" onclick="">Close</button>
+            <button class="ui button" onclick="closeModal('Coupon')">Close</button>
             <button class="ui green button post-coupon" onclick="saveCoupon(false)">Submit</button>
             <button class="ui red button put-coupon" style="display:none" onclick="deleteCoupon()">Remove</button>
             <button class="ui green button put-coupon" style="display:none" onclick="saveCoupon(true)">Save</button>
@@ -522,23 +511,27 @@
                 })
             })
 
-            jQuery('#addQuestion').on('hidden.bs.modal', function(){
-                responseSet = '';
-                currOptionsObjList = [];
-                jQuery(this).find('input[type="text"]').val('');
-                jQuery('#customQuestionsPreviewDropdown').dropdown('set text', 'Select one')
-                jQuery('#customQuestionsPreviewOptions').text('');
-                jQuery('#option-list').text('');
-                jQuery('input[name="optional"]').prop('checked', false);
-                jQuery('input[name="hidden"]').prop('checked', false);
-                jQuery('#question-preview').hide();
-                jQuery('#questionECI').dropdown('restore defaults');
+            jQuery('#addQuestion').modal({
+                onShow: function() {
+                    var responseSet = '';
+                    var currOptionsObjList = [];
+                    jQuery(this).find('input[type="text"]').val('');
+                    jQuery('#customQuestionsPreviewDropdown').dropdown('set text', 'Select one')
+                    jQuery('#customQuestionsPreviewOptions').text('');
+                    jQuery('#option-list').text('');
+                    jQuery('input[name="optional"]').prop('checked', false);
+                    jQuery('input[name="hidden"]').prop('checked', false);
+                    jQuery('#question-preview').hide();
+                    jQuery('#questionECI').dropdown('restore defaults');
+                }
             });
 
-            jQuery('#addCoupon').on('hidden.bs.modal', function(){
-                jQuery('#couponECI').dropdown('clear');
-                jQuery('#couponECI').dropdown('set text', 'none');
-                jQuery(this).find('input[type="text"],input[type="number"]').val('');
+            jQuery('#addCoupon').modal({
+                onShow: function() {
+                    jQuery('#couponECI').dropdown('clear');
+                    jQuery('#couponECI').dropdown('set text', 'none');
+                    jQuery(this).find('input[type="text"],input[type="number"]').val('');
+                }
             });
 
             var transfer = '${event.ticketTransferEnabled}';
@@ -565,6 +558,10 @@
             transferHandler();
             limitShirtHandler();
             customFormTab();
+        }
+
+        function closeModal(type){
+            jQuery('#add' + type).modal('hide');
         }
 
         function addCouponModal(){
