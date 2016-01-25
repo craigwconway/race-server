@@ -1,160 +1,129 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" xmlns:sec="http://www.springframework.org/security/tags">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <style>
-    	body{
-    	    background-image: url('images/auth.jpg');
-    	    background-size: cover; background-repeat: no-repeat;
-    	}
-    	.white-overlay{
-    	    display: block;
-    	    background: rgba(255,255,255,.8);
-    	    width: 103%;
-    	    margin-top: -2%;
-    	    margin-left: -1%;
-    	    padding-top: 2%;
-    	    padding-bottom: 2%;
-    	    text-align: center;
-    	}
-    	.info-container{
-    	    margin: 0 auto;
-    	    width: 500px;
-    	    min-height: 400px;
-    	    line-height: 27px;
-    	    color: #292929;
-    	}
-    	.ui.action.input{
-    		width: 100%;
-    	}
-    	@media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
-    		.info-container{
-    			width: 90%;
-    		}
-    	}
-    </style>
-    <div class="white-overlay">
-        <div class="info-container">
-            <h2 class="ui icon header">
-                <i class="fa fa-bolt"><!--  --></i>
-                <div class="content">Licensing
-				    <div class="sub header">Apply license to manage runners</div>
-                </div>
-            </h2>
-		    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-		    <form method="post" enctype="multipart/form-data">
-		    	<div class="field pull-left">
-		    	    <div class="ui action input">
-		    	        <input type="text" id="filename" readonly="readonly"></input>
-		    	        <label for="file" class="ui icon button btn-file">
-		    	             <i class="fa fa-folder-open" style="margin-right:5px"><!--  --></i>Import File
-		    	             <div style="width:0px;height:0px;overflow:hidden;"><input type="file" id="file" name="license"></input></div>
-		    	        </label>
-		    	    </div>
-		    	    <div class="meta" style="text-align:right">allowed: .lic (&lt;1KB)</div>
-		    	</div>
-		    	<div class="pull-right">
-					<button type="submit" class="ui teal button" id="submit">
-					  	<i class="fa fa-bolt" style="margin-right: 3px"><!--  --></i> submit
-					</button>
-				</div>
-				<div style="clear:both; margin-bottom:10px"><!--  --></div>
-		    </form>
-		    <div id="licstatus" style="display:none;" role="alert">
-		    License Expired, please reapply
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment">
+        <h2 class="ui icon center aligned header">
+            <i class="fa fa-bolt"><!--  --></i>
+            <div class="content">Licensing
+			    <div class="sub header">Apply license to manage runners</div>
+            </div>
+        </h2>
+	    <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+	    <form class="ui form" method="post" enctype="multipart/form-data" style="width:400px;margin:0 auto">
+	    	<div class="field">
+	    	    <div class="ui action input">
+	    	        <input type="text" id="filename" readonly="readonly"></input>
+	    	        <label for="file" class="ui button" style="width:initial">
+	    	             <i class="fa fa-folder-open icon"><!--  --></i>Import File
+	    	             <input style="display:none" type="file" id="file" name="license"></input>
+	    	        </label>
+	    	    </div>
+	    	    <div class="meta" style="text-align:right">allowed: .lic (&lt;1KB)</div>
+	    	</div>
+	    	<div style="float:right">
+				<button type="submit" class="ui teal button" id="submit">
+				  	<i class="fa fa-bolt" style="margin-right: 3px"><!--  --></i> submit
+				</button>
 			</div>
-		    <div id="unlicstatus" style="display:none;" role="alert">
-		    No Unlicensed Runners Found
-			</div>
-			Build 1.3.0_585BETA
-		</sec:authorize>
+			<div style="clear:both; margin-bottom:10px"><!--  --></div>
+	    </form>
+	    <div class="ui error message" id="licstatus" style="display:none;" role="alert">
+	    License Expired, please reapply
 		</div>
+	    <div class="ui info message" id="unlicstatus" style="display:none;" role="alert">
+	    No Unlicensed Runners Found
+		</div>
+		Build 1.3.0_585BETA
+	</sec:authorize>
 	</div>
-	<script>
-		// Get license status
-		window.onload = licenseManagement();
+</div>
+<script>
+	// Get license status
+	window.onload = licenseManagement();
 
-		var fileExtentionRange = '.lic';
-		var MAX_SIZE = 1; // KB
+	var fileExtentionRange = '.lic';
+	var MAX_SIZE = 1; // KB
 
-		jQuery('.btn-file input:file').on('change', function() {
-		    var input = jQuery(this);
+	jQuery('.btn-file input:file').on('change', function() {
+	    var input = jQuery(this);
 
-		    if (navigator.appVersion.indexOf("MSIE") != -1) { // IE
-		        var label = input.val();
+	    if (navigator.appVersion.indexOf("MSIE") != -1) { // IE
+	        var label = input.val();
 
-		        input.trigger('fileselect', [ 1, label, 0 ]);
-		    } else {
-		        var label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-		        var numFiles = input.get(0).files ? input.get(0).files.length : 1;
-		        var size = input.get(0).files[0].size;
+	        input.trigger('fileselect', [ 1, label, 0 ]);
+	    } else {
+	        var label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+	        var numFiles = input.get(0).files ? input.get(0).files.length : 1;
+	        var size = input.get(0).files[0].size;
 
-		        input.trigger('fileselect', [ numFiles, label, size ]);
-		    }
-		});
+	        input.trigger('fileselect', [ numFiles, label, size ]);
+	    }
+	});
 
-		jQuery('.btn-file input:file').on('fileselect', function(event, numFiles, label, size) {
-		    jQuery('#file').attr('name', 'license'); // allow upload.
+	jQuery('.btn-file input:file').on('fileselect', function(event, numFiles, label, size) {
+	    jQuery('#file').attr('name', 'license'); // allow upload.
 
-		    var postfix = label.substr(label.lastIndexOf('.'));
-		    if (fileExtentionRange.indexOf(postfix.toLowerCase()) > -1) {
-		        if (size > 1024 * MAX_SIZE ) {
-		            alert('Max size： ' + MAX_SIZE + ' MB.');
-		            jQuery('#file').removeAttr('name'); // cancel upload file.
-		        } else {
-		            jQuery('#filename').val(label);
-		        }
-		    } else {
-		        alert('This is an incorrect file type.');
+	    var postfix = label.substr(label.lastIndexOf('.'));
+	    if (fileExtentionRange.indexOf(postfix.toLowerCase()) > -1) {
+	        if (size > 1024 * MAX_SIZE ) {
+	            alert('Max size： ' + MAX_SIZE + ' MB.');
+	            jQuery('#file').removeAttr('name'); // cancel upload file.
+	        } else {
+	            jQuery('#filename').val(label);
+	        }
+	    } else {
+	        alert('This is an incorrect file type.');
 
-		        jQuery('#file').removeAttr('name'); // cancel upload file.
-		    }
-		});
+	        jQuery('#file').removeAttr('name'); // cancel upload file.
+	    }
+	});
 
-		function getLicenseStatus(){
-			// console.log("findUncategorized");
-			var r = jQuery.ajax({
-				url: "/bibs-server/licensing/status",
-				dataType: "json"
-				});
-			r.done(function( data ) {
-				console.log(data)
-				// If we have > 50 units left, display a regular message
-				var unitsRemaining = Number(data.units)
-				jQuery("#licstatus").show()
-				if(unitsRemaining &lt;= 0) {
-					jQuery("#licstatus").show();
-					jQuery("#licstatus").addClass("alert alert-danger");
-				} else if(unitsRemaining &lt; 50) {
-					jQuery("#licstatus").show();
-					jQuery("#licstatus").addClass("alert alert-warning");
-					jQuery("#licstatus").html("You have " + data.units + " runners remaining");
-				} else {
-					jQuery("#licstatus").show();
-					jQuery("#licstatus").addClass("alert alert-success");
-					jQuery("#licstatus").html("You have " + data.units + " runners remaining");
-	
-				}
-				
+	function getLicenseStatus(){
+		// console.log("findUncategorized");
+		var r = jQuery.ajax({
+			url: "/bibs-server/licensing/status",
+			dataType: "json"
 			});
-			r.fail(function( jqXHR, textStatus ) {
-				// console.log(textStatus);
-			});
-		}
-		function licenseActivator() {
-			var unlicensedResults = '${unlicensed}';
-			console.log(unlicensedResults);
-			if(unlicensedResults === '0') {
-				jQuery("#unlicstatus").show();
-				jQuery("#unlicstatus").addClass("alert alert-success");
+		r.done(function( data ) {
+			console.log(data)
+			// If we have > 50 units left, display a regular message
+			var unitsRemaining = Number(data.units)
+			jQuery("#licstatus").show()
+			if(unitsRemaining &lt;= 0) {
+				jQuery("#licstatus").show();
+				jQuery("#licstatus").addClass("danger");
+			} else if(unitsRemaining &lt; 50) {
+				jQuery("#licstatus").show();
+				jQuery("#licstatus").addClass("warning");
+				jQuery("#licstatus").html("You have " + data.units + " runners remaining");
 			} else {
-				jQuery("#unlicstatus").show();
-				jQuery("#unlicstatus").html('&lt;a href="/bibs-server/licensing/activate" class="alert-link"&gt;Activate&lt;/a&gt; ' + unlicensedResults + ' Unlicensed Athletes.');
-				jQuery("#unlicstatus").addClass("alert alert-warning");
+				jQuery("#licstatus").show();
+				jQuery("#licstatus").addClass("green");
+				jQuery("#licstatus").html("You have " + data.units + " runners remaining");
+
 			}
+			
+		});
+		r.fail(function( jqXHR, textStatus ) {
+			// console.log(textStatus);
+		});
+	}
+	function licenseActivator() {
+		var unlicensedResults = '${unlicensed}';
+		console.log(unlicensedResults);
+		if(unlicensedResults === '0') {
+			jQuery("#unlicstatus").show();
+			jQuery("#unlicstatus").addClass("green");
+		} else {
+			jQuery("#unlicstatus").show();
+			jQuery("#unlicstatus").html('&lt;a href="/bibs-server/licensing/activate" class="alert-link"&gt;Activate&lt;/a&gt; ' + unlicensedResults + ' Unlicensed Athletes.');
+			jQuery("#unlicstatus").addClass("info");
 		}
-		function licenseManagement() {
-			getLicenseStatus();
-			licenseActivator();
-		}
-	</script>
+	}
+	function licenseManagement() {
+		getLicenseStatus();
+		licenseActivator();
+	}
+</script>
 </div>
