@@ -33,11 +33,12 @@
       	role="form">
         <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />
         <jsp:doBody />
-        <div class="submit" id="${fn:escapeXml(id)}_submit">
-          <button id="back" type="button" class="btn" onclick="window.history.back();">Cancel</button>
+
+        <div class="submit" style="margin-bottom:5%" id="${fn:escapeXml(id)}_submit">
+          <button id="back" type="button" class="ui button" onclick="window.history.back();">Cancel</button>
           <spring:message code="button_save" var="save_button" htmlEscape="false" />
           <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
-          <button id="proceed" type="submit" class="btn btn-success">Save</button>
+          <button id="proceed" type="submit" class="ui green button">Save</button>
         </div>
         <form:hidden id="_${fn:escapeXml(idField)}_id" path="${fn:escapeXml(idField)}" />
         <c:if test="${versionField ne 'none'}">

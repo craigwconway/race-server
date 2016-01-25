@@ -18,10 +18,10 @@
         margin: 0 auto;
         width: 400px;
         text-align: right;
+        margin-top: 2%;
     }
-
 </style>
-<div class="bibs-page bibs-bg-gray-1" style="padding-top:2%;padding-bottom:2%">
+<div class="bibs-page bibs-bg-gray-1" style="padding-top:2%;">
     <form:update id="fu_com_bibsmobile_model_Event" modelAttribute="event" path="/events" versionField="Version" z="HRUEbbTPOtP6NCVvkP7sA85e324=">
     <div class="info-container">
         <h2 class="ui icon center aligned header">
