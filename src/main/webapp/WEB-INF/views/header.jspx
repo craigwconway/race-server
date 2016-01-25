@@ -21,7 +21,7 @@
     	<a href="/bibs-server" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
   		<a href="${raceday_url}" class="item"><i class="fa fa-wifi left-icon icon"><!--  --></i> rfid</a>
   		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-  	  		<a href="${timers_url}" class="item"><i class="fa fa-cog left-icon icon"><!--  --></i> settings</a>
+  	  		<a href="${timers_url}" class="item"><i class="fa fa-clock-o left-icon icon"><!--  --></i> timers</a>
   			<a href="${license_url}" class="item"><i class="fa fa-bolt left-icon icon"><!--  --></i> licensing</a>
   	  	</sec:authorize>
     	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>

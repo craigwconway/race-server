@@ -1,76 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <style>
-        body{
-            background-image: url('../images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .ui.form.info-container{
-            margin: 0 auto;
-            width: 400px;
-            font-weight: 100;
-            color: #292929;
-        }
-        .ui.labeled.input {
-            display: table;
-            margin: 5px auto;
-            text-align: left;
-            width: 500px;
-        }
-        .ui.labeled.input > .label {
-            width: 32%;
-        }
-        .form-fields>input{
-            width: 400px;
-            margin: 5px auto; 
-        }
-        .ui.selection.dropdown{
-            width: 100%;
-            height: 34px;
-            line-height: 0.65em;
-            font-size: 1em;
-        }
-        .submit{
-            margin: 0 auto;
-            width: 400px;
-            text-align: right;
-        }
-        .ui.form input[type="number"]{
-            height: 38px;
-        }
-    </style>
-    <div class="white-overlay">
-        <form:update id="fu_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" versionField="Version" z="gHW4sjp6C91L58dzI5umszglaCQ=">
-        <div class="ui form info-container">
-        <div class="pull-right"><button onclick="deleteReader()" class="ui red button" type="button"><i class="fa fa-trash"><!--  --></i> delete</button></div>
-        <div style="clear:both"><!--  --></div>
-            <h2 class="ui icon header">
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<style>
+    .ui.selection.dropdown{
+        width: 100%;
+        height: 34px;
+        line-height: 0.65em;
+        font-size: 1em;
+    }
+    .submit{
+        margin: 0 auto;
+        width: 400px;
+        text-align: right;
+    }
+    .ui.form input[type="number"]{
+        height: 38px;
+    }
+</style>
+<div class="bibs-page bibs-bg-gray-1">
+    <form:update id="fu_com_bibsmobile_model_TimerConfig" modelAttribute="timerConfig" path="/timers" versionField="Version" z="gHW4sjp6C91L58dzI5umszglaCQ=">
+    <div class="ui very padded basic segment">
+        <div class="ui form" style="width:400px;margin:0 auto">
+            <div class="pull-right"><button onclick="deleteReader()" class="ui red button"><i class="fa fa-trash icon"><!--  --></i> Delete</button></div>
+            <div style="clear:both"><!--  --></div>
+            <h2 class="ui icon center aligned header">
                 <i class="fa fa-cog"><!--  --></i>
                 <div class="content">Edit Reader
                     <div class="sub header">Change this reader's configurations.</div>
                 </div>
             </h2>
-            <div class="ui labeled input">
-                <div class="ui blue label">Reader Type</div>
+            <div class="field">
+                <label>Reader Type</label>
                 <select class="ui dropdown" id="rtype" name="type">
                     <option id="type-0" value="0">Demo (No Reader)</option>
                     <option id="type-1" value="1">Bibs Timer</option>
                 </select>
             </div>
-            <div class="ui labeled input">
-                <div class="ui blue label">Position</div>
+            <div class="field">
+                <label>Position</label>
                 <select class="ui dropdown" id="pos" name="position">
                     <option id="starting" value="0">Starting Line</option>
                     <option id="finishing" value="1">Finish Line</option>
@@ -81,8 +49,8 @@
                     <option id="split5" value="6">Split 5</option>
                 </select>
             </div>
-            <div class="ui labeled input">
-                <div class="ui blue label">Ports</div>
+            <div class="field">
+                <label>Ports</label>
                 <div class="ui active buttons">
                     <div class="ui toggle button" id="port-1" onclick="updatePorts(1)">1</div>
                     <div class="ui toggle button" id="port-2" onclick="updatePorts(2)">2</div>
@@ -90,107 +58,109 @@
                     <div class="ui toggle button" id="port-4" onclick="updatePorts(4)">4</div>
                 </div>
             </div>
-            <div class="ui labeled input">
-                <div class="ui blue label">Reader Location</div>
-                <input  type="string" name="url"
+            <div class="field">
+                <label>Reader Location</label>
+                <input  type="text" name="url"
                         placeholder="Reader Location"
                         data-parsley-error-message="Please enter a valid url."
                         value="${timerConfig.url}"></input>
             </div>
-            <div class="ui labeled input">
-                <div class="ui blue label">Read Timeout</div>
+            <div class="field">
+                <label>Read Timeout</label>
                 <input  type="number" name="readTimeout"
                         class="form-control"
                         placeholder="Read Timeout"
                         data-parsley-error-message="Invalid timeout number."
                         value="${timerConfig.readTimeout}"></input>
             </div>
-            <div class="ui labeled input">
-                <div class="ui blue label">Filename</div>
+            <div class="field">
+                <label>Filename</label>
                 <input  type="text" name="filename"
                         class="form-control"
                         placeholder="Filename"
                         data-parsley-error-message="Invalid filename."
                         value="${timerConfig.filename}"></input>
             </div>
-            <div class="ui labeled input">
-            	<div class="ui blue label">Laps</div>
-            	<input type="checkbox" name="laps"
-            			class="form-control"
-            			value="${timerConfig.laps}"></input>
+            <div class="field">
+                <div class="ui slider checkbox">
+                    <input  type="checkbox" name="laps"
+                            value="${timerConfig.laps}"></input>
+                	<label>Laps</label>
+                </div>
             </div>
-            <div class="ui labeled input">
-            	<div class="ui blue label">Minimum Finish</div>
+            <div class="field">
+            	<label>Minimum Finish</label>
             	<input type="number" name="minFinish"
-            			class="form-control"
-            			placeholder="Minimum Finish Time (seconds)"
-            			value="${timerConfig.minFinish}"></input>
+            		   placeholder="Minimum Finish Time (seconds)"
+            		   value="${timerConfig.minFinish}"></input>
             </div>
             <div style="display:none"><input name="ports" id="ports"><!--  --></input></div>
         </div>
-        </form:update>
     </div>
-    <script>
-        window.onload=function(){
-        	// type
-            jQuery("#rtype").dropdown('set selected', '${timerConfig.type}');
-        	// position
-            jQuery("#pos").dropdown('set selected', '${timerConfig.position}');
-            // ports
-            initPorts();
-            // If licensing build, do not show option 'Demo Timer'
-            var licensing = '${build.licensing}'
-            if(licensing === 'true') {
-            	dropdownElement = jQuery("#rtype");
-            	dropdownElement.find('option[value=0]').remove();
-            	//$("#rtype option[value='1']").remove();
-            }
-        };
-        var one = false; var two = false; var three = false; var four = false; var str = "";
-        function updatePorts(val){
-            if( val == 1 ){ one = !one; val = one; }
-            if( val == 2 ){ two = !two; val = two; }
-            if( val == 3 ){ three = !three; val = three; }
-            if( val == 4 ){ four = !four; val = four; }
-            str = "";
-            if(one){ str += "1," }
-            if(two){ str += "2," }
-            if(three){ str += "3," }
-            if(four){ str += "4," }
-            if(str.length > 1 &amp;&amp; str[str.length-1] == ','){
-                str = str.substr(0, str.length-1);
-            }
-            jQuery("#ports").val(str);
+    </form:update>
+</div>
+<script>
+    window.onload=function(){
+        jQuery('.ui.checkbox').checkbox();
+    	// type
+        jQuery("#rtype").dropdown('set selected', '${timerConfig.type}');
+    	// position
+        jQuery("#pos").dropdown('set selected', '${timerConfig.position}');
+        // ports
+        initPorts();
+        // If licensing build, do not show option 'Demo Timer'
+        var licensing = '${build.licensing}'
+        if(licensing === 'true') {
+        	dropdownElement = jQuery("#rtype");
+        	dropdownElement.find('option[value=0]').remove();
+        	//$("#rtype option[value='1']").remove();
         }
-        function initPorts(){
-            jQuery('.ui.button').state();
-            var ports = "${timerConfig.ports}";
-            ports = ports.split(',');
-            for( i=0; i &lt; ports.length; i++ ){
-                if( ports[i] !== "" ){
-                    jQuery("#port-"+ports[i]).addClass("active");
-                    if( ports[i] == '1' ){ one = true; str += "1," }
-                    if( ports[i] == '2' ){ two = true; str += "2," }
-                    if( ports[i] == '3' ){ three = true; str += "3," }
-                    if( ports[i] == '4' ){ four = true; str += "4," }
+    };
+    var one = false; var two = false; var three = false; var four = false; var str = "";
+    function updatePorts(val){
+        if( val == 1 ){ one = !one; val = one; }
+        if( val == 2 ){ two = !two; val = two; }
+        if( val == 3 ){ three = !three; val = three; }
+        if( val == 4 ){ four = !four; val = four; }
+        str = "";
+        if(one){ str += "1," }
+        if(two){ str += "2," }
+        if(three){ str += "3," }
+        if(four){ str += "4," }
+        if(str.length > 1 &amp;&amp; str[str.length-1] == ','){
+            str = str.substr(0, str.length-1);
+        }
+        jQuery("#ports").val(str);
+    }
+    function initPorts(){
+        jQuery('.ui.button').state();
+        var ports = "${timerConfig.ports}";
+        ports = ports.split(',');
+        for( i=0; i &lt; ports.length; i++ ){
+            if( ports[i] !== "" ){
+                jQuery("#port-"+ports[i]).addClass("active");
+                if( ports[i] == '1' ){ one = true; str += "1," }
+                if( ports[i] == '2' ){ two = true; str += "2," }
+                if( ports[i] == '3' ){ three = true; str += "3," }
+                if( ports[i] == '4' ){ four = true; str += "4," }
+            }
+        }
+        if(str.length > 1 &amp;&amp; str[str.length-1] == ','){
+            str = str.substr(0, str.length-1);
+        }
+        jQuery("#ports").val(str);
+   }
+   function deleteReader(){
+        if( confirm('Are you sure you want to delete this item? This cannot be undone.') ){
+            jQuery.ajax({
+                url: "/bibs-server/timers/${timerConfig.id}",
+                type: "DELETE",
+                dataType: "json",
+                complete: function() {
+                    window.location="/bibs-server/timers";
                 }
-            }
-            if(str.length > 1 &amp;&amp; str[str.length-1] == ','){
-                str = str.substr(0, str.length-1);
-            }
-            jQuery("#ports").val(str);
-       }
-       function deleteReader(){
-            if( confirm('Are you sure you want to delete this item? This cannot be undone.') ){
-                jQuery.ajax({
-                    url: "/bibs-server/timers/${timerConfig.id}",
-                    type: "DELETE",
-                    dataType: "json",
-                    complete: function() {
-                        window.location="/bibs-server/timers";
-                    }
-                });
-            }
+            });
         }
-    </script>
+    }
+</script>
 </div>

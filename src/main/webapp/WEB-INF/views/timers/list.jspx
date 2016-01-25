@@ -3,27 +3,6 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-        body{
-            background-image: url('images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .info-container{
-            margin: 0 auto;
-            width: 90%;
-            min-height: 400px;
-            line-height: 27px;
-            color: #292929;
-        }
         @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
             .ui.blue.table thead, .ui.table:not(.unstackable) tr > td:nth-child(2), .ui.table:not(.unstackable) tr > td:nth-child(3), .ui.table:not(.unstackable) tr > td:nth-child(4) {
                 display: none !important;
@@ -34,11 +13,11 @@
             }
         }
     </style>
-    <div class="white-overlay">
-        <div class="info-container">
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui very padded basic segment">
             <div class="pull-right">
-                <button class="ui button" onclick="document.location='/bibs-server/timers?form';" type="button">
-                	<i class="fa fa-plus"><!--  --></i> reader</button>
+                <button class="ui basic button" onclick="document.location='/bibs-server/timers?form';">
+                	<i class="fa fa-plus icon"><!--  --></i> reader</button>
             </div>
             <div class="clearfix"><!--  --></div>
             <!--
