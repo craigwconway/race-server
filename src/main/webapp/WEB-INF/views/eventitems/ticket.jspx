@@ -24,6 +24,7 @@
     }
     #schedule-tab{
         padding: 2em 1em;
+        padding-bottom:50px;
     }
     #addTypeForm{
         margin: 0 auto;
@@ -104,8 +105,8 @@
     </div>
 </div>
 
-<div class="ui modal" id="createSchedulesModal" style="display:none">
-    <div class="header">Edit Price Schedule</div>
+<div class="ui small modal" id="createSchedulesModal" style="display:none">
+    <div class="header">Create Price Schedule</div>
     <div class="content">
         <div class="ui form" id="addSchedForm">
             <div class="required field">
@@ -122,8 +123,8 @@
                     <input type="hidden" name="ticketList"><!--  --></input>
                     <i class="fa fa-caret-down" style="margin-left:5px;float:right;line-height:2em;"><!--  --></i>
                     <div class="menu" id="ticketTypeListDropdownMenu" style="width:inherit"><!--  -->
-                        <div class="item" id="dropdown-item-template" style="display:none"><!--  --></div>
                     </div>
+                    <div class="item" id="dropdown-item-template" style="display:none"><!--  --></div>
                 </div>
             </div>
             <div class="two fields">
@@ -341,7 +342,7 @@
                 <i class="fa fa-close link left-icon"><!--  --></i>
                 <i class="fa fa-question-circle" id="notify-icon"><!--  --></i>You have unsaved information. Your changes will be lost if you press 'Back' or close your browser, unless you <a href="#saveTTPC">save</a>. You can also make all your changes first and then save.
             </div>
-            <h3 class="ui horizontal header divider"><i class="fa fa-ticket"><!--  --></i>Ticket Types</h3>
+            <h3 class="ui horizontal header divider"><i class="fa fa-ticket icon"><!--  --></i>Ticket Types</h3>
             <div class="ui basic text segment" style="width:70%;margin:0 auto">
                 <form id="addTypeForm" class="ui form" data-parsley-validate="data-parsley-vaidate">
                     <h3 class="ui small header">Add a purchasable ticket for ${eventtype.typeName}.</h3>
@@ -392,7 +393,7 @@
             </div>
             <div class="ui basic text segment" id="schedule-main-container" style="text-align:left;width:70%;margin:0 auto">
                 <h3 class="ui horizontal header divider">
-                    <i class="fa fa-calendar"><!--  --></i>
+                    <i class="fa fa-calendar icon"><!--  --></i>
                     Price Schedules
                 </h3>
                 <div class="ui divided list" id="schedule-list" style="display:none">
@@ -590,8 +591,10 @@
                 this.dropdownDOM = jQuery("#dropdown-item-template").clone().appendTo('#ticketTypeListDropdownMenu')
                     .removeAttr('id', 'dropdown-item-template');
             }
+            console.log('append to schedule dropdown:', this.name)
             this.dropdownDOM.text(this.name);
             this.dropdownDOM.show();
+            jQuery('#ticketTypeListDropdown').dropdown('set selected', this.id);
             jQuery('#ticketTypeListDropdown').dropdown('refresh');
         }
         this.renderTable = function(){
@@ -711,6 +714,11 @@
         jQuery('.ui.accordion').accordion();
         jQuery('.ui.checkbox').checkbox();
         jQuery('#ticketTypeListDropdown, #scheduleTypeDropdown').dropdown();
+
+        jQuery('#createSchedulesModal').modal({
+            autofocus: false
+        });
+
         jQuery('i.link.fa.fa-close').on('click', function() {
             jQuery(this).closest('.message').fadeOut();
         });
@@ -864,6 +872,12 @@
     function addSchedule(){
         jQuery('#add-sched-error').hide();
         jQuery('#createSchedulesModal').modal('show');
+        // jQuery('#ticketTypeListDropdown').dropdown('clear');
+        ticketAry.forEach(function(n,i){
+            console.log(n);
+            n.renderScheduleDropdownItem();
+        });
+        jQuery('#ticketTypeListDropdown').dropdown('refresh');
     }
 
     function editSchedule(ticketHeader, ticketId, scheduleId){
