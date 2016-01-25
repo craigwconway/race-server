@@ -593,6 +593,7 @@ public class EventController {
     	EventType type;
     	type = eventTypeId == null ? EventType.findEventTypesByEvent(event).get(0) : EventType.findEventType(eventTypeId);
         uiModel.addAttribute("event", Event.findEvent(eventId));
+        uiModel.addAttribute("eventTypes", EventType.findEventTypesByEvent(event));
         uiModel.addAttribute("eventType", type);
         uiModel.addAttribute("awardCategoryResults", getAwards(type.getId()));
         uiModel.addAttribute("templates", AwardsTemplate.findAwardsTemplatesForUser(UserProfileUtil.getLoggedInUserProfile()));
