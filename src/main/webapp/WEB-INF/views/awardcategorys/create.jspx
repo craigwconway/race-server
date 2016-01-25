@@ -7,30 +7,6 @@
             background-image: url('../images/auth.jpg');
             background-size: cover; background-repeat: no-repeat;
         }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .info-container{
-            margin: 0 auto;
-            font-weight: 100;
-            color: #292929;
-        }
-        .ui.labeled.input {
-            display: table;
-            margin: 5px auto;
-            text-align: left;
-            width: 500px;
-        }
-        .ui.labeled.input > .label {
-            width: 26%;
-        }
         .ui.button, .ui.button:hover{
             width: 8%;
             color: #DD0000;
@@ -51,48 +27,46 @@
             text-align: right;
         }
     </style>
-    <div class="white-overlay">
-        <div class="info-container">
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui very padded basic segment">
             <form:create id="fc_com_bibsmobile_model_AwardCategory" modelAttribute="awardCategory" path="/awardcategorys" z="user-managed">
-            <h2 class="ui icon header">
-                <i class="fa fa-trophy"><!--  --></i>
-                <div class="content">Create Award Category in ${event.name }
-                    <div class="sub header">Add details for ${eventType.typeName }.</div>
+            <h2 class="ui icon center aligned header">
+                <i class="fa fa-trophy fa-2x"><!--  --></i>
+                <div class="content">Create Award Category
+                    <div class="sub header">Add details for ${event.name }'s ${eventType.typeName }.</div>
                 </div>
             </h2>
-
-            <div class="form-horizontal">
+            <div class="ui form" style="width:400px;margin:0 auto;">
             	<div style="display:none">
             		<input type="text" name="eventType" value="${eventType.id }"></input>
             	</div>
-                <div class="ui labeled input">
-                    <div class="ui orange label">Category Name</div>
-                    <input  type="text" name="name"
-                            class="form-control" id="cat-name"
+                <div class="field">
+                    <label>Category Name</label>
+                    <input  type="text" name="name" id="cat-name"
                             placeholder="Category Name"
                             value="${awardCategory.name}"
                             data-parsley-error-message="Please enter a category name."
                             data-parsley-required="required"></input>
                 </div>
-                <div class="ui labeled input">
-                    <div class="ui orange label">Min Age</div>
-                    <input  type="number" name="ageMin"
-                            class="form-control" id="lowAge"
-                            placeholder="1"
-                            data-parsley-error-message="Invalid age."
-                            data-parsley-required="true"
-                            value=""></input>
+                <div class="two fields">
+                    <div class="field">
+                        <label>Min Age</label>
+                        <input  type="number" name="ageMin" id="lowAge"
+                                placeholder="1"
+                                data-parsley-error-message="Invalid age."
+                                data-parsley-required="true"
+                                value=""></input>
+                    </div>
+                    <div class="field">
+                        <label>Max Age</label>
+                        <input  type="number" name="ageMax" id="highAge"
+                                placeholder="120"
+                                data-parsley-error-message="Invalid Age."
+                                data-parsley-required="required"></input>
+                    </div>
                 </div>
-                <div class="ui labeled input">
-                    <div class="ui orange label">Max Age</div>
-                    <input  type="number" name="ageMax"
-                            class="form-control" id="highAge"
-                            placeholder="120"
-                            data-parsley-error-message="Invalid Age."
-                            data-parsley-required="required"></input>
-                </div>
-                <div class="ui labeled input">
-                    <div class="ui orange label">Gender</div>
+                <div class="field">
+                    <label>Gender</label>
                     <select class="ui dropdown" id="award-gender" name="gender"
                             data-parsley-error-message="Please select a gender.">
                         <option value="">Gender</option>
@@ -101,29 +75,27 @@
                         <option value="F">Female</option>
                     </select>
                 </div>
-                <div class="ui labeled input">
-                    <div class="ui orange label">List Size</div>
+                <div class="field">
+                    <label>List Size</label>
                     <input  type="text" name="listSize"
-                            class="form-control"
                             placeholder="List Size"
                             data-parsley-error-message="Invalid list size."
                             data-parsley-required="required"></input>
                 </div>
+                <div style="display:true">
+                    <div class="ui checkbox" id="checkmedal">
+                        <input type="checkbox" name="medal" checked=""></input>
+                        <label>Medal Category</label>
+                    </div>
+                    <!-- <input  type="text" name="sortOrder"
+                            class="form-control"
+                            placeholder="Sort Order"
+                            data-parsley-error-message="Invalid sort order."
+                            data-parsley-required="required"></input> -->
+            		<!--<field:select field="event" id="c_com_bibsmobile_model_AwardCategory_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/> -->
+                </div>
             </div>
 
-            <div style="display:true">
-                <div class="ui labeled input">
-                    <div class="ui orange label">Medal Category</div>
-                    <div class="btn btn-default btn-sm med-button" onclick="medalToggle()"><!--  --></div>
-                    <input style="display:none" id="checkmedal" type="checkbox" name="medal"></input>
-                </div>
-                <!-- <input  type="text" name="sortOrder"
-                        class="form-control"
-                        placeholder="Sort Order"
-                        data-parsley-error-message="Invalid sort order."
-                        data-parsley-required="required"></input> -->
-        		<!--<field:select field="event" id="c_com_bibsmobile_model_AwardCategory_event" itemLabel="name" itemValue="id" items="${events}" path="/events" z="user-managed"/> -->
-            </div>
             </form:create>
         </div>
     </div>
@@ -131,6 +103,8 @@
         window.onload=function(){
             parseEventId();
             setValidation();
+
+            jQuery('#checkmedal').checkbox();
 
             jQuery("#award-gender").change(function(){
                 if(jQuery("#award-gender").val() == 'x'){
@@ -206,14 +180,6 @@
                         jQuery("#lowAge").attr("max", jQuery(this).val());
                     }
                 }
-            });
-        }
-        
-        function medalToggle(){
-            jQuery("#checkmedal").prop("checked", function(i, val) {
-                var str = val ? 'glyphicon-ok' : 'glyphicon-remove';
-                jQuery(".med-button").html('<span class="glyphicon ' + str + '"></span>')
-                return !val;
             });
         }
 
