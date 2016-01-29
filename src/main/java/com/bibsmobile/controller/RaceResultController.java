@@ -7,6 +7,7 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.UserProfileUtil;
+import com.bibsmobile.model.CustomResultField;
 import com.bibsmobile.model.DeviceInfo;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.License;
@@ -23,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -445,6 +447,23 @@ public class RaceResultController {
         return "raceresults/update";
     }
 
+    @RequestMapping(value = "/advanced/{id}", produces = "text/html")
+    public String getExtras(@PathVariable("id") Long id, Model uiModel) {
+    	// sketchy bait-and-switch because that's what bibs does
+    	RaceResult result = RaceResult.findRaceResult(id);
+    	System.out.println("Result id: " + result.getId() + " bib: " + result.getBib());
+    	Event event = result.getEvent();
+        EventType eventType = result.getEventType();
+        Map<Integer, Split> splits = result.getSplits();
+        Map<String, String> customFields = result.getCustomFields();
+        this.populateEditForm(uiModel, result);
+        uiModel.addAttribute("event", event);
+        uiModel.addAttribute("eventType", eventType);
+        uiModel.addAttribute("splits", splits);
+        uiModel.addAttribute("custom", customFields);
+        return "raceresults/advanced";
+    }    
+    
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid RaceResult raceResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
