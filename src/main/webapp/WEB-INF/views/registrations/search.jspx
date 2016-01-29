@@ -25,7 +25,7 @@
             line-height: 27px;
             color: #292929;
         }
-        .modal-header .close{
+        .header .close{
             margin-top: 0;
         }
         .ui.table td:hover:not(:last-child) {
@@ -38,183 +38,175 @@
             list-style-type: none;
         }
     </style>
-    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="search-label" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title ui header" id="search-label">Receipt Copy <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button></h2>
+    <div class="ui modal" id="searchModal">
+        <div class="header">
+            <h2 class="modal-title ui header" id="search-label">Receipt Copy <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button></h2>
+        </div>
+        <div class="content">
+            <div style="margin:0 auto;">
+                <div class="pull-left">
+                    <button type="button" class="ui button" style="width:150px" onclick="refundHandler()">
+                        <i class="fa fa-cart-arrow-down" style="margin-right:7px"><!--  --></i>Refund
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <div style="margin:0 auto;">
-                        <div class="pull-left">
-                            <button type="button" class="ui button" style="width:150px" onclick="refundHandler()">
-                                <i class="fa fa-cart-arrow-down" style="margin-right:7px"><!--  --></i>Refund
-                            </button>
-                        </div>
-                        <div class="pull-right">
-                            <div class="ui icon yellow button" onclick="editModal()"><i class="fa fa-pencil fa-inverse"><!--  --></i></div>
-                            <div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div>
-                        </div>
-                        <div style="clear:both"><!--  --></div>
-                        <h3 class="ui header">Athlete Info</h3>
-                        <span id="modal-athlete"><!--  --></span>
-                        <h3 class="ui header">Transaction ID</h3>
-                        <span id="modal-transaction"><!--  --></span>
-                        <div id="cart-details">
-                            <div style="clear:both"><!--  --></div>
-                            <h3 class="ui header">Purchased Items</h3>
-                            <div id="modal-purchased"><!--  -->
-                                <table class="ui very basic table" id="cartitem-table" style="margin-top:0">
-                                    <thead>
-                                        <tr>
-                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Item</td>
-                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Details</td>
-                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Quantity</td>
-                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Price ($)</td>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-						<div id="cart-questions">
-                            <div style="clear:both"><!--  --></div>
-                            <h3 class="ui header">Form Responses</h3>
-                            <div id="modal-answered"><!--  -->
-                                <table class="ui very basic table" id="questions-table" style="margin-top:0">
-                                    <thead>
-                                        <tr>
-                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Question</td>
-                                            <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Answer</td>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
+                <div class="pull-right">
+                    <div class="ui icon yellow button" onclick="editModal()"><i class="fa fa-pencil fa-inverse"><!--  --></i></div>
+                    <div class="ui icon red button"><i style="margin-right:0" class="fa fa-trash"><!--  --></i></div>
+                </div>
+                <div style="clear:both"><!--  --></div>
+                <h3 class="ui header">Athlete Info</h3>
+                <span id="modal-athlete"><!--  --></span>
+                <h3 class="ui header">Transaction ID</h3>
+                <span id="modal-transaction"><!--  --></span>
+                <div id="cart-details">
+                    <div style="clear:both"><!--  --></div>
+                    <h3 class="ui header">Purchased Items</h3>
+                    <div id="modal-purchased"><!--  -->
+                        <table class="ui very basic table" id="cartitem-table" style="margin-top:0">
+                            <thead>
+                                <tr>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Item</td>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Details</td>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Quantity</td>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Price ($)</td>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
+				<div id="cart-questions">
+                    <div style="clear:both"><!--  --></div>
+                    <h3 class="ui header">Form Responses</h3>
+                    <div id="modal-answered"><!--  -->
+                        <table class="ui very basic table" id="questions-table" style="margin-top:0">
+                            <thead>
+                                <tr>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Question</td>
+                                    <td class="h4" style="color: #b2b2b2;font-family: 'Open Sans', sans-serif;font-weight: normal;font-size: 18px;line-height: 22px;">Answer</td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="edit-label" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title ui header" id="edit-label">Receipt Edit <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button></h2>
-                </div>
-                <div class="modal-body">
-                    <h3 class="ui header">Transaction: <span id="edit-title-detail"><!--  --></span></h3>
-                    <div class="ui athlete-menu accordion">
-                        <div class="ui tertiary attached raised segment title">Edit Athlete <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
-                        <div class="ui form edit-fields attached raised segment content" id="edit-athlete" data-parsley-validate="true">
-                            <div class="two fields">
-                                <div class="field">
-                                    <label>First Name</label>
-                                    <input  type="text" placeholder="First Name" class="edit-field" id="edit-firstname"
-                                            data-parsley-error-message="Please enter a first name."
-                                            data-parsley-required="true"><!--  --></input>
-                                </div>
-                                <div class="field">
-                                    <label>Last Name</label>
-                                    <input  type="text" placeholder="Last Name" class="edit-field" id="edit-lastname"
-                                            data-parsley-error-message="Please enter a last name."
-                                            data-parsley-required="true"><!--  --></input>
-                                </div>
-                            </div>
-                            <div class="two fields">
-                                <div class="twelve wide field">
-                                    <label>Email</label>
-                                    <input  type="email" placeholder="Email" class="edit-field" id="edit-email"
-                                            data-parsley-error-message="Please enter a valid email address."
-                                            data-parsley-required="true"><!--  --></input>
-                                </div>
-                                <div class="four wide field">
-                                    <label>Gender</label>
-                                    <div class="ui small buttons">
-                                        <div class="ui button edit-field" id="gender-m" onclick="genderHandler('M')"><span><i class="fa fa-mars"><!--  --></i></span></div>
-                                        <div class="or"><!--  --></div>
-                                        <div class="ui button edit-field" id="gender-f" onclick="genderHandler('F')"><span><i class="fa fa-venus"><!--  --></i></span></div>
-                                        <span style="display:none">
-                                            <input  class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-m" value="Male"
-                                                    data-parsley-mincheck="1" data-parsley-error-message="Please select a gender."><!--  --></input>
-                                            <input class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-f" value="Female"><!--  --></input>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="two fields">
-                                <div class="field">
-                                    <label>Birthdate</label>
-                                    <input  type="text" class="edit-field" id="edit-birthdate"
-                                            placeholder="Birthdate"
-                                            data-provide="datepicker"
-                                            data-date-format="MM/DD/YYYY"
-                                            data-parsley-error-message="Please enter a birthdate."
-                                            data-parsley-required="true"></input>
-                                </div>
-                                <div class="field">
-                                    <label>Phone</label>
-                                    <input  type="text" placeholder="Phone Number" class="edit-field" id="edit-phone"
-                                            data-parsley-error-message="Please enter a valid phone number."
-                                            data-parsley-required="true"><!--  --></input>
-                                </div>
-                            </div>
-                            <div class="two fields">
-                                <div class="field">
-                                    <label style="width:100%">Emergency Contact Name</label>
-                                    <input  type="text" placeholder="Emergency Contact Name" class="edit-field" id="edit-em-name"
-                                            data-parsley-error-message="Please enter an emergency contact name."
-                                            data-parsley-required="true"><!--  --></input>
-                                </div>
-                                <div class="field">
-                                    <label style="width:100%">Emergency Contact Phone</label>
-                                    <input  type="text" placeholder="Emergency Contact Phone Number" class="edit-field" id="edit-em-phone"
-                                            data-parsley-error-message="Please enter a valid phone number."
-                                            data-parsley-required="true"><!--  --></input>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="clear:both;height:15px;width:100%;"><!--  --></div>
-                    <div class="ui purchase-menu accordion">
-                        <div class="ui tertiary attached segment title">Edit Purchases <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
-                        <div class="ui form edit-fields attached raised segment content">
-                            <div id="edit-cart" data-parsley-validate="true"><!--  --></div>
-                        </div>
-                    </div>
-					<div style="clear:both;height:15px;width:100%;"><!--  --></div>
-                    <div class="ui purchase-menu accordion">
-                        <div class="ui tertiary attached segment title">Edit Custom Questions <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
-                        <div class="ui form edit-fields attached raised segment content">
-                            <div id="edit-questions" data-parsley-validate="true"><!--  --></div>
-                        </div>
-                    </div>
-                    <div style="clear:both;height:15px;width:100%;"><!--  --></div>
-                    <div class="ui purchase-menu accordion">
-                        <div class="ui tertiary attached segment title">Unanswered Questions (Warning: Deep) <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
-                        <div class="ui form edit-fields attached raised segment content">
-                            <div id="edit-unanswered" data-parsley-validate="true"><!--  --></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" id="footer-save" onclick="editValidate()">Save</button>
-                </div>
-            </div>
+        <div class="actions">
+            <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
         </div>
     </div>
 
-    <div class="white-overlay">
-        <div class="info-container">
-            <form method="post" class="navbar-form navbar-left" role="search">
-                <div class="form-group">
+    <div class="ui modal" id="editModal">
+        <div class="header">
+            <h2 class="modal-title ui header" id="edit-label">Receipt Edit <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button></h2>
+        </div>
+        <div class="content">
+            <h3 class="ui header">Transaction: <span id="edit-title-detail"><!--  --></span></h3>
+            <div class="ui athlete-menu accordion">
+                <div class="ui tertiary attached raised segment title">Edit Athlete <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
+                <div class="ui form edit-fields attached raised segment content" id="edit-athlete" data-parsley-validate="true">
+                    <div class="two fields">
+                        <div class="field">
+                            <label>First Name</label>
+                            <input  type="text" placeholder="First Name" class="edit-field" id="edit-firstname"
+                                    data-parsley-error-message="Please enter a first name."
+                                    data-parsley-required="true"><!--  --></input>
+                        </div>
+                        <div class="field">
+                            <label>Last Name</label>
+                            <input  type="text" placeholder="Last Name" class="edit-field" id="edit-lastname"
+                                    data-parsley-error-message="Please enter a last name."
+                                    data-parsley-required="true"><!--  --></input>
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="twelve wide field">
+                            <label>Email</label>
+                            <input  type="email" placeholder="Email" class="edit-field" id="edit-email"
+                                    data-parsley-error-message="Please enter a valid email address."
+                                    data-parsley-required="true"><!--  --></input>
+                        </div>
+                        <div class="four wide field">
+                            <label>Gender</label>
+                            <div class="ui small buttons">
+                                <div class="ui button edit-field" id="gender-m" onclick="genderHandler('M')"><span><i class="fa fa-mars"><!--  --></i></span></div>
+                                <div class="or"><!--  --></div>
+                                <div class="ui button edit-field" id="gender-f" onclick="genderHandler('F')"><span><i class="fa fa-venus"><!--  --></i></span></div>
+                                <span style="display:none">
+                                    <input  class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-m" value="Male"
+                                            data-parsley-mincheck="1" data-parsley-error-message="Please select a gender."><!--  --></input>
+                                    <input class="gender-sel edit-field" style="display:none" type="checkbox" name="gender" id="box-f" value="Female"><!--  --></input>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Birthdate</label>
+                            <input  type="text" class="edit-field" id="edit-birthdate"
+                                    placeholder="Birthdate"
+                                    data-provide="datepicker"
+                                    data-date-format="MM/DD/YYYY"
+                                    data-parsley-error-message="Please enter a birthdate."
+                                    data-parsley-required="true"></input>
+                        </div>
+                        <div class="field">
+                            <label>Phone</label>
+                            <input  type="text" placeholder="Phone Number" class="edit-field" id="edit-phone"
+                                    data-parsley-error-message="Please enter a valid phone number."
+                                    data-parsley-required="true"><!--  --></input>
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label style="width:100%">Emergency Contact Name</label>
+                            <input  type="text" placeholder="Emergency Contact Name" class="edit-field" id="edit-em-name"
+                                    data-parsley-error-message="Please enter an emergency contact name."
+                                    data-parsley-required="true"><!--  --></input>
+                        </div>
+                        <div class="field">
+                            <label style="width:100%">Emergency Contact Phone</label>
+                            <input  type="text" placeholder="Emergency Contact Phone Number" class="edit-field" id="edit-em-phone"
+                                    data-parsley-error-message="Please enter a valid phone number."
+                                    data-parsley-required="true"><!--  --></input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="clear:both;height:15px;width:100%;"><!--  --></div>
+            <div class="ui purchase-menu accordion">
+                <div class="ui tertiary attached segment title">Edit Purchases <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
+                <div class="ui form edit-fields attached raised segment content">
+                    <div id="edit-cart" data-parsley-validate="true"><!--  --></div>
+                </div>
+            </div>
+			<div style="clear:both;height:15px;width:100%;"><!--  --></div>
+            <div class="ui purchase-menu accordion">
+                <div class="ui tertiary attached segment title">Edit Custom Questions <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
+                <div class="ui form edit-fields attached raised segment content">
+                    <div id="edit-questions" data-parsley-validate="true"><!--  --></div>
+                </div>
+            </div>
+            <div style="clear:both;height:15px;width:100%;"><!--  --></div>
+            <div class="ui purchase-menu accordion">
+                <div class="ui tertiary attached segment title">Unanswered Questions (Warning: Deep) <i style="float:right" class="fa fa-caret-down"><!--  --></i></div>
+                <div class="ui form edit-fields attached raised segment content">
+                    <div id="edit-unanswered" data-parsley-validate="true"><!--  --></div>
+                </div>
+            </div>
+        </div>
+        <div class="actions">
+            <button type="button" class="btn btn-default" id="footer-close" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-success" id="footer-save" onclick="editValidate()">Save</button>
+        </div>
+    </div>
+
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui very padded basic segment">
+            <form method="post" class="ui horizontal form" role="search">
+                <div class="fields">
                     <c:if test="${events != null}">
-                        <select name="event"
-                            class="form-control">
+                    <div class="field">
+                        <select name="event" class="ui dropdown">
                             <c:forEach var="event" items="${events}">
                                 <c:if test="${eventId == event.id}">
                                     <option value="${event.id}" selected="selected">${event.name}</option>
@@ -224,13 +216,22 @@
                                 </c:if>
                             </c:forEach>
                         </select>
+                    </div>
                     </c:if>
-                    <input class="form-control" style="margin-left: 7px;" type="text" name="firstName" placeholder="First name" value="${firstName}"></input>
-                    <input class="form-control" style="margin-left: 7px;" type="text" name="lastName" placeholder="Last name" value="${lastName}"></input>
-                    <input class="form-control" style="margin-left: 7px;" type="text" name="invoiceId" placeholder="Invoice ID" value="${invoiceId}"></input>
-                    <input class="form-control" style="margin-left: 7px;" type="text" name="email" placeholder="E-Mail" value="${email}"></input>
+                    <div class="field">
+                        <input type="text" name="firstName" placeholder="First name" value="${firstName}"><!--  --></input>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="lastName" placeholder="Last name" value="${lastName}"><!--  --></input>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="invoiceId" placeholder="Invoice ID" value="${invoiceId}"><!--  --></input>
+                    </div>
+                    <div class="field">
+                        <input type="text" name="email" placeholder="E-Mail" value="${email}"><!--  --></input>
+                    </div>
+                <div class="ui green button" type="submit">Search</div>
                 </div>
-                <input class="btn btn-success" style="margin-left: 7px" type="submit" value="Search"></input>
             </form>
             <div style="clear:both"><!--  --></div>
             <div>
