@@ -1,7 +1,9 @@
 package com.bibsmobile.util;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
@@ -16,6 +18,7 @@ import com.bibsmobile.model.License;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Series;
 import com.bibsmobile.model.SeriesRegion;
+import com.bibsmobile.model.Split;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
@@ -153,6 +156,17 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             	user.setLastname(generateRandomName());
             	user.setCity("San Francisco");
             	user.setState("CA");
+            	if( i== 1) {
+            		Map<String, String> customs = new HashMap<String,String>();
+            		customs.put("beers", "3");
+            		customs.put("beer-adjusted-time", "00:33:22");
+            		Map<Integer, Split> splits = new HashMap<Integer, Split>();
+            		Split split1 = new Split();
+            		split1.setTimedisplay("00:15:15");
+            		splits.put(1, split1);
+            		user.setSplits(splits);
+            		user.setCustomFields(customs);
+            	}
             	user.persist();
             }
             
