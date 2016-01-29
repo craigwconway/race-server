@@ -1,108 +1,124 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <script type="text/javascript" src="https://js.stripe.com/v2/"><!-- --></script>
-	<div class="overlay" style="opacity:1;background-color:#0a334d;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;">
-		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
-		<h2 class="ui inverted header">Get started with bibs!</h2>
-		<h3 class="ui inverted header">Add you account details.</h3>
-		<div style="clear:both;"><!-- --></div>
-		<form action="/bibs-server/register/recipientadd" method="POST" id="payment-form" class="ui inverted form">
-			<div class="field">
-			  <label>
-			    <span>Bank Location</span>
-			        <select data-stripe="country">
-			            <option value="US">United States</option>
-			        </select>
-			  </label>
-			</div>
-			<div class="field">
-			  <label>
-			    <span>Account Type</span>
-			  </label>
-			        <select data-stripe="account_holder_type">
-			            <option value="individual">Individual</option>
-			            <option value="company">Company</option>
-			        </select>
-			</div>
-			<div class="field">
-			  <label>
-			    <span>Currency</span>
-			  </label>
-			        <select data-stripe="currency">
-			            <option value="USD">USD</option>
-			        </select>
-			</div>
-			<div class="field">
-			  <label>
-			    <span>Name</span>
-			        <input type="text" size="9" data-stripe="name"/>
-			  </label>
-			</div>	
-			<div class="field">
-			  <label>
-			    <span>Routing Number</span>
-			        <input type="text" size="9" data-stripe="routingNumber"/>
-			  </label>
-			</div>
-	
-			<div class="field">
-			  <label>
-			    <span>Account Number</span>
-			  </label>
-			        <input type="text" size="17" data-stripe="accountNumber"/>
-			</div>
-			<div style="clear:both;"><!-- --></div>
-			<br></br>
-			These will be stored securely on a server at Stripe. 
-			<div style="clear:both;"><!--  --></div>
-			  <br></br>
-			<button class="ui right floated inverted button" type="submit">Create</button>
-		</form>
-		</div>
-	</div>
-	<script>
-	Stripe.setPublishableKey('pk_test_02RQIM2iLYhfbXQgPjkkyELx');
-	
-	Stripe.bankAccount.createToken({
-		  country: JQuery('.country').val(),
-		  currency: JQuery('.currency').val(),
-		  routing_number: JQuery('.routing-number').val(),
-		  account_number: JQuery('.account-number').val(),
-		  name: JQuery('.name').val(),
-		  account_holder_type: JQuery('.account_holder_type').val()
-		}, stripeResponseHandler);
-	
-	function stripeResponseHandler(status, response) {
-		  var form = JQuery('#payment-form');
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<style>
+    .welcome {
+        position: absolute;
+        left: 50%;
+        margin-left: -350px;
+        top: 50%;
+        margin-top: -200px;
+        width: 700px;
+        height: 400px;
+        font-family: 'Montserrat';
+        font-weight:400;
+        text-align: center;
+    }
+    .welcome-sub {
+        margin-top: 15px;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        font-family: 'Arvo';
+    }
+    .ui.attacked.segment{
+    	margin: 0 !important;
+	    width: calc(100% + 0px) !important;
+	    max-width: calc(100% + 0px) !important;
+	    border: none !important;
+    }
+</style>
+<div class="welcome bibs-gray-1">
+    <img class="ui tiny centered image" src="../images/bibsicon.png"/>
+    <div class="welcome-sub">Get started with bibs!</div>
+    <div class="ui segment">
+		<div class="bibs-gray-3">These will be stored securely on a server at Stripe.</div>
+	    <form class="ui form" method="post" action="/bibs-server/register/fourth">
+	    	<div class="inline field">
+	            <label>Bank Location</label>
+	            <select class="ui dropdown" data-stripe="country">
+	                <option value="US">United States</option>
+	            </select>
+	    	</div>
+	    	<div class="inline field">
+	            <label>Account Type</label>
+	            <select data-stripe="account_holder_type">
+		            <option value="individual">Individual</option>
+		            <option value="company">Company</option>
+		        </select>
+	    	</div>
+	    	<div class="inline field">
+	            <label>Currency</label>
+	            <select data-stripe="currency">
+		            <option value="USD">USD</option>
+		        </select>
+	    	</div>
+	    	<div class="inline field">
+	            <label>Full Name</label>
+		        <input type="text" size="9" data-stripe="name"/>
+	    	</div>
+	    	<div class="inline field">
+	            <label>Routing Number</label>
+		        <input type="text" size="9" data-stripe="routingNumber"/>
+	    	</div>
+	    	<div class="inline field">
+	            <label>Account Number</label>
+		        <input type="text" size="17" data-stripe="accountNumber"/>
+	    	</div>
+			<!-- Fields from previous part of flow -->
+			<div style="display:none">
+				<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
+				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
+				<input type="text" name="username" value="${account.username }"><!--  --></input>
+				<input type="text" name="password" value="${account.password }"><!--  --></input>
+				<input type="text" name="email" value="${account.email }"><!--  --></input>
+				<input type="text" name="phone" value="${account.phone }"><!--  --></input>
+			</div>  
+	        <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" type="submit">Submit</button>
+	    </form>
+    </div>
+</div>
+<script>
+Stripe.setPublishableKey('pk_test_02RQIM2iLYhfbXQgPjkkyELx');
 
-		  if (response.error) {
-		    // Show the errors on the form
-		    form.find('.bank-errors').text(response.error.message);
-		    form.find('button').prop('disabled', false);
-		  } else {
-		    // response contains id and bank_account, which contains additional bank account details
-		    var token = response.id;
-		    // Insert the token into the form so it gets submitted to the server
-		    form.append($('<input type="hidden" name="stripeToken" />').val(token));
-		    // and submit
-		    form.get(0).submit();
-		  }
-		}
+Stripe.bankAccount.createToken({
+	  country: jQuery('.country').val(),
+	  currency: jQuery('.currency').val(),
+	  routing_number: jQuery('.routing-number').val(),
+	  account_number: jQuery('.account-number').val(),
+	  name: jQuery('.name').val(),
+	  account_holder_type: jQuery('.account_holder_type').val()
+	}, stripeResponseHandler);
+
+function stripeResponseHandler(status, response) {
+	  var form = jQuery('#payment-form');
+
+	  if (response.error) {
+	    // Show the errors on the form
+	    form.find('.bank-errors').text(response.error.message);
+	    form.find('button').prop('disabled', false);
+	  } else {
+	    // response contains id and bank_account, which contains additional bank account details
+	    var token = response.id;
+	    // Insert the token into the form so it gets submitted to the server
+	    form.append($('<input type="hidden" name="stripeToken" />').val(token));
+	    // and submit
+	    form.get(0).submit();
+	  }
+	}
 	jQuery(function() {
-		  jQuery('#payment-form').submit(function(event) {
-		    var form = jQuery(this);
+	  jQuery('#payment-form').submit(function(event) {
+	    var form = jQuery(this);
 
-		    // Disable the submit button to prevent repeated clicks
-		    form.find('button').prop('disabled', true);
+	    // Disable the submit button to prevent repeated clicks
+	    form.find('button').prop('disabled', true);
 
-		    Stripe.card.createToken(form, stripeResponseHandler);
+	    Stripe.card.createToken(form, stripeResponseHandler);
 
-		    // Prevent the form from submitting with the default action
-		    return false;
-		  });
-		});
-	
-	</script>
+	    // Prevent the form from submitting with the default action
+	    return false;
+	  });
+	});
+
+</script>
 </div>

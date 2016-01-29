@@ -1,34 +1,91 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-	<div class="overlay" style="opacity:1;background-color:#0a334d;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;">
-		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
-		<h2 class="ui inverted header">Get started with bibs!</h2>
-		<h3 class="ui inverted header">Add some login info.</h3>
-		<form class="ui form" method="post" action="/bibs-server/register/second">
-		  <div class="ui massive inverted input">
-		    <input type="text" name="username" placeholder="Username"> <!--  --></input>
-		  </div>
-		  <div class="ui inverted divider"><!--  --></div>
-		  <div class="ui massive inverted input">
-		    <input type="password" name="password" placeholder="Password"> <!--  --></input>
-		  </div>
-		  <div class="ui inverted divider"><!--  --></div>
-		  <div class="ui massive inverted input">
-		    <input type="password" placeholder="Confirm Password"> <!--  --></input>
-		  </div>
-		  <div style="clear:both;"><!-- --></div>
-		  <br></br>
-		  
-		<!-- Fields from previous part of flow -->
-		<div style="display:none">
-			<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
-			<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
-		</div>
-		  
-		  <input type="submit" value="Next" class="ui right floated inverted submit button"> <!--  --></input>
-		  </form>
-		</div>
-	</div>
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<style>
+    .welcome {
+        position: absolute;
+        left: 50%;
+        margin-left: -350px;
+        top: 50%;
+        margin-top: -200px;
+        width: 700px;
+        height: 400px;
+        font-family: 'Montserrat';
+        font-weight:400;
+        text-align: center;
+    }
+    .welcome-sub {
+        margin-top: 15px;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        font-family: 'Arvo';
+    }
+    .ui.attacked.segment{
+    	margin: 0 !important;
+	    width: calc(100% + 0px) !important;
+	    max-width: calc(100% + 0px) !important;
+	    border: none !important;
+    }
+</style>
+<div class="welcome bibs-gray-1">
+    <img class="ui tiny centered image" src="../images/bibsicon.png"/>
+    <div class="welcome-sub">Get started with bibs!</div>
+    <div class="ui four top attached steps">
+      <div class="step">
+        <i class="fa fa-check bibs-green"><!--  --></i>
+        <div class="content">
+          <div class="title">Basic Info</div>
+          <div class="description">Enter your name</div>
+        </div>
+      </div>
+      <div class="active step">
+        <i class="fa fa-check bibs-green"><!--  --></i>
+        <div class="content">
+          <div class="title">Login Info</div>
+          <div class="description">Enter login information</div>
+        </div>
+      </div>
+      <div class="disabled step">
+        <i class="fa fa-check"><!--  --></i>
+        <div class="content">
+          <div class="title">Contact Info</div>
+          <div class="description">Enter contact information</div>
+        </div>
+      </div>
+      <div class="disabled step">
+        <i class="fa fa-check"><!--  --></i>
+        <div class="content">
+          <div class="title">Company Info</div>
+          <div class="description">Enter company info</div>
+        </div>
+      </div>
+    </div>
+    <div class="ui attached segment">
+	    <form class="ui form" method="post" action="/bibs-server/register/second">
+	    	<div class="inline required field">
+	            <label>Username</label>
+	            <input type="text" name="username" 
+	                data-parsley-error-message="Please enter a username."
+	                data-parsley-required="true" />
+	    	</div>
+	    	<div class="inline required field">
+	            <label>Password</label>
+	            <input type="password" name="password"
+            		data-parsley-error-message="Please enter a password."
+            		data-parsley-required="true" />
+	    	</div>
+	    	<div class="inline required field">
+	            <label>Confirm Password</label>
+	            <input type="password"  />
+	    	</div>
+			<!-- Fields from previous part of flow -->
+			<div style="display:none">
+				<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
+				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
+			</div>
+	        <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" type="submit">Submit</button>
+	    </form>
+    </div>
+</div>
 </div>

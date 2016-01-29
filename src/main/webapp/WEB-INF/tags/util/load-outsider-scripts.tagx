@@ -33,13 +33,17 @@
   <spring:url value="/resources/styles/outsiders/semantic.min.css" var="semantic_css_url" />
   <spring:url value="/resources/styles/outsiders/font-awesome.min.css" var="font_awesome_url"/>
   <spring:url value="/resources/styles/outsiders/animate.min.css" var="animate_url"/>
+  <spring:url value="/resources/styles/bibs.css" var="bibs_url" />
+  <spring:url value="/resources/styles/so.css" var="so_url" />
+
   <!-- Import Stylesheets Implementation -->
   <link href="${bootstrap_url }" rel="stylesheet"/>
   <link href="${semantic_css_url }" rel="stylesheet"/>
   <link href="${ font_awesome_url}" rel="stylesheet"/>
   <link href="${ animate_url}" rel="stylesheet"/>
+  <link href="${bibs_url }" rel="stylesheet"/>
+  <link href="${so_url }" rel="stylesheet"/>
 
-  
   <!-- Roo shit -->
   <spring:theme code="styleSheet" var="roo_css" />
   <spring:url value="/${roo_css}" var="roo_css_url" />
