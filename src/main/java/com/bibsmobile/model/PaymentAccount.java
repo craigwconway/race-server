@@ -42,6 +42,8 @@ public class PaymentAccount {
 	
 	private boolean primaryAccount=true;
 	
+	private String stripeToken;
+	
 	/**
 	 * User in charge of payments.
 	 */
@@ -127,12 +129,32 @@ public class PaymentAccount {
 		this.created = created;
 	}
 
+	/**
+	 * @return the stripeToken
+	 */
+	public String getStripeToken() {
+		return stripeToken;
+	}
+
+	/**
+	 * @param stripeToken the stripeToken to set
+	 */
+	public void setStripeToken(String stripeToken) {
+		this.stripeToken = stripeToken;
+	}
+
 	@PrePersist
 	void prePersist() {
 		if(this.created == null) {
 			this.created = new Date();
 		}
 			
+	}
+	
+	public PaymentAccount(UserProfile user, UserGroup group, String stripeToken) {
+		this.user = user;
+		this.userGroup = group;
+		this.stripeToken = stripeToken;
 	}
 
 	@PersistenceContext
