@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    ${result.id } : ${result.bib }
+    <c:forEach var="item" items="${splits}">
+    key: ${map.key }
+    value: ${map.value }
+    </c:forEach>
+    
+	<c:forEach var="item" items="${customFields}">
+    field: ${map.key }
+    value: ${map.value }
+    </c:forEach>   
+</div>
