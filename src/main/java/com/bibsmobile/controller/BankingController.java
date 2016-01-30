@@ -39,6 +39,7 @@ import com.bibsmobile.model.dto.BankAddRequest;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
+import com.stripe.Stripe;
 import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.APIException;
 import com.stripe.exception.AuthenticationException;
@@ -94,6 +95,7 @@ public class BankingController {
 			SpringJSONUtil.returnErrorMessage("OrgNotFound", HttpStatus.BAD_REQUEST);
 		}
 		
+		Stripe.apiKey = this.secretKey;
 		
 		Map<String,Object> recipientRequest = new HashMap <String, Object>();
 		recipientRequest.put("name", bankAddRequest.getHolderName());
