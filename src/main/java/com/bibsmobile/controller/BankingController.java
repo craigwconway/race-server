@@ -64,7 +64,8 @@ public class BankingController {
      * @apiParam {String=individual,corporation} type type of account holder
      * @apiParam {String} customName account description for user
      * @apiSuccess (200) {String} status Created - Account Associated Successfully
-     * @apiError (404) {String=MissingType, MissingHolder, MissingToken, MissingName, MissingOrg, BadAccountType, OrgNotFound, BadRequestGeneric} error Account not created successfully     */
+     * @apiError (404) {String=MissingType, MissingHolder, MissingToken, MissingName, MissingOrg, BadAccountType, OrgNotFound, BadRequestGeneric} error Account not created successfully
+     */
 	@RequestMapping(value ="/add", method = RequestMethod.POST) 
 	public ResponseEntity<String> addBank (@RequestBody BankAddRequest bankAddRequest){
 		if(bankAddRequest.getType() == null) {
