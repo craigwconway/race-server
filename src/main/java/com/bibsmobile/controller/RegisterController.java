@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.PaymentAccount;
 import com.bibsmobile.model.Badge;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Series;
@@ -35,6 +36,7 @@ import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.dto.AccountCreationDto;
 import com.bibsmobile.util.SpringJSONUtil;
+import com.bibsmobile.util.UserProfileUtil;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -153,6 +155,39 @@ public class RegisterController {
         authenticateRegisteredUser(user);
 
 		return "register/created";
+	}
+	
+	@RequestMapping(value = "/account", method = RequestMethod.GET)
+	public String editBankInfo(@RequestParam(value = "group", required= false) Long userGroupId,
+			Model uiModel) {
+		UserGroup group = null;
+		UserProfile user = UserProfileUtil.getLoggedInUserProfile();
+		if(userGroupId == null) {
+			for(UserAuthorities authority : user.getUserAuthorities()) {
+				System.out.println("got authority");
+				if(authority.getUserAuthority().isAuthority(UserAuthority.EVENT_ADMIN)) {
+					System.out.println("eventadmin");
+					for(UserGroupUserAuthority ugua : authority.getUserGroupUserAuthorities()) {
+						group = ugua.getUserGroup();
+						System.out.println("got group");
+						break;
+					}
+				}
+			}
+		} else {
+			group = UserGroup.findUserGroup(userGroupId);
+		}
+		List<PaymentAccount> accounts = PaymentAccount.findActivePaymentAccountsForUser(user);
+		if(accounts.isEmpty()) {
+			uiModel.addAttribute("hasAccount", false);
+		}
+		if(accounts.size() == 1) {
+			uiModel.addAttribute("activeAccount", accounts.get(0));
+		}
+		uiModel.addAttribute("accounts", accounts);
+		uiModel.addAttribute("userGroup", group);
+		uiModel.addAttribute("orgId", group.getId());
+		return "register/account";
 	}
 	
 	@RequestMapping(value = "/signupbank", method = RequestMethod.POST, produces = "text/html")

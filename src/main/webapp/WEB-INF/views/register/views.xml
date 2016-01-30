@@ -19,4 +19,7 @@
     <definition extends="outsiders" name="register/bankadd">
         <put-attribute name="body" value="/WEB-INF/views/register/bankadd.jspx"/>
     </definition>
+    <definition extends="outsiders" name="register/account">
+        <put-attribute name="body" value="/WEB-INF/views/register/account.jspx"/>
+    </definition>
 </tiles-definitions>

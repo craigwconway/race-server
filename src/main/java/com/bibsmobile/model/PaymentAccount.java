@@ -221,6 +221,6 @@ public class PaymentAccount {
 	}
 	
     public static List<PaymentAccount> findActivePaymentAccountsForUser(UserProfile user) {
-        return entityManager().createQuery("SELECT o FROM PaymentAccount o where o.defaultTemplate = 1 AND o.user = :user", PaymentAccount.class).setParameter("user",  user).getResultList();
+        return entityManager().createQuery("SELECT o FROM PaymentAccount o where o.primaryAccount = 1 AND o.user = :user", PaymentAccount.class).setParameter("user",  user).getResultList();
     }
 }
