@@ -9,16 +9,16 @@
   <link rel="SHORTCUT ICON" href="${favicon}" />
   
   	<!-- Import Scripts -->
-  	<spring:url value="/resources/scripts/outsiders/semantic.min.js" var="semantic_url" />
-  	<spring:url value="/resources/scripts/outsiders/bootstrap.min.js" var="bootstrap_url" />
-  	<spring:url value="/resources/scripts/outsiders/jquery.js" var="jquery_url" />
-  	<spring:url value="/resources/scripts/outsiders/jquery.easing.min.js" var="easing_url" />
-  	<spring:url value="/resources/scripts/outsiders/jquery.fittext.js" var="fittext_url" />
+    <spring:url value="/resources/scripts/outsiders/jquery.js" var="jquery_url" />
+    <spring:url value="/resources/scripts/outsiders/jquery.easing.min.js" var="easing_url" />
+    <spring:url value="/resources/scripts/outsiders/jquery.fittext.js" var="fittext_url" />
+    <spring:url value="/resources/scripts/outsiders/bootstrap.min.js" var="bootstrap_url" />
+  	<spring:url value="/resources/scripts/outsiders/semantic.js" var="semantic_url" />
   	<spring:url value="/resources/scripts/outsiders/wow.min.js" var="wow_url" />
   	<!-- Import Scripts Implementation -->
   	<script src="${jquery_url}" type="text/javascript">;//?</script>
+  <script src="${bootstrap_url}" type="text/javascript">;//?</script>
 	<script src="${semantic_url}" type="text/javascript">;//?</script>
-	<script src="${bootstrap_url}" type="text/javascript">;//?</script>
 	<script src="${wow_url}" type="text/javascript">;//?</script>
 	<script src="${easing_url}" type="text/javascript">;//?</script>
 	<script src="${fittext_url}" type="text/javascript">;//?</script>
@@ -30,7 +30,7 @@
   
   <!-- Import Stylesheets -->
   <spring:url value="/resources/styles/outsiders/bootstrap.min.css" var="bootstrap_url" />
-  <spring:url value="/resources/styles/outsiders/semantic.min.css" var="semantic_css_url" />
+  <spring:url value="/resources/styles/outsiders/semantic.css" var="semantic_css_url" />
   <spring:url value="/resources/styles/outsiders/font-awesome.min.css" var="font_awesome_url"/>
   <spring:url value="/resources/styles/outsiders/animate.min.css" var="animate_url"/>
   <spring:url value="/resources/styles/bibs.css" var="bibs_url" />

@@ -28,97 +28,182 @@
 	    border: none !important;
     }
 </style>
+<script type="text/javascript" src="https://js.stripe.com/v2/"><!--  --></script>
 <div class="welcome bibs-gray-1">
     <img class="ui tiny centered image" src="../images/bibsicon.png"/>
     <div class="welcome-sub">Get started with bibs!</div>
     <div class="ui segment">
+    	<div class="ui bibs-bg-red error-segment segment" id="errorSegment" style="display:none">
+    	    <i class="fa fa-exclamation-circle left-icon"><!--  --></i>
+    	    <span class="error-msg"><!--  --></span>
+    	</div>
 		<div class="bibs-gray-3">These will be stored securely on a server at Stripe.</div>
-	    <form class="ui form" method="post" action="/bibs-server/register/fourth">
+	    <form class="ui form">
 	    	<div class="inline field">
+	            <label>Account Description</label>
+	            <input id="inputDesc" type="text" placeholder="e.g. Family Fund, etc."/>
+            </div>
+            <div class="inline field">
 	            <label>Bank Location</label>
-	            <select class="ui dropdown" data-stripe="country">
-	                <option value="US">United States</option>
-	            </select>
+	            <div class="ui selection dropdown" id="dropdownCountry">
+	            	<i class="fa fa-caret-down right-icon"><!--  --></i>
+	            	<input type="hidden" data-stripe="country" />
+	            	<div class="default text">Select Location</div>
+	            	<div class="menu">
+		                <div class="item" data-value="US">United States</div>
+	            	</div>
+	            </div>
 	    	</div>
 	    	<div class="inline field">
 	            <label>Account Type</label>
-	            <select data-stripe="account_holder_type">
-		            <option value="individual">Individual</option>
-		            <option value="company">Company</option>
-		        </select>
+	            <div class="ui selection dropdown" id="dropdownAccountType">
+	            	<i class="fa fa-caret-down right-icon"><!--  --></i>
+	            	<input type="hidden" data-stripe="account_holder_type" />
+	            	<div class="default text">Select Type</div>
+	            	<div class="menu">
+			            <div class="item" data-value="individual">Individual</div>
+			            <div class="item" data-value="company">Company</div>
+	            	</div>
+		        </div>
 	    	</div>
 	    	<div class="inline field">
 	            <label>Currency</label>
-	            <select data-stripe="currency">
-		            <option value="USD">USD</option>
-		        </select>
+	            <div class="ui selection dropdown" id="dropdownCurrency">
+	            	<i class="fa fa-caret-down right-icon"><!--  --></i>
+	            	<input type="hidden" data-stripe="currency" />
+	            	<div class="default text">Currency</div>
+	            	<div class="menu">
+			            <div class="item" data-value="USD">USD</div>
+	            	</div>
+		        </div>
 	    	</div>
 	    	<div class="inline field">
 	            <label>Full Name</label>
-		        <input type="text" size="9" data-stripe="name"/>
+		        <input id="inputName" type="text" size="9" data-stripe="name"/>
 	    	</div>
 	    	<div class="inline field">
 	            <label>Routing Number</label>
-		        <input type="text" size="9" data-stripe="routingNumber"/>
+		        <input id="inputRouting" type="text" size="9" data-stripe="routingNumber"/>
 	    	</div>
 	    	<div class="inline field">
 	            <label>Account Number</label>
-		        <input type="text" size="17" data-stripe="accountNumber"/>
+		        <input id="inputAccount" type="text" size="17" data-stripe="accountNumber"/>
 	    	</div>
-			<!-- Fields from previous part of flow -->
-			<div style="display:none">
-				<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
-				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
-				<input type="text" name="username" value="${account.username }"><!--  --></input>
-				<input type="text" name="password" value="${account.password }"><!--  --></input>
-				<input type="text" name="email" value="${account.email }"><!--  --></input>
-				<input type="text" name="phone" value="${account.phone }"><!--  --></input>
-			</div>  
-	        <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" type="submit">Submit</button>
+	        <button id="submitButton" type="button" class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" onClick="stripeForm()">Submit</button>
 	    </form>
     </div>
 </div>
-<script>
-Stripe.setPublishableKey('pk_test_02RQIM2iLYhfbXQgPjkkyELx');
+<script type="text/javascript">
+	jQuery('#dropdownCountry').dropdown();
+	jQuery('#dropdownCurrency').dropdown();
+	jQuery('#dropdownAccountType').dropdown();
+	jQuery('#dropdownCountry').dropdown('set selected', 'US');
+	jQuery('#dropdownCurrency').dropdown('set selected', 'USD');
+	jQuery('#dropdownAccountType').dropdown('set selected', 'individual');
 
-Stripe.bankAccount.createToken({
-	  country: jQuery('.country').val(),
-	  currency: jQuery('.currency').val(),
-	  routing_number: jQuery('.routing-number').val(),
-	  account_number: jQuery('.account-number').val(),
-	  name: jQuery('.name').val(),
-	  account_holder_type: jQuery('.account_holder_type').val()
-	}, stripeResponseHandler);
 
-function stripeResponseHandler(status, response) {
-	  var form = jQuery('#payment-form');
+	function stripeResponseHandler(status, response) {
+		console.log(status, response);
+		if (response.error) {
+		    // Show the errors on the form
+		    jQuery('.error-msg').text(response.error.message);
+		    jQuery('#errorSegment').show();
+		    jQuery('#submitButton').prop('disabled', false);
+		} else {
+			jQuery('#errorSegment').hide();
 
-	  if (response.error) {
-	    // Show the errors on the form
-	    form.find('.bank-errors').text(response.error.message);
-	    form.find('button').prop('disabled', false);
-	  } else {
-	    // response contains id and bank_account, which contains additional bank account details
-	    var token = response.id;
-	    // Insert the token into the form so it gets submitted to the server
-	    form.append($('<input type="hidden" name="stripeToken" />').val(token));
-	    // and submit
-	    form.get(0).submit();
-	  }
+			var bank = response.bank_account;
+			var userGroupId = +'${account.userGroup.id}';
+			// var stripeToken = response.id;
+			var stripeToken = response.id;
+			var holderName 	= bank.name;
+			var type 		= bank.account_holder_type;
+			var customName 	= jQuery('#inputDesc').val();
+
+			console.log(userGroupId, stripeToken, holderName, type, customName);
+			var bankObj = {};
+				bankObj.userGroupId = userGroupId;
+				bankObj.stripeToken = stripeToken;
+				bankObj.holderName = holderName;
+				bankObj.type = type;
+				bankObj.customName = customName;
+
+		    jQuery.ajax({
+				method: "POST",
+				url: "/bibs-server/banking/add",
+				data: JSON.stringify(bankObj),
+				// data: bankObj,
+				success: function(){
+					// success code
+				},
+				contentType: 'application/json'
+		    });
+		}
 	}
-	jQuery(function() {
-	  jQuery('#payment-form').submit(function(event) {
-	    var form = jQuery(this);
 
-	    // Disable the submit button to prevent repeated clicks
-	    form.find('button').prop('disabled', true);
+	function stripeForm(){
+	    jQuery('#submitButton').prop('disabled', true);
 
-	    Stripe.card.createToken(form, stripeResponseHandler);
+		var country 	= jQuery('#dropdownCountry').dropdown('get value');
+		var currency 	= jQuery('#dropdownCurrency').dropdown('get value');
+		var accountType = jQuery('#dropdownAccountType').dropdown('get value');
+		var routing 	= jQuery('#inputRouting').val();
+		var account 	= jQuery('#inputAccount').val();
+		var name 		= jQuery('#inputName').val();
+		var customName 	= jQuery('#inputDesc').val();
 
-	    // Prevent the form from submitting with the default action
-	    return false;
-	  });
-	});
+		if(country !== null &amp;&amp; country.length > 0 &amp;&amp; currency !== null &amp;&amp; currency.length > 0 &amp;&amp; accountType !== null &amp;&amp; accountType.length > 0 &amp;&amp; routing !== null &amp;&amp; routing.length > 0 &amp;&amp; account !== null &amp;&amp; account.length > 0 &amp;&amp; name !== null &amp;&amp; name.length > 0 &amp;&amp; customName !== null &amp;&amp; customName.length > 0){
 
+			var routingError = false;
+			var accountError = false;
+
+			if(!Stripe.bankAccount.validateRoutingNumber(routing, country)){
+				jQuery('.error-msg').text('This routing number is invalid!');
+			    jQuery('#errorSegment').show();
+				jQuery('#submitButton').prop('disabled', true);
+				jQuery('#inputRouting').off().on('change', function(){
+				    jQuery('#errorSegment').hide();
+				});
+				routingError = true;
+			}else{
+				routingError = false;
+			    jQuery('#errorSegment').hide();
+			    console.log('no errors on routing')
+			}
+
+			if(!Stripe.bankAccount.validateAccountNumber(account, country)){
+				jQuery('.error-msg').text('This account number is invalid!');
+			    jQuery('#errorSegment').show();
+				jQuery('#submitButton').prop('disabled', true);
+				jQuery('#inputAccount').off().on('change', function(){
+				    jQuery('#errorSegment').hide();
+				});
+				accountError = true;
+			}else{
+				accountError = false;
+			    jQuery('#errorSegment').hide();
+			    console.log('no errors on account')
+			}
+
+			if(!routingError &amp;&amp; !accountError){
+				Stripe.setPublishableKey('pk_test_02RQIM2iLYhfbXQgPjkkyELx');
+				Stripe.bankAccount.createToken({
+					country: country,
+					currency: currency,
+					routing_number: routing,
+					account_number: account,
+					name: name,
+					account_holder_type: accountType
+				}, stripeResponseHandler);
+			}else{
+				jQuery('#submitButton').prop('disabled', false);
+			}
+		}else{
+			alert("Please fill out all fields!");
+			jQuery('input').off().on('change', function(){
+				jQuery('#submitButton').prop('disabled', false);
+			});
+		}
+	}
 </script>
 </div>
