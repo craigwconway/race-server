@@ -149,6 +149,16 @@
                     <div class="ui icon button" id="removetime"><i class="fa fa-close bibs-red"><!--   --></i></div>
                 </div>
             </div>
+            <c:forEach var="item" items="${splits}">
+                <div class="field">
+                    <label>Split ${item.key}</label>
+                    <input  type="text" class="split-timepicker"
+                            value="${item.value}"
+                            data-provide="datepicker"
+                            data-date-format="HH:mm:ss"
+                            data-parsley-error-message="Invalid time format. (hh:mm:ss required)"><!--  --></input>
+                </div>
+            </c:forEach>
             <div class="field">
                 <label>Laps</label>
             	<input  type="number" name="laps" min="0"
