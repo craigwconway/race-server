@@ -10,6 +10,7 @@
 	<spring:url var="users_url" 	value="/userprofiles?page=1&amp;size=10" />
 	<spring:url var="timers_url" 	value="/timers?page=1&amp;size=10" />
 	<spring:url var="license_url" 	value="/licensing" />
+	<spring:url var="account_url" 	value="/register/account" />
 	<spring:url var="login" 		value="/login" />
 	<spring:url var="logout" 		value="/resources/j_spring_security_logout" />
 	<spring:message code="button_home" var="home_label" htmlEscape="false" />
@@ -20,6 +21,7 @@
     		<img class="ui mini image" style="margin:0 auto" src="/bibs-server/images/bibsicon.png"/>
 		</a>
     	<a href="/bibs-server" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
+    	<a href="/bibs-server/register/account" class="item"><i class="fa fa-user left-icon icon"><!--  --></i> account</a>
   		<a href="${raceday_url}" class="item" style="display:none"><i class="fa fa-wifi left-icon icon"><!--  --></i> rfid</a>
   		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
   	  		<a href="${timers_url}" class="item" style="display:none"><i class="fa fa-clock-o left-icon icon"><!--  --></i> timers</a>

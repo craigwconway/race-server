@@ -30,10 +30,23 @@
 </style>
 <div class="welcome bibs-gray-1">
     <img class="ui tiny centered image" src="../images/bibsicon.png"/>
-    <div class="welcome-sub">Welcome to bibs!</div>
+    <div class="welcome-sub">Welcome, ${account.firstname} ${account.lastname}!</div>
     <div class="ui padded segment">
-		<div class="ui center aligned two column grid">
-			<div class="column">
+        <c:if test="${hasAccount}">
+            <div class="ui basic segment">
+                <div class="ui center aligned header"><i class="fa fa-user"><!--  --></i> Bank Info</div>
+                <div class="ui card" style="margin: 0 auto">
+                    <div class="content">
+                        <div class="header">Primary Bank Account</div>
+                        <div class="description">My Bank Name</div>
+                    </div>
+                    <div class="extra content">Some Bank Info</div>
+                    <div class="ui bottom attached button"><i class="fa fa-edit"><!--   --></i> Edit Account</div>
+                </div>
+            </div>
+        </c:if>
+        <div class="ui center aligned two column grid">
+            <div class="column">
 				<label class="bibs-gray-4">Add banking info to collect payments now.</label>
 			    <form class="ui form" method="post" action="/bibs-server/register/signupbank">
 					<div style="display:none">

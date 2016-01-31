@@ -1,34 +1,68 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-	<div class="overlay" style="opacity:1;background-color:#0a334d;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;">
-		<div class="ui inverted center aligned compact segment" style="margin:0 auto">
-		<h2 class="ui inverted header">Get started with bibs!</h2>
-		<h3 class="ui inverted header">Describe your company to athletes.</h3>
-		<form class="ui form" method="post" action="/bibs-server/register/fourth">
-			  <div class="ui massive inverted input">
-			    <input type="text" name="orgName" placeholder="Company Name"> <!--  --></input>
-			  </div>
-			  <div class="ui inverted divider"><!--  --></div>
-			  <div class="ui inverted input">
-			    <textarea name="orgDescription" rows="4" style="width:290px" placeholder="Description"> <!--  --></textarea>
-			  </div>
-			  <div style="clear:both;"><!-- --></div>
-			  <br></br>
-			  
-				<!-- Fields from previous part of flow -->
-				<div style="display:none">
-					<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
-					<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
-					<input type="text" name="username" value="${account.username }"><!--  --></input>
-					<input type="text" name="password" value="${account.password }"><!--  --></input>
-					<input type="text" name="email" value="${account.email }"><!--  --></input>
-					<input type="text" name="phone" value="${account.phone }"><!--  --></input>
-				</div>  
-			  
-			  <input type="submit" value="Create" class="ui right floated inverted submit button"><!--  --></input>
-		  </form>
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<style>
+    .welcome {
+        position: absolute;
+        left: 50%;
+        margin-left: -350px;
+        top: 40%;
+        margin-top: -200px;
+        width: 700px;
+        height: 400px;
+        font-family: 'Montserrat';
+        font-weight:400;
+        text-align: center;
+    }
+    .welcome-sub {
+        margin-top: 15px;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        font-family: 'Arvo';
+    }
+    .ui.attacked.segment{
+    	margin: 0 !important;
+	    width: calc(100% + 0px) !important;
+	    max-width: calc(100% + 0px) !important;
+	    border: none !important;
+    }
+</style>
+<div class="welcome bibs-gray-1">
+    <img class="ui tiny centered image" src="../images/bibsicon.png"/>
+    <div class="welcome-sub">Welcome, ${account.firstname} ${account.lastname}!</div>
+    <div class="ui padded segment">
+        <c:if test="${hasAccount}">
+            <div class="ui basic segment">
+                <div class="ui center aligned header"><i class="fa fa-user"><!--  --></i> Bank Info</div>
+                <div class="ui card" style="margin: 0 auto">
+                    <div class="content">
+                        <div class="header">Primary Bank Account</div>
+                        <div class="description">My Bank Name</div>
+                    </div>
+                    <div class="extra content">Some Bank Info</div>
+                    <div class="ui bottom attached button"><i class="fa fa-edit"><!--   --></i> Edit Account</div>
+                </div>
+            </div>
+        </c:if>
+        <div class="ui center aligned two column grid">
+            <div class="column">
+				<label class="bibs-gray-4">Add banking info to collect payments now.</label>
+			    <form class="ui form" method="post" action="/bibs-server/register/signupbank">
+					<div style="display:none">
+						<input type="number" name="id"><!--  --></input>
+						<input type="number" name="org"><!--  --></input>
+						<input type="text" name="username"><!--  --></input>
+						<input type="text" name="password"><!--  --></input>
+					</div>
+					<button class="ui bibs-bg-main-yellow large button" type="submit">Add Bank</button>
+				</form>
+			</div>
+			<div class="column">
+				<label class="bibs-gray-4">Skip this and check out the software.</label>
+				<button class="ui bibs-bg-pale-red large button">Intro</button>
+			</div>
 		</div>
-	</div>
+    </div>
+</div>
 </div>
