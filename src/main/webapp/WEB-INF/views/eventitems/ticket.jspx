@@ -165,11 +165,11 @@
         <div class="pull-left"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
         <div style="clear:both"><!--  --></div>
         <div class="ui top attached tabular menu">
-            <div class="active item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
-            <div class="item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
+            <div class="item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
+            <div class="active item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
         </div>
-        <div class="ui bottom attached active tab segment" data-tab="logistics-menu">
-            <form class="ui form" id="logisticsForm" style="width:700px;margin:3% auto;">
+        <div class="ui bottom attached tab segment" data-tab="logistics-menu">
+            <form class="ui form" id="logisticsForm" style="width:700px;margin-top: 3%;margin-left: 3%;">
                 <h3 class="ui center aligned header">
                     <div class="content">
                         Logistics Settings
@@ -333,7 +333,7 @@
                 </div>
             </form>
         </div>
-        <div class="ui bottom attached tab segment" id="schedule-tab" data-tab="schedule-menu">
+        <div class="ui bottom attached active tab segment" id="schedule-tab" data-tab="schedule-menu">
             <div class="ui yellow message" id="notify">
                 <i class="fa fa-close link icon"><!--  --></i>
                 <i class="fa fa-question-circle icon" id="notify-icon"><!--  --></i><span id="notify-msg"><b>Ticket Types</b> will create purchasable tickets for people registering for ${eventtype.typeName}.<br/>You can also add <b>Price Schedules</b> to modify the price of a Ticket Type for a duration of time.<br/><br/>For example, you can have a Ticket Type titled <em>"Youth Discount (ID Required)"</em>,<br/> where the Price Schedule will be cheaper than General Admission by <em>$10</em> for <em>two months</em>.</span>
