@@ -335,6 +335,7 @@ public class RaceResultController {
     	}
     	uiModel.addAttribute("event", parentEvent);
         uiModel.addAttribute("types", EventType.findEventTypesByEvent(parentEvent));
+        uiModel.addAttribute("eventType", eventType);
         int sizeNo = size == null ? 10 : size.intValue();
         final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
         float nrOfPages = 0;
