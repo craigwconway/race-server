@@ -144,6 +144,9 @@
 		jQuery('#header-nav').show();
 		jQuery('#awards-nav').show();
 	} 
+	function create(){
+		window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
+	}
 	</script>
 	
 </div>

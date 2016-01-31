@@ -3,18 +3,6 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-        body{
-            background-image: url('../images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .ui.button, .ui.button:hover{
-            width: 8%;
-            color: #DD0000;
-        }
-        .form-fields>input{
-            width: 400px;
-            margin: 5px auto; 
-        }
         .ui.selection.dropdown{
             width: 100%;
             height: 34px;
@@ -36,7 +24,7 @@
                     <div class="sub header">Add details for ${event.name }'s ${eventType.typeName }.</div>
                 </div>
             </h2>
-            <div class="ui form" style="width:400px;margin:0 auto;">
+            <div class="ui form" style="width:500px;margin:0 auto;">
             	<div style="display:none">
             		<input type="text" name="eventType" value="${eventType.id }"></input>
             	</div>
@@ -52,7 +40,7 @@
                     <div class="field">
                         <label>Min Age</label>
                         <input  type="number" name="ageMin" id="lowAge"
-                                placeholder="1"
+                                min="1" placeholder="1"
                                 data-parsley-error-message="Invalid age."
                                 data-parsley-required="true"
                                 value=""></input>
@@ -60,7 +48,7 @@
                     <div class="field">
                         <label>Max Age</label>
                         <input  type="number" name="ageMax" id="highAge"
-                                placeholder="120"
+                                max="120" placeholder="120"
                                 data-parsley-error-message="Invalid Age."
                                 data-parsley-required="required"></input>
                     </div>
@@ -77,8 +65,8 @@
                 </div>
                 <div class="field">
                     <label>List Size</label>
-                    <input  type="text" name="listSize"
-                            placeholder="List Size"
+                    <input  type="number" name="listSize"
+                            min="0" placeholder="List Size"
                             data-parsley-error-message="Invalid list size."
                             data-parsley-required="required"></input>
                 </div>
@@ -106,11 +94,14 @@
 
             jQuery('#checkmedal').checkbox();
 
-            jQuery("#award-gender").change(function(){
-                if(jQuery("#award-gender").val() == 'x'){
-                    jQuery("#award-gender").val('');
+            jQuery('#award-gender').dropdown({
+                onChange: function(){
+                    if(jQuery("#award-gender").val() == 'x'){
+                        jQuery("#award-gender").val('');
+                    }
                 }
-            })
+            });
+            jQuery('#award-gender').dropdown('set selected', 'x');
 
     		// medal hack
     		var name = jQuery('#cat-name').val();

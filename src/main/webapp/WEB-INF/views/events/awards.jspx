@@ -16,7 +16,7 @@
 				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 				<button class="ui basic blue button"
 					onclick="create()" 
-					type="button"><i class="fa fa-plus" style="margin-left:0; margin-right:5px"><!--  --></i> Category</button>
+					type="button"><i class="fa fa-plus icon"><!--  --></i> Category</button>
 				<button class="ui blue button" onclick="renderModal('save')">Save Awards Template</button>
 				<button class="ui blue button" onclick="renderModal('template')">Apply Template</button>
 				</sec:authorize>
