@@ -28,7 +28,7 @@
 <div class="welcome bibs-gray-1">
     <img class="ui tiny centered image" src="images/bibsicon.png"/>
     <div class="welcome-sub">bibs control panel</div>
-    <div class="ui info bibs-gray-4 message">
+    <div class="ui info bibs-gray-4 message" style="margin-top:3em;">
         <i class="fa fa-info-circle left-icon"><!--  --></i>
         No account? No problem! You can <a href="/bibs-server/register">register here</a>.
     </div>

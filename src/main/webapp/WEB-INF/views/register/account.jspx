@@ -30,7 +30,7 @@
 </style>
 <div class="welcome bibs-gray-1">
     <img class="ui tiny centered image" src="../images/bibsicon.png"/>
-    <div class="welcome-sub">Welcome, ${account.firstname} ${account.lastname}!</div>
+    <div class="welcome-sub">Welcome!</div>
     <div class="ui padded segment">
         <c:if test="${hasAccount}">
             <div class="ui basic segment">
