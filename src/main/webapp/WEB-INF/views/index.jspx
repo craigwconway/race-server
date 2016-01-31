@@ -28,7 +28,7 @@
 <div class="welcome bibs-gray-1">
     <img class="ui tiny centered image" src="images/bibsicon.png"/>
     <div class="welcome-sub">bibs control panel</div>
-    <div class="ui info bibs-gray-4 message">
+    <div class="ui info bibs-gray-4 message" style="margin-top:3em;">
         <i class="fa fa-info-circle left-icon"><!--  --></i>
         No account? No problem! You can <a href="/bibs-server/register">register here</a>.
     </div>
@@ -74,19 +74,19 @@
             </div>
         </c:if>
         <c:if test="${not empty events}">
+            <div class="ui bibs-bg-main-yellow bibs-gray-4 no-border-radius segment">
+                <i class="fa fa-bell left-icon"><!--  --></i>
+                Upcoming Event: <a onclick="redirectEvent(${events[0].id})" class="emphasized emphasized-link bibs-gray-4">${events[0].name}</a> happening on <span class="event-date">${events[0].timeStart}</span>
+            </div>
             <div class="empty-event-placeholder ui basic segment"><!--  -->
             </div>
             <h1 class="ui horizontal divider header">
                 <i class="fa fa-globe left-icon"><!--  --></i>
                 Events
             </h1>
-            <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
-                <i class="fa fa-bell left-icon"><!--  --></i>
-                Upcoming Event: <a onclick="redirectEvent(${events[0].id})" class="emphasized emphasized-link bibs-gray-4">${events[0].name}</a> happening on <span class="event-date">${events[0].timeStart}</span>
-            </div>
-            <div class="tri-container">
-                <div class="tri-row-short stats-holder">
-                    <h3 class="ui header">
+            <div class="ui two column grid" style="margin: 3% 8%">
+                <div class="column stats-holder">
+                    <h3 class="ui center aligned header">
                         Analytics
                     </h3>
                     <div class="ui three column center aligned grid">
@@ -110,9 +110,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="tri-row-tall map-holder"><!--  --></div>
-                <div class="tri-col events-holder">
-                    <h3 class="ui header">Current Events</h3>
+                <div class="column events-holder">
+                    <h3 class="ui center aligned header">Current Events</h3>
                     <div class="ui middle aligned very relaxed divided list">
                         <c:forEach var="item" items="${events}">
                         <a  class="item"

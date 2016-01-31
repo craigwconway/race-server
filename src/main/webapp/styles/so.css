@@ -46,6 +46,7 @@ body{
 	height:63%;
 	margin-left: 1%;
 	margin-top: 1%;
+	text-align: center;
 }
 
 .map-holder{
@@ -53,6 +54,11 @@ body{
 	background-position-x: 50%;
 	background-position-y: 25%;
 	background-repeat: no-repeat;
+}
+
+.stats-holder{
+	max-width: 500px;
+	margin: 0 auto;
 }
 
 .events-holder{
