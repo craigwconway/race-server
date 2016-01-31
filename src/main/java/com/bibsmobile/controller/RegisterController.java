@@ -6,6 +6,7 @@ package com.bibsmobile.controller;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +38,13 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.dto.AccountCreationDto;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
+import com.stripe.Stripe;
+import com.stripe.exception.APIConnectionException;
+import com.stripe.exception.APIException;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
+import com.stripe.model.Recipient;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -53,6 +61,9 @@ import java.util.HashSet;
 @RequestMapping("/register")
 @Controller
 public class RegisterController {
+	
+    @Value("${stripe.com.secret.key}")
+    private String secretKey;
 	
     @Autowired
     private StandardPasswordEncoder encoder;
@@ -205,11 +216,20 @@ public class RegisterController {
 		}
 		if(accounts.size() == 1) {
 			uiModel.addAttribute("activeAccount", accounts.get(0));
+			Stripe.apiKey = this.secretKey;
+			try {
+				Recipient recipient = Recipient.retrieve(accounts.get(0).getStripeToken());
+				uiModel.addAttribute("bankAccount", recipient.getActiveAccount());
+			} catch (Exception e) {
+				uiModel.addAttribute("accountDetailsError", true);
+			}
+			uiModel.addAttribute("activeAccountDetails", accounts.get(0).getStripeToken());
 		}
 		uiModel.addAttribute("accounts", accounts);
+		uiModel.addAttribute("user", user);
 		uiModel.addAttribute("userGroup", group);
 		uiModel.addAttribute("orgId", group.getId());
-		return "register/created";
+		return "register/account";
 	}
 	
 	@RequestMapping(value = "/signupbank", method = RequestMethod.POST, produces = "text/html")

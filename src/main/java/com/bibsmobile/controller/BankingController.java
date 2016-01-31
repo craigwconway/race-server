@@ -104,7 +104,9 @@ public class BankingController {
 		recipientRequest.put("email", user.getEmail());
 		recipientRequest.put("description", bankAddRequest.getCustomName());
 		try {
-			Recipient.create(recipientRequest);
+			Recipient created = Recipient.create(recipientRequest);
+			PaymentAccount account = new PaymentAccount(user, group, created.getId());
+			account.persist();
 		} catch (AuthenticationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -127,8 +129,7 @@ public class BankingController {
 			e.printStackTrace();
 			return SpringJSONUtil.returnErrorMessage("BadRequestGeneric", HttpStatus.BAD_REQUEST);
 		}
-		PaymentAccount account = new PaymentAccount(user, group, bankAddRequest.getStripeToken());
-		account.persist();
+
 		
 		return SpringJSONUtil.returnStatusMessage("Created", HttpStatus.OK);
 		
