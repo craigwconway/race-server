@@ -249,186 +249,157 @@
             </div>
         </c:if>
         <div class="content">
-            <div class="ui three top attached steps" id="etype-tab-control">
-                <a class="active step" data-tab="log">
-                    <i class="fa fa-wrench fa-2x"><!--  --></i>
-                    <div class="content">
-                        <div class="title">Logistics</div>
-                        <div class="description">Change Event Type name, distance, and more.</div>
-                    </div>
-                </a>
-                <a class="step" data-tab="bib">
-                    <i class="fa fa-flag fa-2x"><!--  --></i>
-                    <div class="content">
-                        <div class="title">Bib Settings</div>
-                        <div class="description">Assign bib numbers.</div>
-                    </div>
-                </a>
-                <a class="step" data-tab="reg">
-                    <i class="fa fa-ticket fa-2x"><!--  --></i>
-                    <div class="content">
-                        <div class="title">Registration Options</div>
-                        <div class="description">Set ticket prices, registration window, and more.</div>
-                    </div>
-                </a>
-            </div>
-            <div class="ui attached segment">
+            <div class="ui basic segment">
                 <form class="ui form" id="etypeForm">
-                    <div class="tab-log">
-                        <h3 class="ui dividing header">Logistics</h3>
-                        <div class="fields tab-log">
-                            <div class="four wide required field">
-                                <label id="racetypes">Race Types</label>
-                                <div class="ui fluid search selection dropdown" id="racetype-dropdown">
-                                    <input type="hidden" name="raceType"/>
-                                    <i class="fa fa-caret-down right-icon"><!--  --></i>
-                                    <div class="default text">Select Race Type</div>
-                                    <div class="menu">
-                                        <div class="item" data-value="Running">Running</div>
-                                        <div class="item" data-value="Swimming">Swimming</div>
-                                        <div class="item" data-value="Cycling">Cycling</div>
-                                        <div class="item" data-value="Mountain Biking">Mountain Biking</div>
-                                        <div class="item" data-value="Trail Run">Trail Run</div>
-                                        <div class="item" data-value="Mud Run">Mud Run</div>
-                                        <div class="item" data-value="Track and Field">Track and Field</div>
-                                        <div class="item" data-value="Triathlon">Triathlon</div>
-                                        <div class="item" data-value="Duathlon">Duathlon</div>
-                                        <div class="item" data-value="Ironman">Ironman</div>
-                                        <div class="item" data-value="Fun Run">Fun Run</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <label id="distance">Distance</label>	
-                        <div class="fields" style="position:relative">
-                            <div class="four wide required field" style="padding-right:0">
-                                <div class="ui fluid search selection dropdown" id="distance-dropdown">
-                                    <input type="hidden" name="dist"/>
-                                    <i class="fa fa-caret-down right-icon"><!--  --></i>
-                                    <div class="default text">Preset Distance</div>
-                                    <div class="menu">
-                                    	<div class="item" data-value="N/A">N/A</div>
-                                        <div class="item" data-value="5k">5k</div>
-                                        <div class="item" data-value="8k">8k</div>
-                                        <div class="item" data-value="10k">10k</div>
-                                        <div class="item" data-value="12k">12k</div>
-                                        <div class="item" data-value="15k">15k</div>
-                                        <div class="item" data-value="Half Marathon">Half Marathon</div>
-                                        <div class="item" data-value="Marathon">Marathon</div>
-                                        <div class="item" data-value="Sprint">Spring</div>
-                                        <div class="item" data-value="Olympic">Olympic</div>
-                                        <div class="item" data-value="Half">Half (Triathlon)</div>
-                                        <div class="item" data-value="Full">Full (Triathlon)</div>
-                                        <div class="item" data-value="Custom">Custom</div>
-                                    </div>
-                                </div>
-        					</div>
-        					<div class="one wide inline required field">
-            					<div class="ui vertical divider" style="height: 25%;left: 28%;top: 38%;">or</div>
-        					</div>
-        					<div class="ten wide inline required field">
-                                <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px" />
-                                <div class="ui icon buttons" style="margin-left:10px">
-                                    <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
-                                    <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
-                                    <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="fields">
-                            <div class="four wide required field">
-                                <label id="starttime">Start Time</label>
-                                <div class="ui action input">
-                                    <input  type="text" name="timeStartLocal"
-                                            class="form-control"
-                                            id="timedisp"
-                                            placeholder="Official Time (hh:mm)"
-                                            data-provide="datepicker"
-                                            data-date-format="h:mm a"
-                                            data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
-                                    <div class="ui icon button" id="removetime"><span class="fa fa-close"></span></div>
-                                </div>
-                            </div>
-                        </div>
-                        <label style="width:100%">Event Type Name</label>
-                        <div class="fields">
-                            <div class="seven wide field">
-                                <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
-                            </div>
-                            <div class="ui left pointing label" style="line-height:2em;">
-                                We can set this automatically for you if you don't name it.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-bib" style="display:none">
-                        <h3 class="ui dividing header">Bib Settings</h3>
-                        <label style="width:100%">Assign Bib Ranges (optional)</label>
-                        <div class="ui info message">
-                            <div class="header"><i class="fa fa-bell left-icon"><!--  --></i> What are bib ranges?</div>
-                            You can choose to allocate bib numbers automatically. If using registration, you will be able to download athlete data with the numbers already assigned for easy insertion into a local database for less stress on raceday!
-                        </div>
-                        <div class="two fields post-event-type">
-                            <div style="clear:both"><!--  --></div>
-                            <div class="four wide field" style="padding-left:0">
-                                <label>Lowest Bib Number</label>
-                                <input class="form-control" type="number" min="1" id="etype-lowbib" name="lowbib"><!--  --></input>
-                            </div>
-                            <div class="four wide field">
-                                <label>Highest Bib Number</label>
-                                <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-reg" style="display:none">
-                        <h3 class="ui dividing header">Registration Details</h3>
-                        <div class="ui toggle checkbox" id="toggleRegistration" style="width:100%">
-                            <input type="checkbox"/>
-                            <label style="width: 100%">Set up ticket sale &amp; registration for this event type</label>
-                        </div>
+                    <h3 class="ui dividing header">Logistics</h3>
+                    <div class="fields">
                         <div class="four wide required field">
-                            <label style="width:100%">Price</label>
-                            <div class="ui labeled input">
-                                <div class="ui label">$</div>
-                                <input  type="number" name="price"
-                                        placeholder="Base price"
-                                        min="0"
-                                        data-parsley-error-message="Invalid base price."
-                                        data-parsley-required="true"></input>
+                            <label id="racetypes">Race Types</label>
+                            <div class="ui fluid search selection dropdown" id="racetype-dropdown">
+                                <input type="hidden" name="raceType"/>
+                                <i class="fa fa-caret-down right-icon"><!--  --></i>
+                                <div class="default text">Select Race Type</div>
+                                <div class="menu">
+                                    <div class="item" data-value="Running">Running</div>
+                                    <div class="item" data-value="Swimming">Swimming</div>
+                                    <div class="item" data-value="Cycling">Cycling</div>
+                                    <div class="item" data-value="Mountain Biking">Mountain Biking</div>
+                                    <div class="item" data-value="Trail Run">Trail Run</div>
+                                    <div class="item" data-value="Mud Run">Mud Run</div>
+                                    <div class="item" data-value="Track and Field">Track and Field</div>
+                                    <div class="item" data-value="Triathlon">Triathlon</div>
+                                    <div class="item" data-value="Duathlon">Duathlon</div>
+                                    <div class="item" data-value="Ironman">Ironman</div>
+                                    <div class="item" data-value="Fun Run">Fun Run</div>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                    <label id="distance">Distance</label>	
+                    <div class="fields" style="position:relative">
+                        <div class="four wide required field" style="padding-right:0">
+                            <div class="ui fluid search selection dropdown" id="distance-dropdown">
+                                <input type="hidden" name="dist"/>
+                                <i class="fa fa-caret-down right-icon"><!--  --></i>
+                                <div class="default text">Preset Distance</div>
+                                <div class="menu">
+                                	<div class="item" data-value="N/A">N/A</div>
+                                    <div class="item" data-value="5k">5k</div>
+                                    <div class="item" data-value="8k">8k</div>
+                                    <div class="item" data-value="10k">10k</div>
+                                    <div class="item" data-value="12k">12k</div>
+                                    <div class="item" data-value="15k">15k</div>
+                                    <div class="item" data-value="Half Marathon">Half Marathon</div>
+                                    <div class="item" data-value="Marathon">Marathon</div>
+                                    <div class="item" data-value="Sprint">Spring</div>
+                                    <div class="item" data-value="Olympic">Olympic</div>
+                                    <div class="item" data-value="Half">Half (Triathlon)</div>
+                                    <div class="item" data-value="Full">Full (Triathlon)</div>
+                                    <div class="item" data-value="Custom">Custom</div>
+                                </div>
+                            </div>
+    					</div>
+    					<div class="one wide inline required field">
+        					<div class="ui vertical divider" style="height: 25%;left: 28%;top: 38%;">or</div>
+    					</div>
+    					<div class="ten wide inline required field">
+                            <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px" />
+                            <div class="ui icon buttons" style="margin-left:10px">
+                                <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
+                                <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+                                <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fields">
+                        <div class="four wide required field">
+                            <label id="starttime">Start Time</label>
+                            <div class="ui action input">
+                                <input  type="text" name="timeStartLocal"
+                                        class="form-control"
+                                        id="timedisp"
+                                        placeholder="Official Time (hh:mm)"
+                                        data-provide="datepicker"
+                                        data-date-format="h:mm a"
+                                        data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
+                                <div class="ui icon button" id="removetime"><span class="fa fa-close"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <label style="width:100%">Event Type Name</label>
+                    <div class="fields">
+                        <div class="seven wide field">
+                            <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
+                        </div>
+                        <div class="ui left pointing label" style="line-height:2em;">
+                            We can set this automatically for you if you don't name it.
+                        </div>
+                    </div>
+                    <h3 class="ui dividing header">Bib Settings</h3>
+                    <label style="width:100%">Assign Bib Ranges (optional)</label>
+                    <div class="ui info message">
+                        <div class="header"><i class="fa fa-bell left-icon"><!--  --></i> What are bib ranges?</div>
+                        You can choose to allocate bib numbers automatically. If using registration, you will be able to download athlete data with the numbers already assigned for easy insertion into a local database for less stress on raceday!
+                    </div>
+                    <div class="two fields post-event-type">
+                        <div style="clear:both"><!--  --></div>
+                        <div class="four wide field" style="padding-left:0">
+                            <label>Lowest Bib Number</label>
+                            <input class="form-control" type="number" min="1" id="etype-lowbib" name="lowbib"><!--  --></input>
                         </div>
                         <div class="four wide field">
-                            <label style="width:100%">Max Participant Count</label>
-                            <input  type="number" name="available"
-                                    placeholder="Max # of Participants"
-                                    min="1"
-                                    data-parsley-error-message="Invalid maximum number."
+                            <label>Highest Bib Number</label>
+                            <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
+                        </div>
+                    </div>
+                    <h3 class="ui dividing header">Registration Details</h3>
+                    <div class="ui toggle checkbox" id="toggleRegistration" style="width:100%">
+                        <input type="checkbox"/>
+                        <label style="width: 100%">Set up ticket sale &amp; registration for this event type</label>
+                    </div>
+                    <div class="four wide required field">
+                        <label style="width:100%">Price</label>
+                        <div class="ui labeled input">
+                            <div class="ui label">$</div>
+                            <input  type="number" name="price"
+                                    placeholder="Base price"
+                                    min="0"
+                                    data-parsley-error-message="Invalid base price."
                                     data-parsley-required="true"></input>
                         </div>
-                        <label style="width:100%">Registration Window</label>
-                        <div class="two fields">
-                            <div class="four wide required field">
-                                <label>Open Date: </label>
-                                <input  type="text" name="timeStartLocal"
-                                        id="ECIStart"
-                                        placeholder="Price start date"
-                                        data-provide="datepicker"
-                                        data-date-format="MM/DD/YYYY hh:mm:ss a"
-                                        data-parsley-error-message="Please specify a start date."
-                                        data-parsley-required="true"></input>
-                            </div>
-                            <div class="four wide required field">
-                                <label>Close Date: </label>
-                                <input  type="text" name="timeEndLocal"
-                                        id="ECIEnd"
-                                        placeholder="Price end date"
-                                        data-provide="datepicker"
-                                        data-date-format="MM/DD/YYYY hh:mm:ss a"
-                                        data-parsley-error-message="Please specify an end date."
-                                        data-parsley-required="true"></input>
-                                <div class="ui pointing label">
-        								Must end before your event starts
-        						</div>
-                            </div>
+                    </div>
+                    <div class="four wide field">
+                        <label style="width:100%">Max Participant Count</label>
+                        <input  type="number" name="available"
+                                placeholder="Max # of Participants"
+                                min="1"
+                                data-parsley-error-message="Invalid maximum number."
+                                data-parsley-required="true"></input>
+                    </div>
+                    <label style="width:100%">Registration Window</label>
+                    <div class="two fields">
+                        <div class="four wide required field">
+                            <label>Open Date: </label>
+                            <input  type="text" name="timeStartLocal"
+                                    id="ECIStart"
+                                    placeholder="Price start date"
+                                    data-provide="datepicker"
+                                    data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                    data-parsley-error-message="Please specify a start date."
+                                    data-parsley-required="true"></input>
+                        </div>
+                        <div class="four wide required field">
+                            <label>Close Date: </label>
+                            <input  type="text" name="timeEndLocal"
+                                    id="ECIEnd"
+                                    placeholder="Price end date"
+                                    data-provide="datepicker"
+                                    data-date-format="MM/DD/YYYY hh:mm:ss a"
+                                    data-parsley-error-message="Please specify an end date."
+                                    data-parsley-required="true"></input>
+                            <div class="ui pointing label">
+    								Must end before your event starts
+    						</div>
                         </div>
                     </div>
                 </form>
@@ -641,7 +612,7 @@
             <div class="row">
                 <div class="column">
                 <c:if test="${not empty eventTypes}">
-                    <h3 class="ui header event-type-header">events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
+                    <h3 class="ui header event-type-header">Events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
                     <table class="ui compact stackable table">
                         <thead><tr>
                             <th>Name</th>
@@ -751,31 +722,31 @@
                     }
                 });
 
-                jQuery('#etype-tab-control > .step').each(function(i,n){
-                    var stepDOM = jQuery(n);
-                    stepDOM.bind('click', function(ev){
-                        var currStep = jQuery(stepDOM).data('tab');
-                        if(currStep == 'bib'){
-                            jQuery(stepDOM).addClass('active');
-                            jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
-                            jQuery('.tab-bib').show();
-                            jQuery('.tab-log').hide();
-                            jQuery('.tab-reg').hide();
-                        }else if(currStep == 'log'){
-                            jQuery(stepDOM).addClass('active');
-                            jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
-                            jQuery('.tab-log').show();
-                            jQuery('.tab-bib').hide();
-                            jQuery('.tab-reg').hide();
-                        }else if(currStep == 'reg'){
-                            jQuery(stepDOM).addClass('active');
-                            jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
-                            jQuery('.tab-reg').show();
-                            jQuery('.tab-bib').hide();
-                            jQuery('.tab-log').hide();
-                        }
-                    })
-                });
+                // jQuery('#etype-tab-control > .step').each(function(i,n){
+                //     var stepDOM = jQuery(n);
+                //     stepDOM.bind('click', function(ev){
+                //         var currStep = jQuery(stepDOM).data('tab');
+                //         if(currStep == 'bib'){
+                //             jQuery(stepDOM).addClass('active');
+                //             jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
+                //             jQuery('.tab-bib').show();
+                //             jQuery('.tab-log').hide();
+                //             jQuery('.tab-reg').hide();
+                //         }else if(currStep == 'log'){
+                //             jQuery(stepDOM).addClass('active');
+                //             jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
+                //             jQuery('.tab-log').show();
+                //             jQuery('.tab-bib').hide();
+                //             jQuery('.tab-reg').hide();
+                //         }else if(currStep == 'reg'){
+                //             jQuery(stepDOM).addClass('active');
+                //             jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
+                //             jQuery('.tab-reg').show();
+                //             jQuery('.tab-bib').hide();
+                //             jQuery('.tab-log').hide();
+                //         }
+                //     })
+                // });
 
                 if(type == 'clean'){
                     jQuery(".post-event-type").show();
