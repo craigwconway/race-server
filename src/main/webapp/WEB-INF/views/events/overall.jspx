@@ -84,9 +84,64 @@
 		</div>
 	</div>
 </div>
+<div class="ui small modal" id="saveModal" style="display:none">
+    <div class="header">Save Awards Template</div>
+    <div class="content">
+        <div class="ui negative message" id="saveError" style="display:none">
+            <i class="fa fa-times close" style="float:right"><!--  --></i>
+            <div class="header">Error</div>
+            <p><!--  --></p>
+        </div>
+        <div class="ui form" id="saveForm">
+            <div class="required field">
+                <label>Name</label>
+                <input class="form-control" name="templateName" placeholder="Name"></input>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+        <button type="button" class="ui green button post-email-button" onclick="saveCategories();return false;">Send</button>
+    </div>
+</div>
+<div class="ui small modal" id="templateModal" style="display:none">
+    <div class="header">Apply Template</div>
+    <div class="content">
+        <div class="ui negative message" id="templateError" style="display:none">
+            <i class="fa fa-times close" style="float:right"><!--  --></i>
+	        <div class="header">Error</div>
+            <p><!--  --></p>
+        </div>
+        <div class="ui form" id="templateForm">
+            <div class="field">
+                <div class="ui fluid selection dropdown" id="template-selector">
+                    <input type="hidden" name="type"><!--  --></input>
+                    <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                    <div class="default text">Use Awards Template</div>
+                    <div class="menu">
+                        <c:forEach var="item" items="${templates}">
+                            <div class="item" data-value="${item.id}">${item.name}</div>
+                        </c:forEach>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <button type="button" class="ui button" onclick="closeModal()">Cancel</button>
+        <button type="button" class="ui green button post-email-button" onclick="applyTemplate();return false;">Send</button>
+    </div>
+</div>
 <script>
 	var eventid = Math.max(0,GetURLParameter("event"));
 	var gender = Math.max(0,GetURLParameter("gender"));
+
+	function onBack(){
+	    window.location="/bibs-server/events/${event.id}"
+	}
+	function renderModal(type){
+		jQuery('#' + type + 'Modal').modal('show');
+	}
 
 	function awards(){
 		window.location = "/bibs-server/events/awards?event="+eventid+"&amp;type=${eventType.id}";
