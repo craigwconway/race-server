@@ -19,6 +19,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.Series;
 import com.bibsmobile.model.SeriesRegion;
 import com.bibsmobile.model.Split;
+import com.bibsmobile.model.SplitTimeType;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
@@ -162,10 +163,47 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             		customs.put("beer-adjusted-time", "00:33:22");
             		Map<Integer, Split> splits = new HashMap<Integer, Split>();
             		Split split1 = new Split();
-            		split1.setTimedisplay("00:15:15");
+            		split1.setTime(10000);
+            		split1.setType(SplitTimeType.DISCRETE);
+            		Split split2 = new Split();
+            		split2.setTime(20000);
+            		split2.setType(SplitTimeType.DISCRETE);
             		splits.put(1, split1);
+            		splits.put(2, split2);
             		user.setSplits(splits);
             		user.setCustomFields(customs);
+            	}
+            	if(i==2) {
+            		Map<String, String> customs = new HashMap<String,String>();
+            		customs.put("bears", "3");
+            		customs.put("bear-adjusted-time", "00:33:22");
+            		Map<Integer, Split> splits = new HashMap<Integer, Split>();
+            		Split split1 = new Split();
+            		split1.setTime(10000);
+            		split1.setType(SplitTimeType.CUMULATIVE);
+            		Split split2 = new Split();
+            		split2.setTime(30000);
+            		split2.setType(SplitTimeType.CUMULATIVE);
+            		splits.put(1, split1);
+            		splits.put(2, split2);
+            		user.setSplits(splits);
+            		user.setCustomFields(customs);            		
+            	}
+            	if(i==3) {
+            		Map<String, String> customs = new HashMap<String,String>();
+            		customs.put("bears", "3");
+            		customs.put("bear-adjusted-time", "00:33:22");
+            		Map<Integer, Split> splits = new HashMap<Integer, Split>();
+            		Split split1 = new Split();
+            		split1.setTime(user.getTimestart()+10000);
+            		split1.setType(SplitTimeType.TIMESTAMP);
+            		Split split2 = new Split();
+            		split2.setTime(user.getTimestart()+30000);
+            		split2.setType(SplitTimeType.TIMESTAMP);
+            		splits.put(1, split1);
+            		splits.put(2, split2);
+            		user.setSplits(splits);
+            		user.setCustomFields(customs);            		
             	}
             	user.persist();
             }
