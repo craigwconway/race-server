@@ -187,7 +187,7 @@ public class RegisterController {
 
         authenticateRegisteredUser(user);
 
-		return "register/created";
+		return "register/account";
 	}
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)

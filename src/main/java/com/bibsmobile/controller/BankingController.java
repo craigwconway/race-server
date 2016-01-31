@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
+import com.bibsmobile.model.Cart;
+import com.bibsmobile.model.Event;
 import com.bibsmobile.model.PaymentAccount;
+import com.bibsmobile.model.Payout;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserAuthoritiesID;
 import com.bibsmobile.model.UserAuthority;
@@ -132,8 +137,17 @@ public class BankingController {
 
 		
 		return SpringJSONUtil.returnStatusMessage("Created", HttpStatus.OK);
-		
-		
+	}
+	
+	@RequestMapping(value = "/payouts/event/{id}")
+	@ResponseBody
+	public ResponseEntity<String> generateEventPayout(@PathVariable("id") Long eventId) {
+		Event event = Event.findEvent(eventId);
+		Payout payout = new Payout(event.getOrganizer());
+		List<Cart> checkedOut = Cart.findCompletedCartsItemsByEventBeforeDate(event, new Date()).getResultList();
+		List<Cart> refunded = Cart.findRefundedCartsItemsByEvent(event).getResultList();
+		payout.persist();
+		return new ResponseEntity<String>("Payout", HttpStatus.OK);
 	}
 		
 		
