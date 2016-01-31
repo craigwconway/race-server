@@ -1,129 +1,130 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
-    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
-    <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<link href='/bibs-server/resources/styles/events_show.css' rel='stylesheet' />
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
+<page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
 
-    <div class="ui long modal" id="addType">
-        <div class="header">Manage Event Type</div>
-        <c:if test="${empty eventTypes}">
-            <div class="ui bibs-bg-main-yellow bibs-gray-4 no-border-radius segment">
-                <i class="fa fa-close link right-icon"><!--  --></i>
-                <i class="fa fa-bell left-icon"><!--  --></i>
-                You've created your event! You can now add your first Event Type!
-            </div>
-        </c:if>
-        <div class="content">
-            <div class="ui basic segment">
-                <form class="ui form" id="etypeForm">
-                    <h3 class="ui dividing header">Logistics</h3>
-                    <div class="fields">
-                        <div class="four wide required field">
-                            <label id="racetypes">Race Types</label>
-                            <div class="ui fluid search selection dropdown" id="racetype-dropdown">
-                                <input type="hidden" name="raceType"/>
-                                <i class="fa fa-caret-down right-icon"><!--  --></i>
-                                <div class="default text">Select Race Type</div>
-                                <div class="menu">
-                                    <div class="item" data-value="Running">Running</div>
-                                    <div class="item" data-value="Swimming">Swimming</div>
-                                    <div class="item" data-value="Cycling">Cycling</div>
-                                    <div class="item" data-value="Mountain Biking">Mountain Biking</div>
-                                    <div class="item" data-value="Trail Run">Trail Run</div>
-                                    <div class="item" data-value="Mud Run">Mud Run</div>
-                                    <div class="item" data-value="Track and Field">Track and Field</div>
-                                    <div class="item" data-value="Triathlon">Triathlon</div>
-                                    <div class="item" data-value="Duathlon">Duathlon</div>
-                                    <div class="item" data-value="Ironman">Ironman</div>
-                                    <div class="item" data-value="Fun Run">Fun Run</div>
-                                </div>
+<div class="ui long modal" id="addType">
+    <div class="header">Manage Event Type</div>
+    <c:if test="${empty eventTypes}">
+        <div class="ui bibs-bg-main-yellow bibs-gray-4 no-border-radius segment">
+            <i class="fa fa-close link right-icon"><!--  --></i>
+            <i class="fa fa-bell left-icon"><!--  --></i>
+            You've created your event! You can now add your first Event Type!
+        </div>
+    </c:if>
+    <div class="content">
+        <div class="ui basic segment">
+            <form class="ui form" id="etypeForm">
+                <h3 class="ui dividing header">Logistics</h3>
+                <div class="fields">
+                    <div class="four wide required field">
+                        <label id="racetypes">Race Types</label>
+                        <div class="ui fluid search selection dropdown" id="racetype-dropdown">
+                            <input type="hidden" name="raceType"/>
+                            <i class="fa fa-caret-down right-icon"><!--  --></i>
+                            <div class="default text">Select Race Type</div>
+                            <div class="menu">
+                                <div class="item" data-value="Running">Running</div>
+                                <div class="item" data-value="Swimming">Swimming</div>
+                                <div class="item" data-value="Cycling">Cycling</div>
+                                <div class="item" data-value="Mountain Biking">Mountain Biking</div>
+                                <div class="item" data-value="Trail Run">Trail Run</div>
+                                <div class="item" data-value="Mud Run">Mud Run</div>
+                                <div class="item" data-value="Track and Field">Track and Field</div>
+                                <div class="item" data-value="Triathlon">Triathlon</div>
+                                <div class="item" data-value="Duathlon">Duathlon</div>
+                                <div class="item" data-value="Ironman">Ironman</div>
+                                <div class="item" data-value="Fun Run">Fun Run</div>
                             </div>
                         </div>
                     </div>
-                    <label id="distance">Distance</label>   
-                    <div class="fields" style="position:relative">
-                        <div class="four wide required field" style="padding-right:0">
-                            <div class="ui fluid search selection dropdown" id="distance-dropdown">
-                                <input type="hidden" name="dist"/>
-                                <i class="fa fa-caret-down right-icon"><!--  --></i>
-                                <div class="default text">Preset Distance</div>
-                                <div class="menu">
-                                    <div class="item" data-value="N/A">N/A</div>
-                                    <div class="item" data-value="5k">5k</div>
-                                    <div class="item" data-value="8k">8k</div>
-                                    <div class="item" data-value="10k">10k</div>
-                                    <div class="item" data-value="12k">12k</div>
-                                    <div class="item" data-value="15k">15k</div>
-                                    <div class="item" data-value="Half Marathon">Half Marathon</div>
-                                    <div class="item" data-value="Marathon">Marathon</div>
-                                    <div class="item" data-value="Sprint">Spring</div>
-                                    <div class="item" data-value="Olympic">Olympic</div>
-                                    <div class="item" data-value="Half">Half (Triathlon)</div>
-                                    <div class="item" data-value="Full">Full (Triathlon)</div>
-                                    <div class="item" data-value="Custom">Custom</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="one wide inline required field">
-                            <div class="ui vertical divider" style="height: 25%;left: 28%;top: 38%;">or</div>
-                        </div>
-                        <div class="ten wide inline required field">
-                            <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px" />
-                            <div class="ui icon buttons" style="margin-left:10px">
-                                <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
-                                <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
-                                <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
+                </div>
+                <label id="distance">Distance</label>   
+                <div class="fields" style="position:relative">
+                    <div class="four wide required field" style="padding-right:0">
+                        <div class="ui fluid search selection dropdown" id="distance-dropdown">
+                            <input type="hidden" name="dist"/>
+                            <i class="fa fa-caret-down right-icon"><!--  --></i>
+                            <div class="default text">Preset Distance</div>
+                            <div class="menu">
+                                <div class="item" data-value="N/A">N/A</div>
+                                <div class="item" data-value="5k">5k</div>
+                                <div class="item" data-value="8k">8k</div>
+                                <div class="item" data-value="10k">10k</div>
+                                <div class="item" data-value="12k">12k</div>
+                                <div class="item" data-value="15k">15k</div>
+                                <div class="item" data-value="Half Marathon">Half Marathon</div>
+                                <div class="item" data-value="Marathon">Marathon</div>
+                                <div class="item" data-value="Sprint">Spring</div>
+                                <div class="item" data-value="Olympic">Olympic</div>
+                                <div class="item" data-value="Half">Half (Triathlon)</div>
+                                <div class="item" data-value="Full">Full (Triathlon)</div>
+                                <div class="item" data-value="Custom">Custom</div>
                             </div>
                         </div>
                     </div>
-                    <div class="fields">
-                        <div class="four wide required field">
-                            <label id="starttime">Start Time</label>
-                            <div class="ui action input">
-                                <input  type="text" name="timeStartLocal"
-                                        class="form-control"
-                                        id="timedisp"
-                                        placeholder="Official Time (hh:mm)"
-                                        data-provide="datepicker"
-                                        data-date-format="h:mm a"
-                                        data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
-                                <div class="ui icon button" id="removetime"><span class="fa fa-close"></span></div>
-                            </div>
+                    <div class="one wide inline required field">
+                        <div class="ui vertical divider" style="height: 25%;left: 28%;top: 38%;">or</div>
+                    </div>
+                    <div class="ten wide inline required field">
+                        <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px" />
+                        <div class="ui icon buttons" style="margin-left:10px">
+                            <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
+                            <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+                            <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
                         </div>
                     </div>
-                    <label style="width:100%">Event Type Name</label>
-                    <div class="fields">
-                        <div class="seven wide field">
-                            <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
-                        </div>
-                        <div class="ui left pointing label" style="line-height:2em;">
-                            We can set this automatically for you if you don't name it.
-                        </div>
-                    </div>
-                    <h3 class="ui dividing header">Bib Settings</h3>
-                    <label style="width:100%">Assign Bib Ranges (optional)</label>
-                    <div class="ui info message">
-                        <div class="header"><i class="fa fa-bell left-icon"><!--  --></i> What are bib ranges?</div>
-                        You can choose to allocate bib numbers automatically. If using registration, you will be able to download athlete data with the numbers already assigned for easy insertion into a local database for less stress on raceday!
-                    </div>
-                    <div class="two fields post-event-type">
-                        <div style="clear:both"><!--  --></div>
-                        <div class="four wide field" style="padding-left:0">
-                            <label>Lowest Bib Number</label>
-                            <input class="form-control" type="number" min="1" id="etype-lowbib" name="lowbib"><!--  --></input>
-                        </div>
-                        <div class="four wide field">
-                            <label>Highest Bib Number</label>
-                            <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
+                </div>
+                <div class="fields">
+                    <div class="four wide required field">
+                        <label id="starttime">Start Time</label>
+                        <div class="ui action input">
+                            <input  type="text" name="timeStartLocal"
+                                    class="form-control"
+                                    id="timedisp"
+                                    placeholder="Official Time (hh:mm)"
+                                    data-provide="datepicker"
+                                    data-date-format="h:mm a"
+                                    data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
+                            <div class="ui icon button" id="removetime"><span class="fa fa-close"></span></div>
                         </div>
                     </div>
-                    <h3 class="ui dividing header">Registration Details</h3>
-                    <div class="ui toggle checkbox" id="toggleRegistration" style="width:100%">
-                        <input type="checkbox"/>
-                        <label style="width: 100%">Set up ticket sale &amp; registration for this event type</label>
+                </div>
+                <label style="width:100%">Event Type Name</label>
+                <div class="fields">
+                    <div class="seven wide field">
+                        <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
                     </div>
+                    <div class="ui left pointing label" style="line-height:2em;">
+                        We can set this automatically for you if you don't name it.
+                    </div>
+                </div>
+                <h3 class="ui dividing header">Bib Settings</h3>
+                <label style="width:100%">Assign Bib Ranges (optional)</label>
+                <div class="ui info message">
+                    <div class="header"><i class="fa fa-bell left-icon"><!--  --></i> What are bib ranges?</div>
+                    You can choose to allocate bib numbers automatically. If using registration, you will be able to download athlete data with the numbers already assigned for easy insertion into a local database for less stress on raceday!
+                </div>
+                <div class="two fields post-event-type">
+                    <div style="clear:both"><!--  --></div>
+                    <div class="four wide field" style="padding-left:0">
+                        <label>Lowest Bib Number</label>
+                        <input class="form-control" type="number" min="1" id="etype-lowbib" name="lowbib"><!--  --></input>
+                    </div>
+                    <div class="four wide field">
+                        <label>Highest Bib Number</label>
+                        <input class="form-control" type="number" min="2" id="etype-highbib" name="highbib"><!--  --></input>
+                    </div>
+                </div>
+                <h3 class="ui dividing header">Registration Details</h3>
+                <div class="ui slider checkbox" id="toggleRegistration" style="width:100%">
+                    <label style="width: 100%">Set up ticket sale &amp; registration for this event type</label>
+                    <input type="checkbox"><!--  --></input>
+                </div>
+                <div class="tab-reg">
                     <div class="four wide required field">
                         <label style="width:100%">Price</label>
                         <div class="ui labeled input">
@@ -169,200 +170,69 @@
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-        <div class="actions">
-            <div class="ui button" onclick="closeModal()">Cancel</div>
-            <div class="ui green submit button post-event-type" onclick="saveEventType(false)">Submit</div>
-            <div class="ui red button put-event-type" style="display:none" onclick="saveEventType(null)">Remove</div>
-            <div class="ui green submit button put-event-type" style="display:none" onclick="saveEventType(true)">Save</div>
-        </div>
-    </div>
-    <div class="ui small modal" id="regButtonModal" style="display:none">
-        <div class="header">Registration Button Snippet</div>
-        <div class="content">
-            <div class="preview">Preview: 
-                <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
-            </div>
-            Embed the code below to generate a bibs registration button:<br/>
-            <c:set var="reghtml" value='&lt;form action="${build.frontend}/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
-            <pre>${fn:escapeXml(reghtml)}</pre>
-            Link: <br/> <a href="${build.frontend}/registration/#/${event.id}">${build.frontend}/registration/#/${event.id}</a>
-        </div>
-        <div class="actions">
-            <div class="ui button" onclick="closeModal()">Close</div>
-        </div>
-    </div>
-
-    <div class="ui long modal" id="liveResults" style="display:none">
-        <div class="header">Live Results Snippet</div>
-        <div class="content">
-            Copy the url below to share live results:<br/>
-            <c:set var="livehead" value='&lt;a href="${build.frontend}/webapp/#/raceday/ug/'/>
-            <c:set var="livetail" value='/t/1/events"&gt;&lt;/a&gt;'/>
-            <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
-        </div>
-        <div class="actions">
-            <div class="ui button" onclick="closeModal()">Close</div>
-        </div>
-    </div>
-
-    <div class="ui long modal" id="waiverModal" style="display:none">
-        <div class="header">Waiver</div>
-        <div class="content">
-            <textarea class="waiver-content" name="waiver">Paste your waiver here.</textarea>
-        </div>
-        <div class="actions">
-            <div class="ui button" onclick="closeModal()">Cancel</div>
-            <div class="ui green button post-waiver-button" onclick="postWaiver()">Save</div>
-        </div>
-    </div>
-
-    <div class="ui long modal" id="emailModal" style="display:none">
-        <div class="header">Email</div>
-        <div class="content">
-            <div class="ui negative message" id="emailError" style="display:none">
-                <i class="fa fa-times close" style="float:right"><!--  --></i>
-                <div class="header">Error</div>
-                <p><!--  --></p>
-            </div>
-            <div class="ui form" id="emailForm">
-                <div class="field">
-                    <label>Email by event type</label>
-                    <div class="ui fluid selection dropdown" id="event-type">
-                        <input type="hidden" name="type"><!--  --></input>
-                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                        <div class="default text">Event Type (optional)</div>
-                        <div class="menu">
-                            <c:forEach var="item" items="${eventTypes}">
-                                <div class="item" data-value="${item.id}">${item.typeName}</div>
-                            </c:forEach>
-                        </div>
-                    </div>
-                </div>
-                <div class="required field">
-                    <label>Subject</label>
-                    <input name="subject" placeholder="Subject"></input>
-                </div>
-                <div class="required field">
-                    <label>Body</label>
-                    <textarea name="body"><!--  --></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="actions">
-            <div class="ui button" onclick="closeModal()">Cancel</div>
-            <div class="ui green button post-email-button" onclick="sendEmail()">Send</div>
-        </div>
-    </div>
-
-    <div class="ui small modal" id="bibsModal" style="display:none">
-        <div class="header">Manage Bib Numbers</div>
-        <div class="content">
-            <div class="ui info small message">
-                <i class="fa fa-close link right-icon"><!--  --></i>
-                <div class="header"><!--  --></div>
-                <ul class="list">
-                    <li>This feature will overwrite currently assigned bib numbers.</li>
-                    <li>To manually assign bib numbers, please do so via <strong>Export Registrations</strong> under the Registration tab.</li>
-                </ul>
-            </div>
-            <div class="ui small negative message" id="bibsError" style="display:none">
-                <i class="fa fa-times close" style="float:right"><!--  --></i>
-                <div class="header">Error</div>
-                <p><!--  --></p>
-            </div>
-            <form class="ui form" id="bibsForm">
-                <div class="required eight wide field">
-                    <label>Select Event Type</label>
-                    <div class="ui fluid selection dropdown" id="event-type">
-                        <input type="hidden" name="type"><!--  --></input>
-                        <i class="fa fa-caret-down" style="float:right"><!--  --></i>
-                        <div class="default text">Event Type</div>
-                        <div class="menu">
-                            <c:forEach var="item" items="${eventTypes}">
-                                <div class="item" data-value="${item.id}">${item.typeName}</div>
-                            </c:forEach>
-                        </div>
-                    </div>
-                </div>
-                <label>Bib Ranges (optional)</label>
-                <div class="two fields">
-                    <div style="clear:both"><!--  --></div>
-                    <div class="four wide field" style="padding-left:0">
-                        <label>Lowest Bib Number</label>
-                        <input class="form-control" type="number" min="1" id="lowbib" name="lowbib"></input>
-                    </div>
-                    <div class="four wide field">
-                        <label>Highest Bib Number</label>
-                        <input class="form-control" type="number" min="2" id="highbib" name="highbib"><!--  --></input>
-                    </div>
                 </div>
             </form>
         </div>
-        <div class="actions">
-            <div class="ui button" onclick="closeModal()">Cancel</div>
-            <div class="ui red button post-bibs-button" onclick="assignBibs()">Overwrite Bib Numbers</div>
-        </div>
     </div>
-
-    <div class="ui small modal" id="exportRegModal" style="display:none">
-        <div class="header">Export Registration</div>
-        <div class="content">
-            <style>.ui.three.cards > .card:nth-child(3n+1){ clear:none; }
-                .ui.three.cards{ outline: none; border: none; margin: 0 auto; width: 75%; text-align: center; }
-                .ui.cards > .card > .content, .ui.card > .content:hover{ cursor: pointer; }
-            </style>
-            <div class="ui three cards" id="ticket-type">
-                <div class="ui card" id="card-ticket" onclick="setExportRegType('TICKET')">
-                    <div class="content">
-                        <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
-                    </div>
-                </div>
-                <div class="ui card" id="card-tshirt" onclick="setExportRegType('T_SHIRT')">
-                    <div class="content">
-                        <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
-                    </div>
-                </div>
-                <div class="ui card" id="card-donation" onclick="setExportRegType('DONATION')">
-                    <div class="content">
-                        <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
-                    </div>
-                </div>
-            </div>
-            <div style="width:400px;margin:0 auto;">
-                <div class="ui slider checkbox">
-                    <input type="checkbox" name="questions"></input>
-                    <label style="width:100%;">Include custom questions?</label>
-                </div>
-                <div style="clear:both"><!--   --></div>
-                <div class="ui slider checkbox">
-                    <input type="checkbox" name="bibnum"></input>
-                    <label style="width:100%;">Include bib numbers?</label>
-                </div>
-            </div>
-        </div>
-        <div class="actions">
-            <div class="ui red button" style="float:left" onclick="closeModal()">Cancel</div>
-			<div class="ui bibs-bg-main-yellow bibs-gray-4 button" onclick="exportRegHandler(true, true)">
-                <i class="fa fa-star-o left-icon"><!--  --></i> Quick
-            </div>
-            <button class="ui bibs-bg-main-blue bibs-gray-2 button" onclick="exportRegHandler(false, false)">
-                <i class="fa fa-refresh left-icon"><!--  --></i> New Data Only
-            </button>
-            <button class="ui bibs-bg-main-navy bibs-gray-2 button" onclick="exportRegHandler(true, false)">
-                <i class="fa fa-files-o left-icon"><!--  --></i> All Data
-            </button>
-        </div>
+    <div class="actions">
+        <div class="ui button" onclick="closeModal()">Cancel</div>
+        <div class="ui green submit button post-event-type" onclick="saveEventType(false)">Submit</div>
+        <div class="ui red button put-event-type" style="display:none" onclick="saveEventType(null)">Remove</div>
+        <div class="ui green submit button put-event-type" style="display:none" onclick="saveEventType(true)">Save</div>
     </div>
+</div>
+<div class="ui small modal" id="regButtonModal" style="display:none">
+    <div class="header">Registration Button Snippet</div>
+    <div class="content">
+        <div class="preview">Preview: 
+            <button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;">Register</button>
+        </div>
+        Embed the code below to generate a bibs registration button:<br/>
+        <c:set var="reghtml" value='&lt;form action="${build.frontend}/registration/#/${event.id}" method="get"&gt;&lt;button style="padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;"&gt;Register&lt;/button&gt;&lt;/form&gt;'/>
+        <pre>${fn:escapeXml(reghtml)}</pre>
+        Link: <br/> <a href="${build.frontend}/registration/#/${event.id}">${build.frontend}/registration/#/${event.id}</a>
+    </div>
+    <div class="actions">
+        <div class="ui button" onclick="closeModal()">Close</div>
+    </div>
+</div>
 
-    <div class="ui small modal" id="exportAthletesModal" style="display:none">
-        <div class="header">Export Athletes</div>
-        <div class="content">
-            <h4 class="ui header">Export by Event Type (optional)</h4>
-            <div class="row">
-                <div class="ui selection dropdown" id="exportAthletes-eventTypes">
+<div class="ui long modal" id="liveResults" style="display:none">
+    <div class="header">Live Results Snippet</div>
+    <div class="content">
+        Copy the url below to share live results:<br/>
+        <c:set var="livehead" value='&lt;a href="${build.frontend}/webapp/#/raceday/ug/'/>
+        <c:set var="livetail" value='/t/1/events"&gt;&lt;/a&gt;'/>
+        <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
+    </div>
+    <div class="actions">
+        <div class="ui button" onclick="closeModal()">Close</div>
+    </div>
+</div>
+
+<div class="ui long modal" id="waiverModal" style="display:none">
+    <div class="header">Waiver</div>
+    <div class="content">
+        <textarea class="waiver-content" name="waiver">Paste your waiver here.</textarea>
+    </div>
+    <div class="actions">
+        <div class="ui button" onclick="closeModal()">Cancel</div>
+        <div class="ui green button post-waiver-button" onclick="postWaiver()">Save</div>
+    </div>
+</div>
+
+<div class="ui long modal" id="emailModal" style="display:none">
+    <div class="header">Email</div>
+    <div class="content">
+        <div class="ui negative message" id="emailError" style="display:none">
+            <i class="fa fa-times close" style="float:right"><!--  --></i>
+            <div class="header">Error</div>
+            <p><!--  --></p>
+        </div>
+        <div class="ui form" id="emailForm">
+            <div class="field">
+                <label>Email by event type</label>
+                <div class="ui fluid selection dropdown" id="event-type">
                     <input type="hidden" name="type"><!--  --></input>
                     <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                     <div class="default text">Event Type (optional)</div>
@@ -373,24 +243,42 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div style="font-size: 0.9em;color:#808080">Default: Export all athletes</div>
+            <div class="required field">
+                <label>Subject</label>
+                <input name="subject" placeholder="Subject"></input>
+            </div>
+            <div class="required field">
+                <label>Body</label>
+                <textarea name="body"><!--  --></textarea>
             </div>
         </div>
-        <div class="actions">
-            <div class="ui button" onclick="closeModal()">Cancel</div>
-            <button class="ui primary button" style="width:150px" onclick="exportAthletesHandler()">
-                <i class="fa fa-files-o icon"><!--  --></i>Export
-            </button>
-        </div>
     </div>
+    <div class="actions">
+        <div class="ui button" onclick="closeModal()">Cancel</div>
+        <div class="ui green button post-email-button" onclick="sendEmail()">Send</div>
+    </div>
+</div>
 
-    <div class="ui small modal" id="importAthletesModal" style="display:none">
-        <div class="header">Import Athletes</div>
-        <div class="content">
-            <h4 class="ui header">Choose Event Type</h4>
-            <div class="row">
-                <div class="ui selection dropdown" id="importAthletes-eventTypes">
+<div class="ui small modal" id="bibsModal" style="display:none">
+    <div class="header">Manage Bib Numbers</div>
+    <div class="content">
+        <div class="ui info small message">
+            <i class="fa fa-close link right-icon"><!--  --></i>
+            <div class="header"><!--  --></div>
+            <ul class="list">
+                <li>This feature will overwrite currently assigned bib numbers.</li>
+                <li>To manually assign bib numbers, please do so via <strong>Export Registrations</strong> under the Registration tab.</li>
+            </ul>
+        </div>
+        <div class="ui small negative message" id="bibsError" style="display:none">
+            <i class="fa fa-times close" style="float:right"><!--  --></i>
+            <div class="header">Error</div>
+            <p><!--  --></p>
+        </div>
+        <form class="ui form" id="bibsForm">
+            <div class="required eight wide field">
+                <label>Select Event Type</label>
+                <div class="ui fluid selection dropdown" id="event-type">
                     <input type="hidden" name="type"><!--  --></input>
                     <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                     <div class="default text">Event Type</div>
@@ -401,278 +289,388 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div style="font-size: 0.9em;color:#808080">Pick an event type to proceed</div>
+            <label>Bib Ranges (optional)</label>
+            <div class="two fields">
+                <div style="clear:both"><!--  --></div>
+                <div class="four wide field" style="padding-left:0">
+                    <label>Lowest Bib Number</label>
+                    <input class="form-control" type="number" min="1" id="lowbib" name="lowbib"></input>
+                </div>
+                <div class="four wide field">
+                    <label>Highest Bib Number</label>
+                    <input class="form-control" type="number" min="2" id="highbib" name="highbib"><!--  --></input>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="actions">
+        <div class="ui button" onclick="closeModal()">Cancel</div>
+        <div class="ui red button post-bibs-button" onclick="assignBibs()">Overwrite Bib Numbers</div>
+    </div>
+</div>
+
+<div class="ui small modal" id="exportRegModal" style="display:none">
+    <div class="header">Export Registration</div>
+    <div class="content">
+        <style>.ui.three.cards > .card:nth-child(3n+1){ clear:none; }
+            .ui.three.cards{ outline: none; border: none; margin: 0 auto; width: 75%; text-align: center; }
+            .ui.cards > .card > .content, .ui.card > .content:hover{ cursor: pointer; }
+        </style>
+        <div class="ui three cards" id="ticket-type">
+            <div class="ui card" id="card-ticket" onclick="setExportRegType('TICKET')">
+                <div class="content">
+                    <div class="ui yellow header"><i class="fa fa-ticket"><!--  --></i><br/>Ticket</div>
+                </div>
+            </div>
+            <div class="ui card" id="card-tshirt" onclick="setExportRegType('T_SHIRT')">
+                <div class="content">
+                    <div class="ui teal header"><i class="fa fa-shirtsinbulk"><!--  --></i><br/>T-shirt</div>
+                </div>
+            </div>
+            <div class="ui card" id="card-donation" onclick="setExportRegType('DONATION')">
+                <div class="content">
+                    <div class="ui blue header"><i class="fa fa-heart-o"><!--  --></i><br/>Donation</div>
+                </div>
             </div>
         </div>
-        <div class="actions">
-            <div class="ui button" onclick="closeModal()">Cancel</div>
-            <button class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
-                <i class="fa fa-files-o icon"><!--  --></i>Import
-            </button>
+        <div style="width:400px;margin:0 auto;">
+            <div class="ui slider checkbox">
+                <input type="checkbox" name="questions"></input>
+                <label style="width:100%;">Include custom questions?</label>
+            </div>
+            <div style="clear:both"><!--   --></div>
+            <div class="ui slider checkbox">
+                <input type="checkbox" name="bibnum"></input>
+                <label style="width:100%;">Include bib numbers?</label>
+            </div>
         </div>
     </div>
-    
-    <div class="bibs-page bibs-bg-gray-1">
-        <div class="ui very padded basic segment">
-        <jsp:useBean id="now" class="java.util.Date"/>
-        <fmt:parseDate value="${event.timeStartLocal}" pattern="MM/dd/yyyy hh:mm:ss a" var="eventDate"/>
-        <c:choose>
-            <c:when test="${eventDate le now}">
-                <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
-                    <i class="fa fa-bell left-icon"><!--  --></i>
-                    <i class="fa fa-close link right-icon"><!--  --></i>
-                    Congratulations on completing your event! You can now manage your race results, awards, athletes, and more.
+    <div class="actions">
+        <div class="ui red button" style="float:left" onclick="closeModal()">Cancel</div>
+		<div class="ui bibs-bg-main-yellow bibs-gray-4 button" onclick="exportRegHandler(true, true)">
+            <i class="fa fa-star-o left-icon"><!--  --></i> Quick
+        </div>
+        <button class="ui bibs-bg-main-blue bibs-gray-2 button" onclick="exportRegHandler(false, false)">
+            <i class="fa fa-refresh left-icon"><!--  --></i> New Data Only
+        </button>
+        <button class="ui bibs-bg-main-navy bibs-gray-2 button" onclick="exportRegHandler(true, false)">
+            <i class="fa fa-files-o left-icon"><!--  --></i> All Data
+        </button>
+    </div>
+</div>
+
+<div class="ui small modal" id="exportAthletesModal" style="display:none">
+    <div class="header">Export Athletes</div>
+    <div class="content">
+        <h4 class="ui header">Export by Event Type (optional)</h4>
+        <div class="row">
+            <div class="ui selection dropdown" id="exportAthletes-eventTypes">
+                <input type="hidden" name="type"><!--  --></input>
+                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                <div class="default text">Event Type (optional)</div>
+                <div class="menu">
+                    <c:forEach var="item" items="${eventTypes}">
+                        <div class="item" data-value="${item.id}">${item.typeName}</div>
+                    </c:forEach>
                 </div>
-            </c:when>
-            <c:when test="${empty eventTypes}">
-                <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
-                    <i class="fa fa-bell left-icon"><!--  --></i>
-                    <i class="fa fa-close link right-icon"><!--  --></i>
-                    You've created your event! You can now <a onclick="renderModal('eventType')" class="emphasized emphasized-link">add your first Event Type</a>!
+            </div>
+        </div>
+        <div class="row">
+            <div style="font-size: 0.9em;color:#808080">Default: Export all athletes</div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui button" onclick="closeModal()">Cancel</div>
+        <button class="ui primary button" style="width:150px" onclick="exportAthletesHandler()">
+            <i class="fa fa-files-o icon"><!--  --></i>Export
+        </button>
+    </div>
+</div>
+
+<div class="ui small modal" id="importAthletesModal" style="display:none">
+    <div class="header">Import Athletes</div>
+    <div class="content">
+        <h4 class="ui header">Choose Event Type</h4>
+        <div class="row">
+            <div class="ui selection dropdown" id="importAthletes-eventTypes">
+                <input type="hidden" name="type"><!--  --></input>
+                <i class="fa fa-caret-down" style="float:right"><!--  --></i>
+                <div class="default text">Event Type</div>
+                <div class="menu">
+                    <c:forEach var="item" items="${eventTypes}">
+                        <div class="item" data-value="${item.id}">${item.typeName}</div>
+                    </c:forEach>
                 </div>
-            </c:when>
-            <c:otherwise>
-                <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
-                    <i class="fa fa-bell left-icon"><!--  --></i>
-                    <i class="fa fa-close link right-icon"><!--  --></i>
-                    You've created your Event Type! Please don't forget to <a href="/bibs-server/eventitems?event=2" class="emphasized emphasized-link">set-up registration</a> and additional event details.
-                </div>
-            </c:otherwise>
-        </c:choose>
-        <div class="ui labeled icon bibs-bg-black menu">
-            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-            <c:if test='${(eventadmin)}'>
-                <c:if test='${(build.registration)}'>
-                    <c:if test="${not empty eventTypes}">
-                    <a class="item bibs-gray-1" href="#" onclick="redirectReport();return false;" style="max-width:100px">
-                        <i class="fa fa-line-chart icon"><!--  --></i> Registration Analytics
-                    </a>
-                    </c:if>
+            </div>
+        </div>
+        <div class="row">
+            <div style="font-size: 0.9em;color:#808080">Pick an event type to proceed</div>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui button" onclick="closeModal()">Cancel</div>
+        <button class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
+            <i class="fa fa-files-o icon"><!--  --></i>Import
+        </button>
+    </div>
+</div>
+
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment">
+    <jsp:useBean id="now" class="java.util.Date"/>
+    <fmt:parseDate value="${event.timeStartLocal}" pattern="MM/dd/yyyy hh:mm:ss a" var="eventDate"/>
+    <c:choose>
+        <c:when test="${eventDate le now}">
+            <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
+                <i class="fa fa-bell left-icon"><!--  --></i>
+                <i class="fa fa-close link right-icon"><!--  --></i>
+                Congratulations on completing your event! You can now manage your race results, awards, athletes, and more.
+            </div>
+        </c:when>
+        <c:when test="${empty eventTypes}">
+            <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
+                <i class="fa fa-bell left-icon"><!--  --></i>
+                <i class="fa fa-close link right-icon"><!--  --></i>
+                You've created your event! You can now <a onclick="renderModal('eventType')" class="emphasized emphasized-link">add your first Event Type</a>!
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
+                <i class="fa fa-bell left-icon"><!--  --></i>
+                <i class="fa fa-close link right-icon"><!--  --></i>
+                You've created your Event Type! Please don't forget to <a href="/bibs-server/eventitems?event=2" class="emphasized emphasized-link">set-up registration</a> and additional event details.
+            </div>
+        </c:otherwise>
+    </c:choose>
+    <div class="ui labeled icon bibs-bg-black menu">
+        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <c:if test='${(eventadmin)}'>
+            <c:if test='${(build.registration)}'>
+                <c:if test="${not empty eventTypes}">
+                <a class="item bibs-gray-1" href="#" onclick="redirectReport();return false;" style="max-width:100px">
+                    <i class="fa fa-line-chart icon"><!--  --></i> Registration Analytics
+                </a>
                 </c:if>
-                <a class="item bibs-gray-1" href="#" onclick="redirectAthletes();return false;">
-                    <i class="fa fa-users icon"><!--  --></i> Athletes
-                </a>
-                <a class="item bibs-gray-1" href="#" onclick="redirectLive();return false;">
-                    <i class="fa fa-refresh icon"><!--  --></i> Live
-                </a>
             </c:if>
-            </sec:authorize>
-            <a class="item bibs-gray-1" href="#" onclick="redirectAwards();return false;">
-                <i class="fa fa-trophy icon"><!--  --></i> Awards
+            <a class="item bibs-gray-1" href="#" onclick="redirectAthletes();return false;">
+                <i class="fa fa-users icon"><!--  --></i> Athletes
             </a>
-            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-            <div class="right menu">
-                <c:if test='${(build.registration)}'>
-                    <div class="ui simple dropdown item bibs-gray-1 .main-menu-dropdown">
-                        <i class="fa fa-check-square-o icon"><!--  --></i> Registration
-                        <i class="fa fa-caret-down"><!--  --></i>
-                        <div class="menu">
-                            <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
-                                <a class="item" href="#" onclick="redirectEnableReg(); return false;">Open Registration</a>
-                            </c:if>
-                            <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
-                                <a class="item" href="#" onclick="redirectDisableReg(); return false;">Close Registration</a>
-                                <div class="divider"><!--  --></div>
-                            </c:if>
-                            <a class="item" href="#" onclick="redirectManageReg(); return false;">Registration Tools</a>
-                            <a class="item" href="#" onclick="renderModal('exportReg')">Export Registrations</a>
-                            <a class="item" href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a>
-                            <c:if test="${not empty eventTypes}">
-                                <a class="item" href="#" onclick="renderModal('bibs')">Assign Bib Numbers</a>
-                                <div class="divider"><!--  --></div>
-                            </c:if>
-                            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                            <!-- <c:if test='${(event.regEnabled)}'> -->
-                                <a class="item" href="#" onclick="renderModal('email')">Send Email Announcement</a>
-                                <div class="divider"><!--  --></div>
-                            <!-- </c:if> -->
-                            </sec:authorize>
-                            <a class="item" href="#" onclick="renderModal('regButton');return false;">Registration URL/Link</a>
-                            <a class="item" href="#" onclick="renderModal('waiver')">Waiver</a>
-                        </div>
-                    </div>
-                </c:if>
+            <a class="item bibs-gray-1" href="#" onclick="redirectLive();return false;">
+                <i class="fa fa-refresh icon"><!--  --></i> Live
+            </a>
+        </c:if>
+        </sec:authorize>
+        <a class="item bibs-gray-1" href="#" onclick="redirectAwards();return false;">
+            <i class="fa fa-trophy icon"><!--  --></i> Awards
+        </a>
+        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <div class="right menu">
+            <c:if test='${(build.registration)}'>
                 <div class="ui simple dropdown item bibs-gray-1 .main-menu-dropdown">
-                    <i class="fa fa-file-text icon"><!--  --></i> Results
+                    <i class="fa fa-check-square-o icon"><!--  --></i> Registration
                     <i class="fa fa-caret-down"><!--  --></i>
                     <div class="menu">
-                        <a class="item" href="#" onclick="renderModal('importAthletes')">Import Athletes</a>
-                        <a class="item" href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a>
-                        <c:if test="${dropboxUnlink == true}">
-                            <a class="item" href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a>
+                        <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
+                            <a class="item" href="#" onclick="redirectEnableReg(); return false;">Open Registration</a>
                         </c:if>
-                        <a class="disabled item" href="#">Import bibs file</a>
-                        <div class="divider"><!--  --></div>
-                        <a class="item" href="#" onclick="renderModal('exportAthletes')">Export Athletes</a>
-                        <a class="item" href="#" onclick="cloud();return false;">Cloud Sync</a>
-                        <c:if test="${lastImport != null}">
-                            <a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a>
+                        <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
+                            <a class="item" href="#" onclick="redirectDisableReg(); return false;">Close Registration</a>
+                            <div class="divider"><!--  --></div>
                         </c:if>
-                        <a class="item" href="#" onclick="redirectBackup();return false;">Export bibs file</a>
-                        <div class="divider show-live"><!--   --></div>
-                        <a class="item show-live" onclick="liveUrl();return false;">Live Results Link</a>
-                    </div>
-                </div>
-            </div>
-            </sec:authorize>
-        </div>
-        <div class="ui grid">
-            <div class="row">
-                <div class="left floated eleven wide column">
-                <c:if test='${(build.registration)}'>
-                    <div class="map-container">
-                        <div id="map"><!--  --></div>
-                        <div class="map-canvas-warning"><small>If you can't see the map, please check your event settings!</small></div>
-                    </div>
-                </c:if>
-                <c:if test='${(!build.registration)}'>
-                <div class="map-container"><!--  --></div>
-                </c:if>
-                <div class="event-info-box">
-                    <div class="event-name">${event.name}</div>
-                    <div class="event-location">${event.city}, ${event.state}</div>
-                    <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" />
-                     <!-- first start <fmt:formatDate type="time" value="${eventDate}" /> -->
-                     </div>
-                </div>
-                </div>
-                <div class="right floated four wide column">
-                <div class="button-container">
-                    <c:if test='${(build.registration)}'>
-                        <div class="ui vertical labeled icon basic buttons">
-                            <button class="ui button"
-                                    onclick="editForm()">
-                                <i class="fa fa-edit bibs-orange icon"><!--  --></i>
-                                Edit Event Details
-                            </button>
-                            <button class="ui button"
-                                    onclick="deleteEvent()">
-                                <i class="fa fa-trash bibs-red icon"><!--  --></i>
-                                Delete Event
-                            </button>
-                        <c:if test='${event.regEnabled}'>
-                            <button class="ui active button"
-                                    onclick="redirectDisableReg()">
-                                <i  class="fa fa-check icon bibs-green"><!--   --></i>
-                                Registration is open
-                            </button>
-                        </c:if>
-                        <c:if test='${(!event.regEnabled)}'>
-                            <button class="ui button"
-                                    onclick="redirectEnableReg()">
-                                <i  class="fa fa-ban icon"><!--   --></i>
-                                Registration is closed
-                            </button>
-                        </c:if>
-                        <c:if test='${(event.live)}'>
-                            <button class="ui active button"
-                                    onclick="redirectDisableLive()">
-                                <i  class="fa fa-unlock icon bibs-green"><!--   --></i>
-                                Listing is public
-                            </button>
-                        </c:if>
-                        <c:if test='${(!event.live)}'>
-                            <button class="ui button"
-                                    onclick="redirectEnableLive()">
-                                <i  class="fa fa-lock icon"><!--   --></i>
-                                Listing is private
-                            </button>
-                        </c:if>
-                        <c:if test='${(event.sync)}'>
-                            <button class="ui active button"
-                                    onclick="redirectDisableSync()">
-                                <i  class="fa fa-cloud icon bibs-green"><!--   --></i>
-                                Cloud sync enabled
-                            </button>
-                        </c:if>
-                        <c:if test='${(!event.sync)}'>
-                            <button class="ui button"
-                                    onclick="redirectEnableSync()">
-                                <i  class="fa fa-ban icon"><!--   --></i>
-                                Cloud sync disabled
-                            </button>
-                        </c:if>
+                        <a class="item" href="#" onclick="redirectManageReg(); return false;">Registration Tools</a>
+                        <a class="item" href="#" onclick="renderModal('exportReg')">Export Registrations</a>
+                        <a class="item" href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a>
                         <c:if test="${not empty eventTypes}">
-                            <button class="ui bibs-bg-main-teal bibs-gray-1 button"
-                                    onclick="redirectManageReg()">
-                                <i  class="fa fa-wrench icon"><!--  --></i>
-                                Registration Tools
-                            </button>
+                            <a class="item" href="#" onclick="renderModal('bibs')">Assign Bib Numbers</a>
+                            <div class="divider"><!--  --></div>
                         </c:if>
-                        </div>
+                        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                        <!-- <c:if test='${(event.regEnabled)}'> -->
+                            <a class="item" href="#" onclick="renderModal('email')">Send Email Announcement</a>
+                            <div class="divider"><!--  --></div>
+                        <!-- </c:if> -->
+                        </sec:authorize>
+                        <a class="item" href="#" onclick="renderModal('regButton');return false;">Registration URL/Link</a>
+                        <a class="item" href="#" onclick="renderModal('waiver')">Waiver</a>
+                    </div>
+                </div>
+            </c:if>
+            <div class="ui simple dropdown item bibs-gray-1 .main-menu-dropdown">
+                <i class="fa fa-file-text icon"><!--  --></i> Results
+                <i class="fa fa-caret-down"><!--  --></i>
+                <div class="menu">
+                    <a class="item" href="#" onclick="renderModal('importAthletes')">Import Athletes</a>
+                    <a class="item" href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a>
+                    <c:if test="${dropboxUnlink == true}">
+                        <a class="item" href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a>
                     </c:if>
-                </div>
-                </div>
-            </div>
-            <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-            <div class="row">
-                <div class="button-container" style="margin-top:-2rem;margin-left:1rem;">
-                    <button class="ui basic black button" onClick="renderModal('eventType')"><i class="fa fa-plus" style="margin-right:5px"><!--  --></i>event type</button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                <c:if test="${not empty eventTypes}">
-                    <h3 class="ui header event-type-header">Events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
-                    <table class="ui compact stackable table">
-                        <thead><tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Distance</th>
-                            <th>Start Time</th>
-                            <th>Registration</th>
-                            <th># Registered</th>
-                            <th># Athletes</th>
-                        </tr></thead>
-                        <tbody>
-                            <c:forEach var="item" items="${metatype}">
-                                <c:if test="${item.ticket != null }">
-                                    <tr class="eventtype-item" onclick="redirectTicket(${item.ticket.id})">    
-                                        <td>${item.type.typeName}</td>
-                                        <td>${item.type.racetype}</td>
-                                        <td>${item.type.distance}</td>
-                                        <td>${item.type.timeStartLocal}</td>
-                                        <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
-                                        <td>${item.ticket.purchased }</td>
-                                        <td>${item.athletes }</td>
-                                    </tr>
-                                </c:if>
-                                <c:if test="${item.ticket == null }">
-                                    <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">
-                                        <td>${item.type.typeName}</td>
-                                        <td>${item.type.racetype}</td>
-                                        <td>${item.type.distance}</td>
-                                        <td>${item.type.timeStartLocal}</td>
-                                        <td><div class="ui small button" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">Enable</div></td>
-                                        <td>N/A</td>
-                                        <td>${item.athletes }</td>
-                                    </tr>
-                                </c:if>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </c:if>
-                <c:if test="${lastImport != null}">
-                    <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
-                    <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
-                </c:if>
+                    <a class="disabled item" href="#">Import bibs file</a>
+                    <div class="divider"><!--  --></div>
+                    <a class="item" href="#" onclick="renderModal('exportAthletes')">Export Athletes</a>
+                    <a class="item" href="#" onclick="cloud();return false;">Cloud Sync</a>
+                    <c:if test="${lastImport != null}">
+                        <a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a>
+                    </c:if>
+                    <a class="item" href="#" onclick="redirectBackup();return false;">Export bibs file</a>
+                    <div class="divider show-live"><!--   --></div>
+                    <a class="item show-live" onclick="liveUrl();return false;">Live Results Link</a>
                 </div>
             </div>
-            </sec:authorize>
         </div>
-        </div>
+        </sec:authorize>
     </div>
+    <div class="ui grid">
+        <div class="row">
+            <div class="left floated eleven wide column">
+            <c:if test='${(build.registration)}'>
+                <div class="map-container">
+                    <div id="map"><!--  --></div>
+                    <div class="map-canvas-warning"><small>If you can't see the map, please check your event settings!</small></div>
+                </div>
+            </c:if>
+            <c:if test='${(!build.registration)}'>
+            <div class="map-container"><!--  --></div>
+            </c:if>
+            <div class="event-info-box">
+                <div class="event-name">${event.name}</div>
+                <div class="event-location">${event.city}, ${event.state}</div>
+                <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" />
+                 <!-- first start <fmt:formatDate type="time" value="${eventDate}" /> -->
+                 </div>
+            </div>
+            </div>
+            <div class="right floated four wide column">
+            <div class="button-container">
+                <c:if test='${(build.registration)}'>
+                    <div class="ui vertical labeled icon basic buttons">
+                        <button class="ui button"
+                                onclick="editForm()">
+                            <i class="fa fa-edit bibs-orange icon"><!--  --></i>
+                            Edit Event Details
+                        </button>
+                        <button class="ui button"
+                                onclick="deleteEvent()">
+                            <i class="fa fa-trash bibs-red icon"><!--  --></i>
+                            Delete Event
+                        </button>
+                    <c:if test='${event.regEnabled}'>
+                        <button class="ui active button"
+                                onclick="redirectDisableReg()">
+                            <i  class="fa fa-check icon bibs-green"><!--   --></i>
+                            Registration is open
+                        </button>
+                    </c:if>
+                    <c:if test='${(!event.regEnabled)}'>
+                        <button class="ui button"
+                                onclick="redirectEnableReg()">
+                            <i  class="fa fa-ban icon"><!--   --></i>
+                            Registration is closed
+                        </button>
+                    </c:if>
+                    <c:if test='${(event.live)}'>
+                        <button class="ui active button"
+                                onclick="redirectDisableLive()">
+                            <i  class="fa fa-unlock icon bibs-green"><!--   --></i>
+                            Listing is public
+                        </button>
+                    </c:if>
+                    <c:if test='${(!event.live)}'>
+                        <button class="ui button"
+                                onclick="redirectEnableLive()">
+                            <i  class="fa fa-lock icon"><!--   --></i>
+                            Listing is private
+                        </button>
+                    </c:if>
+                    <c:if test='${(event.sync)}'>
+                        <button class="ui active button"
+                                onclick="redirectDisableSync()">
+                            <i  class="fa fa-cloud icon bibs-green"><!--   --></i>
+                            Cloud sync enabled
+                        </button>
+                    </c:if>
+                    <c:if test='${(!event.sync)}'>
+                        <button class="ui button"
+                                onclick="redirectEnableSync()">
+                            <i  class="fa fa-ban icon"><!--   --></i>
+                            Cloud sync disabled
+                        </button>
+                    </c:if>
+                    <c:if test="${not empty eventTypes}">
+                        <button class="ui bibs-bg-main-teal bibs-gray-1 button"
+                                onclick="redirectManageReg()">
+                            <i  class="fa fa-wrench icon"><!--  --></i>
+                            Registration Tools
+                        </button>
+                    </c:if>
+                    </div>
+                </c:if>
+            </div>
+            </div>
+        </div>
+        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <div class="row">
+            <div class="button-container" style="margin-top:-2rem;margin-left:1rem;">
+                <button class="ui basic black button" onClick="renderModal('eventType')"><i class="fa fa-plus icon"><!--  --></i>event type</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+            <c:if test="${not empty eventTypes}">
+                <h3 class="ui header event-type-header">Events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
+                <table class="ui compact stackable table">
+                    <thead><tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Distance</th>
+                        <th>Start Time</th>
+                        <th>Registration</th>
+                        <th># Registered</th>
+                        <th># Athletes</th>
+                    </tr></thead>
+                    <tbody>
+                        <c:forEach var="item" items="${metatype}">
+                            <c:if test="${item.ticket != null }">
+                                <tr class="eventtype-item" onclick="redirectTicket(${item.ticket.id})">    
+                                    <td>${item.type.typeName}</td>
+                                    <td>${item.type.racetype}</td>
+                                    <td>${item.type.distance}</td>
+                                    <td>${item.type.timeStartLocal}</td>
+                                    <td><div class="ui small button" onclick="redirectEventTypeDetail('${item.type.id}')">Detail</div></td>
+                                    <td>${item.ticket.purchased }</td>
+                                    <td>${item.athletes }</td>
+                                </tr>
+                            </c:if>
+                            <c:if test="${item.ticket == null }">
+                                <tr class="eventtype-item" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">
+                                    <td>${item.type.typeName}</td>
+                                    <td>${item.type.racetype}</td>
+                                    <td>${item.type.distance}</td>
+                                    <td>${item.type.timeStartLocal}</td>
+                                    <td><div class="ui small button" onclick="editEventType('${item.type.typeName}', '${item.type.racetype}', '${item.type.distance}', '${item.type.timeStartLocal}', '${item.type.id}', null, null, null, null, null)">Enable</div></td>
+                                    <td>N/A</td>
+                                    <td>${item.athletes }</td>
+                                </tr>
+                            </c:if>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
+            <c:if test="${lastImport != null}">
+                <field:display date="true" dateTimePattern="${event_timestart_date_format}" field="runDate" id="s_com_bibsmobile_model_ResultsImport_runDate" object="${lastImport}" z="user-managed" label="Last import time"/>
+                <field:display field="errors" id="s_com_bibsmobile_model_ResultsImport_errors" object="${lastImport}" z="user-managed" label="Errors in last import"/>
+            </c:if>
+            </div>
+        </div>
+        </sec:authorize>
+    </div>
+    </div>
+</div>
 </page>
 <script>
     var saveType = 'eventTypes';
     window.onload = init;
 
     function init(){
-        <c:if test="${empty eventTypes}">
-            renderEventTypeModal('clean');
-        </c:if>
-
         jQuery('i.link.fa.fa-close').off().on('click', function() {
             jQuery(this).closest('.segment').transition('fade');
         });
@@ -680,6 +678,10 @@
         jQuery('.main-menu-dropdown').dropdown();
 
         initInfo();
+
+        <c:if test="${empty eventTypes}">
+            renderEventTypeModal('clean');
+        </c:if>
         <c:if test='${(!build.rfid)}'>
             initMap();
         </c:if>
@@ -701,70 +703,6 @@
     }
 
     function renderEventTypeModal(type){
-        jQuery('#addType').modal({
-            autofocus: false,
-            onShow: function(){
-                jQuery("#etypeForm .field > .selection.dropdown").dropdown();
-
-                jQuery("#removetime").click(function(){
-                    jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').startOf('hour'));
-                });
-
-                jQuery('.tab-reg > .field, .tab-reg > .fields').addClass('disabled');
-                jQuery('.tab-reg > .ui.checkbox').checkbox({
-                    onChecked: function(){
-                        console.log('checked')
-                        jQuery('.tab-reg > .field, .tab-reg > .fields').removeClass('disabled');
-                        saveType = 'ticket';
-                    },
-                    onUnchecked: function(){
-                        console.log('unchecked')
-                        jQuery('.tab-reg > .field, .tab-reg > .fields').addClass('disabled');
-                        saveType = 'eventTypes';
-                    }
-                });
-
-                // jQuery('#etype-tab-control > .step').each(function(i,n){
-                //     var stepDOM = jQuery(n);
-                //     stepDOM.bind('click', function(ev){
-                //         var currStep = jQuery(stepDOM).data('tab');
-                //         if(currStep == 'bib'){
-                //             jQuery(stepDOM).addClass('active');
-                //             jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
-                //             jQuery('.tab-bib').show();
-                //             jQuery('.tab-log').hide();
-                //             jQuery('.tab-reg').hide();
-                //         }else if(currStep == 'log'){
-                //             jQuery(stepDOM).addClass('active');
-                //             jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
-                //             jQuery('.tab-log').show();
-                //             jQuery('.tab-bib').hide();
-                //             jQuery('.tab-reg').hide();
-                //         }else if(currStep == 'reg'){
-                //             jQuery(stepDOM).addClass('active');
-                //             jQuery('#etype-tab-control > .step').not(stepDOM).removeClass('active');
-                //             jQuery('.tab-reg').show();
-                //             jQuery('.tab-bib').hide();
-                //             jQuery('.tab-log').hide();
-                //         }
-                //     })
-                // });
-
-                if(type == 'clean'){
-                    jQuery(".post-event-type").show();
-                    jQuery(".put-event-type").hide();
-                    jQuery('#etypeForm input').val('');
-                    jQuery('#racetype-dropdown').dropdown('clear');
-                }
-                else if(type == 'reg'){
-                    jQuery('.tab-reg').show();
-                    jQuery('.tab-log, .tab-bib').hide();
-                    jQuery('#etype-tab-control > .step:last-child').addClass('active');
-                    jQuery(".post-event-type").hide();
-                    jQuery(".put-event-type").show();
-                }
-            }
-        });
         jQuery('#addType').modal('show');
     }
 
@@ -863,6 +801,30 @@
             jQuery(this).closest('.message').fadeOut();
         });
         jQuery(".ui.form .field > .selection.dropdown").dropdown();
+        jQuery('#addType').modal({
+            autofocus: false,
+            onShow: function(){
+                jQuery("#etypeForm .field > .selection.dropdown").dropdown();
+
+                jQuery("#removetime").click(function(){
+                    jQuery("#timedisp").data('DateTimePicker').setDate(moment('${event.timeStartLocal}', 'MM/DD/YYYY hh:mm:ss a').startOf('hour'));
+                });
+
+                jQuery('.tab-reg > .field, .tab-reg > .fields').addClass('disabled');
+                jQuery('#toggleRegistration').checkbox({
+                    onChecked: function(){
+                        // console.log('checked')
+                        jQuery('.tab-reg > .field, .tab-reg > .fields').removeClass('disabled');
+                        saveType = 'ticket';
+                    },
+                    onUnchecked: function(){
+                        // console.log('unchecked')
+                        jQuery('.tab-reg > .field, .tab-reg > .fields').addClass('disabled');
+                        saveType = 'eventTypes';
+                    }
+                });
+            }
+        });
         getWebappId();
         getWaiver();
     }
