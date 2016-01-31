@@ -70,6 +70,8 @@
             </div>
         </c:if>
         <c:if test="${not empty events}">
+            <div class="empty-event-placeholder ui basic segment"><!--  -->
+            </div>
             <h1 class="ui horizontal divider header">
                 <i class="fa fa-globe left-icon"><!--  --></i>
                 Events

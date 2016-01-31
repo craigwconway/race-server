@@ -1,63 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <style>
-        body{
-            background-image: url('images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .ui.form.info-container{
-            margin: 0 auto;
-            width: 400px;
-            font-weight: 100;
-            color: #292929;
-        }
-        .ui.form .form-fields{
-            margin-bottom: 5px;
-        }
-        .ui.form .two.fields > .fields, .ui.form .two.fields > .field{
-            margin-bottom: 5px;
-        }
-        .ui.form input, .ui.form textarea, .ui.form select, #demo>input{
-            width: 400px;
-            margin: 5px auto; 
-        }
-        .ui.form select{
-            height: 38px;
-            font-size: 1em;
-        }
-        .submit{
-            margin: 0 auto;
-            width: 400px;
-            text-align: right;
-        }
-        .ui.form input[type="number"]{
-            height: 38px;
-        }
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-          -webkit-appearance: none; 
-          margin: 0; 
-        }
-        .ui.action.input:not([class*="left action"]) > .button, .ui.action.input:not([class*="left action"]) > .buttons > .button{
-            width:10%;
-        }
-    </style>
-    <div class="white-overlay">
+<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+<jsp:output omit-xml-declaration="yes"/>
+<style>
+    #removetime{
+        padding-bottom:8px;
+    }
+    .submit{
+        margin: 1em auto;
+        width: 500px;
+        text-align: right;
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+</style>
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment">
         <div id="added" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;margin:5px;padding:5px;">Runner Added</div>
         <form:create id="fc_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" render="${empty dependencies}" z="lDbQbfi+ahMJ+wsQw7rqYz4MxJc=">
-        <div class="ui form info-container">
+        <div class="ui form" style="margin:0 auto; width:500px; text-align:center;">
             <h2 class="ui icon header">
                 <i class="fa fa-cog"><!--  --></i>
                 <div class="content">Add Athlete
@@ -65,90 +29,97 @@
                     <div class="sub header">Event: ${event.name }</div>
                 </div>
             </h2>
-            <input name="event" value="${event.id}" style="display:none"></input>
-            <select class="form-control" id="eventtype-type" name="eventType"
-                    data-parsley-required="true"
-                    data-parsley-error-message="Please select an event.">
-                <option selected="selected" disabled="true">Select Race</option>
-                <c:forEach var="item" items="${eventTypes}">
-                    <option value="${item.id}">${item.typeName}</option>
-                </c:forEach>
-            </select>            
-            <div class="form-fields">
+            <input name="event" value="${event.id}" style="display:none"><!--  --></input>
+            <div class="field">
+                <select class="ui dropdown" id="eventtype-type" name="eventType"
+                        data-parsley-required="true"
+                        data-parsley-error-message="Please select an event type.">
+                    <option selected="selected" disabled="true">Select Event Type</option>
+                    <c:forEach var="item" items="${eventTypes}">
+                        <option value="${item.id}">${item.typeName}</option>
+                    </c:forEach>
+                </select>
+            </div>  
+            <div class="field">
                 <input  type="number" name="bib"
                         placeholder="Bib Number"
                         min="1"
                         data-parsley-error-message="Please enter a bib number."
-                        data-parsley-required="true"></input>
+                        data-parsley-required="true"><!--  --></input>
             </div>
             <c:if test='${(!build.rfid)}'>
-                <div class="form-fields">
+            <div class="two fields">
+                <div class="field">
                     <input  type="text" name="firstname"
                         id="firstname"
                         placeholder="First name"
                         data-parsley-error-message="Please provide a first name."
-                        data-parsley-required="true"></input>
+                        data-parsley-required="true"><!--  --></input>
                 </div>
-                <div class="form-fields">
+                <div class="field">
                     <input  type="text" name="lastname"
                         id="lastname"
                         placeholder="Last name"
                         data-parsley-error-message="Please provide a last name."
-                        data-parsley-required="true"></input>
+                        data-parsley-required="true"><!--  --></input>
                 </div>
+            </div>
             </c:if>
             <c:if test='${(build.rfid)}'>
-                <div class="form-fields">
+            <div class="two fields">
+                <div class="field">
                     <input  type="text" name="firstname"
                         id="firstname"
-                        placeholder="First name"></input>
+                        placeholder="First name"><!--  --></input>
                 </div>
-                <div class="form-fields">
+                <div class="field">
                     <input  type="text" name="lastname"
                         id="lastname"
-                        placeholder="Last name"></input>
+                        placeholder="Last name"><!--  --></input>
                 </div>
+            </div>
             </c:if>
-            <select name="gender" id="gender-type"
-                    data-parsley-error-message="Please select a gender.">
-                <option selected="selected" disabled="disabled">Gender</option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-            </select>
-            <div class="form-fields">
-                <input  type="number" name="age"
-                        placeholder="Age"
-                        min="1"
-                        max="120"
-                        data-parsley-error-message="Invalid age."
-                        value=""></input>
-            </div>
-            <div class="form-fields">
-                <div class="two fields">
-                    <div class="field">
-                        <input  type="text" name="city"
-                                placeholder="City"
-                                data-parsley-error-message="Please enter a city."
-                                value=""></input>
-                    </div>
-                    <div class="field">
-                        <input  type="text" name="state"
-                                placeholder="State"
-                                data-parsley-error-message="Please enter a state."
-                                value=""></input>
-                    </div>
+            <div class="two fields">
+                <div class="field">
+                    <select name="gender" id="gender-type" class="ui dropdown"
+                            data-parsley-error-message="Please select a gender.">
+                        <option selected="selected" disabled="disabled">Gender</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <input  type="number" name="age"
+                            placeholder="Age"
+                            min="1"
+                            max="120"
+                            data-parsley-error-message="Invalid age."
+                            value=""><!--  --></input>
                 </div>
             </div>
-            <div class="form-fields">
+            <div class="two fields">
+                <div class="field">
+                    <input  type="text" name="city"
+                            placeholder="City"
+                            data-parsley-error-message="Please enter a city."
+                            value=""><!--  --></input>
+                </div>
+                <div class="field">
+                    <input  type="text" name="state"
+                            placeholder="State"
+                            data-parsley-error-message="Please enter a state."
+                            value=""><!--  --></input>
+                </div>
+            </div>
+            <div class="field">
                 <div class="ui action input">
-                    <input  type="text" name="timeofficialdisplay"
-                            class="form-control" style="margin-top: 0; margin-bottom:0"
+                    <input  type="text" name="timeStartLocal"
                             id="timedisp"
-                            placeholder="Official Time (hh:mm:ss)"
+                            placeholder="Official Time (hh:mm)"
                             data-provide="datepicker"
-                            data-date-format="HH:mm:ss"
-                            data-parsley-error-message="Invalid time format. (hh:mm:ss required)"></input>
-                    <div class="ui icon button" id="removetime"><span class="glyphicon glyphicon-remove"></span></div>
+                            data-date-format="h:mm a"
+                            data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
+                    <div class="ui icon button" id="removetime"><span class="fa fa-close bibs-red"></span></div>
                 </div>
             </div>
 
@@ -157,7 +128,7 @@
         </form:create>
     </div>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
-    <script>
+<script>
     window.onload=function(){
         // select event based on param
         parseEventId();
@@ -237,6 +208,6 @@
     			element.innerHTML=element.innerHTML.replace(' null null 0','');
     	});
     }
-    
-    </script>
+</script>
+</div>
 </div>
