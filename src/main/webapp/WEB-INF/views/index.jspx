@@ -84,7 +84,7 @@
                 <i class="fa fa-globe left-icon"><!--  --></i>
                 Events
             </h1>
-            <div class="ui two column grid container">
+            <div class="ui two column grid" style="margin: 3% 8%">
                 <div class="column stats-holder">
                     <h3 class="ui center aligned header">
                         Analytics

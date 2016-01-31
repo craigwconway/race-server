@@ -56,6 +56,11 @@ body{
 	background-repeat: no-repeat;
 }
 
+.stats-holder{
+	max-width: 500px;
+	margin: 0 auto;
+}
+
 .events-holder{
 	margin: 1% 0;
 }
