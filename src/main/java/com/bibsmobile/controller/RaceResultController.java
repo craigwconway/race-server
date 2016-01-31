@@ -6,6 +6,7 @@ import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.BuildTypeUtil;
+import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.model.CustomResultField;
 import com.bibsmobile.model.DeviceInfo;
@@ -457,6 +458,18 @@ public class RaceResultController {
         uiModel.addAttribute("splits", result.getSplits());
         uiModel.addAttribute("custom", result.getCustomFields());
         return "raceresults/update";
+    }
+    
+    @RequestMapping(value = "/advancedupdate", method=RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> updateAdvanced(@RequestBody RaceResult result) {
+    	RaceResult trueResult = RaceResult.findFullRaceResult(result.getId());
+    	if(result.getSplits() != null) {
+    		System.out.println("Updating splits");
+    		trueResult.setSplits(result.getSplits());
+    	}
+    	trueResult.merge();
+    	return SpringJSONUtil.returnStatusMessage("ResultUpdated", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/advanced/{id}", produces = "text/html")
