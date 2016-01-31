@@ -364,7 +364,7 @@
                         <h3 class="ui dividing header">Bib Settings</h3>
                         <label style="width:100%">Assign Bib Ranges (optional)</label>
                         <div class="ui info message">
-                            <div class="header"><i class="fa fa-bell left-icon"><!--  --></i><i class="fa fa-close link right-icon"><!--  --></i> What are bib ranges?</div>
+                            <div class="header"><i class="fa fa-bell left-icon"><!--  --></i> What are bib ranges?</div>
                             You can choose to allocate bib numbers automatically. If using registration, you will be able to download athlete data with the numbers already assigned for easy insertion into a local database for less stress on raceday!
                         </div>
                         <div class="two fields post-event-type">

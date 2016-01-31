@@ -60,9 +60,14 @@
 			</div>
 			<div class="column">
 				<label class="bibs-gray-4">Skip this and check out the software.</label>
-				<button class="ui bibs-bg-pale-red large button">Intro</button>
+                <button class="ui bibs-bg-pale-red large button" onclick="redirectBibs()">Intro</button>
 			</div>
 		</div>
     </div>
 </div>
+<script>
+    function redirectBibs(){
+        window.location='/bibs-server/';
+    }
+</script>
 </div>

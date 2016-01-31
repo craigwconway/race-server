@@ -1,32 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-        body{
-            background-image: url('images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .info-container{
-            margin: 0 auto;
-            width: 90%;
-            min-height: 400px;
-            line-height: 27px;
-            color: #292929;
-        }
-        .info-container button{
-            float: right;
-        }
         @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
             .ui.blue.table thead, .ui.table:not(.unstackable) tr > td:nth-child(3), .ui.table:not(.unstackable) tr > td:nth-child(4) {
                 display: none !important;
@@ -37,11 +13,22 @@
         <div class="ui very padded basic segment">
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
                 <button class="ui blue button" onclick="document.location='/bibs-server/events?form';" type="button">
-        		<span><i class="fa fa-plus icon"><!-- --></i> event</span>
-        		</button>
+                <span><i class="fa fa-plus icon"><!-- --></i> event</span>
+                </button>
                 <div style="clear:both;"><!--  --></div>
-        		<!-- <button class="btn btn-default btn-top" onclick="redirectMegaexport()" type="button">Megaexport</button> -->
+                <!-- <button class="btn btn-default btn-top" onclick="redirectMegaexport()" type="button">Megaexport</button> -->
             </sec:authorize>
+            <h1 class="ui horizontal divider header">
+                <i class="fa fa-globe left-icon"><!--  --></i>
+                Events
+            </h1>
+            <c:if test="${empty events}">
+                <div class="empty-event-placeholder ui basic segment"><!--  -->
+                </div>
+                <div class="empty-state bibs-gray-3">
+                    You haven't created an event yet! You can do so here: <a onclick="document.location='/bibs-server/events?form';" class="emphasized emphasized-link">Add your first event</a>!
+                </div>
+            </c:if>
             <page:list id="pl_com_bibsmobile_model_Event" items="${events}" z="VdTsxpFCHtK3Cr12/rMHXyFgspM=">
                 <table:table data="${events}" id="l_com_bibsmobile_model_Event" path="/events" z="mGSRRLKAKEtgodwBZRzmqoHkMic=">
                     <table:column id="c_com_bibsmobile_model_Event_name" property="name" z="user-managed"/>
@@ -99,6 +86,10 @@
               console.log(jQuery(this).attr("href"))
               window.document.location = jQuery(this).attr("href");
             });
+
+            if(jQuery('#_title_pl_com_bibsmobile_model_Event_id').text() == 'No Event found.'){
+                jQuery('#_title_pl_com_bibsmobile_model_Event_id').hide();
+            }
         }
     </script>
 </div>

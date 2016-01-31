@@ -58,21 +58,26 @@
 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 <page id="pl_com_bibsmobile_model_Event" items="${events}">
     <div class="bibs-page bibs-bg-gray-1">
+        <c:if test="${empty events}">
+            <div class="empty-event-placeholder ui basic segment"><!--  -->
+            </div>
+            <h1 class="ui horizontal divider header">
+                <i class="fa fa-globe left-icon"><!--  --></i>
+                Events
+            </h1>
+            <div class="empty-state bibs-gray-3">
+                You haven't created an event yet! You can do so here: <a onclick="redirectEventCreate()" class="emphasized emphasized-link">Add your first event</a>!
+            </div>
+        </c:if>
         <c:if test="${not empty events}">
+            <h1 class="ui horizontal divider header">
+                <i class="fa fa-globe left-icon"><!--  --></i>
+                Events
+            </h1>
             <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
                 <i class="fa fa-bell left-icon"><!--  --></i>
                 Upcoming Event: <a onclick="redirectEvent(${events[0].id})" class="emphasized emphasized-link bibs-gray-4">${events[0].name}</a> happening on <span class="event-date">${events[0].timeStart}</span>
             </div>
-        </c:if>
-        <c:if test="${empty events}">
-            <div class="empty-event-placeholder ui basic segment"><!--  -->
-            </div>
-        </c:if>
-        <h1 class="ui horizontal divider header">
-            <i class="fa fa-globe left-icon"><!--  --></i>
-            Events
-        </h1>
-        <c:if test="${not empty events}">
             <div class="tri-container">
                 <div class="tri-row-short stats-holder">
                     <h3 class="ui header">
@@ -124,14 +129,6 @@
                     </div>
                 </div>
             </div>
-        </c:if>
-        <c:if test="${empty events}">
-            <a class="not-list" href="#" onclick="redirectEventCreate();">
-                <div class="col-sm-9 content"><span class="event-name">No Events Found</span><br/>
-                <span class="event-info">Add Event</span></div>
-                <div class="col-sm-3 content"><!--  --></div>
-            </a>
-            <div class="empty"><!-- --></div>
         </c:if>
     </div>
 </page>
