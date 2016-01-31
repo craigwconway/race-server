@@ -129,6 +129,7 @@ import com.bibsmobile.model.wrapper.EventTypeDataWrapper;
 import com.bibsmobile.model.wrapper.EventTypeTicketWrapper;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.service.AbstractTimer;
+import com.bibsmobile.service.AwardsImmortalCache;
 import com.bibsmobile.service.BibTimeout;
 import com.bibsmobile.service.EventService;
 
@@ -151,8 +152,6 @@ public class EventController {
     @Autowired
     private SimpleMailMessage eventMessage;
     
-    private final static Map cache = new HashMap();
-
     @RequestMapping(value = "/uncat", method = RequestMethod.GET)
     @ResponseBody
     public static String findUncategorized() {
@@ -557,7 +556,7 @@ public class EventController {
     	if(!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
     		return "You are not authorized for this event";
     	}
-    	clearAwardsCache(eventTypeId);
+    	AwardsImmortalCache.clearAwardsCache(eventTypeId);
     	type.setAwardsConfig(template.getAwardsConfig());
     	//List<AwardCategory> categories = new ArrayList <AwardCategory>();
     	//Clear old categories
@@ -595,7 +594,7 @@ public class EventController {
         uiModel.addAttribute("event", Event.findEvent(eventId));
         uiModel.addAttribute("eventTypes", EventType.findEventTypesByEvent(event));
         uiModel.addAttribute("eventType", type);
-        uiModel.addAttribute("awardCategoryResults", getAwards(type.getId()));
+        uiModel.addAttribute("awardCategoryResults", AwardsImmortalCache.getAwards(type.getId()));
         uiModel.addAttribute("templates", AwardsTemplate.findAwardsTemplatesForUser(UserProfileUtil.getLoggedInUserProfile()));
         return "events/awards";
     }
@@ -607,7 +606,7 @@ public class EventController {
     	Event event = Event.findEvent(id);
     	Map <EventTypeDto, List<AwardCategoryResults>> awardMap = new HashMap<EventTypeDto,List<AwardCategoryResults>>();
     	for(EventType type : event.getEventTypes()) {
-    		awardMap.put(new EventTypeDto(type), getAwards(type.getId()));
+    		awardMap.put(new EventTypeDto(type), AwardsImmortalCache.getAwards(type.getId()));
     	}
     	ObjectMapper objectMapper = new ObjectMapper();
     	try {
@@ -640,63 +639,7 @@ public class EventController {
     	}
     }
 
-    public static List<AwardCategoryResults> getClassRankings(long eventTypeId){
-    	List<AwardCategoryResults> list = new ArrayList<AwardCategoryResults>();
-    	EventType eventType = EventType.findEventType(eventTypeId);
-    	String key = StringUtils.join("class",eventTypeId);
-    	// check cached value
-    	if(cache.containsKey(key)){
-    		System.out.println("cahce hit");
-    		list = (List<AwardCategoryResults>) cache.get(key);
-    	}else{
-    		System.out.println("cache miss");
-    		list = eventType.calculateRank(eventType);
-	    	for(AwardCategoryResults c:list){
-	    		c.getCategory().setMedal(false); // hack
-	    	}
-	    	cache.put(key, list);
-    	}
-    	return list;
-    }    
-    
-    public static List<AwardCategoryResults> getAwards(long eventTypeId){
-    	List<AwardCategoryResults> list = new ArrayList<AwardCategoryResults>();
-    	EventType eventType = EventType.findEventType(eventTypeId);
-    	String key = StringUtils.join("awards",eventTypeId,eventType.getAwardsConfig().isAllowMedalsInAgeGenderRankings());
-    	// check cached value
-    	if(cache.containsKey(key)){
-    		System.out.println("cahce hit");
-    		list = (List<AwardCategoryResults>) cache.get(key);
-    	}else{
-    		System.out.println("cache miss");
-    		list = eventType.calculateMedals(eventType);
-	    	for(AwardCategoryResults c:list){
-	    		c.getCategory().setMedal(false); // hack
-	    	}
-	    	cache.put(key, list);
-    	}
-    	return list;
-    }
-    
-    public static int getAward(long eventId, long bib){
-    	for(AwardCategoryResults a:getAwards(eventId)){
-    		for(int i=0;i<a.getResults().size();i++){
-    			if(a.getResults().get(i).getBib()==bib) return i+1;
-    		}
-    	}
-    	System.out.println("No award found for bib "+bib);
-    	return 0;
-    }
 
-    public static int getClassRank(long eventId, long bib){
-    	for(AwardCategoryResults a:getClassRankings(eventId)){
-    		for(int i=0;i<a.getResults().size();i++){
-    			if(a.getResults().get(i).getBib()==bib) return i+1;
-    		}
-    	}
-    	System.out.println("No classrank found for bib "+bib);
-    	return 0;
-    }
     
     @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
     public static String ageGenderRankings(
@@ -707,50 +650,15 @@ public class EventController {
         uiModel.asMap().clear();
         uiModel.addAttribute("event", Event.findEvent(eventId));
         uiModel.addAttribute("eventType", EventType.findEventType(eventTypeId));
-        uiModel.addAttribute("awardCategoryResults", getAgeGenderRankings(eventTypeId, gender));
+        uiModel.addAttribute("awardCategoryResults", AwardsImmortalCache.getAgeGenderRankings(eventTypeId, gender));
         return "events/ageGenderRankings";
     }
     
-    public static List<AwardCategoryResults> getAgeGenderRankings(long eventTypeId, String gender){
-    	List<AwardCategoryResults> results = new ArrayList<AwardCategoryResults>();
-    	EventType eventType = EventType.findEventType(eventTypeId);
-    	String key = StringUtils.join("age_gender",eventTypeId,gender);
-    	// check cached value
-    	if(cache.containsKey(key)){
-    		System.out.println("cache hit");
-    		results = (List<AwardCategoryResults>) cache.get(key); 
-    	}else{
-    		System.out.println("cache miss");
-    		
-	    	List<AwardCategory> list = eventType.getAwardCategorys();
-	    	List<Long> medalsBibs = new ArrayList<Long>();
-	
-	    	// if not allow medals in age/gender, collect medals bibs, pass into non-medals
-	    	if(!eventType.getAwardsConfig().isAllowMedalsInAgeGenderRankings()){
-	        	for(AwardCategoryResults c:eventType.calculateMedals(eventType)){
-	        		for(RaceResult r:c.getResults()){
-	        			medalsBibs.add(r.getBib());
-	        		}
-	        	}
-	    	}
-	    	
-			// filter age/gender
-	    	for(AwardCategory c:eventType.getAwardCategorys()){
-	    		if(!c.isMedal() && c.getGender().toUpperCase().equals(gender.toUpperCase())){
-	    			results.add(new AwardCategoryResults(c,
-	    					eventType.getAwards(c.getGender(), c.getAgeMin(), c.getAgeMax(), c.getListSize(), medalsBibs)));
-	    		}
-	    	}
-	    	cache.put(key, results);
-    	}
-    	
-    	Collections.sort(results);
-    	return results;
-    }
+
     
     public static int getAgeGenderRanking(long eventId, String gender, long bib){
     	try{
-	    	for(AwardCategoryResults a : getAgeGenderRankings(eventId, gender)){
+	    	for(AwardCategoryResults a : AwardsImmortalCache.getAgeGenderRankings(eventId, gender)){
 	    		for(int i=0;i<a.getResults().size();i++){
 	    			if(a.getResults().get(i).getBib()==i) return i+1;
 	    		}
@@ -926,10 +834,10 @@ public class EventController {
         } else {
         	runners = Event.findRaceResults(event, type, 0, 99999);
         }
-        clearAwardsCache(event);
+        AwardsImmortalCache.clearAwardsCache(event);
         for (RaceResult r : runners) {
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
-                    + r.getGender() + "," + r.getAge()  +"," + getResultOverall(r.getEvent().getId(), r.getBib()) + "," + getResultGender(r.getEvent().getId(), r.getBib(), r.getGender()) + "," + getClassRank(r.getEvent().getId(), r.getBib()) + "\r\n");
+                    + r.getGender() + "," + r.getAge()  +"," + AwardsImmortalCache.getResultOverall(r.getEvent().getId(), r.getBib()) + "," + AwardsImmortalCache.getResultGender(r.getEvent().getId(), r.getBib(), r.getGender()) + "," + AwardsImmortalCache.getClassRank(r.getEvent().getId(), r.getBib()) + "\r\n");
         }
         outputwriter.flush();
         outputwriter.close();
@@ -1825,79 +1733,12 @@ public class EventController {
     	uiModel.asMap().clear();
         uiModel.addAttribute("event", Event.findEvent(eventId));
         uiModel.addAttribute("eventType", EventType.findEventType(eventTypeId));
-        uiModel.addAttribute("results", getResultsOverall(eventTypeId));
+        uiModel.addAttribute("results", AwardsImmortalCache.getResultsOverall(eventTypeId));
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/overall";
     }
 
-    public static List<RaceResult> getResultsGender(long eventTypeId, String gender){
-    	EventType eventType = EventType.findEventType(eventTypeId);
-    	List<RaceResult> results = new ArrayList<RaceResult>();
-    	String key = StringUtils.join("gender", eventTypeId, gender);
-    	// check cached value
-    	if(cache.containsKey(key)){
-    		System.out.println("cache hit");
-    		results = (ArrayList<RaceResult>) cache.get(key);   
-    	}else{
-    		System.out.println("cache miss");
-        	results = eventType.getAwards(gender, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
-        	cache.put(key, results);
-        	System.out.println("generating overall results for event Type ID: " + eventTypeId);
-        	System.out.println(results);
-    	}
-    	return results;
-    }    
-    
-    public static List<RaceResult> getResultsOverall(long eventTypeId){
-    	EventType eventType = EventType.findEventType(eventTypeId);
-    	List<RaceResult> results = new ArrayList<RaceResult>();
-    	String key = StringUtils.join("overall",eventTypeId);
-    	// check cached value
-    	if(cache.containsKey(key)){
-    		System.out.println("cache hit");
-    		results = (ArrayList<RaceResult>) cache.get(key);   
-    	}else{
-    		System.out.println("cache miss");
-        	results = eventType.getAwards(StringUtils.EMPTY, AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 9999);
-        	cache.put(key, results);
-        	System.out.println("generating overall results for event Type ID: " + eventTypeId);
-        	System.out.println(results);
-    	}
-    	return results;
-    }    
-    
-    public static void clearAwardsCache(long eventTypeId) {
-    	System.out.println("Overall cache:");
-    	System.out.println(getResultsOverall(eventTypeId));
-    	cache.remove(StringUtils.join("overall",eventTypeId));
-    	cache.remove(StringUtils.join("class", eventTypeId));
-    	cache.remove(StringUtils.join("age_gender", eventTypeId, "M"));
-    	cache.remove(StringUtils.join("age_gender", eventTypeId, "F"));
-    	cache.remove(StringUtils.join("gender", eventTypeId, "M"));
-    	cache.remove(StringUtils.join("gender", eventTypeId, "M"));
-    }
-    
-    public static int getResultOverall(long eventTypeId, long bib){
-    	try{
-	    	for(int i=0;i<getResultsOverall(eventTypeId).size();i++){
-	    		if(getResultsOverall(eventTypeId).get(i).getBib()==bib) return i+1;
-	    	}
-    	} catch(Exception e) {
-    		return 0;
-    	}
-    	return 0;
-    }
-
-    public static int getResultGender(long eventTypeId, long bib, String gender){
-    	try{
-	    	for(int i=0;i<getResultsGender(eventTypeId, gender).size();i++){
-	    		if(getResultsGender(eventTypeId, gender).get(i).getBib()==bib) return i+1;
-	    	}
-    	} catch(Exception e) {
-    		return 0;
-    	}
-    	return 0;
-    }    
+   
     
     class OfficialtimeComparator implements Comparator<RaceResult> {
         @Override
