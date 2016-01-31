@@ -60,7 +60,7 @@
                 jQuery(this).remove();
             })
 
-    		setEventSelection(getUrlParam('event'));
+    		setEventTypeSelection(getUrlParam('type'));
     		removeNulls();
     	    // press enter submit
     	    jQuery("input").keyup(function(e){
@@ -80,15 +80,16 @@
         			element.innerHTML=element.innerHTML.replace(' null null 0','');
         	});
         }
-        function setEventSelection(id){
-        	jQuery("#event-"+id).prop('selected','true');
+        function setEventTypeSelection(id){
+        	jQuery("#types-"+id).prop('selected','true');
         }
         
-        function filterByEvent(){
+        function filterByEventType(){
         	var uri = document.location;
-        	uri = updateQueryStringParameter(uri+"","event",document.getElementById("event").value);
+        	uri = updateQueryStringParameter(uri+"","event",getUrlParam('event'));
         	uri = updateQueryStringParameter(uri+"","page","1");
-        	uri = updateQueryStringParameter(uri+"","size","10");
+            uri = updateQueryStringParameter(uri+"","size","10");
+        	uri = updateQueryStringParameter(uri+"","type",jQuery('#types').val());
         	document.location = uri;
         }
         
@@ -147,10 +148,10 @@
     <div class="bibs-page bibs-bg-gray-1">
         <div class="ui very padded basic segment">
             <div class="pull-left">
-                <select class="form-control pull-left" id="event" name="event" onchange="filterByEvent()">
-                    <option id="event-0" value="0">All Events</option>
-                    <c:forEach items="${events}" var="event" varStatus="i">
-                        <option id="event-${event.id}" value="${event.id}">${ event.name }</option>
+                <select class="ui dropdown pull-left" id="types" name="types" onchange="filterByEventType()">
+                    <option id="eventType-0" disabled="disabled">Event Types</option>
+                    <c:forEach items="${types}" var="item" varStatus="i">
+                        <option id="types-${item.id}" value="${item.id}">${ item.typeName }</option>
                     </c:forEach>
                 </select>
             </div>
