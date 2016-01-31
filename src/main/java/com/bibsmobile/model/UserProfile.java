@@ -218,6 +218,15 @@ public class UserProfile implements UserDetails {
         q.setParameter("email", email);
         return q.getSingleResult();
     }
+
+    public static Long countFindEnabledUserProfilesByUsernameEquals(String username) {
+        if (username == null || username.isEmpty())
+            throw new IllegalArgumentException("The username argument is required");
+        EntityManager em = UserProfile.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM UserProfile AS o WHERE o.username = :username AND o.enabled = 1", Long.class);
+        q.setParameter("username", username);
+        return q.getSingleResult();
+    }    
     
     public static Long countFindEnabledUserProfilesByEmailEquals(String email) {
         if (email == null || email.isEmpty())
@@ -642,7 +651,7 @@ public class UserProfile implements UserDetails {
         if (username == null || username.isEmpty())
             throw new IllegalArgumentException("The username argument is required");
         EntityManager em = UserProfile.entityManager();
-        TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.username = :username", UserProfile.class);
+        TypedQuery<UserProfile> q = em.createQuery("SELECT o FROM UserProfile AS o WHERE o.username = :username and o.enabled=1", UserProfile.class);
         q.setParameter("username", username);
         return q;
     }
