@@ -613,6 +613,33 @@ public class Cart {
         return q;
     }    
 
+    public static TypedQuery<Cart> findCompletedCartsItemsByEventBeforeDate(Event event, Date timestamp) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = CartItem.entityManager();
+        //SELECT o FROM CartItem AS o join o.cart c WHERE o.bib is null
+        String jpaQuery = "SELECT DISTINCT o FROM Cart AS o join o.cartItems c join c.eventCartItem eci join eci.event e WHERE "
+        		+ "e = :event and o.status = 3 and o.created < :timecheck";
+        TypedQuery<Cart> q = em.createQuery(jpaQuery, Cart.class);
+        q.setParameter("event", event);
+        q.setParameter("timeCheck", timestamp);
+
+        return q;
+    }      
+
+    public static TypedQuery<Cart> findRefundedCartsItemsByEvent(Event event) {
+        if (event == null)
+            throw new IllegalArgumentException("The event argument is required");
+        EntityManager em = CartItem.entityManager();
+        //SELECT o FROM CartItem AS o join o.cart c WHERE o.bib is null
+        String jpaQuery = "SELECT DISTINCT o FROM Cart AS o join o.cartItems c join c.eventCartItem eci join eci.event e WHERE "
+        		+ "e = :event and o.status = 5";
+        TypedQuery<Cart> q = em.createQuery(jpaQuery, Cart.class);
+        q.setParameter("event", event);
+
+        return q;
+    }       
+    
     public static TypedQuery<Cart> findRefundedCartsByEventCartItems(List<EventCartItem> eventCartItems, Date greaterThan, Date lessThan) {
         if (eventCartItems == null)
             throw new IllegalArgumentException("The eventCartItems argument is required");

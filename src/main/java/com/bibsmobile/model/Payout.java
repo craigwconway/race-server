@@ -10,6 +10,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,13 +44,28 @@ public class Payout {
 	/**
 	 * Token of payout.
 	 */
-	private String stripeToken;
+	private String payoutToken;
+	
+	@Enumerated
+	private PayoutStatus status = PayoutStatus.PENDING;
 	
 	/**
-	 * User in charge of payments.
+	 * Amount computed in payout.
 	 */
-	@ManyToOne
-	UserProfile user;
+	private long amount;
+	
+	/**
+	 * Amount manually settled in payout (ignored/not paid out).
+	 */
+	private long manualSettleAmount;
+	
+	/**
+	 * Amount actually paid out. This is the same as {{@link #amount} generally.
+	 */
+	private long paidOut;
+	
+	@Enumerated
+	private CurrencyEnum currency = CurrencyEnum.USD;
 	
 	/**
 	 * Organization recieving payment.
@@ -77,6 +93,154 @@ public class Payout {
 			
 	}
 
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	/**
+	 * @return the payoutToken
+	 */
+	public String getPayoutToken() {
+		return payoutToken;
+	}
+
+	/**
+	 * @param payoutToken the payoutToken to set
+	 */
+	public void setPayoutToken(String payoutToken) {
+		this.payoutToken = payoutToken;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public PayoutStatus getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(PayoutStatus status) {
+		this.status = status;
+	}
+
+	/**
+	 * @return the amount
+	 */
+	public long getAmount() {
+		return amount;
+	}
+
+	/**
+	 * @param amount the amount to set
+	 */
+	public void setAmount(long amount) {
+		this.amount = amount;
+	}
+
+	/**
+	 * @return the manualSettleAmount
+	 */
+	public long getManualSettleAmount() {
+		return manualSettleAmount;
+	}
+
+	/**
+	 * @param manualSettleAmount the manualSettleAmount to set
+	 */
+	public void setManualSettleAmount(long manualSettleAmount) {
+		this.manualSettleAmount = manualSettleAmount;
+	}
+
+	public long getPaidOut() {
+		return paidOut;
+	}
+
+	public void setPaidOut(long paidOut) {
+		this.paidOut = paidOut;
+	}
+
+	/**
+	 * @return the currency
+	 */
+	public CurrencyEnum getCurrency() {
+		return currency;
+	}
+
+	/**
+	 * @param currency the currency to set
+	 */
+	public void setCurrency(CurrencyEnum currency) {
+		this.currency = currency;
+	}
+
+	/**
+	 * @return the userGroup
+	 */
+	public UserGroup getUserGroup() {
+		return userGroup;
+	}
+
+	/**
+	 * @param userGroup the userGroup to set
+	 */
+	public void setUserGroup(UserGroup userGroup) {
+		this.userGroup = userGroup;
+	}
+
+	/**
+	 * @return the account
+	 */
+	public PaymentAccount getAccount() {
+		return account;
+	}
+
+	/**
+	 * @param account the account to set
+	 */
+	public void setAccount(PaymentAccount account) {
+		this.account = account;
+	}
+
+	/**
+	 * @return the created
+	 */
+	public Date getCreated() {
+		return created;
+	}
+
+	/**
+	 * @param created the created to set
+	 */
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	/**
+	 * @return the processed
+	 */
+	public Date getProcessed() {
+		return processed;
+	}
+
+	/**
+	 * @param processed the processed to set
+	 */
+	public void setProcessed(Date processed) {
+		this.processed = processed;
+	}
+
 	@PersistenceContext
     transient EntityManager entityManager;
 
@@ -91,7 +255,7 @@ public class Payout {
 	 * @param id of Award Template to search for
 	 * @return the AwardsTemplate object
 	 */
-	public static Payout findAwardsTemplate(Long id) {
+	public static Payout findPayout(Long id) {
         if (id == null) return null;
         return entityManager().find(Payout.class, id);
     }
@@ -108,7 +272,7 @@ public class Payout {
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            Payout attached = Payout.findAwardsTemplate(this.id);
+            Payout attached = Payout.findPayout(this.id);
             this.entityManager.remove(attached);
         }
     }
@@ -136,9 +300,13 @@ public class Payout {
 	/**
 	 * Default Constructor
 	 */
- 	private Payout() {
+ 	public Payout() {
 		
 	}
+ 	
+ 	public Payout(UserGroup userGroup) {
+ 		
+ 	}
 	
     public static List<Payout> findPayoutsForUser(UserProfile user) {
         return entityManager().createQuery("SELECT o FROM Payout o where o.user = :user", Payout.class).setParameter("user",  user).getResultList();
