@@ -222,6 +222,7 @@ public class RegisterController {
 			try {
 				Recipient recipient = Recipient.retrieve(accounts.get(0).getStripeToken());
 				uiModel.addAttribute("bankAccount", recipient.getActiveAccount());
+				uiModel.addAttribute("bankCustomName", recipient.getDescription());
 			} catch (Exception e) {
 				uiModel.addAttribute("accountDetailsError", true);
 			}
