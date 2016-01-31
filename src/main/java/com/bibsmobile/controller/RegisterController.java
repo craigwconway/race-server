@@ -213,6 +213,8 @@ public class RegisterController {
 		List<PaymentAccount> accounts = PaymentAccount.findActivePaymentAccountsForUser(user);
 		if(accounts.isEmpty()) {
 			uiModel.addAttribute("hasAccount", false);
+		} else {
+			uiModel.addAttribute("hasAccount", true);
 		}
 		if(accounts.size() == 1) {
 			uiModel.addAttribute("activeAccount", accounts.get(0));

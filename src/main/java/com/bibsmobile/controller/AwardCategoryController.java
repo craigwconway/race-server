@@ -25,6 +25,7 @@ import com.bibsmobile.model.AwardsTemplate;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.service.AwardsImmortalCache;
 import com.bibsmobile.util.PermissionsUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
@@ -55,7 +56,7 @@ public class AwardCategoryController {
         awardCategory.setSortOrder(AwardCategory.findByEventType(awardCategory.getEventType()).size());
         
         awardCategory.persist();
-        
+        AwardsImmortalCache.clearAwardsCache(awardCategory.getEventType().getId());
         return (!awardCategory.isMedal()) 
         		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEventType().getEvent().getId()+"&type="+awardCategory.getEventType().getId()+"&gender="+awardCategory.getGender()
         		: "redirect:/events/awards?event=" + awardCategory.getEventType().getEvent().getId()+"&type="+awardCategory.getEventType().getId()+"&gender="+awardCategory.getGender();
