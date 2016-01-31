@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <style>
         @media (max-width: 980px){
-            .info-container{
+            #reports-container{
                 margin: 0 auto;
                 width: 90%;
                 font-size: 1em;
@@ -17,7 +17,7 @@
             }
         }
         @media (min-width: 981px){
-            .info-container{
+            #reports-container{
                 margin: 0 auto;
                 width: 70%;
                 font-size: 1.2em;
@@ -25,20 +25,6 @@
                 line-height: 27px;
                 color: #292929;
             }
-        }
-        body{
-            background-image: url('../images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 102%;
-            margin-top: -2%;
-            margin-left: -1%;
-            margin-right: -3%;
-            padding-top: 2%;
-            padding-bottom: 4%;
         }
         .description{
             text-align: center;
@@ -69,7 +55,7 @@
         }
     </style>
     <div class="bibs-page bibs-bg-gray-1">
-        <div class="ui very padded basic segment">
+        <div class="ui very padded basic segment" id="reports-container">
             <div class="pull-left">
                <button class="ui orange button" onclick="onBack()" type="submit">Back</button>
             </div>
