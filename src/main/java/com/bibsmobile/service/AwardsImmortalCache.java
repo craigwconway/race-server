@@ -26,8 +26,7 @@ public class AwardsImmortalCache {
 
     
     public static void clearAwardsCache(long eventTypeId) {
-    	System.out.println("Overall cache:");
-    	System.out.println(getResultsOverall(eventTypeId));
+    	cache.remove(StringUtils.join("awards",eventTypeId));
     	cache.remove(StringUtils.join("overall",eventTypeId));
     	cache.remove(StringUtils.join("class", eventTypeId));
     	cache.remove(StringUtils.join("age_gender", eventTypeId, "M"));
@@ -116,7 +115,7 @@ public class AwardsImmortalCache {
     public static List<AwardCategoryResults> getAwards(long eventTypeId){
     	List<AwardCategoryResults> list = new ArrayList<AwardCategoryResults>();
     	EventType eventType = EventType.findEventType(eventTypeId);
-    	String key = StringUtils.join("awards",eventTypeId,eventType.getAwardsConfig().isAllowMedalsInAgeGenderRankings());
+    	String key = StringUtils.join("awards",eventTypeId,eventType.getAwardsConfig());
     	// check cached value
     	if(cache.containsKey(key)){
     		System.out.println("cahce hit");
