@@ -1,163 +1,63 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
-	xmlns:sec="http://www.springframework.org/security/tags"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
-	xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
-	<jsp:directive.page contentType="text/html;charset=UTF-8" />
-	<jsp:output omit-xml-declaration="yes" />
-	<style>
-        body{
-            background-image: url('../images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .info-container{
-            margin: 0 auto;
-            width: 50%;
-            font-weight: 100;
-            line-height: 27px;
-            color: #292929;
-        }
-		b {
-			fint-size: 15px;
-		}
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:sec="http://www.springframework.org/security/tags" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+<jsp:output omit-xml-declaration="yes" />
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment">
+        <div class="pull-left">
+            <button class="ui orange button" onclick="onBack()" type="button">Back</button>
+        </div>
+		<div class="pull-right">
+			<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+			<button class="ui basic blue button"
+				onclick="create()" 
+				type="button"><i class="fa fa-plus" style="margin-left:0; margin-right:5px"><!--  --></i> Category</button>
+			<button class="ui blue button" onclick="renderModal('save')">Save Awards Template</button>
+			<button class="ui blue button" onclick="renderModal('template')">Apply Template</button>
+			</sec:authorize>
+				
+			<button class="ui green button" 
+					onclick="printawards()">Print</button>
+		</div>
+        <div style="clear:both;height:15px"><!--   --></div>
+	    <h2 class="ui icon center aligned header">
+	        <i class="fa fa-trophy fa-2x" style="margin-left:0"><!--  --></i>
+	        <div class="content">${event.name} Official Results
+	            <div class="sub header">Standings for ${eventType.typeName}</div>
+	        </div>
+	    </h2>
 
-		input {
-			margin-left: 6px;
-		}
-
-		label {
-			width: 80px;
-			margin-right: 5px;
-			text-align:right;
-		}
-
-		i{
-			margin-left: 10px;
-		}
-
-		.awards-title {
-			font-size: 18px;
-		}
-
-		.fa-trash{
-			color: #DD0000;
-		}
-
-		.awards-table {
+		<div class="awards-nav" style="text-align:center;">
+			<button class="ui bibs-bg-main-teal bibs-gray-1 button"
+					onclick="byGender('M')">Age M</button>
+				
+			<button class="ui bibs-bg-main-teal bibs-gray-1 button"
+					onclick="byGender('F')">Age F</button>
 			
-		}
-	</style>
-
-	<div class="white-overlay">
-	    <div class="info-container">
-		    <h2 class="ui icon header">
-		        <i class="fa fa-trophy fa-2x"><!--  --></i>
-		        <div class="content">${event.name} Official Results
-		            <div class="sub header">Standings for ${eventType.typeName}</div>
-		        </div>
-		    </h2>
-
-			<div id="awards-nav"> 
-				<button class="btn btn-info btn-top"
-					onclick="byGender('M')" 
-					type="button">Age M</button>
-					
-				<button class="btn btn-info btn-top"
-					onclick="byGender('F')" 
-					type="button">Age F</button>
+			<button class="ui bibs-bg-main-teal bibs-gray-1 button"
+					onclick="awards()">Medals</button>
 				
-				<button class="btn btn-info btn-top"
-					onclick="awards()" 
-					type="button">Medals</button>
-					
-				<button class="btn btn-info btn-top" 
-					onclick="overall()"
-					type="button">Overall</button>
-					
-				<button class="btn btn-default btn-top"
-					onclick="jQuery('#search-box').toggle()" 
-					type="button">Configure</button>
-					
-				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-				<button class="btn btn-primary btn-top"
-					onclick="create()" 
-					type="button">Add Category</button>
-				</sec:authorize>
-					
-				<button class="btn btn-success btn-top" 
-					onclick="printAwards()"
-					type="button">Print</button>
-
-				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-					<div class="ui large form">
-						<div class="inline fields">
-						    <div class="field">
-						     	<label>Allow Duplicates</label>
-						     	<input type="checkbox" id="duplicate" name="duplicate" value="true" onclick="update()"/>
-						    </div>
-						    <div class="field">
-						      	<label>Masters in Overall</label>
-						      	<input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
-						    </div>
-						</div>
-					</div>
-			    </sec:authorize>
-				
-				<form id="search-box" class="form-inline" role="form"
-					style="display: none; border: 1px solid #ddd;padding: 10px;margin: 10px;">
-					<div>
-					<h3>Customize Age/Gender Categories</h3>
-					</div>
-					<div class="form-group">
-						<label for="ageMin">Start Age</label> <input id="ageMin" name="ageMin"
-							class="form-control" style="width: 50px;" value="0" />
-					</div>
-					<div class="form-group">
-						<label for="ageMax">End Age</label> <input id="ageMax" name="ageMax"
-							class="form-control" style="width: 50px;" value="109" />
-					</div>
-					<div class="form-group">
-						<label for="ageRange">Age Span</label> <input id="ageRange"
-							name="ageRange" class="form-control" style="width: 50px;"
-							value="9" />
-					</div>
-					<div class="form-group">
-						<label for="listSize">Group Size</label> <input id="listSize"
-							name="listSize" class="form-control" style="width: 50px;"
-							value="3" />
-					</div>
-					<button class="btn btn-primary btn-top" onclick="createAwardCategories()"
-						type="button">Create</button>
-				<hr/>		
-				<h3>Update Group Size</h3>
-			  	<div class="form-group">
-				    <label for="listSize2">List Size</label>
-					<input id="listSize2" name="listSize2"
-						class="form-control" style="width:80px;"
-						placeholder="List Size"/>
+			<button class="ui bibs-bg-main-teal bibs-gray-1 button" 
+					onclick="overall()">Overall</button>
+			<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+			<div class="ui large form" style="width:400px;margin:0 auto;line-height:4em;text-align:center;">
+				<div class="two inline fields">
+				    <div class="field">
+				     	<label>Allow Duplicates</label>
+				     	<input type="checkbox" id="duplicate" name="duplicate" value="true" onclick="update()"/>
+				    </div>
+				    <div class="field">
+				      	<label>Masters in Overall</label>
+				      	<input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
+				    </div>
 				</div>
-			    <button class="btn btn-primary btn-top" onclick="updateListSize()" type="button">
-					Update Size
-				</button>
-				</form>
 			</div>
-			<!-- awards-nav -->
+		    </sec:authorize>
+		</div>
+		<!-- awards-nav -->
 
-			<div id="awards-table">
-				<table class="ui table awards-table">
-				
+		<div id="awards-table">
+			<table class="ui table awards-table">
 				<c:forEach items="${awardCategoryResults}" var="acr" varStatus="i">
 				<thead>
 					<tr class="cat-${acr.category.id}">
@@ -174,104 +74,103 @@
 						</th>
 					</tr>
 				</thead>
-					<tr class="cat-${acr.category.id}">
-						<th size="1"></th>
-						<th>Time</th>
-						<th>Bib</th>
-						<th>Runner</th>
-						<th>Age</th>
-						<th>Gender</th>
-					</tr>
-					<c:forEach items="${acr.results}" var="result" varStatus="x">
-					<tr class="cat-${acr.category.id}">
-						<td style="width:10px">${x.index+1}</td>
-						<td style="width:150px">${result.timeofficialdisplay}</td>
-						<td style="width:10px">${result.bib}</td>
-						<td>${result.firstname} ${result.lastname}</td>
-						<td style="width:10px">${result.age}</td>
-						<td style="width:10px">${result.gender}</td>
-					</tr>
-					</c:forEach>
+				<tr class="cat-${acr.category.id}">
+					<th size="1"></th>
+					<th>Time</th>
+					<th>Bib</th>
+					<th>Runner</th>
+					<th>Age</th>
+					<th>Gender</th>
+				</tr>
+				<c:forEach items="${acr.results}" var="result" varStatus="x">
+				<tr class="cat-${acr.category.id}">
+					<td style="width:10px">${x.index+1}</td>
+					<td style="width:150px">${result.timeofficialdisplay}</td>
+					<td style="width:10px">${result.bib}</td>
+					<td>${result.firstname} ${result.lastname}</td>
+					<td style="width:10px">${result.age}</td>
+					<td style="width:10px">${result.gender}</td>
+				</tr>
 				</c:forEach>
-				</table>
-			</div>
-	
-			<c:set value="${fn:length(awardCategoryResults) }" var="size"/>
+			</c:forEach>
+			</table>
 		</div>
+		<c:set value="${fn:length(awardCategoryResults) }" var="size"/>
 	</div>
-	<script>
-		var eventid = GetURLParameter("event");
-		var gender = GetURLParameter("gender");
-		
-		window.onload=function(){
-			if(${eventType.awardsConfig.allowMedalsInAgeGenderRankings}){
-				jQuery('#duplicate').prop('checked', true);
-			}
-			if(${eventType.awardsConfig.allowMastersInNonMasters}){
-				jQuery('#master').prop('checked', true);
-			}
+</div>
+<script>
+	var eventid = GetURLParameter("event");
+	var gender = GetURLParameter("gender");
+	
+	window.onload=function(){
+		if(${eventType.awardsConfig.allowMedalsInAgeGenderRankings}){
+			jQuery('#duplicate').prop('checked', true);
 		}
-		
-		function update(){
-			var loc = "/bibs-server/events/ageGenderRankings/update?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+gender;
-			if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
-			if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
-			window.location=loc;
+		if(${eventType.awardsConfig.allowMastersInNonMasters}){
+			jQuery('#master').prop('checked', true);
 		}
-		
-		function printAwards(){
-			window.location = "/bibs-server/events/printclass?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+getParameterByName("gender");
+	}
+	
+	function update(){
+		var loc = "/bibs-server/events/ageGenderRankings/update?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+gender;
+		if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
+		if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
+		window.location=loc;
+	}
+	
+	function printAwards(){
+		window.location = "/bibs-server/events/printclass?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+getParameterByName("gender");
+	}
+	
+	function byGender(g){
+		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+g;
+	}
+	
+	function awards(){
+		window.location = "/bibs-server/events/awards?event="+eventid+"&amp;type="+${eventType.id};
+	}
+	
+	function overall(){
+		window.location = "/bibs-server/events/overall?event="+eventid+"&amp;type="+${eventType.id};
+	}
+	
+	function getParameterByName(name) {
+	    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	    var regex = new RegExp("[\\?&amp;]" + name + "=([^&amp;#]*)"),
+	        results = regex.exec(location.search);
+	    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+	
+	function createAwardCategories(){
+		var event = Math.max(0,GetURLParameter("event"));
+		var ageMin = Math.max(jQuery('#ageMin').val(),0);
+		var ageMax = Math.max(jQuery('#ageMax').val(),0);
+		var ageRange = Math.max(jQuery('#ageRange').val(),0);
+		var listSize = Math.max(jQuery('#listSize').val(),0);
+		window.location="/bibs-server/events/createAwardCategories?event="+eventid+"&amp;ageMin="+ageMin+"&amp;ageMax="+ageMax+"&amp;ageRange="+ageRange+"&amp;listSize="+listSize;
+	}
+	
+	function updateListSize(){
+		var event = Math.max(0,GetURLParameter("event"));
+		var listSize = Math.max(jQuery('#listSize2').val(),0);
+		window.location="/bibs-server/events/updateListSize?event="+eventid+"&amp;listSize="+listSize+"&amp;gender="+gender;
+	}
+	
+	function deleteAwardCategory(id){
+		if(confirm("Delete Award Category?")){
+			jQuery(".cat-"+id).remove();
+			sendDelete(id);
 		}
-		
-		function byGender(g){
-			window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+g;
-		}
-		
-		function awards(){
-			window.location = "/bibs-server/events/awards?event="+eventid+"&amp;type="+${eventType.id};
-		}
-		
-		function overall(){
-			window.location = "/bibs-server/events/overall?event="+eventid+"&amp;type="+${eventType.id};
-		}
-		
-		function getParameterByName(name) {
-		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-		    var regex = new RegExp("[\\?&amp;]" + name + "=([^&amp;#]*)"),
-		        results = regex.exec(location.search);
-		    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-		}
-		
-		function createAwardCategories(){
-			var event = Math.max(0,GetURLParameter("event"));
-			var ageMin = Math.max(jQuery('#ageMin').val(),0);
-			var ageMax = Math.max(jQuery('#ageMax').val(),0);
-			var ageRange = Math.max(jQuery('#ageRange').val(),0);
-			var listSize = Math.max(jQuery('#listSize').val(),0);
-			window.location="/bibs-server/events/createAwardCategories?event="+eventid+"&amp;ageMin="+ageMin+"&amp;ageMax="+ageMax+"&amp;ageRange="+ageRange+"&amp;listSize="+listSize;
-		}
-		
-		function updateListSize(){
-			var event = Math.max(0,GetURLParameter("event"));
-			var listSize = Math.max(jQuery('#listSize2').val(),0);
-			window.location="/bibs-server/events/updateListSize?event="+eventid+"&amp;listSize="+listSize+"&amp;gender="+gender;
-		}
-		
-		function deleteAwardCategory(id){
-			if(confirm("Delete Award Category?")){
-				jQuery(".cat-"+id).remove();
-				sendDelete(id);
-			}
-		}
-		
-		function sendDelete(id){	
-			var request = jQuery.ajax({
-				url: "/bibs-server/awardcategorys/delete/"+id
-				});
-		}
-		
-		function create(){
-			window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
-		}
-	</script>
+	}
+	
+	function sendDelete(id){	
+		var request = jQuery.ajax({
+			url: "/bibs-server/awardcategorys/delete/"+id
+			});
+	}
+	
+	function create(){
+		window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
+	}
+</script>
 </div>

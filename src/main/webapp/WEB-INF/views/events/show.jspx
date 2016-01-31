@@ -444,9 +444,11 @@
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
             <c:if test='${(eventadmin)}'>
                 <c:if test='${(build.registration)}'>
-                <a class="item bibs-gray-1" href="#" onclick="redirectReport();return false;">
-                    <i class="fa fa-line-chart icon"><!--  --></i> Reports
-                </a>
+                    <c:if test="${not empty eventTypes}">
+                    <a class="item bibs-gray-1" href="#" onclick="redirectReport();return false;" style="max-width:100px">
+                        <i class="fa fa-line-chart icon"><!--  --></i> Registration Analytics
+                    </a>
+                    </c:if>
                 </c:if>
                 <a class="item bibs-gray-1" href="#" onclick="redirectAthletes();return false;">
                     <i class="fa fa-users icon"><!--  --></i> Athletes
@@ -1053,8 +1055,10 @@
                     	console.log("ResponseData");
                     	console.log(data)
                     	if(data != null &amp;&amp; data.responseJSON) {
-                    		console.log("/bibs-server/eventitems/" + data.responseJSON.status)
-                    		console.log(window.location)
+                            window.location.reload();
+
+                    		// console.log("/bibs-server/eventitems/" + data.responseJSON.status)
+                    		// console.log(window.location)
                     		jQuery('#addType').modal('hide');
                     		//window.location.href = "/bibs-server/eventitems/" + data.responseJSON.status
                     		redirectTicket(data.responseJSON.status);

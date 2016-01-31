@@ -37,7 +37,7 @@
 }
 .bibs-page .ui.icon.menu > .item,
 .bibs-page .right.menu > .ui.dropdown{
-    height: 75px !important;
+    height: 80px !important;
     text-transform: lowercase;
     font-variant: small-caps;
 }

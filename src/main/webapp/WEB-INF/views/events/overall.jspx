@@ -7,121 +7,84 @@
 	xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-	
-	<style>
-	b{
-		fint-size: 15px;
-	}
-	input{
-		margin-left: 6px;
-	}
-	label{
-		width:60px;
-	}
-	.awards-title{
-		font-size: 18px;
-	}
-	.awards-table{
-	}
-	</style>
-	
-	<div id="awards-nav">
-	
-	<button class="btn btn-info btn-top" 
-		onclick="byGender('M')" type="button">
-		Age M
-	</button>
-	
-	<button class="btn btn-info btn-top" 
-		onclick="byGender('F')" type="button">
-		Age F
-	</button>
-	
-	<button class="btn btn-info btn-top" 
-		onclick="awards()" type="button">
-		Medals
-	</button>
-	
-	<button class="btn btn-info btn-top" 
-		onclick="overall()" type="button">
-		Overall
-	</button>
-	
-	<button class="btn btn-default btn-top" onclick="jQuery('#search-box').toggle()" type="button">
-		Custom
-	</button>
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment">
+        <div class="pull-left">
+            <button class="ui orange button" onclick="onBack()" type="button">Back</button>
+        </div>
+		<div class="pull-right">
+			<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+			<button class="ui basic blue button"
+				onclick="create()" 
+				type="button"><i class="fa fa-plus" style="margin-left:0; margin-right:5px"><!--  --></i> Category</button>
+			<button class="ui blue button" onclick="renderModal('save')">Save Awards Template</button>
+			<button class="ui blue button" onclick="renderModal('template')">Apply Template</button>
+			</sec:authorize>
+				
+			<button class="ui green button" 
+					onclick="printawards()">Print</button>
+		</div>
+        <div style="clear:both;height:15px"><!--   --></div>
+	    <h2 class="ui icon center aligned header">
+	        <i class="fa fa-trophy fa-2x" style="margin-left:0"><!--  --></i>
+	        <div class="content">${event.name} Official Results
+	            <div class="sub header">Standings for ${eventType.typeName}</div>
+	        </div>
+	    </h2>
 
-	<button class="btn btn-success btn-top" 
-		onclick="printAwards()" type="button">
-		Print
-	</button>
-	
-	<form id="search-box" class="form-inline" role="form" style="display:none;">
-	  	<div class="form-group">
-		    <label for="gender">Gender</label>
-			<select id="gender" name="gender" 
-				class="form-control" style="width:160px;">
-				<option value="">Any</option>
-				<option value="M">Men</option>
-				<option value="F">Women</option>
-			</select>
+		<div class="awards-nav" style="text-align:center;">
+			<button class="ui bibs-bg-main-teal bibs-gray-1 button"
+					onclick="byGender('M')">Age M</button>
+				
+			<button class="ui bibs-bg-main-teal bibs-gray-1 button"
+					onclick="byGender('F')">Age F</button>
+			
+			<button class="ui bibs-bg-main-teal bibs-gray-1 button"
+					onclick="awards()">Medals</button>
+				
+			<button class="ui bibs-bg-main-teal bibs-gray-1 button" 
+					onclick="overall()">Overall</button>
+			<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+			<div class="ui large form" style="width:400px;margin:0 auto;line-height:4em;text-align:center;">
+				<div class="two inline fields">
+				    <div class="field">
+				     	<label>Allow Duplicates</label>
+				     	<input type="checkbox" id="duplicate" name="duplicate" value="true" onclick="update()"/>
+				    </div>
+				    <div class="field">
+				      	<label>Masters in Overall</label>
+				      	<input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
+				    </div>
+				</div>
+			</div>
+		    </sec:authorize>
 		</div>
-	  	<div class="form-group">
-		    <label for="ageMin">Age Min</label>
-			<input id="ageMin" name="ageMin" 
-				class="form-control" style="width:80px;"
-				placeholder="Age Min"/>
+		<!-- awards-nav -->
+		<div id="awards-table">
+			<table class="table awards-table">
+				<tr>
+					<th size="1"></th>
+					<th>Time</th>
+					<th>Bib</th>
+					<th>Runner</th>
+					<th>Age</th>
+					<th>Gender</th>
+				</tr>
+				<c:forEach items="${results}" var="result" varStatus="i">
+				<tr class="${result.gender}">
+					<td size="1">${i.index+1}</td>
+					<td>${result.timeofficialdisplay}</td>
+					<td>${result.bib}</td>
+					<td>${result.firstname} ${result.lastname}</td>
+					<td>${result.age}</td>
+					<td>${result.gender}</td>
+				</tr>
+				</c:forEach>
+			</table>
 		</div>
-	  	<div class="form-group">
-		    <label for="ageMax">Age Max</label>
-			<input id="ageMax" name="ageMax"
-				class="form-control" style="width:80px;"
-				placeholder="Age Max"/>
-		</div>
-	  	<div class="form-group">
-		    <label for="listSize">List Size</label>
-			<input id="listSize" name="listSize"
-				class="form-control" style="width:80px;"
-				placeholder="List Size"/>
-		</div>
-	    <button class="btn btn-primary btn-top" onclick="getCustom()" type="button">
-			Lookup Custom Award
-		</button>
-	</form>
-	
-	</div><!-- awards-nav -->
-	
-	<div style="clear:both;"/>
-	
-	
-	<h3 style="padding-top:0;margin-top:0;">${event.name} <small id="award-title">Official Results</small></h3>
-	<div id="awards-table">
-	
-		<table class="table awards-table">
-			<tr>
-				<th size="1"></th>
-				<th>Time</th>
-				<th>Bib</th>
-				<th>Runner</th>
-				<th>Age</th>
-				<th>Gender</th>
-			</tr>
-			<c:forEach items="${results}" var="result" varStatus="i">
-			<tr class="${result.gender}">
-				<td size="1">${i.index+1}</td>
-				<td>${result.timeofficialdisplay}</td>
-				<td>${result.bib}</td>
-				<td>${result.firstname} ${result.lastname}</td>
-				<td>${result.age}</td>
-				<td>${result.gender}</td>
-			</tr>
-			</c:forEach>
-		</table>
-	
 	</div>
-
-	<script>
-
+</div>
+<script>
 	var eventid = Math.max(0,GetURLParameter("event"));
 	var gender = Math.max(0,GetURLParameter("gender"));
 
