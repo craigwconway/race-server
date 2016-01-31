@@ -325,18 +325,27 @@ public class RaceResultController {
     public static String list(
     						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
     						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
-    						@RequestParam(value = "event", required = false, defaultValue = "0") Long event, 
+    						@RequestParam(value = "event") Long event, 
+    						@RequestParam(value = "type", required = false) Long type,
     						Model uiModel) {
-        uiModel.addAttribute("events", Event.findAllEvents());
+    	Event parentEvent =Event.findEvent(event);
+    	EventType eventType = null;
+    	if(type != null) {
+    		eventType = EventType.findEventType(type);
+    	}
+    	uiModel.addAttribute("event", parentEvent);
+        uiModel.addAttribute("types", EventType.findEventTypesByEvent(parentEvent));
         int sizeNo = size == null ? 10 : size.intValue();
         final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
         float nrOfPages = 0;
-        if (event > 0) {
-            uiModel.addAttribute("raceresults", Event.findRaceResults(event, firstResult, sizeNo));
-            nrOfPages = (float) Event.countRaceResults(event) / sizeNo;
+        if (eventType != null){
+        	nrOfPages = (float) RaceResult.countFindRaceResultsByEventType(eventType) / sizeNo;
+        	uiModel.addAttribute("raceresults", RaceResult.findRaceResultsByEventType(eventType).setFirstResult(firstResult).setMaxResults(size).getResultList());
+        	
         } else {
-            uiModel.addAttribute("raceresults", RaceResult.findRaceResultEntries(firstResult, sizeNo));
-            nrOfPages = (float) RaceResult.countRaceResults() / sizeNo;
+        	nrOfPages = (float) RaceResult.countFindRaceResultsByEvent(parentEvent) / sizeNo;
+        	uiModel.addAttribute("raceresults", RaceResult.findRaceResultsByEvent(parentEvent).setFirstResult(firstResult).setMaxResults(size).getResultList());
+
         }
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         // addDateTimeFormatPatterns(uiModel);
