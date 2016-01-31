@@ -38,9 +38,9 @@
                 <div class="ui card" style="margin: 0 auto">
                     <div class="content">
                         <div class="header">Primary Bank Account</div>
-                        <div class="description">My Bank Name</div>
+                        <div class="description">${bankAccount.bankName} - ${bankAccount.country}</div>
                     </div>
-                    <div class="extra content">Some Bank Info</div>
+                    <div class="extra content">Last 4 digits of Routing: ${bankAccount.last4}</div>
                     <div class="ui bottom attached button"><i class="fa fa-edit"><!--   --></i> Edit Account</div>
                 </div>
             </div>
