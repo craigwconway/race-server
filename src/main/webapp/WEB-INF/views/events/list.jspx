@@ -33,11 +33,11 @@
             }
         }
     </style>
-    <div class="white-overlay">
-        <div class="info-container">
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui very padded basic segment">
             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                <button class="btn btn-primary btn-top" onclick="document.location='/bibs-server/events?form';" type="button">
-        		<span><i class="fa fa-plus" style="margin-right:5px"><!-- --></i> event</span>
+                <button class="ui blue button" onclick="document.location='/bibs-server/events?form';" type="button">
+        		<span><i class="fa fa-plus icon"><!-- --></i> event</span>
         		</button>
                 <div style="clear:both;"><!--  --></div>
         		<!-- <button class="btn btn-default btn-top" onclick="redirectMegaexport()" type="button">Megaexport</button> -->

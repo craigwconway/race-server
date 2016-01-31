@@ -7,7 +7,7 @@
         position: absolute;
         left: 50%;
         margin-left: -350px;
-        top: 50%;
+        top: 40%;
         margin-top: -200px;
         width: 700px;
         height: 400px;
@@ -135,6 +135,7 @@
 				// data: bankObj,
 				success: function(){
 					// success code
+			        window.location="/bibs-server/register/account";
 				},
 				contentType: 'application/json'
 		    });
