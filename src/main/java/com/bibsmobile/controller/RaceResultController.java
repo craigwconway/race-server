@@ -454,6 +454,8 @@ public class RaceResultController {
         this.populateEditForm(uiModel, result);
         uiModel.addAttribute("event", event);
         uiModel.addAttribute("eventTypes", eventTypes);
+        uiModel.addAttribute("splits", result.getSplits());
+        uiModel.addAttribute("custom", result.getCustomFields());
         return "raceresults/update";
     }
 
