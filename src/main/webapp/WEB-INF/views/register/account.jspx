@@ -43,7 +43,14 @@
                 </c:if>
                 <div class="ui card" style="margin: 0 auto">
                     <div class="content">
-                        <div class="header">Primary Bank Account</div>
+                        <div class="header">
+                            <c:if test="${bankCustomName == null}">
+                                Primary Bank Account
+                            </c:if>
+                            <c:if test="${fn:length(bankCustomName) > 0}">
+                                ${bankCustomName}
+                            </c:if>
+                        </div>
                         <div class="description">${bankAccount.bankName} - ${bankAccount.country}</div>
                     </div>
                     <div class="extra content">
