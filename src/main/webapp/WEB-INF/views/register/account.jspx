@@ -60,7 +60,7 @@
 			</div>
 			<div class="column">
 				<label class="bibs-gray-4">Skip this and head to the admin panel.</label>
-				<button class="ui bibs-bg-pale-red large button" onclick="redirectBibs()">Intro</button>
+				<button class="ui bibs-bg-pale-red large button" onclick="redirectBibs()">Admin Panel</button>
 			</div>
 		</div>
     </div>
