@@ -11,6 +11,7 @@ package com.bibsmobile.model.dto;
 public class BankAddRequest {
 	public Long userGroupId;
 	public String stripeToken;
+	public String bankToken;
 	public String holderName;
 	public String customName;
 	public String type;
@@ -37,6 +38,18 @@ public class BankAddRequest {
 	 */
 	public void setStripeToken(String stripeToken) {
 		this.stripeToken = stripeToken;
+	}
+	/**
+	 * @return the stripeToken
+	 */
+	public String getBankToken() {
+		return bankToken;
+	}
+	/**
+	 * @param stripeToken the stripeToken to set
+	 */
+	public void setBankToken(String bankToken) {
+		this.bankToken = bankToken;
 	}
 	/**
 	 * @return the holderName
