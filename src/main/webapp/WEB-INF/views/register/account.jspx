@@ -34,14 +34,29 @@
     <div class="ui padded segment">
         <c:if test="${hasAccount}">
             <div class="ui basic segment">
-                <div class="ui center aligned header"><i class="fa fa-user"><!--  --></i> Bank Info</div>
+                <div class="ui center aligned header"><i class="fa fa-user"><!--  --></i> Payout Info</div>
+                <c:if test="${!bankAccount.validated}">
+                    <div class="ui info message">
+                        <i class="fa fa-exclamation-triangle icon"><!--  --></i>
+                        Your bank account is currently unverified. We contact you for payment information to ensure payouts go through properly and tax reporting is handled.
+                    </div>
+                </c:if>
                 <div class="ui card" style="margin: 0 auto">
                     <div class="content">
                         <div class="header">Primary Bank Account</div>
                         <div class="description">${bankAccount.bankName} - ${bankAccount.country}</div>
                     </div>
-                    <div class="extra content">Last 4 digits of Routing: ${bankAccount.last4}</div>
-                    <div class="ui bottom attached button"><i class="fa fa-edit"><!--   --></i> Edit Account</div>
+                    <div class="extra content">
+                        <span class="left floated">XXXXX${bankAccount.last4}</span>
+                        <span class="right floated">
+                            <c:if test="${bankAccount.validated}">
+                                <span class="bibs-green"><i class="fa fa-check icon"><!--  --></i> verified</span>
+                            </c:if>
+                            <c:if test="${!bankAccount.validated}">
+                                <span class="bibs-red"><i class="fa fa-close icon"><!--  --></i>Unverified</span>
+                            </c:if> 
+                        </span>
+                    </div>
                 </div>
             </div>
         </c:if>
