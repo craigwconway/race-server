@@ -243,6 +243,11 @@ h1,h2,h3,h4,h5,h6{
 	-moz-box-shadow: 0px 0px 1px 1px rgba(252,252,252,1);
 	box-shadow: 0px 0px 1px 1px rgba(252,252,252,1);
 }
+.no-border-radius{
+	border-radius: 0px !important;
+	-moz-border-radius: 0px !important;
+	-webkit-border-radius: 0px !important;
+}
 .error-segment{
 	font-size: 1em;
 	font-family: 'Lato';
