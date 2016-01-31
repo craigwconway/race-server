@@ -47,7 +47,7 @@
                             <c:if test="${bankCustomName == null}">
                                 Primary Bank Account
                             </c:if>
-                            <c:if test="${bankCustomName.length > 0}">
+                            <c:if test="${fn:length(bankCustomName) > 0}">
                                 ${bankCustomName}
                             </c:if>
                         </div>
