@@ -62,7 +62,11 @@
       </div>
     </div>
     <div class="ui attached segment">
-	    <form class="ui form" method="post" action="/bibs-server/register/second">
+	    <form class="ui form" id="userForm" method="post" action="/bibs-server/register/second">
+        <div class="ui bibs-bg-red error-segment segment" id="errorSegment" style="display:none">
+            <i class="fa fa-exclamation-circle left-icon"><!--  --></i>
+            <span class="error-msg"><!--  --></span>
+        </div>
 	    	<div class="inline required field">
 	            <label>Username</label>
 	            <input type="text" name="username" 
@@ -84,8 +88,30 @@
 				<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
 				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
 			</div>
-	        <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" type="submit">Submit</button>
-	    </form>
+      </form>
+      <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" onclick="checkUsername()">Submit</button>
     </div>
+  <script type="text/javascript">
+    function checkUsername(){
+      var username = jQuery('input[name="username"]').val();
+
+      var request = jQuery.ajax({
+                      method: "GET",
+                      url: 'checkusername?username=' + encodeURIComponent(username)
+                    });
+      request.done(function( d ) {
+        if(d === 'bad'){
+          console.log('BAD');
+          jQuery('.error-msg').text('This username has been taken! Please select another username.');
+          jQuery('#errorSegment').show();
+          jQuery('input[name="username"]').off().on('change', function(){
+            jQuery('#errorSegment').hide();
+          })
+        }else{
+          jQuery('#userForm').submit();
+        }
+      });
+    }
+  </script>
 </div>
 </div>
