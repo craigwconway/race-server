@@ -28,6 +28,7 @@
   			<a href="${license_url}" class="item" style="display:none"><i class="fa fa-bolt left-icon icon"><!--  --></i> licensing</a>
   	  	</sec:authorize>
     	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>
+    	<a class="item" href="#"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a>
 	 </div>
     </sec:authorize>
 

@@ -473,20 +473,20 @@
                             </c:if>
                             <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
                                 <a class="item" href="#" onclick="redirectDisableReg(); return false;">Close Registration</a>
-                                <a class="item" href="#" onclick="redirectManageReg(); return false;">Registration Tools</a>
-                                <a class="item" href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a>
-                                <a class="item" href="#" onclick="renderModal('exportReg')">Export Registrations</a>
                                 <div class="divider"><!--  --></div>
                             </c:if>
+                            <a class="item" href="#" onclick="redirectManageReg(); return false;">Registration Tools</a>
+                            <a class="item" href="#" onclick="renderModal('exportReg')">Export Registrations</a>
+                            <a class="item" href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a>
                             <c:if test="${not empty eventTypes}">
                                 <a class="item" href="#" onclick="renderModal('bibs')">Assign Bib Numbers</a>
                                 <div class="divider"><!--  --></div>
                             </c:if>
                             <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-                            <c:if test='${(event.regEnabled)}'>
+                            <!-- <c:if test='${(event.regEnabled)}'> -->
                                 <a class="item" href="#" onclick="renderModal('email')">Send Email Announcement</a>
                                 <div class="divider"><!--  --></div>
-                            </c:if>
+                            <!-- </c:if> -->
                             </sec:authorize>
                             <a class="item" href="#" onclick="renderModal('regButton');return false;">Registration URL/Link</a>
                             <a class="item" href="#" onclick="renderModal('waiver')">Waiver</a>
