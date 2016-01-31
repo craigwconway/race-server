@@ -27,6 +27,7 @@ public class EventDetailsDto {
 	 * @apiSuccess (200) {String} name Name of event
 	 * @apiSuccess (200) {String} timeStartLocal String containing local start time as: MM/dd/yyyy hh:mm:ss a
 	 * @apiSuccess (200) {String} address Street address of event
+	 * @apiSuccess (200) {String} email contact email of event director
 	 * @apiSuccess (200) {String} city city of event
 	 * @apiSuccess (200) {String} state state of event
 	 * @apiSuccess (200) {String} country country of event
@@ -51,6 +52,7 @@ public class EventDetailsDto {
 	 * 		"charity":"Ancient Aliens",
 	 * 		"city":"San Francisco",
 	 * 		"state":"CA",
+	 * 		"email":"gedanziger@gmail.com",
 	 * 		"address":"904 Haight St",
 	 * 		"country":"US",
 	 * 		"eventTypes":
@@ -88,6 +90,8 @@ public class EventDetailsDto {
 		this.charity = event.getCharity();
 		this.registration = event.getRegistration();
 		this.website = event.getWebsite();
+		this.parking = event.getParking();
+		this.email = event.getEmail();
 		this.general = event.getGeneral();
 		this.courseRules = event.getCourseRules();
 		this.phone = event.getPhone();
@@ -106,6 +110,8 @@ public class EventDetailsDto {
 	private String description;
 	
 	private String website;
+	
+	private String email;
 	
 	private String registration;
 	
@@ -201,6 +207,13 @@ public class EventDetailsDto {
 	 */
 	public String getWebsite() {
 		return website;
+	}	
+	
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
 	}	
 	
 	/**

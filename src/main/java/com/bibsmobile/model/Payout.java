@@ -31,17 +31,18 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Configurable
 @Entity
-public class PaymentAccount {
+public class Payout {
 	/**
-	 * This is the id of the awards template.
+	 * This is the id payout.
 	 */
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 	
-	private boolean primaryAccount=true;
-	
+	/**
+	 * Token of payout.
+	 */
 	private String stripeToken;
 	
 	/**
@@ -56,92 +57,17 @@ public class PaymentAccount {
 	@ManyToOne
 	UserGroup userGroup;
 	
+	/**
+	 * Account credited payment.
+	 */
+	@ManyToOne
+	PaymentAccount account;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	Date created;
 	
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	/**
-	 * @return the primaryAccount
-	 */
-	public boolean isPrimaryAccount() {
-		return primaryAccount;
-	}
-
-	/**
-	 * @param primaryAccount the primaryAccount to set
-	 */
-	public void setPrimaryAccount(boolean primaryAccount) {
-		this.primaryAccount = primaryAccount;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public UserProfile getUser() {
-		return user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(UserProfile user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return the userGroup
-	 */
-	public UserGroup getUserGroup() {
-		return userGroup;
-	}
-
-	/**
-	 * @param userGroup the userGroup to set
-	 */
-	public void setUserGroup(UserGroup userGroup) {
-		this.userGroup = userGroup;
-	}
-
-	/**
-	 * @return the created
-	 */
-	public Date getCreated() {
-		return created;
-	}
-
-	/**
-	 * @param created the created to set
-	 */
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	/**
-	 * @return the stripeToken
-	 */
-	public String getStripeToken() {
-		return stripeToken;
-	}
-
-	/**
-	 * @param stripeToken the stripeToken to set
-	 */
-	public void setStripeToken(String stripeToken) {
-		this.stripeToken = stripeToken;
-	}
+	@Temporal(TemporalType.TIMESTAMP)
+	Date processed;
 
 	@PrePersist
 	void prePersist() {
@@ -150,18 +76,12 @@ public class PaymentAccount {
 		}
 			
 	}
-	
-	public PaymentAccount(UserProfile user, UserGroup group, String stripeToken) {
-		this.user = user;
-		this.userGroup = group;
-		this.stripeToken = stripeToken;
-	}
 
 	@PersistenceContext
     transient EntityManager entityManager;
 
 	public static final EntityManager entityManager() {
-        EntityManager em = new PaymentAccount().entityManager;
+        EntityManager em = new Payout().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
@@ -171,9 +91,9 @@ public class PaymentAccount {
 	 * @param id of Award Template to search for
 	 * @return the AwardsTemplate object
 	 */
-	public static PaymentAccount findAwardsTemplate(Long id) {
+	public static Payout findAwardsTemplate(Long id) {
         if (id == null) return null;
-        return entityManager().find(PaymentAccount.class, id);
+        return entityManager().find(Payout.class, id);
     }
 	
 	@Transactional
@@ -188,7 +108,7 @@ public class PaymentAccount {
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            PaymentAccount attached = PaymentAccount.findAwardsTemplate(this.id);
+            Payout attached = Payout.findAwardsTemplate(this.id);
             this.entityManager.remove(attached);
         }
     }
@@ -206,9 +126,9 @@ public class PaymentAccount {
     }
 
 	@Transactional
-    public PaymentAccount merge() {
+    public Payout merge() {
         if (this.entityManager == null) this.entityManager = entityManager();
-        PaymentAccount merged = this.entityManager.merge(this);
+        Payout merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }
@@ -216,11 +136,17 @@ public class PaymentAccount {
 	/**
 	 * Default Constructor
 	 */
- 	private PaymentAccount() {
+ 	private Payout() {
 		
 	}
 	
-    public static List<PaymentAccount> findActivePaymentAccountsForUser(UserProfile user) {
-        return entityManager().createQuery("SELECT o FROM PaymentAccount o where o.primaryAccount = 1 AND o.user = :user", PaymentAccount.class).setParameter("user",  user).getResultList();
+    public static List<Payout> findPayoutsForUser(UserProfile user) {
+        return entityManager().createQuery("SELECT o FROM Payout o where o.user = :user", Payout.class).setParameter("user",  user).getResultList();
     }
+    
+    public static List<Payout> findPayoutsForUserAndUserGroup(UserProfile user, UserGroup userGroup) {
+        return entityManager().createQuery("SELECT o FROM Payout o where o.user = :user AND o.userGroup = :userGroup", Payout.class)
+        		.setParameter("user",  user).setParameter("userGroup", userGroup).getResultList();
+    }
+    
 }

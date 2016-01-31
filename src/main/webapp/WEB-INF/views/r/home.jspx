@@ -1,23 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
-	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
-	<jsp:output omit-xml-declaration="yes"/>
-	<h1 class="ui header">Bibs Home</h1>
-	<button onclick="getLocation()">Try It</button>
-	<div id="demo"></div>
-	<h3 class="ui header">Events</h3>
-	<table class="ui selectable table">
-		<c:forEach var="item" items="${events}">
-			<tr href="/bibs-server/r/e/${item.id}" style="cursor:pointer">
-				<td>
-					${item.name }
-				</td>
-				<td>
-					${item.timeStartLocal}
-				</td>
-			</tr>
-		</c:forEach>
-	</table>
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+	<div class="overlay" style="opacity:1;background-color:#0a334d;position:fixed;width:100%;height:100%;top:0px;left:0px;z-index:1000;">
+		<div class="ui center aligned segment" style="margin:0 auto; width:70%">
+		<c:if test="${page eq 1 &amp;&amp; name == null}">
+		<h1 class="ui header">Welcome to bibs.</h1>
+		<h3 class="ui header">We found some races we thought you might be interested in.</h3>		
+		</c:if>
+		<c:if test="${name != null }">
+		<h3 class="ui header">Here's what we could find for ${name }...</h3>		
+		</c:if>
+		
+		<button type="submit" class="ui center floated mini teal button" onclick="toggleEventSearch()">Looking for a specific race?</button>
+		<button type="submit" class="ui center floated mini green button" onclick="toggleOrgSearch()">What about an organizer?</button>
+		<div style="clear:both;"><!-- --></div>
+		<div class="ui input" id="organizer-search" style="display:none">
+			<input id="org-search-field" placeholder="Organizer name"> <!--  --></input>
+			<button class="ui submit button">Go</button>
+		</div>
+		<div style="clear:both;"><!--  --></div>
+		<div class="ui input" id="event-search" style="display:none">
+			<input id="event-search-field" placeholder="Event name"> <!--  --></input>
+			<button class="ui submit button" onclick="searchEvents()">Go</button>
+		</div>
+			<c:forEach var="item" items="${events}">
+			<h3 class="ui header">${item.name }</h3>
+			<div>
+			<div class="ui large image">
+				<c:if test="${item.photo == null }">
+				<img src="/bibs-server/outsideres/img/portfolio/${item.id %7 }.jpg"><!--  --></img>
+				</c:if>
+				<c:if test="${item.photo != null }">
+				<img  src="${item.photo }"><!--  --></img>
+				</c:if>		
+			</div>
+			</div>
+
+			</c:forEach>
+		<div style="clear:both;"><!-- --></div>
+		<br><!--  --></br>
+		<button class="ui fluid button">Show me more</button>
+		</div>
+	</div>
 	<script>
 		var x = document.getElementById("demo");
 		function getLocation() {
@@ -30,6 +55,20 @@
 		function showPosition(position) {
 		    x.innerHTML = "Latitude: " + position.coords.latitude + 
 		    "<br></br>Longitude: " + position.coords.longitude; 
+		}
+		function goEvent(id) {
+			window.location = "/bibs-server/r/e/"+id
+		}
+		function toggleOrgSearch() {
+			jQuery('#event-search').hide()
+			jQuery('#organizer-search').show()
+		}
+		function toggleEventSearch() {
+			jQuery('#organizer-search').hide()
+			jQuery('#event-search').show()
+		}
+		function searchEvents() {
+			window.location = "/bibs-server/r?name="+encodeURI(jQuery('#event-search-field').val());
 		}
 	</script>
 

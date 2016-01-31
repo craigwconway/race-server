@@ -2,6 +2,7 @@ package com.bibsmobile.model.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +37,7 @@ public class EventViewResultsDto {
 	 * 		"id":1,
 	 * 		"name":"Kings Canyon Critical Mass",
 	 * 		"timeStartLocal":"12/01/2015 12:44:20 AM",
+	 * 		"timeStart":1448959460000,
 	 * 		"city":"San Francisco",
 	 * 		"state":"CA",
 	 * 		"address":"904 Haight St",
@@ -52,6 +54,7 @@ public class EventViewResultsDto {
 		this.id = event.getId();
 		this.name = event.getName();
 		this.timeStartLocal = event.getTimeStartLocal();
+		this.timeStart  = event.getTimeStart();
 		this.city = event.getCity();
 		this.state = event.getState();
 		this.address = event.getAddress();
@@ -64,6 +67,8 @@ public class EventViewResultsDto {
 	private String name;
 		
 	private String timeStartLocal;
+	
+	private Date timeStart;
 		
 	private String city;
 	
@@ -133,6 +138,13 @@ public class EventViewResultsDto {
 	 */
 	public String getTimeStartLocal() {
 		return timeStartLocal;
+	}
+	
+	/**
+	 * @return the timeStart
+	 */
+	public Date getTimeStart() {
+		return timeStart;
 	}
 
 	/**

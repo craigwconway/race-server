@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserBadge;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.dto.UserDetailsShortDto;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.util.app.JWTUtil;
@@ -51,15 +52,7 @@ public class AppUserController {
 	 *  }
 	 * @apiSuccess (200) {Object} user UserProfile object returned for logged in user
 	 * @apiError (403) {String} UserNotAuthenticated The supplied authentication token is missing or invalid.
-	 * @apiSuccessExample {json} Success
-	 * HTTP/1.1 200 OK
-	 * {
-	 * 	"firstname": "Galen",
-	 * 	"lastname": "Danziger",
-	 * 	"email": "gedanziger@gmail.com",
-	 * 	"gender": "M",
-	 * 	"username": "galen"
-	 * }
+	 * @apiUse userDetailsShortDto
 	 * @apiErrorExample {json} UserNotAuthenticated
 	 * HTTP/1.1 403 Forbidden
 	 * {
@@ -74,9 +67,10 @@ public class AppUserController {
 		if( user == null) {
 			return SpringJSONUtil.returnErrorMessage("UserNotAuthenticated", HttpStatus.FORBIDDEN);
 		}
-		user = UserProfile.findUserProfile(user.getId());
+		UserProfile trueUser = UserProfile.findUserProfile(user.getId());
+		System.out.println("User " + trueUser + " Requested data");
 		
-		return new ResponseEntity<String>(user.toJson(), HttpStatus.OK);
+		return new ResponseEntity<String>(UserDetailsShortDto.fromUserProfileToDto(trueUser), HttpStatus.OK);
 	}
 
 	/**
