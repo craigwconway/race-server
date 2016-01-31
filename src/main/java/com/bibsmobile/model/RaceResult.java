@@ -62,6 +62,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bibsmobile.util.BuildTypeUtil;
+import com.bibsmobile.util.PermissionsUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import flexjson.JSONDeserializer;
@@ -698,6 +699,20 @@ public class RaceResult implements Comparable<RaceResult> {
         EntityManager em = RaceResult.entityManager();
         TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o WHERE o.event = :event", Long.class);
         q.setParameter("event", event);
+        return q.getSingleResult();
+    }
+    
+    public static Long countResultsForUser(UserProfile user) {
+        // return all events for the sysadmin or unauthenticated users (can not edit anyways)
+        if (user == null || PermissionsUtil.isSysAdmin(user))
+            return RaceResult.countRaceResults();
+        // get only accessible events for everyone else
+        String jpaQuery = "select COUNT(r) from RaceResult r join r.event e join e.eventUserGroups eug join eug.userGroup ug join ug.userGroupUserAuthorities ugua join ugua.userAuthorities uasid join uasid.userProfile up where up.id = :user_id";
+
+        TypedQuery<Long> q = entityManager().createQuery(jpaQuery, Long.class);
+        q.setParameter("user_id", user.getId());
+
+
         return q.getSingleResult();
     }
 
