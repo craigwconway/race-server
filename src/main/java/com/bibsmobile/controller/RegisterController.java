@@ -71,9 +71,31 @@ public class RegisterController {
 	
 	@RequestMapping(value = "second", method= RequestMethod.POST, produces = "text/html")
 	public String submitSecondPage(Model uiModel, AccountCreationDto account) {
-		System.out.println("Submitted step 2");
 		uiModel.addAttribute("account", account);
+		System.out.println("Submitted step 2");
+		if(UserProfile.countFindUserProfilesByUsernameEquals(account.getUsername()) > 0) {
+			uiModel.addAttribute("duplicate", true);
+			return "register/second";
+		}
 		return "register/third";
+	}
+	
+	@RequestMapping(value="checkusername", method=RequestMethod.GET)
+	public ResponseEntity<String> checkUsername(@RequestParam("username") String username) { 
+		if(StringUtils.isEmpty(username)) {
+			return new ResponseEntity<String>("bad", HttpStatus.OK);
+		}
+		try{
+			long profiles = UserProfile.countFindUserProfilesByUsernameEquals(username);
+			if(profiles == 0) {
+				return new ResponseEntity<String>("good", HttpStatus.OK);
+			} else {
+				return new ResponseEntity<String>("bad", HttpStatus.OK);
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<String>("bad", HttpStatus.OK);
+		}
+		
 	}
 
 	@RequestMapping(value = "third", method= RequestMethod.POST, produces = "text/html")
@@ -187,7 +209,7 @@ public class RegisterController {
 		uiModel.addAttribute("accounts", accounts);
 		uiModel.addAttribute("userGroup", group);
 		uiModel.addAttribute("orgId", group.getId());
-		return "register/account";
+		return "register/created";
 	}
 	
 	@RequestMapping(value = "/signupbank", method = RequestMethod.POST, produces = "text/html")
