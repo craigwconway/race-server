@@ -87,7 +87,7 @@
                         </div>
                         <div class="column">
                             <div class="ui small statistic">
-                                <div class="value bibs-green">31,200</div>
+                                <div class="value bibs-green">${totalAthletes }</div>
                                 <div class="label bibs-gray-4">Athletes</div>
                             </div>
                         </div>
