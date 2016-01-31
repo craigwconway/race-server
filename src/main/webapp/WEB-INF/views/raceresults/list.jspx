@@ -3,31 +3,8 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <style>
-        body{
-            background-image: url('images/auth.jpg');
-            background-size: cover; background-repeat: no-repeat;
-        }
-        .white-overlay{
-            display: block;
-            background: rgba(255,255,255,.8);
-            width: 103%;
-            min-height: 500px;
-            margin-top: -2%;
-            margin-left: -1%;
-            padding-top: 2%;
-            padding-bottom: 2%;
-            text-align: center;
-        }
-        .info-container{
-            width: 80%;
-            margin: 0 auto;
-            color: #292929;
-        }
         #event{
             width:300px;
-        }
-        label{
-        	width:60px;
         }
         @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
             .pull-left, .pull-right, .ui.form .fields > .field{
@@ -196,16 +173,33 @@
                 </div>
             </div>
             <div style="clear:both;"/>
-            <page:list id="pl_com_bibsmobile_model_RaceResult" items="${raceresults}" z="YFteNpNSy87fSVCYb1X/4lNLBoA=">
-                <table:table data="${raceresults}" id="l_com_bibsmobile_model_RaceResult" path="/raceresults" z="8A8H2AFIrX6CW2kysD/E4yuVCqQ=">
-                    <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
-                    <table:column id="c_com_bibsmobile_model_RaceResult_firstname" property="firstname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
-                    <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
-                    <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
-                    <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="user-managed"/>
-                    <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" z="user-managed" render="false"/>
-                </table:table>
-            </page:list>
+            <c:if test="${empty raceresults}">
+                <div class="empty-event-placeholder ui basic segment"><!--  -->
+                </div>
+                <h1 class="ui horizontal divider header">
+                    <i class="fa fa-globe left-icon"><!--  --></i>
+                    Athletes
+                </h1>
+                <div class="empty-state bibs-gray-3">
+                    No athletes were found!
+                </div>
+            </c:if>
+
+            <c:if test="${not empty raceresults}">
+                <div class="empty-event-placeholder ui basic segment"><!--  -->
+                </div>
+
+                <page:list id="pl_com_bibsmobile_model_RaceResult" items="${raceresults}" z="YFteNpNSy87fSVCYb1X/4lNLBoA=">
+                    <table:table data="${raceresults}" id="l_com_bibsmobile_model_RaceResult" path="/raceresults" z="8A8H2AFIrX6CW2kysD/E4yuVCqQ=">
+                        <table:column id="c_com_bibsmobile_model_RaceResult_bib" property="bib" z="g8/dhmailv7l/pyuBsbduraTxso="/>
+                        <table:column id="c_com_bibsmobile_model_RaceResult_firstname" property="firstname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
+                        <table:column id="c_com_bibsmobile_model_RaceResult_lastname" property="lastname" z="yih8mWmthdt4GbiXqHTkPueM5lA="/>
+                        <table:column id="c_com_bibsmobile_model_RaceResult_event" property="event" z="e+D79zr0xnSYV+wYSkwwxjTHdLM="/>
+                        <table:column id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" property="timeofficialdisplay" z="user-managed"/>
+                        <table:column id="c_com_bibsmobile_model_RaceResult_userProfile" property="userProfile" z="user-managed" render="false"/>
+                    </table:table>
+                </page:list>
+            </c:if>
         </div>
     </div>
 </div>
