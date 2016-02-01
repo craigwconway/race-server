@@ -10,17 +10,6 @@ body{
     font-family: 'Lato', 'Helvetica-Neue', Arial, sans-serif;
 }
 
-.bibs-page{
-    position: absolute;
-    width: 92%;
-    min-height: 95%;
-    max-height: 95%;
-	margin-left: 6em !important;
-    margin-right: 1%;
-    margin-bottom: 1%;
-    overflow-y: auto;
-}
-
 .tri-container{
 	position: relative;
 	display: flex;

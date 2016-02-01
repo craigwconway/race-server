@@ -2,6 +2,15 @@
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
 
+	<style>
+		.ui.menu .item > img:not(.ui) {
+		    display: inline-block;
+		    vertical-align: middle;
+		    margin: .5em 0em;
+		    width: 2.5em;
+		    max-height: 35px;
+		}
+	</style>
 	<spring:url var="banner" 		value="/bibs-server/images/bibsicon.png" />
 	<spring:url var="home" 			value="/" />
 	<spring:url var="raceday_url" 	value="/events/raceday" />
@@ -16,9 +25,9 @@
 	<spring:message code="button_home" var="home_label" htmlEscape="false" />
 
     <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-	<div class="ui visible left inverted vertical sidebar labeled icon small-caps menu">
+	<div class="ui visible left vertical sidebar inverted labeled icon small-caps desktop menu">
     	<a href="/bibs-server" class="item">
-    		<img class="ui mini image" style="margin:0 auto" src="/bibs-server/images/bibsicon.png"/>
+    		<img src="/bibs-server/images/bibsicon.png"/>
 		</a>
     	<a href="/bibs-server" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
     	<a href="/bibs-server/register/account" class="item"><i class="fa fa-user left-icon icon"><!--  --></i> account</a>
@@ -29,39 +38,56 @@
   	  	</sec:authorize>
     	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>
     	<a class="item" href="#"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a>
-	 </div>
+	</div>
+	<div class="ui visible top sidebar inverted large mobile menu">
+		<div class="item" id="mobile-menu-bars"><i class="fa fa-bars"><!--  --></i></div>
+	</div>
+	<div class="ui top sidebar stackable inverted small-caps mobile menu" id="mobile-menu">
+    	<a href="/bibs-server" class="item">
+    		<img src="/bibs-server/images/bibsicon.png"/>
+		</a>
+    	<a href="/bibs-server" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
+    	<a href="/bibs-server/register/account" class="item"><i class="fa fa-user left-icon icon"><!--  --></i> account</a>
+  		<a href="${raceday_url}" class="item" style="display:none"><i class="fa fa-wifi left-icon icon"><!--  --></i> rfid</a>
+  		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+  	  		<a href="${timers_url}" class="item" style="display:none"><i class="fa fa-clock-o left-icon icon"><!--  --></i> timers</a>
+  			<a href="${license_url}" class="item" style="display:none"><i class="fa fa-bolt left-icon icon"><!--  --></i> licensing</a>
+  	  	</sec:authorize>
+    	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>
+    	<a class="item" href="#"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a>
+	</div>
     </sec:authorize>
+	<script type="text/javascript">
+		window.onload = init;
 
-	<script>
-	window.onload = init;
+		function init(){
+			initTooltip();
+			jQuery('#mobile-menu').sidebar().sidebar('attach events', '#mobile-menu-bars');
+		}
 
-	function init(){
-		initTooltip();
-	}
+		function initTooltip(){
+		    var url = window.location.href;
+		    var urllen = url.length;
+		    var ind = url.lastIndexOf("=");
+		    var eid = url.substring(ind+1, urllen);
+		    if( eid == 't' ){
+		    	jQuery('input[name="j_username"]').parent().addClass("has-error");
+		    	jQuery('input[name="j_password"]').parent().addClass("has-error");
+			    jQuery("#loginForm").show();
+			    jQuery('input[name="j_username"]').focus();
+		    }
+		    else{
+		    	jQuery('input[name="j_username"]').parent().removeClass("has-error");
+		    	jQuery('input[name="j_password"]').parent().removeClass("has-error");
+		    	return false;
+		    }
+		}
 
-	function initTooltip(){
-	    var url = window.location.href;
-	    var urllen = url.length;
-	    var ind = url.lastIndexOf("=");
-	    var eid = url.substring(ind+1, urllen);
-	    if( eid == 't' ){
-	    	jQuery('input[name="j_username"]').parent().addClass("has-error");
-	    	jQuery('input[name="j_password"]').parent().addClass("has-error");
-		    jQuery("#loginForm").show();
-		    jQuery('input[name="j_username"]').focus();
-	    }
-	    else{
-	    	jQuery('input[name="j_username"]').parent().removeClass("has-error");
-	    	jQuery('input[name="j_password"]').parent().removeClass("has-error");
-	    	return false;
-	    }
-	}
-
-	function redirectEventList(){
-	    window.location='/bibs-server/events?page=1&amp;size=10';
-	}
-	function redirectAthleteList(){
-	    window.location='/bibs-server/raceresults?/myresults';
-	}
+		function redirectEventList(){
+		    window.location='/bibs-server/events?page=1&amp;size=10';
+		}
+		function redirectAthleteList(){
+		    window.location='/bibs-server/raceresults?/myresults';
+		}
 	</script>	
 </div>

@@ -19657,6 +19657,13 @@ ol.ui.horizontal.list li:before,
   border-radius: 0.28571429rem 0px 0px 0.28571429rem;
 }
 
+.ui.menu .item>img:not(.ui){
+  display: inline-block;
+  vertical-align: middle;
+  margin: -.3em 0;
+  width: 2.5em;
+}
+
 /* Border */
 
 .ui.menu .item:before {

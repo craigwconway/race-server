@@ -168,8 +168,17 @@ h3.ui.header.event-type-header{
 }
 @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
     .map-container {
-        width: 95%;
-        margin-top: 15%;
+        float: none;
+        width: 90%;
+        margin: 0 auto;
+    }
+    .event-info-box{
+        width: 400px;
+        height: auto; 
+        padding: 0; 
+        padding-bottom: 1.5em; 
+        margin-left: 1rem;
+        float: none; 
     }
     .map-canvas { width: 90%; height: 250px; margin: 0 auto; }
     .info-container{
@@ -178,5 +187,10 @@ h3.ui.header.event-type-header{
     }
     .event-name{ font-size: 1.7em; }
     #event-time{ width: auto; }
-    .button-container{ padding-top: 2%; text-align: right; }
+    .button-container{
+        float: none;
+        padding: 0 5%;
+        padding-top: 2%;
+        text-align: left;
+    }
 }

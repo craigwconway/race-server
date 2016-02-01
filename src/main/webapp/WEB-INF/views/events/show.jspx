@@ -6,7 +6,7 @@
 <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.9/mapbox.css' rel='stylesheet' />
 <page id="ps_com_bibsmobile_model_Event" object="${event}" path="/events" z="SUWZZpErB/yTE/5ml2JyarhiIek=">
 
-<div class="ui long modal" id="addType">
+<div class="ui long modal" id="addType" style="display:none">
     <div class="header">Manage Event Type</div>
     <c:if test="${empty eventTypes}">
         <div class="ui bibs-bg-main-yellow bibs-gray-4 no-border-radius segment">
@@ -67,13 +67,14 @@
                         </div>
                     </div>
                     <div class="one wide inline required field">
-                        <div class="ui vertical divider" style="height: 25%;left: 28%;top: 38%;">or</div>
+                        <div class="ui vertical desktop divider" style="height: 25%;left: 28%;top: 38%;">or</div>
+                        <div class="ui horizontal mobile divider" style="min-width:300px">or</div>
                     </div>
                     <div class="ten wide inline required field">
                         <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px" />
                         <div class="ui icon buttons" style="margin-left:10px">
                             <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
-                            <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+                            <div class="ui button dist-btn" id="dist-km"><b><span class="desktop">kilometers></span><span class="mobile">km</span></b></div>
                             <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
                         </div>
                     </div>
@@ -98,7 +99,10 @@
                     <div class="seven wide field">
                         <input type="text" name="typeName" placeholder="Event Type Name"><!--  --></input>
                     </div>
-                    <div class="ui left pointing label" style="line-height:2em;">
+                    <div class="ui left pointing desktop label" style="line-height:2em;">
+                        We can set this automatically for you if you don't name it.
+                    </div>
+                    <div class="ui pointing mobile label" style="line-height:2em;">
                         We can set this automatically for you if you don't name it.
                     </div>
                 </div>
@@ -125,7 +129,7 @@
                     <input type="checkbox"><!--  --></input>
                 </div>
                 <div class="tab-reg">
-                    <div class="four wide required field">
+                    <div class="four wide computer sixteen wide tablet required field">
                         <label style="width:100%">Price</label>
                         <div class="ui labeled input">
                             <div class="ui label">$</div>
@@ -136,7 +140,7 @@
                                     data-parsley-required="true"></input>
                         </div>
                     </div>
-                    <div class="four wide field">
+                    <div class="four wide computer sixteen wide tablet field">
                         <label style="width:100%">Max Participant Count</label>
                         <input  type="number" name="available"
                                 placeholder="Max # of Participants"
@@ -196,7 +200,6 @@
         <div class="ui button" onclick="closeModal()">Close</div>
     </div>
 </div>
-
 <div class="ui long modal" id="liveResults" style="display:none">
     <div class="header">Live Results Snippet</div>
     <div class="content">
@@ -209,7 +212,6 @@
         <div class="ui button" onclick="closeModal()">Close</div>
     </div>
 </div>
-
 <div class="ui long modal" id="waiverModal" style="display:none">
     <div class="header">Waiver</div>
     <div class="content">
@@ -220,7 +222,6 @@
         <div class="ui green button post-waiver-button" onclick="postWaiver()">Save</div>
     </div>
 </div>
-
 <div class="ui long modal" id="emailModal" style="display:none">
     <div class="header">Email</div>
     <div class="content">
@@ -258,7 +259,6 @@
         <div class="ui green button post-email-button" onclick="sendEmail()">Send</div>
     </div>
 </div>
-
 <div class="ui small modal" id="bibsModal" style="display:none">
     <div class="header">Manage Bib Numbers</div>
     <div class="content">
@@ -308,7 +308,6 @@
         <div class="ui red button post-bibs-button" onclick="assignBibs()">Overwrite Bib Numbers</div>
     </div>
 </div>
-
 <div class="ui small modal" id="exportRegModal" style="display:none">
     <div class="header">Export Registration</div>
     <div class="content">
@@ -358,7 +357,6 @@
         </button>
     </div>
 </div>
-
 <div class="ui small modal" id="exportAthletesModal" style="display:none">
     <div class="header">Export Athletes</div>
     <div class="content">
@@ -386,7 +384,6 @@
         </button>
     </div>
 </div>
-
 <div class="ui small modal" id="importAthletesModal" style="display:none">
     <div class="header">Import Athletes</div>
     <div class="content">
@@ -416,7 +413,7 @@
 </div>
 
 <div class="bibs-page bibs-bg-gray-1">
-    <div class="ui very padded basic segment">
+    <div class="ui basic segment">
     <jsp:useBean id="now" class="java.util.Date"/>
     <fmt:parseDate value="${event.timeStartLocal}" pattern="MM/dd/yyyy hh:mm:ss a" var="eventDate"/>
     <c:choose>
@@ -442,7 +439,7 @@
             </div>
         </c:otherwise>
     </c:choose>
-    <div class="ui labeled icon bibs-bg-black menu">
+    <div class="ui labeled icon bibs-bg-black desktop menu">
         <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <c:if test='${(eventadmin)}'>
             <c:if test='${(build.registration)}'>
@@ -519,9 +516,91 @@
         </div>
         </sec:authorize>
     </div>
+    <div class="ui stackable bibs-bg-black small-caps menu">
+        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+        <c:if test='${(eventadmin)}'>
+            <c:if test='${(build.registration)}'>
+                <c:if test="${not empty eventTypes}">
+                <a class="item bibs-gray-1" href="#" onclick="redirectReport();return false;" style="max-width:100px">
+                    <i class="fa fa-line-chart icon"><!--  --></i> Registration Analytics
+                </a>
+                </c:if>
+            </c:if>
+            <a class="item bibs-gray-1" href="#" onclick="redirectAthletes();return false;">
+                <i class="fa fa-users icon"><!--  --></i> Athletes
+            </a>
+            <a class="item bibs-gray-1" href="#" onclick="redirectLive();return false;">
+                <i class="fa fa-refresh icon"><!--  --></i> Live
+            </a>
+        </c:if>
+        </sec:authorize>
+        <a class="item bibs-gray-1" href="#" onclick="redirectAwards();return false;">
+            <i class="fa fa-trophy icon"><!--  --></i> Awards
+        </a>
+        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+            <c:if test='${(build.registration)}'>
+                <div class="ui simple dropdown item bibs-gray-1 .main-menu-dropdown">
+                    <i class="fa fa-check-square-o icon"><!--  --></i> Registration
+                    <i class="fa fa-caret-down icon"><!--  --></i>
+                    <div class="menu">
+                        <c:if test='${(eventadmin) &amp;&amp; (!event.regEnabled)}'>
+                            <a class="item" href="#" onclick="redirectEnableReg(); return false;">Open Registration</a>
+                        </c:if>
+                        <c:if test='${(eventadmin) &amp;&amp; (event.regEnabled)}'>
+                            <a class="item" href="#" onclick="redirectDisableReg(); return false;">Close Registration</a>
+                            <div class="divider"><!--  --></div>
+                        </c:if>
+                        <a class="item" href="#" onclick="redirectManageReg(); return false;">Registration Tools</a>
+                        <a class="item" href="#" onclick="renderModal('exportReg')">Export Registrations</a>
+                        <a class="item" href="#" onclick="redirectSearchReg(); return false;">Search Registrations</a>
+                        <c:if test="${not empty eventTypes}">
+                            <a class="item" href="#" onclick="renderModal('bibs')">Assign Bib Numbers</a>
+                            <div class="divider"><!--  --></div>
+                        </c:if>
+                        <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+                        <!-- <c:if test='${(event.regEnabled)}'> -->
+                            <a class="item" href="#" onclick="renderModal('email')">Send Email Announcement</a>
+                            <div class="divider"><!--  --></div>
+                        <!-- </c:if> -->
+                        </sec:authorize>
+                        <a class="item" href="#" onclick="renderModal('regButton');return false;">Registration URL/Link</a>
+                        <a class="item" href="#" onclick="renderModal('waiver')">Waiver</a>
+                    </div>
+                </div>
+            </c:if>
+            <div class="ui simple dropdown item bibs-gray-1 .main-menu-dropdown">
+                <i class="fa fa-file-text icon"><!--  --></i> Results
+                <i class="fa fa-caret-down icon"><!--  --></i>
+                <div class="menu">
+                    <a class="item" href="#" onclick="renderModal('importAthletes')">Import Athletes</a>
+                    <a class="item" href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a>
+                    <c:if test="${dropboxUnlink == true}">
+                        <a class="item" href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a>
+                    </c:if>
+                    <a class="disabled item" href="#">Import bibs file</a>
+                    <div class="divider"><!--  --></div>
+                    <a class="item" href="#" onclick="renderModal('exportAthletes')">Export Athletes</a>
+                    <a class="item" href="#" onclick="cloud();return false;">Cloud Sync</a>
+                    <c:if test="${lastImport != null}">
+                        <a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a>
+                    </c:if>
+                    <a class="item" href="#" onclick="redirectBackup();return false;">Export bibs file</a>
+                    <div class="divider show-live"><!--   --></div>
+                    <a class="item show-live" onclick="liveUrl();return false;">Live Results Link</a>
+                </div>
+            </div>
+        </sec:authorize>
+    </div>
     <div class="ui grid">
         <div class="row">
-            <div class="left floated eleven wide column">
+            <div class="left floated eleven wide computer sixteen wide tablet column">
+            <div class="event-info-box mobile">
+                <div class="event-name">${event.name}</div>
+                <div class="event-location">${event.city}, ${event.state}</div>
+                <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" />
+                 <!-- first start <fmt:formatDate type="time" value="${eventDate}" /> -->
+                 </div>
+            </div>
             <c:if test='${(build.registration)}'>
                 <div class="map-container">
                     <div id="map"><!--  --></div>
@@ -529,82 +608,82 @@
                 </div>
             </c:if>
             <c:if test='${(!build.registration)}'>
-            <div class="map-container"><!--  --></div>
+                <div class="map-container"><!--  --></div>
             </c:if>
-            <div class="event-info-box">
-                <div class="event-name">${event.name}</div>
-                <div class="event-location">${event.city}, ${event.state}</div>
-                <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" />
-                 <!-- first start <fmt:formatDate type="time" value="${eventDate}" /> -->
-                 </div>
+                <div class="event-info-box desktop">
+                    <div class="event-name">${event.name}</div>
+                    <div class="event-location">${event.city}, ${event.state}</div>
+                    <div id="event-time"><fmt:formatDate type="date" value="${eventDate}" />
+                     <!-- first start <fmt:formatDate type="time" value="${eventDate}" /> -->
+                     </div>
+                </div>
             </div>
-            </div>
-            <div class="right floated four wide column">
-            <div class="button-container">
-                <c:if test='${(build.registration)}'>
-                    <div class="ui vertical labeled icon basic buttons">
-                        <button class="ui button"
-                                onclick="editForm()">
-                            <i class="fa fa-edit bibs-orange icon"><!--  --></i>
-                            Edit Event Details
-                        </button>
-                        <button class="ui button"
-                                onclick="deleteEvent()">
-                            <i class="fa fa-trash bibs-red icon"><!--  --></i>
-                            Delete Event
-                        </button>
-                    <c:if test='${event.regEnabled}'>
-                        <button class="ui active button"
-                                onclick="redirectDisableReg()">
-                            <i  class="fa fa-check icon bibs-green"><!--   --></i>
-                            Registration is open
-                        </button>
+            <div class="right floated four wide computer sixteen wide tablet column">
+                <div class="button-container">
+                    <c:if test='${(build.registration)}'>
+                        <div class="ui vertical labeled icon basic buttons">
+                            <button class="ui button"
+                                    onclick="editForm()">
+                                <i class="fa fa-edit bibs-orange icon"><!--  --></i>
+                                Edit Event Details
+                            </button>
+                            <button class="ui button"
+                                    onclick="deleteEvent()">
+                                <i class="fa fa-trash bibs-red icon"><!--  --></i>
+                                Delete Event
+                            </button>
+                        <c:if test='${event.regEnabled}'>
+                            <button class="ui active button"
+                                    onclick="redirectDisableReg()">
+                                <i  class="fa fa-check icon bibs-green"><!--   --></i>
+                                Registration is open
+                            </button>
+                        </c:if>
+                        <c:if test='${(!event.regEnabled)}'>
+                            <button class="ui button"
+                                    onclick="redirectEnableReg()">
+                                <i  class="fa fa-ban icon"><!--   --></i>
+                                Registration is closed
+                            </button>
+                        </c:if>
+                        <c:if test='${(event.live)}'>
+                            <button class="ui active button"
+                                    onclick="redirectDisableLive()">
+                                <i  class="fa fa-unlock icon bibs-green"><!--   --></i>
+                                Listing is public
+                            </button>
+                        </c:if>
+                        <c:if test='${(!event.live)}'>
+                            <button class="ui button"
+                                    onclick="redirectEnableLive()">
+                                <i  class="fa fa-lock icon"><!--   --></i>
+                                Listing is private
+                            </button>
+                        </c:if>
+                        <c:if test='${(event.sync)}'>
+                            <button class="ui active button"
+                                    onclick="redirectDisableSync()">
+                                <i  class="fa fa-cloud icon bibs-green"><!--   --></i>
+                                Cloud sync enabled
+                            </button>
+                        </c:if>
+                        <c:if test='${(!event.sync)}'>
+                            <button class="ui button"
+                                    onclick="redirectEnableSync()">
+                                <i  class="fa fa-ban icon"><!--   --></i>
+                                Cloud sync disabled
+                            </button>
+                        </c:if>
+                        <c:if test="${not empty eventTypes}">
+                            <button class="ui bibs-bg-main-teal bibs-gray-1 button"
+                                    onclick="redirectManageReg()">
+                                <i  class="fa fa-wrench icon"><!--  --></i>
+                                Registration Tools
+                            </button>
+                        </c:if>
+                        </div>
                     </c:if>
-                    <c:if test='${(!event.regEnabled)}'>
-                        <button class="ui button"
-                                onclick="redirectEnableReg()">
-                            <i  class="fa fa-ban icon"><!--   --></i>
-                            Registration is closed
-                        </button>
-                    </c:if>
-                    <c:if test='${(event.live)}'>
-                        <button class="ui active button"
-                                onclick="redirectDisableLive()">
-                            <i  class="fa fa-unlock icon bibs-green"><!--   --></i>
-                            Listing is public
-                        </button>
-                    </c:if>
-                    <c:if test='${(!event.live)}'>
-                        <button class="ui button"
-                                onclick="redirectEnableLive()">
-                            <i  class="fa fa-lock icon"><!--   --></i>
-                            Listing is private
-                        </button>
-                    </c:if>
-                    <c:if test='${(event.sync)}'>
-                        <button class="ui active button"
-                                onclick="redirectDisableSync()">
-                            <i  class="fa fa-cloud icon bibs-green"><!--   --></i>
-                            Cloud sync enabled
-                        </button>
-                    </c:if>
-                    <c:if test='${(!event.sync)}'>
-                        <button class="ui button"
-                                onclick="redirectEnableSync()">
-                            <i  class="fa fa-ban icon"><!--   --></i>
-                            Cloud sync disabled
-                        </button>
-                    </c:if>
-                    <c:if test="${not empty eventTypes}">
-                        <button class="ui bibs-bg-main-teal bibs-gray-1 button"
-                                onclick="redirectManageReg()">
-                            <i  class="fa fa-wrench icon"><!--  --></i>
-                            Registration Tools
-                        </button>
-                    </c:if>
-                    </div>
-                </c:if>
-            </div>
+                </div>
             </div>
         </div>
         <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
@@ -680,7 +759,7 @@
         initInfo();
 
         <c:if test="${empty eventTypes}">
-            renderEventTypeModal('clean');
+            // renderEventTypeModal('clean');
         </c:if>
         <c:if test='${(!build.rfid)}'>
             initMap();
