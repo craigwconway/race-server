@@ -31,7 +31,13 @@
 		            <div class="sub header">Standings for ${eventType.typeName}</div>
 		        </div>
 		    </h2>
-
+			<select class="ui dropdown" id="types" name="types" onchange="filterByEventType()">
+				<option id="eventType-0" disabled="disabled">Event Types</option>
+				<c:forEach items="${eventTypes}" var="item" varStatus="i">
+					<option id="types-${item.id}" value="${item.id}">${ item.typeName }</option>
+				</c:forEach>
+			</select>
+	        <div style="clear:both;height:15px"><!--   --></div>
 			<div class="awards-nav" style="text-align:center;">
 				<button class="ui bibs-bg-main-teal bibs-gray-1 button"
 						onclick="byGender('M')">Age M</button>
@@ -156,6 +162,7 @@
 			if(${eventType.awardsConfig.allowMastersInNonMasters}){
 				jQuery('#master').prop('checked', true);
 			}
+			setEventTypeSelection(getUrlParam('type'));
 		}
 
 		function renderModal(type){
@@ -233,5 +240,21 @@
 		function create(){
 			window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
 		}
+		
+		function filterByEventType(){
+			var uri = document.location;
+			uri = updateQueryStringParameter(uri+"","event",${event.id});
+			uri = updateQueryStringParameter(uri+"","type",jQuery('#types').val());
+          	document.location = uri;
+		}
+		
+		function setEventTypeSelection(id){
+			jQuery("#types-"+id).prop('selected','true');
+		}
+        function getUrlParam(sParam)
+        {
+            return purl().param(sParam);
+        }
+		
 	</script>
 </div>
