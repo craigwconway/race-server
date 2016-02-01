@@ -7,6 +7,13 @@
         margin: 0 auto;
         width: 400px;
     }
+    #eventForm{
+        width:400px;
+        margin:3% auto;
+    }
+    textarea{
+        width: 400px;
+    }
     .ui.search .prompt{
         width: 400px;
         height: 34px;
@@ -54,9 +61,18 @@
         text-align: right;
     }
     @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
-        .form-fields>input, #demo>input{
-            width: 90%;
-            margin: 5px auto; 
+        #eventForm, textarea{
+            width: 95%;
+        }
+        .bootstrap-datetimepicker-widget.timepicker-sbs{
+            width: 300px;
+        }
+        .bootstrap-datetimepicker-widget.timepicker-sbs > .row > .col-sm-6.timepicker{
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+        .bootstrap-datetimepicker-widget button[data-action]{
+            margin-left: -0.3em;
         }
         .submit{
             width: auto;
@@ -72,7 +88,7 @@
 </style>
 <div class="bibs-page bibs-bg-gray-1">
 <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
-    <div class="ui small form" style="width:400px; margin:3% auto">
+    <div class="ui small form" id="eventForm">
         <h2 class="ui icon center aligned header">
             <i class="fa fa-bullhorn"><!--  --></i>
             <div class="content">Create Event
@@ -97,8 +113,7 @@
         </div>
         <div class="field">
             <label>Event Description</label>
-            <textarea  name="description" style="width:400px;margin:0 auto"
-                rows="2"
+            <textarea  name="description" rows="2"
                 placeholder="World's largest race series! Win up to $10,000!"><!-- --></textarea>
         </div>
         <div class="required field">

@@ -10,6 +10,13 @@
         line-height: 27px;
         color: #292929;
     }
+    #eventForm{
+        width:400px;
+        margin:3% auto;
+    }
+    textarea{
+        width: 400px;
+    }
     label{
         width: 100%;
         text-align:left;
@@ -19,6 +26,24 @@
         width: 400px;
         text-align: right;
         margin-top: 2%;
+    }
+    @media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+        #eventForm, textarea{
+            width: 95%;
+        }
+        .bootstrap-datetimepicker-widget.timepicker-sbs{
+            width: 300px;
+        }
+        .bootstrap-datetimepicker-widget.timepicker-sbs > .row > .col-sm-6.timepicker{
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+        .bootstrap-datetimepicker-widget button[data-action]{
+            margin-left: -0.3em;
+        }
+        .submit{
+            width: 95%;
+        }
     }
 </style>
 <div class="bibs-page bibs-bg-gray-1" style="padding-top:2%;">
@@ -34,7 +59,7 @@
         <div style="display: none;">
             <input type="text" id="PreventChromeAutocomplete" name="PreventChromeAutocomplete" autocomplete="address-level4" />
         </div>
-        <div class="ui small form" style="width:400px;margin:0 auto;">
+        <div class="ui small form" id="eventForm">
             <div class="required field">
                 <label>Event Name</label>
                 <input  type="text" name="name"

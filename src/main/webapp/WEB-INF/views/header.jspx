@@ -58,30 +58,30 @@
 	</div>
     </sec:authorize>
 	<script type="text/javascript">
-		window.onload = init;
+		// window.onload = init;
 
-		function init(){
-			initTooltip();
-			jQuery('#mobile-menu').sidebar().sidebar('attach events', '#mobile-menu-bars');
-		}
+		// function init(){
+		// 	initTooltip();
+		// 	jQuery('#mobile-menu').sidebar().sidebar('attach events', '#mobile-menu-bars');
+		// }
 
-		function initTooltip(){
-		    var url = window.location.href;
-		    var urllen = url.length;
-		    var ind = url.lastIndexOf("=");
-		    var eid = url.substring(ind+1, urllen);
-		    if( eid == 't' ){
-		    	jQuery('input[name="j_username"]').parent().addClass("has-error");
-		    	jQuery('input[name="j_password"]').parent().addClass("has-error");
-			    jQuery("#loginForm").show();
-			    jQuery('input[name="j_username"]').focus();
-		    }
-		    else{
-		    	jQuery('input[name="j_username"]').parent().removeClass("has-error");
-		    	jQuery('input[name="j_password"]').parent().removeClass("has-error");
-		    	return false;
-		    }
-		}
+		// function initTooltip(){
+		//     var url = window.location.href;
+		//     var urllen = url.length;
+		//     var ind = url.lastIndexOf("=");
+		//     var eid = url.substring(ind+1, urllen);
+		//     if( eid == 't' ){
+		//     	jQuery('input[name="j_username"]').parent().addClass("has-error");
+		//     	jQuery('input[name="j_password"]').parent().addClass("has-error");
+		// 	    jQuery("#loginForm").show();
+		// 	    jQuery('input[name="j_username"]').focus();
+		//     }
+		//     else{
+		//     	jQuery('input[name="j_username"]').parent().removeClass("has-error");
+		//     	jQuery('input[name="j_password"]').parent().removeClass("has-error");
+		//     	return false;
+		//     }
+		// }
 
 		function redirectEventList(){
 		    window.location='/bibs-server/events?page=1&amp;size=10';

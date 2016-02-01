@@ -252,7 +252,7 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 }
 
 /* ----------- Non-Retina Screens ----------- */
-@media screen and (min-device-width: 992px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 1) { 
+@media screen and (min-device-width: 992px) and (-webkit-min-device-pixel-ratio: 1) { 
 	.mobile{
 		display:none!important;
 	}
@@ -263,11 +263,6 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 	.mobile{
 		display:none!important;
 	}
-}
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-    .mobile{
-    	display:none!important;
-    }
 }
 
 /* ----------- Smartphones ----------- */
