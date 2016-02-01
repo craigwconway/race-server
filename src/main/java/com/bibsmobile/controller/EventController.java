@@ -595,6 +595,10 @@ public class EventController {
         uiModel.addAttribute("eventTypes", EventType.findEventTypesByEvent(event));
         uiModel.addAttribute("eventType", type);
         uiModel.addAttribute("awardCategoryResults", AwardsImmortalCache.getAwards(type.getId()));
+        System.out.println("=================AWARDS==============");
+        for(AwardCategoryResults results : AwardsImmortalCache.getAwards(type.getId())){
+        	System.out.println(results.getResults());
+        }
         uiModel.addAttribute("templates", AwardsTemplate.findAwardsTemplatesForUser(UserProfileUtil.getLoggedInUserProfile()));
         return "events/awards";
     }
@@ -639,7 +643,29 @@ public class EventController {
     	}
     }
 
-
+    // Print awards
+    @RequestMapping(value = "/printclass", method = RequestMethod.GET)
+    public static void printAgeGender(@RequestParam(value = "event", required = true) Long eventId,
+    		@RequestParam(value = "type", required = true) Long eventTypeId,
+    		@RequestParam(value = "gender", required = true) String gender,
+    		HttpServletResponse response) {
+    	Event event = Event.findEvent(eventId);
+    	EventType eventType = EventType.findEventType(eventTypeId);
+    	PDDocument doc = PDFUtil.createColorMedalsPDF(eventType, AwardsImmortalCache.getAgeGenderRankings(eventTypeId, gender));
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    	try {
+    		doc.save(baos);
+    		doc.close();
+    		response.setContentType("application/pdf");
+    		response.setHeader("Content-Disposition","attachment; filename=\""+event.getName().replace(" ", "") +".pdf\"");
+    		OutputStream os = response.getOutputStream();
+    		baos.writeTo(os);
+    		os.flush();
+    		os.close();
+    	} catch (COSVisitorException | IOException e) {
+    		e.printStackTrace();
+    	}
+    }
     
     @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
     public static String ageGenderRankings(

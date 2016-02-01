@@ -609,7 +609,8 @@ public class RaceResult implements Comparable<RaceResult> {
 
     @Override
     public int compareTo(RaceResult other) {
-        return (int) ((other.timestart - other.timeofficial) - (this.timestart - this.timeofficial));
+        //return (int) ((other.timestart - other.timeofficial) - (this.timestart - this.timeofficial));
+    	return (int) ((this.timediff - other.timediff));
     }
 
     public static long fromHumanTime(String humanReadable) {

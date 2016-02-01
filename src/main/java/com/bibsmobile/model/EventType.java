@@ -597,7 +597,7 @@ public class EventType {
     public static List<RaceResult> findRaceResultsByAwardCategory(long eventType, String gender, int min, int max, int page, int size) {
         if (min > max)
             min = max;
-        String HQL = "SELECT o FROM RaceResult AS o WHERE o.eventType = :eventType AND o.timeofficial > 0 ";
+        String HQL = "SELECT o FROM RaceResult AS o WHERE o.eventType = :eventType AND o.timediff > 0 ";
         if (!gender.isEmpty()) HQL += " AND o.gender = :gender ";
         if (min >= 0 && max > 0) HQL += "AND o.age >= :min AND o.age <= :max ) ";
         HQL += " order by o.timeofficialdisplay asc";
