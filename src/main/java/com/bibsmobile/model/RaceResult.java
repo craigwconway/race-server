@@ -1146,7 +1146,9 @@ public class RaceResult implements Comparable<RaceResult> {
     public static RaceResult findFullRaceResult(Long id) {
     	if (id == null)
     		return null;
-    	RaceResult result = entityManager().createQuery("Select o FROM RaceResult o where o.id = :id", RaceResult.class).getSingleResult();
+    	RaceResult result = entityManager().createQuery("Select o FROM RaceResult o where o.id = :id", RaceResult.class)
+    			.setParameter("id", id).getSingleResult();
+    	
     	Hibernate.initialize(result.getCustomFields());
     	Hibernate.initialize(result.getSplits());
     	return result;
