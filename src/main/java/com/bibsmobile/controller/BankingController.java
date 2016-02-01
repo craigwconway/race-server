@@ -42,6 +42,7 @@ import com.bibsmobile.model.UserGroupUserAuthorityID;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.dto.BankAddRequest;
 import com.bibsmobile.util.PermissionsUtil;
+import com.bibsmobile.util.SlackUtil;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.stripe.Stripe;
@@ -147,6 +148,7 @@ public class BankingController {
 		List<Cart> checkedOut = Cart.findCompletedCartsItemsByEventBeforeDate(event, new Date()).getResultList();
 		List<Cart> refunded = Cart.findRefundedCartsItemsByEvent(event).getResultList();
 		payout.persist();
+		SlackUtil.logPayoutGenerate(event.getName());
 		return new ResponseEntity<String>("Payout", HttpStatus.OK);
 	}
 		

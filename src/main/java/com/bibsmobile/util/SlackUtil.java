@@ -90,4 +90,13 @@ public class SlackUtil {
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
 	}
 	
+	public static void logPayoutGenerate(String name) {
+		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+		JsonObject json = new JsonObject();
+		String message = getIP();
+		message += "A payout report is currently pending generation for: " + name;
+		json.addProperty("text", message);
+		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
+	}
+	
 }

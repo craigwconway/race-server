@@ -622,7 +622,7 @@ public class Cart {
         		+ "e = :event and o.status = 3 and o.created < :timecheck";
         TypedQuery<Cart> q = em.createQuery(jpaQuery, Cart.class);
         q.setParameter("event", event);
-        q.setParameter("timeCheck", timestamp);
+        q.setParameter("timecheck", timestamp);
 
         return q;
     }      
