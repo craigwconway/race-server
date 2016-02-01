@@ -516,7 +516,7 @@
         </div>
         </sec:authorize>
     </div>
-    <div class="ui stackable bibs-bg-black small-caps menu">
+    <div class="ui stackable bibs-bg-black small-caps mobile menu">
         <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <c:if test='${(eventadmin)}'>
             <c:if test='${(build.registration)}'>
