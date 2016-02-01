@@ -55,7 +55,7 @@
 						<input type="text" name="username"><!--  --></input>
 						<input type="text" name="password"><!--  --></input>
 					</div>
-					<button class="ui bibs-bg-main-yellow large button" type="submit">Add Bank</button>
+					<button class="ui bibs-bg-main-yellow large button" type="submit">Add New Account</button>
 				</form>
 			</div>
 			<div class="column">

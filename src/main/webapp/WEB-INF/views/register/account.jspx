@@ -64,6 +64,7 @@
                             </c:if> 
                         </span>
                     </div>
+                    <div class="ui bottom attached button"><i class="fa fa-edit"><!--   --></i> Edit Account</div>
                 </div>
             </div>
         </c:if>
@@ -77,7 +78,7 @@
 						<input type="text" name="username"><!--  --></input>
 						<input type="text" name="password"><!--  --></input>
 					</div>
-					<button class="ui bibs-bg-main-yellow large button" type="submit">Add Bank</button>
+					<button class="ui bibs-bg-main-yellow large button" type="submit">Add New Account</button>
 				</form>
 			</div>
 			<div class="column">
