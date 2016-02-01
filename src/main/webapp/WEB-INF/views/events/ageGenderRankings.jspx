@@ -17,7 +17,7 @@
 			</sec:authorize>
 				
 			<button class="ui green button" 
-					onclick="printawards()">Print</button>
+					onclick="printAwards()">Print</button>
 		</div>
         <div style="clear:both;height:15px"><!--   --></div>
 	    <h2 class="ui icon center aligned header">

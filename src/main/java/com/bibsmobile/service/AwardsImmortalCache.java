@@ -115,7 +115,7 @@ public class AwardsImmortalCache {
     public static List<AwardCategoryResults> getAwards(long eventTypeId){
     	List<AwardCategoryResults> list = new ArrayList<AwardCategoryResults>();
     	EventType eventType = EventType.findEventType(eventTypeId);
-    	String key = StringUtils.join("awards",eventTypeId,eventType.getAwardsConfig());
+    	String key = StringUtils.join("awards",eventTypeId);
     	// check cached value
     	if(cache.containsKey(key)){
     		System.out.println("cahce hit");
