@@ -130,7 +130,6 @@
                     </div>
                     <a class="ui label label-clone transition" data-value="1" style="display:none"  onclick="removeLabelOption(this)"><span class="label-eci-name">5k run</span><i class="fa fa-close link icon"><!--  --></i></a>
                 </div>
-                
             </div>
             <h4 class="ui horizontal header divider"><i class="fa fa-question"><!--  --></i> Preview
             </h4>
@@ -441,7 +440,7 @@
                     <label>Discount Amount (min: $1.00)</label>
                     <div class="ui labeled input">
                         <div class="ui label" style="cursor:default">$</div>
-                        <input  type="number" step="0.05" min="1" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
+                        <input  type="number" step="0.05" min="1" max="5" onchange="(function(el){el.value=parseFloat(el.value).toFixed(2);})(this)"
                                 name="socialSharingDiscountAmount"
                                 placeholder="Discount"
                                 data-parsley-error-message="Please enter a valid discount amount."
