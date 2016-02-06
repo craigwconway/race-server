@@ -238,7 +238,7 @@
 		}
 
 		function create(){
-			window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
+			window.location="/bibs-server/awardcategorys/?form&amp;event=${eventType.id}";
 		}
 		
 		function filterByEventType(){

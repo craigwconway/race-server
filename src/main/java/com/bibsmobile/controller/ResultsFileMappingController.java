@@ -206,7 +206,7 @@ public class ResultsFileMappingController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        return "redirect:/raceresults/";
+        return "redirect:/events/"+resultsImport.getResultsFile().getEvent().getId();
         
         //return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
     }

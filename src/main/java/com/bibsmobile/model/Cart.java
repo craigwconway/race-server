@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -140,14 +142,9 @@ public class Cart {
      * Amount the total is modified by for social sharing discounts.
      */
     private long referralDiscount;
-    /**
-     * Switch to denote the cart paid out.
-     */
-    private boolean paidOut = false;
-    /**
-     * Amount paid out to the user.
-     */
-    private long payoutAmount;
+    
+    @ManyToMany
+    private Set<Payout> payouts;
     /**
      * Amount held by the processor in this cart.
      */
@@ -314,7 +311,19 @@ public class Cart {
         this.timeout = timeout;
     }
 
-    public String getStripeChargeId() {
+    /**
+	 * @return the payouts
+	 */
+	public Set<Payout> getPayouts() {
+		return payouts;
+	}
+	/**
+	 * @param payouts the payouts to set
+	 */
+	public void setPayouts(Set<Payout> payouts) {
+		this.payouts = payouts;
+	}
+	public String getStripeChargeId() {
         return this.stripeChargeId;
     }
 
@@ -397,30 +406,6 @@ public class Cart {
 	 */
 	public void setProcessor(PaymentProviderEnum processor) {
 		this.processor = processor;
-	}
-	/**
-	 * @return the paidOut
-	 */
-	public boolean isPaidOut() {
-		return paidOut;
-	}
-	/**
-	 * @param paidOut the paidOut to set
-	 */
-	public void setPaidOut(boolean paidOut) {
-		this.paidOut = paidOut;
-	}
-	/**
-	 * @return the payoutAmount
-	 */
-	public long getPayoutAmount() {
-		return payoutAmount;
-	}
-	/**
-	 * @param payoutAmount the payoutAmount to set
-	 */
-	public void setPayoutAmount(long payoutAmount) {
-		this.payoutAmount = payoutAmount;
 	}
 	/**
 	 * @return the processorFee

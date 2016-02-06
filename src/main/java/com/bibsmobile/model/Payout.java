@@ -4,6 +4,7 @@
 package com.bibsmobile.model;
 
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceContext;
@@ -53,6 +55,11 @@ public class Payout {
 	 * Amount computed in payout.
 	 */
 	private long amount;
+	
+	/**
+	 * Manually added total modification.
+	 */
+	private long manualAddition;
 	
 	/**
 	 * Amount manually settled in payout (ignored/not paid out).
@@ -147,6 +154,14 @@ public class Payout {
 	 */
 	public void setAmount(long amount) {
 		this.amount = amount;
+	}
+
+	public long getManualAddition() {
+		return manualAddition;
+	}
+
+	public void setManualAddition(long manualAddition) {
+		this.manualAddition = manualAddition;
 	}
 
 	/**
