@@ -30,16 +30,20 @@
                 </div>
             </h2>
             <input name="event" value="${event.id}" style="display:none"><!--  --></input>
-            <div class="field">
-                <select class="ui dropdown" id="eventtype-type" name="eventType"
-                        data-parsley-required="true"
-                        data-parsley-error-message="Please select an event type.">
-                    <option selected="selected" disabled="true">Select Event Type</option>
-                    <c:forEach var="item" items="${eventTypes}">
-                        <option value="${item.id}">${item.typeName}</option>
-                    </c:forEach>
-                </select>
-            </div>  
+            <c:if test="${not empty eventTypes}">
+                <div class="required field">
+                    <div class="ui selection dropdown" id="eventtype-type">
+                        <input name="eventType" type="hidden"><!--  --></input>
+                        <i class="fa fa-caret-down right-icon"><!--  --></i>
+                        <div class="default text">Select Event Type</div>
+                        <div class="menu">
+                        <c:forEach var="item" items="${eventTypes}">
+                            <div class="item" data-value="${item.id}">${item.typeName}</div>
+                        </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
             <div class="field">
                 <input  type="number" name="bib"
                         placeholder="Bib Number"
@@ -129,14 +133,19 @@
     </div>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
 <script>
+    var etype = getUrlParam('type');
     window.onload=function(){
         // select event based on param
         parseEventId();
         // focus bib number
         setValidation();
         initDateTimePickers();
-        console.log("${errors}")
-        var errors = '${errors}'
+
+        // select first event type
+        jQuery('#eventtype-type').dropdown().dropdown('set selected', etype);
+
+        console.log("${errors}");
+        var errors = '${errors}';
         if(errors !== null) {
     		if(errors == "bib.duplicate") {
     			console.log("${raceResult}")
@@ -150,7 +159,7 @@
         if(GetURLParameter("added")){
             jQuery("#added").show().delay(3000).fadeOut();
             if(decodeURIComponent(GetURLParameter("added")).indexOf('unlicensed') > -1) {
-            	jQuery("#added").css("background-color", "#EC971F")
+            	jQuery("#added").css("background-color", "#EC971F");
             }
             jQuery("#added").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
         }
@@ -163,6 +172,10 @@
         var regex = new RegExp("[\\?&amp;]" + name + "=([^&amp;#]*)"),
             results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    function getUrlParam(sParam){
+        return purl().param(sParam);
     }
     
     function parseEventId(){

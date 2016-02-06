@@ -41,6 +41,7 @@
     </style>
     <script>
         var event = getUrlParam('event');
+        var etype = getUrlParam('type');
         
         window.onload = function(){
             jQuery("th:nth-child(2), td:nth-child(2)").each(function(i){
@@ -127,19 +128,21 @@
         }
         
         function addRunner(){
+            // get current event type id
+
        		var request = jQuery.ajax({
        			url: "/bibs-server/events/",
        			type: "GET",
        			dataType: "json"
        			});
        		request.done(function( data ) {
-    				if(data.length &gt; 0){
-    					document.location='/bibs-server/raceresults?form&amp;event=${param.event}';
-    				}else{
-    					alert("Please create an Event first.");
-    					document.location='/bibs-server/events?form';
-    				}
-       			});
+				if(data.length &gt; 0){
+					document.location='/bibs-server/raceresults?form&amp;event=${param.event}&amp;type='+etype;
+				}else{
+					alert("Please create an Event first.");
+					document.location='/bibs-server/events?form';
+				}
+   			});
        		request.fail(function( jqXHR, textStatus ) {
        			// error
        			});
