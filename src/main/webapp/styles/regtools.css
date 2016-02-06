@@ -1,0 +1,42 @@
+/* ----------- Non-Retina Screens ----------- */
+@media screen and (min-device-width: 992px) and (-webkit-min-device-pixel-ratio: 1) { 
+}
+
+/* ----------- Retina Screens ----------- */
+@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 2)and (min-resolution: 192dpi) { 
+}
+
+/* ----------- Smartphones ----------- */
+@media only screen and (max-width : 320px) {
+	.ui[class*="very padded"].segment{
+		padding: 1.5em !important;
+	}
+	.ui.five.doubling.cards .card{
+		width: 100% !important;
+	}
+}
+
+/* iPhone 4 ----------- */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) and (-webkit-min-device-pixel-ratio : 2) {
+	.ui[class*="very padded"].segment{
+		padding: 1.5em !important;
+	}
+	.ui.five.doubling.cards .card{
+		width: 100% !important;
+	}
+}
+
+/* iPhone 5 ----------- */
+@media only screen and (min-device-width: 320px) and (max-device-height: 568px) and (-webkit-device-pixel-ratio: 2){
+
+}
+
+/* iPhone 6 ----------- */
+@media only screen and (min-device-width: 375px) and (max-device-height: 667px) and (-webkit-device-pixel-ratio: 2){
+
+}
+
+/* iPhone 6+ ----------- */
+@media only screen and (min-device-width: 414px) and (max-device-height: 736px) and (-webkit-device-pixel-ratio: 2){
+
+}

@@ -287,6 +287,26 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 		margin: 1% !important;
 		margin-top: 3em !important;
 	}
+	.welcome{
+		position: relative !important;
+		margin: 5% auto !important;
+		width: 85% !important;
+		top: 0 !important;
+		left: 0 !important;
+	}
+	.welcome > img.ui.tiny.centered.image{
+		width: 40px;
+	}
+	.welcome-sub{
+		font-size: 1.5em;
+	}
+	.ui.info.bibs-gray-4.message{
+		margin-top:2em;
+		font-size: 0.9em;
+	}
+	#loginForm{
+		padding-bottom: 15px;
+	}
 }
 
 /* iPhone 5 ----------- */
@@ -298,6 +318,26 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 		width: 97%;
 		margin: 1% !important;
 		margin-top: 3em !important;
+	}
+	.welcome{
+		position: relative !important;
+		margin: 5% auto !important;
+		width: 85% !important;
+		top: 0 !important;
+		left: 0 !important;
+	}
+	.welcome > img.ui.tiny.centered.image{
+		width: 40px;
+	}
+	.welcome-sub{
+		font-size: 1.5em;
+	}
+	.ui.info.bibs-gray-4.message{
+		margin-top:2em;
+		font-size: 0.9em;
+	}
+	#loginForm{
+		padding-bottom: 15px;
 	}
 }
 
@@ -311,6 +351,26 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 		margin: 1% !important;
 		margin-top: 3em !important;
 	}
+	.welcome{
+		position: relative !important;
+		margin: 5% auto !important;
+		width: 85% !important;
+		top: 0 !important;
+		left: 0 !important;
+	}
+	.welcome > img.ui.tiny.centered.image{
+		width: 40px;
+	}
+	.welcome-sub{
+		font-size: 1.5em;
+	}
+	.ui.info.bibs-gray-4.message{
+		margin-top:2em;
+		font-size: 0.9em;
+	}
+	#loginForm{
+		padding-bottom: 15px;
+	}
 }
 
 /* iPhone 6+ ----------- */
@@ -322,6 +382,26 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 		width: 97%;
 		margin: 1% !important;
 		margin-top: 3em !important;
+	}
+	.welcome{
+		position: relative !important;
+		margin: 5% auto !important;
+		width: 85% !important;
+		top: 0 !important;
+		left: 0 !important;
+	}
+	.welcome > img.ui.tiny.centered.image{
+		width: 40px;
+	}
+	.welcome-sub{
+		font-size: 1.5em;
+	}
+	.ui.info.bibs-gray-4.message{
+		margin-top:2em;
+		font-size: 0.9em;
+	}
+	#loginForm{
+		padding-bottom: 15px;
 	}
 }
 

@@ -185,7 +185,7 @@ h3.ui.header.event-type-header{
         width: 90%;
         margin: 0 auto;
     }
-    .event-name{ font-size: 1.7em; }
+    .event-name{ font-size: 1.7em; width: 300px; overflow-wrap: break-word; }
     #event-time{ width: auto; }
     .button-container{
         float: none;

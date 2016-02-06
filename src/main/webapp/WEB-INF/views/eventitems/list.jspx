@@ -49,6 +49,8 @@
         font-weight: 400;
     }
 </style>
+<link rel="stylesheet" href="/bibs-server/resources/styles/regtools.css" type="text/css" />
+
 <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 <div class="ui long modal" id="addQuestion">
     <div class="header" id="addQuestionModal">Add Question</div>
@@ -79,7 +81,7 @@
             <div class="fields" id="dropdown-field" style="display:none">
                 <div class="field">
                     <label style="width:100%">Add Dropdown Option</label>
-                    <div class="ui input" style="width:300px">
+                    <div class="ui input" style="width:15em">
                         <input  type="text" id="custom-response-dropdown-input" placeholder="Add dropdown option"></input>
                     </div>
                 </div>
@@ -236,7 +238,7 @@
     <div class="ui very padded basic segment">
         <div class="pull-left"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
         <div style="clear:both"><!--  --></div>
-        <div class="ui top attached tabular menu">
+        <div class="ui top attached stackable menu">
             <div class="active item" data-tab="eci-menu">Products</div>
             <div class="item" data-tab="form-menu">Custom Forms</div>
             <div class="item" data-tab="coupon-menu">Coupons</div>
@@ -501,6 +503,10 @@
 
     window.onload = function(){
         // initialize semantic-ui elements
+        if(detectMobile()){
+            jQuery('.bibs-page > .ui.segment').removeClass('very padded');
+        }
+
         jQuery('#couponECI, #questionECI, #customQuestionsPreviewDropdown').dropdown();
         jQuery('.menu .item').tab();
         jQuery('.ui.checkbox').checkbox();
