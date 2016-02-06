@@ -728,13 +728,27 @@
 
         jQuery(".ui.form .field > .selection.dropdown").dropdown();
         jQuery('.dist-btn').each(function(){
-            jQuery(this).click(function(){
+            jQuery(this).off().click(function(){
                 var id = jQuery(this).attr("id");
                 jQuery(this).addClass('positive');
                 jQuery(this).siblings().removeClass('positive');
                 distType = id;
+                jQuery('#distance-dropdown').dropdown('clear');
             })
         });
+        jQuery('input[name="distance"]').off().on('keyup input', function(){
+            jQuery('#distance-dropdown').dropdown('clear');
+        });
+        jQuery('#distance-dropdown').dropdown({
+            onChange: function(value, text, $choice){
+                if(value.length > 0){
+                    jQuery('input[name="distance"]').val('');
+                    jQuery('.dist-btn').each(function(){
+                        jQuery(this).removeClass('positive');
+                    });
+                }
+            }
+        })
 
         jQuery('#dist-m').removeClass('positive');
         jQuery('#dist-mi').removeClass('positive');
@@ -1175,14 +1189,14 @@
 
         jQuery('#scheduleStartDate')
             .datetimepicker({
-                // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
+                defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
                 useSeconds: true,
                 sideBySide: true
             });
 
         jQuery('#editPriceSchedulePicker')
             .datetimepicker({
-                // defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
+                defaultDate: eventCartStartDate.format('MM/DD/YYYY h:mm:ss a'),
                 useSeconds: true,
                 sideBySide: true
             });
