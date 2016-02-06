@@ -27,6 +27,13 @@
 	    max-width: calc(100% + 0px) !important;
 	    border: none !important;
     }
+    #userForm{
+      width: 400px;
+      margin: 0 auto;
+    }
+    #register-error-message{
+      margin-bottom: 1em;
+    }
 </style>
 <div class="welcome bibs-gray-1">
     <img class="ui tiny centered image" src="../images/bibsicon.png"/>
@@ -67,50 +74,98 @@
             <i class="fa fa-exclamation-circle left-icon"><!--  --></i>
             <span class="error-msg"><!--  --></span>
         </div>
-	    	<div class="inline required field">
+	    	<div class="required field">
 	            <label>Username</label>
 	            <input type="text" name="username" 
 	                data-parsley-error-message="Please enter a username."
 	                data-parsley-required="true" />
 	    	</div>
-	    	<div class="inline required field">
+	    	<div class="required field">
 	            <label>Password</label>
 	            <input type="password" name="password"
             		data-parsley-error-message="Please enter a password."
             		data-parsley-required="true" />
 	    	</div>
-	    	<div class="inline required field">
+	    	<div class="required field">
 	            <label>Confirm Password</label>
-	            <input type="password"  />
+	            <input type="password" name="confirmPW" />
 	    	</div>
-			<!-- Fields from previous part of flow -->
-			<div style="display:none">
-				<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
-				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
-			</div>
+  			<!-- Fields from previous part of flow -->
+  			<div style="display:none">
+  				<input type="text" name="firstname" value="${account.firstname }"><!--  --></input>
+  				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
+  			</div>
+        <div class="ui error message" id="register-error-message" style="display:none"><!-- --></div>
       </form>
       <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" onclick="checkUsername()">Submit</button>
     </div>
   <script type="text/javascript">
+    var rules = {
+      fields: {
+        username:   {
+          identifier  : 'username',
+          rules: [{
+              type   : 'empty',
+              prompt : 'Please enter a username!'
+          }]
+        },
+        password:   {
+          identifier  : 'password',
+          rules: [{
+              type   : 'empty',
+              prompt : 'Please choose a password!'
+          },{
+              type   : 'minLength[8]',
+              prompt : 'Your password must be at least {ruleValue} characters or digits long.'
+          }]
+        },
+        confirmPW:   {
+          identifier  : 'confirmPW',
+          rules: [{
+              type   : 'empty',
+              prompt : 'Please confirm your password!'
+          },{
+              type   : 'match[password]',
+              prompt : 'Your password confirmation was different from your typed password!'
+          }]
+        }
+      }
+    };
+
+    jQuery('#userForm').form(rules);
     function checkUsername(){
       var username = jQuery('input[name="username"]').val();
-
-      var request = jQuery.ajax({
-                      method: "GET",
-                      url: 'checkusername?username=' + encodeURIComponent(username)
-                    });
-      request.done(function( d ) {
-        if(d === 'bad'){
-          console.log('BAD');
-          jQuery('.error-msg').text('This username has been taken! Please select another username.');
-          jQuery('#errorSegment').show();
-          jQuery('input[name="username"]').off().on('change', function(){
-            jQuery('#errorSegment').hide();
-          })
-        }else{
-          jQuery('#userForm').submit();
-        }
-      });
+      if(username.length > 3){
+        var request = jQuery.ajax({
+                        method: "GET",
+                        url: 'checkusername?username=' + encodeURIComponent(username)
+                      });
+        request.done(function( d ) {
+          if(d === 'bad'){
+            console.log('BAD');
+            jQuery('.error-msg').text('This username has been taken! Please select another username.');
+            jQuery('#errorSegment').show();
+            jQuery('input[name="username"]').off().on('change', function(){
+              jQuery('#errorSegment').hide();
+            })
+          }else{
+            var validation = jQuery('#userForm').form('validate form');
+            if(validation){
+              jQuery('input[name="confirmPW"]').removeAttr('name');
+              jQuery('#register-error-message').hide();
+              jQuery('#userForm').submit();
+            }else{
+              jQuery('#register-error-message').show();
+            }
+          }
+        });
+      }else{
+        jQuery('.error-msg').text('Please enter a username longer than 4 characters!');
+        jQuery('#errorSegment').show();
+        jQuery('input[name="username"]').off().on('change', function(){
+          jQuery('#errorSegment').hide();
+        });
+      }
     }
   </script>
 </div>

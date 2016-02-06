@@ -62,7 +62,7 @@
       </div>
     </div>
     <div class="ui attached segment">
-		<form class="ui form" method="post" action="/bibs-server/register/third">
+		<form class="ui form" id="userForm" method="post" action="/bibs-server/register/third">
 	    	<div class="inline required field">
 	            <label>Email</label>
 	            <input type="email" name="email" 
@@ -81,9 +81,44 @@
 				<input type="text" name="lastname" value="${account.lastname }"><!--  --></input>
 				<input type="text" name="username" value="${account.username }"><!--  --></input>
 				<input type="text" name="password" value="${account.password }"><!--  --></input>
-			</div>  
-	        <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" type="submit">Submit</button>
+			</div>
+      <div class="ui error message" id="register-error-message"><!-- --></div>  
+      <button class="ui bibs-bg-logo-darkblue bibs-gray-1 small-caps button" type="validateForm()">Submit</button>
 		</form>
 	</div>
 </div>
+<script type="text/javascript">
+  var rules = {
+    fields: {
+      email:   {
+        identifier  : 'email',
+        rules: [{
+            type   : 'email',
+            prompt : 'Please enter a valid email address!'
+        }]
+      },
+      phone:   {
+        identifier  : 'phone',
+        rules: [{
+            type: 'regExp[/^([0-9\(\)\/\+ \-]*)$/]',
+            prompt: 'Please enter a valid phone number!'
+        },{
+            type: 'minLength[10]',
+            prompt: 'A phone number must be at least 10 digits!'
+        }]
+      }
+    }
+  };
+
+  jQuery('#userForm').form(rules);
+  function validateForm(){
+    var validation = jQuery('#userForm').form('validate form');
+    if(validation){
+      jQuery('#register-error-message').hide();
+      // jQuery('#userForm').submit();
+    }else{
+      jQuery('#register-error-message').show();
+    }
+  }
+</script>
 </div>
