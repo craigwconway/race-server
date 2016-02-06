@@ -164,7 +164,7 @@
     <div class="ui very padded basic segment">
         <div class="pull-left"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
         <div style="clear:both"><!--  --></div>
-        <div class="ui top attached tabular menu">
+        <div class="ui top attached stackable menu">
             <div class="item" data-tab="logistics-menu">Logistics &amp; Registration Details</div>
             <div class="active item" data-tab="schedule-menu">Ticket Types &amp; Price Schedules</div>
         </div>
@@ -197,7 +197,7 @@
                         </div>
                     </div>
                 </div>
-                <label id="distance">Distance</label>   
+                <label id="distance">Distance<span style="margin: -0.2em 0em 0em 0.2em;color: #db2828;">*</span></label>   
                 <div class="fields" style="position:relative">
                     <div class="four wide required field" style="padding-right:0">
                         <div class="ui fluid search selection dropdown" id="distance-dropdown">
@@ -228,7 +228,7 @@
                         <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px" />
                         <div class="ui icon buttons" style="margin-left:10px">
                             <div class="ui positive button dist-btn" id="dist-mi"><b>miles</b></div>
-                            <div class="ui button dist-btn" id="dist-km"><b>kilometers</b></div>
+                            <div class="ui button dist-btn" id="dist-km"><b><span class="desktop">kilometers</span><span class="mobile">km</span></b></div>
                             <div class="ui button dist-btn" id="dist-m"><b>meters</b></div>
                         </div>
                     </div>
@@ -692,17 +692,20 @@
         }
     }
 
+    var saved = true;
+    var alerted = false;
     window.onload = function(){
         initUIElements();
 
         var logistics = new Logistics();
         logistics.init();
+        jQuery('input').off().on('keyup', function(){
+            saved = false;
+        })
 
         initTicketList();
     }
 
-    var saved = false;
-    var alerted = false;
     window.onbeforeunload = function() {
         if(!alerted &amp;&amp; !saved){
             return "If you have unsaved changes in either tabs on this page, your changes will be lost.";
@@ -1218,8 +1221,6 @@
     }
 
     function onBack(){
-        alerted = false;
-        saved = false;
         window.location="/bibs-server/eventitems?event=${event.id}";
     }
     
