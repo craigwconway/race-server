@@ -21,7 +21,7 @@
     <div class="ui very padded basic segment">
         <div id="added" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;margin:5px;padding:5px;">Runner Added</div>
         <form:create id="fc_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" render="${empty dependencies}" z="lDbQbfi+ahMJ+wsQw7rqYz4MxJc=">
-        <div class="ui form" style="margin:0 auto; width:500px; text-align:center;">
+        <div class="ui form" id="add-athlete-form" style="margin:0 auto; width:500px; text-align:center;">
             <h2 class="ui icon header">
                 <i class="fa fa-cog"><!--  --></i>
                 <div class="content">Add Athlete
@@ -45,9 +45,7 @@
                 </div>
             </c:if>
             <div class="field">
-                <input  type="number" name="bib"
-                        placeholder="Bib Number"
-                        min="1"
+                <input  type="number" name="bib" placeholder="Bib Number" min="1"
                         data-parsley-error-message="Please enter a bib number."
                         data-parsley-required="true"><!--  --></input>
             </div>
@@ -117,15 +115,13 @@
             </div>
             <div class="field">
                 <div class="ui action input">
-                    <input  type="text" name="timeStartLocal"
-                            id="timedisp"
-                            placeholder="Official Time (hh:mm)"
-                            data-provide="datepicker"
-                            data-date-format="h:mm a"
+                    <input  type="text" name="timeStartLocal" id="timedisp"
+                            placeholder="Official Time (mm:ss:SS)"
                             data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
                     <div class="ui icon button" id="removetime"><span class="fa fa-close bibs-red"></span></div>
                 </div>
             </div>
+            <div class="ui error message" id="form-error-messages"><!--  --></div>
 
             <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
         </div>
@@ -134,6 +130,51 @@
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_RaceResult" render="${not empty dependencies}" z="TYwa3h/T7RlbQyVKQ6chbtgOdaw="/>
 <script>
     var etype = getUrlParam('type');
+    var rules = {
+        fields: {
+            firstname:   {
+                identifier  : 'firstname',
+                rules: [{
+                    type   : 'empty',
+                    prompt : 'Please enter a first name!'
+                }]
+            },
+            lastname:   {
+                identifier  : 'lastname',
+                rules: [{
+                    type   : 'empty',
+                    prompt : 'Please enter a last name!'
+                }]
+            },
+            bib:   {
+                identifier  : 'bib',
+                rules: [{
+                    type   : 'empty',
+                    prompt : 'Please enter a bib number!'
+                },{
+                    type   : 'number',
+                    prompt : 'Please enter a valid bib number!'
+                }]
+            },
+            gender:   {
+                identifier  : 'gender',
+                optional    : true,
+                rules: [{
+                    type   : 'empty',
+                    prompt : 'Please select a gender!'
+                }]
+            },
+            timeStartLocal: {
+                identifier  : 'timeStartLocal',
+                optional    : true,
+                rules       : [{
+                    type    : 'regExp[/([0-9][0-9]):([0-5][0-9]|60):([0-5][0-9]|60)/]',
+                    prompt  : 'Please enter a valid time: mm:ss:ss'
+                }]
+            }
+        }
+    };
+
     window.onload=function(){
         // select event based on param
         parseEventId();
@@ -143,8 +184,9 @@
 
         // select first event type
         jQuery('#eventtype-type').dropdown().dropdown('set selected', etype);
+        jQuery('#add-athlete-form').form(rules);
 
-        console.log("${errors}");
+        // console.log("${errors}");
         var errors = '${errors}';
         if(errors !== null) {
     		if(errors == "bib.duplicate") {
@@ -165,6 +207,24 @@
         }
         
         jQuery('input[name="bib"]').focus();
+        jQuery('#proceed').click(function(e){
+            var validate = jQuery('#add-athlete-form').form('validate form');
+            if(validate){
+                jQuery("#add-athlete-form").submit(function() {
+                    jQuery('#form-error-messages').hide();
+                });
+            }else{
+                e.preventDefault();
+                jQuery('#form-error-messages').show();
+                return false;
+            }
+        });
+
+        // override back button
+        jQuery('#back').off().click(function(e){
+            e.preventDefault();
+            document.location='/bibs-server/raceresults?page=1&amp;size=10&amp;event=${param.event}&amp;type='+etype;
+        })
     };
 
     function getParameterByName(name) {
@@ -198,18 +258,6 @@
     }
 
     function initDateTimePickers(){
-        jQuery("#timedisp")
-            .datetimepicker({
-                pickDate: false,
-                pickTime: true,
-                useSeconds: true,
-                format: 'LTS'
-            });
-
-        jQuery("#timedisp").on('dp.show', function(){
-            jQuery("#timedisp").data("DateTimePicker").setDate(moment().startOf('day'));
-        });
-
         jQuery("#removetime").click(function(){
             jQuery("#timedisp").val("");
         });
