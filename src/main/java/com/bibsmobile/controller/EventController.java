@@ -1351,6 +1351,7 @@ public class EventController {
         List <EventCartItem> items = EventCartItem.findEventCartItemsByEventAndType(e, EventCartItemTypeEnum.TICKET).getResultList();
         List<EventTypeTicketWrapper> metatypes = new LinkedList <EventTypeTicketWrapper>();
         Map <EventType, EventCartItem> itemMap = new HashMap <EventType, EventCartItem>();
+        boolean hasTickets = false;
         for(EventCartItem item : items) {
         	if(item.getEventType() != null) {
         		itemMap.put(item.getEventType(), item);
@@ -1359,6 +1360,7 @@ public class EventController {
         for(EventType type : eventTypes) {
         	if(itemMap.containsKey(type)) {
         		metatypes.add(new EventTypeTicketWrapper(type, itemMap.get(type)));
+        		hasTickets = true;
         	} else {
         		metatypes.add(new EventTypeTicketWrapper(type));
         	}
@@ -1366,6 +1368,7 @@ public class EventController {
         System.out.println(metatypes);
         uiModel.addAttribute("metatype", metatypes);
         uiModel.addAttribute("event", e);
+        uiModel.addAttribute("hasTickets", hasTickets);
         uiModel.addAttribute("eventTypes", eventTypes);
         uiModel.addAttribute("dropboxUnlink", (UserProfileUtil.getLoggedInDropboxAccessToken() != null));
         uiModel.addAttribute("lastImport", latestImport);
