@@ -445,10 +445,10 @@
         <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <c:if test='${(eventadmin)}'>
             <c:if test='${(build.registration)}'>
-                <c:if test="${not empty eventTypes}">
-                <a class="item bibs-gray-1" href="#" onclick="redirectReport();return false;" style="max-width:100px">
-                    <i class="fa fa-line-chart icon"><!--  --></i> Registration Analytics
-                </a>
+                <c:if test="${hasTickets}">
+                    <a class="item bibs-gray-1" href="#" onclick="redirectReport();return false;" style="max-width:100px">
+                        <i class="fa fa-line-chart icon"><!--  --></i> Registration Analytics
+                    </a>
                 </c:if>
             </c:if>
             <a class="item bibs-gray-1" href="#" onclick="redirectAthletes();return false;">
