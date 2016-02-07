@@ -3,12 +3,17 @@ package com.bibsmobile.util;
 public final class BuildType {
 	private static final BuildTypeName typeName = BuildTypeName.MASTER;
 	private static final String frontend = "https://bibs-frontend.herokuapp.com";
+	private static final String location = "http://localhost:8080";
 	private static final boolean licensing = false;
 	private static final boolean registration = true;
 	private static final boolean rfid = false;
 	
 	public BuildTypeName getTypeName() {
 		return typeName;
+	}
+	
+	public String getLocation() {
+		return location;
 	}
 	
 	public String getFrontend() {
