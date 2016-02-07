@@ -40,7 +40,7 @@
         }
     </style>
     <script>
-        var event = getUrlParam('event');
+        var eid = getUrlParam('event');
         var etype = getUrlParam('type');
         
         window.onload = function(){
@@ -106,9 +106,9 @@
         }
         
         function search(){
-        	if(isNaN(event)) event = 0;
+        	if(isNaN(eid)) eid = 0;
         	var request = jQuery.ajax({
-        		url: "/bibs-server/raceresults/search?event="+event+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
+        		url: "/bibs-server/raceresults/search?event="+eid+"&amp;name="+jQuery("#query").val()+"&amp;bib="+jQuery("#bib").val(),
         		type: "GET",
         		dataType: "json"
         		});
@@ -147,9 +147,15 @@
        			// error
        			});
         }
+
+        function onBack(){
+            window.location="/bibs-server/events/"+eid;
+        }
     </script>
     <div class="bibs-page bibs-bg-gray-1">
         <div class="ui very padded basic segment">
+        <div class="pull-left" style="margin-bottom:1em;"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
+        <div style="clear:both"><!--  --></div>
             <div class="pull-left">
                 <select class="ui dropdown pull-left" id="types" name="types" onchange="filterByEventType()">
                     <option id="eventType-0" disabled="disabled">Event Types</option>

@@ -333,6 +333,7 @@
             </div>
         </div>
         <div style="width:400px;margin:0 auto;">
+            <div class="ui error message" id="export-reg-error-message" style="display:none"><span><!--  --></span></div>
             <div class="ui slider checkbox">
                 <input type="checkbox" name="questions"></input>
                 <label style="width:100%;">Include custom questions?</label>
@@ -1454,29 +1455,34 @@
         jQuery('.modal').modal('hide');
     }
     function exportRegHandler(all, quick){
-        var typeString = "";
-        for( var i in currentExportRegTypes ){
-            typeString += '&amp;type='+currentExportRegTypes[i];
-        }
-        var optString = "";
-        if( jQuery('input[name="questions"]').prop('checked') ){
-            optString += '&amp;questions=true';
+        if(currentExportRegTypes.length > 0){
+            var typeString = "";
+            for( var i in currentExportRegTypes ){
+                typeString += '&amp;type='+currentExportRegTypes[i];
+            }
+            var optString = "";
+            if( jQuery('input[name="questions"]').prop('checked') ){
+                optString += '&amp;questions=true';
+            }else{
+                optString += '&amp;questions=false';
+            }
+            if( jQuery('input[name="bibnum"]').prop('checked') ){
+                optString += '&amp;bibnum=true';
+            }else{
+                optString += '&amp;bibnum=false';
+            }
+            var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false" + typeString + optString;
+            if(all){
+                callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true" + typeString + optString;
+            }
+            if(quick){
+            	callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true&amp;quick=true" + "&amp;type=TICKET" + optString;
+            }
+            window.location=callUrl;
         }else{
-            optString += '&amp;questions=false';
+            jQuery('#export-reg-error-message').show();
+            jQuery('#export-reg-error-message > span').text('You must select at least one of the types above!');
         }
-        if( jQuery('input[name="bibnum"]').prop('checked') ){
-            optString += '&amp;bibnum=true';
-        }else{
-            optString += '&amp;bibnum=false';
-        }
-        var callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=false" + typeString + optString;
-        if(all){
-            callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true" + typeString + optString;
-        }
-        if(quick){
-        	callUrl = "/bibs-server/cartitems/export?eventId=${event.id}&amp;all=true&amp;quick=true" + "&amp;type=TICKET" + optString;
-        }
-        window.location=callUrl;
     }
 
     var currentExportRegTypes = [];
@@ -1487,6 +1493,7 @@
                     
         if(currentExportRegTypes.indexOf(val) == -1){
             currentExportRegTypes.push(val);
+            jQuery('#export-reg-error-message').hide();
         }else{
             currentExportRegTypes.splice(currentExportRegTypes.indexOf(val), 1);
         }
