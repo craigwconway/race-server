@@ -404,6 +404,7 @@
         <div class="row">
             <div style="font-size: 0.9em;color:#808080">Pick an event type to proceed</div>
         </div>
+        <div class="ui error message" id="import-athletes-error-message" style="display:none"><span><!--  --></span></div>
     </div>
     <div class="actions">
         <div class="ui button" onclick="closeModal()">Cancel</div>
@@ -507,7 +508,7 @@
                     <a class="item" href="#" onclick="renderModal('exportAthletes')">Export Athletes</a>
                     <a class="item" href="#" onclick="cloud();return false;">Cloud Sync</a>
                     <c:if test="${lastImport != null}">
-                        <a href="#" onclick="redirectChangeFileMapping();return false;">Change file mapping</a>
+                        <a href="#" class="item" onclick="redirectChangeFileMapping();return false;">Change file mapping</a>
                     </c:if>
                     <a class="item" href="#" onclick="redirectBackup();return false;">Export bibs file</a>
                     <div class="divider show-live"><!--   --></div>
@@ -875,7 +876,11 @@
         })
 
         jQuery('#exportAthletes-eventTypes').dropdown();
-        jQuery('#importAthletes-eventTypes').dropdown();
+        jQuery('#importAthletes-eventTypes').dropdown().dropdown({
+            onChange: function(){
+                jQuery('#import-athletes-error-message').hide();
+            }
+        });
 
         jQuery('.message .close').on('click', function() {
             jQuery(this).closest('.message').fadeOut();
@@ -1549,10 +1554,11 @@
         console.log(type);
 
         var callUrl = "/bibs-server/resultsfiles?form&amp;event=${event.id}";
-        if(type !== null || type !== ""){
+        if(type !== null &amp;&amp; type.length > 0){
             window.location = callUrl + '&amp;type=' + type;
         }else{
-            window.location = callUrl;
+            jQuery('#import-athletes-error-message').show();
+            jQuery('#import-athletes-error-message > span').text('You must select an event type!');
         }
     }
     

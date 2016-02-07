@@ -49,8 +49,8 @@
             <div class="field">
                 <div class="ui action input">
                     <input type="text" id="filename" readonly="readonly"></input>
-                    <label for="file" class="ui icon button btn-file">
-                         <i class="fa fa-folder-open"><!--  --></i>Import File
+                    <label for="file" class="ui button btn-file">
+                         <i class="fa fa-folder-open icon"><!--  --></i>Import File
                          <div style="width:1px;height:0px;overflow:hidden;"><input type="file" id="file" name="content"></input></div>
                     </label>
                 </div>
