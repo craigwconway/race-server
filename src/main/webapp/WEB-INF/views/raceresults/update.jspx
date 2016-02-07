@@ -110,6 +110,7 @@
                         <option selected="selected" disabled="disabled">Gender</option>
                         <option value="M">Male</option>
                         <option value="F">Female</option>
+
                     </select>
                 </div>
                 <div class="field">
@@ -196,6 +197,7 @@
         jQuery('#event-type').dropdown('set selected', '${raceResult.eventType.id}');
         jQuery('#team-type').dropdown();
         jQuery('#gender-type').dropdown('set selected', '${raceResult.gender}');
+
         console.log('${raceResult.gender}')
     }
 

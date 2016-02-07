@@ -1345,10 +1345,13 @@ public class RaceResult implements Comparable<RaceResult> {
      * @return String containing gender character or null.
      */
 	public String getGender() {
-		if(null==gender || gender.equalsIgnoreCase("M")){
+		if(gender == null) return "";
+		if(gender.equalsIgnoreCase("M")){
 			return "M";
-		}else{
+		}else if(gender.equalsIgnoreCase("F")){
 			return "F";
+		} else {
+			return "";
 		}
     }
 

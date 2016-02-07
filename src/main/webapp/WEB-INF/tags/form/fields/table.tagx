@@ -174,7 +174,7 @@
             <c:out value=" " />
           </c:if>
           <c:if test="${not empty maxPages}">
-            <util:pagination maxPages="${maxPages}" page="${param.page}" size="${param.size}"  event="${param.event}" />
+            <util:pagination maxPages="${maxPages}" page="${param.page}" size="${param.size}"  event="${param.event}"  type="${param.type }"/>
           </c:if>
         </td>
       </tr>

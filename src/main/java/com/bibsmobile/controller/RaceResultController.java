@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -385,6 +386,9 @@ public class RaceResultController {
             return "raceresults/create";
         }
         // If this is an RFID build, do not allow the user to double up on a bib number:
+        if(!StringUtils.isEmpty(raceResult.valueOfTimeofficialdisplay())){
+        	raceResult.setTimeofficialmanual(raceResult.valueOfTimeofficialdisplay());
+        }
         if(BuildTypeUtil.usesRfid()) {
         	Long matches = RaceResult.countFindRaceResultsByBibEquals(raceResult.getBib());
         	if (matches > 0) {
