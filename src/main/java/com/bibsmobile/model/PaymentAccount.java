@@ -223,4 +223,9 @@ public class PaymentAccount {
     public static List<PaymentAccount> findActivePaymentAccountsForUser(UserProfile user) {
         return entityManager().createQuery("SELECT o FROM PaymentAccount o where o.primaryAccount = 1 AND o.user = :user", PaymentAccount.class).setParameter("user",  user).getResultList();
     }
+    
+    public static List<PaymentAccount> findActivePaymentAccountsForOrg(UserGroup userGroup) {
+        return entityManager().createQuery("SELECT o FROM PaymentAccount o where o.primaryAccount = 1 AND o.userGroup = :userGroup", PaymentAccount.class).setParameter("userGroup",  userGroup).getResultList();
+    }
+    
 }

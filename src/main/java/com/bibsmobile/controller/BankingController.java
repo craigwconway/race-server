@@ -147,7 +147,18 @@ public class BankingController {
 		Payout payout = new Payout(event.getOrganizer());
 		List<Cart> checkedOut = Cart.findCompletedCartsItemsByEventBeforeDate(event, new Date()).getResultList();
 		List<Cart> refunded = Cart.findRefundedCartsItemsByEvent(event).getResultList();
+		PaymentAccount account = PaymentAccount.findActivePaymentAccountsForOrg(event.getOrganizer()).get(0);
+		payout.setAccount(account);
 		payout.persist();
+		payout.flush();
+		long amount = 0;
+		for(Cart c : checkedOut) {
+			c.getPayouts().add(payout);
+			c.merge();
+			amount += c.getTotal();
+		}
+		payout.setAmount(amount);
+		payout.merge();
 		SlackUtil.logPayoutGenerate(event.getName());
 		return new ResponseEntity<String>("Payout", HttpStatus.OK);
 	}
