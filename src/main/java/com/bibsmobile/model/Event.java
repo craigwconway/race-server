@@ -766,6 +766,19 @@ public class Event {
 
         return q.getResultList();
     }     
+
+    public static Long countFindSeriesEventsForUser(UserProfile user) {
+        // return all events for the sysadmin or unauthenticated users (can not edit anyways)
+        if (user == null || PermissionsUtil.isSysAdmin(user))
+            return countEvents();
+        // get only accessible events for everyone else
+        String jpaQuery = "select COUNT(e) from Event e join e.eventUserGroups eug join eug.userGroup ug join ug.userGroupUserAuthorities ugua join ugua.userAuthorities uasid join uasid.userProfile up where up.id = :user_id and e.series != null";
+
+        TypedQuery<Long> q = entityManager().createQuery(jpaQuery, Long.class);
+        q.setParameter("user_id", user.getId());
+
+        return q.getSingleResult();
+    } 
     
     public static Long countFindNonHiddenEventsForUser(UserProfile user) {
         // return all events for the sysadmin or unauthenticated users (can not edit anyways)

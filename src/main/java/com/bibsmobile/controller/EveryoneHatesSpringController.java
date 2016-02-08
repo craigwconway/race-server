@@ -37,10 +37,12 @@ public class EveryoneHatesSpringController {
 			// Case: Sysadmin: the user is using this on raceday.
 			events = Event.findEventEntries(0, 3, "id", "DESC");
 	        uiModel.addAttribute("totalEvents", Event.countFindNonHiddenEventsForUser(loggedInUser));
+	        uiModel.addAttribute("seriesEvents", Event.countFindSeriesEventsForUser(loggedInUser));
 	        uiModel.addAttribute("totalAthletes", RaceResult.countResultsForUser(loggedInUser));
 		} else if(PermissionsUtil.isVaguelyEventAdmin(loggedInUser)) {
 			System.out.println("evenadmin detected");
 	        uiModel.addAttribute("totalEvents", Event.countFindNonHiddenEventsForUser(loggedInUser));
+	        uiModel.addAttribute("seriesEvents", Event.countFindSeriesEventsForUser(loggedInUser));
 	        uiModel.addAttribute("totalAthletes", RaceResult.countResultsForUser(loggedInUser));
 			// Case: Eventadmin: the user is using this on the bibs website.
 			events = Event.findNonHiddenEventsForUser(loggedInUser, 0, 3, "id", "DESC");

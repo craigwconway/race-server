@@ -242,8 +242,8 @@
                         </div>
                         <div class="column">
                             <div class="ui small statistic">
-                                <div class="value bibs-main-blue">924</div>
-                                <div class="label bibs-gray-4">Shares</div>
+                                <div class="value bibs-main-blue">${seriesEvents }</div>
+                                <div class="label bibs-gray-4">Series Events</div>
                             </div>
                         </div>
                     </div>
