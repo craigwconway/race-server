@@ -44,6 +44,16 @@
         var etype = getUrlParam('type');
         
         window.onload = function(){
+            if( navigator.userAgent.match(/Android/i)
+               || navigator.userAgent.match(/webOS/i)
+               || navigator.userAgent.match(/iPhone/i)
+               || navigator.userAgent.match(/iPad/i)
+               || navigator.userAgent.match(/iPod/i)
+               || navigator.userAgent.match(/BlackBerry/i)
+               || navigator.userAgent.match(/Windows Phone/i)
+            ){
+                jQuery('.ui.very.padded.basic.segment').removeClass('very padded');
+            }
             jQuery("th:nth-child(2), td:nth-child(2)").each(function(i){
                 var firstname = jQuery(this).html();
                 var lastname = jQuery("tr:nth-child("+i+") > td:nth-child(3)").html();

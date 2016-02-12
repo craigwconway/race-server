@@ -68,7 +68,7 @@
 			<!-- awards-nav -->
 
 			<div id="awards-table">
-				<table class="ui table awards-table">
+				<table class="ui table unstackable awards-table">
 					<c:forEach items="${awardCategoryResults}" var="acr" varStatus="i">
 					<thead>
 						<tr class="cat-${acr.category.id}">
@@ -156,6 +156,26 @@
 		var eventid = GetURLParameter("event");
 		jQuery('#template-selector').dropdown();
 		window.onload=function(){
+			if( navigator.userAgent.match(/Android/i)
+			   || navigator.userAgent.match(/webOS/i)
+			   || navigator.userAgent.match(/iPhone/i)
+			   || navigator.userAgent.match(/iPad/i)
+			   || navigator.userAgent.match(/iPod/i)
+			   || navigator.userAgent.match(/BlackBerry/i)
+			   || navigator.userAgent.match(/Windows Phone/i)
+			){
+			    jQuery('.ui.very.padded.basic.segment').removeClass('very padded');
+				jQuery('.ui.basic.segment').find('.pull-left')
+					.removeClass('pull-left')
+					.css('clear','both').css('margin-bottom','1em');
+				jQuery('.ui.basic.segment').find('.pull-right > button:first-child')
+					.css('display', 'block').css('clear', 'both').css('margin-bottom','0.5em');
+				jQuery('.ui.basic.segment').find('.pull-right > button:not(first-child)')
+					.css('margin-bottom','0.5em');
+				jQuery('.ui.basic.segment').find('pull-right')
+					.removeClass('pull-right');
+				jQuery('.awards-nav > button').css('margin-bottom', '0.5em');
+			}
 			if(${eventType.awardsConfig.allowMedalsInAgeGenderRankings}){
 				jQuery('#duplicate').prop('checked', true);
 			}

@@ -698,7 +698,7 @@
             <div class="column">
             <c:if test="${not empty eventTypes}">
                 <h3 class="ui header event-type-header">Events taking place on <fmt:formatDate type="date" value="${eventDate}" /></h3>
-                <table class="ui compact stackable table">
+                <table class="ui compact unstackable table">
                     <thead><tr>
                         <th>Name</th>
                         <th>Type</th>

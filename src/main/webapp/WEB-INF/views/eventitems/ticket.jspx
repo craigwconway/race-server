@@ -419,7 +419,7 @@
                         <i class="fa fa-plus" style="margin-right:5px"><!--  --></i> Add Price Schedule
                     </div>
                 </div>
-                <table class="ui small celled sortable structured table" id="schedule-table">
+                <table class="ui small celled sortable unstackable structured table" id="schedule-table">
                     <thead>
                         <tr>
                             <th rowspan="3">Ticket Type Name</th>
@@ -710,6 +710,11 @@
             jQuery('#ticket-cards').removeClass('four').addClass('two');
             jQuery('#distance-dropdown').css('width', '95%');
             jQuery('.ui.left.pointing.label').removeClass('left').addClass('top');
+            var dw = jQuery('#schedule-table').width();
+            var w  = jQuery('.bibs-page > .ui.basic.segment').width();
+            if( w-40 &lt; dw ){
+                jQuery('.bibs-page > .ui.basic.segment').width(dw + 115);
+            }
         }
         initUIElements();
 
