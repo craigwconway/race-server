@@ -39,23 +39,43 @@
     	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>
     	<a class="item" href="#"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a>
 	</div>
-	<div class="ui visible top sidebar inverted large mobile menu">
-		<div class="item" id="mobile-menu-bars"><i class="fa fa-bars"><!--  --></i></div>
-	</div>
-	<div class="ui top sidebar stackable inverted small-caps mobile menu" id="mobile-menu">
-    	<a href="/bibs-server" class="item">
-    		<img src="/bibs-server/images/bibsicon.png"/>
-		</a>
-    	<a href="/bibs-server" class="item" id="menu-events"><i class="fa fa-globe left-icon icon"><!--  --></i> events</a>
-    	<a href="/bibs-server/register/account" class="item"><i class="fa fa-user left-icon icon"><!--  --></i> account</a>
-  		<a href="${raceday_url}" class="item" style="display:none"><i class="fa fa-wifi left-icon icon"><!--  --></i> rfid</a>
-  		<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-  	  		<a href="${timers_url}" class="item" style="display:none"><i class="fa fa-clock-o left-icon icon"><!--  --></i> timers</a>
-  			<a href="${license_url}" class="item" style="display:none"><i class="fa fa-bolt left-icon icon"><!--  --></i> licensing</a>
-  	  	</sec:authorize>
-    	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>
-    	<a class="item" href="#"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a>
-	</div>
+	<nav class="navbar navbar-inverse navbar-fixed-top mobile">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+	            <button type="btn btn-default" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		            <span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+				</button>
+	            <div class="icon" style="width=50px;height=50px;padding:10px">
+		            <a href="${home}" name="${fn:escapeXml(home_label)}" title="${fn:escapeXml(home_label)}"><img src="/bibs-server/images/bibsicon.png" width="30" height="30"/></a>
+	            </div>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
+					<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+	                	<li><a href="#" onclick="redirectEventList();return false;"><i class="fa fa-globe" style="margin-right: 5px"><!--  --></i> events</a></li>
+				    	<li><a href="/bibs-server/register/account" class="item"><i class="fa fa-user left-icon icon"><!--  --></i> account</a></li>
+                  		<li id="nav_raceday" style="display:none"><a href="${raceday_url}"><span class="fa fa-wifi" style="margin-right:5px;"><!--  --></span> rfid</a></li>
+                  	</sec:authorize>
+                	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
+                  		<li id="nav_timers"><a href="${timers_url}"><span class="fa fa-cog" style="margin-right:5px;"><!--  --></span> timers</a></li>
+                  			<li id="nav_license"><a href="${license_url}"><span class="fa fa-bolt" style="margin-right:5px;"><!--  --></span> licensing</a></li>
+                  	</sec:authorize>
+                	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
+				    	<li><a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a></li>
+				    	<li><a class="item" href="#"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a></li>
+                  		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
+                  	</sec:authorize>
+                </ul>
+            </div>
+        </div>
+    </nav>
     </sec:authorize>
 	<script type="text/javascript">
 		function detectMobile() { 

@@ -250,6 +250,13 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
     margin-bottom: 1%;
     overflow-y: auto;
 }
+/*	mobile navbar override */
+.navbar-brand{
+	padding: 10px !important;
+}
+.navbar-brand > img{
+	max-width: 30px !important;
+}
 
 /* ----------- Non-Retina Screens ----------- */
 @media screen and (min-device-width: 992px) and (-webkit-min-device-pixel-ratio: 1) { 
@@ -274,6 +281,9 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 		width: 97%;
 		margin: 1% !important;
 		margin-top: 3em !important;
+	}
+	.modals.dimmer .ui.scrolling.modal{
+		margin-top: 4.5rem !important;
 	}
 }
 
@@ -307,6 +317,9 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 	#loginForm{
 		padding-bottom: 15px;
 	}
+	.modals.dimmer .ui.scrolling.modal{
+		margin-top: 4.5rem !important;
+	}
 }
 
 /* iPhone 5 ----------- */
@@ -338,6 +351,9 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 	}
 	#loginForm{
 		padding-bottom: 15px;
+	}
+	.modals.dimmer .ui.scrolling.modal{
+		margin-top: 4.5rem !important;
 	}
 }
 
@@ -371,6 +387,9 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 	#loginForm{
 		padding-bottom: 15px;
 	}
+	.modals.dimmer .ui.scrolling.modal{
+		margin-top: 4.5rem !important;
+	}
 }
 
 /* iPhone 6+ ----------- */
@@ -402,6 +421,9 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 	}
 	#loginForm{
 		padding-bottom: 15px;
+	}
+	.modals.dimmer .ui.scrolling.modal{
+		margin-top: 4.5rem !important;
 	}
 }
 

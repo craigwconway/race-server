@@ -222,7 +222,8 @@
                         </div>
                     </div>
                     <div class="one wide inline required field">
-                        <div class="ui vertical divider" style="height: 25%;left: 28%;top: 38%;">or</div>
+                        <div class="ui vertical desktop divider" style="height: 25%;left: 28%;top: 38%;">or</div>
+                        <div class="ui horizontal mobile divider" style="min-width:250px">or</div>
                     </div>
                     <div class="ten wide inline required field">
                         <input type="number" name="distance" placeholder="Distance" min="0" step="0.1" style="width: 100px" />
@@ -695,6 +696,21 @@
     var saved = true;
     var alerted = false;
     window.onload = function(){
+        if( navigator.userAgent.match(/Android/i)
+           || navigator.userAgent.match(/webOS/i)
+           || navigator.userAgent.match(/iPhone/i)
+           || navigator.userAgent.match(/iPad/i)
+           || navigator.userAgent.match(/iPod/i)
+           || navigator.userAgent.match(/BlackBerry/i)
+           || navigator.userAgent.match(/Windows Phone/i)
+        ){
+            jQuery('.bibs-page > .ui.very.padded.segment').removeClass('very padded');
+            jQuery('#schedule-tab > .ui.basic.segment').removeClass('text').css('width', '100%');
+            jQuery('#addTypeForm').css('width', '100%');
+            jQuery('#ticket-cards').removeClass('four').addClass('two');
+            jQuery('#distance-dropdown').css('width', '95%');
+            jQuery('.ui.left.pointing.label').removeClass('left').addClass('top');
+        }
         initUIElements();
 
         var logistics = new Logistics();

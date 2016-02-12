@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+<div class="bibs-page bibs-bg-gray-1" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 <jsp:directive.page contentType="text/html;charset=UTF-8"/>
 <jsp:output omit-xml-declaration="yes"/>
 <style>
@@ -86,7 +86,6 @@
         }
     }
 </style>
-<div class="bibs-page bibs-bg-gray-1">
 <form:create id="fc_com_bibsmobile_model_Event" modelAttribute="event" path="/events" render="${empty dependencies}" z="K0C4SWO1IaqNLeX1z1OyjHvbWEw=">
     <div class="ui small form" id="eventForm">
         <h2 class="ui icon center aligned header">
@@ -285,7 +284,6 @@
         Quick Add
     </button> -->
 </form:create>
-</div>
 <script src="/bibs-server/resources/scripts/tzid.js" type="text/javascript"><jsp:text/></script>
     <c:if test='${(!build.rfid)}'>
         <c:set var="gmaps" value="https://maps.googleapis.com/maps/api/js?libraries=places&amp;sensor=false" />
