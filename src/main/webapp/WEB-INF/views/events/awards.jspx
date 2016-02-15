@@ -23,6 +23,8 @@
 					
 				<button class="ui green button" 
 						onclick="printawards()">Print</button>
+				<button class="ui green button" 
+						onclick="printhtml()">HTML</button>
 			</div>
 	        <div style="clear:both;height:15px"><!--   --></div>
 		    <h2 class="ui icon center aligned header">

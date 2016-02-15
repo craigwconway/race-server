@@ -620,6 +620,32 @@ public class EventController {
 		}
     }
     
+    @RequestMapping(value = "/overallhtml", method = RequestMethod.GET)
+    public static void printOverallHtml(@RequestParam(value = "event") Long eventId,
+    		@RequestParam(value="type") Long eventTypeId,
+    		HttpServletResponse response) {
+    	Event event = Event.findEvent(eventId);
+    	EventType type = EventType.findEventType(eventTypeId);
+    	
+    	OutputStream os;
+		try {
+			os = response.getOutputStream();
+			OutputStream buffOs = new BufferedOutputStream(os);
+			OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
+			outputwriter.append("<html><body><h1>Awards for " + event.getName() + " - " + type.getTypeName() + "</h1><table>");
+			for(RaceResult rr : AwardsImmortalCache.getResultsOverall(eventTypeId)) {
+				outputwriter.append("<tr><td>"+ rr.getBib()+"</td><td>" + rr.getFirstname() + " " + rr.getLastname() + "</td><td>"
+			+ rr.getAge() + "</td><td>" + rr.getGender() + "</td><td>" + rr.getTimeofficialdisplay() +"</td></tr>");
+			}
+			outputwriter.append("</table> Powered by bibs </body></html>");
+			outputwriter.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
     // Print awards
     @RequestMapping(value = "/printawards", method = RequestMethod.GET)
     public static void printAwards(@RequestParam(value = "event", required = true) Long eventId,
