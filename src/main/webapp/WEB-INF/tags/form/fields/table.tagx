@@ -62,7 +62,7 @@
           cursor: pointer;
       }
     </style>
-    <table class="ui blue table">
+    <table class="ui blue unstackable table">
       <thead>
         <tr>
 <!--           <th class="table-btn"></th>

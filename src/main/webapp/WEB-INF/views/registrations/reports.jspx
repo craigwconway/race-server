@@ -53,6 +53,10 @@
         #chart svg {
             height: 400px;
         }
+
+        .ui.grid > [class*="two column"].row > .column{
+            margin-bottom: 1.5em;
+        }
     </style>
     <div class="bibs-page bibs-bg-gray-1">
         <div class="ui very padded basic segment" id="reports-container">
@@ -180,6 +184,27 @@
 
 <script>
     window.onload = function(){
+        if( navigator.userAgent.match(/Android/i)
+           || navigator.userAgent.match(/webOS/i)
+           || navigator.userAgent.match(/iPhone/i)
+           || navigator.userAgent.match(/iPad/i)
+           || navigator.userAgent.match(/iPod/i)
+           || navigator.userAgent.match(/BlackBerry/i)
+           || navigator.userAgent.match(/Windows Phone/i)
+        ){
+            jQuery('#reports-container').removeClass('very padded');
+            jQuery('.ui.text.container').removeClass('text');
+            jQuery('.ui.small.statistics.five.column.grid').removeClass('five column');
+            jQuery('.five.column.centered.row:first-child').removeClass('five column');
+            jQuery('.five.column.centered.row:nth-child(2)').removeClass('five column').addClass('two column');
+            jQuery('.five.column.centered.row:nth-child(3)').removeClass('five column').addClass('two column');
+            jQuery('.ui.small.statistics.grid > .centered.row.two.column > .column:nth-child(4)').find('.label')
+                .css('margin-top', '-0.5em')
+                .css('margin-bottom', '0.5em')
+                .css('line-height', '1em');
+            jQuery('#cartitems').removeClass('four column');
+            jQuery('#cartitems .four.wide.column').addClass('row').removeClass('four wide column');
+        }
         getEventCartItems();
     }
 
