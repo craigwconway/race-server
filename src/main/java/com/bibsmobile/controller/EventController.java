@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -626,18 +627,100 @@ public class EventController {
     		HttpServletResponse response) {
     	Event event = Event.findEvent(eventId);
     	EventType type = EventType.findEventType(eventTypeId);
+    	long numResults = RaceResult.countFindRaceResultsByEventType(type);
+    	String organizerSnippet ="";
+    	if(event.getOrganizer() != null) {
+    		organizerSnippet +="<h5>" +event.getOrganizer().getName()+"</h5>";
+    	}
     	
     	OutputStream os;
 		try {
 			os = response.getOutputStream();
 			OutputStream buffOs = new BufferedOutputStream(os);
 			OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
-			outputwriter.append("<html><body><h1>Awards for " + event.getName() + " - " + type.getTypeName() + "</h1><table>");
-			for(RaceResult rr : AwardsImmortalCache.getResultsOverall(eventTypeId)) {
-				outputwriter.append("<tr><td>"+ rr.getBib()+"</td><td>" + rr.getFirstname() + " " + rr.getLastname() + "</td><td>"
-			+ rr.getAge() + "</td><td>" + rr.getGender() + "</td><td>" + rr.getTimeofficialdisplay() +"</td></tr>");
+			outputwriter.append("<html><style>tbody tr:nth-child(odd){background-color: #ccc;} table {border-radius: 10px; width:80%;}</style><body><h1>Awards for "
+			+ event.getName() + " - " + type.getTypeName() + "</h1>"+ organizerSnippet+ "<table>");
+			// High ranking patrician like masters and medals go first. If allow masters in overall, overall goes first.
+			// Otherwise masters goes first.
+			List<AwardCategory> medalCategories = AwardCategory.findMedalsByEventType(type);
+			List<AwardCategory> mastersCategories = AwardCategory.findMastersByEventType(type);
+			// Lower ranking plebian categories go second
+			List<AwardCategory> classCategories = AwardCategory.findBottomRankedByEventType(type);
+
+			HashSet<Long> exclusions = new HashSet<Long>();
+			HashMap<Long, Integer> medalsRankings = new HashMap<Long, Integer>((int)(numResults*4/3 + 1));
+			HashMap<Long, String> medalsNames = new HashMap<Long, String>((int) (numResults *4/3 + 1));
+			HashMap<Long, String> classNames = new HashMap<Long, String>((int) (numResults *4/3 + 1));
+			HashMap<Long, Integer> classRankings = new HashMap<Long, Integer>((int) (numResults*4/3 + 1));
+			if(type.getAwardsConfig().isAllowMastersInNonMasters()) {
+				for(AwardCategory category : medalCategories) {
+					int position = 1;
+					for(RaceResult rr : EventType.findRaceResultsByAwardCategory(eventTypeId, category.getGender(), category.getAgeMin(), category.getAgeMax(), 1, category.getListSize())) {
+						if(!exclusions.contains(rr.getId())) {
+							medalsRankings.put(rr.getId(), position);
+							medalsNames.put(rr.getId(), category.getName());
+							exclusions.add(rr.getId());
+						}
+						position++;
+					}
+				}
+				for(AwardCategory category : mastersCategories) {
+					int position = 1;
+					for(RaceResult rr : EventType.findRaceResultsByAwardCategory(eventTypeId, category.getGender(), category.getAgeMin(), category.getAgeMax(), 1, category.getListSize())) {
+						if(!exclusions.contains(rr.getId())) {
+							medalsRankings.put(rr.getId(), position);
+							medalsNames.put(rr.getId(), category.getName());
+							exclusions.add(rr.getId());
+						}
+						position++;
+					}
+				}
+			} else {
+				for(AwardCategory category : medalCategories) {
+					int position = 1;
+					for(RaceResult rr : EventType.findRaceResultsByAwardCategory(eventTypeId, category.getGender(), category.getAgeMin(), category.getAgeMax(), 1, category.getListSize())) {
+						if(!exclusions.contains(rr.getId())) {
+							medalsRankings.put(rr.getId(), position);
+							medalsNames.put(rr.getId(), category.getName());
+							exclusions.add(rr.getId());
+						}
+						position++;
+					}
+				}
+				for(AwardCategory category : mastersCategories) {
+					int position = 1;
+					for(RaceResult rr : EventType.findRaceResultsByAwardCategory(eventTypeId, category.getGender(), category.getAgeMin(), category.getAgeMax(), 1, category.getListSize())) {
+						if(!exclusions.contains(rr.getId())) {
+							medalsRankings.put(rr.getId(), position);
+							medalsNames.put(rr.getId(), category.getName());
+							exclusions.add(rr.getId());
+						}
+						position++;
+					}
+				}
 			}
-			outputwriter.append("</table> Powered by bibs </body></html>");
+			for(AwardCategory category : classCategories) {
+				int position = 1;
+				for(RaceResult rr : EventType.findRaceResultsByAwardCategory(eventTypeId, category.getGender(), category.getAgeMin(), category.getAgeMax(), 1, 9999)) {
+					if(!exclusions.contains(rr.getId())) {
+						medalsRankings.put(rr.getId(), position);
+						medalsNames.put(rr.getId(), category.getName());
+						exclusions.add(rr.getId());
+					}
+					position++;
+				}
+			}
+			for(RaceResult rr : AwardsImmortalCache.getResultsOverall(eventTypeId)) {
+				String ranking = "";
+				if(medalsRankings.get(rr.getId()) == null) {
+					ranking = "";
+				} else {
+					ranking = medalsRankings.get(rr.getId()) + " " + medalsNames.get(rr.getId());
+				}
+				outputwriter.append("<tr><td>"+ rr.getBib()+"</td><td>" + rr.getFirstname() + " " + rr.getLastname() + "</td><td>"
+			+ rr.getAge() + "</td><td>" + rr.getGender() + "</td><td>" + rr.getTimeofficialdisplay() +"</td><td>"+ranking +"</td></tr>");
+			}
+			outputwriter.append("</table> Powered by bibs.</body></html>");
 			outputwriter.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -360,6 +360,33 @@ public class AwardCategory implements Comparable{
 		return list;
 	}
 
+	public static List<AwardCategory> findMastersByEventType(EventType eventType) {
+        EntityManager em = AwardCategory.entityManager();
+        String jpaQuery = "SELECT o FROM AwardCategory AS o WHERE o.eventType = :eventType AND o.master = 1";
+        jpaQuery = jpaQuery + " ORDER BY o.sortOrder ASC";
+        TypedQuery<AwardCategory> q = em.createQuery(jpaQuery, AwardCategory.class);
+        q.setParameter("eventType", eventType);
+        return q.getResultList();
+    }	
+	
+	public static List<AwardCategory> findMedalsByEventType(EventType eventType) {
+        EntityManager em = AwardCategory.entityManager();
+        String jpaQuery = "SELECT o FROM AwardCategory AS o WHERE o.eventType = :eventType AND o.medal = 1";
+        jpaQuery = jpaQuery + " ORDER BY o.sortOrder ASC";
+        TypedQuery<AwardCategory> q = em.createQuery(jpaQuery, AwardCategory.class);
+        q.setParameter("eventType", eventType);
+        return q.getResultList();
+    }
+
+	public static List<AwardCategory> findBottomRankedByEventType(EventType eventType) {
+        EntityManager em = AwardCategory.entityManager();
+        String jpaQuery = "SELECT o FROM AwardCategory AS o WHERE o.eventType = :eventType AND o.master = 0 AND o.medal = 0";
+        jpaQuery = jpaQuery + " ORDER BY o.sortOrder ASC";
+        TypedQuery<AwardCategory> q = em.createQuery(jpaQuery, AwardCategory.class);
+        q.setParameter("eventType", eventType);
+        return q.getResultList();
+    }	
+	
 	public static List<AwardCategory> findByEventType(EventType eventType) {
         EntityManager em = AwardCategory.entityManager();
         String jpaQuery = "SELECT o FROM AwardCategory AS o WHERE o.eventType = :eventType";
