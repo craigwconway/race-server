@@ -140,6 +140,7 @@
 	        complete: function(data) {
 	        	console.log("ResponseData");
 	        	console.log(data)
+	        	//location.reload();
 	        }
 	    })
 	}

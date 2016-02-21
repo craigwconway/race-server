@@ -815,6 +815,7 @@ public class EventController {
     	EventAwardsConfig awardsConfig = eventType.getAwardsConfig();
     	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
     	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
+    	awardsConfig.setUseGunTimeForAwards(httpServletRequest.getParameterMap().containsKey("gun"));
     	eventType.setAwardsConfig(awardsConfig);
     	eventType.merge();
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
@@ -830,6 +831,7 @@ public class EventController {
     	EventAwardsConfig awardsConfig = eventType.getAwardsConfig();
     	awardsConfig.setAllowMastersInNonMasters(httpServletRequest.getParameterMap().containsKey("master"));
     	awardsConfig.setAllowMedalsInAgeGenderRankings(httpServletRequest.getParameterMap().containsKey("duplicate"));
+    	awardsConfig.setUseGunTimeForAwards(httpServletRequest.getParameterMap().containsKey("gun"));
     	eventType.setAwardsConfig(awardsConfig);
     	eventType.merge();
         return "redirect:/events/awards?event="+eventId;

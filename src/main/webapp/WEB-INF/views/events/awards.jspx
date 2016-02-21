@@ -63,6 +63,10 @@
 					      	<label>Masters in Overall</label>
 					      	<input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
 					    </div>
+						<div class="field">
+							<label>Use Only Gun for Awards</label>
+							<input type="checkbox" id="gun" name="gun" value="true" onclick="update()"/>
+						</div>
 					</div>
 				</div>
 			    </sec:authorize>
