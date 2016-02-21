@@ -50,6 +50,10 @@
 				      	<label>Masters in Overall</label>
 				      	<input type="checkbox" id="master" name="master" value="true" onclick="update()"/>
 				    </div>
+					<div class="field">
+						<label>Use Only Gun for Awards</label>
+						<input type="checkbox" id="gun" name="gun" value="true" onclick="update()"/>
+					</div>
 				</div>
 			</div>
 		    </sec:authorize>
@@ -153,6 +157,9 @@
 		if(${eventType.awardsConfig.allowMastersInNonMasters}){
 			jQuery('#master').prop('checked', true);
 		}
+		if(${eventType.awardsConfig.useGunTimeForAwards}){
+			jQuery('#gun').prop('checked', true);
+		}
 	}
 	
 	function onBack(){
@@ -166,6 +173,7 @@
 		var loc = "/bibs-server/events/ageGenderRankings/update?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+gender;
 		if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
 		if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
+		if(jQuery('#gun').prop('checked')) loc += "&amp;gun=true"
 		window.location=loc;
 	}
 	

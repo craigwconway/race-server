@@ -818,7 +818,7 @@ public class EventController {
     	awardsConfig.setUseGunTimeForAwards(httpServletRequest.getParameterMap().containsKey("gun"));
     	eventType.setAwardsConfig(awardsConfig);
     	eventType.merge();
-        return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
+        return "redirect:/events/ageGenderRankings?event="+eventId+"&type="+ eventTypeId+"&gender=" +gender;
     }
 
     @RequestMapping(value = "/awards/update", method = RequestMethod.GET)

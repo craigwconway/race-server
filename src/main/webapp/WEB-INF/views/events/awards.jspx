@@ -188,6 +188,9 @@
 			if(${eventType.awardsConfig.allowMastersInNonMasters}){
 				jQuery('#master').prop('checked', true);
 			}
+			if(${eventType.awardsConfig.useGunTimeForAwards}){
+				jQuery('#gun').prop('checked', true);
+			}
 			setEventTypeSelection(getUrlParam('type'));
 		}
 
@@ -203,6 +206,7 @@
 			var loc = "/bibs-server/events/awards/update?event="+eventid+"&amp;type=${eventType.id}";
 			if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
 			if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
+			if(jQuery('#gun').prop('checked')) loc += "&amp;gun=true"
 			window.location=loc;
 		}
 
