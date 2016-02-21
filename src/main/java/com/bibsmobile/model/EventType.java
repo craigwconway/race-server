@@ -597,13 +597,18 @@ public class EventType {
     public static List<RaceResult> findRaceResultsByAwardCategory(long eventType, String gender, int min, int max, int page, int size) {
         if (min > max)
             min = max;
+        EventType type = EventType.findEventType(eventType);
         String HQL = "SELECT o FROM RaceResult AS o WHERE o.eventType = :eventType AND o.timediff > 0 ";
         if (!gender.isEmpty()) HQL += " AND o.gender = :gender ";
         if (min >= 0 && max > 0) HQL += "AND o.age >= :min AND o.age <= :max ) ";
-        HQL += " order by o.timeofficialdisplay asc";
+        if(type.getAwardsConfig().isUseGunTimeForAwards()) {
+        	HQL += " order by o.timeofficialdisplayGun asc";
+        } else {
+        	HQL += " order by o.timeofficialdisplay asc";
+        }
         EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery(HQL, RaceResult.class);
-        q.setParameter("eventType", EventType.findEventType(eventType));
+        q.setParameter("eventType", type);
         if (!gender.isEmpty()) q.setParameter("gender", gender);
         if (min >= 0 && max > 0) {
             q.setParameter("min", min);

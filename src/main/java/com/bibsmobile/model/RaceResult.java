@@ -182,6 +182,11 @@ public class RaceResult implements Comparable<RaceResult> {
     private String timeofficialmanual;
     
     /**
+     * String to store valid gun import times.
+     */
+    private String timegunmanual;
+    
+    /**
      * String used to store time difference for official time computations.
      */
     private long timediff;
@@ -314,6 +319,11 @@ public class RaceResult implements Comparable<RaceResult> {
         return RaceResult.toHumanTime(this.timestart, this.timeofficial);
     }
 
+    public String getTimeofficialdisplayGun() {
+    	if(this.getEventType() == null) return "";
+    	if(this.getEventType().getGunTime() == null) return "";
+        return RaceResult.toHumanTime(this.getEventType().getGunTime().getTime(), this.timeofficial);
+    }
     /**
      * This returns the last-set value of the runner's timeofficialdisplay, regardless of what the current timeofficial,
      * timestart or state of the runner's license are.
@@ -1418,6 +1428,20 @@ public class RaceResult implements Comparable<RaceResult> {
 	 */
 	public void setTimeofficialmanual(String timeofficialmanual) {
 		this.timeofficialmanual = timeofficialmanual;
+	}
+
+	/**
+	 * @return the timegunmanual
+	 */
+	public String getTimegunmanual() {
+		return timegunmanual;
+	}
+
+	/**
+	 * @param timegunmanual the timegunmanual to set
+	 */
+	public void setTimegunmanual(String timegunmanual) {
+		this.timegunmanual = timegunmanual;
 	}
 
 	/**

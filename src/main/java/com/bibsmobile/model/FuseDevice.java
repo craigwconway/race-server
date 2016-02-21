@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
@@ -48,6 +49,9 @@ public class FuseDevice {
 	 * Name of device
 	 */
 	private String deviceName;
+	
+	@ManyToOne
+	private UserGroup owner;
 	
 	/**
 	 * Creation timestamp of device.
@@ -105,6 +109,20 @@ public class FuseDevice {
 
 	public void setDeviceName(String deviceName) {
 		this.deviceName = deviceName;
+	}
+
+	/**
+	 * @return the owner
+	 */
+	public UserGroup getOwner() {
+		return owner;
+	}
+
+	/**
+	 * @param owner the owner to set
+	 */
+	public void setOwner(UserGroup owner) {
+		this.owner = owner;
 	}
 
 	public Date getCreated() {
