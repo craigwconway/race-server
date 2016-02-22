@@ -368,7 +368,7 @@ public class EventController {
 
     @RequestMapping(value = "/gun", method = RequestMethod.POST)
     @ResponseBody
-    public static String timerGun(@RequestParam(value = "type", required = true) long type,
+    public static ResponseEntity<String> timerGun(@RequestParam(value = "type", required = true) long type,
     		@RequestParam(value = "time", required = false) String timeLocal) {
         try {
         	EventType eventType = EventType.findEventType(type);
@@ -376,11 +376,13 @@ public class EventController {
             	SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
                 format.setTimeZone(eventType.getEvent().getTimezone());
                 eventType.setGunTime(format.parse(timeLocal));
+        	} else {
+                eventType.setGunTime(new Date());
         	}
 
             
             eventType.setGunFired(true);
-            eventType.setGunTime(new Date());
+
             eventType.merge();
             for(RaceResult r : RaceResult.findRaceResultsByEventType(eventType).getResultList()) {
             	r.setTimestart(eventType.getGunTime().getTime());
@@ -388,9 +390,9 @@ public class EventController {
             }
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            return "false";
+            return new ResponseEntity<String>("false", HttpStatus.BAD_REQUEST);
         }
-        return "true";
+        return new ResponseEntity<String>("true", HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/run", method = RequestMethod.GET)
