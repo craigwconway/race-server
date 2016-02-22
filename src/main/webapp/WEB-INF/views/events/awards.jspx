@@ -98,8 +98,12 @@
 					<c:forEach items="${acr.results}" var="result" varStatus="x">
 					<tr class="cat-${acr.category.id}">
 						<td style="width:10px">${x.index+1}</td>
+						<c:if test="${!eventType.awardsConfig.useGunTimeForAwards }">
 						<td style="width:150px">${result.timeofficialdisplay}</td>
-						<td style="width:10px">${result.bib}</td>
+						</c:if>
+						<c:if test="${eventType.awardsConfig.useGunTimeForAwards }">
+						<td style="width:150px">${result.timeofficialdisplayGun}</td>
+						</c:if>						<td style="width:10px">${result.bib}</td>
 						<td>${result.firstname} ${result.lastname}</td>
 						<td style="width:10px">${result.age}</td>
 						<td style="width:10px">${result.gender}</td>
