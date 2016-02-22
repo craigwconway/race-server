@@ -459,7 +459,7 @@
             </a>
         </c:if>
         </sec:authorize>
-        <c:if test="${hasTickets}">
+        <c:if test="${not empty eventTypes}">
             <a class="item bibs-gray-1" href="#" onclick="redirectAwards();return false;">
                 <i class="fa fa-trophy icon"><!--  --></i> Awards
             </a>

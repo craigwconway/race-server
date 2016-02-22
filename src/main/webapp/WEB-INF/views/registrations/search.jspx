@@ -206,7 +206,7 @@
                 <div class="fields">
                     <c:if test="${events != null}">
                     <div class="field">
-                        <select name="event" class="ui dropdown">
+                        <select name="event" class="ui selection dropdown">
                             <c:forEach var="event" items="${events}">
                                 <c:if test="${eventId == event.id}">
                                     <option value="${event.id}" selected="selected">${event.name}</option>
@@ -325,6 +325,7 @@
     <script>
         window.onload = function(){
             initModalContent();
+            jQuery('#_title_pl_com_bibsmobile_model_Registration_id').css('margin', '1em');
         }
 
         function initModalContent(){
