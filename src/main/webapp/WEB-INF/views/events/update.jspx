@@ -196,6 +196,7 @@
                             value="${event.charity}"></input>
                 </div>
             </div>
+            <div class="ui error message" style="display:none"><!--  --></div>
         </div>
         <div style="display:none">
             <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
@@ -318,34 +319,92 @@
     }
 
     function setValidation(){
-        jQuery('#event').parsley({
-            errorsWrapper: '<div class="has-error"></div>',
-            errorTemplate: '<span></span>'
+        jQuery('#eventForm').form({
+            fields: {
+                name:     {
+                    identifier  : 'name',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter an event name!'
+                    }]
+                },timeStartLocal:     {
+                    identifier  : 'timeStartLocal',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter a start time for this event!'
+                    }]
+                },website:     {
+                    identifier  : 'website',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter a website address!'
+                    },{
+                        type   : 'url',
+                        prompt : 'Please enter a valid website address!'
+                    }]
+                },phone:     {
+                    identifier  : 'phone',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter a phone number!'
+                    },{
+                        type   : 'minLength[10]',
+                        prompt : 'Please enter at least 10 digits for the phone number!'
+                    }]
+                },address:     {
+                    identifier  : 'address',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter an address for this event!'
+                    }]
+                },
+            }
         });
+        // jQuery('#event').parsley({
+        //     errorsWrapper: '<div class="has-error"></div>',
+        //     errorTemplate: '<span></span>'
+        // });
     }
 
     function preventGeocompleteBlur(){
         jQuery('#proceed').click(function(){
-            jQuery("#event").submit(function(e) {
+            jQuery("#event").submit(function(e){
                 e.preventDefault();
-                var localdate = jQuery('input[name="timeStartLocal"]').val();
-                localdate = moment(localdate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY hh:mm:ss a');
-                jQuery('input[name="timeStartLocal"]').val(localdate);
-                if( addr == "" ){
-                    jQuery('#geoaddress').val('${event.address}');
-                    jQuery('#geocity').val('${event.city}');
-                    jQuery('#geostate').val('${event.state}');
-                    jQuery('#geocountry').val('${event.country}');
-                }else{
-                    jQuery('#geoaddress').val(addr);
+                var valid = jQuery('#eventForm').form('validate form');
+                var $submit = jQuery('#proceed');
+                    $submit.addClass('loading').addClass('disabled');
+
+                var $errors = jQuery('#eventForm').find('.ui.error.message');
+                if(valid){
+                    $submit.removeClass('loading').removeClass('disabled');
+                    if( addr == "" ){
+                        jQuery('#geoaddress').val(misc);
+                    }else{
+                        jQuery('#geoaddress').val(addr);
+                    }
+
+                    var localdate = jQuery('input[name="timeStartLocal"]').val();
+                    localdate = moment(localdate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY hh:mm:ss a');
+                    jQuery('input[name="timeStartLocal"]').val(localdate);
+                    jQuery('input[name="PreventChromeAutocomplete"]').removeAttr('name');
+
                     jQuery('#geocity').val(city);
                     jQuery('#geostate').val(state);
                     jQuery('#geocountry').val(country);
+
+                    this.submit();
+                }else{
+                    $submit.removeClass('loading').removeClass('disabled');
+                    $errors.show();
+                    jQuery('input').on('change keyup', function(){
+                        valid = jQuery('#eventForm').form('validate form');
+                        if(valid){
+                            $errors.hide();
+                        }
+                    });
                 }
-                jQuery('input[name="PreventChromeAutocomplete"]').removeAttr('name');
-                this.submit();
             });
-        })
+        });
     }
 
     // creating new variables to prevent full control given to autocomplete feature
