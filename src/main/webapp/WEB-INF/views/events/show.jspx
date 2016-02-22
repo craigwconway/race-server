@@ -459,9 +459,11 @@
             </a>
         </c:if>
         </sec:authorize>
-        <a class="item bibs-gray-1" href="#" onclick="redirectAwards();return false;">
-            <i class="fa fa-trophy icon"><!--  --></i> Awards
-        </a>
+        <c:if test="${hasTickets}">
+            <a class="item bibs-gray-1" href="#" onclick="redirectAwards();return false;">
+                <i class="fa fa-trophy icon"><!--  --></i> Awards
+            </a>
+        </c:if>
         <sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
         <div class="right menu">
             <c:if test='${(build.registration)}'>
@@ -677,7 +679,7 @@
                             </button>
                         </c:if>
                         <c:if test="${not empty eventTypes}">
-                            <button class="ui bibs-bg-main-teal bibs-gray-1 button"
+                            <button class="ui bibs-bg-main-teal bibs-gray-1 button registration-tools-button"
                                     onclick="redirectManageReg()">
                                 <i  class="fa fa-wrench icon"><!--  --></i>
                                 Registration Tools
@@ -761,7 +763,7 @@
         initInfo();
 
         <c:if test="${empty eventTypes}">
-            // renderEventTypeModal('clean');
+            renderEventTypeModal('clean');
         </c:if>
         <c:if test='${(!build.rfid)}'>
             initMap();

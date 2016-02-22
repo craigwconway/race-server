@@ -48,7 +48,7 @@
 .leaflet-top{
     z-index: 1 !important;
 }
-.ui.basic.buttons .button:last-child{
+.ui.basic.buttons .registration-tools-button{
     background-color: rgba(42,157,143,1) !important;
     color: rgba(240,240,240,1) !important;
 }
