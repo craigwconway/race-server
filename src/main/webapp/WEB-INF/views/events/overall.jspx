@@ -45,7 +45,7 @@
 			<button class="ui bibs-bg-main-teal bibs-gray-1 button" 
 					onclick="overall()">Overall</button>
 			<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-			<div class="ui large form" style="width:400px;margin:0 auto;line-height:4em;text-align:center;">
+			<div class="ui large form" style="width:400px;margin:1em auto;line-height:41.5m;text-align:center;">
 				<div class="two inline fields">
 				    <div class="field">
 				     	<label>Allow Duplicates</label>

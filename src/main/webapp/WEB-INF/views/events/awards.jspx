@@ -33,7 +33,7 @@
 		            <div class="sub header">Standings for ${eventType.typeName}</div>
 		        </div>
 		    </h2>
-			<select class="ui dropdown" id="types" name="types" onchange="filterByEventType()">
+			<select class="ui selection dropdown" id="types" name="types" onchange="filterByEventType()">
 				<option id="eventType-0" disabled="disabled">Event Types</option>
 				<c:forEach items="${eventTypes}" var="item" varStatus="i">
 					<option id="types-${item.id}" value="${item.id}">${ item.typeName }</option>
