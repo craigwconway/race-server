@@ -818,6 +818,7 @@ public class EventController {
     	awardsConfig.setUseGunTimeForAwards(httpServletRequest.getParameterMap().containsKey("gun"));
     	eventType.setAwardsConfig(awardsConfig);
     	eventType.merge();
+    	AwardsImmortalCache.clearAwardsCache(eventTypeId);
         return "redirect:/events/ageGenderRankings?event="+eventId+"&type="+ eventTypeId+"&gender=" +gender;
     }
 
@@ -834,6 +835,7 @@ public class EventController {
     	awardsConfig.setUseGunTimeForAwards(httpServletRequest.getParameterMap().containsKey("gun"));
     	eventType.setAwardsConfig(awardsConfig);
     	eventType.merge();
+    	AwardsImmortalCache.clearAwardsCache(eventTypeId);
         return "redirect:/events/awards?event="+eventId;
     }
 
