@@ -198,7 +198,7 @@
 			saveGunTimePromise.done(function(data){
 				$button.removeClass('loading').removeClass('disabled').removeClass('red').removeClass('yellow').addClass('positive').text('Saved!');
 				closeModal();
-				console.log(data);
+				location.reload();
 			}).fail(function(data){
 				$button.removeClass('loading').removeClass('yellow').addClass('red').text('Error!');
 				$input.off().on('change click', function(){
