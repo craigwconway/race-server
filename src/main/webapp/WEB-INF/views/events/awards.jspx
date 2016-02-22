@@ -242,7 +242,7 @@
 			window.location = "/bibs-server/events/printawards?event="+eventid+"&amp;type="+${eventType.id};
 		}
 		function saveCategories(){
-			var name  = jQuery('#saveForm input[name="categoryName"]').val();
+			var name  = jQuery('#saveForm input[name="templateName"]').val();
 			var request = jQuery.ajax({
 				url: "/bibs-server/awardcategorys/template/create?event=${eventType.id}&amp;name="+name,
 				type: 'POST',
