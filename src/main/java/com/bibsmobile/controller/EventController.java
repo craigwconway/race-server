@@ -392,7 +392,7 @@ public class EventController {
             log.error(ex.getMessage(), ex);
             return new ResponseEntity<String>("false", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String>("true", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<String>("true", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/run", method = RequestMethod.GET)
