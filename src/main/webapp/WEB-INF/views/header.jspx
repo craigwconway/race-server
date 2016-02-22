@@ -3,6 +3,9 @@
 	<jsp:output omit-xml-declaration="yes" />
 
 	<style>
+		.ui.vertical.menu .item > img:not(.ui):only-child{
+			margin: 0 auto;
+		}
 		.ui.menu .item > img:not(.ui) {
 		    display: inline-block;
 		    vertical-align: middle;
