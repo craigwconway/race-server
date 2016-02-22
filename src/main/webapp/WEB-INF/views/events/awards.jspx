@@ -33,7 +33,7 @@
 		            <div class="sub header">Standings for ${eventType.typeName}</div>
 		        </div>
 		    </h2>
-			<select class="ui dropdown" id="types" name="types" onchange="filterByEventType()">
+			<select class="ui selection dropdown" id="types" name="types" onchange="filterByEventType()">
 				<option id="eventType-0" disabled="disabled">Event Types</option>
 				<c:forEach items="${eventTypes}" var="item" varStatus="i">
 					<option id="types-${item.id}" value="${item.id}">${ item.typeName }</option>
@@ -53,7 +53,7 @@
 				<button class="ui bibs-bg-main-teal bibs-gray-1 button" 
 						onclick="overall()">Overall</button>
 				<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-				<div class="ui large form" style="width:400px;margin:0 auto;line-height:4em;text-align:center;">
+				<div class="ui large form" style="width:400px;margin:1em auto;line-height:1.5em;text-align:center;">
 					<div class="two inline fields">
 					    <div class="field">
 					     	<label>Allow Duplicates</label>
