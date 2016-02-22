@@ -20,6 +20,7 @@
 	<spring:url var="timers_url" 	value="/timers?page=1&amp;size=10" />
 	<spring:url var="license_url" 	value="/licensing" />
 	<spring:url var="account_url" 	value="/register/account" />
+	<spring:url var="support_url"	value="https://bibs.zendesk.com/hc/en-us"/>
 	<spring:url var="login" 		value="/login" />
 	<spring:url var="logout" 		value="/resources/j_spring_security_logout" />
 	<spring:message code="button_home" var="home_label" htmlEscape="false" />
@@ -37,7 +38,7 @@
   			<a href="${license_url}" class="item" style="display:none"><i class="fa fa-bolt left-icon icon"><!--  --></i> licensing</a>
   	  	</sec:authorize>
     	<a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a>
-    	<a class="item" href="#"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a>
+    	<a class="item" href="${support_url }"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a>
 	</div>
 	<nav class="navbar navbar-inverse navbar-fixed-top mobile">
         <div class="container-fluid">
@@ -69,7 +70,7 @@
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
 				    	<li><a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a></li>
-				    	<li><a class="item" href="#"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a></li>
+				    	<li><a class="item" href="${support_url }"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a></li>
                   		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
                   	</sec:authorize>
                 </ul>
