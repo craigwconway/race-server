@@ -1,5 +1,6 @@
 package com.bibsmobile.controller;
 
+import com.bibsmobile.model.AwardCategory;
 import com.bibsmobile.model.CartItem;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.EventType;
@@ -204,6 +205,11 @@ public class EventTypeController {
 		}
         
         eventType.persist();
+        eventType.flush();
+        AwardCategory.createDefaultMedals(eventType);
+        AwardCategory.createAgeGenderRankings(eventType, 
+        		AwardCategory.MIN_AGE, AwardCategory.MAX_AGE, 
+        		AwardCategory.DEFAULT_AGE_SPAN, AwardCategory.DEFAULT_LIST_SIZE);
         return new ResponseEntity<>(eventType.toJson(), headers, HttpStatus.OK);
     }
 
