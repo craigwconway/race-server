@@ -217,6 +217,7 @@
                         value="${event.charity}"></input>
             </div>
         </div>
+        <div class="ui error message" style="display:none"><!--  --></div>
         <c:if test='${(build.rfid)}'>
             <div class="field">
                 <label>Website</label>
@@ -304,7 +305,6 @@
                 searchFields: ['title'],
                 searchFullText: true
             });
-            preventGeocompleteBlur();
         </c:if>
         setValidation();
         if(test){
@@ -343,7 +343,7 @@
 
     function initDateTimePickers(){
         var todayDate = moment().startOf('day');
-        jQuery("input[name='timeStartLocal']")
+        jQuery('input[name="timeStartLocal"]')
             .datetimepicker({
                 useSeconds: true,
                 sideBySide: true
@@ -352,10 +352,51 @@
     }
 
     function setValidation(){
-        jQuery('#event').parsley({
-            errorsWrapper: '<div class="has-error"></div>',
-            errorTemplate: '<span></span>'
+        jQuery('#eventForm').form({
+            fields: {
+                name:     {
+                    identifier  : 'name',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter an event name!'
+                    }]
+                },timeStartLocal:     {
+                    identifier  : 'timeStartLocal',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter a start time for this event!'
+                    }]
+                },website:     {
+                    identifier  : 'website',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter a website address!'
+                    },{
+                        type   : 'url',
+                        prompt : 'Please enter a valid website address!'
+                    }]
+                },phone:     {
+                    identifier  : 'phone',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter a phone number!'
+                    },{
+                        type   : 'minLength[10]',
+                        prompt : 'Please enter at least 10 digits for the phone number!'
+                    }]
+                },address:     {
+                    identifier  : 'address',
+                    rules: [{
+                        type   : 'empty',
+                        prompt : 'Please enter an address for this event!'
+                    }]
+                },
+            }
         });
+        // jQuery('#event').parsley({
+        //     errorsWrapper: '<div class="has-error"></div>',
+        //     errorTemplate: '<span></span>'
+        // });
 
         /*  non-parsley  */
         jQuery("#mask-website").focus(function(){
@@ -369,33 +410,56 @@
             var fulltext = jQuery("input[name='website']").val();
             jQuery("input[name='website']").val(fulltext);
         });
+
+        preventGeocompleteBlur();
     }
 
     function preventGeocompleteBlur(){
         jQuery('#proceed').click(function(){
-            jQuery("#event").submit(function(e) {
+            jQuery("#event").submit(function(e){
                 e.preventDefault();
-                if( addr == "" ){
-                    jQuery('#geoaddress').val(misc);
+                var valid = jQuery('#eventForm').form('validate form');
+                var $submit = jQuery('#proceed');
+                    $submit.addClass('loading').addClass('disabled');
+
+                var $errors = jQuery('#eventForm').find('.ui.error.message');
+                if(valid){
+                    $submit.removeClass('loading').removeClass('disabled');
+                    if( addr == "" ){
+                        jQuery('#geoaddress').val(misc);
+                    }else{
+                        jQuery('#geoaddress').val(addr);
+                    }
+                    var localdate = jQuery('input[name="timeStartLocal"]').val();
+                    localdate = moment(localdate, 'MM/DD/YYYY h:mm:ss a').format('MM/DD/YYYY hh:mm:ss a');
+                    jQuery('input[name="timeStartLocal"]').val(localdate);
+                    jQuery('input[name="PreventChromeAutocomplete"]').removeAttr('name');
+
+                    // if( addr == "" ){
+                        // var safeAddr = encodeURIComponent(misc);
+                        // jQuery('#geoaddress').val(safeAddr);
+                    // }else{
+                        // var safeAddr = encodeURIComponent(addr);
+                        // jQuery('#geoaddress').val(safeAddr);
+                        // console.log('address should be: ' + addr);
+                    // }
+
+                    jQuery('#geocity').val(city);
+                    jQuery('#geostate').val(state);
+                    jQuery('#geocountry').val(country);
+
+                    this.submit();
                 }else{
-                    jQuery('#geoaddress').val(addr);
+                    $submit.removeClass('loading').removeClass('disabled');
+                    $errors.show();
+                    jQuery('input').on('change keyup', function(){
+                        valid = jQuery('#eventForm').form('validate form');
+                        if(valid){
+                            $errors.hide();
+                        }
+                    });
                 }
-
-                // if( addr == "" ){
-                    // var safeAddr = encodeURIComponent(misc);
-                    // jQuery('#geoaddress').val(safeAddr);
-                // }else{
-                    // var safeAddr = encodeURIComponent(addr);
-                    // jQuery('#geoaddress').val(safeAddr);
-                    // console.log('address should be: ' + addr);
-                // }
-
-                jQuery('#geocity').val(city);
-                jQuery('#geostate').val(state);
-                jQuery('#geocountry').val(country);
-
-                this.submit();
-            });
+            })
         })
     }
 
