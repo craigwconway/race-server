@@ -410,6 +410,11 @@
     // creating new variables to prevent full control given to autocomplete feature
     var addr = ""; var city = ""; var state = ""; var country = ""; var misc = "";
     function setGeocomplete(){
+        addr = jQuery('#geoaddress').val();
+        city = jQuery('#geocity').val();
+        state = jQuery('#geostate').val();
+        country = jQuery('#geocountry').val();
+        console.log(addr,city,state,country,misc)
         jQuery("#demo input").geocomplete({
             details: ".details",
             detailsAttribute: "data-geo",
