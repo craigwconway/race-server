@@ -437,7 +437,7 @@
             <div class="ui bibs-bg-main-yellow bibs-gray-4 segment">
                 <i class="fa fa-bell left-icon"><!--  --></i>
                 <i class="fa fa-close link right-icon"><!--  --></i>
-                You've created your Event Type! Please don't forget to <a href="/bibs-server/eventitems?event=2" class="emphasized emphasized-link">set-up registration</a> and additional event details.
+                You've created your Event Type! Please don't forget to <a href="/bibs-server/eventitems?event=${event.id}" class="emphasized emphasized-link">set-up registration</a> and additional event details.
             </div>
         </c:otherwise>
     </c:choose>
