@@ -1194,6 +1194,7 @@
             legend: graphLegend,
             legend_target: '.legend',
             yax_units: '$',
+            xax_count: 5,
             x_extended_ticks: true
         });
     }
