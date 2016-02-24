@@ -189,11 +189,19 @@ public class CartItemRestController {
                         }
                         
                     	Long questionPriceSum = new Long(0);
+                    	Long totalQuestionQuantity = totalQuantity.get("QUESTIONS");
+                    	if(totalQuestionQuantity == null) {
+                    		totalQuestionQuantity = new Long(0);
+                    	}
                     	for(CustomRegFieldResponse crfr : c.getCustomRegFieldResponses()) {
                     		if(crfr.getPrice() != null) {
                     			questionPriceSum += crfr.getPrice();
+                    			if (crfr.getPrice() != 0) {
+                    				totalQuestionQuantity +=1;
+                    			}
                     		}
                     	}
+                    	totalQuantity.put("QUESTIONS", totalQuestionQuantity);
                     	Long currentQuestions = totalMoney.get("QUESTIONS");
                     	if (currentQuestions != null) {
                     		currentQuestions += questionPriceSum;

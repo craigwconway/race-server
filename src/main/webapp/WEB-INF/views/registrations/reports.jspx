@@ -387,6 +387,10 @@
             amount = displayDollar(money.QUESTIONS);
             console.log(amount);
             jQuery("#total-money-questions").text(amount);
+            if('QUESTIONS' in quantity) {
+            	jQuery("#total-questions").text(quantity.QUESTIONS);
+            	console.log("questions: " + quantity.QUESTIONS);
+            }
         }else{
             jQuery('#total-questions').text(initValue);
             jQuery("#total-money-questions").text("$0");
