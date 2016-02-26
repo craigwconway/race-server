@@ -1257,7 +1257,7 @@
     }
 
     function onBack(){
-        window.location="/bibs-server/event=${event.id}";
+        window.location="/bibs-server/events/${event.id}";
     }
     
     function deleteItem(id){
