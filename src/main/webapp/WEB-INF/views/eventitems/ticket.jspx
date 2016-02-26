@@ -1162,6 +1162,7 @@
             postObjList.push(postObj);
             alert('You haven\'t indicated any Ticket Types. We created for you one default Ticket Type called "General Admission".');
         }
+        saved = true;
         jQuery.ajax({
             url: "/bibs-server/eventitemspricechanges/jsonArraySmart",
             contentType: 'application/json',
@@ -1170,7 +1171,6 @@
             data: JSON.stringify(postObjList),
             complete: function(data) {
                 console.log('finished');
-                saved = true;
                 alert('Your changes have been saved!');
                 jQuery('#saveTTPC').prop('disabled', true).text('Saving...');
                 window.location.reload();
@@ -1257,7 +1257,7 @@
     }
 
     function onBack(){
-        window.location="/bibs-server/eventitems?event=${event.id}";
+        window.location="/bibs-server/event=${event.id}";
     }
     
     function deleteItem(id){
@@ -1270,6 +1270,7 @@
         }
     }
     function sendDeleteItem(id){ 
+        saved = true;
         var request = jQuery.ajax({
             url: "/bibs-server/eventitems/ticketremove/"+id,
             type: "DELETE",
@@ -1277,7 +1278,6 @@
             data: { "id": id },
             complete: function() {
                 alerted = true;
-                saved = true;
                 onBack();
             }
         });
@@ -1292,6 +1292,7 @@
         }
     }
     function sendDeleteItemAndType(id){    
+        saved = true;
         var request = jQuery.ajax({
             url: "/bibs-server/eventitems/fullremove/"+id,
             type: "DELETE",
@@ -1299,7 +1300,6 @@
             data: { "id": id },
             complete: function() {
                 alerted = true;
-                saved = true;
                 onBack();
             }
         });
@@ -1388,6 +1388,8 @@
             }
     		dat.eventType.timeStartLocal = parseDate;
     		dat.eventType.racetype = raceType;
+            
+            saved = true;
     		
     		jQuery.ajax({
                 url: uploadUrl,
@@ -1396,7 +1398,6 @@
                 data: JSON.stringify(dat),
                 dataType: "json",
                 complete: function(data) {
-                    saved = true;
                     console.log("ResponseData");
                     console.log(data)
                     if(data != null &amp;&amp; data.responseJSON) {
