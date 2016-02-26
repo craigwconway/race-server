@@ -204,7 +204,7 @@
     <div class="header">Live Results Snippet</div>
     <div class="content">
         Copy the url below to share live results:<br/>
-        <c:set var="livehead" value='&lt;a href="${build.location}/bibs-server/r/e/'/>
+        <c:set var="livehead" value='&lt;a href="${build.location}/bibs-server/r/o/'/>
         <c:set var="livetail" value='"&gt;&lt;/a&gt;'/>
         <pre>${fn:escapeXml(livehead)}<span id="liveid"><!--  --></span>${fn:escapeXml(livetail)}</pre>
     </div>
