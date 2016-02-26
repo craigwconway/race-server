@@ -967,7 +967,7 @@ public class EventController {
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
-        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,gender,age,rankoverall,rankgender,rankclass\r\n");
+        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,timegun,gender,age,rankoverall,rankgender,rankclass\r\n");
         
         List<RaceResult> runners;
         if (type == null) {
@@ -977,7 +977,7 @@ public class EventController {
         }
         AwardsImmortalCache.clearAwardsCache(event);
         for (RaceResult r : runners) {
-            outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + ","
+            outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + "," + r.getTimeofficialdisplayGun() + ","
                     + r.getGender() + "," + r.getAge()  +"," + AwardsImmortalCache.getResultOverall(r.getEvent().getId(), r.getBib()) + "," + AwardsImmortalCache.getResultGender(r.getEvent().getId(), r.getBib(), r.getGender()) + "," + AwardsImmortalCache.getClassRank(r.getEvent().getId(), r.getBib()) + "\r\n");
         }
         outputwriter.flush();

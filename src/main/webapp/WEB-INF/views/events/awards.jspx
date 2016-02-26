@@ -238,6 +238,10 @@
 			window.location = "/bibs-server/events/overall?event="+eventid+"&amp;type="+${eventType.id};
 		}
 
+		function printhtml(){
+			window.location = "/bibs-server/events/overallhtml?event="+eventid+"&amp;type="+${eventType.id};
+		}
+		
 		function printawards(){
 			window.location = "/bibs-server/events/printawards?event="+eventid+"&amp;type="+${eventType.id};
 		}
