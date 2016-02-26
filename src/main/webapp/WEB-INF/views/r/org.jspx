@@ -2,6 +2,8 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:sec="http://www.springframework.org/security/tags" xmlns:spring="http://www.springframework.org/tags" version="2.0" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
 	<jsp:output omit-xml-declaration="yes"/>
+<div class="bibs-page bibs-bg-gray-1">
+    <div class="ui very padded basic segment">
 	<h1 class="ui header">${usergroup.name}</h1>
 	${usergroup.description}
 	<h3 class="ui header">Events</h3>
@@ -17,6 +19,8 @@
 			</tr>
 		</c:forEach>
 	</table>
+	</div>
+</div>
 	<script>
 		window.onload = function(){
 			jQuery(".clickable-row").click(function() {

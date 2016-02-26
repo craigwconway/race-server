@@ -789,9 +789,11 @@
 
             jQuery('#option-list').append('<li><div class="ui label" data-index="' + (currOptionsObjList.length-1) + '" onclick="removeDropdownOption(this)">' + opt + feeString + '<i class="fa fa-close icon"><!-- --></i></div></li>');
 
+
             // add to sample dropdown for user
             jQuery("#customQuestionsPreviewOptions").append('<div class="item">' + opt + feeString + '</div>');
             jQuery('#customQuestionsPreviewDropdown').dropdown('refresh');
+            jQuery('#addQuestion').modal('refresh');
 
             // clear UI
             jQuery('#custom-response-dropdown-input').val("");
