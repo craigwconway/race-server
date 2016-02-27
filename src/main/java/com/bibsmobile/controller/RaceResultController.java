@@ -514,29 +514,7 @@ public class RaceResultController {
         trueResult.setLaps(raceResult.getLaps());
         trueResult.setTimeofficialdisplay(raceResult.getTimeofficialdisplay());
     	// Add logic to handle timeofficialdisplay updates if we have a nontrivial timeofficialdisplay value:
-    	if("" != raceResult.valueOfTimeofficialdisplay()) {
-    		DateFormat timeparser = new SimpleDateFormat("kk:mm:ss");
-    		// Define new time difference as timeofficialdisplay
-    		long newtimediff;
-			try {
-				
-				Date newdatetimediff = timeparser.parse(raceResult.valueOfTimeofficialdisplay());
-				newtimediff = newdatetimediff.getTime() - (long) (newdatetimediff.getTimezoneOffset()*60000);
-	    		System.out.println("newtimediff: " + newtimediff);
-	    		System.out.println("timezone offset: " + (long) (newdatetimediff.getTimezoneOffset()*60));
-
-	    		// Define an old time difference quantity, compare to timeofficialdisplay
-	    		long oldtimediff = raceResult.getTimeofficial()-raceResult.getTimestart();
-	    		System.out.println("oldtimediff: " + oldtimediff);
-	    		long difference = newtimediff - oldtimediff;
-	    		System.out.println("adding: " + difference);
-	    		// adjust timeofficial by the difference between timeofficialdisplay and timeofficial
-	    		raceResult.setTimeofficial(raceResult.getTimeofficial() + newtimediff - oldtimediff);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
+    	trueResult.setTimeofficialmanual(raceResult.valueOfTimeofficialdisplay());
 		trueResult.merge();
     	return "redirect:/raceresults/" + encodeUrlPathSegment(trueResult.getId().toString(), httpServletRequest);
 
