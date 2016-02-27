@@ -114,6 +114,7 @@ import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.Series;
 import com.bibsmobile.model.SeriesRegion;
+import com.bibsmobile.model.Split;
 import com.bibsmobile.model.SyncReport;
 import com.bibsmobile.model.TimerConfig;
 import com.bibsmobile.model.UploadFile;
@@ -967,7 +968,7 @@ public class EventController {
         OutputStream resOs = response.getOutputStream();
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
-        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,timegun,gender,age,rankoverall,rankgender,rankclass\r\n");
+        outputwriter.write("bib,firstname,lastname,city,state,timeofficial,timegun,gender,age,rankoverall,rankgender,rankclass,split1,split2,split3,split4,split5\r\n");
         
         List<RaceResult> runners;
         if (type == null) {
@@ -977,8 +978,22 @@ public class EventController {
         }
         AwardsImmortalCache.clearAwardsCache(event);
         for (RaceResult r : runners) {
+        	String[] splits = new String[5];
+        	for(int i =0; i< 5; i++) {
+        		Split split = r.getSplits().get(i);
+        		if(split != null && split.getTime() >0) {
+        			try{
+        				splits[i] = RaceResult.toHumanTime(r.getTimestart(), split.getTime());
+        			} catch(Exception e) {
+        				splits[i] = "-";
+        			}
+        		} else {
+        			splits[i]="-";
+        		}
+        	}
             outputwriter.write(r.getBib() + "," + r.getFirstname() + "," + r.getLastname() + "," + r.getCity() + "," + r.getState() + "," + r.getTimeofficialdisplay() + "," + r.getTimeofficialdisplayGun() + ","
-                    + r.getGender() + "," + r.getAge()  +"," + AwardsImmortalCache.getResultOverall(r.getEvent().getId(), r.getBib()) + "," + AwardsImmortalCache.getResultGender(r.getEvent().getId(), r.getBib(), r.getGender()) + "," + AwardsImmortalCache.getClassRank(r.getEvent().getId(), r.getBib()) + "\r\n");
+                    + r.getGender() + "," + r.getAge()  +"," + AwardsImmortalCache.getResultOverall(r.getEvent().getId(), r.getBib()) + "," + AwardsImmortalCache.getResultGender(r.getEvent().getId(), r.getBib(), r.getGender()) + "," + AwardsImmortalCache.getClassRank(r.getEvent().getId(), r.getBib()) +
+                    "," + splits[0] + "," + splits[1] + "," + splits[2] + "," + splits[3] + "," + splits[4]+ "\r\n");
         }
         outputwriter.flush();
         outputwriter.close();
