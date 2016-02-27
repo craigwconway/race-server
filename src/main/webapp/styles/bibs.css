@@ -266,7 +266,7 @@ h1,h2,h3,h4,h5,h6{ font-family: 'Arvo-Bold' !important; }
 }
 
 /* ----------- Retina Screens ----------- */
-@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 2)and (min-resolution: 192dpi) { 
+@media screen and (min-device-width: 992px) and (-webkit-min-device-pixel-ratio: 2) { 
 	.mobile{
 		display:none!important;
 	}
