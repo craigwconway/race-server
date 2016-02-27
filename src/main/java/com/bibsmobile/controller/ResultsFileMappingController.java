@@ -11,6 +11,7 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.Split;
+import com.bibsmobile.service.AwardsImmortalCache;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.XlsToCsv;
 
@@ -206,6 +207,9 @@ public class ResultsFileMappingController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+        if(resultsImport.getResultsFile().getEventType() != null) {
+        	AwardsImmortalCache.clearAwardsCache(resultsImport.getResultsFile().getEventType().getId());
+        }
         return "redirect:/events/"+resultsImport.getResultsFile().getEvent().getId();
         
         //return "redirect:/resultsimports/" + encodeUrlPathSegment(resultsImport.getId().toString(), httpServletRequest);
