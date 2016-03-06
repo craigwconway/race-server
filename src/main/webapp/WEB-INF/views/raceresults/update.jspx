@@ -165,9 +165,9 @@
             	<input  type="number" name="laps" min="0"
 						id="timedisp" value="${raceResult.laps}"
 						placeholder="laps"><!--  --></input>
-            </div>                
+            </div>
+            <input style="display:none;" name="id" value="${raceResult.id }"><!--  --></input>                
             <div style="display:none;">
-            	<field:input field="id" id="c_com_bibsmobile_model_RaceResult_id" z="user-managed"/>
                 <field:input field="timestart" id="c_com_bibsmobile_model_RaceResult_timestart" z="user-managed"/>
                 <field:input field="timeofficial" id="c_com_bibsmobile_model_RaceResult_timeofficial" z="user-managed"/>
                 <field:input field="country" id="c_com_bibsmobile_model_RaceResult_country" z="user-managed"/>

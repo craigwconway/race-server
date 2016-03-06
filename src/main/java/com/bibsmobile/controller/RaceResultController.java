@@ -385,6 +385,7 @@ public class RaceResultController {
             this.populateEditForm(uiModel, raceResult);
             return "raceresults/create";
         }
+        System.out.println("Incoming result display time: " + raceResult.getTimeofficialdisplay() + " true time: " + raceResult.valueOfTimeofficialdisplay());
         // If this is an RFID build, do not allow the user to double up on a bib number:
         if(!StringUtils.isEmpty(raceResult.valueOfTimeofficialdisplay())){
         	raceResult.setTimeofficialmanual(raceResult.valueOfTimeofficialdisplay());
@@ -405,17 +406,8 @@ public class RaceResultController {
         
         uiModel.asMap().clear();
         
-        // If we are using licensing in the build, deduct a license 
-        if(BuildTypeUtil.usesLicensing()) {
-            DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
-            raceResult.setLicensed(License.isUnitAvailible());
-            raceResult.persist();
-            systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
-            systemInfo.persist();
-        } else {
-        	raceResult.persist();	
-        }
-        
+        raceResult.persist();	
+
         
         long eventId = 0;
         if (null != raceResult.getEvent()) {
@@ -500,6 +492,7 @@ public class RaceResultController {
             return "raceresults/update";
         }
         uiModel.asMap().clear();
+        System.out.println("Incoming Result: id:" + raceResult.getId() + " bib: "  + raceResult.getBib() + "timeofficial" + raceResult.valueOfTimeofficialdisplay());
         // Load true result from database, only modify fields on page.
         RaceResult trueResult = RaceResult.findRaceResult(raceResult.getId());
         trueResult.setFirstname(raceResult.getFirstname());

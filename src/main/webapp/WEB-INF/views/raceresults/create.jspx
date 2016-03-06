@@ -115,7 +115,7 @@
             </div>
             <div class="field">
                 <div class="ui action input">
-                    <input  type="text" name="timeStartLocal" id="timedisp"
+                    <input  type="text" name="timeofficialdisplay" id="timedisp"
                             placeholder="Official Time (mm:ss:SS)"
                             data-parsley-error-message="Invalid time format. (hh:mm required)"></input>
                     <div class="ui icon button" id="removetime"><span class="fa fa-close bibs-red"></span></div>
@@ -123,7 +123,7 @@
             </div>
             <div class="ui error message" id="form-error-messages"><!--  --></div>
 
-            <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/>
+            <!-- <field:input field="timeofficialdisplay" id="c_com_bibsmobile_model_RaceResult_timeofficialdisplay" render="false" z="user-managed"/> -->
         </div>
         </form:create>
     </div>
