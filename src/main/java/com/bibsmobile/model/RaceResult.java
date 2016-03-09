@@ -498,7 +498,8 @@ public class RaceResult implements Comparable<RaceResult> {
 
         String HQL = "SELECT o FROM RaceResult AS o WHERE ";
 
-        HQL += "o.timediff > 0 AND";
+        if (StringUtils.isEmpty(name) && bib == null)
+        	HQL += "o.timediff > 0 AND";
         
         if (null != eventId && eventId > 0)
             HQL += " o.event = :event AND ";
