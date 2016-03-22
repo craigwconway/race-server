@@ -192,6 +192,10 @@
         initForm();
         setValidation();
         initDateTimePickers();
+        jQuery('#back').off().on('click', function(e){
+            e.preventDefault();
+            window.location="/bibs-server/raceresults?/myresults&amp;event=${raceResult.event.id}";
+        });
     };
 
     function initForm(){
