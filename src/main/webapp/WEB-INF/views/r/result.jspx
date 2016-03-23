@@ -61,7 +61,9 @@
                         <!-- <div class="image"> -->
                             <!-- <img src="img/placeholder.png"> -->
                         <!-- </div> -->
-                        <div class="ui blue top attached label">Bib #${result.bib}<span class="runner-bib"></span></div>
+                        <div class="ui blue top attached label">
+                            <c:if test="${not empty result.team}">Team ${result.team} - </c:if>Bib #${result.bib}
+                        </div>
                         <div class="content">
                             <div class="header"><span class="runner-name">${result.firstname } ${result.lastname }</span></div>
                             <div class="description"><span class="runner-age">${result.age }</span>, <span class="runner-gender">${result.gender }</span></div>
