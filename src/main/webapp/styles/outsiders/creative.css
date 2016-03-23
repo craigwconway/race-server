@@ -3,10 +3,10 @@
  * Code licensed under the Apache License v2.0.
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
-@font-face {font-family: 'Montserrat-Light';src: url('/bibs-server/resources/outsideres/fonts/Montserrat-Light.otf');}
-@font-face {font-family: 'Montserrat';src: url('/bibs-server/resources/outsideres/fonts/Montserrat-Regular.otf');}
-@font-face {font-family: 'Montserrat-Bold';src: url('/bibs-server/resources/outsideres/fonts/Montserrat-SemiBold.otf');}
-@font-face {font-family: 'Montserrat-Black';src: url('/bibs-server/resources/outsideres/fonts/Montserrat-Black.otf');}
+@font-face {font-family: 'Montserrat-Light';src: url('../fonts/Montserrat-Light.otf');}
+@font-face {font-family: 'Montserrat';src: url('../fonts/Montserrat-Regular.otf');}
+@font-face {font-family: 'Montserrat-Bold';src: url('../fonts/Montserrat-SemiBold.otf');}
+@font-face {font-family: 'Montserrat-Black';src: url('../fonts/Montserrat-Black.otf');}
 
 /*  
     Zappos Design Requests
@@ -18,23 +18,46 @@
     background-color: #e64f25 !important;
 }
 #back-btn{
-    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(20,0,0,1);
-    -moz-box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
-    box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
+    position: absolute;
+    left: 15px;
+    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1);
+    -moz-box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1);
+    box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1);
     width: 30px;
     height: 30px;
     margin-top: 10px;
     margin-left: 10px;
     line-height: 30px;
     text-align: center;
-    background: white;
+    background: transparent;
     cursor: pointer;
+    color: #FFF;
+}
+.navbar-default.affix #back-btn{
+    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
+    -moz-box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
+    box-shadow: 0px 0px 0px 2.5px rgba(0,0,0,1);
     color: #000;
 }
 #back-btn i{
     margin:0;
+    z-index: 1;
 }
 
+.navbar-icon{
+    max-height: 50px;
+}
+.navbar-centered{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    text-align: center;
+    margin: auto;
+    z-index: -1;
+}
+.navbar-collapse.in a.navbar-centered{
+    display:none;
+}
 .navbar-default .navbar-toggle{
     border-color: transparent;
 }
@@ -44,8 +67,47 @@
     padding: 8px;
 }
 
+.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover{
+    background-color: transparent;
+}
+
 .navbar-default .navbar-toggle .icon-bar{
+    background-color: #FFF;
+}
+.navbar-default.affix .navbar-toggle .icon-bar{
     background-color: #000;
+}
+
+.navbar-default .nav > li>a,
+.navbar-default .nav>li>a:focus {
+    text-transform: uppercase;
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #222;
+}
+
+.navbar-default .nav > li>a:hover,
+.navbar-default .nav>li>a:focus:hover {
+    color: #FCFCFC;
+}
+
+.navbar-default .nav > li.active>a,
+.navbar-default .nav>li.active>a:focus {
+    color: #FCFCFC!important;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.navbar-default .nav > li.active>a:hover,
+.navbar-default .nav>li.active>a:focus:hover {
+    background-color: transparent;
+}
+
+.navbar-default .navbar-collapse .nav > li > a{
+    color: rgba(255,255,255,1);
+}
+
+.navbar-default.affix .navbar-collapse .nav > li > a{
+    color: rgba(0,0,0,.7);
 }
 
 .navbar-toggle .icon-bar{
@@ -59,19 +121,15 @@
 #region-title{
     font-family: 'Montserrat',Arial,sans-serif;
     padding: 15px 15px;
-    margin-top: 2%;
+    margin-top: 1%;
     display: inline-block;
     clear: both;
-}
-
-#event-cards-container > .card > .content > .header{
-    font-family: 'Montserrat',Arial,sans-serif;
-    margin-bottom: 10px;
 }
 
 #event-cards-container > .card > .content > .description{
     font-family: 'Montserrat-Light';
     color: #64666A;
+    padding: 10px;
 }
 
 #event-cards-container > .card{
@@ -87,36 +145,43 @@
 .ui.zappos.orange.label{
     background-color: #E84B12!important;
     border-color: #E84B12!important;
+    color: #FFF !important;
 }
 
 .ui.zappos.purple.label{
     background-color: #6531B3!important;
     border-color: #6531B3!important;
+    color: #FFF !important;
 }
 
 .ui.zappos.blue.label{
     background-color: #2a5da8!important;
     border-color: #2a5da8!important;
+    color: #FFF !important;
 }
 
 .ui.zappos.babyblue.label{
     background-color: #5D98C3!important;
     border-color: #5D98C3!important;
+    color: #FFF !important;
 }
 
 .ui.zappos.yellow.label{
     background-color: #E5A715!important;
     border-color: #E5A715!important;
+    color: #FFF !important;
 }
 
 .ui.zappos.lightgreen.label{
     background-color: #52B266!important;
     border-color: #52B266!important;
+    color: #FFF !important;
 }
 
 .ui.zappos.red.label{
     background-color: #D13017!important;
     border-color: #D13017!important;
+    color: #FFF !important;
 }
 
 .ui.zappos.green.label{
@@ -144,14 +209,18 @@ h5.ui.header{
     font-family: 'Montserrat' !important;
     text-transform: none;
 }
+.ui.card, .ui.cards>.card{
+    box-shadow: 0 0 0 1px #D4D4D5 !important;
+}
 .ui.card>.content>.header, .ui.cards>.card>.content>.header, .ui.list .list>.item .header, .ui.list>.item .header, .ui.accordion .title:not(.ui), .ui.menu, .ui.input input{
     font-family: 'Montserrat' !important;
+    color: #777777 !important;
 }
 .ui.menu, input, .card, .ui.card>:first-child, .ui.cards>.card>:first-child{
     border-radius: 0 !important;
 }
 .ui.vertical.menu{
-    box-shadow: none ! important;
+    box-shadow: none !important;
 }
 #facebook-share-button, #twitter-share-button, #pinterest-share-button{
     font-family: 'FontAwesome';
@@ -231,6 +300,11 @@ p {
     color: rgba(255,255,255,.9);
 }
 
+section {
+    padding: 50px 0;
+    text-align: center;
+}
+
 aside {
     padding: 50px 0;
 }
@@ -261,31 +335,6 @@ aside {
 .navbar-default .navbar-header .navbar-brand:focus {
     color: #14457b;
 }
-
-.navbar-default .nav > li>a,
-.navbar-default .nav>li>a:focus {
-    text-transform: uppercase;
-    font-size: 1.1em;
-    font-weight: 700;
-    color: #222;
-}
-
-.navbar-default .nav > li>a:hover,
-.navbar-default .nav>li>a:focus:hover {
-    color: #FCFCFC;
-}
-
-.navbar-default .nav > li.active>a,
-.navbar-default .nav>li.active>a:focus {
-    color: #FCFCFC!important;
-    background-color: rgba(0,0,0,0.3);
-}
-
-.navbar-default .nav > li.active>a:hover,
-.navbar-default .nav>li.active>a:focus:hover {
-    background-color: transparent;
-}
-
 
 @media (min-device-width : 375px) and (max-device-width : 667px) and (width : 375px) and (height : 627px){
     .ui.cards > .card, #single-result-card{
@@ -321,62 +370,67 @@ aside {
     }
 }
 
+.navbar-default {
+    border-color: rgba(255,255,255,.7);
+    background-color: transparent;
+}
+
+.navbar-default .navbar-header .navbar-brand {
+    color: rgba(255,255,255,1);
+}
+
+.navbar-default .navbar-header .navbar-brand:hover,
+.navbar-default .navbar-header .navbar-brand:focus {
+    color: #fff;
+}
+
+.navbar-default .nav > li>a,
+.navbar-default .nav>li>a:focus {
+    color: rgba(255,255,255,1);
+}
+
+.navbar-default .nav > li>a:hover,
+.navbar-default .nav>li>a:focus:hover {
+    color: #fff;
+}
+
+.navbar-default.affix {
+    border-color: rgba(34,34,34,.05);
+    background-color: #fff;
+}
+
+.navbar-default.affix .navbar-header .navbar-brand {
+    font-size: 14px;
+    color: #254e7b;
+}
+
+.navbar-default.affix .navbar-header .navbar-brand:hover,
+.navbar-default.affix .navbar-header .navbar-brand:focus {
+    color: #14457b;
+}
+
+.navbar-default.affix .navbar-collapse .nav > li > a,
+.navbar-default.affix #back-btn,
+.navbar-default.affix .nav>li>a:focus,
+.navbar-default.affix .nav>li>a:focus:hover {
+    color: #FFF !important;
+}
+.navbar-default.affix #back-btn{
+    -webkit-box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1) !important;
+    -moz-box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1) !important;
+    box-shadow: 0px 0px 0px 2.5px rgba(255,255,255,1) !important;
+}
+
 @media(min-width:768px) {
-    .navbar-default {
-        border-color: rgba(255,255,255,.3);
-        background-color: transparent;
-    }
-
-    .navbar-default .navbar-header .navbar-brand {
-        color: rgba(0,0,0,.7);
-    }
-
-    .navbar-default .navbar-header .navbar-brand:hover,
-    .navbar-default .navbar-header .navbar-brand:focus {
-        color: #fff;
-    }
-
-    .navbar-default .nav > li>a,
-    .navbar-default .nav>li>a:focus {
-        color: rgba(0,0,0,.7);
-    }
-
-    .navbar-default .nav > li>a:hover,
-    .navbar-default .nav>li>a:focus:hover {
-        color: #fff;
-    }
-
-    .navbar-default.affix {
-        border-color: rgba(34,34,34,.05);
-        background-color: #fff;
-    }
-
-    .navbar-default.affix .navbar-header .navbar-brand {
-        font-size: 14px;
-        color: #254e7b;
-    }
-
-    .navbar-default.affix .navbar-header .navbar-brand:hover,
-    .navbar-default.affix .navbar-header .navbar-brand:focus {
-        color: #14457b;
-    }
-
-    .navbar-default.affix .nav > li>a,
-    .navbar-default.affix .nav>li>a:focus {
-        color: #222;
-    }
-
-    .navbar-default.affix .nav > li>a:hover,
-    .navbar-default.affix .nav>li>a:focus:hover {
-        color: #254e7b;
-    }
-
     .mobile-ad{
         display:none;
     }
 }
 
 @media only screen and (min-device-width: 319px) and (max-device-width: 481px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+    header .header-content{
+        top: 37%;
+    }
     #event-cards-container{
         margin-top: 10px;
         margin-bottom: 10px;
@@ -394,12 +448,14 @@ aside {
     }
 }
 
-#banner {
+header {
+    margin-top: -40px;
+    padding-top: 40px;
     position: relative;
     width: 100%;
     min-height: auto;
     text-align: center;
-    color: #FFF;
+    color: #fff;
     background-color: #0a334d;
     /*background-image: url(../img/header4.jpg);*/
     /*background-position: center;*/
@@ -413,24 +469,25 @@ aside {
     background-color: rgba(42,93,168,1);
 }*/
 
-#banner .header-content {
+header .header-content {
     position: relative;
     width: 100%;
-    padding-top: 40px;
+    margin-top: 40px;
+    padding: 20px 15px;
     text-align: center;
 }
 
-#banner .header-content .header-content-inner h1 {
+header .header-content .header-content-inner h1 {
     margin-top: 0;
     margin-bottom: 0;
     font-weight: 700;
 }
 
-#banner .header-content .header-content-inner hr {
+header .header-content .header-content-inner hr {
     margin: 30px auto;
 }
 
-#banner .header-content .header-content-inner p {
+header .header-content .header-content-inner p {
     margin-bottom: 50px;
     font-size: 16px;
     font-weight: 300;
@@ -446,32 +503,52 @@ aside {
 }
 
 @media(min-width:768px),  only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
-    #banner {
-        min-height: 100%;
+    header {
+        min-height: 50%;
     }
-
-    #banner .header-content {
-        padding-top: 60px;
-        -webkit-transform: translateY(-30%);
-        -ms-transform: translateY(-30%);
-        transform: translateY(-30%);
+    header .header-content {
+        position: absolute;
+        top: 50%;
+        padding: 0 50px;
+        -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
     }
-
-    #banner .header-content .header-content-inner {
+    header .header-content .header-content-inner {
         margin-right: auto;
         margin-left: auto;
-        max-width: 1000px;
+        max-width: 100%;
     }
 
-    #banner .header-content .header-content-inner p {
+    header .header-content .header-content-inner p {
         margin-right: auto;
         margin-left: auto;
         max-width: 80%;
         font-size: 18px;
     }
-
     .mobile-ad{
         display:none;
+    }
+    .container{
+        width: 100%;
+    }
+    #region-header {
+        font-size: 30px;
+        padding-top: 50px;
+        color: white;
+    }
+    #events{
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 76%;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    #event > h4{
+        font-size: 2rem;
     }
 }
 
@@ -522,12 +599,12 @@ aside {
     width: 100%;
     height: 100%;
     text-align: center;
-    color: #222;
+    color: #fff;
 }
 
 /* override portfolio-box bg colors: */
 #zappos-logo{
-    width: 200px;
+    width: 15rem;
 }
 #region-logo{
     width: 110px;
@@ -650,7 +727,6 @@ aside {
     border-radius: 0;
     width: 200px;
 }
-
 .event-early-container{
     width: 100%;
 }
@@ -698,6 +774,10 @@ aside {
     font-family: 'Montserrat',Arial,sans-serif;
 }
 
+.portfolio-box{
+    background-position: center;
+}
+
 .portfolio-box .portfolio-box-caption .portfolio-box-caption-content {
     position: absolute;
     top: 50%;
@@ -713,7 +793,7 @@ aside {
 }
 
 .portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-category {
-    font-size: 1.5em;
+    font-size: 2.2em;
     font-weight: 900;
     letter-spacing: 0;
     display: inline-block;
@@ -896,6 +976,12 @@ img::-moz-selection {
 body {
     webkit-tap-highlight-color: #222;
 }
+/*  iphone 4    */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) and (-webkit-min-device-pixel-ratio : 2) {
+    .portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-category{
+        font-size: 1.6em;
+    }
+}
 
 /*  iphone 5    */
 @media screen and (device-aspect-ratio: 40/71) {
@@ -903,10 +989,13 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    .portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-category{
+        font-size: 1.7em;
+    }
+    header{
         min-height: 30%;
     }
-    #banner .header-content{
+    header .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -955,10 +1044,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    header{
         min-height: 30%;
     }
-    #banner .header-content{
+    header .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1006,10 +1095,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    header{
         min-height: 30%;
     }
-    #banner .header-content{
+    header .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1058,10 +1147,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    header{
         min-height: 30%;
     }
-    #banner .header-content{
+    header .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1104,10 +1193,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    header{
         min-height: 30%;
     }
-    #banner .header-content{
+    header .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1141,10 +1230,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    header{
         min-height: 30%;
     }
-    #banner .header-content{
+    header .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1178,10 +1267,10 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    header{
         min-height: 30%;
     }
-    #banner .header-content{
+    header .header-content{
         padding-top: 40px;
     }
     #zappos-logo{
@@ -1215,11 +1304,42 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    header{
         min-height: 30%;
     }
-    #banner .header-content{
-        padding-top: 40px;
+    #zappos-logo{
+        width: 120px;
+        height: auto;
+    }
+    #event-cards-container{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .ui.list{
+        font-size: 0.9em !important;
+    }
+    .ui.left.pointing.label{
+        font-size: 0.85em !important;
+        width: 70px !important;
+    }
+    #search-type{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    #photo-search-bar > .ui.input{
+        width: 80%;
+        text-align: left;
+    }
+}
+
+/*  android phone (nexus 4)     */
+@media screen and (device-width: 384px) and (device-height: 567px) and (-webkit-device-pixel-ratio: 2) {
+    #region-title{
+        margin-top: 5%;
+        font-size: 0.8em;
+    }
+    header{
+        min-height: 30%;
     }
     #zappos-logo{
         width: 120px;
@@ -1252,11 +1372,8 @@ body {
         margin-top: 5%;
         font-size: 0.8em;
     }
-    #banner{
+    header{
         min-height: 30%;
-    }
-    #banner .header-content{
-        padding-top: 40px;
     }
     #zappos-logo{
         width: 120px;
@@ -1283,37 +1400,6 @@ body {
     }
 }
 
-
-@media (min-device-width: 800px){ 
-    #banner .header-content .header-content-inner{
-        max-width: 100%;
-    }
-    .container{
-        width: 100%;
-    }
-    #region-header {
-        font-size: 30px;
-        padding-top: 10%;
-    }
-    #events{
-        margin-top: 20px;
-        margin-left: auto;
-        margin-right: auto;
-        width: 76%;
-    }
-    #event-cards-container{
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
-    #event > h4{
-        font-size: 2rem;
-    }
-
-    .mobile-ad{
-        display:none;
-    }
-}
-
 @media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
     #events{
         margin-top: 20px;
@@ -1328,5 +1414,15 @@ body {
 
     .mobile-ad{
         display:none;
+    }
+}
+
+/*      non-retina      */
+@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 1) { 
+    #zappos-logo{
+        width: 10rem;
+    }
+    #region-header{
+        padding-top: 15%;
     }
 }
