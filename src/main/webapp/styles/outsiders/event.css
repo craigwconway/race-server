@@ -6,6 +6,7 @@ body{
     width: 75px;
 }
 #region-header{
+	color: white;
     font-size: 20px;
     /*text-transform: uppercase;*/
     font-weight: 700;
@@ -339,108 +340,81 @@ i{
 }
 
 
-
-@media (min-device-width : 768px){
-	header{
-		min-height: 55%;
+/*		non-retina 		*/
+@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 1) { 
+	#zappos-logo{
+		width: 1.5em;
 	}
-	header .header-content{
-		top: 32%;
-	}
-	#events{
-		width: 60%;
-	}
-	#runner-header{
-		height: 25%;
-	}
-	#runner-header > #region-header{
-		padding-top: 3%;
-	}
-	#runner-header > #region-header > .ui.tiny.image{
-		margin-top: 4%;
-	}
-	.responsive-container {
-	    max-height: inherit;
-	    max-max-width: inherit;
-	}
-	.responsive-container > img {
-	    max-height: 90%;
-	    max-max-width: 90%;
+	.ranking-container > .ui[class*="five column"].grid>.column:not(.row),
+	.ranking-container > .ui[class*="five column"].grid>.row>.column{
+		width: 25%;
 	}
 }
 
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait){
-	header{
-		min-height: 25%;
+/*		iphones 2-4 (also can work for 5-6) 	*/
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+	.navbar-icon {
+	    max-width: 200px;
+	    margin-top: 5px;
 	}
-	header .header-content{
-		top: 45%;
+	/*
+			runner.html
+	*/
+	.ranking-container > .ui.grid,
+	.ranking-container > .ui.grid>.column:not(.row){
+		padding-left: 0;
+		padding-right: 0;
 	}
-	#events{
-		width: 80%;
+	/* 	convert five column grid to three columns 	*/
+	.ranking-container > .ui[class*="five column"].grid>.column:not(.row),
+	.ranking-container > .ui[class*="five column"].grid>.row>.column{
+		width: 33.333333%;
 	}
-	#runner-header{
-		height: 25%;
-		min-height: 25%;
+	#single-result-card > .top-label{
+		padding: 1em;
 	}
-	#runner-header > #region-header > .ui.tiny.image{
-		margin-top: 4%;
+	.runner-name{
+		font-size: 1.5em;
 	}
-	.responsive-container {
-	    max-height: inherit;
-	    max-width: inherit;
+	.runner-bib-main{
+		font-size: 1em;
 	}
-	.responsive-container > img {
-	    max-height: 90%;
-	    max-width: 90%;
+	.runner-event-type{
+		font-size: 1em;
+	}
+	.small-circular-bg{
+		width: 5em;
+	    height: 5em;
+	    border-radius: 5em;
+	}
+	.small-circular-bg * .ui.mini.statistic>.value{
+		font-size: 1em;
+	}
+	.circular-bg{
+		width: 7em;
+	    height: 7em;
+	    border-radius: 6em;
+	}
+	.circular-bg * .ui.tiny.statistic>.value{
+		font-size: 1.2em;
+	}
+	.rank-divider{
+		width: 3em;
 	}
 }
 
-@media only screen and (min-device-width : 375px) and (max-device-width : 667px) and (width : 375px) and (height : 627px){
-	#runner-header{
-		height: 25%;
-	}
-	#runner-header > #region-header > .ui.tiny.image{
-		margin-top: 4%;
-	}
-	.responsive-container {
-	    max-height: inherit;
-	    max-width: inherit;
-	}
-	.responsive-container > img {
-	    max-height: 90%;
-	    max-width: 90%;
-	}
+/*		iphone 5, 5s	*/
+/*@media only screen and (min-device-width : 320px) and (max-device-width : 568px) {
+}*/
+
+/*		iphone 6s		*/
+/*@media only screen and (min-device-width : 414px) and (max-device-width : 736px) {
+}*/
+
+/*  android phones (galaxy s3)  */
+@media screen and (device-width: 320px) and (device-height: 640px) and (-webkit-device-pixel-ratio: 2) {
 }
-@media only screen and (min-device-width: 319px) and (max-device-width: 481px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
-	#runner-header{
-		height: 30%;
-	}
-	#runner-header > #region-header > .ui.tiny.image{
-		margin-top: 4%;
-	}
-	.responsive-container {
-	    height: 100px;
-	    max-width: 100px;
-	}
-	.responsive-container > img {
-	    max-height: 90px;
-	    max-width: 90px;
-	}
-}
-@media only screen and (min-device-width : 414px) and (max-device-width : 736px) {
-	#runner-header{
-		height: 25%;
-	}
-	#runner-header > #region-header > .ui.tiny.image{
-		margin-top: 4%;
-	}
-	.responsive-container {
-	    height: 100px;
-	    max-width: 100px;
-	}
-	.responsive-container > img {
-	    max-height: 90px;
-	    max-width: 90px;
-	}
+
+/*  iphone 5    */
+@media screen and (device-aspect-ratio: 40/71) {
 }
