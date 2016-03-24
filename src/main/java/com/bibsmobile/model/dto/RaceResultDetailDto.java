@@ -2,12 +2,15 @@ package com.bibsmobile.model.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.Split;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -73,6 +76,7 @@ public class RaceResultDetailDto {
 		this.age = result.getAge();
 		this.city = result.getCity();
 		this.timeofficialdisplay = result.getTimeofficialdisplay();
+		this.timeofficialdisplayGun = result.getTimeofficialdisplayGun();
 		this.team = result.getTeam();
 		this.disqualified = result.isDisqualified();
 		this.rankOverall = result.computeOverallRanking();
@@ -87,6 +91,10 @@ public class RaceResultDetailDto {
 		}
 		if(result.getEvent() != null) {
 			this.event = new EventViewResultsDto(result.getEvent());
+		}
+		ArrayList<SplitDto> splits = new ArrayList<SplitDto>();
+		for(Entry<Integer, Split> split : result.getSplits().entrySet()) {
+			splits.add(new SplitDto(split.getValue(), split.getKey()));
 		}
 		images = new ArrayList<RaceImageViewDto>();
 		for(RaceImage rawImage : result.getRaceImages()) {
@@ -104,6 +112,7 @@ public class RaceResultDetailDto {
 	private String rankGender;
 	private String rankOverall;
 	private String timeofficialdisplay;
+	private String timeofficialdisplayGun;
 	private String timePace;
 	private String team;
 	private boolean claimed;
@@ -111,6 +120,7 @@ public class RaceResultDetailDto {
 	private EventTypeDto eventType;
 	private EventViewResultsDto event;
 	private List<RaceImageViewDto> images;
+	private List<Split> splits;
 		
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -267,4 +277,18 @@ public class RaceResultDetailDto {
 	public List<RaceImageViewDto> getImages() {
 		return images;
 	}
+	/**
+	 * @return the timeofficialdisplayGun
+	 */
+	public String getTimeofficialdisplayGun() {
+		return timeofficialdisplayGun;
+	}
+
+	/**
+	 * @return the splits
+	 */
+	public List<Split> getSplits() {
+		return splits;
+	}
+
 }
