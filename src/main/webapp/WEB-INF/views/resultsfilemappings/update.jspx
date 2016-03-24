@@ -75,6 +75,7 @@
                                     <div class="item" data-value="email">Email</div>
                                     <div class="item" data-value="laps">Laps</div>
                                     <div class="item" data-value="timeofficial">Official Time</div>
+                                    <div class="item" data-value="timegun">Gun Time</div>
                                     <div class="item" data-value="city">City</div>
                                     <div class="item" data-value="state">State</div>
                                     <div class="item" data-value="country">Country</div>

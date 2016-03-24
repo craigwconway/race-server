@@ -301,6 +301,16 @@ public class ResultsFileMappingController {
             		e.printStackTrace();
             		System.out.println("split error "+e.getMessage());
             	}
+            }else if(map[j].equals("timegun")) {
+	            	//Try to parse incoming time, base start time at event start
+	        		//if we have a reg build, we should set timeofficial
+	    		try {
+	    			String officialtime = "";
+	    			if (!json.toString().equals("{")) json.append(",");
+	    			json.append("\"timegunmanual\"" + ":\"" + nextLine[j].trim() + "\"");
+	    		} catch(Exception e) {
+	    			System.out.println(e);
+	    		}
             }else if(map[j].equals("timeofficial")) {
             	//Try to parse incoming time, base start time at event start
             		//if we have a reg build, we should set timeofficial
