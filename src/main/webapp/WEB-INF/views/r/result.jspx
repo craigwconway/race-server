@@ -152,7 +152,7 @@
     </section>
     <script>
     function goBack(){
-        window.location = '/bibs-server/r/e/${event.id}';
+        window.location = '/bibs-server/r/e/${result.event.id}';
     }
     </script>
 </div>
