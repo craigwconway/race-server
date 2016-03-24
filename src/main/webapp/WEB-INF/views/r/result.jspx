@@ -74,17 +74,13 @@
                         </div>
                         <div class="content">
                             <div class="ui blue tiny statistic stat-finish">
-                                <div class="value"><span class="runner-time">${result.timeofficialdisplay}</span></div>
+                                <div class="value"><span class="runner-time">${result.timeofficialdisplayGun}</span></div>
                                 <div class="label">Gun Time</div>
                             </div>
                             <div class="ui hidden divider"><!--  --></div>
                             <div class="ui purple small statistic stat-finish">
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplay }</span></div>
                                 <div class="label">Finish Time</div>
-                            </div>
-                            <div class="ui purple small statistic stat-finish">
-                                <div class="value"><span class="runner-time">${result.timeofficialdisplayGun }</span></div>
-                                <div class="label">Time before Shrugging</div>
                             </div>
                             <div class="ui two column center aligned grid">
                                 <div class="column">
