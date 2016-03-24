@@ -76,6 +76,7 @@ public class RaceResultDetailDto {
 		this.age = result.getAge();
 		this.city = result.getCity();
 		this.timeofficialdisplay = result.getTimeofficialdisplay();
+		this.timeofficialdisplayGun = result.getTimeofficialdisplayGun();
 		this.team = result.getTeam();
 		this.disqualified = result.isDisqualified();
 		this.rankOverall = result.computeOverallRanking();
@@ -111,6 +112,7 @@ public class RaceResultDetailDto {
 	private String rankGender;
 	private String rankOverall;
 	private String timeofficialdisplay;
+	private String timeofficialdisplayGun;
 	private String timePace;
 	private String team;
 	private boolean claimed;
@@ -275,4 +277,18 @@ public class RaceResultDetailDto {
 	public List<RaceImageViewDto> getImages() {
 		return images;
 	}
+	/**
+	 * @return the timeofficialdisplayGun
+	 */
+	public String getTimeofficialdisplayGun() {
+		return timeofficialdisplayGun;
+	}
+
+	/**
+	 * @return the splits
+	 */
+	public List<Split> getSplits() {
+		return splits;
+	}
+
 }

@@ -320,6 +320,7 @@ public class RaceResult implements Comparable<RaceResult> {
     }
 
     public String getTimeofficialdisplayGun() {
+    	if(!StringUtils.isEmpty(this.getTimegunmanual())) return this.timegunmanual;
     	if(this.getEventType() == null) return "";
     	if(this.getEventType().getGunTime() == null) return "";
         return RaceResult.toHumanTime(this.getEventType().getGunTime().getTime(), this.timeofficial);
