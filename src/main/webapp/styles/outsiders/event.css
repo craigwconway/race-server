@@ -51,6 +51,76 @@ body{
 #single-result-container{
 	margin-top: 20px;
 }
+.circular-header{
+	font-weight: 400 !important;
+}
+.circular-bg{
+	display: table;
+	margin: 0 auto;
+	width: 140px;
+    height: 140px;
+    border: 2px #444444 solid;
+    border-radius: 100px;
+}
+.small-circular-bg{
+	display: table;
+	margin: 0 auto;
+	width: 120px;
+    height: 120px;
+    border: 2px #444444 solid;
+    border-radius: 100px;
+}
+.border-6{
+	border: 2px rgba(101,153,192,1) solid !important;
+}
+.border-1{
+	border: 2px rgba(47,106,173,1) solid !important;
+}
+.border-5{
+	border: 2px rgba(222,166,56,1) solid !important;
+}
+.border-3{
+	border: 2px rgba(106,171,103,1) solid !important;
+}
+.border-4{
+	border: 2px rgba(218,95,57,1) solid !important;
+}
+.border-8{
+	border: 2px rgba(94,79,153,1) solid !important;
+}
+.ranking-container{
+	margin: 2em auto;
+}
+.circular-contents{
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+}
+.small-circular-bg * .ui.statistic>.value{
+	font-variant: small-caps;
+	text-transform: none;
+}
+.runner-event-type,.runner-time,
+.runner-overall-rank,.runner-gender-rank,
+.runner-overall-rank-total,.runner-gender-rank-total,
+.split-time,.pace-time{
+	font-weight: 700;
+}
+.runner-event-type{
+	font-size: 1.4em;
+    line-height: 2.5em;
+	font-weight: 400;
+}
+.runner-name{
+	font-size: 2em;
+    font-weight: 400;
+    font-family: 'Montserrat-Light';
+}
+.runner-bib-main{
+	font-family: 'Montserrat';
+	font-size: 1.2em;
+	text-transform:uppercase;
+}
 
 #single-result-card > .content{
 	font-size: 1em;
@@ -59,14 +129,15 @@ body{
 }
 
 #single-result-card > .ui[class*="top attached"].label{
+	padding: 1.5em;
 	font-size: 1.3em;
 }
 
 #single-result-card> .content > .description{
-	margin-top: 0;
 	font-weight: 600;
 	color: rgba(0, 0, 0, 0.5);
 	font-size: 1.3em;
+	padding-top: 0.5em;
 }
 
 #info-btn{

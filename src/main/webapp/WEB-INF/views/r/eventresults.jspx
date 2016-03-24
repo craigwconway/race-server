@@ -460,7 +460,7 @@
 
 
         function goBack(){
-            window.history.back();
+            window.location = "/bibs-server/r/e/${event.id}";
         }
         function goInfo(){
         	window.location = "/bibs-server/r/e/${event.id}/info";

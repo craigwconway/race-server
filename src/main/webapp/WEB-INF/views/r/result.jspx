@@ -58,42 +58,69 @@
                 <h4 class="ui header"><div class="sub header date-elev"></div></h4>
                 <div id="single-result-container">
                     <div class="ui fluid card" id="single-result-card">
-                        <!-- <div class="image"> -->
-                            <!-- <img src="img/placeholder.png"> -->
-                        <!-- </div> -->
                         <div class="ui blue top attached label">
-                            <c:if test="${not empty result.team}">Team ${result.team} - </c:if>Bib #${result.bib}
+                            <div class="runner-bib-main">
+                                <c:if test="${not empty result.team}">Team ${result.team} - </c:if>Bib #${result.bib}
+                            </div>
                         </div>
                         <div class="content">
-                            <div class="header"><span class="runner-name">${result.firstname } ${result.lastname }</span></div>
-                            <div class="description"><span class="runner-age">${result.age }</span>, <span class="runner-gender">${result.gender }</span></div>
+                            <div class="header">
+                                <div class="runner-event-type">${result.eventType.typeName}</div>
+                                <div class="runner-name">${result.firstname } ${result.lastname }</div>
+                            </div>
+                            <div class="description">
+                                <span class="runner-age">${result.age }</span>, <span class="runner-gender">${result.gender }</span>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="ui blue tiny statistic stat-finish">
+                                <div class="value"><span class="runner-time">${result.timeofficialdisplay}</span></div>
+                                <div class="label">Gun Time</div>
+                            </div>
+                            <div class="ui hidden divider"><!--  --></div>
                             <div class="ui purple small statistic stat-finish">
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplay }</span></div>
                                 <div class="label">Finish Time</div>
                             </div>
                             <div class="ui two column center aligned grid">
                                 <div class="column">
-                                    <div class="ui tiny blue statistic stat-rank">
-                                    	<c:if test="${result.rankOverall != 'N/A' }">
-                                    	<c:set var="overall" value="${fn:split(result.rankOverall, ' of ')}" />
-                                        <div class="value"><span class="runner-overall-rank">${overall[0] }</span> of <span class="runner-overall-count">${overall[1] }</span></div>
-                                        </c:if>
-										<c:if test="${result.rankOverall == 'N/A' }">
-                                        <div class="value"><span class="runner-overall-rank">N/A</span></div>
-                                        </c:if>
-                                        <div class="label">Overall Rank</div>
+                                    <div class="ui center aligned header circular-header">Overall</div>
+                                    <div class="circular-bg border-4">
+                                        <div class="circular-contents">
+                                            <div class="ui tiny statistic stat-rank">
+                                            	<c:if test="${result.rankOverall != 'N/A' }">
+                                                	<c:set var="overall" value="${fn:split(result.rankOverall, ' of ')}" />
+                                                    <div class="value">
+                                                        <div class="runner-overall-rank">${overall[0]}</div>
+                                                        <div class="ui divider rank-divider"><!--  --></div>
+                                                        <div class="runner-overall-count">${overall[1]}</div>
+                                                    </div>
+                                                </c:if>
+        										<c:if test="${result.rankOverall == 'N/A' }">
+                                                    <div class="value"><span class="runner-overall-rank">N/A</span></div>
+                                                </c:if>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="column">
-                                    <div class="ui tiny blue statistic stat-rank">
-										<c:if test="${result.rankGender != 'N/A' }">
-                                    	<c:set var="gender" value="${fn:split(result.rankGender, ' of ')}" />
-                                        <div class="value"><span class="runner-gender-rank">${gender[0] }</span> of <span class="runner-gender-count">${gender[1] }</span></div>
-                                        </c:if>
-										<c:if test="${result.rankGender == 'N/A' }">
-                                        <div class="value"><span class="runner-gender-rank">N/A</span></div>
-                                        </c:if>
-                                        <div class="label">Gender Rank</div>
+                                    <div class="ui center aligned header circular-header">Gender</div>
+                                    <div class="circular-bg border-6">
+                                        <div class="circular-contents">
+                                            <div class="ui tiny statistic stat-rank">
+        										<c:if test="${result.rankGender != 'N/A' }">
+                                                	<c:set var="gender" value="${fn:split(result.rankGender, ' of ')}" />
+                                                    <div class="value">
+                                                        <div class="runner-gender-rank">${gender[0]}</div>
+                                                        <div class="ui divider rank-divider"><!--  --></div>
+                                                        <div class="runner-gender-count">${gender[1]}</div>
+                                                    </div>
+                                                </c:if>
+        										<c:if test="${result.rankGender == 'N/A' }">
+                                                    <div class="value"><span class="runner-gender-rank">N/A</span></div>
+                                                </c:if>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +151,7 @@
     </section>
     <script>
     function goBack(){
-        window.history.back();
+        window.location = '/bibs-server/r/e/${event.id}';
     }
     </script>
 </div>
