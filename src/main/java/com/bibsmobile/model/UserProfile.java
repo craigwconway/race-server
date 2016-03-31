@@ -28,7 +28,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.Version;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Email;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -61,7 +60,6 @@ public class UserProfile implements UserDetails {
 
     private String gender;
 
-    @Email
     private String email;
 
     private String image;

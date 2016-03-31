@@ -1292,6 +1292,20 @@ public class Event {
     }
 
     /**
+	 * @return the series
+	 */
+	public Series getSeries() {
+		return series;
+	}
+
+	/**
+	 * @param series the series to set
+	 */
+	public void setSeries(Series series) {
+		this.series = series;
+	}
+
+	/**
      * Switch to use discounts for social shares
 	 * @return the socialSharingDiscounts
 	 */

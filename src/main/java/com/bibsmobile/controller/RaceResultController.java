@@ -3,6 +3,7 @@ package com.bibsmobile.controller;
 import com.bibsmobile.model.Event;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.Series;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.service.UserProfileService;
 import com.bibsmobile.util.BuildTypeUtil;
@@ -88,6 +89,24 @@ public class RaceResultController {
         raceResult.persist();
         return raceResult.toJson();
     }
+    
+    @RequestMapping(value = "/seriessearch", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchSeries(@RequestParam(value = "series") Long seriesId, 
+    		@RequestParam(value = "name") String name,
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+    		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
+        String rtn = "[]";
+        try {
+        	Series series = Series.findSeries(seriesId);
+            List<RaceResult> raceResults = RaceResult.searchSeriesPaginated(series, name, page, size);
+            rtn = RaceResultViewDto.fromRaceResultsToDtoArray(raceResults);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtn;
+    }
+    
 
     /**
      * @api {get} /raceresults/search Search

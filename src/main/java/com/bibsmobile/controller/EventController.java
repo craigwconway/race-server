@@ -275,6 +275,23 @@ public class EventController {
         event.persist();
         return event.toJson();
     }
+    
+    @RequestMapping(value = "/seriessearch", method = RequestMethod.GET, headers = "Accept=application/json")
+    @ResponseBody
+    public ResponseEntity<String> searchSeries(@RequestParam("series") Long seriesId, @RequestParam("name") String eventName) {
+    	if(seriesId == null) {
+    		SpringJSONUtil.returnErrorMessage("MissingSeriesId", HttpStatus.BAD_REQUEST);
+    	}
+    	Series series = Series.findSeries(seriesId);
+    	List<Event> rawList = eventService.nameSearch(eventName);
+    	List<Event> eventList = new ArrayList<Event>();
+    	for(Event e :rawList) {
+    		if(e.getSeries() != null && e.getSeries().getId() == series.getId()) {
+    			eventList.add(e);
+    		}
+    	}
+    	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(eventList), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/webappid", method = RequestMethod.GET)
     @ResponseBody
