@@ -74,16 +74,16 @@
                             </div>
                         </div>
                         <div class="content">
-                            <div class="ui blue tiny statistic stat-finish">
+                            <div class="ui blue small statistic stat-finish">
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplayGun}</span></div>
                                 <div class="label">Gun Time</div>
                             </div>
                             <div class="ui hidden divider"><!--  --></div>
-                            <div class="ui purple small statistic stat-finish">
+                            <div class="ui purple statistic stat-finish">
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplay }</span></div>
                                 <div class="label">Finish Time</div>
                             </div>
-                            <div class="ui two column center aligned grid">
+                            <div class="ui three column center aligned grid">
                                 <div class="column">
                                     <div class="ui center aligned header circular-header">Overall</div>
                                     <div class="circular-bg border-4">
@@ -109,15 +109,35 @@
                                     <div class="circular-bg border-6">
                                         <div class="circular-contents">
                                             <div class="ui tiny statistic stat-rank">
-        										<c:if test="${result.rankGender != 'N/A' }">
-                                                	<c:set var="gender" value="${fn:split(result.rankGender, ' of ')}" />
+                                                <c:if test="${result.rankGender != 'N/A' }">
+                                                    <c:set var="gender" value="${fn:split(result.rankGender, ' of ')}" />
                                                     <div class="value">
                                                         <div class="runner-gender-rank">${gender[0]}</div>
                                                         <div class="ui divider rank-divider"><!--  --></div>
                                                         <div class="runner-gender-count">${gender[1]}</div>
                                                     </div>
                                                 </c:if>
-        										<c:if test="${result.rankGender == 'N/A' }">
+                                                <c:if test="${result.rankGender == 'N/A' }">
+                                                    <div class="value"><span class="runner-gender-rank">N/A</span></div>
+                                                </c:if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column">
+                                    <div class="ui center aligned header circular-header">Class</div>
+                                    <div class="circular-bg border-3">
+                                        <div class="circular-contents">
+                                            <div class="ui tiny statistic stat-rank">
+                                                <c:if test="${result.rankGender != 'N/A' }">
+                                                    <c:set var="gender" value="${fn:split(result.rankGender, ' of ')}" />
+                                                    <div class="value">
+                                                        <div class="runner-gender-rank">${gender[0]}</div>
+                                                        <div class="ui divider rank-divider"><!--  --></div>
+                                                        <div class="runner-gender-count">${gender[1]}</div>
+                                                    </div>
+                                                </c:if>
+                                                <c:if test="${result.rankGender == 'N/A' }">
                                                     <div class="value"><span class="runner-gender-rank">N/A</span></div>
                                                 </c:if>
                                             </div>

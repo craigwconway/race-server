@@ -124,20 +124,20 @@ body{
 }
 
 #single-result-card > .content{
-	font-size: 1em;
+	font-size: 10pt;
 	padding-top: 50px;
 	text-align: center;
 }
 
 #single-result-card > .ui[class*="top attached"].label{
-	padding: 1.5em;
+	padding: 15px;
 	font-size: 1.3em;
 }
 
 #single-result-card> .content > .description{
 	font-weight: 600;
 	color: rgba(0, 0, 0, 0.5);
-	font-size: 1.3em;
+	font-size: 15pt;
 	padding-top: 0.5em;
 }
 
@@ -227,7 +227,9 @@ body{
 	width: 100%;
 	text-align: center;
 }
-
+.ui.statistic.stat-finish:nth-child(3) > .value ~ .label{
+	font-size: 20pt;
+}
 .ui.pointing.left.label{
 	font-size: 1em;
 	width: 80px;

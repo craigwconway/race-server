@@ -119,11 +119,12 @@
 }
 
 #region-title{
-    font-family: 'Montserrat',Arial,sans-serif;
-    padding: 15px 15px;
-    margin-top: 1%;
     display: inline-block;
     clear: both;
+    margin: 2% 0;
+    padding: 15px 15px;
+    font-family: 'Montserrat',Arial,sans-serif;
+    font-size: 1.5em;
 }
 
 #event-cards-container > .card > .content > .description{
@@ -140,6 +141,7 @@
 
 .ui.label{
     border-radius: 0;
+    font-size: 10pt;
 }
 
 .ui.zappos.orange.label{
@@ -211,6 +213,7 @@ h5.ui.header{
 }
 .ui.card, .ui.cards>.card{
     box-shadow: 0 0 0 1px #D4D4D5 !important;
+    font-size: 14pt;
 }
 .ui.card>.content>.header, .ui.cards>.card>.content>.header, .ui.list .list>.item .header, .ui.list>.item .header, .ui.accordion .title:not(.ui), .ui.menu, .ui.input input{
     font-family: 'Montserrat' !important;
@@ -734,6 +737,8 @@ header .header-content .header-content-inner p {
 .event-detail-container{
     width: 100%;
     display: table;
+    font-size: 18pt;
+    margin: 50px 0;
 }
 
 .event-countdown-column{
@@ -746,6 +751,9 @@ header .header-content .header-content-inner p {
     background-position: 50% 50%;
     width: 130px;
     height: 130px;
+}
+.event-countdown{
+    font-size: 12pt;
 }
 .event-datetime-column{
     width: 65%;
