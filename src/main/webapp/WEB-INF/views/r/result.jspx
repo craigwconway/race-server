@@ -83,7 +83,7 @@
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplay }</span></div>
                                 <div class="label">Finish Time</div>
                             </div>
-                            <div class="ui three column center aligned grid">
+                            <div class="ui three column stackable center aligned grid" style="margin-top:20px">
                                 <div class="column">
                                     <div class="ui center aligned header circular-header">Overall</div>
                                     <div class="circular-bg border-4">
