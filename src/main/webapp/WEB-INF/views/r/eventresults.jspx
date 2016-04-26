@@ -64,134 +64,80 @@
     <div style="clear:both;"><!-- --></div>
     <section class="no-padding" id="events">
         <div class="ui center aligned basic segment">
-            <div class="ui fluid region-1-bg card" id="result-btn">
-                <div class="content">
-                    <div class="header"><img class="ui mini image" src="/bibs-server/outsideres/img/results.png"/></div>
-                    <div class="description">Results</div>
-                </div>
-            </div>
             <div id="event">
+                <div class="event-date"><!--  --></div>
+                <div class="event-time"><!--  --></div>
                 <h4 class="ui header"><div class="sub header date-elev"><!--   --></div></h4>
-                <div class="ui two column centered grid container" id="search-type">
-                    <div class="sixteen wide column">
-                        <div class="ui vertical fluid accordion menu">
-                            <div class="item">
-                                <a class="title">
-                                    <i class="dropdown icon"><!--   --></i>
-                                    Search by Teams
-                                </a>
-                                <div class="content">
-                                    <div class="ui form">
-                                        <div class="grouped fields" id="result-filter-ttype">
-                                            <!-- <c:forEach var="item" items="${event.eventTypes}">
-                                                <div class="field">
-                                                    <div class="ui radio checkbox">
-                                                        <input type="radio" name="etype" value="${item.id }"></input>
-                                                        <label>${item.typeName }</label>
-                                                    </div>
-                                                </div>
-                                            </c:forEach> -->
-                                            <div class="field">
-                                                <div class="ui radio checkbox">
-                                                    <input type="radio" name="ttype" value="" />
-                                                    <label>All Teams</label>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <div class="ui radio checkbox">
-                                                    <input type="radio" name="ttype" value="M" />
-                                                    <label>Teams (M)</label>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <div class="ui radio checkbox">
-                                                    <input type="radio" name="ttype" value="F" />
-                                                    <label>Teams (F)</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <a class="title">
-                                    <i class="dropdown icon"><!--   --></i>
-                                    Search by Event Type
-                                </a>
-                                <div class="content">
-                                    <div class="ui form">
-                                        <div class="grouped fields" id="result-filter-etype">
-                                            <c:forEach var="item" items="${event.eventTypes}">
-                                                <div class="field">
-                                                    <div class="ui radio checkbox">
-                                                        <input type="radio" name="etype" value="${item.id }"></input>
-                                                        <label>${item.typeName }</label>
-                                                    </div>
-                                                </div>
-                                            </c:forEach>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <a class="title">
-                                    <i class="dropdown icon"><!--   --></i>
-                                    Search by Category
-                                </a>
-                                <div class="content">
-                                    <div class="ui form">
-                                        <div class="grouped fields" id="result-filter-radios">
-                                            <div class="field">
-                                                <div class="ui radio checkbox">
-                                                    <input type="radio" name="type" value="0" checked="checked" />
-                                                    <label>All Race Results</label>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <div class="ui radio checkbox">
-                                                    <input type="radio" name="type" value="M" />
-                                                    <label>Top Male</label>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <div class="ui radio checkbox">
-                                                    <input type="radio" name="type" value="F" />
-                                                    <label>Top Female</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <a class="title">
-                                  <i class="dropdown icon"><!--   --></i>
-                                  Search by bib #, team name, or athlete name
-                                </a>
-                                <div class="content">
-                                    <div class="ui search" id="search-user">
-                                        <div class="ui icon input">
-                                            <input type="text" name="bibsearch" placeholder="Search bib #, name..." />
-                                            <button class="circular ui tiny icon button" id="search-single-button"><i class="inverted circular icon fa fa-search"
-                                               style="font-family:'FontAwesome';top:5px;right:5px"><!--   --></i></button>
-                                        </div>
-                                        <div class="results" style="height: 175px; overflow-y: auto"><!--   --></div>
-                                        <a class="result" id="query-item-template" style="display:none">
-                                            <div class="content query-content">
-                                                <div class="title query-title"><!--   --></div>
-                                                <div class="description query-description"><!--   --></div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="ui search" id="search-user">
+                    <div class="ui icon input">
+                        <input type="text" name="bibsearch" placeholder="Search bib #, name..." />
+                        <button class="circular ui tiny icon button" id="search-single-button"><i class="inverted circular icon fa fa-search"
+                           style="font-family:'FontAwesome';top:5px;right:5px"><!--   --></i></button>
                     </div>
+                    <div class="results" style="height: 175px; overflow-y: auto"><!--   --></div>
+                    <a class="result" id="query-item-template" style="display:none">
+                        <div class="content query-content">
+                            <div class="title query-title"><!--   --></div>
+                            <div class="description query-description"><!--   --></div>
+                        </div>
+                    </a>
                 </div>
                 <div id="results">
                     <div id="category-result-container">
-                        <h4 class="ui horizontal divider header result-header">Results: Overall</h4>
-                        <div class="ui three stackable cards result-cards">
+                        <h2 class="ui center aligned header result-header">Overall Results</h2>
+                        <div class="ui four column centered grid container">
+                            <div class="center aligned column">
+                                <div class="ui dropdown" id="result-filter-team" style="margin:auto 10px;font-size:1.2em;">
+                                    <input type="hidden" name="team" />
+                                    <div class="default text">Team Standings</div>
+                                    <i class="dropdown icon"><!--  --></i>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Overall Team Standings</div>
+                                        <div class="item" data-value="M">Teams (M)</div>
+                                        <div class="item" data-value="F">Teams (F)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="center aligned column">
+                                <div class="ui dropdown" id="result-filter-gender" style="margin:auto 10px;font-size:1.2em;">
+                                    <input type="hidden" name="type" />
+                                    <div class="default text">Filter by Gender</div>
+                                    <i class="dropdown icon"><!--  --></i>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Overall Gender</div>
+                                        <div class="item" data-value="M">Top Male</div>
+                                        <div class="item" data-value="F">Top Female</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="center aligned column">
+                                <div class="ui dropdown" id="result-filter-age" style="margin:auto 10px;font-size:1.2em;">
+                                    <input type="hidden" name="age" />
+                                    <div class="default text">Filter by Age Group</div>
+                                    <i class="dropdown icon"><!--  --></i>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Overall Age Group</div>
+                                        <div class="item" data-value="1">10-19</div>
+                                        <div class="item" data-value="2">20-29</div>
+                                        <div class="item" data-value="3">30-39</div>
+                                        <div class="item" data-value="4">40-49</div>
+                                        <div class="item" data-value="5">50-59</div>
+                                        <div class="item" data-value="6">60-69</div>
+                                        <div class="item" data-value="7">70-79</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="center aligned column">
+                                <div class="ui dropdown" id="result-filter-etype" style="margin:auto 10px;font-size:1.2em;">
+                                    <input type="hidden" name="etype" />
+                                    <div class="default text">Event Type</div>
+                                    <i class="dropdown icon"><!--  --></i>
+                                    <div class="menu"><!--  --></div>
+                                </div>
+                                <div class="item" id="filter-etype-template" data-value="0" style="display:none"><!--  --></div>
+                            </div>
+                        </div>
+                        <div class="ui three stackable cards result-cards" style="display:none">
                             <div class="card result-cards-first">
                                 <div class="ui first-place top attached label"><div class="icon award-banner"><i class="fa fa-trophy"><!--   --></i> 1st Overall</div></div>
                                 <div class="content award-content">
@@ -269,8 +215,6 @@
         jQuery('.ui.accordion').accordion();
         jQuery('.ui.checkbox').checkbox();
 
-        var currentEventTypeID = null;
-
         jQuery.ajax({
             context: this,
             url: '/bibs-server/events/details/${event.id}',
@@ -283,45 +227,23 @@
             },
             type: 'GET'
         }).then(function(eventInfo){
+            var currentEventTypeID = null;
+            var currentTeamFilter = null;
+            var currentGenderFilter = null;
+            var currentAgeFilter = null;
+            
             jQuery('#region-title').text(eventInfo.name);
             jQuery('#single-result-container').hide();
 
-            if(eventInfo.timeStartLocal == null || eventInfo.timeStartLocal.length &lt; 1){
-                jQuery('#event').find('h4 > .date-elev').text('');
-            }else{
-                jQuery('#event').find('h4 > .date-elev').text(eventInfo.timeStartLocal);
-            }
+            reformatEventDate();
+            initEventType();
 
-            jQuery('#result-filter-etype * .ui.checkbox').checkbox({
-                onChange: function(){
-                    var type = jQuery(this).val();
-                    currentEventTypeID = type;
-                    renderCategoryResults(null);
-                }
-            });
+            renderCategoryResults(null);
 
-            jQuery('#result-filter-ttype * .ui.checkbox').checkbox({
-                onChange: function(){
-                    var type = jQuery(this).val();
-                    currentTeamType = type;
-                    renderTeamResults(null);
-                }
-            });
+            initAgeFilter();
+            initTeamFilter();
+            initGenderFilter();
 
-            jQuery('#result-filter-radios * .ui.checkbox').checkbox({
-                onChange: function(){
-                    var type = jQuery(this).val();
-                    renderCategoryResults(type);
-                    if(type == 0){
-                        jQuery('.result-header').text('Results: Overall');
-                    }else if(type == 'M'){
-                        jQuery('.result-header').text('Results: Overall Male');
-                    }else if(type == 'F'){
-                        jQuery('.result-header').text('Results: Overall Female');
-                    }
-                    jQuery('#single-result-container').hide();
-                }
-            });
             jQuery('#search-single-button').bind('click', function(){
                 var query = jQuery('input[name="bibsearch"]').val();
                 if(query.length > 0){
@@ -329,10 +251,146 @@
                 }
             });
 
-            jQuery('#result-filter-etype > .field:first-child').find('input').prop('checked', 'checked');
-            jQuery('#result-filter-ttype > .field:first-child').find('input').prop('checked', 'checked');
-            currentEventTypeID = jQuery('#result-filter-etype > .field:first-child').find('input').val();
             renderCategoryResults(null);
+
+            function reformatEventDate(){
+                var momentTimeStart = null;
+                var dayOfWeek = null;
+                var date = null;
+                var time = null;
+                if(eventInfo.timeStartLocal !== null){
+                    momentTimeStart = moment(eventInfo.timeStartLocal, 'MM/DD/YYYY hh:mm:ss a');
+                    dayOfWeek = momentTimeStart.format('dddd');
+                    date = momentTimeStart.format('MMMM D, YYYY');
+                    time = momentTimeStart.format('h:mm a');
+                    jQuery('#event').find('.event-date').text(date);
+                    jQuery('#event').find('.event-time').text(time);
+                }
+            }
+
+            function initEventType(){
+                var firstEtype = null;
+                for(var el in eventInfo.eventTypes){
+                    var etype = eventInfo.eventTypes[el];
+                    if(el == 0){ firstEtype = etype.id; }
+                    var etypeItem = jQuery('#filter-etype-template').clone().appendTo('#result-filter-etype > .menu');
+                        etypeItem.text(etype.distance);
+                        etypeItem.attr('data-value', etype.id);
+                        etypeItem.removeAttr('id').show();
+                }
+
+                if( eventInfo.hasOwnProperty('eventTypes') &amp;&amp; eventInfo.eventTypes.length > 1 ){
+                    currentEventTypeID = eventInfo.eventTypes[0].id;
+                }else{
+                    jQuery('#search-type').find('.item:first-child').hide();
+                }
+
+                jQuery('#result-filter-etype').dropdown('set selected', firstEtype);
+                jQuery('#result-filter-etype').dropdown({
+                    onChange: function(value, text, $selectedDOM){
+                        currentEventTypeID = value;
+                        renderCategoryResults(null);
+                        renderQueryDescription();
+                    }
+                });
+            }
+
+            function initAgeFilter(){
+                jQuery('#result-filter-age').dropdown({
+                    onChange: function(value, text, $selectedDOM){
+                        renderCategoryResults(value);
+                        if(value == 0){
+                            // jQuery('.result-header').text('Overall Results');
+                            currentAgeFilter = null;
+                        }else {
+                            // jQuery('.result-header').text('Age Group ' + text + ' Results');
+                            currentAgeFilter = text;
+                        }
+                        renderQueryDescription();
+                    }
+                });
+                jQuery('#result-filter-age').dropdown('set selected', '0');
+            }
+
+            function initTeamFilter(){
+                jQuery('#result-filter-team').dropdown({
+                    onChange: function(value, text, $selectedDOM){
+                        renderCategoryResults(value);
+                        var genderValue = jQuery('#result-filter-gender').dropdown('get value');
+                        if(value == 0){
+                            // jQuery('.result-header').text('Team Results');
+                            currentTeamFilter = null;
+                            if(genderValue == 'M'){
+                                currentGenderFilter = 'Male';
+                            }
+                            if(genderValue == 'F'){
+                                currentGenderFilter = 'Female';
+                            }
+                        }else if(value == 'M'){
+                            // jQuery('.result-header').text('Team Male Results');
+                            currentTeamFilter = 'Team (M)';
+                            if(genderValue == 'F'){
+                                jQuery('#result-filter-gender').dropdown('set selected', 'M');
+                            }
+                        }else if(value == 'F'){
+                            // jQuery('.result-header').text('Team Female Results');
+                            currentTeamFilter = 'Team (F)';
+                            if(genderValue == 'M'){
+                                jQuery('#result-filter-gender').dropdown('set selected', 'F');
+                            }
+                        }
+                        renderQueryDescription();
+                    }
+                });
+                jQuery('#result-filter-team').dropdown('set selected', '0');
+            }
+
+            function initGenderFilter(){
+                jQuery('#result-filter-gender').dropdown({
+                    onChange: function(value, text, $selectedDOM){
+                        renderCategoryResults(value);
+                        var teamValue = jQuery('#result-filter-team').dropdown('get value');
+                        if(value == 0){
+                            // jQuery('.result-header').text('Overall Results');
+                            currentGenderFilter = null;
+                        }else if(value == 'M'){
+                            // jQuery('.result-header').text('Overall Male Results');
+                            currentGenderFilter = 'Male';
+                            if(teamValue == 'F'){
+                                jQuery('#result-filter-team').dropdown('set selected', 'M');
+                                currentGenderFilter = null;
+                            }
+                        }else if(value == 'F'){
+                            // jQuery('.result-header').text('Overall Female Results');
+                            currentGenderFilter = 'Female';
+                            if(teamValue == 'M'){
+                                jQuery('#result-filter-team').dropdown('set selected', 'F');
+                                currentGenderFilter = null;
+                            }
+                        }
+                        renderQueryDescription();
+                    }
+                });
+                jQuery('#result-filter-gender').dropdown('set selected', '0');
+            }
+
+            function renderQueryDescription(){
+                var text = "";
+                if(currentTeamFilter){
+                    text += currentTeamFilter + " ";
+                }
+                if(currentGenderFilter){
+                    text += currentGenderFilter + " ";
+                }
+                if(currentAgeFilter){
+                    text += currentAgeFilter + " ";
+                }
+                if(text.length == 0){
+                    text = "Overall ";
+                }
+                console.log(currentTeamFilter, currentGenderFilter, currentAgeFilter)
+                jQuery('.result-header').text(text + "Results");
+            }
 
             function renderTeamResults(typeId){
                 jQuery('.result-cards').hide();
@@ -443,7 +501,7 @@
                                 })(i, elem)
                                 jQuery(resultDOM).removeAttr('id').show();
                         }
-                        jQuery('.result-cards').show();
+                        // jQuery('.result-cards').show();
                         jQuery('#result-filter-ttype > .field:first-child').find('input').prop('checked', 'checked');
                     },
                     type: 'GET'
@@ -515,7 +573,6 @@
             }
         });
 
-
         function goBack(){
             window.location = "/bibs-server/r/e/${event.id}";
         }
@@ -526,5 +583,6 @@
         	window.location = "/bibs-server/r/e/${event.id}/results";
         }        
     </script>
+    <script type="text/javascript" src="/bibs-server/resources/scripts/outsiders/moment.min.js"><!-- --></script>
 </div>
 
