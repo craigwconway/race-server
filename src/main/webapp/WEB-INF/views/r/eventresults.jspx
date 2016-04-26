@@ -249,10 +249,10 @@
                                 <div class="description"><span class="result-list-bib">Bib #<span class="result-list-item-bib"></span></span> <span class="result-list-team">, Team <span class="result-list-item-team"></span></span></div>
                             </div>
                         </div>
-                        <div class="ui divided relaxed large list team-result-list" id="result-list-team-template" style="display:none">
-                            <div class="item team-header">
-                                <div class="content"></div>
-                            </div>
+                    </div>
+                    <div class="ui divided relaxed large list team-result-list" id="result-list-team-template" style="display:none">
+                        <div class="item team-header">
+                            <div class="content"></div>
                         </div>
                     </div>
                 </div>
@@ -353,7 +353,7 @@
                         jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
 
                         var teams = [];
-
+                        jQuery('#category-result-container > .team-result-list').remove();
                         for(var i in results){
                             var elem = results[i];
                             var resultDOM = null;
