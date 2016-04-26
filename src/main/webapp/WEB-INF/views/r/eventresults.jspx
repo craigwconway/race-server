@@ -78,19 +78,57 @@
                             <div class="item">
                                 <a class="title">
                                     <i class="dropdown icon"><!--   --></i>
+                                    Search by Teams
+                                </a>
+                                <div class="content">
+                                    <div class="ui form">
+                                        <div class="grouped fields" id="result-filter-ttype">
+                                            <!-- <c:forEach var="item" items="${event.eventTypes}">
+                                                <div class="field">
+                                                    <div class="ui radio checkbox">
+                                                        <input type="radio" name="etype" value="${item.id }"></input>
+                                                        <label>${item.typeName }</label>
+                                                    </div>
+                                                </div>
+                                            </c:forEach> -->
+                                            <div class="field">
+                                                <div class="ui radio checkbox">
+                                                    <input type="radio" name="ttype" value="" />
+                                                    <label>All Teams</label>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="ui radio checkbox">
+                                                    <input type="radio" name="ttype" value="M" />
+                                                    <label>Teams (M)</label>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <div class="ui radio checkbox">
+                                                    <input type="radio" name="ttype" value="F" />
+                                                    <label>Teams (F)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <a class="title">
+                                    <i class="dropdown icon"><!--   --></i>
                                     Search by Event Type
                                 </a>
                                 <div class="content">
                                     <div class="ui form">
                                         <div class="grouped fields" id="result-filter-etype">
-                                        	<c:forEach var="item" items="${event.eventTypes}">
-    	                                        <div class="field">
-    	                                            <div class="ui radio checkbox">
-    	                                                <input type="radio" name="etype" value="${item.id }"></input>
-    	                                                <label>${item.typeName }</label>
-    	                                            </div>
-    	                                        </div>
-                                        	</c:forEach>
+                                            <c:forEach var="item" items="${event.eventTypes}">
+                                                <div class="field">
+                                                    <div class="ui radio checkbox">
+                                                        <input type="radio" name="etype" value="${item.id }"></input>
+                                                        <label>${item.typeName }</label>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
                                         </div>
                                     </div>
                                 </div>
@@ -128,7 +166,7 @@
                             <div class="item">
                                 <a class="title">
                                   <i class="dropdown icon"><!--   --></i>
-                                  Search by bib # or name
+                                  Search by bib #, team name, or athlete name
                                 </a>
                                 <div class="content">
                                     <div class="ui search" id="search-user">
@@ -189,7 +227,7 @@
                             </div>
                         </div>
                         <div class="ui divider" style="visibility:hidden;"><!--   --></div>
-                        <div class="ui divided relaxed list result-list"><!--   --></div>
+                        <div class="ui divided relaxed large list result-list"><!--   --></div>
                         <div class="item" id="result-list-item-header" style="display:none">
                             <div class="right floated content">
                                 <div class="ui label">Finish Time</div>
@@ -208,64 +246,12 @@
                             </div>
                             <div class="content">
                                 <a class="header"><span class="result-list-item-name"><!--   --></span>, <span class="result-list-item-age"><!--   --></span>, <span class="result-list-item-gender"><!--   --></span></a>
-                                <div class="description">Bib #<span class="result-list-item-bib">1</span></div>
+                                <div class="description"><span class="result-list-bib">Bib #<span class="result-list-item-bib"></span></span> <span class="result-list-team">, Team <span class="result-list-item-team"></span></span></div>
                             </div>
                         </div>
-                    </div>
-                    <div id="single-result-container" style="display:none">
-                        <h4 class="ui horizontal divider header">Single Result</h4>
-                        <div class="ui fluid card" id="single-result-card">
-                            <!-- <div class="image"> -->
-                                <!-- <img src="img/placeholder.png"> -->
-                            <!-- </div> -->
-                            <div class="ui blue top attached label">Bib #<span class="single-result-card-bib"><!--   --></span></div>
-                            <div class="content">
-                                <div class="icon"><i class="fa fa-trophy fa-2x"><!--   --></i></div>
-                                <div class="header"><span class="single-result-card-name"><!--   --></span></div>
-                                <div class="description"><span class="single-result-card-age"><!--   --></span>, <span class="single-result-card-gender"><!--   --></span></div>
-                                <div class="ui purple small statistic stat-finish">
-                                    <div class="value"><span class="single-result-card-time"><!--   --></span></div>
-                                    <div class="label">Finish Time</div>
-                                </div>
-                                <div class="ui two column center aligned grid">
-                                    <div class="column">
-                                        <div class="ui tiny blue statistic stat-rank">
-                                            <div class="value"><span class="single-result-card-overall-rank">434</span> of <span class="single-result-card-overall-count">3,322</span></div>
-                                            <div class="label">Overall Rank</div>
-                                        </div>
-                                    </div>
-                                    <div class="column">
-                                        <div class="ui tiny blue statistic stat-rank">
-                                            <div class="value"><span class="single-result-card-gender-rank">12</span> of <span class="single-result-card-gender-count">2300</span></div>
-                                            <div class="label">Gender Rank</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="single-result-card-images-container">
-                                    <h5 class="ui header">Photos with <span class="single-result-card-name"><!--   --></span></h5>
-                                    <div class="ui tiny images single-result-card-images">
-                                      <img class="ui image" id="single-result-card-img-template" src="/bibs-server/outsideres/img/placeholder.png" />
-                                      <div class="ui teal tiny button" id="single-result-card-img-more" style="display:none;margin:0 auto;width:125px;">More Photos</div>
-                                    </div>
-                                </div>
-                                <div id="social">
-                                    <h5 class="ui horizontal divider header">Share <span class="single-result-card-name"><!--   --></span>'s results!</h5>
-                                    <button class="ui facebook icon button">
-                                      <i class="fa fa-facebook"><!--   --></i>
-                                    </button>
-                                    <button class="ui twitter icon button">
-                                      <i class="fa fa-twitter"><!--   --></i>
-                                    </button>
-                                    <button class="ui google plus icon button">
-                                      <i class="fa fa-google-plus"><!--   --></i>
-                                    </button>
-                                    <button class="ui youtube icon button">
-                                      <i class="fa fa-pinterest-p"><!--   --></i>
-                                    </button>
-                                    <button class="ui instagram icon button">
-                                      <i class="fa fa-instagram"><!--   --></i>
-                                    </button>
-                                </div>
+                        <div class="ui divided relaxed large list team-result-list" id="result-list-team-template" style="display:none">
+                            <div class="item team-header">
+                                <div class="content"></div>
                             </div>
                         </div>
                     </div>
@@ -314,6 +300,14 @@
                 }
             });
 
+            jQuery('#result-filter-ttype * .ui.checkbox').checkbox({
+                onChange: function(){
+                    var type = jQuery(this).val();
+                    currentTeamType = type;
+                    renderTeamResults(null);
+                }
+            });
+
             jQuery('#result-filter-radios * .ui.checkbox').checkbox({
                 onChange: function(){
                     var type = jQuery(this).val();
@@ -336,8 +330,66 @@
             });
 
             jQuery('#result-filter-etype > .field:first-child').find('input').prop('checked', 'checked');
+            jQuery('#result-filter-ttype > .field:first-child').find('input').prop('checked', 'checked');
             currentEventTypeID = jQuery('#result-filter-etype > .field:first-child').find('input').val();
             renderCategoryResults(null);
+
+            function renderTeamResults(typeId){
+                jQuery('.result-cards').hide();
+                // Events.getResultsByGender(id)
+                if(typeId == null || typeId == 0){
+                    typeId = 'M&amp;gender=F';
+                }
+
+                // jQuery.ajax({
+                //     context: this,
+                //     url: '/bibs-server/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;gender=' + typeId,
+                //     error: function() {
+                //         console.log('error in retrieving events')
+                //     },
+                //     success: function(data) {
+                        var results = [{"id":44,"bib":44,"firstname":"Togi","lastname":"Dixi","age":83,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:15:12","team":"Rocket"},{"id":190,"bib":190,"firstname":"Qari","lastname":"Rimir","age":83,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:15:37","team":"Magma"},{"id":125,"bib":125,"firstname":"Bejavu","lastname":"Muse","age":53,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:15:49","team":"Rocket"},{"id":73,"bib":73,"firstname":"Rodo","lastname":"Bopi","age":18,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:15:49","team":"Rocket"},{"id":38,"bib":38,"firstname":"Bubimun","lastname":"Baviwir","age":38,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:28","team":"Magma"},{"id":157,"bib":157,"firstname":"Qebi","lastname":"Kujeqa","age":46,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:16:38","team":"Rocket"},{"id":178,"bib":178,"firstname":"Janu","lastname":"Humi","age":16,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:46","team":"Magma"},{"id":172,"bib":172,"firstname":"Gamiw","lastname":"Kizuzav","age":43,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:49","team":"Magma"},{"id":194,"bib":194,"firstname":"Sona","lastname":"Qowe","age":21,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:17:17","team":"Aqua"},{"id":220,"bib":220,"firstname":"Fuvo","lastname":"Ramula","age":18,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:17:26","team":"Aqua"}];
+                        jQuery('.result-list').html('');
+                        jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
+
+                        var teams = [];
+
+                        for(var i in results){
+                            var elem = results[i];
+                            var resultDOM = null;
+                            if(teams.indexOf(elem.team) == -1){
+                                teams.push(elem.team);
+                                var teamHeaderDOM = jQuery('#result-list-team-template').clone().appendTo('#category-result-container');
+                                jQuery(teamHeaderDOM).find('.team-header > .content').text("Team " + elem.team || "N/A");
+                                jQuery(teamHeaderDOM).attr('id', 'team-' + teams.length).show();
+                                resultDOM = jQuery('#result-list-item-template').clone().appendTo('#team-' + teams.length);
+                            }else{
+                                var index = teams.indexOf(elem.team)+1;
+                                console.log("found team", elem.team, index, teams[index])
+                                resultDOM = jQuery('#result-list-item-template').clone().appendTo('#team-' + index);
+                            }
+
+                            if(resultDOM !== null){
+                                var place = +i+1;
+                                    jQuery(resultDOM).find('.result-list-item-time').text(elem.timeofficialdisplay);
+                                    jQuery(resultDOM).find('.result-list-item-name').text(elem.firstname + ' ' + elem.lastname);
+                                    jQuery(resultDOM).find('.result-list-item-age').text(elem.age);
+                                    jQuery(resultDOM).find('.result-list-item-gender').text(elem.gender);
+                                    jQuery(resultDOM).find('.result-list-item-bib').text(elem.bib);
+                                    jQuery(resultDOM).find('.result-list-item-place').text(place);
+                                    jQuery(resultDOM).find('.result-list-item-team').text(elem.team || "N/A");
+                                    (function(index, elem){
+                                        jQuery(resultDOM).find('a').bind('click', function(){
+                                            window.location.href = '/bibs-server/r/r/'+elem.id;
+                                        })
+                                    })(i, elem)
+                                    jQuery(resultDOM).removeAttr('id').show();
+                            }
+                        }
+                //     },
+                //     type: 'GET'
+                // });
+            }
 
             function renderCategoryResults(typeId){
                 // Events.getResultsByGender(id)
@@ -383,6 +435,7 @@
                                 jQuery(resultDOM).find('.result-list-item-gender').text(elem.gender);
                                 jQuery(resultDOM).find('.result-list-item-bib').text(elem.bib);
                                 jQuery(resultDOM).find('.result-list-item-place').text(place);
+                                jQuery(resultDOM).find('.result-list-item-team').text(elem.team || "N/A");
                                 (function(index, elem){
                                     jQuery(resultDOM).find('a').bind('click', function(){
                                         window.location.href = '/bibs-server/r/r/'+elem.id;
@@ -390,6 +443,8 @@
                                 })(i, elem)
                                 jQuery(resultDOM).removeAttr('id').show();
                         }
+                        jQuery('.result-cards').show();
+                        jQuery('#result-filter-ttype > .field:first-child').find('input').prop('checked', 'checked');
                     },
                     type: 'GET'
                 });

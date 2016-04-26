@@ -179,6 +179,16 @@ body{
 	text-transform: uppercase;
 }
 
+.team-result-list{
+	padding: 0 !important;
+	}.team-result-list > .team-header.item{
+		font-size: 25px;
+		font-family: 'Arvo-Bold';
+		color: white;
+		background-color: #777;
+		padding: 15px;
+	}
+
 .award-banner{
 	color: black;
 	font-size: 1.4em;
@@ -232,7 +242,7 @@ body{
 }
 .ui.pointing.left.label{
 	font-size: 1em;
-	width: 80px;
+	width: 90px;
 }
 
 .ui.statistics > .statistic{
