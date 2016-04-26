@@ -10,7 +10,22 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
-    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>    
+    <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>   
+    <style type="text/css">
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .printable, .printable * {
+                visibility: visible;
+            }
+            .printable {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        }
+    </style> 
     
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -57,7 +72,11 @@
         <div class="ui center aligned basic segment">
             <div id="runner">
                 <h4 class="ui header"><div class="sub header date-elev"></div></h4>
-                <div id="single-result-container">
+                <div class="ui basic desktop segment">
+                    <button type="button" class="ui basic right floated button" onclick="printCertificate()">Print Certificate</button>
+                    <div class="ui hidden divider"><!--  --></div>
+                </div>
+                <div id="single-result-container" class="printable">
                     <div class="ui fluid card" id="single-result-card">
                         <div class="ui blue top attached label">
                             <div class="runner-bib-main">
@@ -171,9 +190,12 @@
         </div>
     </section>
     <script>
-    function goBack(){
-        window.location = '/bibs-server/r/e/${result.event.id}';
-    }
+        function goBack(){
+            window.location = '/bibs-server/r/e/${result.event.id}';
+        }
+        function printCertificate() {
+            window.print();
+        }
     </script>
 </div>
 
