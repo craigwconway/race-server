@@ -89,7 +89,7 @@
                                 <div class="runner-name">${result.firstname } ${result.lastname }</div>
                             </div>
                             <div class="description">
-                                <span class="runner-age">${result.age }</span>, <span class="runner-gender">${result.gender }</span>
+                                <c:if test="${result.age != null}"><span class="runner-age">${result.age }</span>, </c:if><span class="runner-gender">${result.gender }</span>
                             </div>
                         </div>
                         <div class="content">
