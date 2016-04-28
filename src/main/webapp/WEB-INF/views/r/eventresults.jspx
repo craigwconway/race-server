@@ -464,6 +464,7 @@
                         // console.log(results)
 
                         jQuery('.result-list').html('');
+                        jQuery('#category-result-container > .team-result-list').remove();
                         jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
 
                         for(var i in results){
