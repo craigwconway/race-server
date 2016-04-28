@@ -315,9 +315,9 @@
             }
 
             function initTeamFilter(){
-                jQuery('#result-filter-team').dropdown({
+                jQuery("#result-filter-team").dropdown({
                     onChange: function(value, text, $selectedDOM){
-                        renderCategoryResults(value);
+                        // renderCategoryResults(value);
                         var genderValue = jQuery('#result-filter-gender').dropdown('get value');
                         if(value == 0){
                             currentTeamFilter = null;
@@ -332,16 +332,18 @@
                             if(genderValue == 'F'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'M');
                             }
+                            renderTeamResults(value);
                         }else if(value == 'F'){
                             currentTeamFilter = 'Team (F)';
                             if(genderValue == 'M'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'F');
                             }
+                            renderTeamResults(value);
                         }
                         renderQueryDescription();
                     }
                 });
-                jQuery('#result-filter-team').dropdown('set selected', '0');
+                jQuery("#result-filter-team").dropdown('set selected', '0');
             }
 
             function initGenderFilter(){
@@ -402,10 +404,11 @@
                 //     },
                 //     success: function(data) {
                         var results = [{"id":44,"bib":44,"firstname":"Togi","lastname":"Dixi","age":83,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:15:12","team":"Rocket"},{"id":190,"bib":190,"firstname":"Qari","lastname":"Rimir","age":83,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:15:37","team":"Magma"},{"id":125,"bib":125,"firstname":"Bejavu","lastname":"Muse","age":53,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:15:49","team":"Rocket"},{"id":73,"bib":73,"firstname":"Rodo","lastname":"Bopi","age":18,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:15:49","team":"Rocket"},{"id":38,"bib":38,"firstname":"Bubimun","lastname":"Baviwir","age":38,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:28","team":"Magma"},{"id":157,"bib":157,"firstname":"Qebi","lastname":"Kujeqa","age":46,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:16:38","team":"Rocket"},{"id":178,"bib":178,"firstname":"Janu","lastname":"Humi","age":16,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:46","team":"Magma"},{"id":172,"bib":172,"firstname":"Gamiw","lastname":"Kizuzav","age":43,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:49","team":"Magma"},{"id":194,"bib":194,"firstname":"Sona","lastname":"Qowe","age":21,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:17:17","team":"Aqua"},{"id":220,"bib":220,"firstname":"Fuvo","lastname":"Ramula","age":18,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:17:26","team":"Aqua"}];
-                        jQuery('.result-list').html('');
+                        jQuery(".result-list").html(" ");
                         jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
 
                         var teams = [];
+
                         jQuery('#category-result-container > .team-result-list').remove();
                         for(var i in results){
                             var elem = results[i];
