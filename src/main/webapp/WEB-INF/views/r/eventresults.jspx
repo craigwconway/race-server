@@ -85,56 +85,65 @@
                 <div id="results">
                     <div id="category-result-container">
                         <h2 class="ui center aligned header result-header">Overall Results</h2>
-                        <div class="ui four column centered grid container">
-                            <div class="center aligned column">
-                                <div class="ui dropdown" id="result-filter-team" style="margin:auto 10px;font-size:1.2em;">
-                                    <input type="hidden" name="team" />
-                                    <div class="default text">Team Standings</div>
-                                    <i class="dropdown icon"><!--  --></i>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">Overall Team Standings</div>
-                                        <div class="item" data-value="M">Teams (M)</div>
-                                        <div class="item" data-value="F">Teams (F)</div>
+                        <div class="ui four column centered doubling stackable grid container">
+                            <div class="six wide column">
+                            <div id="result-filter-buttons" class="ui four teal large buttons">
+                                <button class="ui button">Overall</button>
+                                <button class="ui button">Team</button>
+                                <button class="ui button">Gender + Age</button>
+                            </div>
+                            </div>
+                            <div class="centered row">
+                                <div id="filter-team-container" class="center aligned column filter-container">
+                                    <div class="ui dropdown" id="result-filter-team" style="margin:auto 10px;font-size:1.2em;">
+                                        <input type="hidden" name="team" />
+                                        <div class="default text">Team Standings</div>
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">Overall Team Standings</div>
+                                            <div class="item" data-value="M">Teams (M)</div>
+                                            <div class="item" data-value="F">Teams (F)</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="center aligned column">
-                                <div class="ui dropdown" id="result-filter-gender" style="margin:auto 10px;font-size:1.2em;">
-                                    <input type="hidden" name="type" />
-                                    <div class="default text">Filter by Gender</div>
-                                    <i class="dropdown icon"><!--  --></i>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">Overall Gender</div>
-                                        <div class="item" data-value="M">Top Male</div>
-                                        <div class="item" data-value="F">Top Female</div>
+                                <div id="filter-gender-container" class="center aligned column filter-container">
+                                    <div class="ui dropdown" id="result-filter-gender" style="margin:auto 10px;font-size:1.2em;">
+                                        <input type="hidden" name="type" />
+                                        <div class="default text">Filter by Gender</div>
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">Overall Gender</div>
+                                            <div class="item" data-value="M">Top Male</div>
+                                            <div class="item" data-value="F">Top Female</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="center aligned column">
-                                <div class="ui dropdown" id="result-filter-age" style="margin:auto 10px;font-size:1.2em;">
-                                    <input type="hidden" name="age" />
-                                    <div class="default text">Filter by Age Group</div>
-                                    <i class="dropdown icon"><!--  --></i>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">Overall Age Group</div>
-                                        <div class="item" data-value="1">10-19</div>
-                                        <div class="item" data-value="2">20-29</div>
-                                        <div class="item" data-value="3">30-39</div>
-                                        <div class="item" data-value="4">40-49</div>
-                                        <div class="item" data-value="5">50-59</div>
-                                        <div class="item" data-value="6">60-69</div>
-                                        <div class="item" data-value="7">70-79</div>
+                                <div id="filter-age-container" class="center aligned column filter-container">
+                                    <div class="ui dropdown" id="result-filter-age" style="margin:auto 10px;font-size:1.2em;">
+                                        <input type="hidden" name="age" />
+                                        <div class="default text">Filter by Age Group</div>
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">Overall Age Group</div>
+                                            <div class="item" data-value="1">10-19</div>
+                                            <div class="item" data-value="2">20-29</div>
+                                            <div class="item" data-value="3">30-39</div>
+                                            <div class="item" data-value="4">40-49</div>
+                                            <div class="item" data-value="5">50-59</div>
+                                            <div class="item" data-value="6">60-69</div>
+                                            <div class="item" data-value="7">70-79</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="center aligned column">
-                                <div class="ui dropdown" id="result-filter-etype" style="margin:auto 10px;font-size:1.2em;">
-                                    <input type="hidden" name="etype" />
-                                    <div class="default text">Event Type</div>
-                                    <i class="dropdown icon"><!--  --></i>
-                                    <div class="menu"><!--  --></div>
+                                <div class="center aligned column">
+                                    <div class="ui dropdown" id="result-filter-etype" style="margin:auto 10px;font-size:1.2em;">
+                                        <input type="hidden" name="etype" />
+                                        <div class="default text">Event Type</div>
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <div class="menu"><!--  --></div>
+                                    </div>
+                                    <div class="item" id="filter-etype-template" data-value="0" style="display:none"><!--  --></div>
                                 </div>
-                                <div class="item" id="filter-etype-template" data-value="0" style="display:none"><!--  --></div>
                             </div>
                         </div>
                         <div class="ui divider" style="visibility:hidden;"><!--   --></div>
@@ -179,6 +188,36 @@
     <script>
         jQuery('.ui.accordion').accordion();
         jQuery('.ui.checkbox').checkbox();
+        jQuery(".filter-container").hide();
+        jQuery("#result-filter-buttons > .button:first-child").addClass("active");
+        jQuery("#result-filter-buttons > .button").each(function(i,o){
+            if(i === 0){ // overall
+                jQuery(o).off().on("click", function(e){
+                    jQuery(".filter-container").hide();
+                    toggleActiveButton(i);
+                });
+            }
+            if(i === 1){ // team
+                jQuery(o).off().on("click", function(e){
+                    jQuery(".filter-container").hide();
+                    jQuery("#filter-team-container").show();
+                    toggleActiveButton(i);
+                });
+            }
+            if(i === 2){ // gender + age
+                jQuery(o).off().on("click", function(e){
+                    jQuery(".filter-container").hide();
+                    jQuery("#filter-gender-container, #filter-age-container").show();
+                    toggleActiveButton(i);
+                });
+            }
+        });
+
+        function toggleActiveButton(i){
+            var n = i + 1;
+            jQuery("#result-filter-buttons > .button").not("#result-filter-buttons > .button:nth-child(" + n + ")").removeClass("active");
+            jQuery("#result-filter-buttons > .button:nth-child(" + n + ")").addClass("active");
+        }
 
         jQuery.ajax({
             context: this,
@@ -263,14 +302,12 @@
             function initAgeFilter(){
                 jQuery('#result-filter-age').dropdown({
                     onChange: function(value, text, $selectedDOM){
-                        renderCategoryResults(value);
                         if(value == 0){
                             currentAgeFilter = null;
-                            jQuery('#result-filter-team').removeClass('disabled');
-                        }else {
+                        }else{
                             currentAgeFilter = text;
-                            jQuery('#result-filter-team').addClass('disabled');
                         }
+                        renderCategoryResults(value);
                         renderQueryDescription();
                     }
                 });
@@ -290,19 +327,16 @@
                             if(genderValue == 'F'){
                                 currentGenderFilter = 'Female';
                             }
-                            jQuery('#result-filter-age').removeClass('disabled');
                         }else if(value == 'M'){
                             currentTeamFilter = 'Team (M)';
                             if(genderValue == 'F'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'M');
                             }
-                            jQuery('#result-filter-age').dropdown('set selected', 0).addClass('disabled');
                         }else if(value == 'F'){
                             currentTeamFilter = 'Team (F)';
                             if(genderValue == 'M'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'F');
                             }
-                            jQuery('#result-filter-age').dropdown('set selected', 0).addClass('disabled');
                         }
                         renderQueryDescription();
                     }
@@ -350,7 +384,6 @@
                 if(text.length == 0){
                     text = "Overall ";
                 }
-                console.log(currentTeamFilter, currentGenderFilter, currentAgeFilter)
                 jQuery('.result-header').text(text + "Results");
             }
 
