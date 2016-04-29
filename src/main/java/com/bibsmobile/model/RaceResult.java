@@ -371,6 +371,13 @@ public class RaceResult implements Comparable<RaceResult> {
         q.setParameter("firstname", firstname);
         return q;
     }
+    
+    public static List<String> getTeamsForEventType(EventType type) {
+    	EntityManager em = RaceResult.entityManager();
+        TypedQuery<String> q = em.createQuery("SELECT distinct o.team FROM RaceResult AS o WHERE o.eventType = :type and o.team != null", String.class);
+        q.setParameter("type", type);
+        return q.getResultList();
+    }
 
     public static TypedQuery<RaceResult> findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event event, String firstname, String lastname) {
         if (event == null)
