@@ -465,7 +465,7 @@
 
                         var medals = [];
 
-                        jQuery('#category-result-container > .medal-result-list').remove();
+                        jQuery('#category-result-container > .team-result-list').remove();
                         for(var i in results){
                             var category = results[i];
                             if(medals.indexOf(category.name)){
@@ -524,7 +524,7 @@
 
                         var teams = [];
 
-                        jQuery('#category-result-container > .team-result-list').remove();
+                        jQuery('#category-result-container > .medal-result-list').remove();
                         for(var i in results){
                             var elem = results[i];
                             var resultDOM = null;
@@ -580,6 +580,7 @@
 
                         jQuery('.result-list').html('');
                         jQuery('#category-result-container > .team-result-list').remove();
+                        jQuery('#category-result-container > .medal-result-list').remove();
                         jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
 
                         for(var i in results){

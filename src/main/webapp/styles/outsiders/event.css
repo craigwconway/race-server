@@ -92,6 +92,9 @@ body{
 .ranking-container{
 	margin: 2em auto;
 }
+#rank-circles-container{
+	margin-top: 20px;
+}
 .circular-contents{
 	display: table-cell;
 	text-align: center;
