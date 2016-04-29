@@ -154,7 +154,8 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             		user.setEventType(type);
             	}
             	
-            	user.setTeam(teams.get(i%10));
+            	user.setTeam(teams.get(((int)i)%10));
+            	System.out.println("Team: " + user.getTeam());
             	user.setAge(generateRandomAge());
             	user.setGender( (i%2==0) ? "M" : "F");
             	user.setTimeofficial(Math.abs(
