@@ -1249,6 +1249,15 @@ public class EventController {
         }
         return Event.toJsonArray(events.values());
     }
+    
+    
+    @RequestMapping(value = "/teams", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> teams(@RequestParam(value = "type") Long type) throws JsonGenerationException, JsonMappingException, IOException {
+    	EventType eventType = EventType.findEventType(type);
+    	ObjectMapper mapper = new ObjectMapper();
+    	return new ResponseEntity<String>(mapper.writeValueAsString(RaceResult.getTeamsForEventType(eventType)), HttpStatus.OK);
+    }
 
     /**
      * @api {get} /events/search Search
