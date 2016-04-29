@@ -210,7 +210,7 @@ public class WebController {
         	if(!StringUtils.isEmpty(search)) {
         		uiModel.addAttribute("search", search);
         	}
-        	uiModel.addAttribute("results", RaceResultViewDto.fromRaceResultsToRawDtoArray(RaceResult.searchPaginated(event.getId(), eventTypeId, "", null, 1, 10, null)));
+        	uiModel.addAttribute("results", RaceResultViewDto.fromRaceResultsToRawDtoArray(RaceResult.searchPaginated(event.getId(), eventTypeId, "", null, 1, 10, null, null)));
             uiModel.addAttribute("event", event);
             return "r/eventresults";    		
     	} catch (Exception e) {
