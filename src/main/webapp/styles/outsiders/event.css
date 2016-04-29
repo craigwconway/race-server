@@ -179,9 +179,10 @@ body{
 	text-transform: uppercase;
 }
 
-.team-result-list{
+.team-result-list, .medal-result-list{
 	padding: 0 !important;
-	}.team-result-list > .team-header.item{
+	}.team-result-list > .team-header.item,
+	 .medal-result-list > .medal-header.item{
 		font-size: 25px;
 		font-family: 'Arvo-Bold';
 		color: white;
