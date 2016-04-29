@@ -13,16 +13,50 @@
     <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>   
     <style type="text/css">
         @media print {
-            body * {
-                visibility: hidden;
+            @page {size: landscape;}
+            nav, #banner, #social, #runner > *:not(.printable){
+                display: none;
             }
             .printable, .printable * {
-                visibility: visible;
+                display: block;
+            }
+            .printable > #single-result-card > .runner-images-container, #runner-img-more{
+                display: none;
             }
             .printable {
-                position: absolute;
-                left: 0;
-                top: 0;
+                background-color: #FFF !important;
+                -webkit-print-color-adjust: exact;
+                width: 100%;
+                border: 0;
+            }
+            .runner-age, .runner-gender{
+                display: inline;
+            }
+            #single-result-card > .content{
+                padding-top: 30px;
+            }
+            #single-result-card{
+                padding-bottom: 40px;
+            }
+            .stat-finish, .stat-finish *{
+                -webkit-print-color-adjust: exact;
+            }
+            .stat-finish > .label{
+                border: none;
+            }
+            .runner-bib-main{
+                color: #FFF !important;
+            }
+            #rank-circles-container{
+                margin-top: 0px;
+            }
+            .circular-bg{
+                width: 100px;
+                height: 100px;
+            }
+            .circular-bg * .ui.tiny.statistic>.value{
+                font-size: 22px;
+                margin-top: 10px;
             }
         }
     </style> 
@@ -102,7 +136,7 @@
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplay }</span></div>
                                 <div class="label">Finish Time</div>
                             </div>
-                            <div class="ui three column stackable center aligned grid" style="margin-top:20px">
+                            <div class="ui three column stackable center aligned grid" id="rank-circles-container">
                                 <div class="column">
                                     <div class="ui center aligned header circular-header">Overall</div>
                                     <div class="circular-bg border-4">

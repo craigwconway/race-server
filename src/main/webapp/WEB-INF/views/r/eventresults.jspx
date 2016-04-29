@@ -148,37 +148,37 @@
                             </div>
                         </div>
                         <div class="ui divider" style="visibility:hidden;"><!--   --></div>
-                        <div class="ui divided relaxed large list result-list"><!--   --></div>
-                        <div class="item" id="result-list-item-header" style="display:none">
-                            <div class="right floated content">
-                                <div class="ui label">Finish Time</div>
-                            </div>
-                            <div class="content">
-                                <div class="header">Top 10 <span class="result-list-category-title">Overall</span></div>
-                                <div class="description"><!--   --></div>
-                            </div>
+                        <div class="ui divided relaxed large list" id="result-list"><!--   --></div>
+                    </div>
+                    <div class="item" id="result-list-item-header" style="display:none">
+                        <div class="right floated content">
+                            <div class="ui label">Finish Time</div>
                         </div>
-                        <div class="item" id="result-list-item-template" style="display:none">
-                            <div class="left floated middle aligned content">
-                                <div class="ui circular large black label"><span class="result-list-item-place"><!--   --></span></div>
-                            </div>
-                            <div class="right floated content">
-                                <div class="ui left pointing blue label"><span class="result-list-item-time">00:42:42</span></div>
-                            </div>
-                            <div class="content">
-                                <a class="header"><span class="result-list-item-name"><!--   --></span>, <span class="result-list-item-age"><!--   --></span> <span class="result-list-item-gender"><!--   --></span></a>
-                                <div class="description"><span class="result-list-bib">Bib #<span class="result-list-item-bib"><!--  --></span></span> <span class="result-list-team">, Team <span class="result-list-item-team"><!--  --></span></span></div>
-                            </div>
+                        <div class="content">
+                            <div class="header">Top 10 <span class="result-list-category-title">Overall</span></div>
+                            <div class="description"><!--   --></div>
+                        </div>
+                    </div>
+                    <div class="item" id="result-list-item-template" style="display:none">
+                        <div class="left floated middle aligned content">
+                            <div class="ui circular large black label"><span class="result-list-item-place"><!--   --></span></div>
+                        </div>
+                        <div class="right floated content">
+                            <div class="ui left pointing blue label"><span class="result-list-item-time">00:42:42</span></div>
+                        </div>
+                        <div class="content">
+                            <a class="header"><span class="result-list-item-name"><!--   --></span>, <span class="result-list-item-age"><!--   --></span> <span class="result-list-item-gender"><!--   --></span></a>
+                            <div class="description"><span class="result-list-bib">Bib #<span class="result-list-item-bib"><!--  --></span></span> <span class="result-list-team">, Team <span class="result-list-item-team"><!--  --></span></span></div>
                         </div>
                     </div>
                     <div class="ui divided relaxed large list team-result-list" id="result-list-team-template" style="display:none">
                         <div class="item team-header">
-                            <div class="content"></div>
+                            <div class="content"><!--  --></div>
                         </div>
                     </div>
                     <div class="ui divided relaxed large list medal-result-list" id="result-list-medal-template" style="display:none">
                         <div class="item medal-header">
-                            <div class="content"></div>
+                            <div class="content"><!--  --></div>
                         </div>
                     </div>
                 </div>
@@ -221,6 +221,7 @@
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         toggleActiveButton(i);
+                        renderCategoryResults(null);
                     });
                 }
                 if(i === 1){ // team
@@ -228,12 +229,14 @@
                         jQuery(".filter-container").hide();
                         jQuery("#filter-team-container").show();
                         toggleActiveButton(i);
+                        renderTeamResults(jQuery('#result-filter-team').dropdown('get value'));
                     });
                 }
                 if(i === 2){ // gender + age
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         jQuery("#filter-gender-container, #filter-age-container").show();
+                        renderCategoryResults(jQuery('#result-filter-gender').dropdown('get value'));
                         toggleActiveButton(i);
                     });
                 }
@@ -343,15 +346,14 @@
                             if(genderValue == 'F'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'M');
                             }
-                            renderTeamResults(value);
                         }else if(value == 'F'){
                             currentTeamFilter = 'Team (F)';
                             if(genderValue == 'M'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'F');
                             }
-                            renderTeamResults(value);
                         }
                         renderQueryDescription();
+                        renderTeamResults(value);
                     }
                 });
                 jQuery("#result-filter-team").dropdown('set selected', '0');
@@ -460,12 +462,12 @@
                                 name: "Top Female Grandmasters",
                                 data: grandF
                             }];
-                        jQuery(".result-list").html(" ");
-                        jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
+                        jQuery("#result-list").html(" ");
+                        jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('#result-list').show();
 
                         var medals = [];
 
-                        jQuery('#category-result-container > .medal-result-list').remove();
+                        jQuery('#category-result-container > .team-result-list').remove();
                         for(var i in results){
                             var category = results[i];
                             if(medals.indexOf(category.name)){
@@ -505,120 +507,128 @@
             }
 
             function renderTeamResults(typeId){
-                jQuery('.result-cards').hide();
+                jQuery(".result-cards").hide();
                 // Events.getResultsByGender(id)
                 if(typeId == null || typeId == 0){
-                    typeId = 'M&amp;gender=F';
+                    typeId = "M&amp;gender=F";
                 }
 
-                // jQuery.ajax({
-                //     context: this,
-                //     url: '/bibs-server/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;gender=' + typeId,
-                //     error: function() {
-                //         console.log('error in retrieving events')
-                //     },
-                //     success: function(data) {
-                        var results = [{"id":44,"bib":44,"firstname":"Togi","lastname":"Dixi","age":83,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:15:12","team":"Rocket"},{"id":190,"bib":190,"firstname":"Qari","lastname":"Rimir","age":83,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:15:37","team":"Magma"},{"id":125,"bib":125,"firstname":"Bejavu","lastname":"Muse","age":53,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:15:49","team":"Rocket"},{"id":73,"bib":73,"firstname":"Rodo","lastname":"Bopi","age":18,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:15:49","team":"Rocket"},{"id":38,"bib":38,"firstname":"Bubimun","lastname":"Baviwir","age":38,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:28","team":"Magma"},{"id":157,"bib":157,"firstname":"Qebi","lastname":"Kujeqa","age":46,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:16:38","team":"Rocket"},{"id":178,"bib":178,"firstname":"Janu","lastname":"Humi","age":16,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:46","team":"Magma"},{"id":172,"bib":172,"firstname":"Gamiw","lastname":"Kizuzav","age":43,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:49","team":"Magma"},{"id":194,"bib":194,"firstname":"Sona","lastname":"Qowe","age":21,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:17:17","team":"Aqua"},{"id":220,"bib":220,"firstname":"Fuvo","lastname":"Ramula","age":18,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:17:26","team":"Aqua"}];
-                        jQuery(".result-list").html(" ");
-                        jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
+                jQuery.ajax({
+                    context: this,
+                    url: "/bibs-server/raceresults/search?eventId=${event.id}&amp;type=" + currentEventTypeID + "&amp;gender=" + typeId,
+                    error: function() {
+                        console.log("error in retrieving events")
+                    },
+                    success: function(data) {
+                        var results = JSON.parse(data);
+                        jQuery("#result-list").html("");
+                        jQuery("#category-result-container > .medal-result-list").remove();
+                        jQuery(".team-result-list").not("#result-list-team-template").remove();
+                        jQuery(".result-list-item-header").clone().removeAttr("id").appendTo("#result-list").show();
 
                         var teams = [];
-
-                        jQuery('#category-result-container > .team-result-list').remove();
                         for(var i in results){
-                            var elem = results[i];
-                            var resultDOM = null;
-                            if(teams.indexOf(elem.team) == -1){
-                                teams.push(elem.team);
-                                var teamHeaderDOM = jQuery('#result-list-team-template').clone().appendTo('#category-result-container');
-                                jQuery(teamHeaderDOM).find('.team-header > .content').text("Team " + elem.team || "N/A");
-                                jQuery(teamHeaderDOM).attr('id', 'team-' + teams.length).show();
-                                resultDOM = jQuery('#result-list-item-template').clone().appendTo('#team-' + teams.length);
-                            }else{
-                                var index = teams.indexOf(elem.team)+1;
-                                console.log("found team", elem.team, index, teams[index])
-                                resultDOM = jQuery('#result-list-item-template').clone().appendTo('#team-' + index);
-                            }
-
-                            if(resultDOM !== null){
-                                var place = +i+1;
-                                    jQuery(resultDOM).find('.result-list-item-time').text(elem.timeofficialdisplay);
-                                    jQuery(resultDOM).find('.result-list-item-name').text(elem.firstname + " " + elem.lastname);
-                                    jQuery(resultDOM).find('.result-list-item-age').text(elem.age + ", " || "");
-                                    jQuery(resultDOM).find('.result-list-item-gender').text(elem.gender || "");
-                                    jQuery(resultDOM).find('.result-list-item-bib').text(elem.bib);
-                                    jQuery(resultDOM).find('.result-list-item-place').text(place);
-                                    jQuery(resultDOM).find('.result-list-item-team').text(elem.team || "N/A");
-                                    (function(index, elem){
-                                        jQuery(resultDOM).find('a').bind('click', function(){
-                                            window.location.href = '/bibs-server/r/r/'+elem.id;
-                                        })
-                                    })(i, elem)
-                                    jQuery(resultDOM).removeAttr('id').show();
+                            var team = results[i].team || "N/A";
+                            if(teams.indexOf(team) == -1){
+                                teams.push(team);
                             }
                         }
-                //     },
-                //     type: 'GET'
-                // });
+                        teams.sort().splice(teams.length-1,0,teams.splice(teams.indexOf("N/A"),1)[0]);
+
+                        for(var i in teams){
+                            var team = teams[i];
+                            var teamHeaderDOM = jQuery("#result-list-team-template").clone().appendTo("#category-result-container");
+                            jQuery(teamHeaderDOM).find(".team-header > .content").text(team || "N/A");
+                            jQuery(teamHeaderDOM).attr("id", "team-" + i).show();
+
+                            for(var j in results){
+                                var elem = results[j];
+                                var resultDOM = null;
+                                var index = i+1;
+                                var athleteTeam = elem.team || "N/A";
+                                if(athleteTeam == team){
+                                    (function(teamIndex, athleteIndex, athlete){
+                                        console.log(teamIndex, athleteIndex, athlete);
+                                        resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + teamIndex);
+                                        var place = +athleteIndex+1;
+                                            jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
+                                            jQuery(resultDOM).find(".result-list-item-name").text(elem.firstname + " " + elem.lastname);
+                                            jQuery(resultDOM).find(".result-list-item-age").text(elem.age + ", " || "");
+                                            jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender || "");
+                                            jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
+                                            jQuery(resultDOM).find(".result-list-item-place").text(place);
+                                            jQuery(resultDOM).find(".result-list-item-team").text(team || "N/A");
+                                            jQuery(resultDOM).find("a").bind("click", function(){
+                                                window.location.href = "/bibs-server/r/r/" + athlete.id;
+                                            })
+                                            jQuery(resultDOM).removeAttr("id").show();
+                                    })(i, j, elem)
+                                }
+                            }
+                        }
+                    },
+                    type: "GET"
+                });
             }
 
             function renderCategoryResults(typeId){
                 // Events.getResultsByGender(id)
                 if(typeId == null || typeId == 0){
-                    typeId = 'M&amp;gender=F';
+                    typeId = "M&amp;gender=F";
                 }
 
                 jQuery.ajax({
                     context: this,
-                    url: '/bibs-server/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;gender=' + typeId,
+                    url: "/bibs-server/raceresults/search?eventId=${event.id}&amp;type=" + currentEventTypeID + "&amp;gender=" + typeId,
                     error: function() {
-                        console.log('error in retrieving events')
+                        console.log("error in retrieving events")
                     },
                     success: function(data) {
                         var results = JSON.parse(data);
                         // console.log(results)
 
-                        jQuery('.result-list').html('');
-                        jQuery('#category-result-container > .team-result-list').remove();
-                        jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('.result-list').show();
+                        jQuery("#result-list").html("");
+                        jQuery("#category-result-container > .team-result-list").remove();
+                        jQuery("#category-result-container > .medal-result-list").remove();
+                        jQuery(".result-list-item-header").clone().removeAttr("id").appendTo("#result-list").show();
 
                         for(var i in results){
                             var elem = results[i];
 
                             // if( i &lt; 3 ){
-                            //     var topThreeClassName = '';
+                            //     var topThreeClassName = "";
                             //     if(i == 0){
-                            //         topThreeClassName = '.result-cards-first';
+                            //         topThreeClassName = ".result-cards-first";
                             //     }else if(i == 1){
-                            //         topThreeClassName = '.result-cards-second';
+                            //         topThreeClassName = ".result-cards-second";
                             //     }else if(i == 2){
-                            //         topThreeClassName = '.result-cards-third';
+                            //         topThreeClassName = ".result-cards-third";
                             //     }
-                            //     jQuery(topThreeClassName).find('.award-content').find('.header').text(elem.firstname + ' ' + elem.lastname);
-                            //     jQuery(topThreeClassName).find('.award-content').find('.description').text(elem.age + ', ' + elem.gender);
-                            //     jQuery(topThreeClassName).find('.stat-finish').find('.value').text(elem.timeofficialdisplay);
+                            //     jQuery(topThreeClassName).find(".award-content").find(".header").text(elem.firstname + " " + elem.lastname);
+                            //     jQuery(topThreeClassName).find(".award-content").find(".description").text(elem.age + ", " + elem.gender);
+                            //     jQuery(topThreeClassName).find(".stat-finish").find(".value").text(elem.timeofficialdisplay);
                             // }
 
                             var place = +i+1;
-                            var resultDOM = jQuery('#result-list-item-template').clone().appendTo('.result-list');
-                                jQuery(resultDOM).find('.result-list-item-time').text(elem.timeofficialdisplay);
-                                jQuery(resultDOM).find('.result-list-item-name').text(elem.firstname + ' ' + elem.lastname);
-                                jQuery(resultDOM).find('.result-list-item-age').text(elem.age + ", " || "");
-                                jQuery(resultDOM).find('.result-list-item-gender').text(elem.gender);
-                                jQuery(resultDOM).find('.result-list-item-bib').text(elem.bib);
-                                jQuery(resultDOM).find('.result-list-item-place').text(place);
-                                jQuery(resultDOM).find('.result-list-item-team').text(elem.team || "N/A");
+                            var resultDOM = jQuery("#result-list-item-template").clone().appendTo("#result-list");
+                                jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
+                                jQuery(resultDOM).find(".result-list-item-name").text(elem.firstname + " " + elem.lastname);
+                                jQuery(resultDOM).find(".result-list-item-age").text(elem.age + ", " || "");
+                                jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender);
+                                jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
+                                jQuery(resultDOM).find(".result-list-item-place").text(place);
+                                jQuery(resultDOM).find(".result-list-item-team").text(elem.team || "N/A");
                                 (function(index, elem){
-                                    jQuery(resultDOM).find('a').bind('click', function(){
-                                        window.location.href = '/bibs-server/r/r/'+elem.id;
+                                    jQuery(resultDOM).find("a").bind("click", function(){
+                                        window.location.href = "/bibs-server/r/r/"+elem.id;
                                     })
                                 })(i, elem)
-                                jQuery(resultDOM).removeAttr('id').show();
+                                jQuery(resultDOM).removeAttr("id").show();
                         }
-                        // jQuery('.result-cards').show();
-                        jQuery('#result-filter-ttype > .field:first-child').find('input').prop('checked', 'checked');
+                        // jQuery(".result-cards").show();
+                        jQuery("#result-filter-ttype > .field:first-child").find("input").prop("checked", "checked");
                     },
-                    type: 'GET'
+                    type: "GET"
                 });
             }
 
