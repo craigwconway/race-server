@@ -135,7 +135,15 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             type2.setGunTime(new DateTime().toDate());
             type2.setGunFired(true);
             type2.persist();
-            
+            Map<Integer, String> teams = new HashMap<Integer, String>();
+            teams.put(0, "Pacific Run Club");
+            teams.put(1, "Face Punchers");
+            teams.put(2, "Face Punchees");
+            teams.put(3, "Dirt Shovellers");
+            teams.put(4, "Grinches");
+            teams.put(5, "Santas");
+            teams.put(6, "Black Bears");
+            teams.put(7, "Beet Farmers");
             for(long i = 1; i < 300; i++){
             	RaceResult user = new RaceResult();
             	user.setBib(i);
@@ -146,6 +154,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
             		user.setEventType(type);
             	}
             	
+            	user.setTeam(teams.get(i%10));
             	user.setAge(generateRandomAge());
             	user.setGender( (i%2==0) ? "M" : "F");
             	user.setTimeofficial(Math.abs(
