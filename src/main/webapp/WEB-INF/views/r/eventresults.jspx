@@ -221,6 +221,7 @@
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         toggleActiveButton(i);
+                        renderCategoryResults(null);
                     });
                 }
                 if(i === 1){ // team
@@ -228,12 +229,14 @@
                         jQuery(".filter-container").hide();
                         jQuery("#filter-team-container").show();
                         toggleActiveButton(i);
+                        renderTeamResults(jQuery('#result-filter-team').dropdown('get value'));
                     });
                 }
                 if(i === 2){ // gender + age
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         jQuery("#filter-gender-container, #filter-age-container").show();
+                        renderCategoryResults(jQuery('#result-filter-gender').dropdown('get value'));
                         toggleActiveButton(i);
                     });
                 }
@@ -343,15 +346,14 @@
                             if(genderValue == 'F'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'M');
                             }
-                            renderTeamResults(value);
                         }else if(value == 'F'){
                             currentTeamFilter = 'Team (F)';
                             if(genderValue == 'M'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'F');
                             }
-                            renderTeamResults(value);
                         }
                         renderQueryDescription();
+                        renderTeamResults(value);
                     }
                 });
                 jQuery("#result-filter-team").dropdown('set selected', '0');
