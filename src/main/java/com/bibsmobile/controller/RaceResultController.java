@@ -19,6 +19,7 @@ import com.bibsmobile.model.UserAuthority;
 import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.EventUserGroup;
+import com.bibsmobile.model.dto.LeaderboardTeamDto;
 import com.bibsmobile.model.dto.RaceResultDetailDto;
 import com.bibsmobile.model.dto.RaceResultViewDto;
 
@@ -105,6 +106,42 @@ public class RaceResultController {
             e.printStackTrace();
         }
         return rtn;
+    }
+    
+    @RequestMapping(value = "teamrankings", method = RequestMethod.GET)
+    public ResponseEntity<String> teamLeaderboard(
+    		@RequestParam(value = "event") Long eventId,
+    		@RequestParam(value = "type") Long typeId,
+    		@RequestParam(value = "start", defaultValue = "") String start,
+    		@RequestParam(value = "gender", required = false) String gender,
+    		@RequestParam(value = "size", defaultValue = "4") int pageSize){
+    	
+    	EventType type = EventType.findEventType(typeId);
+    	List<String> teams = RaceResult.getTeamsForEventType(type);
+    	String searchGender = null;
+    	if(StringUtils.equalsIgnoreCase(gender, "M")) searchGender = "M";
+    	if(StringUtils.equalsIgnoreCase(gender, "F")) searchGender = "F";
+    	int index = 0;
+    	for(int i = 0; i < teams.size(); i++) {
+    		if(teams.get(i).compareTo(start) > 0) {
+    			index = i;
+    			break;
+    		}
+    		if(i == teams.size() - 1) return new ResponseEntity<String>(HttpStatus.OK);
+    	}
+    	List<String> displayTeams;
+    	if((teams.size() - index) < pageSize) {
+    		displayTeams = teams.subList(index, teams.size()-1);
+    	} else {
+    		displayTeams = teams.subList(index, index + pageSize);
+    	}
+    	
+    	List<LeaderboardTeamDto> response = new ArrayList<LeaderboardTeamDto>();
+    	for(String team : teams) {
+    		response.add(new LeaderboardTeamDto(RaceResult.getRankingForTeam(type, team, searchGender, 5), team));
+    	}
+    	System.out.println("Teams Found: " + response.size());
+    	return new ResponseEntity<String>(LeaderboardTeamDto.toJsonArray(response), HttpStatus.OK);
     }
     
 
