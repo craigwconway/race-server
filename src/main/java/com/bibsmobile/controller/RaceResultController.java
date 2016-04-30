@@ -137,7 +137,7 @@ public class RaceResultController {
     	}
     	
     	List<LeaderboardTeamDto> response = new ArrayList<LeaderboardTeamDto>();
-    	for(String team : teams) {
+    	for(String team : displayTeams) {
     		response.add(new LeaderboardTeamDto(RaceResult.getRankingForTeam(type, team, searchGender, 5), team));
     	}
     	System.out.println("Teams Found: " + response.size());
