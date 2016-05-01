@@ -122,6 +122,7 @@ import com.bibsmobile.model.UserGroup;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
+import com.bibsmobile.model.dto.AwardCategoryResultsDto;
 import com.bibsmobile.model.dto.DeviceStatusDisplayDto;
 import com.bibsmobile.model.dto.EventDetailsDto;
 import com.bibsmobile.model.dto.EventDto;
@@ -623,6 +624,18 @@ public class EventController {
         uiModel.addAttribute("templates", AwardsTemplate.findAwardsTemplatesForUser(UserProfileUtil.getLoggedInUserProfile()));
         return "events/awards";
     }
+
+    @RequestMapping(value = "/typeawards/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public static ResponseEntity<String> typeAwards(
+    		@PathVariable("id") Long id) {
+    	EventType type = EventType.findEventType(id);
+    	Map <EventTypeDto, List<AwardCategoryResults>> awardMap = new HashMap<EventTypeDto,List<AwardCategoryResults>>();
+    	List<AwardCategoryResults> results = AwardsImmortalCache.getAwards(id);
+    	return new ResponseEntity<String>(AwardCategoryResultsDto.toJsonArray(AwardCategoryResultsDto.fromCategories(results)), HttpStatus.OK);
+    	
+    }
+    
     
     @RequestMapping(value = "/fullawards/{id}", method = RequestMethod.GET)
     @ResponseBody
