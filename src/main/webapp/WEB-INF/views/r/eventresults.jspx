@@ -107,6 +107,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div id="filter-team-name-container" class="center aligned column filter-container">
+                                    <div class="ui search dropdown" id="result-filter-team-name" style="margin:auto 10px;font-size:1.2em;">
+                                        <input type="hidden" name="teamName" />
+                                        <div class="default text">Team Name</div>
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <div class="menu"><!--  --></div>
+                                    </div>
+                                    <div class="item" id="filter-team-name-template" data-value="0" style="display:none"><!--  --></div>
+                                </div>
                                 <div id="filter-gender-container" class="center aligned column filter-container">
                                     <div class="ui dropdown" id="result-filter-gender" style="margin:auto 10px;font-size:1.2em;">
                                         <input type="hidden" name="type" />
@@ -199,7 +208,7 @@
             context: this,
             url: '/bibs-server/events/details/${event.id}',
             error: function() {
-                console.log('error in retrieving events')
+                console.log('error in retrieving events');
             },
             success: function(data) {
                 this.currentEvent = data;
@@ -221,13 +230,14 @@
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         toggleActiveButton(i);
-                        renderCategoryResults(null);
+                        renderCategoryResults(null, null);
                     });
                 }
                 if(i === 1){ // team
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         jQuery("#filter-team-container").show();
+                        jQuery("#filter-team-name-container").show();
                         toggleActiveButton(i);
                         renderTeamResults(jQuery('#result-filter-team').dropdown('get value'));
                     });
@@ -236,7 +246,7 @@
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         jQuery("#filter-gender-container, #filter-age-container").show();
-                        renderCategoryResults(jQuery('#result-filter-gender').dropdown('get value'));
+                        renderMedalResults(null);
                         toggleActiveButton(i);
                     });
                 }
@@ -244,7 +254,7 @@
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         toggleActiveButton(i);
-                        renderMedalResults();
+                        renderMedalResults(3);
                     });
                 }
             });
@@ -258,9 +268,37 @@
             reformatEventDate();
             initEventType();
 
-            initAgeFilter();
-            initTeamFilter();
-            initGenderFilter();
+            jQuery.ajax({
+                url: "/bibs-server/events/classcategories/list/" + currentEventTypeID,
+                error: function(){
+                    console.log("Error retrieving class categories");
+                },
+                success: function(data){
+                    var results = JSON.parse(data);
+                    console.log("class", results);
+                    initAgeFilter();
+                    initGenderFilter();
+                },
+                type: "GET"
+            });
+            jQuery.ajax({
+                url: "/bibs-server/events/teams?type=" + currentEventTypeID,
+                error: function(){
+                    console.log("Error retrieving team names");
+                },
+                success: function(data){
+                    var teams = JSON.parse(data);
+                    for(var i in teams){
+                        var team = teams[i];
+                        var teamItem = jQuery('#filter-team-name-template').clone().appendTo('#result-filter-team-name > .menu');
+                            teamItem.text(team);
+                            teamItem.attr('data-value', team);
+                            teamItem.removeAttr('id').show();
+                    }
+                    initTeamFilter();
+                },
+                type: "GET"
+            });
 
             jQuery('#search-single-button').bind('click', function(){
                 var query = jQuery('input[name="bibsearch"]').val();
@@ -269,7 +307,7 @@
                 }
             });
 
-            renderCategoryResults(null);
+            renderCategoryResults(0, null);
 
             function reformatEventDate(){
                 var momentTimeStart = null;
@@ -307,7 +345,7 @@
                 jQuery('#result-filter-etype').dropdown({
                     onChange: function(value, text, $selectedDOM){
                         currentEventTypeID = value;
-                        renderCategoryResults(null);
+                        renderCategoryResults(null, null);
                         renderQueryDescription();
                     }
                 });
@@ -321,7 +359,8 @@
                         }else{
                             currentAgeFilter = text;
                         }
-                        renderCategoryResults(value);
+                        var gender = jQuery('#result-filter-gender').dropdown('get value');
+                        renderCategoryResults(gender, value);
                         renderQueryDescription();
                     }
                 });
@@ -356,13 +395,18 @@
                         renderTeamResults(value);
                     }
                 });
+                jQuery("#result-filter-team-name").dropdown({
+                    onChange: function(value, text, $selectedDOM){
+                        console.log(value);
+                    }
+                });
                 jQuery("#result-filter-team").dropdown('set selected', '0');
             }
 
             function initGenderFilter(){
                 jQuery('#result-filter-gender').dropdown({
                     onChange: function(value, text, $selectedDOM){
-                        renderCategoryResults(value);
+                        renderCategoryResults(value, null);
                         var teamValue = jQuery('#result-filter-team').dropdown('get value');
                         if(value == 0){
                             currentGenderFilter = null;
@@ -402,89 +446,51 @@
                 jQuery('.result-header').text(text + "Results");
             }
 
-            function renderMedalResults(){
-                jQuery('.result-cards').hide();
+            function renderMedalResults(max){
+                jQuery(".result-cards").hide();
+                var url = "/bibs-server/events/typeclassrankings/" + currentEventTypeID;
+                
+                if(max){
+                    url = "/bibs-server/events/typeawards/" + currentEventTypeID;
+                }
 
-                // jQuery.ajax({
-                //     context: this,
-                //     url: '/bibs-server/raceresults/search?eventId=${event.id}&amp;type=' + currentEventTypeID + '&amp;gender=' + typeId,
-                //     error: function() {
-                //         console.log('error in retrieving events')
-                //     },
-                //     success: function(data) {
-                        var overallM = [
-                            {"id":216,"bib":216,"firstname":"Sazu","lastname":"Focahew","age":19,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:15:17","team":null},
-                            {"id":126,"bib":126,"firstname":"Kutavoxu","lastname":"Vexagulu","age":16,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:15:44","team":null},
-                            {"id":162,"bib":162,"firstname":"Kogo","lastname":"Zixele","age":38,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:14","team":null}
-                        ];
-                        var mastersM = [
-                            {"id":204,"bib":204,"firstname":"Beqote","lastname":"Popoco","age":26,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:16:16","team":null},
-                            {"id":24,"bib":24,"firstname":"Betibo","lastname":"Heju","age":28,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:17:38","team":null},
-                            {"id":18,"bib":18,"firstname":"Fofoh","lastname":"Xafo","age":62,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:17:42","team":null}
-                        ];
-                        var grandM = [
-                            {"id":264,"bib":264,"firstname":"Loci","lastname":"Nicohibu","age":19,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:18:52","team":null},
-                            {"id":144,"bib":144,"firstname":"Jogu","lastname":"Filu","age":14,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:20:28","team":null},
-                            {"id":90,"bib":90,"firstname":"Gasof","lastname":"Nacem","age":60,"gender":"M","city":"San Francisco","timeofficialdisplay":"00:22:33","team":null}
-                        ];
-                        var overallF = [
-                            {"id":63,"bib":63,"firstname":"Labanek","lastname":"Wazema","age":73,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:16:13","team":null},
-                            {"id":51,"bib":51,"firstname":"Mohom","lastname":"Zuzi","age":14,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:16:37","team":null},
-                            {"id":153,"bib":153,"firstname":"Nipop","lastname":"Hidoq","age":14,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:16:51","team":null}
-                        ];
-                        var mastersF = [
-                            {"id":261,"bib":261,"firstname":"Zoze","lastname":"Pegosa","age":56,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:19:40","team":null},
-                            {"id":177,"bib":177,"firstname":"Zigi","lastname":"Tusa","age":48,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:20:45","team":null},
-                            {"id":291,"bib":291,"firstname":"Gicec","lastname":"Dapi","age":22,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:21:49","team":null}
-                        ];
-                        var grandF = [
-                            {"id":141,"bib":141,"firstname":"Zucal","lastname":"Lazo","age":79,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:24:44","team":null},
-                            {"id":267,"bib":267,"firstname":"Zocurego","lastname":"Hawu","age":28,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:30:17","team":null},
-                            {"id":111,"bib":111,"firstname":"Biharul","lastname":"Jude","age":74,"gender":"F","city":"San Francisco","timeofficialdisplay":"00:30:26","team":null}
-                        ];
-                        var results = [
-                            {
-                                name: "Top Males Overall",
-                                data: overallM
-                            }, {
-                                name: "Top Male Masters",
-                                data: mastersM
-                            }, {
-                                name: "Top Male Grandmasters",
-                                data: grandM
-                            }, {
-                                name: "Top Females Overall",
-                                data: overallF
-                            }, {
-                                name: "Top Female Masters",
-                                data: mastersF
-                            }, {
-                                name: "Top Female Grandmasters",
-                                data: grandF
-                            }];
+                jQuery.ajax({
+                    context: this,
+                    url: url,
+                    error: function() {
+                        console.log('error in retrieving events')
+                    },
+                    success: function(data) {
+                        results = JSON.parse(data);
+                        console.log(results);
+
                         jQuery("#result-list").html(" ");
                         jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('#result-list').show();
 
                         var medals = [];
 
                         jQuery('#category-result-container > .team-result-list').remove();
+                        jQuery(".medal-result-list").not("#result-list-medal-template").remove();
                         for(var i in results){
                             var category = results[i];
-                            if(medals.indexOf(category.name)){
+                            if(medals.indexOf(category.name) &amp;&amp; category.results.length > 0){
                                 medals.push(category.name);
                                 var medalHeaderDOM = jQuery('#result-list-medal-template').clone().appendTo('#category-result-container');
                                 jQuery(medalHeaderDOM).find('.medal-header > .content').text(category.name);
                                 jQuery(medalHeaderDOM).attr('id', 'medal-' + medals.length).show();
                                 resultDOM = jQuery('#result-list-item-template').clone().appendTo('#medal-' + medals.length);
                             }
-                            var data = category.data;
+                            var data = category.results;
                             var index = medals.indexOf(category.name)+1;
+                            if(max){
+                                data.length = max;
+                            }
                             for(var j in data){
                                 var elem = data[j];
                                 var resultDOM = null;
                                 resultDOM = jQuery('#result-list-item-template').clone().appendTo('#medal-' + index);
                                 if(resultDOM !== null){
-                                    var place = +i+1;
+                                    var place = +j+1;
                                         jQuery(resultDOM).find('.result-list-item-time').text(elem.timeofficialdisplay);
                                         jQuery(resultDOM).find('.result-list-item-name').text(elem.firstname + " " + elem.lastname);
                                         jQuery(resultDOM).find('.result-list-item-age').text(elem.age + ", " || "");
@@ -501,9 +507,9 @@
                                 }
                             }
                         }
-                //     },
-                //     type: 'GET'
-                // });
+                    },
+                    type: 'GET'
+                });
             }
 
             function renderTeamResults(typeId){
@@ -513,11 +519,12 @@
                     typeId = "M&amp;gender=F";
                 }
 
+                    // url: "/raceresults/teamrankings?event=x&amp;type=x[&amp;start=Santas][&amp;gender=M]" + currentEvent.id
                 jQuery.ajax({
                     context: this,
                     url: "/bibs-server/raceresults/search?eventId=${event.id}&amp;type=" + currentEventTypeID + "&amp;gender=" + typeId,
                     error: function() {
-                        console.log("error in retrieving events")
+                        console.log("error in retrieving events");
                     },
                     success: function(data) {
                         var results = JSON.parse(data);
@@ -548,7 +555,7 @@
                                 var athleteTeam = elem.team || "N/A";
                                 if(athleteTeam == team){
                                     (function(teamIndex, athleteIndex, athlete){
-                                        console.log(teamIndex, athleteIndex, athlete);
+                                        // console.log(teamIndex, athleteIndex, athlete);
                                         resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + teamIndex);
                                         var place = +athleteIndex+1;
                                             jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
@@ -571,15 +578,19 @@
                 });
             }
 
-            function renderCategoryResults(typeId){
+            function renderCategoryResults(gender, age){
                 // Events.getResultsByGender(id)
-                if(typeId == null || typeId == 0){
-                    typeId = "M&amp;gender=F";
+                var url = "/bibs-server/raceresults/search?eventId=${event.id}&amp;type=" + currentEventTypeID + "&amp;gender=";
+                
+                if(gender == 0){
+                    url += "M&amp;gender=F";
+                }else{
+                    url += gender;
                 }
 
                 jQuery.ajax({
                     context: this,
-                    url: "/bibs-server/raceresults/search?eventId=${event.id}&amp;type=" + currentEventTypeID + "&amp;gender=" + typeId,
+                    url: url,
                     error: function() {
                         console.log("error in retrieving events")
                     },
@@ -594,20 +605,6 @@
 
                         for(var i in results){
                             var elem = results[i];
-
-                            // if( i &lt; 3 ){
-                            //     var topThreeClassName = "";
-                            //     if(i == 0){
-                            //         topThreeClassName = ".result-cards-first";
-                            //     }else if(i == 1){
-                            //         topThreeClassName = ".result-cards-second";
-                            //     }else if(i == 2){
-                            //         topThreeClassName = ".result-cards-third";
-                            //     }
-                            //     jQuery(topThreeClassName).find(".award-content").find(".header").text(elem.firstname + " " + elem.lastname);
-                            //     jQuery(topThreeClassName).find(".award-content").find(".description").text(elem.age + ", " + elem.gender);
-                            //     jQuery(topThreeClassName).find(".stat-finish").find(".value").text(elem.timeofficialdisplay);
-                            // }
 
                             var place = +i+1;
                             var resultDOM = jQuery("#result-list-item-template").clone().appendTo("#result-list");
