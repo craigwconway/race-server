@@ -532,10 +532,10 @@ public class RaceResult implements Comparable<RaceResult> {
         	HQL += "o.timediff > 0 AND";
         
         if (null != eventId && eventId > 0)
-            HQL += " o.event = :event AND ";
+            HQL += " o.event = :event AND";
 
         if (null != eventTypeId && eventTypeId > 0)
-        	HQL += " o.eventType = :eventType AND ";
+        	HQL += " o.eventType = :eventType AND";
         
         if (bib != null)
             HQL += " o.bib = :bib AND ";
