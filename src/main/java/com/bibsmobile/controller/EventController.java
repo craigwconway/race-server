@@ -636,6 +636,17 @@ public class EventController {
     	
     }
     
+    @RequestMapping(value = "/typeclassrankings/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public static ResponseEntity<String> classAwards(
+    		@PathVariable("id") Long id) {
+    	EventType type = EventType.findEventType(id);
+    	Map <EventTypeDto, List<AwardCategoryResults>> awardMap = new HashMap<EventTypeDto,List<AwardCategoryResults>>();
+    	List<AwardCategoryResults> results = AwardsImmortalCache.getClassRankings(id);
+    	return new ResponseEntity<String>(AwardCategoryResultsDto.toJsonArray(AwardCategoryResultsDto.fromCategories(results)), HttpStatus.OK);
+    	
+    }
+    
     
     @RequestMapping(value = "/fullawards/{id}", method = RequestMethod.GET)
     @ResponseBody
