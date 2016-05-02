@@ -123,6 +123,7 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.UserAuthorities;
 import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.dto.AwardCategoryResultsDto;
+import com.bibsmobile.model.dto.AwardCategoryViewDto;
 import com.bibsmobile.model.dto.DeviceStatusDisplayDto;
 import com.bibsmobile.model.dto.EventDetailsDto;
 import com.bibsmobile.model.dto.EventDto;
@@ -1053,6 +1054,13 @@ public class EventController {
 			e.printStackTrace();
 			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+    }
+    
+    @RequestMapping(value = "/classcategories/list/{id}")
+    @ResponseBody
+    public ResponseEntity<String> getAwardCategories(@PathVariable("id") Long typeId) {
+    	EventType type = EventType.findEventType(typeId);
+    	return new ResponseEntity<String>(AwardCategoryViewDto.fromAwardCategoriesToJson(AwardCategory.findBottomRankedByEventType(type)), HttpStatus.OK);
     }
     
     @RequestMapping(value ="/live")
