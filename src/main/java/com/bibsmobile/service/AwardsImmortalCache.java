@@ -99,10 +99,10 @@ public class AwardsImmortalCache {
     	String key = StringUtils.join("class",eventTypeId);
     	// check cached value
     	if(cache.containsKey(key)){
-    		System.out.println("cahce hit");
+    		System.out.println("Cache Hit: Class Rank for Type: " + eventTypeId);
     		list = (List<AwardCategoryResults>) cache.get(key);
     	}else{
-    		System.out.println("cache miss");
+    		System.out.println("Cache Miss: Class Rank for Type: " + eventTypeId);
     		list = eventType.calculateRank(eventType);
 	    	for(AwardCategoryResults c:list){
 	    		c.getCategory().setMedal(false); // hack
@@ -139,6 +139,19 @@ public class AwardsImmortalCache {
     	}
     	System.out.println("No award found for bib "+bib);
     	return 0;
+    }
+    
+    public static String getClassRankingString(long eventId, long bib){
+    	for(AwardCategoryResults a:getClassRankings(eventId)){
+    		for(int i=0;i<a.getResults().size();i++){
+    			if(a.getResults().get(i).getBib()==bib) {
+    				String returnString = String.valueOf(i+1) + " of " + String.valueOf(a.getResults().size() + " in " + a.getCategory().getName());
+    				return returnString;
+    			}
+    		}
+    	}
+    	System.out.println("No classrank found for bib "+bib);
+    	return "N/A";
     }
 
     public static int getClassRank(long eventId, long bib){
