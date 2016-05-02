@@ -107,6 +107,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div id="filter-team-name-container" class="center aligned column filter-container">
+                                    <div class="ui search dropdown" id="result-filter-team-name" style="margin:auto 10px;font-size:1.2em;">
+                                        <input type="hidden" name="teamName" />
+                                        <div class="default text">Team Name</div>
+                                        <i class="dropdown icon"><!--  --></i>
+                                        <div class="menu"><!--  --></div>
+                                    </div>
+                                    <div class="item" id="filter-team-name-template" data-value="0" style="display:none"><!--  --></div>
+                                </div>
                                 <div id="filter-gender-container" class="center aligned column filter-container">
                                     <div class="ui dropdown" id="result-filter-gender" style="margin:auto 10px;font-size:1.2em;">
                                         <input type="hidden" name="type" />
@@ -228,6 +237,7 @@
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         jQuery("#filter-team-container").show();
+                        jQuery("#filter-team-name-container").show();
                         toggleActiveButton(i);
                         renderTeamResults(jQuery('#result-filter-team').dropdown('get value'));
                     });
@@ -258,9 +268,37 @@
             reformatEventDate();
             initEventType();
 
-            initAgeFilter();
-            initTeamFilter();
-            initGenderFilter();
+            jQuery.ajax({
+                url: "/bibs-server/events/classcategories/list/" + currentEventTypeID,
+                error: function(){
+                    console.log("Error retrieving class categories");
+                },
+                success: function(data){
+                    var results = JSON.parse(data);
+                    console.log("class", results);
+                    initAgeFilter();
+                    initGenderFilter();
+                },
+                type: "GET"
+            });
+            jQuery.ajax({
+                url: "/bibs-server/events/teams?type=" + currentEventTypeID,
+                error: function(){
+                    console.log("Error retrieving team names");
+                },
+                success: function(data){
+                    var teams = JSON.parse(data);
+                    for(var i in teams){
+                        var team = teams[i];
+                        var teamItem = jQuery('#filter-team-name-template').clone().appendTo('#result-filter-team-name > .menu');
+                            teamItem.text(team);
+                            teamItem.attr('data-value', team);
+                            teamItem.removeAttr('id').show();
+                    }
+                    initTeamFilter();
+                },
+                type: "GET"
+            });
 
             jQuery('#search-single-button').bind('click', function(){
                 var query = jQuery('input[name="bibsearch"]').val();
@@ -355,6 +393,11 @@
                         }
                         renderQueryDescription();
                         renderTeamResults(value);
+                    }
+                });
+                jQuery("#result-filter-team-name").dropdown({
+                    onChange: function(value, text, $selectedDOM){
+                        console.log(value);
                     }
                 });
                 jQuery("#result-filter-team").dropdown('set selected', '0');
@@ -476,11 +519,12 @@
                     typeId = "M&amp;gender=F";
                 }
 
+                    // url: "/raceresults/teamrankings?event=x&amp;type=x[&amp;start=Santas][&amp;gender=M]" + currentEvent.id
                 jQuery.ajax({
                     context: this,
                     url: "/bibs-server/raceresults/search?eventId=${event.id}&amp;type=" + currentEventTypeID + "&amp;gender=" + typeId,
                     error: function() {
-                        console.log("error in retrieving events")
+                        console.log("error in retrieving events");
                     },
                     success: function(data) {
                         var results = JSON.parse(data);
@@ -511,7 +555,7 @@
                                 var athleteTeam = elem.team || "N/A";
                                 if(athleteTeam == team){
                                     (function(teamIndex, athleteIndex, athlete){
-                                        console.log(teamIndex, athleteIndex, athlete);
+                                        // console.log(teamIndex, athleteIndex, athlete);
                                         resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + teamIndex);
                                         var place = +athleteIndex+1;
                                             jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
