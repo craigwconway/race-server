@@ -33,6 +33,7 @@ public class RaceResultDetailDto {
 	 * @apiSuccess (200) {String} gender Gender of athlete. Either M or F
 	 * @apiSuccess (200) {String="a of b","N/A"} rankGender Gender rank of race result. Either "a of b" or "N/A"
 	 * @apiSuccess (200) {String="a of b","N/A"} rankOverall Overall rank of race result. Either "a of b" or "N/A"
+	 * @apiSuccess (200) {String="a of b","N/A"} rankClass Class rank of race result. Either "a of b" or "N/A"
 	 * @apiSuccess (200) {String} city City of origin of athlete
 	 * @apiSuccess (200) {String} timeofficialdisplay Official Time of athlete
 	 * @apiSuccess (200) {String} team Name of athlete's team
@@ -81,6 +82,7 @@ public class RaceResultDetailDto {
 		this.disqualified = result.isDisqualified();
 		this.rankOverall = result.computeOverallRanking();
 		this.rankGender = result.computeGenderRanking();
+		this.rankClass = result.computeClassRanking();
 		this.claimed = (result.getUserProfile() != null);
 		if(result.getEventType() != null) {
 			this.eventType = new EventTypeDto(result.getEventType());
@@ -111,6 +113,7 @@ public class RaceResultDetailDto {
 	private String gender;
 	private String rankGender;
 	private String rankOverall;
+	private String rankClass;
 	private String timeofficialdisplay;
 	private String timeofficialdisplayGun;
 	private String timePace;
@@ -220,6 +223,13 @@ public class RaceResultDetailDto {
 	 */
 	public String getRankOverall() {
 		return rankOverall;
+	}
+	
+	/**
+	 * @return the class ranking
+	 */
+	public String getRankClass() {
+		return rankClass;
 	}
 
 	/**

@@ -61,6 +61,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bibsmobile.service.AwardsImmortalCache;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.PermissionsUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -846,7 +847,11 @@ public class RaceResult implements Comparable<RaceResult> {
     	} catch (Exception e ) {
     		return "N/A";
     	}
-    }    
+    }
+    
+    public String computeClassRanking() {
+    	return AwardsImmortalCache.getClassRankingString(this.getEventType().getId(), this.getBib());
+    }
     
     public static Long countFindRaceResultsByEventAndBibEquals(Event event, long bib) {
         if (event == null)
