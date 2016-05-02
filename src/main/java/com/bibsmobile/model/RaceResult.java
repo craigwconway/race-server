@@ -407,6 +407,25 @@ public class RaceResult implements Comparable<RaceResult> {
         q.setMaxResults(number);
        return q.getResultList();
     }
+    
+    public static List<RaceResult> getRankingForTeam(EventType type, String team, String gender) {
+    	EntityManager em = RaceResult.entityManager();
+    	String query = "SELECT o FROM RaceResult AS o WHERE o.eventType = :type and o.team = :team and o.timediff > 0";
+    	if(StringUtils.equalsIgnoreCase(gender, "M")) {
+    		query += "and o.gender = 'M'";
+    	} else if(StringUtils.equalsIgnoreCase(gender, "F")) {
+    		query += "and o.gender = 'F'";
+    	} 
+    	query += "ORDER BY o.timediff ASC";
+        TypedQuery<RaceResult> q = em.createQuery(query, RaceResult.class);
+        q.setParameter("type", type);
+        q.setParameter("team", team);
+        //q.setP
+        //if(StringUtils.equalsIgnoreCase(gender, "M") || StringUtils.equalsIgnoreCase(gender, "F")){
+        //	 q.setParameter("team", team);
+        //}
+       return q.getResultList();
+    }
 
     public static TypedQuery<RaceResult> findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event event, String firstname, String lastname) {
         if (event == null)

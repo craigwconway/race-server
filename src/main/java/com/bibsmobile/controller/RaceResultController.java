@@ -110,7 +110,6 @@ public class RaceResultController {
     
     @RequestMapping(value = "teamrankings", method = RequestMethod.GET)
     public ResponseEntity<String> teamLeaderboard(
-    		@RequestParam(value = "event") Long eventId,
     		@RequestParam(value = "type") Long typeId,
     		@RequestParam(value = "start", defaultValue = "") String start,
     		@RequestParam(value = "gender", required = false) String gender,
@@ -142,6 +141,19 @@ public class RaceResultController {
     	}
     	System.out.println("Teams Found: " + response.size());
     	return new ResponseEntity<String>(LeaderboardTeamDto.toJsonArray(response), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "teamdetails", method = RequestMethod.GET)
+    public ResponseEntity<String> teamDetails(
+    		@RequestParam(value = "type") Long typeId,
+    		@RequestParam(value = "team") String team,
+    		@RequestParam(value = "gender", required = false) String gender){
+    	EventType type = EventType.findEventType(typeId);
+    	String searchGender = null;
+    	if(StringUtils.equalsIgnoreCase(gender, "M")) searchGender = "M";
+    	if(StringUtils.equalsIgnoreCase(gender, "F")) searchGender = "F";
+    	LeaderboardTeamDto response = new LeaderboardTeamDto(RaceResult.getRankingForTeam(type, team, searchGender), team);
+    	return new ResponseEntity<String>(response.toJson(), HttpStatus.OK);
     }
     
 
