@@ -147,12 +147,18 @@ public class RaceResultController {
     public ResponseEntity<String> teamDetails(
     		@RequestParam(value = "type") Long typeId,
     		@RequestParam(value = "team") String team,
-    		@RequestParam(value = "gender", required = false) String gender){
+    		@RequestParam(value = "gender", required = false) String gender,
+    		@RequestParam(value = "size", required = false) Integer size){
     	EventType type = EventType.findEventType(typeId);
     	String searchGender = null;
     	if(StringUtils.equalsIgnoreCase(gender, "M")) searchGender = "M";
     	if(StringUtils.equalsIgnoreCase(gender, "F")) searchGender = "F";
-    	LeaderboardTeamDto response = new LeaderboardTeamDto(RaceResult.getRankingForTeam(type, team, searchGender), team);
+    	LeaderboardTeamDto response = null;
+    	if(size == null) {
+    		response = new LeaderboardTeamDto(RaceResult.getRankingForTeam(type, team, searchGender), team);
+    	} else {
+    		response = new LeaderboardTeamDto(RaceResult.getRankingForTeam(type, team, searchGender, size), team);
+    	}
     	return new ResponseEntity<String>(response.toJson(), HttpStatus.OK);
     }
     
