@@ -313,9 +313,9 @@
                             }
                         }
                     }
-                    console.log("gender:", genderCategories)
-                    console.log("age:", ageCategories);
-                    console.log("age groups:", ageGroups);
+                    // console.log("gender:", genderCategories)
+                    // console.log("age:", ageCategories);
+                    // console.log("age groups:", ageGroups);
                     initAgeFilter();
                     initGenderFilter();
                 },
@@ -473,7 +473,7 @@
 
             function renderQueryDescription(){
                 var text = "";
-                console.log(currentFilter);
+                // console.log(currentFilter);
                 if(currentFilter == 1){
                     text = currentTeamFilter + " ";
                     if(!currentTeamFilter){
@@ -693,7 +693,7 @@
                     },
                     success: function(data) {
                         var results = JSON.parse(data);
-                        // console.log(results)
+                        console.log(results)
 
                         jQuery("#result-list").html("");
                         jQuery("#category-result-container > .team-result-list").remove();
@@ -766,7 +766,7 @@
                         }else if(results.length > 1){
                             jQuery('.results').html('');
                             for(var i in results){
-                                console.log(results[i]);
+                                // console.log(results[i]);
                                 var queryDOM = jQuery('#query-item-template').clone().appendTo('.results');
                                     jQuery(queryDOM).find('.query-title').text(results[i].firstname + ' ' + results[i].lastname);
                                     jQuery(queryDOM).find('.query-description').text('Bib #' + results[i].bib);
