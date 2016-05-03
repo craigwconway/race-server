@@ -211,6 +211,7 @@
             },
             type: 'GET'
         }).then(function(eventInfo){
+            var currentFilter = null;
             var currentEventTypeID = null;
             var currentTeamFilter = null;
             var currentGenderFilter = null;
@@ -223,6 +224,7 @@
             jQuery("#result-filter-buttons > .button").each(function(i,o){
                 if(i === 0){ // overall
                     jQuery(o).off().on("click", function(e){
+                        currentFilter = i;
                         jQuery(".filter-container").hide();
                         toggleActiveButton(i);
                         renderCategoryResults(null, null);
@@ -230,6 +232,7 @@
                 }
                 if(i === 1){ // team
                     jQuery(o).off().on("click", function(e){
+                        currentFilter = i;
                         jQuery(".filter-container").hide();
                         jQuery("#filter-team-container").show();
                         var previousTeamFilter = jQuery('#result-filter-team').dropdown('get value');
@@ -245,6 +248,7 @@
                 }
                 if(i === 2){ // gender + age
                     jQuery(o).off().on("click", function(e){
+                        currentFilter = i;
                         jQuery(".filter-container").hide();
                         jQuery("#filter-gender-container, #filter-age-container").show();
                         var gender = jQuery("#result-filter-gender").dropdown("get value");
@@ -255,6 +259,7 @@
                 }
                 if(i === 3){ // medal
                     jQuery(o).off().on("click", function(e){
+                        currentFilter = i;
                         jQuery(".filter-container").hide();
                         toggleActiveButton(i);
                         renderMedalResults(null, null, 3);
@@ -266,6 +271,7 @@
                 var n = i + 1;
                 jQuery("#result-filter-buttons > .button").not("#result-filter-buttons > .button:nth-child(" + n + ")").removeClass("active");
                 jQuery("#result-filter-buttons > .button:nth-child(" + n + ")").addClass("active");
+                renderQueryDescription();
             }
 
             reformatEventDate();
@@ -379,7 +385,12 @@
                 jQuery('#result-filter-etype').dropdown({
                     onChange: function(value, text, $selectedDOM){
                         currentEventTypeID = value;
-                        renderCategoryResults(null, null);
+                        if(currentFilter !== null){
+                            var n = currentFilter + 1;
+                            jQuery("#result-filter-buttons > .button:nth-child(" + n + ")").click();
+                        }else{
+                            renderCategoryResults(null, null);
+                        }
                         renderQueryDescription();
                     }
                 });
@@ -462,14 +473,23 @@
 
             function renderQueryDescription(){
                 var text = "";
-                if(currentTeamFilter){
-                    text += currentTeamFilter + " ";
+                console.log(currentFilter);
+                if(currentFilter == 1){
+                    text = currentTeamFilter + " ";
+                    if(!currentTeamFilter){
+                        text = "Team ";
+                    }
                 }
-                if(currentGenderFilter){
-                    text += currentGenderFilter + " ";
+                if(currentFilter == 2){
+                    if(currentGenderFilter){
+                        text += currentGenderFilter + " ";
+                    }
+                    if(currentAgeFilter){
+                        text += currentAgeFilter + " ";
+                    }
                 }
-                if(currentAgeFilter){
-                    text += currentAgeFilter + " ";
+                if(currentFilter == 3){
+                    text = "Medal ";
                 }
                 if(text.length == 0){
                     text = "Overall ";
