@@ -178,7 +178,12 @@
                                     </div>
                                 </div>
                                 <div class="column">
-                                    <div class="ui center aligned header circular-header">Class</div>
+                                    <div class="ui center aligned header circular-header">
+                                        <c:set var="tokens" value="${fn:split(result.rankClass,' in ')}" />
+                                        <c:forEach var="i" begin="3" end="${fn:length(tokens)}">
+                                             ${tokens[i]} 
+                                        </c:forEach>
+                                    </div>
                                     <div class="circular-bg border-3">
                                         <div class="circular-contents">
                                             <div class="ui tiny statistic stat-rank">
