@@ -230,7 +230,7 @@
     </section>
     <script>
         function goBack(){
-            window.location = '/bibs-server/r/e/${result.event.id}';
+            window.location = '/bibs-server/r/e/${result.event.id}/results';
         }
         function printCertificate() {
             window.print();
