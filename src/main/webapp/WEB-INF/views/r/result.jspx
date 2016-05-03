@@ -182,16 +182,16 @@
                                     <div class="circular-bg border-3">
                                         <div class="circular-contents">
                                             <div class="ui tiny statistic stat-rank">
-                                                <c:if test="${result.rankGender != 'N/A' }">
-                                                    <c:set var="gender" value="${fn:split(result.rankGender, ' of ')}" />
+                                                <c:if test="${result.rankClass != 'N/A' }">
+                                                    <c:set var="rankClass" value="${fn:split(result.rankClass, ' of ')}" />
                                                     <div class="value">
-                                                        <div class="runner-gender-rank">${gender[0]}</div>
+                                                        <div class="runner-rankClass-rank">${rankClass[0]}</div>
                                                         <div class="ui divider rank-divider"><!--  --></div>
-                                                        <div class="runner-gender-count">${gender[1]}</div>
+                                                        <div class="runner-rankClass-count">${rankClass[1]}</div>
                                                     </div>
                                                 </c:if>
-                                                <c:if test="${result.rankGender == 'N/A' }">
-                                                    <div class="value"><span class="runner-gender-rank">N/A</span></div>
+                                                <c:if test="${result.rankClass == 'N/A' }">
+                                                    <div class="value"><span class="runner-rankClass-rank">N/A</span></div>
                                                 </c:if>
                                             </div>
                                         </div>
