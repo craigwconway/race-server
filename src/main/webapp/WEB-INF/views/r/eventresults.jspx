@@ -12,6 +12,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/creative.css" type="text/css"> </link>
     <link rel="stylesheet" href="/bibs-server/resources/styles/outsiders/event.css" type="text/css"> </link>
+    <script type="text/javascript" src="/bibs-server/resources/scripts/outsiders/moment.min.js"><!-- --></script>
     
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -101,9 +102,10 @@
                                         <div class="default text">Team Standings</div>
                                         <i class="dropdown icon"><!--  --></i>
                                         <div class="menu">
-                                            <div class="item" data-value="0">Overall Team Standings</div>
+                                            <div class="item" data-value="null">Overall Team Standings</div>
                                             <div class="item" data-value="M">Teams (M)</div>
                                             <div class="item" data-value="F">Teams (F)</div>
+                                            <div class="item" data-value="S">Team Search</div>
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +124,7 @@
                                         <div class="default text">Filter by Gender</div>
                                         <i class="dropdown icon"><!--  --></i>
                                         <div class="menu">
-                                            <div class="item" data-value="0">Overall Gender</div>
+                                            <div class="item" data-value="null">Overall Gender</div>
                                             <div class="item" data-value="M">Top Male</div>
                                             <div class="item" data-value="F">Top Female</div>
                                         </div>
@@ -134,16 +136,10 @@
                                         <div class="default text">Filter by Age Group</div>
                                         <i class="dropdown icon"><!--  --></i>
                                         <div class="menu">
-                                            <div class="item" data-value="0">Overall Age Group</div>
-                                            <div class="item" data-value="1">10-19</div>
-                                            <div class="item" data-value="2">20-29</div>
-                                            <div class="item" data-value="3">30-39</div>
-                                            <div class="item" data-value="4">40-49</div>
-                                            <div class="item" data-value="5">50-59</div>
-                                            <div class="item" data-value="6">60-69</div>
-                                            <div class="item" data-value="7">70-79</div>
+                                            <div class="item" data-value="null">Overall Age Group</div>
                                         </div>
                                     </div>
+                                    <div class="item" id="filter-team-age-template" data-value="0" style="display:none"><!--  --></div>
                                 </div>
                                 <div class="center aligned column">
                                     <div class="ui dropdown" id="result-filter-etype" style="margin:auto 10px;font-size:1.2em;">
@@ -212,7 +208,6 @@
             },
             success: function(data) {
                 this.currentEvent = data;
-                console.log(data);
             },
             type: 'GET'
         }).then(function(eventInfo){
@@ -237,16 +232,24 @@
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         jQuery("#filter-team-container").show();
-                        jQuery("#filter-team-name-container").show();
+                        var previousTeamFilter = jQuery('#result-filter-team').dropdown('get value');
+                        var hasTeamName = false;
+                        if(previousTeamFilter == "S"){
+                            jQuery("#filter-team-name-container").show();
+                            hasTeamName = true;
+                            previousTeamFilter = jQuery('#result-filter-team-name').dropdown('get value');
+                        }
                         toggleActiveButton(i);
-                        renderTeamResults(jQuery('#result-filter-team').dropdown('get value'));
+                        renderTeamResults(previousTeamFilter, hasTeamName);
                     });
                 }
                 if(i === 2){ // gender + age
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         jQuery("#filter-gender-container, #filter-age-container").show();
-                        renderMedalResults(null);
+                        var gender = jQuery("#result-filter-gender").dropdown("get value");
+                        var age = jQuery("#result-filter-age").dropdown("get value");
+                        renderMedalResults(gender, age, null);
                         toggleActiveButton(i);
                     });
                 }
@@ -254,7 +257,7 @@
                     jQuery(o).off().on("click", function(e){
                         jQuery(".filter-container").hide();
                         toggleActiveButton(i);
-                        renderMedalResults(3);
+                        renderMedalResults(null, null, 3);
                     });
                 }
             });
@@ -268,6 +271,10 @@
             reformatEventDate();
             initEventType();
 
+            var ageGroups = [];
+            var ageCategories = [];
+            var genderCategories = {"male": [], "female": []};
+
             jQuery.ajax({
                 url: "/bibs-server/events/classcategories/list/" + currentEventTypeID,
                 error: function(){
@@ -275,7 +282,34 @@
                 },
                 success: function(data){
                     var results = JSON.parse(data);
-                    console.log("class", results);
+                    for(var i in results){
+                        var category = results[i];
+                        if(category.gender == "M"){
+                            genderCategories["male"].push(category);
+                        }else if(category.gender == "F"){
+                            genderCategories["female"].push(category);
+                        }
+                        var pair = category.ageMin + "-" + category.ageMax;
+                        if(ageGroups.length == 0 || ageGroups.indexOf(pair) == -1){
+                            ageGroups.push(pair);
+                            ageCategories.push({ageGroup: pair, categories:[category]});
+
+                            var ageItem = jQuery("#filter-team-age-template").clone().appendTo("#result-filter-age > .menu");
+                                ageItem.text(pair);
+                                ageItem.attr("data-value", pair);
+                                ageItem.removeAttr("id").show();
+                        }else{
+                            for(var j in ageCategories){
+                                if(ageCategories[j].ageGroup == pair){
+                                    ageCategories[j].categories.push(category);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    console.log("gender:", genderCategories)
+                    console.log("age:", ageCategories);
+                    console.log("age groups:", ageGroups);
                     initAgeFilter();
                     initGenderFilter();
                 },
@@ -360,7 +394,7 @@
                             currentAgeFilter = text;
                         }
                         var gender = jQuery('#result-filter-gender').dropdown('get value');
-                        renderCategoryResults(gender, value);
+                        renderMedalResults(gender, value, null);
                         renderQueryDescription();
                     }
                 });
@@ -370,6 +404,7 @@
             function initTeamFilter(){
                 jQuery("#result-filter-team").dropdown({
                     onChange: function(value, text, $selectedDOM){
+                        jQuery("#filter-team-name-container").hide();
                         // renderCategoryResults(value);
                         var genderValue = jQuery('#result-filter-gender').dropdown('get value');
                         if(value == 0){
@@ -390,14 +425,18 @@
                             if(genderValue == 'M'){
                                 jQuery('#result-filter-gender').dropdown('set selected', 'F');
                             }
+                        }else if(value == 'S'){
+                            jQuery("#filter-team-name-container").show();
+                            currentTeamFilter = "Team";
+                            return;
                         }
                         renderQueryDescription();
-                        renderTeamResults(value);
+                        renderTeamResults(value, false);
                     }
                 });
                 jQuery("#result-filter-team-name").dropdown({
                     onChange: function(value, text, $selectedDOM){
-                        console.log(value);
+                        renderTeamResults(value, true);
                     }
                 });
                 jQuery("#result-filter-team").dropdown('set selected', '0');
@@ -406,23 +445,15 @@
             function initGenderFilter(){
                 jQuery('#result-filter-gender').dropdown({
                     onChange: function(value, text, $selectedDOM){
-                        renderCategoryResults(value, null);
-                        var teamValue = jQuery('#result-filter-team').dropdown('get value');
                         if(value == 0){
                             currentGenderFilter = null;
                         }else if(value == 'M'){
                             currentGenderFilter = 'Male';
-                            if(teamValue == 'F'){
-                                jQuery('#result-filter-team').dropdown('set selected', 'M');
-                                currentGenderFilter = null;
-                            }
                         }else if(value == 'F'){
                             currentGenderFilter = 'Female';
-                            if(teamValue == 'M'){
-                                jQuery('#result-filter-team').dropdown('set selected', 'F');
-                                currentGenderFilter = null;
-                            }
                         }
+                        var age = jQuery("#result-filter-age").dropdown("get value");
+                        renderMedalResults(value, age, null);
                         renderQueryDescription();
                     }
                 });
@@ -446,7 +477,7 @@
                 jQuery('.result-header').text(text + "Results");
             }
 
-            function renderMedalResults(max){
+            function renderMedalResults(gender, age, max){
                 jQuery(".result-cards").hide();
                 var url = "/bibs-server/events/typeclassrankings/" + currentEventTypeID;
                 
@@ -462,7 +493,39 @@
                     },
                     success: function(data) {
                         results = JSON.parse(data);
-                        console.log(results);
+
+                        if(gender &amp;&amp; gender !== "null"){
+                            if(gender == "M"){ gender = "male"; }
+                            if(gender == "F"){ gender = "female"; }
+                            results = results.filter(function(el){
+                                var categories = genderCategories[gender];
+                                var found = false;
+                                for(var i in categories){
+                                    var category = categories[i];
+                                    if(category.name == el.name){
+                                        found = true;
+                                    }
+                                }
+                                return found;
+                            });
+                        }
+
+                        if(age &amp;&amp; age !== "null"){
+                            var range = age.split("-");
+                            var min   = +range[0];
+                            var max   = +range[1];
+                            var filtered = [];
+                            results = results.filter(function(el){
+                                var found = false;
+                                if(el.results.length > 0){
+                                    var age = el.results[0].age;
+                                    if(age >= min &amp;&amp; age &lt;= max){
+                                        found = true;
+                                    }
+                                }
+                                return found;
+                            })
+                        }
 
                         jQuery("#result-list").html(" ");
                         jQuery('.result-list-item-header').clone().removeAttr('id').appendTo('#result-list').show();
@@ -512,50 +575,64 @@
                 });
             }
 
-            function renderTeamResults(typeId){
+            function renderTeamResults(filter, searchByName){
                 jQuery(".result-cards").hide();
                 // Events.getResultsByGender(id)
-                if(typeId == null || typeId == 0){
-                    typeId = "M&amp;gender=F";
+                var url = "/bibs-server/raceresults/teamrankings?event=${event.id}&amp;type=" + currentEventTypeID;
+                if(!searchByName){
+                    if(filter == "M" || filter == "F"){
+                        url += "&amp;gender=" + filter;
+                    }
+                }else{
+                    url = "/bibs-server/raceresults/teamdetails?type=" + currentEventTypeID + "&amp;team=" + encodeURIComponent(filter);
+                    currentTeamFilter = filter;
+                    renderQueryDescription();
                 }
-
-                    // url: "/raceresults/teamrankings?event=x&amp;type=x[&amp;start=Santas][&amp;gender=M]" + currentEvent.id
                 jQuery.ajax({
                     context: this,
-                    url: "/bibs-server/raceresults/search?eventId=${event.id}&amp;type=" + currentEventTypeID + "&amp;gender=" + typeId,
+                    url: url,
                     error: function() {
                         console.log("error in retrieving events");
                     },
-                    success: function(data) {
-                        var results = JSON.parse(data);
+                    success: function(response) {
+                        var data = null;
+                        if(searchByName){
+                            data = [JSON.parse(response)];
+                        }else{
+                            data = JSON.parse(response);
+                        }
                         jQuery("#result-list").html("");
                         jQuery("#category-result-container > .medal-result-list").remove();
                         jQuery(".team-result-list").not("#result-list-team-template").remove();
                         jQuery(".result-list-item-header").clone().removeAttr("id").appendTo("#result-list").show();
 
                         var teams = [];
-                        for(var i in results){
-                            var team = results[i].team || "N/A";
-                            if(teams.indexOf(team) == -1){
-                                teams.push(team);
+                        var teamNames = [];
+                        for(var i in data){
+                            var name = data[i].name || "N/A";
+                            if(teamNames.indexOf(name) == -1 &amp;&amp; data[i].results.length > 0){
+                                teams.push(data[i]);
+                                teamNames.push(name);
                             }
                         }
-                        teams.sort().splice(teams.length-1,0,teams.splice(teams.indexOf("N/A"),1)[0]);
+                        teams.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} );
+                        // teams.splice(teams.length-1,0,teams.splice(teams.indexOf("N/A"),1)[0]);
 
                         for(var i in teams){
                             var team = teams[i];
+                            var teamResults = team.results;
+
                             var teamHeaderDOM = jQuery("#result-list-team-template").clone().appendTo("#category-result-container");
-                            jQuery(teamHeaderDOM).find(".team-header > .content").text(team || "N/A");
+                            jQuery(teamHeaderDOM).find(".team-header > .content").text(team.name || "N/A");
                             jQuery(teamHeaderDOM).attr("id", "team-" + i).show();
 
-                            for(var j in results){
-                                var elem = results[j];
+                            for(var j in teamResults){
+                                var elem = teamResults[j];
                                 var resultDOM = null;
                                 var index = i+1;
                                 var athleteTeam = elem.team || "N/A";
-                                if(athleteTeam == team){
+                                if(athleteTeam == team.name){
                                     (function(teamIndex, athleteIndex, athlete){
-                                        // console.log(teamIndex, athleteIndex, athlete);
                                         resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + teamIndex);
                                         var place = +athleteIndex+1;
                                             jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
@@ -564,7 +641,7 @@
                                             jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender || "");
                                             jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
                                             jQuery(resultDOM).find(".result-list-item-place").text(place);
-                                            jQuery(resultDOM).find(".result-list-item-team").text(team || "N/A");
+                                            jQuery(resultDOM).find(".result-list-item-team").text(team.name || "N/A");
                                             jQuery(resultDOM).find("a").bind("click", function(){
                                                 window.location.href = "/bibs-server/r/r/" + athlete.id;
                                             })
@@ -704,6 +781,5 @@
         	window.location = "/bibs-server/r/e/${event.id}/results";
         }        
     </script>
-    <script type="text/javascript" src="/bibs-server/resources/scripts/outsiders/moment.min.js"><!-- --></script>
 </div>
 
