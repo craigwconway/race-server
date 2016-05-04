@@ -36,6 +36,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Parameter;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -605,6 +606,85 @@ public class RaceResult implements Comparable<RaceResult> {
         System.out.println("Prepared Query: " + HQL);
         return q.getResultList();
     }    
+    
+    public static long searchCount(Long eventId, Long eventTypeId, String name, Long bib, String gender, String team) {
+        EntityManager em = RaceResult.entityManager();
+        
+        Event event = new Event();
+        if (null != eventId && eventId > 0)
+            event = Event.findEvent(eventId);
+        
+        EventType eventType = null;
+        if (null != eventTypeId && eventTypeId > 0)
+        	eventType = EventType.findEventType(eventTypeId);
+        
+        String firstname = "";
+        String lastname = "";
+        if (name.contains(" ")) {
+            firstname = name.split(" ")[0];
+            lastname = name.split(" ")[1];
+        }
+
+        String HQL = "SELECT COUNT(o) FROM RaceResult o WHERE ";
+
+        if (StringUtils.isEmpty(name) && bib == null)
+        	HQL += "o.timediff > 0 AND";
+        
+        if (null != eventId && eventId > 0)
+            HQL += " o.event = :event AND";
+
+        if (null != eventTypeId && eventTypeId > 0)
+        	HQL += " o.eventType = :eventType AND";
+        
+        if (bib != null)
+            HQL += " o.bib = :bib AND ";
+
+        if(gender != null && gender.equalsIgnoreCase("M"))
+        	HQL += " o.gender = 'M' AND";
+        
+        if(gender != null && gender.equalsIgnoreCase("F"))
+        	HQL += " o.gender = 'F' AND";
+        
+        if(team != null) {
+        	HQL += " o.team LIKE LOWER(:team) AND";
+        }
+        if (!StringUtils.isEmpty(firstname) && !StringUtils.isEmpty(lastname)) {
+            firstname += "%";
+            lastname += "%";
+            HQL += " LOWER(o.firstname) LIKE LOWER(:firstname) AND LOWER(o.lastname) LIKE LOWER(:lastname) ";
+        } else if (StringUtils.isEmpty(firstname) && StringUtils.isEmpty(lastname)){
+        	System.out.println("No name selected");
+        } else{
+            name += "%";
+            HQL += " (LOWER(o.firstname) LIKE LOWER(:name) OR LOWER(o.lastname) LIKE LOWER(:name)) ";
+        }
+        if(HQL.endsWith("AND"))
+        	HQL = HQL.substring(0, HQL.length() - 3);
+        
+        System.out.println("HQL: " + HQL);
+        TypedQuery<Long> q = em.createQuery(HQL, Long.class);
+
+        if (null != eventId && eventId > 0)
+            q.setParameter("event", event);
+        if (null != eventTypeId && eventTypeId > 0)
+        	q.setParameter("eventType", eventType);
+        if (bib != null)
+            q.setParameter("bib", bib);
+        if(team != null)
+        	q.setParameter("team", team);
+        if (StringUtils.isNotEmpty(firstname) && !StringUtils.isNotEmpty(lastname)) {
+            q.setParameter("firstname", firstname);
+            q.setParameter("lastname", lastname);
+        } else if(StringUtils.isNotEmpty(firstname) && StringUtils.isNotEmpty(lastname)){
+            q.setParameter("name", name);
+        }
+        System.out.println("Prepared Query: " + HQL);
+        for(Parameter<?> p :q.getParameters()) {
+        	System.out.println("Param: " + p.getName() + " Type: " + p.getParameterType());
+        }
+        return q.getSingleResult();
+    }    
+
     
     public static List<RaceResult> search(Long eventId, String name, Long bib) {
         EntityManager em = RaceResult.entityManager();

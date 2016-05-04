@@ -199,6 +199,40 @@ public class RaceResultController {
         }
         return rtn;
     }
+    
+    /**
+     * @api {get} /raceresults/search Search
+     * @apiName Search
+     * @apiParam {Number} event Event to search from
+     * @apiParam {Number} type Event Type to search from
+     * @apiParam {Number} [bib] Bib number to search for
+     * @apiParam {String} [name] First last or fullname to search
+     * @apiParam {String=M,F} [gender] Gender to serch
+     * @apiParam {Number} [page=1] Page of results to get
+     * @apiParam {Number} [size=10] Number of results per page
+     * @apiGroup raceresults
+     * @apiPermission none
+     * @apiDescription Search for a Race Result by event id and either first/last/fullname or bib. Results are returned in pages of 10
+     * and start from page number 1.
+     * @apiSuccess (200) {Object} RaceResult object returned
+     * @return
+     */
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    @ResponseBody
+    public String count(@RequestParam(value = "event", required = false, defaultValue = "0") Long event,
+    		@RequestParam(value = "type", required = false) Long type,
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
+            @RequestParam(value = "bib", required = false, defaultValue = "") Long bib,
+            @RequestParam(value = "gender", required = false) String gender,
+            @RequestParam(value = "team", required = false) String team){
+        String rtn = "";
+        try {
+            rtn += RaceResult.searchCount(event, type, name, bib, gender, team);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rtn;
+    }
 
     /**
      * @api {get} /raceresults/byevent/:eventname
