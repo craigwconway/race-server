@@ -262,6 +262,7 @@
                         }
                         toggleActiveButton(i);
                         renderTeamResults(previousTeamFilter, hasTeamName);
+                        jQuery("#pagination").hide();
                     });
                 }
                 if(i === 2){ // gender + age
@@ -273,6 +274,7 @@
                         var age = jQuery("#result-filter-age").dropdown("get value");
                         renderMedalResults(gender, age, null);
                         toggleActiveButton(i);
+                        jQuery("#pagination").hide();
                     });
                 }
                 if(i === 3){ // medal
@@ -281,6 +283,7 @@
                         jQuery(".filter-container").hide();
                         toggleActiveButton(i);
                         renderMedalResults(null, null, 3);
+                        jQuery("#pagination").hide();
                     });
                 }
             });
