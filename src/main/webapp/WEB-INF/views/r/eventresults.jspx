@@ -165,6 +165,12 @@
                             </a>
                         </div>
                     </div>
+                    <a class="icon item" id="pagination-back-template" style="display:none">
+                      <i class="left chevron icon"><!--  --></i>
+                    </a>
+                    <a class="icon item" id="pagination-next-template" style="display:none">
+                        <i class="right chevron icon"><!--  --></i>
+                    </a>
                     <a class="item" id="pagination-template" style="display:none">Page Number</a>
                     <div class="item" id="result-list-item-header" style="display:none">
                         <div class="right floated content">
@@ -691,7 +697,7 @@
                 // Events.getResultsByGender(id)
                 var url = "/bibs-server/raceresults/search?event=${event.id}&amp;type=" + currentEventTypeID;
                 var query = "";
-                if(gender !== 0){
+                if(gender !== null &amp;&amp; gender !== 0){
                     query = gender;
                 }
                 url += "&amp;gender=" + query;
@@ -706,9 +712,14 @@
                         var count = data;
                         maxPages = Math.ceil(count/10);
                         if(maxPages > 1){
+                            currentPage = 1;
+                            var pagination = jQuery("#pagination").find(".pagination.menu").html("").show();
+                            var back       = jQuery("#pagination-back-template");
+                            var next       = jQuery("#pagination-next-template");
+                            back = back.clone().appendTo(pagination).attr("id", "pagination-back").show();
+                            next = next.clone().appendTo(pagination).attr("id", "pagination-next").show();
                             jQuery("#pagination").show();
-                            var back       = jQuery("#pagination-back");
-                            var next       = jQuery("#pagination-next");
+
                             var pageNav = null;
                             console.log("number of pages:", maxPages, "count:", count);
                             for(var i = 0; i &lt; maxPages; i++){
