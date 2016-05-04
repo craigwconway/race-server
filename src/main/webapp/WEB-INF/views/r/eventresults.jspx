@@ -155,6 +155,17 @@
                         <div class="ui divider" style="visibility:hidden;"><!--   --></div>
                         <div class="ui divided relaxed large list" id="result-list"><!--   --></div>
                     </div>
+                    <div class="ui center aligned basic segment" id="pagination" style="display:none;">
+                        <div class="ui pagination menu">
+                            <a class="icon item" id="pagination-back">
+                              <i class="left chevron icon"><!--  --></i>
+                            </a>
+                            <a class="icon item" id="pagination-next">
+                                <i class="right chevron icon"><!--  --></i>
+                            </a>
+                        </div>
+                    </div>
+                    <a class="item" id="pagination-template" style="display:none">Page Number</a>
                     <div class="item" id="result-list-item-header" style="display:none">
                         <div class="right floated content">
                             <div class="ui label">Finish Time</div>
@@ -216,6 +227,7 @@
             var currentTeamFilter = null;
             var currentGenderFilter = null;
             var currentAgeFilter = null;
+            var currentPage = 0; var maxPages = 0;
             
             jQuery('#region-title').text(eventInfo.name);
             jQuery('#single-result-container').hide();
@@ -677,12 +689,82 @@
 
             function renderCategoryResults(gender, age){
                 // Events.getResultsByGender(id)
-                var url = "/bibs-server/raceresults/search?eventId=${event.id}&amp;type=" + currentEventTypeID + "&amp;gender=";
-                
-                if(gender == 0){
-                    url += "M&amp;gender=F";
+                var url = "/bibs-server/raceresults/search?event=${event.id}&amp;type=" + currentEventTypeID;
+                var query = "";
+                if(gender !== 0){
+                    query = gender;
+                }
+                url += "&amp;gender=" + query;
+
+                jQuery.ajax({
+                    context: this,
+                    url: "/bibs-server/raceresults/count?event=${event.id}&amp;type=" + currentEventTypeID + query,
+                    error: function() {
+                        console.log("error in retrieving events");
+                    },
+                    success: function(data) {
+                        var count = data;
+                        maxPages = Math.ceil(count/10);
+                        if(maxPages > 1){
+                            jQuery("#pagination").show();
+                            var back       = jQuery("#pagination-back");
+                            var next       = jQuery("#pagination-next");
+                            var pageNav = null;
+                            console.log("number of pages:", maxPages, "count:", count);
+                            for(var i = 0; i &lt; maxPages; i++){
+                                (function(index){
+                                    var pageNum = +index+1;
+                                    pageNav = jQuery("#pagination-template").clone().insertBefore("#pagination-next");
+                                    pageNav.text(pageNum).off().on("click", function(){
+                                        renderCategoryPagination(pageNum);
+                                    });
+                                    pageNav.removeAttr("id").show();
+                                })(i);
+                            }
+                            back.click(function(){
+                                currentPage--;
+                                renderCategoryPagination(currentPage);
+                            })
+                            next.click(function(){
+                                currentPage++;
+                                renderCategoryPagination(currentPage);
+                            })
+                        }
+                    },
+                    type: "GET"
+                }).then(function(data){
+                    renderCategoryPagination(currentPage, gender);
+                });
+            }
+
+            function renderCategoryPagination(page){
+                if(currentPage !== page){
+                    currentPage = page;
+                }
+                if(currentPage &lt; 2){
+                    currentPage = 1;
+                    jQuery("#pagination-back").addClass("disabled");
                 }else{
-                    url += gender;
+                    jQuery("#pagination-back").removeClass("disabled");
+                }
+                if(currentPage == maxPages){
+                    jQuery("#pagination-next").addClass("disabled");
+                }else{
+                    jQuery("#pagination-next").removeClass("disabled");
+                }
+                console.log("current page:", currentPage, page, maxPages);
+                // Events.getResultsByGender(id)
+                var url = "/bibs-server/raceresults/search?event=${event.id}&amp;type=" + currentEventTypeID;
+                var gender = jQuery('#result-filter-gender').dropdown('get value');
+
+                var query = "";
+                if(gender &amp;&amp; gender !== 0){
+                    query = "&amp;gender=" + gender;
+                }
+                url += query;
+
+                if(currentPage > 1){
+                    url += "&amp;page=" + currentPage;
                 }
 
                 jQuery.ajax({
@@ -691,9 +773,9 @@
                     error: function() {
                         console.log("error in retrieving events")
                     },
-                    success: function(data) {
-                        var results = JSON.parse(data);
-                        console.log(results)
+                    success: function(response) {
+                        var results = JSON.parse(response);
+                        // console.log(results)
 
                         jQuery("#result-list").html("");
                         jQuery("#category-result-container > .team-result-list").remove();
@@ -723,6 +805,10 @@
                         jQuery("#result-filter-ttype > .field:first-child").find("input").prop("checked", "checked");
                     },
                     type: "GET"
+                }).then(function(){
+                    var pageIndex = currentPage === 1 ? 2 : currentPage + 1;
+                    jQuery("#pagination > .pagination.menu > .item").removeClass("active");
+                    jQuery("#pagination > .pagination.menu > .item:nth-child(" + pageIndex + ")").addClass("active");
                 });
             }
 
