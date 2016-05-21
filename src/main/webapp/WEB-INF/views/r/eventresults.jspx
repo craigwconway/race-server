@@ -399,6 +399,9 @@
                 if( eventInfo.hasOwnProperty('eventTypes') &amp;&amp; eventInfo.eventTypes.length > 1 ){
                     currentEventTypeID = eventInfo.eventTypes[0].id;
                 }else{
+                	if(eventInfo.hasOwnProperty('eventTypes')) {
+                		currentEventTypeID = eventInfo.eventTypes[0].id;
+                	}
                     jQuery('#search-type').find('.item:first-child').hide();
                 }
 
