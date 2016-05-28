@@ -155,7 +155,7 @@
                         <div class="ui divider" style="visibility:hidden;"><!--   --></div>
                         <div class="ui divided relaxed large list" id="result-list"><!--   --></div>
                     </div>
-                    <div class="ui center aligned basic segment" id="pagination" style="display:none;">
+                    <div id="pagination" style="display:none;">
                         <div class="ui pagination menu"><!--  --></div>
                     </div>
                     <a class="icon item" id="pagination-back-template" style="display:none">
@@ -716,13 +716,17 @@
                     success: function(data) {
                         var count = data;
                         maxPages = Math.ceil(count/10);
+
+                        var isMobile = window.matchMedia("only screen and (max-width: 760px)");
+
+                        var MAX_PAGINATION = isMobile.matches ? 5 : 10;
                         if(maxPages > 1){
                             currentPage = 1;
                             var pagination = jQuery("#pagination").find(".pagination.menu").html("").show();
                             var back       = jQuery("#pagination-back-template");
                             var next       = jQuery("#pagination-next-template");
                             back = back.clone().appendTo(pagination).attr("id", "pagination-back").show();
-                            if(maxPages > 10){
+                            if(maxPages > MAX_PAGINATION){
                                 var backward   = jQuery("#pagination-backward-template");
                                 backward = backward.clone().appendTo(pagination).attr("id", "pagination-backward").show();
                             }
@@ -739,13 +743,13 @@
                                         renderCategoryPagination(pageNum);
                                     });
                                     pageNav.removeAttr("id").addClass("page-item");
-                                    if(i &lt; 10){
+                                    if(i &lt; MAX_PAGINATION){
                                         pageNav.show();
                                     }
                                 })(i);
                             }
 
-                            if(maxPages > 10){
+                            if(maxPages > MAX_PAGINATION){
                                 var forward    = jQuery("#pagination-forward-template");
                                 forward  = forward.clone().insertBefore("#pagination-next").attr("id", "pagination-forward").show();
                             }
@@ -756,17 +760,17 @@
                                     return;
                                 }else{
                                     currentPage--;
-                                    if(currentPage % 10 === 0){
+                                    if(currentPage % MAX_PAGINATION === 0){
                                         // i.e. page 11 should currently show 11-20 (index = 1),
                                         // so pressing back should display 1-10 (index = 0).
-                                        var index = Math.floor(currentPage/10);
+                                        var index = Math.floor(currentPage/MAX_PAGINATION);
                                         if(index > 0){
                                             index = index - 1;
                                         }
                                         
                                         // if previous upper index was 20, new upper index should be 10.
-                                        var lower = index * 10;
-                                        var upper = index * 10 + 9;
+                                        var lower = index * MAX_PAGINATION;
+                                        var upper = index * MAX_PAGINATION + (MAX_PAGINATION - 1);
                                         jQuery(".ui.pagination.menu > .page-item").show();
                                         jQuery(".ui.pagination.menu > .page-item:lt(" + lower + ")").hide();
                                         jQuery(".ui.pagination.menu > .page-item:gt(" + upper + ")").hide();
@@ -782,14 +786,14 @@
                                 }else{
                                     currentPage++;
 
-                                    if(currentPage % 10 === 1){
+                                    if(currentPage % MAX_PAGINATION === 1){
                                         // i.e. page 20 should currently show 11-20 (index = 1),
                                         // so pressing next should display 21-30 (index = 2).
-                                        var index = Math.floor(currentPage/10);
+                                        var index = Math.floor(currentPage/MAX_PAGINATION);
                                         
                                         // if previous upper index was 20, new upper index should be 10.
-                                        var lower = index * 10;
-                                        var upper = index * 10 + 9;
+                                        var lower = index * MAX_PAGINATION;
+                                        var upper = index * MAX_PAGINATION + (MAX_PAGINATION - 1);
                                         jQuery(".ui.pagination.menu > .page-item").show();
                                         jQuery(".ui.pagination.menu > .page-item:lt(" + lower + ")").hide();
                                         jQuery(".ui.pagination.menu > .page-item:gt(" + upper + ")").hide();
@@ -800,7 +804,7 @@
                             });
                             if(backward){
                                 backward.click(function(){
-                                    if(Math.floor(currentPage/10) === 0){
+                                    if(Math.floor(currentPage/MAX_PAGINATION) === 0){
                                         jQuery("#pagination-backward").addClass("disabled");
                                         return;
                                     }else{
@@ -808,13 +812,13 @@
                                         // get current index then decrement backwards.
                                         // i.e. page 13 should currently show 11-20 (index = 1),
                                         // so pressing backward should display 1-10 (index = 0).
-                                        var index = Math.floor(currentPage/10);
+                                        var index = Math.floor(currentPage/MAX_PAGINATION);
                                         if(index > 0){
                                             index = index - 1;
                                         }
                                         // if previous upper index was 20, new upper index should be 10.
-                                        var lower = index * 10;
-                                        var upper = index * 10 + 9;
+                                        var lower = index * MAX_PAGINATION;
+                                        var upper = index * MAX_PAGINATION + (MAX_PAGINATION - 1);
                                         jQuery(".ui.pagination.menu > .page-item").show();
                                         jQuery(".ui.pagination.menu > .page-item:lt(" + lower + ")").hide();
                                         jQuery(".ui.pagination.menu > .page-item:gt(" + upper + ")").hide();
@@ -826,7 +830,7 @@
                             }
                             if(forward){
                                 forward.click(function(){
-                                    if(Math.floor(currentPage/10) === Math.floor(maxPages/10)){
+                                    if(Math.floor(currentPage/MAX_PAGINATION) === Math.floor(maxPages/MAX_PAGINATION)){
                                         jQuery("#pagination-forward").addClass("disabled");
                                         return;
                                     }else{
@@ -834,13 +838,13 @@
                                         // get current index then increment forwards.
                                         // i.e. page 13 should currently show 11-20 (index = 1),
                                         // so pressing forward should display 21-30 (index = 2).
-                                        var index = Math.floor(currentPage/10);
-                                        if(index &lt; Math.floor(maxPages/10) &amp;&amp; currentPage % 10 !== 0){
+                                        var index = Math.floor(currentPage/MAX_PAGINATION);
+                                        if(index &lt; Math.floor(maxPages/MAX_PAGINATION) &amp;&amp; currentPage % 10 !== 0){
                                             index = index + 1;
                                         }
                                         // if previous upper index was 20, new upper index should be 10.
-                                        var lower = index * 10;
-                                        var upper = index * 10 + 9;
+                                        var lower = index * MAX_PAGINATION;
+                                        var upper = index * MAX_PAGINATION + (MAX_PAGINATION - 1);
                                         jQuery(".ui.pagination.menu > .page-item").show();
                                         jQuery(".ui.pagination.menu > .page-item:lt(" + lower + ")").hide();
                                         jQuery(".ui.pagination.menu > .page-item:gt(" + upper + ")").hide();

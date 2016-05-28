@@ -181,7 +181,6 @@ body{
 	font-size: 1.4em;
 	text-transform: uppercase;
 }
-
 .team-result-list, .medal-result-list{
 	padding: 0 !important;
 	}.team-result-list > .team-header.item,
@@ -304,6 +303,12 @@ body{
 	margin-top: 15px;
 }
 
+
+#pagination{
+	margin: 25px auto;
+	text-align: center;
+}
+
 .bibs-num{
 	float:left;
 	margin: 0 1em 0 0 !important;
@@ -364,6 +369,18 @@ i{
 	.ranking-container > .ui[class*="five column"].grid>.column:not(.row),
 	.ranking-container > .ui[class*="five column"].grid>.row>.column{
 		width: 25%;
+	}
+}
+
+@media only screen and (max-width: 760px) {
+	#result-filter-buttons > button.ui.button{
+		font-size: 1rem;
+	}
+	#pagination{
+		margin: 15px 0;
+	}
+	#pagination > .ui.pagination.menu{
+		font-size: 0.8em;
 	}
 }
 
