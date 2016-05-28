@@ -156,20 +156,19 @@
                         <div class="ui divided relaxed large list" id="result-list"><!--   --></div>
                     </div>
                     <div class="ui center aligned basic segment" id="pagination" style="display:none;">
-                        <div class="ui pagination menu">
-                            <a class="icon item" id="pagination-back">
-                              <i class="left chevron icon"><!--  --></i>
-                            </a>
-                            <a class="icon item" id="pagination-next">
-                                <i class="right chevron icon"><!--  --></i>
-                            </a>
-                        </div>
+                        <div class="ui pagination menu"><!--  --></div>
                     </div>
                     <a class="icon item" id="pagination-back-template" style="display:none">
                       <i class="left chevron icon"><!--  --></i>
                     </a>
                     <a class="icon item" id="pagination-next-template" style="display:none">
                         <i class="right chevron icon"><!--  --></i>
+                    </a>
+                    <a class="icon item" id="pagination-backward-template" style="display:none">
+                      <i class="angle double left icon"><!--  --></i>
+                    </a>
+                    <a class="icon item" id="pagination-forward-template" style="display:none">
+                        <i class="angle double right icon"><!--  --></i>
                     </a>
                     <a class="item" id="pagination-template" style="display:none">Page Number</a>
                     <div class="item" id="result-list-item-header" style="display:none">
@@ -723,6 +722,10 @@
                             var back       = jQuery("#pagination-back-template");
                             var next       = jQuery("#pagination-next-template");
                             back = back.clone().appendTo(pagination).attr("id", "pagination-back").show();
+                            if(maxPages > 10){
+                                var backward   = jQuery("#pagination-backward-template");
+                                backward = backward.clone().appendTo(pagination).attr("id", "pagination-backward").show();
+                            }
                             next = next.clone().appendTo(pagination).attr("id", "pagination-next").show();
                             jQuery("#pagination").show();
 
@@ -735,17 +738,118 @@
                                     pageNav.text(pageNum).off().on("click", function(){
                                         renderCategoryPagination(pageNum);
                                     });
-                                    pageNav.removeAttr("id").show();
+                                    pageNav.removeAttr("id").addClass("page-item");
+                                    if(i &lt; 10){
+                                        pageNav.show();
+                                    }
                                 })(i);
                             }
+
+                            if(maxPages > 10){
+                                var forward    = jQuery("#pagination-forward-template");
+                                forward  = forward.clone().insertBefore("#pagination-next").attr("id", "pagination-forward").show();
+                            }
                             back.click(function(){
-                                currentPage--;
-                                renderCategoryPagination(currentPage);
-                            })
+                                if(currentPage &lt; 2){
+                                    currentPage = 1;
+                                    jQuery("#pagination-back").addClass("disabled");
+                                    return;
+                                }else{
+                                    currentPage--;
+                                    if(currentPage % 10 === 0){
+                                        // i.e. page 11 should currently show 11-20 (index = 1),
+                                        // so pressing back should display 1-10 (index = 0).
+                                        var index = Math.floor(currentPage/10);
+                                        if(index > 0){
+                                            index = index - 1;
+                                        }
+                                        
+                                        // if previous upper index was 20, new upper index should be 10.
+                                        var lower = index * 10;
+                                        var upper = index * 10 + 9;
+                                        jQuery(".ui.pagination.menu > .page-item").show();
+                                        jQuery(".ui.pagination.menu > .page-item:lt(" + lower + ")").hide();
+                                        jQuery(".ui.pagination.menu > .page-item:gt(" + upper + ")").hide();
+                                    }
+
+                                    renderCategoryPagination(currentPage);
+                                }
+                            });
                             next.click(function(){
-                                currentPage++;
-                                renderCategoryPagination(currentPage);
-                            })
+                                if(currentPage === maxPages){
+                                    jQuery("#pagination-next").addClass("disabled");
+                                    return;
+                                }else{
+                                    currentPage++;
+
+                                    if(currentPage % 10 === 1){
+                                        // i.e. page 20 should currently show 11-20 (index = 1),
+                                        // so pressing next should display 21-30 (index = 2).
+                                        var index = Math.floor(currentPage/10);
+                                        
+                                        // if previous upper index was 20, new upper index should be 10.
+                                        var lower = index * 10;
+                                        var upper = index * 10 + 9;
+                                        jQuery(".ui.pagination.menu > .page-item").show();
+                                        jQuery(".ui.pagination.menu > .page-item:lt(" + lower + ")").hide();
+                                        jQuery(".ui.pagination.menu > .page-item:gt(" + upper + ")").hide();
+                                    }
+
+                                    renderCategoryPagination(currentPage);
+                                }
+                            });
+                            if(backward){
+                                backward.click(function(){
+                                    if(Math.floor(currentPage/10) === 0){
+                                        jQuery("#pagination-backward").addClass("disabled");
+                                        return;
+                                    }else{
+                                        jQuery("#pagination-backward").removeClass("disabled");
+                                        // get current index then decrement backwards.
+                                        // i.e. page 13 should currently show 11-20 (index = 1),
+                                        // so pressing backward should display 1-10 (index = 0).
+                                        var index = Math.floor(currentPage/10);
+                                        if(index > 0){
+                                            index = index - 1;
+                                        }
+                                        // if previous upper index was 20, new upper index should be 10.
+                                        var lower = index * 10;
+                                        var upper = index * 10 + 9;
+                                        jQuery(".ui.pagination.menu > .page-item").show();
+                                        jQuery(".ui.pagination.menu > .page-item:lt(" + lower + ")").hide();
+                                        jQuery(".ui.pagination.menu > .page-item:gt(" + upper + ")").hide();
+
+                                        currentPage = lower + 1;
+                                        renderCategoryPagination(currentPage);
+                                    }
+                                });
+                            }
+                            if(forward){
+                                forward.click(function(){
+                                    if(Math.floor(currentPage/10) === Math.floor(maxPages/10)){
+                                        jQuery("#pagination-forward").addClass("disabled");
+                                        return;
+                                    }else{
+                                        jQuery("#pagination-forward").removeClass("disabled");
+                                        // get current index then increment forwards.
+                                        // i.e. page 13 should currently show 11-20 (index = 1),
+                                        // so pressing forward should display 21-30 (index = 2).
+                                        var index = Math.floor(currentPage/10);
+                                        if(index &lt; Math.floor(maxPages/10) &amp;&amp; currentPage % 10 !== 0){
+                                            index = index + 1;
+                                        }
+                                        // if previous upper index was 20, new upper index should be 10.
+                                        var lower = index * 10;
+                                        var upper = index * 10 + 9;
+                                        jQuery(".ui.pagination.menu > .page-item").show();
+                                        jQuery(".ui.pagination.menu > .page-item:lt(" + lower + ")").hide();
+                                        jQuery(".ui.pagination.menu > .page-item:gt(" + upper + ")").hide();
+
+                                        currentPage = lower + 1;
+                                        renderCategoryPagination(currentPage);
+                                    }
+                                });
+                            }
                         }
                     },
                     type: "GET"
@@ -764,10 +868,20 @@
                 }else{
                     jQuery("#pagination-back").removeClass("disabled");
                 }
-                if(currentPage == maxPages){
+                if(currentPage === maxPages){
                     jQuery("#pagination-next").addClass("disabled");
                 }else{
                     jQuery("#pagination-next").removeClass("disabled");
+                }
+                if(Math.floor(currentPage/10) === 0){
+                    jQuery("#pagination-backward").addClass("disabled");
+                }else{
+                    jQuery("#pagination-backward").removeClass("disabled");
+                }
+                if(Math.floor(currentPage/10) === Math.floor(maxPages/10)){
+                    jQuery("#pagination-forward").addClass("disabled");
+                }else{
+                    jQuery("#pagination-forward").removeClass("disabled");
                 }
                 console.log("current page:", currentPage, page, maxPages);
                 // Events.getResultsByGender(id)
@@ -826,9 +940,9 @@
                     },
                     type: "GET"
                 }).then(function(){
-                    var pageIndex = currentPage === 1 ? 2 : currentPage + 1;
-                    jQuery("#pagination > .pagination.menu > .item").removeClass("active");
-                    jQuery("#pagination > .pagination.menu > .item:nth-child(" + pageIndex + ")").addClass("active");
+                    var pageIndex = currentPage === 1 ? 3 : currentPage + 2;
+                    jQuery("#pagination > .pagination.menu > .page-item").removeClass("active");
+                    jQuery("#pagination > .pagination.menu > .page-item:nth-child(" + pageIndex + ")").addClass("active");
                 });
             }
 
