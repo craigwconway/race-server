@@ -116,10 +116,15 @@ public class RaceResultController {
     		@RequestParam(value = "size", defaultValue = "4") int pageSize){
     	
     	EventType type = EventType.findEventType(typeId);
-    	List<String> teams = RaceResult.getTeamsForEventType(type);
+    	List<String> teams;
     	String searchGender = null;
     	if(StringUtils.equalsIgnoreCase(gender, "M")) searchGender = "M";
     	if(StringUtils.equalsIgnoreCase(gender, "F")) searchGender = "F";
+    	if(searchGender != null) {
+    		teams = RaceResult.getGenderTeamsForEventType(type, searchGender);
+    	} else {
+    		teams = RaceResult.getTeamsForEventType(type);
+    	}
     	int index = 0;
     	for(int i = 0; i < teams.size(); i++) {
     		if(teams.get(i).compareTo(start) > 0) {
