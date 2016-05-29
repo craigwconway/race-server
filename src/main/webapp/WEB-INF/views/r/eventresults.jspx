@@ -233,6 +233,9 @@
             var currentGenderFilter = null;
             var currentAgeFilter = null;
             var currentPage = 0; var maxPages = 0;
+            var lastTeamName = null;
+            var teams = [];
+            var teamNames = [];
             
             jQuery('#region-title').text(eventInfo.name);
             jQuery('#single-result-container').hide();
@@ -260,7 +263,31 @@
                             previousTeamFilter = jQuery('#result-filter-team-name').dropdown('get value');
                         }
                         toggleActiveButton(i);
-                        renderTeamResults(previousTeamFilter, hasTeamName);
+                        
+                        teams = [];
+                        teamNames = [];
+                        jQuery("#result-list").html("");
+
+                        jQuery("#category-result-container > .medal-result-list").remove();
+                        jQuery(".team-result-list").not("#result-list-team-template").remove();
+                        renderTeamResults(previousTeamFilter, hasTeamName, null);
+                        jQuery("#category-result-container").visibility({
+                            once: false,
+                            // update size when new content loads
+                            observeChanges: true,
+                            // load content on bottom edge visible
+                            onBottomVisible: function() {
+                                var previousTeamFilter = jQuery('#result-filter-team').dropdown('get value');
+                                var hasTeamName = false;
+                                if(previousTeamFilter == "S"){
+                                    jQuery("#filter-team-name-container").show();
+                                    hasTeamName = true;
+                                    previousTeamFilter = jQuery('#result-filter-team-name').dropdown('get value');
+                                }
+                                toggleActiveButton(i);
+                                renderTeamResults(previousTeamFilter, hasTeamName, lastTeamName);
+                            }
+                        });
                         jQuery("#pagination").hide();
                     });
                 }
@@ -465,7 +492,15 @@
                             return;
                         }
                         renderQueryDescription();
-                        renderTeamResults(value, false);
+                        
+                        teams = [];
+                        teamNames = [];
+                        jQuery("#result-list").html("");
+
+                        jQuery("#category-result-container > .medal-result-list").remove();
+                        jQuery(".team-result-list").not("#result-list-team-template").remove();
+
+                        renderTeamResults(value, false, null);
                     }
                 });
                 jQuery("#result-filter-team-name").dropdown({
@@ -618,7 +653,7 @@
                 });
             }
 
-            function renderTeamResults(filter, searchByName){
+            function renderTeamResults(filter, searchByName, teamName){
                 jQuery(".result-cards").hide();
                 // Events.getResultsByGender(id)
                 var url = "/bibs-server/raceresults/teamrankings?event=${event.id}&amp;type=" + currentEventTypeID;
@@ -629,7 +664,17 @@
                 }else{
                     url = "/bibs-server/raceresults/teamdetails?type=" + currentEventTypeID + "&amp;team=" + encodeURIComponent(filter);
                     currentTeamFilter = filter;
+                    
                     renderQueryDescription();
+                    teams = [];
+                    teamNames = [];
+                    jQuery("#result-list").html("");
+
+                    jQuery("#category-result-container > .medal-result-list").remove();
+                    jQuery(".team-result-list").not("#result-list-team-template").remove();
+                }
+                if(teamName){
+                    url += "&amp;start=" + teamName;
                 }
                 jQuery.ajax({
                     context: this,
@@ -639,57 +684,61 @@
                     },
                     success: function(response) {
                         var data = null;
-                        if(searchByName){
-                            data = [JSON.parse(response)];
-                        }else{
-                            data = JSON.parse(response);
-                        }
-                        jQuery("#result-list").html("");
-                        jQuery("#category-result-container > .medal-result-list").remove();
-                        jQuery(".team-result-list").not("#result-list-team-template").remove();
-                        jQuery(".result-list-item-header").clone().removeAttr("id").appendTo("#result-list").show();
-
-                        var teams = [];
-                        var teamNames = [];
-                        for(var i in data){
-                            var name = data[i].name || "N/A";
-                            if(teamNames.indexOf(name) == -1 &amp;&amp; data[i].results.length > 0){
-                                teams.push(data[i]);
-                                teamNames.push(name);
+                        if(response.length > 0){
+                            if(searchByName){
+                                data = [JSON.parse(response)];
+                            }else{
+                                data = JSON.parse(response);
                             }
-                        }
-                        teams.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} );
-                        // teams.splice(teams.length-1,0,teams.splice(teams.indexOf("N/A"),1)[0]);
+                            jQuery(".result-list-item-header").clone().removeAttr("id").appendTo("#result-list").show();
 
-                        for(var i in teams){
-                            var team = teams[i];
-                            var teamResults = team.results;
+                            for(var i in data){
+                                var name = data[i].name || "N/A";
+                                if(teamNames.indexOf(name) == -1){
+                                    teams.push(data[i]);
+                                    teamNames.push(name);
+                                }
+                            }
+                            teams.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} );
+                            // teams.splice(teams.length-1,0,teams.splice(teams.indexOf("N/A"),1)[0]);
 
-                            var teamHeaderDOM = jQuery("#result-list-team-template").clone().appendTo("#category-result-container");
-                            jQuery(teamHeaderDOM).find(".team-header > .content").text(team.name || "N/A");
-                            jQuery(teamHeaderDOM).attr("id", "team-" + i).show();
+                            for(var i in teams){
+                                if(jQuery("#team-" + i).length === 0){
+                                    var team = teams[i];
+                                    var teamResults = team.results;
 
-                            for(var j in teamResults){
-                                var elem = teamResults[j];
-                                var resultDOM = null;
-                                var index = i+1;
-                                var athleteTeam = elem.team || "N/A";
-                                if(athleteTeam == team.name){
-                                    (function(teamIndex, athleteIndex, athlete){
-                                        resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + teamIndex);
-                                        var place = +athleteIndex+1;
-                                            jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
-                                            jQuery(resultDOM).find(".result-list-item-name").text(elem.firstname + " " + elem.lastname);
-                                            jQuery(resultDOM).find(".result-list-item-age").text(elem.age + ", " || "");
-                                            jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender || "");
-                                            jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
-                                            jQuery(resultDOM).find(".result-list-item-place").text(place);
-                                            jQuery(resultDOM).find(".result-list-item-team").text(team.name || "N/A");
-                                            jQuery(resultDOM).find("a").bind("click", function(){
-                                                window.location.href = "/bibs-server/r/r/" + athlete.id;
-                                            })
-                                            jQuery(resultDOM).removeAttr("id").show();
-                                    })(i, j, elem)
+                                    var teamHeaderDOM = jQuery("#result-list-team-template").clone().appendTo("#category-result-container");
+                                    jQuery(teamHeaderDOM).find(".team-header > .content").text(team.name || "N/A");
+                                    jQuery(teamHeaderDOM).attr("id", "team-" + i).show();
+
+                                    for(var j in teamResults){
+                                        var elem = teamResults[j];
+                                        var resultDOM = null;
+                                        var index = i+1;
+                                        var athleteTeam = elem.team || "N/A";
+                                        if(athleteTeam == team.name){
+                                            (function(teamIndex, athleteIndex, athlete){
+                                                resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + teamIndex);
+                                                var place = +athleteIndex+1;
+                                                    jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
+                                                    jQuery(resultDOM).find(".result-list-item-name").text(elem.firstname + " " + elem.lastname);
+                                                    jQuery(resultDOM).find(".result-list-item-age").text(elem.age + ", " || "");
+                                                    jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender || "");
+                                                    jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
+                                                    jQuery(resultDOM).find(".result-list-item-place").text(place);
+                                                    jQuery(resultDOM).find(".result-list-item-team").text(team.name || "N/A");
+                                                    jQuery(resultDOM).find("a").bind("click", function(){
+                                                        window.location.href = "/bibs-server/r/r/" + athlete.id;
+                                                    });
+                                                    lastTeamName = team.name;
+                                                    jQuery(resultDOM).removeAttr("id").show();
+                                            })(i, j, elem)
+                                        }
+                                    }
+
+                                    if(teamResults.length === 0){
+                                        lastTeamName = team.name;
+                                    }
                                 }
                             }
                         }
