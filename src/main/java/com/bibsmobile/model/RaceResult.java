@@ -381,6 +381,15 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getResultList();
     }
     
+    public static List<String> getGenderTeamsForEventType(EventType type, String gender) {
+    	EntityManager em = RaceResult.entityManager();
+
+        TypedQuery<String> q = em.createQuery("SELECT distinct o.team FROM RaceResult AS o WHERE o.eventType = :type and o.gender = :gender and o.team != null order by o.team ASC", String.class);
+        q.setParameter("type", type);
+        q.setParameter("gender", gender);
+        return q.getResultList();
+    }
+    
     public static List<RaceResult> getRaceResultsByTeam(EventType type, String team) {
     	EntityManager em = RaceResult.entityManager();
         TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.eventType = :type and o.team = :team", RaceResult.class);

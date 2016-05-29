@@ -1285,9 +1285,14 @@ public class EventController {
     
     @RequestMapping(value = "/teams", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<String> teams(@RequestParam(value = "type") Long type) throws JsonGenerationException, JsonMappingException, IOException {
+    public ResponseEntity<String> teams(
+    		@RequestParam(value = "type") Long type,
+    		@RequestParam(value = "gender", required = false) String gender) throws JsonGenerationException, JsonMappingException, IOException {
     	EventType eventType = EventType.findEventType(type);
     	ObjectMapper mapper = new ObjectMapper();
+    	if(StringUtils.equalsIgnoreCase(gender, "M") || StringUtils.equalsIgnoreCase(gender, "F")) {
+    		return new ResponseEntity<String>(mapper.writeValueAsString(RaceResult.getGenderTeamsForEventType(eventType, gender)), HttpStatus.OK);
+    	}
     	return new ResponseEntity<String>(mapper.writeValueAsString(RaceResult.getTeamsForEventType(eventType)), HttpStatus.OK);
     }
 
