@@ -685,6 +685,7 @@
                     success: function(response) {
                         var data = null;
                         if(response.length > 0){
+                            // format data such that all filters return unified
                             if(searchByName){
                                 data = [JSON.parse(response)];
                             }else{
@@ -694,31 +695,41 @@
 
                             for(var i in data){
                                 var name = data[i].name || "N/A";
-                                if(teamNames.indexOf(name) == -1){
+                                if(teamNames.indexOf(name) == -1 &amp;&amp; teamNames.indexOf(name.toLowerCase()) == -1){
                                     teams.push(data[i]);
                                     teamNames.push(name);
                                 }
                             }
                             teams.sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} );
                             // teams.splice(teams.length-1,0,teams.splice(teams.indexOf("N/A"),1)[0]);
+                            // console.log(teams, teamNames);
 
-                            for(var i in teams){
-                                if(jQuery("#team-" + i).length === 0){
-                                    var team = teams[i];
+                            // for all existing team names, find corresponding result data
+                            for(var i in teamNames){
+                                var index = -1;
+                                for(var tIndex in teams){
+                                    if(teams[tIndex].name.trim().toLowerCase() === teamNames[i].trim().toLowerCase()){
+                                        index = tIndex;
+                                    }
+                                }
+
+                                if(index > -1 &amp;&amp; jQuery("#team-" + i).length === 0){
+                                    var team = teams[index];
                                     var teamResults = team.results;
 
+                                    // once result data is found, create one header for each team name
                                     var teamHeaderDOM = jQuery("#result-list-team-template").clone().appendTo("#category-result-container");
                                     jQuery(teamHeaderDOM).find(".team-header > .content").text(team.name || "N/A");
                                     jQuery(teamHeaderDOM).attr("id", "team-" + i).show();
 
+                                    // parse through team results
                                     for(var j in teamResults){
                                         var elem = teamResults[j];
                                         var resultDOM = null;
-                                        var index = i+1;
                                         var athleteTeam = elem.team || "N/A";
-                                        if(athleteTeam == team.name){
-                                            (function(teamIndex, athleteIndex, athlete){
-                                                resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + teamIndex);
+                                        // if(athleteTeam.trim().toLowerCase() == (team.name).trim().toLowerCase()){
+                                            (function(domIndex, athleteIndex, athlete){
+                                                resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + domIndex);
                                                 var place = +athleteIndex+1;
                                                     jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
                                                     jQuery(resultDOM).find(".result-list-item-name").text(elem.firstname + " " + elem.lastname);
@@ -726,14 +737,13 @@
                                                     jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender || "");
                                                     jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
                                                     jQuery(resultDOM).find(".result-list-item-place").text(place);
-                                                    jQuery(resultDOM).find(".result-list-item-team").text(team.name || "N/A");
+                                                    jQuery(resultDOM).find(".result-list-item-team").text(athleteTeam || "N/A");
                                                     jQuery(resultDOM).find("a").bind("click", function(){
                                                         window.location.href = "/bibs-server/r/r/" + athlete.id;
                                                     });
-                                                    lastTeamName = team.name;
                                                     jQuery(resultDOM).removeAttr("id").show();
                                             })(i, j, elem)
-                                        }
+                                        // }
                                     }
 
                                     if(teamResults.length === 0){
@@ -741,6 +751,7 @@
                                     }
                                 }
                             }
+                            lastTeamName = teamNames[teamNames.length-1];
                         }
                     },
                     type: "GET"
