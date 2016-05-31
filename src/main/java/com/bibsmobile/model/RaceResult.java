@@ -583,7 +583,7 @@ public class RaceResult implements Comparable<RaceResult> {
             firstname += "%";
             lastname += "%";
             HQL += " LOWER(o.firstname) LIKE LOWER(:firstname) AND LOWER(o.lastname) LIKE LOWER(:lastname) ";
-        } else if (StringUtils.isEmpty(firstname) && StringUtils.isEmpty(lastname)){
+        } else if (StringUtils.isEmpty(name)){
         	System.out.println("No name selected");
         } else{
             name += "%";
@@ -607,7 +607,7 @@ public class RaceResult implements Comparable<RaceResult> {
         if (StringUtils.isNotEmpty(firstname) && !StringUtils.isNotEmpty(lastname)) {
             q.setParameter("firstname", firstname);
             q.setParameter("lastname", lastname);
-        } else if(StringUtils.isNotEmpty(firstname) && StringUtils.isNotEmpty(lastname)){
+        } else if(StringUtils.isNotEmpty(name)){
             q.setParameter("name", name);
         }
         q.setFirstResult((page-1) * 10);

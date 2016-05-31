@@ -117,6 +117,7 @@ public class RaceResultController {
     	
     	EventType type = EventType.findEventType(typeId);
     	List<String> teams;
+    	start = StringUtils.lowerCase(start);
     	String searchGender = null;
     	if(StringUtils.equalsIgnoreCase(gender, "M")) searchGender = "M";
     	if(StringUtils.equalsIgnoreCase(gender, "F")) searchGender = "F";
@@ -127,7 +128,7 @@ public class RaceResultController {
     	}
     	int index = 0;
     	for(int i = 0; i < teams.size(); i++) {
-    		if(teams.get(i).compareTo(start) > 0) {
+    		if(StringUtils.lowerCase(teams.get(i)).compareTo(start) > 0) {
     			index = i;
     			break;
     		}
@@ -139,7 +140,6 @@ public class RaceResultController {
     	} else {
     		displayTeams = teams.subList(index, index + pageSize);
     	}
-    	
     	List<LeaderboardTeamDto> response = new ArrayList<LeaderboardTeamDto>();
     	for(String team : displayTeams) {
     		response.add(new LeaderboardTeamDto(RaceResult.getRankingForTeam(type, team, searchGender, 5), team));
