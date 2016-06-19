@@ -568,7 +568,7 @@ public class RaceResult implements Comparable<RaceResult> {
         	HQL += " o.eventType = :eventType AND";
         
         if (bib != null)
-            HQL += " o.bib = :bib AND ";
+            HQL += " o.bib = :bib AND";
 
         if(gender != null && gender.equalsIgnoreCase("M"))
         	HQL += " o.gender = 'M' AND";
