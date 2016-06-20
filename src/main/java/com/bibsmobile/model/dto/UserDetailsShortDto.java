@@ -86,9 +86,9 @@ public class UserDetailsShortDto {
 		for (Event event : user.getEvents()) {
 			events.add(new EventViewResultsDto(event));
 		}
-		results = new HashSet<RaceResultViewDto>();
+		results = new HashSet<RaceResultEnhancedViewDto>();
 		for(RaceResult result : user.getRaceResults()) {
-			results.add(new RaceResultViewDto(result));
+			results.add(new RaceResultEnhancedViewDto(result));
 		}
 
 
@@ -108,7 +108,7 @@ public class UserDetailsShortDto {
 	
 	private Set<EventViewResultsDto> events;
 	
-	private Set<RaceResultViewDto> results;
+	private Set<RaceResultEnhancedViewDto> results;
 		
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -227,14 +227,14 @@ public class UserDetailsShortDto {
 	/**
 	 * @return the results
 	 */
-	public Set<RaceResultViewDto> getResults() {
+	public Set<RaceResultEnhancedViewDto> getResults() {
 		return results;
 	}
 
 	/**
 	 * @param results the results to set
 	 */
-	public void setResults(Set<RaceResultViewDto> results) {
+	public void setResults(Set<RaceResultEnhancedViewDto> results) {
 		this.results = results;
 	}
 
