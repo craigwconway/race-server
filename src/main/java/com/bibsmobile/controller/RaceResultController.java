@@ -21,6 +21,7 @@ import com.bibsmobile.model.UserGroupUserAuthority;
 import com.bibsmobile.model.EventUserGroup;
 import com.bibsmobile.model.dto.LeaderboardTeamDto;
 import com.bibsmobile.model.dto.RaceResultDetailDto;
+import com.bibsmobile.model.dto.RaceResultEnhancedViewDto;
 import com.bibsmobile.model.dto.RaceResultViewDto;
 
 import java.io.UnsupportedEncodingException;
@@ -101,7 +102,7 @@ public class RaceResultController {
         try {
         	Series series = Series.findSeries(seriesId);
             List<RaceResult> raceResults = RaceResult.searchSeriesPaginated(series, name, page, size);
-            rtn = RaceResultViewDto.fromRaceResultsToDtoArray(raceResults);
+            rtn = RaceResultEnhancedViewDto.fromRaceResultsToDtoArray(raceResults);
         } catch (Exception e) {
             e.printStackTrace();
         }
