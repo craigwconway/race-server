@@ -25,6 +25,7 @@ import com.bibsmobile.model.PictureHashtag;
 import com.bibsmobile.model.RaceImage;
 import com.bibsmobile.model.RaceResult;
 import com.bibsmobile.model.UserProfile;
+import com.bibsmobile.model.dto.RaceImageViewDto;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.app.JWTUtil;
 
@@ -190,5 +191,17 @@ public class AppPhotoController {
 		saveImage.setPictureHashtags(saveHashtags);
 		saveImage.persist();
 		return SpringJSONUtil.returnStatusMessage("Created", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/me", method = RequestMethod.GET)
+	@ResponseBody
+	ResponseEntity<String> createPhoto(HttpServletRequest request) {
+		UserProfile user =  JWTUtil.authenticate(request.getHeader("X-FacePunch"));
+		if( user == null) {
+			return SpringJSONUtil.returnErrorMessage("UserNotAuthenticated", HttpStatus.FORBIDDEN);
+		}
+		UserProfile userProfile = UserProfile.findUserProfile(user.getId());
+		List<RaceImage> images = RaceImage.findRaceImagesByUser(userProfile).getResultList();
+		return new ResponseEntity<String>(RaceImageViewDto.fromRaceImagesToDtoArray(images), HttpStatus.OK);
 	}
 }

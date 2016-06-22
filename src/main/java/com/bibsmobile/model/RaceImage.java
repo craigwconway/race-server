@@ -382,4 +382,15 @@ public class RaceImage {
         q.setParameter("event", event);
         return q;
     }
+    
+    public static TypedQuery<RaceImage> findRaceImagesByUser(UserProfile user) {
+        if (user == null)
+            throw new IllegalArgumentException("The user argument is required");
+        EntityManager em = RaceImage.entityManager();
+        String jpaQuery = "SELECT ri from RaceImage ri join ri.raceResults rr where rr.userProfile = :user";
+
+        TypedQuery<RaceImage> q = em.createQuery(jpaQuery, RaceImage.class);
+        q.setParameter("user", user);
+        return q;
+    }
 }
