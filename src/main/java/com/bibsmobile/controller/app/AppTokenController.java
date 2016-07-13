@@ -304,6 +304,12 @@ public class AppTokenController {
 		if(UserProfile.countFindEnabledUserProfilesByEmailEquals(user.getEmail()) > 0) {
 			return SpringJSONUtil.returnErrorMessage("Duplicate", HttpStatus.BAD_REQUEST);
 		}
+		if(!user.getEmail().contains("@") || !user.getEmail().contains(".")) {
+			return SpringJSONUtil.returnErrorMessage("InvalidEmail", HttpStatus.BAD_REQUEST);
+		}
+		if(user.getPassword().length() < 8) {
+			return SpringJSONUtil.returnErrorMessage("InvalidPassword", HttpStatus.BAD_REQUEST);
+		}
 		UserProfile newUser = new UserProfile();
 		newUser.setEmail(user.getEmail());
 		newUser.setFirstname(user.getFirstname());
@@ -430,6 +436,8 @@ public class AppTokenController {
 			object.addProperty("time", new Date().getTime());
 			object.addProperty("status", "success");
 			object.addProperty("expires", new Date().getTime() + 1000 * 60 * 60 * 24 * 30);
+			object.addProperty("firstname", newUser.getFirstname());
+			object.addProperty("lastname", newUser.getLastname());
 			response.setHeader("X-FacePunch", token);
 			return new ResponseEntity<String>(object.toString(), HttpStatus.CREATED);
 		}
