@@ -71,6 +71,7 @@ public class UserDetailsShortDto {
 	UserDetailsShortDto(UserProfile user) {
 		this.id = user.getId();
 		this.firstname = user.getFirstname();
+		this.lastname = user.getLastname();
 		this.gender = user.getGender();
 		this.email = user.getEmail();
 		this.gender = user.getGender();
