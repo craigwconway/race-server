@@ -604,7 +604,7 @@ public class RaceResult implements Comparable<RaceResult> {
             q.setParameter("bib", bib);
         if(team != null)
         	q.setParameter("team", team);
-        if (StringUtils.isNotEmpty(firstname) && !StringUtils.isNotEmpty(lastname)) {
+        if (StringUtils.isNotEmpty(firstname) && StringUtils.isNotEmpty(lastname)) {
             q.setParameter("firstname", firstname);
             q.setParameter("lastname", lastname);
         } else if(StringUtils.isNotEmpty(name)){
