@@ -19,7 +19,9 @@
 </style>
 <div class="bibs-page bibs-bg-gray-1">
     <div class="ui very padded basic segment">
-        <div id="added" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;margin:5px;padding:5px;">Runner Added</div>
+        <div id="added-message-container" style="display:none;color:#fff;background-color:#5cb85c;text-align:center;margin:5px;padding:5px;">
+            <span id="message">Runner Added.</span> Click <a href="/bibs-server/events/${param.event}">here</a> to return to your event.
+        </div>
         <form:create id="fc_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" render="${empty dependencies}" z="lDbQbfi+ahMJ+wsQw7rqYz4MxJc=">
         <div class="ui form" id="add-athlete-form" style="margin:0 auto; width:500px; text-align:center;">
             <h2 class="ui icon header">
@@ -193,17 +195,17 @@
     			console.log("${raceResult}")
     			var userSelectedEvent = '${selectedEventID}';
     			jQuery('#event-type option[value="'+ userSelectedEvent +'"]').attr("selected", "selected");
-                jQuery("#added").show().delay(3000).fadeOut();
-                jQuery("#added").css("background-color", "#ff4e50")
-                jQuery("#added").html("That bib number already exists, please choose a different one");
+                jQuery("#added-message-container").show().delay(3000).fadeOut();
+                jQuery("#added-message-container").css("background-color", "#ff4e50")
+                jQuery("#message").html("That bib number already exists, please choose a different one");
     		}
         }
         if(GetURLParameter("added")){
-            jQuery("#added").show().delay(3000).fadeOut();
+            jQuery("#added-message-container").show().delay(3000).fadeOut();
             if(decodeURIComponent(GetURLParameter("added")).indexOf('unlicensed') > -1) {
-            	jQuery("#added").css("background-color", "#EC971F");
+            	jQuery("#added-message-container").css("background-color", "#EC971F");
             }
-            jQuery("#added").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
+            jQuery("#message").html("Runner " + decodeURIComponent(GetURLParameter("added")) + " added.");
         }
         
         jQuery('input[name="bib"]').focus();
