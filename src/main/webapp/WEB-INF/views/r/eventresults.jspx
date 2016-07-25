@@ -1004,7 +1004,7 @@
                     },
                     type: "GET"
                 }).then(function(){
-                    var pageIndex = currentPage === 1 ? 3 : currentPage + 2;
+                    var pageIndex = currentPage === 1 ? 2 : currentPage + 1;
                     jQuery("#pagination > .pagination.menu > .page-item").removeClass("active");
                     jQuery("#pagination > .pagination.menu > .page-item:nth-child(" + pageIndex + ")").addClass("active");
                 });
