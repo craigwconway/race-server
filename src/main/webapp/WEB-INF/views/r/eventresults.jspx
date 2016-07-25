@@ -958,7 +958,7 @@
                 }
                 url += query;
 
-                if(currentPage > 1){
+                if(currentPage > 0){
                     url += "&amp;page=" + currentPage;
                 }
 
@@ -980,10 +980,7 @@
                         for(var i in results){
                             var elem = results[i];
 
-                            var place = +i + 1;
-                            if(currentPage > 1){
-                                place = +i + currentPage*10 + 1;
-                            }
+                            var place = +i + (currentPage-1)*10 + 1;
                             var resultDOM = jQuery("#result-list-item-template").clone().appendTo("#result-list");
                                 jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
                                 jQuery(resultDOM).find(".result-list-item-name").text(elem.firstname + " " + elem.lastname);
