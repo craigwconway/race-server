@@ -18,7 +18,7 @@
         @media all and (max-width: 500px){
             #result-filter-buttons .ui.button,
             #result-list .ui.label{
-                font-size: 0.5vmax !important;
+                font-size: 2vmax !important;
             }
         }
     </style>
