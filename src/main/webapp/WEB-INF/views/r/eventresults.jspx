@@ -634,11 +634,15 @@
                                     var place = +j+1;
                                         jQuery(resultDOM).find('.result-list-item-time').text(elem.timeofficialdisplay);
                                         jQuery(resultDOM).find('.result-list-item-name').text(elem.firstname + " " + elem.lastname);
-                                        jQuery(resultDOM).find('.result-list-item-age').text(elem.age + ", " || "");
+                                        if(elem.age == null) {
+                                        	jQuery(resultDOM).find('.result-list-item-age').text("");
+                                        } else {
+                                        	jQuery(resultDOM).find('.result-list-item-age').text(elem.age + ", " || "");
+                                        }
                                         jQuery(resultDOM).find('.result-list-item-gender').text(elem.gender || "");
                                         jQuery(resultDOM).find('.result-list-item-bib').text(elem.bib);
                                         jQuery(resultDOM).find('.result-list-item-place').text(place);
-                                        if(elem.team == null) {
+                                        if(elem.team == null || elem.team == "") {
                                         	jQuery(resultDOM).find(".result-list-item-team").text("");
                                         	jQuery(resultDOM).find(".result-list-team").text("");
                                         } else {
@@ -731,18 +735,26 @@
                                     for(var j in teamResults){
                                         var elem = teamResults[j];
                                         var resultDOM = null;
-                                        var athleteTeam = elem.team || "N/A";
                                         // if(athleteTeam.trim().toLowerCase() == (team.name).trim().toLowerCase()){
                                             (function(domIndex, athleteIndex, athlete){
                                                 resultDOM = jQuery("#result-list-item-template").clone().appendTo("#team-" + domIndex);
                                                 var place = +athleteIndex+1;
                                                     jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
                                                     jQuery(resultDOM).find(".result-list-item-name").text(elem.firstname + " " + elem.lastname);
-                                                    jQuery(resultDOM).find(".result-list-item-age").text(elem.age + ", " || "");
+                                                    if(elem.age == null) {
+                                                    	jQuery(resultDOM).find('.result-list-item-age').text("");
+                                                    } else {
+                                                    	jQuery(resultDOM).find('.result-list-item-age').text(elem.age + ", " || "");
+                                                    }
                                                     jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender || "");
                                                     jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
                                                     jQuery(resultDOM).find(".result-list-item-place").text(place);
-                                                    jQuery(resultDOM).find(".result-list-item-team").text(athleteTeam || "N/A");
+                                                    if(elem.team == null || elem.team == "") {
+                                                    	jQuery(resultDOM).find(".result-list-item-team").text("");
+                                                    	jQuery(resultDOM).find(".result-list-team").text("");
+                                                    } else {
+                                                        jQuery(resultDOM).find(".result-list-item-team").text(elem.team || "N/A");
+                                                    }
                                                     jQuery(resultDOM).find("a").bind("click", function(){
                                                         window.location.href = "/bibs-server/r/r/" + athlete.id;
                                                     });
@@ -989,11 +1001,15 @@
                             var resultDOM = jQuery("#result-list-item-template").clone().appendTo("#result-list");
                                 jQuery(resultDOM).find(".result-list-item-time").text(elem.timeofficialdisplay);
                                 jQuery(resultDOM).find(".result-list-item-name").text(elem.firstname + " " + elem.lastname);
-                                jQuery(resultDOM).find(".result-list-item-age").text(elem.age + ", " || "");
+                                if(elem.age == null) {
+                                	jQuery(resultDOM).find('.result-list-item-age').text("");
+                                } else {
+                                	jQuery(resultDOM).find('.result-list-item-age').text(elem.age + ", " || "");
+                                }
                                 jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender);
                                 jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
                                 jQuery(resultDOM).find(".result-list-item-place").text(place);
-                                if(elem.team == null) {
+                                if(elem.team == null || elem.team == "") {
                                 	jQuery(resultDOM).find(".result-list-item-team").text("");
                                 	jQuery(resultDOM).find(".result-list-team").text("");
                                 } else {
