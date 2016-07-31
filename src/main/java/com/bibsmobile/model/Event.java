@@ -761,7 +761,7 @@ public class Event {
         if (userGroup == null )
             return null;
 
-        TypedQuery<Event> q = entityManager().createQuery("select e from Event e join e.eventUserGroups eug where eug.userGroup = :userGroup and e.live = 1", Event.class);
+        TypedQuery<Event> q = entityManager().createQuery("select e from Event e join e.eventUserGroups eug where eug.userGroup = :userGroup and e.live = 1 ORDER BY  e.timeStart DESC", Event.class);
         q.setParameter("userGroup", userGroup);
 
         return q.getResultList();
