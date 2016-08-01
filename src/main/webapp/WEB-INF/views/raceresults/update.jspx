@@ -22,6 +22,7 @@
 </style>
 <div class="bibs-page bibs-bg-gray-1">
     <div class="ui very padded basic segment">
+    <div class="pull-left" style="margin-bottom:1em;"><button class="ui orange button" onclick="onBack()" type="submit">Back</button></div>
     <form:update id="fu_com_bibsmobile_model_RaceResult" modelAttribute="raceResult" path="/raceresults" versionField="Version" z="F9aarHhR5nq4t+oI83y+vKqDH/g=">
         <div class="ui form" style="margin:0 auto; width:500px;">
             <div class="pull-right"><button onclick="deleteAthlete()" class="ui red button" type="button"><i class="fa fa-trash icon"><!--  --></i>Delete</button></div>
@@ -259,6 +260,10 @@
                 }
             });
         }
+    }
+
+    function onBack(){
+        window.location="/bibs-server/raceresults?/myresults&event="+eid;
     }
 </script>
 </div>
