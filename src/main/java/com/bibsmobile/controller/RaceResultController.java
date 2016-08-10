@@ -308,7 +308,7 @@ public class RaceResultController {
         String rtn = "";
         try {
             RaceResult raceResult = RaceResult.findRaceResultsByEventAndBibEquals(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), bib).getSingleResult();
-            rtn = raceResult.toJson();
+            return RaceResultDetailDto.fromRaceResultToDto(raceResult);
         } catch (Exception e) {
             // e.printStackTrace();
         }
