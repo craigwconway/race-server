@@ -171,6 +171,7 @@ public class EventTypeController {
         // Compute meters:
         Long meters;
         try {
+        	System.out.println("Checking distance: " + eventType.getDistance());  
             if(StringUtils.endsWith(eventType.getDistance(), "k")) {
             	meters = (Long) (1000 * Float.valueOf(eventType.getDistance().replace("k", "")).longValue());
             } else if(StringUtils.endsWith(eventType.getDistance(), "mi")) {
@@ -179,8 +180,10 @@ public class EventTypeController {
             	meters = Long.valueOf(eventType.getDistance());
             } else {
             	meters = null;
-            }        	
+            }        
+            System.out.println("Chosen meters value: " + meters);
         } catch (Exception e) {
+        	System.out.println("Unparseable meter string: " + e);
         	meters = null;
         }
         eventType.setMeters(meters);

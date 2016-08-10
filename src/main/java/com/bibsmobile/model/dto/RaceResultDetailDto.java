@@ -88,7 +88,7 @@ public class RaceResultDetailDto {
 			this.eventType = new EventTypeDto(result.getEventType());
 			//Calculate pace time.
 			if(result.getEventType().getMeters() != null && result.getEventType().getMeters() > 0) {
-				this.timePace = RaceResult.paceToHumanTime(result.getTimestart(), result.getTimeofficial(), result.getEventType().getMeters());
+				this.timePace = RaceResult.paceToHumanTime(0, result.getTimediff(), result.getEventType().getMeters());
 			}
 		}
 		if(result.getEvent() != null) {

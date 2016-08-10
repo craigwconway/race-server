@@ -341,7 +341,7 @@ public class RaceResultController {
                 rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), firstName)
                         .getResultList());
             else
-                rtn = RaceResult.toJsonArray(RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(),
+                rtn = RaceResultDetailDto.fromRaceResultsToDtoArray(RaceResult.findRaceResultsByEventAndFirstnameLikeAndLastnameLike(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(),
                         firstName, lastName).getResultList());
         } catch (Exception e) {
             // e.printStackTrace();
