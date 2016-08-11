@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class LeaderboardTeamDto {
 	
 	private String name;
-	private List<RaceResultViewDto> results;
+	private List<RaceResultRankedDto> results;
 	
 	/**
 	 * @return the name
@@ -34,13 +34,13 @@ public class LeaderboardTeamDto {
 	/**
 	 * @return the results
 	 */
-	public List<RaceResultViewDto> getResults() {
+	public List<RaceResultRankedDto> getResults() {
 		return results;
 	}
 	/**
 	 * @param results the results to set
 	 */
-	public void setResults(List<RaceResultViewDto> results) {
+	public void setResults(List<RaceResultRankedDto> results) {
 		this.results = results;
 	}
 	
@@ -51,7 +51,7 @@ public class LeaderboardTeamDto {
 
 	public LeaderboardTeamDto(List<RaceResult> results, String name) {
 		this.name = name;
-		this.results = RaceResultViewDto.fromRaceResultsToRawDtoArray(results);
+		this.results = RaceResultRankedDto.fromRaceResultsToRawDtoArray(results);
 	}
 	
 	public static String toJsonArray(Collection<LeaderboardTeamDto> leaderboards) {
