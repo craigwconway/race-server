@@ -293,10 +293,14 @@ public class ResultsFileMappingController {
             	String field = map[j].split("custom-",2)[1];
             } else if(map[j].startsWith("split")){
             	try{
-            		System.out.println("Import mapping: " + map[j] + " value: " + nextLine[j]);
-	            	int index = Integer.valueOf(map[j].replaceAll("split", ""))-1;
-	            	splits[index] = RaceResult.fromHumanTime(eventType.getGunTime().getTime(), nextLine[j]);
+            		//System.out.println("Import mapping: " + map[j] + " value: " + nextLine[j]);
+	            	//int index = Integer.valueOf(map[j].replaceAll("split", ""))-1;
+	            	//splits[index] = RaceResult.fromHumanTime(eventType.getGunTime().getTime(), nextLine[j]);
+            		Integer position = Integer.valueOf(map[j].replace("split", "").trim());
 	            	hasSplits = true;
+	            	Split split = new Split();
+	            	split.setTimeManual(nextLine[j].trim());
+	            	splitMap.put(position, split);
             	}catch(Exception e){
             		e.printStackTrace();
             		System.out.println("split error "+e.getMessage());
@@ -363,12 +367,11 @@ public class ResultsFileMappingController {
         RaceResult exists = null;
         try {
             exists = RaceResult.findRaceResultsByEventAndBibEquals(event, result.getBib()).getSingleResult();
-            Hibernate.initialize(exists.getCustomFields());
-            Hibernate.initialize(exists.getSplits());
         } catch (Exception e) {
             System.out.println("ResultsFileMappingController error "+e.getMessage());
         }
         if (null != exists) {
+        	System.out.println("Found a match for bib " + result.getBib());
         	if(exists.getTimeofficial() > 0){
         		result.setTimestart(exists.getTimestart());
         		result.setTimeofficial(exists.getTimeofficial());
@@ -379,42 +382,15 @@ public class ResultsFileMappingController {
     			result.setLicensed(exists.isLicensed());
     			result.setTimed(exists.isTimed());
     		}
-    		
+    		System.out.println("Updating custom fields for bib " + result.getBib());
     		exists.getCustomFields().putAll(customFields);
-    		
-        	if(exists.getTimesplit() != null && !exists.getTimesplit().isEmpty()) {
-        		// merge splits
-        		String strSplits2 = "";
-        		String[] existingSplits = exists.getTimesplit().split(",");
-                if(hasSplits){
-                	try{
-        		        for(int i = 0; i < splits.length; i++){
-        		        	long split = splits[i];
-        		        	if(strSplits2.length() > 0){
-        		        		strSplits2 += ",";
-        		        	}
-        		        	if(split !=0) {
-        		        		if(hasOffset) split += offset;
-        		        		strSplits2 += split+"";
-        		        	} else if(i < existingSplits.length && existingSplits[i] != null && !existingSplits[i].isEmpty()) {
-        		        		strSplits2 += existingSplits[i];
-        		        	} else {
-        		        		strSplits2 += split+"";
-        		        	}
-        		        }
-        		        result.setTimesplit(strSplits2);
-        		        System.out.println("ResultsFileMappingController splits "+strSplits);
-                	}catch(Exception e){
-                		e.printStackTrace();
-                	}
-                } else {
-        			result.setTimesplit(exists.getTimesplit());
-        		}
-        		
-        	}
+    		System.out.println("Updating splits for bib " + result.getBib());
+    		exists.getSplits().putAll(splitMap);
+    		System.out.println("Saving result " + result);
             exists.merge(result);
             exists.merge();
         } else {
+        	System.out.println("Couldn't find match for bib " + result.getBib());
             if(BuildTypeUtil.usesLicensing()) {
             	DeviceInfo systemInfo = DeviceInfo.findDeviceInfo(new Long(1));
                 result.setLicensed(License.isUnitAvailible());
@@ -422,6 +398,10 @@ public class ResultsFileMappingController {
                 systemInfo.setRunnersUsed(systemInfo.getRunnersUsed() + 1);
                 systemInfo.merge();
             } else {
+        		for(Split split : splitMap.values()) {
+        			split.setRaceResult(exists);
+        		}
+        		result.setSplits(splitMap);
             	result.persist();
             }
         }

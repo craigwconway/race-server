@@ -94,7 +94,7 @@ public class RaceResultDetailDto {
 		if(result.getEvent() != null) {
 			this.event = new EventViewResultsDto(result.getEvent());
 		}
-		ArrayList<SplitDto> splits = new ArrayList<SplitDto>();
+		splits = new ArrayList<SplitDto>();
 		for(Entry<Integer, Split> split : result.getSplits().entrySet()) {
 			splits.add(new SplitDto(split.getValue(), split.getKey()));
 		}
@@ -123,7 +123,7 @@ public class RaceResultDetailDto {
 	private EventTypeDto eventType;
 	private EventViewResultsDto event;
 	private List<RaceImageViewDto> images;
-	private List<Split> splits;
+	private List<SplitDto> splits;
 		
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -297,7 +297,7 @@ public class RaceResultDetailDto {
 	/**
 	 * @return the splits
 	 */
-	public List<Split> getSplits() {
+	public List<SplitDto> getSplits() {
 		return splits;
 	}
 

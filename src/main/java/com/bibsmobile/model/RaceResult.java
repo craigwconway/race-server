@@ -1129,7 +1129,7 @@ public class RaceResult implements Comparable<RaceResult> {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");
         EntityManager em = RaceResult.entityManager();
-        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o WHERE o.event = :event AND o.bib = :bib", RaceResult.class);
+        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult o LEFT JOIN FETCH o.splits WHERE o.event = :event AND o.bib = :bib", RaceResult.class);
         q.setParameter("event", event);
         q.setParameter("bib", bib);
         return q;

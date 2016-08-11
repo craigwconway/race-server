@@ -11,8 +11,8 @@ import com.bibsmobile.model.Split;
  *
  */
 public class SplitDto {
-	String timeDisplay;
-	int position;
+	private String timeDisplay;
+	private int position;
 	
 	public SplitDto(){};
 	public SplitDto(Split split) {
@@ -58,6 +58,30 @@ public class SplitDto {
 		default:
 			break;
 		}
+	}
+	/**
+	 * @return the timeDisplay
+	 */
+	public String getTimeDisplay() {
+		return timeDisplay;
+	}
+	/**
+	 * @return the position
+	 */
+	public int getPosition() {
+		return position;
+	}
+	/**
+	 * @param timeDisplay the timeDisplay to set
+	 */
+	public void setTimeDisplay(String timeDisplay) {
+		this.timeDisplay = timeDisplay;
+	}
+	/**
+	 * @param position the position to set
+	 */
+	public void setPosition(int position) {
+		this.position = position;
 	};
 	
 }
