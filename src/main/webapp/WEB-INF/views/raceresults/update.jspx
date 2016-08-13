@@ -196,7 +196,7 @@
         initDateTimePickers();
         jQuery('#back').off().on('click', function(e){
             e.preventDefault();
-            window.location="/bibs-server/raceresults?/myresults&amp;event=${raceResult.event.id}";
+            window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
         });
     };
 
@@ -256,14 +256,14 @@
                 type: "DELETE",
                 dataType: "json",
                 complete: function() {
-                    window.location="/bibs-server/raceresults?/myresults&amp;event=${raceResult.event.id}";
+                    window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
                 }
             });
         }
     }
 
     function onBack(){
-        window.location="/bibs-server/raceresults?/myresults&event="+eid;
+        window.location="/bibs-server/raceresults?/myresults&amp;event=${event.id}";
     }
 </script>
 </div>
