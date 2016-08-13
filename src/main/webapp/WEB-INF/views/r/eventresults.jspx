@@ -198,7 +198,10 @@
                         </div>
                         <div class="content">
                             <a class="header"><span class="result-list-item-name"><!--   --></span>, <span class="result-list-item-age"><!--   --></span> <span class="result-list-item-gender"><!--   --></span></a>
-                            <div class="description"><span class="result-list-bib">Bib #<span class="result-list-item-bib"><!--  --></span></span> <span class="result-list-team">, Team <span class="result-list-item-team"><!--  --></span></span></div>
+                            <div class="description"><span class="result-list-bib">Bib #<span class="result-list-item-bib"><!--  --></span></span> <span class="result-list-team"><span class="result-list-item-team-container">, Team <span class="result-list-item-team"><!--  --></span></span></span></div>
+                            <div class="right floated content result-list-item-ranking-container" style="display:none">
+                                <span class="result-list-item-ranking bibs-main-blue"><!--   --></span>
+                            </div>
                         </div>
                     </div>
                     <div class="ui divided relaxed large list team-result-list" id="result-list-team-template" style="display:none">
@@ -758,11 +761,25 @@
                                                     jQuery(resultDOM).find(".result-list-item-gender").text(elem.gender || "");
                                                     jQuery(resultDOM).find(".result-list-item-bib").text(elem.bib);
                                                     jQuery(resultDOM).find(".result-list-item-place").text(place);
+                                                    var ranking = elem.rankGender.split(" ")[0];
+                                                    console.log(ranking, ranking.length-1);
+                                                    if(ranking.substr(ranking.length-1) == "1"){
+                                                        ranking += "st";
+                                                    }else if(ranking.substr(ranking.length-1) == "2"){
+                                                        ranking += "nd";
+                                                    }else if(ranking.substr(ranking.length-1) == "3"){
+                                                        ranking += "rd";
+                                                    }else{
+                                                        ranking += "th";
+                                                    }
+                                                    jQuery(resultDOM).find(".result-list-item-ranking").text(ranking + " in Overall " + elem.gender);
+                                                    jQuery(resultDOM).find(".result-list-item-ranking-container").show();
                                                     if(elem.team == null || elem.team == "") {
                                                     	jQuery(resultDOM).find(".result-list-item-team").text("");
                                                     	jQuery(resultDOM).find(".result-list-team").text("");
                                                     } else {
                                                         jQuery(resultDOM).find(".result-list-item-team").text(elem.team || "N/A");
+                                                        jQuery(resultDOM).find(".result-list-item-team-container").hide();
                                                     }
                                                     jQuery(resultDOM).find("a").bind("click", function(){
                                                         window.location.href = "/bibs-server/r/r/" + athlete.id;
