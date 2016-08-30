@@ -108,8 +108,10 @@ public class AwardCategoryController {
         
         awardCategory.merge();
         return (!awardCategory.isMedal()) 
-        		? "redirect:/events/ageGenderRankings?event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender()
-        		: "redirect:/events/awards?event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender();
+        		? "redirect:/events/ageGenderRankings?type="+awardCategory.getEventType().getId()  
+        				+"&event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender()
+        		: "redirect:/events/awards?type=" + awardCategory.getEventType().getId() 
+        				+ "&event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender();
      }
 	
 	@RequestMapping(value = "/{id}", params = "form", produces = "text/html")

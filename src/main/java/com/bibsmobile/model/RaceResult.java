@@ -924,6 +924,50 @@ public class RaceResult implements Comparable<RaceResult> {
         q.setParameter("timediff", r.getTimediff());
         return q.getSingleResult();
     }    
+    
+    // Slow way to do this until I figure out a better one
+    public static Long findResolvedGenderRankingForResult(RaceResult r) {
+        if (r.getEventType() == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        if (! (StringUtils.equalsIgnoreCase(r.getGender(), "M") || StringUtils.equalsIgnoreCase(r.getGender(), "F") ) ) {
+        	throw new IllegalArgumentException("Result does not have a gender");
+        }
+        if(r.getTimediff() == 0) {
+        	throw new IllegalArgumentException("Result is missing a time");
+        }
+        List<RaceResult> resolved = RaceResult.resolveGenderRankingForResult(r);
+        long offset = resolved.size() - resolved.indexOf(r) - 1;
+        if(offset != 0) {
+        	System.out.println("Result ID: " + r.getId() + " Resolved offset of " + offset);
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o "
+        		+ "WHERE o.eventType = :eventType AND o.gender = :gender AND o.disqualified = 0"
+        		+ "AND o.timediff <= :timediff AND o.timediff > 0", Long.class);
+        q.setParameter("eventType", r.getEventType());
+        q.setParameter("gender", r.getGender());
+        q.setParameter("timediff", r.getTimediff());
+        return q.getSingleResult() - offset;
+    }  
+    
+    public static List<RaceResult> resolveGenderRankingForResult(RaceResult r) {
+        if (r.getEventType() == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        if (! (StringUtils.equalsIgnoreCase(r.getGender(), "M") || StringUtils.equalsIgnoreCase(r.getGender(), "F") ) ) {
+        	throw new IllegalArgumentException("Result does not have a gender");
+        }
+        if(r.getTimediff() == 0) {
+        	throw new IllegalArgumentException("Result is missing a time");
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o "
+        		+ "WHERE o.eventType = :eventType AND o.gender = :gender AND o.disqualified = 0"
+        		+ "AND o.timediff = :timediff AND o.timediff > 0", RaceResult.class);
+        q.setParameter("eventType", r.getEventType());
+        q.setParameter("gender", r.getGender());
+        q.setParameter("timediff", r.getTimediff());
+        return q.getResultList();
+    }
  
     public static Long findOverallRankingForResult(RaceResult r) {
         if (r.getEventType() == null)
@@ -940,9 +984,48 @@ public class RaceResult implements Comparable<RaceResult> {
         return q.getSingleResult();
     }
     
+    // Slow way to do this until I figure out a better one
+    public static Long findResolvedOverallRankingForResult(RaceResult r) {
+        if (r.getEventType() == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        if (! (StringUtils.equalsIgnoreCase(r.getGender(), "M") || StringUtils.equalsIgnoreCase(r.getGender(), "F") ) ) {
+        	throw new IllegalArgumentException("Result does not have a gender");
+        }
+        if(r.getTimediff() == 0) {
+        	throw new IllegalArgumentException("Result is missing a time");
+        }
+        List<RaceResult> resolved = RaceResult.resolveOverallRankingForResult(r);
+        long offset = resolved.size() - resolved.indexOf(r) - 1;
+        if(offset != 0) {
+        	System.out.println("Result ID: " + r.getId() + " Resolved offset of " + offset);
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(o) FROM RaceResult AS o "
+        		+ "WHERE o.eventType = :eventType  AND o.disqualified = 0"
+        		+ "AND o.timediff <= :timediff AND o.timediff > 0", Long.class);
+        q.setParameter("eventType", r.getEventType());
+        q.setParameter("timediff", r.getTimediff());
+        return q.getSingleResult() - offset;
+    }  
+    
+    public static List<RaceResult> resolveOverallRankingForResult(RaceResult r) {
+        if (r.getEventType() == null)
+            throw new IllegalArgumentException("The eventType argument is required");
+        if(r.getTimediff() == 0) {
+        	throw new IllegalArgumentException("Result is missing a time");
+        }
+        EntityManager em = RaceResult.entityManager();
+        TypedQuery<RaceResult> q = em.createQuery("SELECT o FROM RaceResult AS o "
+        		+ "WHERE o.eventType = :eventType  AND o.disqualified = 0"
+        		+ "AND o.timediff = :timediff AND o.timediff > 0", RaceResult.class);
+        q.setParameter("eventType", r.getEventType());
+        q.setParameter("timediff", r.getTimediff());
+        return q.getResultList();
+    }    
+    
     public String computeGenderRanking() {
     	try{
-    		return "" + RaceResult.findGenderRankingForResult(this) + " of " + RaceResult.countFindValidRaceResultsInGenderForType(this.getEventType(), this.gender);
+    		return "" + RaceResult.findResolvedGenderRankingForResult(this) + " of " + RaceResult.countFindValidRaceResultsInGenderForType(this.getEventType(), this.gender);
     	} catch (Exception e ) {
     		e.printStackTrace();
     		return "N/A";
@@ -951,7 +1034,7 @@ public class RaceResult implements Comparable<RaceResult> {
 
     public String computeOverallRanking() {
     	try{
-    		return "" + RaceResult.findOverallRankingForResult(this) + " of " + RaceResult.countFindValidRaceResultsByEventType(this.getEventType());
+    		return "" + RaceResult.findResolvedOverallRankingForResult(this) + " of " + RaceResult.countFindValidRaceResultsByEventType(this.getEventType());
     	} catch (Exception e ) {
     		return "N/A";
     	}
