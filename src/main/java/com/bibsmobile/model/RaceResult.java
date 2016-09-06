@@ -988,9 +988,6 @@ public class RaceResult implements Comparable<RaceResult> {
     public static Long findResolvedOverallRankingForResult(RaceResult r) {
         if (r.getEventType() == null)
             throw new IllegalArgumentException("The eventType argument is required");
-        if (! (StringUtils.equalsIgnoreCase(r.getGender(), "M") || StringUtils.equalsIgnoreCase(r.getGender(), "F") ) ) {
-        	throw new IllegalArgumentException("Result does not have a gender");
-        }
         if(r.getTimediff() == 0) {
         	throw new IllegalArgumentException("Result is missing a time");
         }
