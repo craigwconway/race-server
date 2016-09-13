@@ -796,8 +796,9 @@ public class RaceResult implements Comparable<RaceResult> {
         if(l < 0 || meters == 0) {
         	return "N/A";
         }
-        double units = ((double) meters)/1760;
-        long lAdjusted = (long) (l/units);
+        double units = ((double) meters)/1609;
+        System.out.println("Distance: " + units );
+        long lAdjusted = (long) (((double)l)/units);
         
         int hours = (int) ((lAdjusted / 3600000));
         int minutes = (int) ((lAdjusted / 60000) % 60);
