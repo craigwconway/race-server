@@ -796,8 +796,9 @@ public class RaceResult implements Comparable<RaceResult> {
         if(l < 0 || meters == 0) {
         	return "N/A";
         }
-        double units = ((double) meters)/1760;
-        long lAdjusted = (long) (l/units);
+        double units = ((double) meters)/1609;
+        System.out.println("Distance: " + units );
+        long lAdjusted = (long) (((double)l)/units);
         
         int hours = (int) ((lAdjusted / 3600000));
         int minutes = (int) ((lAdjusted / 60000) % 60);
@@ -988,9 +989,6 @@ public class RaceResult implements Comparable<RaceResult> {
     public static Long findResolvedOverallRankingForResult(RaceResult r) {
         if (r.getEventType() == null)
             throw new IllegalArgumentException("The eventType argument is required");
-        if (! (StringUtils.equalsIgnoreCase(r.getGender(), "M") || StringUtils.equalsIgnoreCase(r.getGender(), "F") ) ) {
-        	throw new IllegalArgumentException("Result does not have a gender");
-        }
         if(r.getTimediff() == 0) {
         	throw new IllegalArgumentException("Result is missing a time");
         }

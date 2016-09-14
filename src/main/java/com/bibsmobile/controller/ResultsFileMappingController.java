@@ -377,6 +377,12 @@ public class ResultsFileMappingController {
         		result.setTimeofficial(exists.getTimeofficial());
         		result.setTimeofficialdisplay(exists.getTimeofficialdisplay());
         	}
+        	if(StringUtils.isNotEmpty(result.getTimeofficialmanual())) {
+        		exists.setTimeofficialmanual(result.getTimeofficialmanual());
+        	}
+        	if(StringUtils.isNotEmpty(result.getTimegunmanual())) {
+        		exists.setTimegunmanual(result.getTimegunmanual());
+        	}
         	//Update merged result to reflect existing results licensing status
     		if(BuildTypeUtil.usesLicensing()) {
     			result.setLicensed(exists.isLicensed());

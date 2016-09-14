@@ -172,7 +172,11 @@ public class EventTypeController {
         Long meters;
         try {
         	System.out.println("Checking distance: " + eventType.getDistance());  
-            if(StringUtils.endsWith(eventType.getDistance(), "k")) {
+        	if(StringUtils.equals(eventType.getDistance(), "Half Marathon")) {
+        		meters = new Long(21100);
+        	} else if(StringUtils.equals(eventType.getDistance(), "Marathon")){ 
+        		meters = new Long(42200);
+        	} else if(StringUtils.endsWith(eventType.getDistance(), "k")) {
             	meters = (Long) (1000 * Float.valueOf(eventType.getDistance().replace("k", "")).longValue());
             } else if(StringUtils.endsWith(eventType.getDistance(), "mi")) {
             	meters = (Long) (1760 * Float.valueOf(eventType.getDistance().replace("mi", "")).longValue());
@@ -258,7 +262,11 @@ public class EventTypeController {
         // Compute meters:
         Long meters;
         try {
-            if(StringUtils.endsWith(eventType.getDistance(), "k")) {
+        	if(StringUtils.equals(eventType.getDistance(), "Half Marathon")) {
+        		meters = new Long(21100);
+        	} else if(StringUtils.equals(eventType.getDistance(), "Marathon")){ 
+        		meters = new Long(42200);
+        	} else if(StringUtils.endsWith(eventType.getDistance(), "k")) {
             	meters = (Long) (1000 * Float.valueOf(eventType.getDistance().replace("k", "")).longValue());
             } else if(StringUtils.endsWith(eventType.getDistance(), "mi")) {
             	meters = (Long) (1760 * Float.valueOf(eventType.getDistance().replace("mi", "")).longValue());
