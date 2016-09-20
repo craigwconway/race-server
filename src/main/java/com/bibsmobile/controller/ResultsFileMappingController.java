@@ -11,6 +11,7 @@ import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.Split;
+import com.bibsmobile.model.structs.RaceResultImportResponse;
 import com.bibsmobile.service.AwardsImmortalCache;
 import com.bibsmobile.util.BuildTypeUtil;
 import com.bibsmobile.util.XlsToCsv;
@@ -234,13 +235,17 @@ public class ResultsFileMappingController {
         resultsImport.setRunDate(new Date());
         File file = new File(resultsFile.getFilePath());
         String[] map = resultsFileMapping.getMap().split(",");
+        int eventTypesChanged = 0;
         if (resultsFile.getFilePath().endsWith(".csv") || resultsFile.getFilePath().endsWith(".txt")
         		|| resultsFile.getFilePath().endsWith(".CSV") || resultsFile.getFilePath().endsWith(".TXT")) {
             CSVReader reader = new CSVReader(new FileReader(file));
             String[] nextLine;
             if(resultsFileMapping.isSkipFirstRow() || resultsFileMapping.isHeader()) reader.readNext();
             while ((nextLine = reader.readNext()) != null) {
-                _this.saveRaceResult(resultsImport, event, eventType, nextLine, map);
+                RaceResultImportResponse response = _this.saveRaceResult(resultsImport, event, eventType, nextLine, map);
+                if(response.isEventTypeChanged()) {
+                	eventTypesChanged++;
+                }
             }
             reader.close();
         } else if (resultsFile.getFilePath().endsWith(".xlsx") || resultsFile.getFilePath().endsWith(".xls")
@@ -261,13 +266,16 @@ public class ResultsFileMappingController {
     	}.start(); // thread run
     }
 
-    public void saveRaceResult(ResultsImport resultsImport, Event event, EventType eventType, String[] nextLine, String[] map) {
+    public RaceResultImportResponse saveRaceResult(ResultsImport resultsImport, Event event, EventType eventType, String[] nextLine, String[] map) {
         if (/*nextLine.length != map.length ||*/ nextLine.length == 0) {
             resultsImport.setErrors(resultsImport.getErrors() + 1);
             resultsImport.setErrorRows(resultsImport.getErrorRows().concat(nextLine[0]));
-            return;
+            RaceResultImportResponse response = new RaceResultImportResponse();
+            response.setError(true);
+            return response;
         }
         
+        RaceResultImportResponse response = new RaceResultImportResponse();
         long[] splits = new long[9];
         long offset = 0;
         boolean hasOffset = false;
@@ -412,6 +420,7 @@ public class ResultsFileMappingController {
             }
         }
         resultsImport.setRowsProcessed(resultsImport.getRowsProcessed() + 1);
+        return response;
     }
     // #################################
 

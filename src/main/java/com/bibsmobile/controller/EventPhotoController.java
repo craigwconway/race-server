@@ -130,17 +130,17 @@ public class EventPhotoController {
 
     @RequestMapping(value = "/fileupload", method = RequestMethod.POST)
     @ResponseBody
-    public String fileUpload(@ModelAttribute("uploadFile") UploadFile uploadFile) throws IOException {
-        MultipartFile file = uploadFile.getFile();
+    public String fileUpload(@ModelAttribute("uploadFile") MultipartFile map,
+    		@RequestParam("event") long eventId) throws IOException {
         Map<String, Object> fileInfo = new HashMap<>();
         StringBuilder fileName = new StringBuilder();
-        fileName.append(((Long) System.currentTimeMillis())).append(".").append(FilenameUtils.getExtension(file.getOriginalFilename()));
+        fileName.append(((Long) System.currentTimeMillis())).append(".").append(FilenameUtils.getExtension(map.getOriginalFilename()));
         String fileNameStr = fileName.toString();
-        if (file != null && file.getSize() > 0) {
-            this.uploadFileToS3(file, fileNameStr);
-            fileInfo.put("fileOriginalName", file.getOriginalFilename());
-            fileInfo.put("fileType", file.getContentType());
-            fileInfo.put("fileSize", file.getSize());
+        if (map != null && map.getSize() > 0) {
+            this.uploadFileToS3(map, fileNameStr);
+            fileInfo.put("fileOriginalName", map.getOriginalFilename());
+            fileInfo.put("fileType", map.getContentType());
+            fileInfo.put("fileSize", map.getSize());
             fileInfo.put("s3FileName", fileNameStr);
             fileInfo.put("s3Url", this.awsS3UrlPrefix + fileNameStr);
         }
