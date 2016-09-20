@@ -54,7 +54,7 @@
                          <div style="width:1px;height:0px;overflow:hidden;"><input type="file" id="file" name="content"></input></div>
                     </label>
                 </div>
-                <div class="meta" style="text-align:right">allowed: .csv, .txt, .xls (&lt;5MB)</div>
+                <div class="meta" style="text-align:right">allowed: .csv, .txt, .xls (&lt;6MB)</div>
             </div> 
         </div>
         <div style="display:none">
@@ -79,7 +79,7 @@
 
         // grabbed code snippet from: https://github.com/Semantic-Org/Semantic-UI/issues/403
         var fileExtentionRange = '.csv .txt .xls';
-        var MAX_SIZE = 5; // MB
+        var MAX_SIZE = 6; // MB
 
         jQuery(document).on('change', '.btn-file :file', function() {
             var input = jQuery(this);

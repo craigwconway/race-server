@@ -113,11 +113,36 @@
             values.join();
             console.log(values);
             // return false;
-    		if ( values.indexOf("bib") == -1 ) {
-    			alert("Bib is a required field.");
-    			return false;
-    		}else{
+
+            /*
+                Make sure user sets Bib and Official Time
+            */
+            var errorList = [];
+            var errorString = "";
+            if ( values.indexOf("bib") == -1 ) {
+                errorList.push("Bib");
+            }
+            if ( values.indexOf("timeofficial") == -1 ) {
+                errorString += "You don’t have an official time selected! Make sure to add one for runners to see times.\n\n"
+            }
+            if ( values.indexOf("gender") == -1 || values.indexOf("age") == -1 ){
+                errorString += "You don’t have gender or age mapped. We will not be able to generate full class rankings for your runners.\n\n";
+            }
+            else{
                 jQuery('#_map_id').val(values);
+            }
+
+            // 
+            if(errorList.length > 0){
+                errorString += errorList.join(', ');
+                if(errorList.length > 1){
+                    errorString += " are required fields!";
+                }else{
+                    errorString += " is a required field!";
+                }
+
+                alert(errorString);
+                return false;
             }
     	});
         jQuery(function () {
@@ -225,9 +250,19 @@
             });
             // jQuery('#checkboxSkip').checkbox('set checked');
     		// console.log('ok');
-    		for(var i=0;i&lt;20;i++){
+            console.log("${resultsFileMapping.row1}");
+
+            /*
+                Get mapping count
+            */
+            var mappingRowList = "${resultsFileMapping.row1}".slice(1,-1).split(",");
+            for(var m = 0; m &lt; mappingRowList.length; m++){
+                mappingRowList[m] = mappingRowList[m].trim();
+            }
+
+    		for(var i = 0; i &lt; mappingRowList.length; i++){
     			// console.log('i='+1);
-    			for(var j=1;j&lt;10;j++){
+    			for(var j = 1; j &lt; 10; j++){
     				// console.log('j='+j);
     				jQuery("#label-"+i).find('.menu').append('&lt;div class="item" data-value="split'+j+'"&gt;Split '+j+'&lt;/div&gt;');
     			}
