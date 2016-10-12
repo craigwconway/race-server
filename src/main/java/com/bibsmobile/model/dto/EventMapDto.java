@@ -25,11 +25,14 @@ public class EventMapDto {
 	EventMapDto(EventMap eventMap) {
 		this.id = eventMap.getId();
 		this.url = eventMap.getUrl();
+		this.name = eventMap.getName();
 	}
 	
 	private Long id;
 	
 	private String url;
+	
+	private String name;
 	
 	
 	public String toJson() {
@@ -82,5 +85,12 @@ public class EventMapDto {
 	 */
 	public String getUrl() {
 		return url;
+	}	
+	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
 	}	
 }

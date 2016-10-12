@@ -4,6 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_bibsmobile_model_EventMap" modelAttribute="eventMap" path="/eventmaps" render="${empty dependencies}" z="LyxFSrwO4j5nrv2LXvvpC7LnV70=">
         <field:input field="url" id="c_com_bibsmobile_model_EventMap_url" z="1yFr7t3AxaBEhX1SlLVmh5cafV0="/>
+        <field:input field="name" id="c_com_bibsmobile_model_EventMap_name" />
         <field:select field="event" id="c_com_bibsmobile_model_EventMap_event" itemValue="id" items="${events}" path="/events" z="XGwXbIHkyoJNmg6YbQGtpNbRGy0="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventMap" render="${not empty dependencies}" z="zNYueOlafZxsYPGW64uYMFUba+k="/>

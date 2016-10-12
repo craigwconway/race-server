@@ -31,6 +31,8 @@ public class EventMap {
     /**
      */
     private String url;
+    
+    private String name;
 
     @ManyToOne
     private Event event;
@@ -53,6 +55,14 @@ public class EventMap {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+    
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setEvent(Event event) {
