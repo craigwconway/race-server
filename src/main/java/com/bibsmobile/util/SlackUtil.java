@@ -99,4 +99,13 @@ public class SlackUtil {
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
 	}
 	
+	public static void logPrizeWin(String seriesName) {
+		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+		JsonObject json = new JsonObject();
+		String message = getIP();
+		message += "A user galen@mybibs.co has just won a prize in " + seriesName;
+		json.addProperty("text", message);
+		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
+	}
+	
 }
