@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bibsmobile.controller.app;
 
@@ -37,7 +37,7 @@ import com.google.gson.JsonObject;
 public class AppPrizeController {
 
 	private static final Logger log = LoggerFactory.getLogger(AppPrizeController.class);
-	
+
 	/**
 	 * @api {get} /app/prizes/spin Spin Wheel
 	 * @apiName Spin Wheel
@@ -55,18 +55,18 @@ public class AppPrizeController {
 	@RequestMapping(value = "/spin/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	ResponseEntity<String> claim(HttpServletRequest request, @PathVariable("id") Long seriesId) {
-		/*
+
 		UserProfile user =  JWTUtil.authenticate(request.getHeader("X-FacePunch"));
 		if( user == null) {
 			return SpringJSONUtil.returnErrorMessage("UserNotAuthenticated", HttpStatus.FORBIDDEN);
 		}
 		user = UserProfile.findUserProfile(user.getId());
-		*/
+
 		//Test scheme
-		
+
 		Series series = Series.findSeries(seriesId);
 		if(Math.random() * 4 > 3) {
-			SlackUtil.logPrizeWin(series.getName());
+			SlackUtil.logPrizeWin(series.getName(), user.getEmail());
 			return SpringJSONUtil.returnErrorMessage("Win", HttpStatus.OK);
 		}
 		return SpringJSONUtil.returnStatusMessage("Loss", HttpStatus.OK);

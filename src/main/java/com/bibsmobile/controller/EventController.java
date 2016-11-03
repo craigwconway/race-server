@@ -149,13 +149,13 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
-    
+
     @Autowired
     private JavaMailSenderImpl mailSender;
 
     @Autowired
     private SimpleMailMessage eventMessage;
-    
+
     @RequestMapping(value = "/uncat", method = RequestMethod.GET)
     @ResponseBody
     public static String findUncategorized() {
@@ -237,7 +237,7 @@ public class EventController {
         */
         System.out.println("localstart" + event.getTimeStartLocal() + ", start" + event.getTimeStart());
         // Generate a hashtag based on event name
-        event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));        
+        event.setHashtag(event.getName().replaceAll("[^a-zA-Z0-9]", ""));
         event.persist();
         System.out.println("persisting event");
         // Add to usergroup:
@@ -256,11 +256,11 @@ public class EventController {
 	    		            eventUserGroup.persist();
 	    		            event.setOrganizer(ug);
 	    		            event.merge();
-	    		        	}    	
+	    		        	}
 	    		        break;
     			}
     			break;
-    		} 
+    		}
     	} else {
     		System.out.println("no logged in user");
     	}
@@ -277,7 +277,7 @@ public class EventController {
         event.persist();
         return event.toJson();
     }
-    
+
     @RequestMapping(value = "/seriessearch", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> searchSeries(@RequestParam("series") Long seriesId, @RequestParam("name") String eventName) {
@@ -307,7 +307,7 @@ public class EventController {
 		}
 
         return "";
-    }    
+    }
 
     @RequestMapping(value = "/regbutton", method = RequestMethod.GET)
     @ResponseBody
@@ -316,9 +316,9 @@ public class EventController {
 		String url = "&lt;form action=&quot;https://bibs-frontend.herokuapp.com/registration/#/"+ eventId + "&quot; method=&quot;get&quot;&gt;\r\n&lt;button style=&quot;padding: 10px 10px 10px 36px; background: #ffffff url(https://s3.amazonaws.com/galen-shennanigans/bibsIcon16x16.png) 10px 10px no-repeat; border-radius: 12px; border: 1px solid #d9d9d9;&quot;&gt;\r\nRegister\r\n&lt;/button&gt;\r\n&lt;/form&gt;";
 		String post = "</code></pre>";
 		return pre + url + post;
-    }      
-    
-    
+    }
+
+
     public static String doPost(String targetURL, String data, boolean json) {
         URL url;
         HttpURLConnection connection = null;
@@ -400,7 +400,7 @@ public class EventController {
                 eventType.setGunTime(new Date());
         	}
 
-            
+
             eventType.setGunFired(true);
 
             eventType.merge();
@@ -504,7 +504,7 @@ public class EventController {
         }
         return rtn.toString();
     }
-    
+
     /**
 	 * @api {get} /events/region/:id Get Events by Series Region
 	 * @apiName Get Events by Series Region
@@ -634,9 +634,9 @@ public class EventController {
     	Map <EventTypeDto, List<AwardCategoryResults>> awardMap = new HashMap<EventTypeDto,List<AwardCategoryResults>>();
     	List<AwardCategoryResults> results = AwardsImmortalCache.getAwards(id);
     	return new ResponseEntity<String>(AwardCategoryResultsDto.toJsonArray(AwardCategoryResultsDto.fromCategories(results)), HttpStatus.OK);
-    	
+
     }
-    
+
     @RequestMapping(value = "/typeclassrankings/{id}", method = RequestMethod.GET)
     @ResponseBody
     public static ResponseEntity<String> classAwards(
@@ -645,10 +645,10 @@ public class EventController {
     	Map <EventTypeDto, List<AwardCategoryResults>> awardMap = new HashMap<EventTypeDto,List<AwardCategoryResults>>();
     	List<AwardCategoryResults> results = AwardsImmortalCache.getClassRankings(id);
     	return new ResponseEntity<String>(AwardCategoryResultsDto.toJsonArray(AwardCategoryResultsDto.fromCategories(results)), HttpStatus.OK);
-    	
+
     }
-    
-    
+
+
     @RequestMapping(value = "/fullawards/{id}", method = RequestMethod.GET)
     @ResponseBody
     public static ResponseEntity<String> fullAwards(
@@ -665,7 +665,7 @@ public class EventController {
 			return SpringJSONUtil.returnErrorMessage(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
     }
-    
+
     @RequestMapping(value = "/overallhtml", method = RequestMethod.GET)
     public static void printOverallHtml(@RequestParam(value = "event") Long eventId,
     		@RequestParam(value="type") Long eventTypeId,
@@ -677,7 +677,7 @@ public class EventController {
     	if(event.getOrganizer() != null) {
     		organizerSnippet +="<h5>" +event.getOrganizer().getName()+"</h5>";
     	}
-    	
+
     	OutputStream os;
 		try {
 			os = response.getOutputStream();
@@ -771,9 +771,9 @@ public class EventController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
+
     }
-    
+
     // Print awards
     @RequestMapping(value = "/printawards", method = RequestMethod.GET)
     public static void printAwards(@RequestParam(value = "event", required = true) Long eventId,
@@ -820,7 +820,7 @@ public class EventController {
     		e.printStackTrace();
     	}
     }
-    
+
     @RequestMapping(value = "/ageGenderRankings", method = RequestMethod.GET)
     public static String ageGenderRankings(
     		@RequestParam(value = "event", required = true) Long eventId,
@@ -833,9 +833,9 @@ public class EventController {
         uiModel.addAttribute("awardCategoryResults", AwardsImmortalCache.getAgeGenderRankings(eventTypeId, gender));
         return "events/ageGenderRankings";
     }
-    
 
-    
+
+
     public static int getAgeGenderRanking(long eventId, String gender, long bib){
     	try{
 	    	for(AwardCategoryResults a : AwardsImmortalCache.getAgeGenderRankings(eventId, gender)){
@@ -949,7 +949,7 @@ public class EventController {
         uiModel.addAttribute("event_regstart_date_format", "MM/dd/yyyy h:mm:ss aZ");
         uiModel.addAttribute("event_regend_date_format", "MM/dd/yyyy h:mm:ss aZ");
     }
-    
+
 	@RequestMapping(value = "/systemdetails", method = RequestMethod.GET)
 	@ResponseBody
 	public static String getRacedayDetails() {
@@ -959,8 +959,8 @@ public class EventController {
 		json.addProperty("allocatefacepunch", "patrick");
 		json.addProperty("buildcode", "1.2.0");
 		return json.toString();
-	} 
-	
+	}
+
     @RequestMapping(value = "/megaexport", method = RequestMethod.GET)
     public static void megaexport(
             HttpServletResponse response) throws IOException {
@@ -1011,7 +1011,7 @@ public class EventController {
         OutputStream buffOs = new BufferedOutputStream(resOs);
         OutputStreamWriter outputwriter = new OutputStreamWriter(buffOs);
         outputwriter.write("bib,firstname,lastname,city,state,timeofficial,timegun,gender,age,rankoverall,rankgender,rankclass,split1,split2,split3,split4,split5\r\n");
-        
+
         List<RaceResult> runners;
         if (type == null) {
         	runners = Event.findRaceResults(event, 0, 99999);
@@ -1041,7 +1041,7 @@ public class EventController {
         outputwriter.close();
 
     }
-    
+
     @RequestMapping(value = "/teams/list")
     @ResponseBody
     public ResponseEntity<String> getTeamsByEvent(@RequestParam("event") Long eventId) {
@@ -1055,14 +1055,14 @@ public class EventController {
 			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
     }
-    
+
     @RequestMapping(value = "/classcategories/list/{id}")
     @ResponseBody
     public ResponseEntity<String> getAwardCategories(@PathVariable("id") Long typeId) {
     	EventType type = EventType.findEventType(typeId);
     	return new ResponseEntity<String>(AwardCategoryViewDto.fromAwardCategoriesToJson(AwardCategory.findBottomRankedByEventType(type)), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value ="/live")
     public static String liveMode(Model uiModel,
     		@RequestParam(value = "event", required=true) Long event,
@@ -1128,11 +1128,11 @@ public class EventController {
             writeBuffer[5] = (byte)(endTime >>> 16);
             writeBuffer[6] = (byte)(endTime >>>  8);
             writeBuffer[7] = (byte)(endTime >>>  0);
-            resOs.write(writeBuffer, 0, 8);	
+            resOs.write(writeBuffer, 0, 8);
         }
         resOs.flush();
         resOs.close();
-    }    
+    }
 
     @RequestMapping(value = "/importBackup", method = RequestMethod.POST)
     @ResponseBody
@@ -1160,8 +1160,8 @@ public class EventController {
 	    	}
         }
         return "{\"Accepted\":true}";
-    }    
-    
+    }
+
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid Event event, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         // check the rights the user has for event
@@ -1281,8 +1281,8 @@ public class EventController {
         }
         return Event.toJsonArray(events.values());
     }
-    
-    
+
+
     @RequestMapping(value = "/teams", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> teams(
@@ -1342,13 +1342,13 @@ public class EventController {
     	} else if( lowDistance != null || highDistance != null) {
     		// perform numeric distances search
     	}
-    	
+
     	if (results == null)
     			results = new ArrayList<Event>();
-    	
+
     	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(results) ,HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/search/webappsearch", method = RequestMethod.GET)
     @ResponseBody
     public String findByUserGroupandTime(
@@ -1361,33 +1361,12 @@ public class EventController {
         // If the timestart is greater than the cutoff, show it in the webapp.
         // TODO: Add futureCutoff to webapp, so races with start times greater than 5 days
         // after the event do not show up in the search present races feature.
-        
+
         if (userGroup != null) {
-        	if (1 == time) {
         		// current events
-	            for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
-	                Event event = eventUserGroup.getEvent();
-	                if (!events.containsKey(event.getId()) && event.getTimeStart().after(presentCutoff)) {
-	                    events.put(event.getId(), event);
-	                }
-	            }
-        	} else if (2 == time) {
-        		// current events
-	            for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
-	                Event event = eventUserGroup.getEvent();
-	                if (!events.containsKey(event.getId()) && event.getTimeStart().before(presentCutoff)) {
-	                    events.put(event.getId(), event);
-	                }
-	            }
-        	} else {
-        		// current events
-	            for (EventUserGroup eventUserGroup : userGroup.getEventUserGroups()) {
-	                Event event = eventUserGroup.getEvent();
-	                if (!events.containsKey(event.getId())) {
-	                    events.put(event.getId(), event);
-	                }
-	            }
-        	}
+              System.out.println("Searching event for user group id: " + userGroupId);
+	            List<Event> eventList = Event.findLiveEventsByUserGroup(userGroup);
+              return(EventDto.fromEventsToDtoArray(eventList));
         } else {
         	if (1 == time) {
         		for (Event event : Event.findAllEvents()) {
@@ -1400,15 +1379,15 @@ public class EventController {
             			if(event.getTimeStart().before(presentCutoff)) {
             				events.put(event.getId(),event);
             			}
-            		}        		
+            		}
         	} else {
         		return Event.toJsonArray(Event.findAllEvents());
         	}
         }
         return Event.toJsonArray(events.values());
-    }    
-    
-    
+    }
+
+
     @RequestMapping(headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> listJson() {
@@ -1471,7 +1450,7 @@ public class EventController {
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return SpringJSONUtil.returnErrorMessage("not authorized for this event", HttpStatus.FORBIDDEN);
         }
-        
+
         event.setHidden(true);
         event.setRegEnabled(false);
         event.setLive(false);
@@ -1572,7 +1551,7 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/show";
     }
-    
+
     @RequestMapping(value = "rest/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJsonRest(@PathVariable("id") Long id) {
@@ -1606,9 +1585,9 @@ public class EventController {
             return new ResponseEntity<>(headers, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(EventDetailsDto.fromEventToDto(event), headers, HttpStatus.OK);
-    }    
-    
-    
+    }
+
+
     @RequestMapping(value = "{1}/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
@@ -1658,7 +1637,7 @@ public class EventController {
 	    		                    events.put(event.getId(), event);
 	    		                }
 	    		            }
-	    		        }    				
+	    		        }
     			}
     		}
     		//List<Event> eventList = events.values();
@@ -1672,7 +1651,7 @@ public class EventController {
     		return "redirect:/events";
     	}
     }
-    
+
     @RequestMapping(value = "/{id}", params = "form", produces = "text/html")
     public String updateForm(@PathVariable("id") Long id, Model uiModel) {
         Event event = Event.findEvent(id);
@@ -1741,7 +1720,7 @@ public class EventController {
      * @apiDescription Settings for managing social sharing. If social sharing discounts are enabled,
      * the minimum amount is $1.00 (100 cents). An event director may optionally specify a custom prize
      * given to the top referrer under topSharerReward. If null, this does not appear. An event director may
-     * specify a top sharer reward, a discount, and a 
+     * specify a top sharer reward, a discount, and a
      * @apiParam {Boolean} socialSharingDiscounts Switch to turn on/off social sharing discounts for an event
      * @apiParam {Number} [socialSharingDiscountAmount=100] Number of cents to take off of each order (minimum 100).
      * @apiParam {String} topSharerReward Text description of prize to give to top sharer.
@@ -1780,7 +1759,7 @@ public class EventController {
     	event.merge();
     	return new ResponseEntity<>(headers, HttpStatus.OK);
     }
-    
+
 
     /**
      * @api {put} /events/:id/regsettings Manage Registration Settings
@@ -1807,9 +1786,9 @@ public class EventController {
     	event.setShirtsLimited(shirtsLimited);
     	event.merge();
     	return new ResponseEntity<>(headers, HttpStatus.OK);
-    }    
-    
-    
+    }
+
+
     @RequestMapping(value="/{id}/tickettransfer",method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<String> manageTicketTransfer(@PathVariable("id") Long id,
@@ -1849,7 +1828,7 @@ public class EventController {
     	return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "addTypeToEvent/{id}", produces = "text/html") 
+    @RequestMapping(method = RequestMethod.POST, value = "addTypeToEvent/{id}", produces = "text/html")
     public String createTypeInEvent(Model uiModel,
     		@PathVariable("id") Long id,
     		@RequestParam(value = "typeName", required = false) String typeName,
@@ -1885,8 +1864,8 @@ public class EventController {
     	uiModel.addAttribute("event", event);
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
     	return "events/show";
-    }    
-    
+    }
+
     @RequestMapping(value = "/createAwardCategories", produces = "text/html")
     public String createAgeGenderRankings(
     		@RequestParam(value = "event") long eventId,
@@ -1919,7 +1898,7 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender=M";
     }
-    
+
     @RequestMapping(value = "/updateListSize", produces = "text/html")
     public String createAgeGenderRankings(
     		@RequestParam(value = "event") long eventId,
@@ -1946,7 +1925,7 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/ageGenderRankings?event="+eventId+"&gender="+gender;
     }
-    
+
     @RequestMapping(value = "/overall", produces = "text/html")
     public String overallResults(
     		@RequestParam(value = "event") long eventId,
@@ -1960,8 +1939,8 @@ public class EventController {
         return "events/overall";
     }
 
-   
-    
+
+
     class OfficialtimeComparator implements Comparator<RaceResult> {
         @Override
         public int compare(RaceResult a, RaceResult b) {
@@ -1977,7 +1956,7 @@ public class EventController {
     @ResponseBody
     public String getWaiver(@PathVariable("id") Long id, @RequestBody String waiver, Model uiModel) {
         Event event = Event.findEvent(id);
-        
+
         // check the rights the user has for event
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return null;
@@ -1985,7 +1964,7 @@ public class EventController {
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return event.getWaiver();
     }
-    
+
     /*
      * Event waiver
      * @return s3 url of where waiver is found
@@ -1994,27 +1973,27 @@ public class EventController {
     @ResponseBody
     public String waiver(@PathVariable("id") Long id, @RequestBody String waiver, Model uiModel) {
         Event event = Event.findEvent(id);
-        
+
         // check the rights the user has for event
         if (!PermissionsUtil.isEventAdmin(UserProfileUtil.getLoggedInUserProfile(), event)) {
             return null;
         }
         System.out.println("setting waiver");
         System.out.println(waiver);
-        
+
         // s3 here
         String fileName = "waivers/" + UUID.randomUUID().toString() + ".txt";
         String s3Url = "https://s3.amazonaws.com/bibs-events/waivers/theOnlyRealWaiver.txt";
         try {
         	S3Util.uploadWaiverToS3(waiver, fileName);
-        	
+
 	        s3Url = S3Util.getAwsS3WaiverPrefix() + fileName;
 		} catch (Exception e) {
 	        System.out.println("s3 upload failed");
 			e.printStackTrace();
 		}
         // s3 done
-        
+
         event.setWaiver(s3Url);
         event.persist();
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
@@ -2034,7 +2013,7 @@ public class EventController {
 			e.printStackTrace();
 			return "ERROR PARSING URL";
 		}
-    	GeneratePresignedUrlRequest generatePresignedUrlRequest = 
+    	GeneratePresignedUrlRequest generatePresignedUrlRequest =
     			new GeneratePresignedUrlRequest("bibs-events", waiverURL.getPath().substring(1));
     	generatePresignedUrlRequest.setMethod(HttpMethod.GET); // Default.
 		generatePresignedUrlRequest.setExpiration(new Date(new Date().getTime() + 1000 * 60 * 10));
@@ -2074,14 +2053,14 @@ public class EventController {
             return null;
         }
 
-        
+
         event.setRegEnabled(false);
         event.persist();
         SlackUtil.logToggleRegistration(false, event.getName(), UserProfileUtil.getLoggedInUserProfile().getUsername());
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }
-    
+
     /**
      * @api /events/:id/enablesync Enable Sync
      * @apiGroup events
@@ -2101,10 +2080,10 @@ public class EventController {
 
         event.setSync(true);
         event.merge();
-        
+
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
-    }    
+    }
 
     /**
      * @api /events/:id/disablesync Disable Sync
@@ -2125,11 +2104,11 @@ public class EventController {
 
         event.setSync(false);
         event.merge();
-        
+
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
-    }    
-    
+    }
+
     /**
      * Make event live
      * Events that are not live do not show up for non-sysadmin or owner users
@@ -2147,10 +2126,10 @@ public class EventController {
 
         event.setLive(true);
         event.persist();
-        
+
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
-    }    
+    }
 
     /**
      * Make event undead
@@ -2169,11 +2148,11 @@ public class EventController {
 
         event.setLive(false);
         event.persist();
-        
+
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "redirect:/events/" + event.getId();
     }
-    
+
     void addDateTimeFormatPatterns(Model uiModel) {
         uiModel.addAttribute("event_timestart_date_format", "MM/dd/yyyy h:mm:ss a");
         uiModel.addAttribute("event_timeend_date_format", "MM/dd/yyyy h:mm:ss a");

@@ -14,7 +14,7 @@ import com.ning.http.client.Response;
 
 public class SlackUtil {
 	private final static String reportsURL = "https://hooks.slack.com/services/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";
-	
+
 	private static String getIP() {
 		String message = "";
 		try {
@@ -27,7 +27,7 @@ public class SlackUtil {
 		}
 		return message;
 	}
-	
+
 	public static void logReportAsync(String message) {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		JsonObject json = new JsonObject();
@@ -41,8 +41,8 @@ public class SlackUtil {
 		String message = username + " has sent a message to registrants in event " + eventname + ": " + subject;
 		json.addProperty("text", message);
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
-	}	
-	
+	}
+
 	public static void logRegAddECI(EventCartItem eci, String Eventname, String username) {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		JsonObject json = new JsonObject();
@@ -64,8 +64,8 @@ public class SlackUtil {
 		message += "registration in the event " + Eventname;
 		json.addProperty("text", message);
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
-	}	
-	
+	}
+
 	public static void logRegAddCoupon(EventCartItemCoupon coupon, String Eventname, String username) {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		JsonObject json = new JsonObject();
@@ -79,7 +79,7 @@ public class SlackUtil {
 		json.addProperty("text", message);
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
 	}
-	
+
 	public static void logRegExportAsync(String eventName, String eventType, int lowBib, int highBib, String username) {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		JsonObject json = new JsonObject();
@@ -89,7 +89,7 @@ public class SlackUtil {
 		json.addProperty("text", message);
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
 	}
-	
+
 	public static void logPayoutGenerate(String name) {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		JsonObject json = new JsonObject();
@@ -98,14 +98,23 @@ public class SlackUtil {
 		json.addProperty("text", message);
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
 	}
-	
-	public static void logPrizeWin(String seriesName) {
+
+	public static void logPrizeWin(String seriesName, String email) {
 		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 		JsonObject json = new JsonObject();
 		String message = getIP();
-		message += "A user galen@mybibs.co has just won a prize in " + seriesName;
+		message += "A user " + email + "has just won a prize in " + seriesName;
 		json.addProperty("text", message);
 		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
 	}
-	
+
+	public static void logResultContested(String eventName, Long id, String email) {
+		AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+		JsonObject json = new JsonObject();
+		String message = getIP();
+		message += "A user " + email + " has just contested result [" + id + "] in " + eventName;
+		json.addProperty("text", message);
+		Future<Response> f = asyncHttpClient.preparePost(reportsURL).setBody(json.toString()).execute();
+	}
+
 }

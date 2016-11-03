@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.bibsmobile.controller.app;
 
@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.RaceResult;
+import com.bibsmobile.model.Event;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
 import com.bibsmobile.util.app.JWTUtil;
+import com.bibsmobile.util.SlackUtil;
 import com.google.gson.JsonObject;
 
 /**
@@ -33,7 +35,7 @@ import com.google.gson.JsonObject;
 public class AppResultsController {
 
 	private static final Logger log = LoggerFactory.getLogger(AppResultsController.class);
-	
+
 	/**
 	 * @api {put} /app/results/claim/:id Claim Result
 	 * @apiName Claim Result
@@ -80,7 +82,7 @@ public class AppResultsController {
 	 * function claimResultListener(event)
 	 * 	if (event.isError) then
 	 * 		print ("cave out")
-	 * 	else 
+	 * 	else
 	 * 		print ( "cave in: " .. event.response )
 	 * 	end
 	 * end
@@ -107,6 +109,8 @@ public class AppResultsController {
 		}
 		if(result.getUserProfile() != null) {
 			log.info("User " + user.getId() + " - " + user.getFirstname() + " " + user.getLastname() + " has requested result id " + result.getId());
+			Event event = result.getEvent();
+			SlackUtil.logResultContested( event.getName(),  result.getId(),  result.getEmail());
 			return SpringJSONUtil.returnStatusMessage("ResultClaimSubmitted", HttpStatus.ACCEPTED);
 		}
 		user = UserProfile.findUserProfile(user.getId());

@@ -71,7 +71,7 @@ public class RaceResultController {
         if(raceResult.getSplits() != null) {
         	//for( raceResult.getSplits()) {
         	for(Entry<Integer, Split> splitEntry :raceResult.getSplits().entrySet()) {
-        		System.out.println(splitEntry);        		
+        		System.out.println(splitEntry);
         	}
         	//}
         }
@@ -91,12 +91,12 @@ public class RaceResultController {
         raceResult.persist();
         return raceResult.toJson();
     }
-    
+
     @RequestMapping(value = "/seriessearch", method = RequestMethod.GET)
     @ResponseBody
-    public String searchSeries(@RequestParam(value = "series") Long seriesId, 
+    public String searchSeries(@RequestParam(value = "series") Long seriesId,
     		@RequestParam(value = "name") String name,
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
     		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         String rtn = "[]";
         try {
@@ -108,14 +108,14 @@ public class RaceResultController {
         }
         return rtn;
     }
-    
+
     @RequestMapping(value = "teamrankings", method = RequestMethod.GET)
     public ResponseEntity<String> teamLeaderboard(
     		@RequestParam(value = "type") Long typeId,
     		@RequestParam(value = "start", defaultValue = "") String start,
     		@RequestParam(value = "gender", required = false) String gender,
     		@RequestParam(value = "size", defaultValue = "4") int pageSize){
-    	
+
     	EventType type = EventType.findEventType(typeId);
     	List<String> teams;
     	start = StringUtils.lowerCase(start);
@@ -148,7 +148,7 @@ public class RaceResultController {
     	System.out.println("Teams Found: " + response.size());
     	return new ResponseEntity<String>(LeaderboardTeamDto.toJsonArray(response), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "teamdetails", method = RequestMethod.GET)
     public ResponseEntity<String> teamDetails(
     		@RequestParam(value = "type") Long typeId,
@@ -167,7 +167,7 @@ public class RaceResultController {
     	}
     	return new ResponseEntity<String>(response.toJson(), HttpStatus.OK);
     }
-    
+
 
     /**
      * @api {get} /raceresults/search Search
@@ -194,7 +194,7 @@ public class RaceResultController {
             @RequestParam(value = "bib", required = false, defaultValue = "") Long bib,
             @RequestParam(value = "gender", required = false) String gender,
             @RequestParam(value = "team", required = false) String team,
-            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
+            @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
     		@RequestParam(value = "size", required = false, defaultValue = "10") Integer size){
         String rtn = "[]";
         try {
@@ -205,7 +205,7 @@ public class RaceResultController {
         }
         return rtn;
     }
-    
+
     /**
      * @api {get} /raceresults/search Search
      * @apiName Search
@@ -283,13 +283,13 @@ public class RaceResultController {
         	Event event = Event.findEvent(eventId);
         	RaceResult raceResult = RaceResult.findRaceResultsByEventAndBibEquals(event, bib).getSingleResult();
             //RaceResult raceResult = RaceResult.findRaceResultsByEventAndBibEquals(Event.findEventsByNameLike(eventName, 1, 1).getSingleResult(), bib).getSingleResult();
-            rtn = raceResult.toJson();
+            rtn = RaceResultDetailDto.fromRaceResultToDto(raceResult);
         } catch (Exception e) {
             // e.printStackTrace();
         }
         return rtn;
-    }    
-    
+    }
+
     /**
      * @api {get} /raceresults/bybib/:eventName/:bib
      * @apiName getRaceResultByBibAndEventName
@@ -396,12 +396,12 @@ public class RaceResultController {
         return rtn;
     }
 
-    
+
     @RequestMapping(value = "/myresults", produces = "text/html")
     public static String listmyevents(
-			@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
-			@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
-			@RequestParam(value = "event", required = false, defaultValue = "0") Long event, 
+			@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+			@RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+			@RequestParam(value = "event", required = false, defaultValue = "0") Long event,
 			Model uiModel) {
     	Map<Long, Event> events = new HashMap<>();
     	UserProfile loggedInUser = UserProfileUtil.getLoggedInUserProfile();
@@ -416,7 +416,7 @@ public class RaceResultController {
 	    		                    events.put(e.getId(), e);
 	    		                }
 	    		            }
-	    		        }    				
+	    		        }
     			}
     		}
     	} else {
@@ -436,13 +436,13 @@ public class RaceResultController {
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         //addDateTimeFormatPatterns(uiModel);
         return "raceresults/myresults";
-    }    
-    
+    }
+
     @RequestMapping(produces = "text/html")
     public static String list(
-    						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
-    						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
-    						@RequestParam(value = "event") Long event, 
+    						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+    						@RequestParam(value = "event") Long event,
     						@RequestParam(value = "type", required = false) Long type,
     						Model uiModel) {
     	Event parentEvent =Event.findEvent(event);
@@ -459,7 +459,7 @@ public class RaceResultController {
         if (eventType != null){
         	nrOfPages = (float) RaceResult.countFindRaceResultsByEventType(eventType) / sizeNo;
         	uiModel.addAttribute("raceresults", RaceResult.findRaceResultsByEventType(eventType).setFirstResult(firstResult).setMaxResults(size).getResultList());
-        	
+
         } else {
         	nrOfPages = (float) RaceResult.countFindRaceResultsByEvent(parentEvent) / sizeNo;
         	uiModel.addAttribute("raceresults", RaceResult.findRaceResultsByEvent(parentEvent).setFirstResult(firstResult).setMaxResults(size).getResultList());
@@ -472,9 +472,9 @@ public class RaceResultController {
 
     @RequestMapping(value="/unassigned", produces = "text/html")
     public static String manageUnassigned(
-    						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, 
-    						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size, 
-    						@RequestParam(value = "event", required = true) Long event, 
+    						@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+    						@RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+    						@RequestParam(value = "event", required = true) Long event,
     						Model uiModel) {
         int sizeNo = size == null ? 10 : size.intValue();
         float nrOfPages = 1;
@@ -484,8 +484,8 @@ public class RaceResultController {
         uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         // addDateTimeFormatPatterns(uiModel);
         return "raceresults/unassigned";
-    }    
-    
+    }
+
     @RequestMapping(value = "/bibs", method = RequestMethod.GET, produces = "text/html")
     public static String bibs() {
 
@@ -518,17 +518,17 @@ public class RaceResultController {
         		return "raceresults/create";
         	}
         }
-        
-        uiModel.asMap().clear();
-        
-        raceResult.persist();	
 
-        
+        uiModel.asMap().clear();
+
+        raceResult.persist();
+
+
         long eventId = 0;
         if (null != raceResult.getEvent()) {
             eventId = raceResult.getEvent().getId();
         }
-        
+
         // Tell user that they have a licensed raceresult, if that is the case
         if (BuildTypeUtil.usesLicensing()) {
         	if(raceResult.isLicensed()) {
@@ -570,7 +570,7 @@ public class RaceResultController {
         uiModel.addAttribute("custom", result.getCustomFields());
         return "raceresults/update";
     }
-    
+
     @RequestMapping(value = "/advancedupdate", method=RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> updateAdvanced(@RequestBody RaceResult result) {
@@ -598,8 +598,8 @@ public class RaceResultController {
         uiModel.addAttribute("splits", splits);
         uiModel.addAttribute("custom", customFields);
         return "raceresults/advanced";
-    }    
-    
+    }
+
     @RequestMapping(method = RequestMethod.PUT, produces = "text/html")
     public String update(@Valid RaceResult raceResult, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -628,7 +628,7 @@ public class RaceResultController {
 
     }
     /**
-     * Open the HTML view of edit raceresult. 
+     * Open the HTML view of edit raceresult.
      * @param id ID of raceresult to edit (long raceResult.id)
      * @param uiModel
      * @return raceresult/update html view.
@@ -638,7 +638,7 @@ public class RaceResultController {
         this.populateEditForm(uiModel, RaceResult.findRaceResult(id));
         return "raceresults/update";
     }
-    
+
     /**
      * Delete a race result by HTML. This is currently only accessible to sysadmin/eventadmin.
      * TODO: restrict this to eventadmin who are managing the particular race result
@@ -714,7 +714,7 @@ public class RaceResultController {
         }
         return new ResponseEntity<>(RaceResultDetailDto.fromRaceResultToDto(raceResult), headers, HttpStatus.OK);
     }
-    
+
     /**
      * @api {get} /raceresults/details/:id Get Race Result Details
      * @apiName Get Race Result Details
