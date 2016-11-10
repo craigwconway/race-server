@@ -37,7 +37,7 @@ import com.google.gson.JsonObject;
 public class AppPrizeController {
 
 	private static final Logger log = LoggerFactory.getLogger(AppPrizeController.class);
-
+	private static final double odds = 100000;
 	/**
 	 * @api {get} /app/prizes/spin Spin Wheel
 	 * @apiName Spin Wheel
@@ -65,7 +65,7 @@ public class AppPrizeController {
 		//Test scheme
 
 		Series series = Series.findSeries(seriesId);
-		if(Math.random() * 4 > 3) {
+		if(Math.random() * odds > (odds -1)) {
 			SlackUtil.logPrizeWin(series.getName(), user.getEmail());
 			return SpringJSONUtil.returnErrorMessage("Win", HttpStatus.OK);
 		}
