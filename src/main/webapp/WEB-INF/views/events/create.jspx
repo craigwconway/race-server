@@ -148,6 +148,14 @@
                         data-parsley-error-message="Please enter a valid phone number."
                         data-parsley-required="required"></input>
             </div>
+            <div class="required field">
+                <label>Contact Email</label>
+                   <input type ="text" name="email"
+                        autocomplete="off"
+                        id="mask-email"
+                        placeholder="i.e. hello@mybibs.co"
+                        value="${event.email}"></input>
+            </div>
         </c:if>
         <div id="demo">
             <div class="required field">
@@ -245,7 +253,7 @@
         <field:input field="featured" id="c_com_bibsmobile_model_Event_featured" z="user-managed"/>
         <field:input field="latitude" id="c_com_bibsmobile_model_Event_latitude" z="user-managed"/>
         <field:input field="longitude" id="c_com_bibsmobile_model_Event_longitude" z="user-managed"/>
-        <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/>
+        <!-- <field:input field="email" id="c_com_bibsmobile_model_Event_email" validationMessageCode="field_invalid_email" z="user-managed"/> -->
         <field:input field="registration" id="c_com_bibsmobile_model_Event_registration" z="user-managed"/>
         <field:input field="parking" id="c_com_bibsmobile_model_Event_parking" z="user-managed"/>
         <field:input field="general" id="c_com_bibsmobile_model_Event_general" z="user-managed"/>

@@ -110,28 +110,14 @@
                             data-parsley-error-message="Please enter a valid phone number."
                             data-parsley-required="required"></input>
                     </div>
-            </c:if>
-            <c:if test='${(build.rfid)}'>
-                <div class="required field">
-                    <label>Website</label>
-                    <input  type="url" name="website"
-                        autocomplete="off"
-                        id="mask-website"
-                        placeholder="Website"
-                        value="${event.website}"
-                        data-parsley-type="url"
-                        data-parsley-error-message="Please enter a valid website starting with http:// or https://"></input>
-                </div>
-                <div class="required field">
-                    <label>Phone Number</label>
-                    <input  type="text" name="phone"
-                        autocomplete="off"
-                        id="mask-phone"
-                        placeholder="Phone Number"
-                        value="${event.phone}"
-                        data-parsley-length="[10,18]"
-                        data-parsley-error-message="Please enter a valid phone number."></input>
-                </div>
+                <div class="field">
+                    <label>Email</label>
+                        <input  type="text" name="email"
+                            autocomplete="off"
+                            id="mask-email"
+                            placeholder="Email"
+                            value="${event.email}"></input>
+                    </div>
             </c:if>
             <div id="demo">
                 <div class="required field">
