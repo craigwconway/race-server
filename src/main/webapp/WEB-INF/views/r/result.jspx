@@ -136,6 +136,13 @@
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplay }</span></div>
                                 <div class="label">Finish Time</div>
                             </div>
+                            <c:if test="${not empty result.timePace}">
+                            <div class="ui hidden divider"><!--  --></div>
+                            <div class="ui green small statistic stat-finish">
+                                <div class="value"><span class="runner-time">${result.timePace}</span></div>
+                                <div class="label">Pace</div>
+                            </div>
+                            </c:if>
                             <div class="ui three column stackable center aligned grid" id="rank-circles-container">
                                 <div class="column">
                                     <div class="ui center aligned header circular-header">Overall</div>
