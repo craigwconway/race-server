@@ -1178,6 +1178,9 @@ public class EventController {
         Event trueEvent = Event.findEvent(event.getId());
         trueEvent.setName(event.getName());
 	trueEvent.setEmail(event.getEmail());
+	trueEvent.setGeneral(event.getGeneral());
+	trueEvent.setCourseRules(event.getCourseRules());
+	trueEvent.setParking(event.getParking());
         trueEvent.setDescription(event.getDescription());
         trueEvent.setTimeStartLocal(event.getTimeStartLocal());
         trueEvent.setWebsite(event.getWebsite());
