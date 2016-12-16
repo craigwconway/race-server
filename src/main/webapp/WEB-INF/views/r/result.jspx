@@ -127,10 +127,12 @@
                             </div>
                         </div>
                         <div class="content">
+                            <c:if test="${(not empty result.timeofficialdisplayGun) and (result.timeofficialdisplayGun ne '00:00:00')}">
                             <div class="ui blue small statistic stat-finish">
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplayGun}</span></div>
                                 <div class="label">Gun Time</div>
                             </div>
+                            </c:if>
                             <div class="ui hidden divider"><!--  --></div>
                             <div class="ui purple statistic stat-finish">
                                 <div class="value"><span class="runner-time">${result.timeofficialdisplay }</span></div>
