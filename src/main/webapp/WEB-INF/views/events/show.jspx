@@ -509,6 +509,7 @@
                     <div class="divider"><!--  --></div>
                     <a class="item" href="#" onclick="renderModal('exportAthletes')">Export Athletes</a>
                     <a class="item" href="#" onclick="cloud();return false;">Cloud Sync</a>
+                    <a class="item" href="#" onclick="redirectMaps()">Manage Maps</a>
                     <c:if test="${lastImport != null}">
                         <a href="#" class="item" onclick="redirectChangeFileMapping();return false;">Change file mapping</a>
                     </c:if>
@@ -1593,6 +1594,9 @@
     }        
     function redirectManageReg(){
         window.location="/bibs-server/eventitems?event=${event.id}";
+    }
+    function redirectMaps(){
+        window.location="/bibs-server/eventmaps?event=${event.id}";
     }
     function redirectBadges(){
         window.location="/bibs-server/badges/form";
