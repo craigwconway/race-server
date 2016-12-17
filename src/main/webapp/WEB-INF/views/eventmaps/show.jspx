@@ -2,22 +2,26 @@
 <div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <button class="btn btn-default btn-top" onclick="backToEvent()" type="button">
-        Back to Event
-    </button>
-    <button class="btn btn-default btn-top" onclick="backToEventMaps()" type="button">
-        Back to Event Maps
-    </button>
-    <script>
-        function backToEvent(){
-            window.location="/bibs-server/events/${eventmap.event.id}";
-        }
-        function backToEventMaps(){
-            window.location="/bibs-server/eventmaps?event=${eventmap.event.id}";
-        }
-    </script>
-    <page:show id="ps_com_bibsmobile_model_EventMap" object="${eventmap}" path="/eventmaps" z="qPRHSDWnimqEgzzFLZOqf2rq94I=">
-        <field:display field="url" id="s_com_bibsmobile_model_EventMap_url" object="${eventmap}" z="s09OVmvldPiVFq5+UwJsuWnBcPI="/>
-        <field:display field="event" id="s_com_bibsmobile_model_EventMap_event" object="${eventmap}" z="AQ0r3ayZEg+Z0GSxpulfTlXvjN0="/>
-    </page:show>
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui basic segment">
+            <button class="btn btn-default btn-top" onclick="backToEvent()" type="button">
+                Back to Event
+            </button>
+            <button class="btn btn-default btn-top" onclick="backToEventMaps()" type="button">
+                Back to Event Maps
+            </button>
+            <script>
+                function backToEvent(){
+                    window.location="/bibs-server/events/${eventmap.event.id}";
+                }
+                function backToEventMaps(){
+                    window.location="/bibs-server/eventmaps?event=${eventmap.event.id}";
+                }
+            </script>
+            <h1 class="ui header">${eventmap.event.name} - ${eventmap.name}</h1>
+            <div class="ui image">
+                <img src="${eventmap.url}"><!-- --></img>
+            </div>
+        </div>
+    </div>
 </div>

@@ -2,10 +2,22 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <form:create id="fc_com_bibsmobile_model_EventMap" modelAttribute="eventMap" path="/eventmaps" render="${empty dependencies}" z="LyxFSrwO4j5nrv2LXvvpC7LnV70=">
-        <field:input field="url" id="c_com_bibsmobile_model_EventMap_url" z="1yFr7t3AxaBEhX1SlLVmh5cafV0="/>
-        <field:input field="name" id="c_com_bibsmobile_model_EventMap_name" />
-        <field:select field="event" id="c_com_bibsmobile_model_EventMap_event" itemValue="id" items="${events}" path="/events" z="XGwXbIHkyoJNmg6YbQGtpNbRGy0="/>
-    </form:create>
-    <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventMap" render="${not empty dependencies}" z="zNYueOlafZxsYPGW64uYMFUba+k="/>
+    <script>
+	function initialize() {
+            jQuery('input[name="url"]').prop('required', 'true');
+        }
+        window.onload = initialize();
+    </script>
+    <div class="bibs-page bibs-bg-gray-1">
+        <div class="ui basic segment">
+            <form:create id="fc_com_bibsmobile_model_EventMap" modelAttribute="eventMap" path="/eventmaps" render="${empty dependencies}" z="LyxFSrwO4j5nrv2LXvvpC7LnV70=">
+                <field:input field="url" id="c_com_bibsmobile_model_EventMap_url" required="required" z="1yFr7t3AxaBEhX1SlLVmh5cafV0="/>
+                <field:input field="name" id="c_com_bibsmobile_model_EventMap_name" />
+		<div style="display:none">
+                    <field:select field="event" id="c_com_bibsmobile_model_EventMap_event" itemValue="id" items="${events}" path="/events" z="XGwXbIHkyoJNmg6YbQGtpNbRGy0="/>
+                </div>
+            </form:create>
+            <form:dependency dependencies="${dependencies}" id="d_com_bibsmobile_model_EventMap" render="${not empty dependencies}" z="zNYueOlafZxsYPGW64uYMFUba+k="/>
+        </div>
+    </div>
 </div>
