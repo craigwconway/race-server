@@ -96,6 +96,29 @@ public class RaceImageController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * @api {get} /raceimages/count Count
+     * @apiGroup raceimages
+     * @apiDescription Count Race Images in a search query
+     * @apiName Count
+     * @apiParam {Number} eventId Id of event to search
+     * @apiParam {Number} [bib] bib number of athlete to search
+     * @apiSuccess (200) {Object[]} raceImage objects returned
+     * @apiPermission none
+     */
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Long> countRaceImagesByEventId(@RequestParam Long eventId, @RequestParam(required = false) Long bib) {
+        HttpHeaders headers = new HttpHeaders();
+        Event event = Event.findEvent(eventId);
+        if (event != null) {
+            return new ResponseEntity<>(RaceImage.countFindRaceImagesByEvent(event), HttpStatus.OK);
+            
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 
     /**
      * @api {get} /raceimages/details/:id Details
