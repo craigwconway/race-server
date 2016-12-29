@@ -1053,7 +1053,7 @@
                     },
                     type: "GET"
                 }).then(function(){
-                    var pageIndex = currentPage === 1 ? 2 : currentPage + 1;
+                    var pageIndex = currentPage === 1 ? 2 : currentPage + 2;
                     jQuery("#pagination > .pagination.menu > .page-item").removeClass("active");
                     jQuery("#pagination > .pagination.menu > .page-item:nth-child(" + pageIndex + ")").addClass("active");
                 });
