@@ -107,6 +107,7 @@ public class AwardCategoryController {
         }
         
         awardCategory.merge();
+        AwardsImmortalCache.clearAwardsCache(awardCategory.getEventType().getId());
         return (!awardCategory.isMedal()) 
         		? "redirect:/events/ageGenderRankings?type="+awardCategory.getEventType().getId()  
         				+"&event=" + awardCategory.getEventType().getEvent().getId()+"&gender="+awardCategory.getGender()
@@ -126,6 +127,7 @@ public class AwardCategoryController {
 	public String delete(@PathVariable("id") Long id) {
 		AwardCategory a = AwardCategory.findAwardCategory(id);
         a.remove();
+        AwardsImmortalCache.clearAwardsCache(a.getEventType().getId());
         return (!a.isMedal()) 
         		? "redirect:/events/ageGenderRankings?event=" + a.getEventType().getEvent().getId()+"&gender="+a.getGender()
         		: "redirect:/events/awards?event=" + a.getEventType().getEvent().getId()+"&gender="+a.getGender();
