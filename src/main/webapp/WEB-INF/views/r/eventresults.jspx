@@ -933,7 +933,7 @@
                             }
                             if(forward){
                                 forward.click(function(){
-                                    if(Math.floor(currentPage/MAX_PAGINATION) === Math.floor(maxPages/MAX_PAGINATION)){
+                                    if(Math.floor(maxPages/10) - Math.floor(currentPage/10) &lt; 2){
                                         jQuery("#pagination-forward").addClass("disabled");
                                         return;
                                     }else{
@@ -1054,7 +1054,7 @@
                     type: "GET"
                 }).then(function(){
                     var shiftIndex = jQuery("#pagination-back").is(":visible") ? 2 : 1;
-                    var pageIndex = currentPage === 1 ? 2 : currentPage + shiftIndex;
+                    var pageIndex = currentPage + shiftIndex;
                     jQuery("#pagination > .pagination.menu > .page-item").removeClass("active");
                     jQuery("#pagination > .pagination.menu > .page-item:nth-child(" + pageIndex + ")").addClass("active");
                 });
