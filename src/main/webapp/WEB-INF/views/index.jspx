@@ -227,7 +227,7 @@
                     <h3 class="ui center aligned header">
                         Analytics
                     </h3>
-                    <div class="ui three column center aligned grid">
+                    <div class="ui doubling stackable three column center aligned grid">
                         <div class="column">
                             <div class="ui small statistic">
                                 <div class="value bibs-main-teal">${totalEvents}</div>

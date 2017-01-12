@@ -60,20 +60,20 @@
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav small-caps">
                     <!-- <li class="active"><a href="#">Info <span class="sr-only">(current)</span></a></li> -->
 					<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-	                	<li><a href="#" onclick="redirectEventList();return false;"><i class="fa fa-globe" style="margin-right: 5px"><!--  --></i> events</a></li>
-				    	<li><a href="/bibs-server/register/account" class="item"><i class="fa fa-user left-icon icon"><!--  --></i> account</a></li>
-                  		<li id="nav_raceday" style="display:none"><a href="${raceday_url}"><span class="fa fa-wifi" style="margin-right:5px;"><!--  --></span> rfid</a></li>
+	                	<li><a href="#" onclick="redirectEventList();return false;"><i class="fa fa-globe" style="width:20px"><!--  --></i> events</a></li>
+				    	<li><a href="/bibs-server/register/account" class="item"><i class="fa fa-user" style="width:20px"><!--  --></i> account</a></li>
+                  		<li id="nav_raceday" style="display:none"><a href="${raceday_url}"><span class="fa fa-wifi" style="width:20px;"><!--  --></span> rfid</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_SYS_ADMIN')">
-                  		<li id="nav_timers"><a href="${timers_url}"><span class="fa fa-cog" style="margin-right:5px;"><!--  --></span> timers</a></li>
-                  			<li id="nav_license"><a href="${license_url}"><span class="fa fa-bolt" style="margin-right:5px;"><!--  --></span> licensing</a></li>
+                  		<li id="nav_timers" style="display:none;"><a href="${timers_url}"><span class="fa fa-cog" style="width:20px;"><!--  --></span> timers</a></li>
+                  			<li id="nav_license" style="display:none;"><a href="${license_url}"><span class="fa fa-bolt" style="width:20px;"><!--  --></span> licensing</a></li>
                   	</sec:authorize>
                 	<sec:authorize access="hasAnyRole('ROLE_EVENT_ADMIN,ROLE_SYS_ADMIN')">
-				    	<li><a class="item" href="${logout}"><i class="fa fa-sign-out left-icon icon"><!--  --></i> logout</a></li>
-				    	<li><a class="item" href="${support_url }"><i class="fa fa-info-circle left-icon icon"><!--  --></i> support</a></li>
+				    	<li><a class="item" href="${logout}"><i class="fa fa-sign-out" style="width:20px"><!--  --></i> logout</a></li>
+				    	<li><a class="item" href="${support_url }"><i class="fa fa-info-circle" style="width:20px"><!--  --></i> support</a></li>
                   		<!-- <li id="nav_reports"><a href="${reports_url}">Reports</a></li> -->
                   	</sec:authorize>
                 </ul>
