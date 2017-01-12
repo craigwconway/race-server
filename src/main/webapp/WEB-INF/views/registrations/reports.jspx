@@ -65,14 +65,11 @@
             </div>
             <div class="ui text container">
                 <div style="clear:both"><!--  --></div>
-                <div class="ui small statistics five column grid">
-                    <div class="five column centered row">
-                        <div class="column">
-                            <div class="purple large statistic">
-                                <div class="label">
-                                    Total Sales
-                                </div>
-                                <div class="value" id="total-sales"><!--  -->$0</div>
+                <div class="ui small statistics doubling stackable five column grid">
+                    <div class="centered row">
+                        <div class="purple large statistic">
+                            <div class="label">
+                                Total Sales
                             </div>
                         </div>
                     </div>
