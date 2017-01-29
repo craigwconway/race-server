@@ -112,7 +112,7 @@
             })
             values.join();
             console.log(values);
-            // return false;
+            console.log(values.indexOf("gender") == -1 || values.indexOf("age") == -1)
 
             /*
                 Make sure user sets Bib and Official Time
@@ -133,17 +133,21 @@
             }
 
             // 
-            if(errorList.length > 0){
-                errorString += errorList.join(', ');
-                if(errorList.length > 1){
-                    errorString += " are required fields!";
-                }else{
-                    errorString += " is a required field!";
+            if(errorList.length > 0 || errorString.length > 0){
+                if(errorList.length > 0){
+                    errorString += errorList.join(', ');
+                    if(errorList.length > 1){
+                        errorString += " are required fields in your mapping!";
+                    }else{
+                        errorString += " is a required field in your mapping!";
+                    }
                 }
 
+                console.log(values.indexOf("gender"), values.indexOf("age"))
                 alert(errorString);
                 return false;
             }
+            // return false;
     	});
         jQuery(function () {
             jQuery('.message .close').on('click', function() {
