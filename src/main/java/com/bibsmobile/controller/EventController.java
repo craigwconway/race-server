@@ -1361,15 +1361,23 @@ public class EventController {
         UserGroup userGroup = UserGroup.findUserGroup(userGroupId);
         Map<Long, Event> events = new HashMap<>();
         // Determine the timeout point. Events time out after five days.
-        Date presentCutoff = DateUtils.addDays(new Date(), -5);
+        Date presentCutoff = DateUtils.addDays(new Date(), -2);
         // If the timestart is greater than the cutoff, show it in the webapp.
         // TODO: Add futureCutoff to webapp, so races with start times greater than 5 days
         // after the event do not show up in the search present races feature.
 
         if (userGroup != null) {
         		// current events
+        	List<Event> eventList;
               System.out.println("Searching event for user group id: " + userGroupId);
-	            List<Event> eventList = Event.findLiveEventsByUserGroup(userGroup);
+              if(time == null || time == 2) {
+            	  eventList = Event.findLiveEventsByUserGroup(userGroup);
+              } else if(time == 0) {
+            	  eventList = Event.findLiveEventsByUserGroupAndTimeBefore(userGroup, new Date());
+              } else {
+            	  eventList = Event.findLiveEventsByUserGroupAndTimeAfter(userGroup, presentCutoff);
+              }
+	           
               return(EventDto.fromEventsToDtoArray(eventList));
         } else {
         	if (1 == time) {

@@ -765,7 +765,30 @@ public class Event {
         q.setParameter("userGroup", userGroup);
 
         return q.getResultList();
-    }     
+    }
+    
+    public static List<Event> findLiveEventsByUserGroupAndTimeAfter(UserGroup userGroup, Date date) {
+        // return all events for the sysadmin or unauthenticated users (can not edit anyways)
+        if (userGroup == null )
+            return null;
+
+        TypedQuery<Event> q = entityManager().createQuery("select e from Event e join e.eventUserGroups eug where eug.userGroup = :userGroup and e.live = 1 and e.timeStart > :date ORDER BY  e.timeStart DESC", Event.class);
+        q.setParameter("userGroup", userGroup);
+        q.setParameter("date", date);
+
+        return q.getResultList();
+    }  
+    
+    public static List<Event> findLiveEventsByUserGroupAndTimeBefore(UserGroup userGroup, Date date) {
+        // return all events for the sysadmin or unauthenticated users (can not edit anyways)
+        if (userGroup == null )
+            return null;
+
+        TypedQuery<Event> q = entityManager().createQuery("select e from Event e join e.eventUserGroups eug where eug.userGroup = :userGroup and e.live = 1 and e.timeStart < :date ORDER BY  e.timeStart DESC", Event.class);
+        q.setParameter("userGroup", userGroup);
+        q.setParameter("date", date);
+        return q.getResultList();
+    }  
 
     public static Long countFindSeriesEventsForUser(UserProfile user) {
         // return all events for the sysadmin or unauthenticated users (can not edit anyways)
