@@ -188,17 +188,50 @@
 			});
 	}
 
-	function printAwards(){
-		jQuery('table').css('max-width','500px');
-		jQuery('#search-box').hide();
-		jQuery('#header-nav').hide();
-		jQuery('#awards-nav').hide();
-		window.print();
-		alert("Print Complete!");
-		jQuery('table').css('max-width','none');
-		jQuery('#header-nav').show();
-		jQuery('#awards-nav').show();
-	} 
+	// function printAwards(){
+	// 	jQuery('table').css('max-width','500px');
+	// 	jQuery('#search-box').hide();
+	// 	jQuery('#header-nav').hide();
+	// 	jQuery('#awards-nav').hide();
+	// 	window.print();
+	// 	alert("Print Complete!");
+	// 	jQuery('table').css('max-width','none');
+	// 	jQuery('#header-nav').show();
+	// 	jQuery('#awards-nav').show();
+	// } 
+
+	function printhtml(){
+		window.location = "/bibs-server/events/overallhtml?event="+eventid+"&amp;type="+${eventType.id};
+	}
+	
+	function printawards(){
+		window.location = "/bibs-server/events/printawards?event="+eventid+"&amp;type="+${eventType.id};
+	}
+	
+	function saveCategories(){
+		var name  = jQuery('#saveForm input[name="templateName"]').val();
+		var request = jQuery.ajax({
+			url: "/bibs-server/awardcategorys/template/create?event=${eventType.id}&amp;name="+name,
+			type: 'POST',
+			contentType: 'application/json'
+		})
+		request.done(function( d ) {
+            jQuery("#saveModal").modal('hide');
+            alert("Your awards have been saved.");
+        });
+        request.fail(function( jqXHR, textStatus ) {
+        });
+	}
+    function closeModal(){
+        jQuery('.modal').modal('hide');
+    }
+	function deleteAwardCategory(id){
+		if(confirm("Delete Award Category?")){
+			jQuery(".cat-"+id).remove();
+			sendDelete(id);
+		}
+	}
+
 	function create(){
 		window.location="/bibs-server/awardcategorys/?form&amp;event="+eventid;
 	}
