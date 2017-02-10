@@ -136,6 +136,20 @@
 	var eventid = Math.max(0,GetURLParameter("event"));
 	var gender = Math.max(0,GetURLParameter("gender"));
 
+	var master = GetURLParameter("master");
+	var duplicate = GetURLParameter("duplicate");
+	var gun = GetURLParameter("gun");
+
+	if(master){
+		jQuery("#master").prop("checked", true);
+	}
+	if(duplicate){
+		jQuery("#duplicate").prop("checked", true);
+	}
+	if(gun){
+		jQuery("#gun").prop("checked", true);
+	}
+
 	function onBack(){
 	    window.location="/bibs-server/events/${event.id}"
 	}
@@ -162,6 +176,14 @@
 		var ageMin = Math.max(jQuery('#ageMin').val(),0);
 		var ageMax = Math.max(jQuery('#ageMax').val(),0);
 		fetchAwards(ageMin,ageMax,gender,listSize,"");
+	}
+
+	function update(){
+		var loc = "/bibs-server/events/overall?event="+eventid+"&amp;type=${eventType.id}";
+		if(jQuery('#master').prop('checked')) loc += "&amp;master=true"
+		if(jQuery('#duplicate').prop('checked')) loc += "&amp;duplicate=true"
+		if(jQuery('#gun').prop('checked')) loc += "&amp;gun=true"
+		window.location=loc;
 	}
 	
 	function fetchAwards(ageMin,ageMax,gender,listSize,title){	
