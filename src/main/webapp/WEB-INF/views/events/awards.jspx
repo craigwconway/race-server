@@ -145,7 +145,7 @@
             <div class="ui form" id="templateForm">
                 <div class="field">
                     <div class="ui fluid selection dropdown" id="template-selector">
-                        <input type="hidden" name="type"><!--  --></input>
+                        <input type="hidden" id="template-selection" name="type"><!--  --></input>
                         <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                         <div class="default text">Use Awards Template</div>
                         <div class="menu">
@@ -244,6 +244,10 @@
 		
 		function printawards(){
 			window.location = "/bibs-server/events/printawards?event="+eventid+"&amp;type="+${eventType.id};
+		}
+		function applyTemplate(){
+			var templateId = jQuery('#template-selection').val();
+			window.location = '/bibs-server/events/awards/applytemplate?type=' + ${eventType.id} + '&amp;template=' + templateId;
 		}
 		function saveCategories(){
 			var name  = jQuery('#saveForm input[name="templateName"]').val();

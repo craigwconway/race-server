@@ -180,6 +180,27 @@
 	function printAwards(){
 		window.location = "/bibs-server/events/printclass?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+getParameterByName("gender");
 	}
+	function applyTemplate(){
+		var templateId = jQuery('#template-selection').val();
+		window.location = '/bibs-server/events/awards/applytemplate?type=' + ${eventType.id} + '&amp;template=' + templateId;
+	}
+	function saveCategories(){
+		var name  = jQuery('#saveForm input[name="templateName"]').val();
+		var request = jQuery.ajax({
+			url: "/bibs-server/awardcategorys/template/create?event=${eventType.id}&amp;name="+name,
+			type: 'POST',
+			contentType: 'application/json'
+		})
+		request.done(function( d ) {
+            jQuery("#saveModal").modal('hide');
+            alert("Your awards have been saved.");
+        });
+        request.fail(function( jqXHR, textStatus ) {
+        });
+	}
+    function closeModal(){
+        jQuery('.modal').modal('hide');
+    }
 	
 	function byGender(g){
 		window.location = "/bibs-server/events/ageGenderRankings?event="+eventid+"&amp;type="+${eventType.id}+"&amp;gender="+g;

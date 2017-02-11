@@ -831,6 +831,7 @@ public class EventController {
         uiModel.addAttribute("event", Event.findEvent(eventId));
         uiModel.addAttribute("eventType", EventType.findEventType(eventTypeId));
         uiModel.addAttribute("awardCategoryResults", AwardsImmortalCache.getAgeGenderRankings(eventTypeId, gender));
+        uiModel.addAttribute("templates", AwardsTemplate.findAwardsTemplatesForUser(UserProfileUtil.getLoggedInUserProfile()));
         return "events/ageGenderRankings";
     }
 
