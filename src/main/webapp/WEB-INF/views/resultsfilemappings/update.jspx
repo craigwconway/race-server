@@ -119,14 +119,18 @@
             */
             var errorList = [];
             var errorString = "";
-            if ( values.indexOf("bib") == -1 ) {
-                errorList.push("Bib");
-            }
-            if ( values.indexOf("timeofficial") == -1 ) {
-                errorString += "You don’t have an official time selected! Make sure to add one for runners to see times.\n\n"
-            }
+            var isGenderOrAge = false;
             if ( values.indexOf("gender") == -1 || values.indexOf("age") == -1 ){
                 errorString += "You don’t have gender or age mapped. We will not be able to generate full class rankings for your runners.\n\n";
+                isGenderOrAge = true;
+            }
+            if ( values.indexOf("bib") == -1 ) {
+                errorList.push("Bib");
+                isGenderOrAge = false;
+            }
+            if ( values.indexOf("timeofficial") == -1 ) {
+                errorString += "You don’t have an official time selected! Make sure to add one for runners to see times.\n\n";
+                isGenderOrAge = false;
             }
             else{
                 jQuery('#_map_id').val(values);
@@ -143,9 +147,17 @@
                     }
                 }
 
-                console.log(values.indexOf("gender"), values.indexOf("age"))
-                alert(errorString);
-                return false;
+                if(isGenderOrAge){
+                    console.log(values.indexOf("gender"), values.indexOf("age"))
+                    if (confirm(errorString + " Are you sure you want to continue with your mapping?")) { 
+                        alert("Your import mapping is currently processing.");
+                    }else{
+                        return false;
+                    }
+                }else{
+                    alert(errorString);
+                    return false;
+                }
             }
             // return false;
     	});
