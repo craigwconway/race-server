@@ -129,7 +129,7 @@
         <div class="ui form" id="templateForm">
             <div class="field">
                 <div class="ui fluid selection dropdown" id="template-selector">
-                    <input type="hidden" name="type"><!--  --></input>
+                    <input type="hidden" id="template-selection" name="type"><!--  --></input>
                     <i class="fa fa-caret-down" style="float:right"><!--  --></i>
                     <div class="default text">Use Awards Template</div>
                     <div class="menu">
@@ -149,7 +149,7 @@
 <script>
 	var eventid = GetURLParameter("event");
 	var gender = GetURLParameter("gender");
-	
+	jQuery('#template-selector').dropdown();
 	window.onload=function(){
 		if(${eventType.awardsConfig.allowMedalsInAgeGenderRankings}){
 			jQuery('#duplicate').prop('checked', true);
