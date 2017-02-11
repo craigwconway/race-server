@@ -1948,6 +1948,7 @@ public class EventController {
         uiModel.addAttribute("event", Event.findEvent(eventId));
         uiModel.addAttribute("eventType", EventType.findEventType(eventTypeId));
         uiModel.addAttribute("results", AwardsImmortalCache.getResultsOverall(eventTypeId));
+        uiModel.addAttribute("templates", AwardsTemplate.findAwardsTemplatesForUser(UserProfileUtil.getLoggedInUserProfile()));
         uiModel.addAttribute("build", BuildTypeUtil.getBuild());
         return "events/overall";
     }
