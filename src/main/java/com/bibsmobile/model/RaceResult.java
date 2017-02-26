@@ -107,7 +107,7 @@ public class RaceResult implements Comparable<RaceResult> {
      * Race images tagged with this race result. This is done by associating a bib number.
      * Mapped on a join table called race_result_race_image.
      */
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(/*cascade = CascadeType.ALL*/)
     @JoinTable(name = "race_result_race_image",
         joinColumns = {@JoinColumn(name = "result_id", referencedColumnName="id")},
         inverseJoinColumns = @JoinColumn(name = "image_id", referencedColumnName="id"))
@@ -1930,5 +1930,57 @@ public class RaceResult implements Comparable<RaceResult> {
 	 */
 	public void setCustomFields(Map <String, String> customFields) {
 		this.customFields = customFields;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((age == null) ? 0 : age.hashCode());
+		result = prime * result + (int) (bib ^ (bib >>> 32));
+		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RaceResult other = (RaceResult) obj;
+		if (age == null) {
+			if (other.age != null)
+				return false;
+		} else if (!age.equals(other.age))
+			return false;
+		if (bib != other.bib)
+			return false;
+		if (firstname == null) {
+			if (other.firstname != null)
+				return false;
+		} else if (!firstname.equals(other.firstname))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (lastname == null) {
+			if (other.lastname != null)
+				return false;
+		} else if (!lastname.equals(other.lastname))
+			return false;
+		return true;
 	}
 }
