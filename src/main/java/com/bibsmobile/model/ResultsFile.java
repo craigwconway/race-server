@@ -134,6 +134,15 @@ public class ResultsFile {
         return q;
     }
 
+    public static TypedQuery<ResultsFile> findResultsFilesByEventType(EventType eventType) {
+        if (eventType == null)
+            throw new IllegalArgumentException("The EventType argument is required");
+        EntityManager em = ResultsFile.entityManager();
+        TypedQuery<ResultsFile> q = em.createQuery("SELECT o FROM ResultsFile AS o WHERE o.eventType = :eventType", ResultsFile.class);
+        q.setParameter("eventType", eventType);
+        return q;
+    }
+
     public static TypedQuery<ResultsFile> findResultsFilesByEvent(Event event, String sortFieldName, String sortOrder) {
         if (event == null)
             throw new IllegalArgumentException("The event argument is required");

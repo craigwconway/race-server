@@ -411,6 +411,9 @@
         <button class="ui primary button" style="width:150px" onclick="importAthletesHandler()">
             <i class="fa fa-files-o icon"><!--  --></i>Import
         </button>
+        <button class="ui bibs-gray-1 button" style="background-color:#007ee5" onclick="importAthletesDropboxHandler()">
+            <i class="fa fa-dropbox icon"><!--  --></i>Import with Dropbox
+        </button>
     </div>
 </div>
 
@@ -501,7 +504,6 @@
                 <i class="fa fa-caret-down"><!--  --></i>
                 <div class="menu">
                     <a class="item" href="#" onclick="renderModal('importAthletes')">Import Athletes</a>
-                    <a class="item" href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a>
                     <c:if test="${dropboxUnlink == true}">
                         <a class="item" href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a>
                     </c:if>
@@ -578,7 +580,6 @@
                 <i class="fa fa-caret-down icon"><!--  --></i>
                 <div class="menu">
                     <a class="item" href="#" onclick="renderModal('importAthletes')">Import Athletes</a>
-                    <a class="item" href="#" onclick="redirectDropboxImport();return false;">Import from Dropbox</a>
                     <c:if test="${dropboxUnlink == true}">
                         <a class="item" href="#" onclick="redirectDropboxDeauth();return false;">Unlink Dropbox Account</a>
                     </c:if>
@@ -1527,9 +1528,6 @@
         window.location="/bibs-server/eventitems/"+id +"#schedule";
     }
 
-    function redirectDropboxImport(){
-        window.location="/bibs-server/dropbox/filepicker?eventId=${event.id}";
-    }
     function redirectDropboxDeauth(){
         jQuery.ajax({
             url: "/bibs-server/dropbox/deauth",
@@ -1559,6 +1557,19 @@
         var callUrl = "/bibs-server/resultsfiles?form&amp;event=${event.id}";
         if(type !== null &amp;&amp; type.length > 0){
             window.location = callUrl + '&amp;type=' + type;
+        }else{
+            jQuery('#import-athletes-error-message').show();
+            jQuery('#import-athletes-error-message > span').text('You must select an event type!');
+        }
+    }
+
+        function importAthletesDropboxHandler(){
+        var type = jQuery('#importAthletes-eventTypes').dropdown('get value');
+        console.log(type);
+
+        var callUrl = "/bibs-server/dropbox/filepicker?eventTypeId=";
+        if(type !== null &amp;&amp; type.length > 0){
+            window.location = callUrl + type;
         }else{
             jQuery('#import-athletes-error-message').show();
             jQuery('#import-athletes-error-message > span').text('You must select an event type!');

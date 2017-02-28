@@ -1,107 +1,110 @@
 <div xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
   <jsp:directive.page contentType="text/html;charset=UTF-8" />
   <jsp:output omit-xml-declaration="yes" />
+  <div class="bibs-page bibs-bg-gray-1">
+    <div class="ui basic segment">
+      <div id="filepicker">
+        <div id="filepicker_hdr">
+        </div>
+      </div>
+      <form id="importForm" action="" method="POST">
+        <ol id="filepicker_lst"></ol>
+      </form>
 
-  <div id="filepicker">
-    <div id="filepicker_hdr">
+      <script type="text/javascript">
+        var loading = jQuery("<div />").css({
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          left: 0,
+          top: 0,
+          zIndex: 1000000,  // to be on the safe side
+          "text-align": "center",
+          "background-color": "rgba(1, 1, 1, 0.4)"
+        }).appendTo(jQuery("#filepicker").css("position", "relative"));
+        jQuery('<img src="/bibs-server/resources/images/ajax-loader.gif" alt="Loading" />').appendTo(loading);
+        jQuery(document).ajaxStart(function () {
+          loading.show();
+        })
+        .ajaxStop(function () {
+          loading.hide();
+        });
+
+        function doImport(path) {
+          console.log("Importing " + path);
+          loading.show();
+          jQuery('#importForm').attr('action', '/bibs-server/dropbox/importFile?eventTypeId=${eventTypeId}&amp;dropboxPath=' + path);
+          jQuery('#importForm').submit();
+        }
+
+        function createBreadcrumbLink(text, path) {
+          var pathLink = jQuery('<a href="#">' + text + '</a>');
+          pathLink.click(function () {
+            loadFilePickerWithPath(path);
+          });
+          return pathLink;
+        }
+
+        function createListEntry(entry) {
+          if (entry['directory']) {
+            var listEntry = jQuery('<li><a href="#"><img src="/bibs-server/resources/images/folder48.gif" alt="folder" style="width: 24px; height: 24px;" /> ' + entry['name'] + '</a></li>');
+            listEntry.click(function () {
+                loadFilePickerWithPath(entry['fullPath']);
+            });
+          } else {
+            var listEntry = jQuery('<li><a href="#"><img src="/bibs-server/resources/images/page_white48.gif" alt="file" style="width: 24px; height: 24px;" /> ' + entry['name'] + '</a></li>');
+            listEntry.click(function () {
+                doImport(entry['fullPath']);
+            });
+          }
+          return listEntry;
+        }
+
+        function loadFilePickerWithPath(path) {
+          console.log('loading path: ' + path);
+
+          var total = jQuery.ajax({
+            url: "/bibs-server/dropbox/directory?dropboxPath=" + path,
+            type: "GET",
+            dataType: "json"
+          });
+          total.done(function (data) {
+            jQuery('#filepicker_hdr').empty();
+            jQuery('#filepicker_lst').empty();
+
+            var pathLink = createBreadcrumbLink('> Your Dropbox', '/');
+            jQuery('#filepicker_hdr').append(pathLink);
+
+            // create breadcrumbs at the top
+            var currentPath = '/';
+            var currentPathPartsTmp = data['fullPath'].split('/');
+            for (var i in currentPathPartsTmp) {
+              var pathPart = currentPathPartsTmp[i];
+              if (pathPart.length > 0) {
+                currentPath += pathPart + '/';
+                pathLink = createBreadcrumbLink(pathPart, currentPath);
+                jQuery('#filepicker_hdr').append($('<span> > </span>'));
+                jQuery('#filepicker_hdr').append(pathLink);
+              }
+            }
+
+            // create actual list entries
+            if (data['entries'].length == 0 &amp;&amp; currentPath == '/') {
+              jQuery('#filepicker_lst').append("<li>Your Bibs App folder is empty</li>");
+            } else if (data['entries'].length == 0 &amp;&amp; currentPath != '/') {
+              jQuery('#filepicker_lst').append("<li>This folder is empty</li>");
+            } else {
+              for (var i in data['entries']) {
+                var dirEntry = data['entries'][i];
+                var listEntry = createListEntry(dirEntry);
+                jQuery('#filepicker_lst').append(listEntry);
+              }
+            }
+          });
+        }
+
+        loadFilePickerWithPath("${path}");
+      </script>
     </div>
   </div>
-  <form id="importForm" action="" method="POST">
-    <ol id="filepicker_lst"></ol>
-  </form>
-
-  <script type="text/javascript">
-    var loading = jQuery("<div />").css({
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      left: 0,
-      top: 0,
-      zIndex: 1000000,  // to be on the safe side
-      "text-align": "center",
-      "background-color": "rgba(1, 1, 1, 0.4)"
-    }).appendTo(jQuery("#filepicker").css("position", "relative"));
-    jQuery('<img src="/bibs-server/resources/images/ajax-loader.gif" alt="Loading" />').appendTo(loading);
-    jQuery(document).ajaxStart(function () {
-      loading.show();
-    })
-    .ajaxStop(function () {
-      loading.hide();
-    });
-
-    function doImport(path) {
-      console.log("Importing " + path);
-      loading.show();
-      jQuery('#importForm').attr('action', '/bibs-server/dropbox/importFile?eventId=${eventId}&amp;dropboxPath=' + path);
-      jQuery('#importForm').submit();
-    }
-
-    function createBreadcrumbLink(text, path) {
-      var pathLink = jQuery('<a href="#">' + text + '</a>');
-      pathLink.click(function () {
-        loadFilePickerWithPath(path);
-      });
-      return pathLink;
-    }
-
-    function createListEntry(entry) {
-      if (entry['directory']) {
-        var listEntry = jQuery('<li><a href="#"><img src="/bibs-server/resources/images/folder48.gif" alt="folder" style="width: 24px; height: 24px;" /> ' + entry['name'] + '</a></li>');
-        listEntry.click(function () {
-            loadFilePickerWithPath(entry['fullPath']);
-        });
-      } else {
-        var listEntry = jQuery('<li><a href="#"><img src="/bibs-server/resources/images/page_white48.gif" alt="file" style="width: 24px; height: 24px;" /> ' + entry['name'] + '</a></li>');
-        listEntry.click(function () {
-            doImport(entry['fullPath']);
-        });
-      }
-      return listEntry;
-    }
-
-    function loadFilePickerWithPath(path) {
-      console.log('loading path: ' + path);
-
-      var total = jQuery.ajax({
-        url: "/bibs-server/dropbox/directory?dropboxPath=" + path,
-        type: "GET",
-        dataType: "json"
-      });
-      total.done(function (data) {
-        jQuery('#filepicker_hdr').empty();
-        jQuery('#filepicker_lst').empty();
-
-        var pathLink = createBreadcrumbLink('> Your Dropbox', '/');
-        jQuery('#filepicker_hdr').append(pathLink);
-
-        // create breadcrumbs at the top
-        var currentPath = '/';
-        var currentPathPartsTmp = data['fullPath'].split('/');
-        for (var i in currentPathPartsTmp) {
-          var pathPart = currentPathPartsTmp[i];
-          if (pathPart.length > 0) {
-            currentPath += pathPart + '/';
-            pathLink = createBreadcrumbLink(pathPart, currentPath);
-            jQuery('#filepicker_hdr').append($('<span> > </span>'));
-            jQuery('#filepicker_hdr').append(pathLink);
-          }
-        }
-
-        // create actual list entries
-        if (data['entries'].length == 0 &amp;&amp; currentPath == '/') {
-          jQuery('#filepicker_lst').append("<li>Your Bibs App folder is empty</li>");
-        } else if (data['entries'].length == 0 &amp;&amp; currentPath != '/') {
-          jQuery('#filepicker_lst').append("<li>This folder is empty</li>");
-        } else {
-          for (var i in data['entries']) {
-            var dirEntry = data['entries'][i];
-            var listEntry = createListEntry(dirEntry);
-            jQuery('#filepicker_lst').append(listEntry);
-          }
-        }
-      });
-    }
-
-    loadFilePickerWithPath("${path}");
-  </script>
 </div>

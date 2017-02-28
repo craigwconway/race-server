@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
@@ -203,13 +204,13 @@ public class DropBoxController {
     }
 
     @RequestMapping(value = "/" + START_URL, method = RequestMethod.GET)
-    public void authorize(@RequestParam(value = "eventId", required = false) Long eventId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void authorize(@RequestParam(value = "eventTypeId", required = false) Long eventTypeId, HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserProfile up = UserProfileUtil.getLoggedInUserProfile();
         if (up == null) {
             response.sendError(401);
             return;
         }
-        request.getSession().setAttribute("dropboxEventId", eventId);
+        request.getSession().setAttribute("dropboxEventTypeId", eventTypeId);
         if (up.getDropboxAccessToken() != null) {
             response.sendRedirect(this.getDropboxUrl(request, DropBoxController.REDIRECT_URL));
             return;
@@ -252,10 +253,10 @@ public class DropBoxController {
             up.persist();
         }
 
-        Long eventId = (Long) request.getSession().getAttribute("dropboxEventId");
+        Long eventTypeId = (Long) request.getSession().getAttribute("dropboxEventTypeId");
         String redirectUrl = null;
-        if (eventId != null)
-            redirectUrl = this.getDropboxUrl(request, PICKER_URL + "?eventId=" + eventId);
+        if (eventTypeId != null)
+            redirectUrl = this.getDropboxUrl(request, PICKER_URL + "?eventTypeId=" + eventTypeId);
         else
             redirectUrl = this.getUrl(request, "");
         response.sendRedirect(redirectUrl);
@@ -284,10 +285,10 @@ public class DropBoxController {
     }
 
     @RequestMapping(value = "/" + PICKER_URL, method = RequestMethod.GET)
-    public String filepicker(@RequestParam("eventId") Long eventId, @RequestParam(value = "dropboxPath", required = false) String dropboxPath, Model uiModel,
+    public String filepicker(@RequestParam("eventTypeId") Long eventTypeId, @RequestParam(value = "dropboxPath", required = false) String dropboxPath, Model uiModel,
             HttpServletRequest request, HttpServletResponse response) {
         if (UserProfileUtil.getLoggedInDropboxAccessToken() == null) {
-            return "redirect:" + this.getDropboxUrl(request, START_URL + "?eventId=" + eventId);
+            return "redirect:" + this.getDropboxUrl(request, START_URL + "?eventTypeId=" + eventTypeId);
         }
         // check access token
         try {
@@ -298,10 +299,10 @@ public class DropBoxController {
             up.setDropboxId(null);
             up.setDropboxAccessToken(null);
             up.persist();
-            return "redirect:" + this.getDropboxUrl(request, START_URL + "?eventId=" + eventId);
+            return "redirect:" + this.getDropboxUrl(request, START_URL + "?eventTypeId=" + eventTypeId);
         }
         // render view
-        uiModel.addAttribute("eventId", eventId);
+        uiModel.addAttribute("eventTypeId", eventTypeId);
         uiModel.addAttribute("path", ((dropboxPath == null || dropboxPath.isEmpty()) ? "/" : dropboxPath));
         return "dropbox/filepicker";
     }
@@ -326,10 +327,13 @@ public class DropBoxController {
 
     @ResponseBody
     @RequestMapping(value = "/" + IMPORT_URL, method = RequestMethod.POST)
-    public ResponseEntity<String> importFile(@RequestParam("eventId") Long eventId, @RequestParam("dropboxPath") String dropboxPath, HttpServletRequest request,
+    public ResponseEntity<String> importFile(@RequestParam("eventTypeId") Long eventTypeId, @RequestParam("dropboxPath") String dropboxPath, HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         // sanity check arguments
-        Event event = Event.findEvent(eventId);
+        EventType eventType = EventType.findEventType(eventTypeId);
+        if (eventType == null)
+            return new ResponseEntity<>("unknown event type", HttpStatus.BAD_REQUEST);
+        Event event = eventType.getEvent();
         if (event == null)
             return new ResponseEntity<>("unknown event", HttpStatus.BAD_REQUEST);
         if (dropboxPath.isEmpty())
@@ -338,14 +342,14 @@ public class DropBoxController {
         // get dropbox credentials
         String accessToken = UserProfileUtil.getLoggedInDropboxAccessToken();
         if (accessToken == null) {
-            response.sendRedirect(this.getDropboxUrl(request, START_URL + "?eventId=" + eventId));
+            response.sendRedirect(this.getDropboxUrl(request, START_URL + "?eventTypeId=" + eventTypeId));
             return new ResponseEntity<>("", HttpStatus.UNAUTHORIZED);
         }
 
         List<String> emptyMap = Collections.emptyList();
         ResultsImport tmpImport;
         try {
-            tmpImport = ResultsFileUtil.importDropbox(UserProfileUtil.getLoggedInUserProfile(), Event.findEvent(eventId), dropboxPath, emptyMap, false);
+            tmpImport = ResultsFileUtil.importDropbox(UserProfileUtil.getLoggedInUserProfile(), event, EventType.findEventType(eventTypeId), dropboxPath, emptyMap, false);
         } catch (InvalidFormatException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

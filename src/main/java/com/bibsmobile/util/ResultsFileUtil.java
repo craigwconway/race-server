@@ -24,6 +24,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.bibsmobile.controller.ResultsFileMappingController;
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.ResultsFile;
 import com.bibsmobile.model.ResultsFileMapping;
 import com.bibsmobile.model.ResultsImport;
@@ -78,7 +79,7 @@ public final class ResultsFileUtil {
      * @throws IOException
      * @throws InvalidFormatException
      */
-    public static ResultsImport importDropbox(UserProfile user, Event event, String dropboxPath, List<String> map, boolean skipHeaders) throws IOException, InvalidFormatException {
+    public static ResultsImport importDropbox(UserProfile user, Event event, EventType eventType, String dropboxPath, List<String> map, boolean skipHeaders) throws IOException, InvalidFormatException {
         if (user == null || event == null || dropboxPath == null || map == null)
             throw new IllegalArgumentException("No null arguments permitted");
 
@@ -99,7 +100,7 @@ public final class ResultsFileUtil {
 
         // disable automatic updates on all other files associated with this
         // event
-        for (ResultsFile rf : ResultsFile.findResultsFilesByEvent(event).getResultList()) {
+        for (ResultsFile rf : ResultsFile.findResultsFilesByEventType(eventType).getResultList()) {
             if (rf.getAutomaticUpdates()) {
                 rf.setAutomaticUpdates(false);
                 rf.persist();
@@ -111,6 +112,7 @@ public final class ResultsFileUtil {
         file.setName(destFile.getName());
         file.setContentType(ResultsFileUtil.guessMimeType(destFile));
         file.setEvent(event);
+        file.setEventType(eventType);
         file.setCreated(new Date());
         file.setFilesize(destFile.length());
         file.setFilePath(destFile.getAbsolutePath());

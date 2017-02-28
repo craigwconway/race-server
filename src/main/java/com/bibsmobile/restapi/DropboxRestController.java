@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bibsmobile.model.Event;
+import com.bibsmobile.model.EventType;
 import com.bibsmobile.model.ResultsImport;
 import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.util.ResultsFileUtil;
@@ -31,7 +32,9 @@ public class DropboxRestController {
             if (user == null)
                 return SpringJSONUtil.returnErrorMessage("not logged in", HttpStatus.UNAUTHORIZED);
             DropboxImportJSON parsedJson = mapper.readValue(body, DropboxImportJSON.class);
-            rimport = ResultsFileUtil.importDropbox(user, Event.findEvent(parsedJson.getEvent()), parsedJson.getDropboxPath(), parsedJson.getMap(), parsedJson.isSkipHeaders());
+            EventType eventType = EventType.findEventType(parsedJson.getEventType());
+            Event event = eventType.getEvent();
+            rimport = ResultsFileUtil.importDropbox(user, event, eventType, parsedJson.getDropboxPath(), parsedJson.getMap(), parsedJson.isSkipHeaders());
             if (rimport.getErrors() > 0)
                 return SpringJSONUtil.returnErrorMessage(rimport.getErrors() + " errors while importing", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -41,21 +44,21 @@ public class DropboxRestController {
     }
 
     private static class DropboxImportJSON {
-        private final Long event;
+        private final Long eventType;
         private final String dropboxPath;
         private final boolean skipHeaders;
         private final List<String> map;
 
-        private DropboxImportJSON(Long event, String dropboxPath, boolean skipHeaders, List<String> map) {
+        private DropboxImportJSON(Long eventType, String dropboxPath, boolean skipHeaders, List<String> map) {
             super();
-            this.event = event;
+            this.eventType = eventType;
             this.dropboxPath = dropboxPath;
             this.skipHeaders = skipHeaders;
             this.map = map;
         }
 
-        public Long getEvent() {
-            return this.event;
+        public Long getEventType() {
+            return this.eventType;
         }
 
         public String getDropboxPath() {
