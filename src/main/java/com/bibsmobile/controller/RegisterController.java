@@ -38,6 +38,7 @@ import com.bibsmobile.model.UserProfile;
 import com.bibsmobile.model.dto.AccountCreationDto;
 import com.bibsmobile.util.SpringJSONUtil;
 import com.bibsmobile.util.UserProfileUtil;
+import com.bibsmobile.util.MailgunUtil;
 import com.stripe.Stripe;
 import com.stripe.exception.APIConnectionException;
 import com.stripe.exception.APIException;
@@ -186,6 +187,8 @@ public class RegisterController {
         userGroupUserAuthority.persist();
 
         authenticateRegisteredUser(user);
+
+		if(user.getEmail() != null) MailgunUtil.sendHTML(user.getEmail(), "Welcome to bibs!", MailgunUtil.ACCOUNT_CREATE_RECEIPT);
 
 		return "register/account";
 	}
