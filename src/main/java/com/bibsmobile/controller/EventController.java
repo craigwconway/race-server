@@ -1375,7 +1375,7 @@ public class EventController {
               if(time == null || time == 2) {
             	  eventList = Event.findLiveEventsByUserGroup(userGroup);
               } else if(time == 0) {
-            	  eventList = Event.findLiveEventsByUserGroupAndTimeBefore(userGroup, new Date());
+            	  eventList = Event.findLiveEventsByUserGroupAndTimeBefore(userGroup, presentCutoff);
               } else {
             	  eventList = Event.findLiveEventsByUserGroupAndTimeAfter(userGroup, presentCutoff);
               }
