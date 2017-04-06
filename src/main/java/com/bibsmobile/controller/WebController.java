@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Months;
@@ -69,7 +70,7 @@ public class WebController {
     public String home(Model uiModel, HttpServletRequest request,
     		@RequestParam(value = "lon", required = false) Double longitude,
     		@RequestParam(value = "lat", required = false) Double latitude,
-    		@RequestParam(value = "worldwide", required = false, defaultValue="false") boolean ignoreLocation,
+    		@RequestParam(value = "worldwide", required = false, defaultValue="true") boolean ignoreLocation,
     		@RequestParam(value = "name", required = false) String name,
     		@RequestParam(value = "page", required = false, defaultValue ="1") int page) {
     	// First, check for an existing session. We do not want to load a session for anonymous users.
@@ -87,6 +88,7 @@ public class WebController {
     		searchLon = (Double) session.getAttribute(SESSION_ATTR_LONGITUDE);
     		searchLat = (Double) session.getAttribute(SESSION_ATTR_LATITUDE);
     	}
+		/*
     	EventSearchCriteria searchCriteria = new EventSearchCriteria();
     	if(searchLon != null && searchLat != null && !ignoreLocation) {
     		searchCriteria.addGeospatialCriteria(searchLon, searchLat);
@@ -99,7 +101,11 @@ public class WebController {
         if(name != null) {
         	uiModel.addAttribute("name", name);
         }
+		*/
+		Date presentCutoff = DateUtils.addDays(new Date(), -2);
+		List<Event> events = Event.findLiveEventsByTimeAfterPaginated(presentCutoff, page, 4);
         uiModel.addAttribute("page", page);
+		uiModel.addAttribute("events", events);
         return "r/home";
     }	
 	

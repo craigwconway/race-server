@@ -778,6 +778,15 @@ public class Event {
 
         return q.getResultList();
     }  
+
+    public static List<Event> findLiveEventsByTimeAfterPaginated(Date date, int page, int size) {
+        TypedQuery<Event> q = entityManager().createQuery("select e from Event e where e.live = 1 and e.timeStart > :date ORDER BY  e.timeStart ASC", Event.class);
+        q.setFirstResult((page - 1) * size);
+        q.setMaxResults(size);
+        q.setParameter("date", date);
+
+        return q.getResultList();
+    }      
     
     public static List<Event> findLiveEventsByUserGroupAndTimeBefore(UserGroup userGroup, Date date) {
         // return all events for the sysadmin or unauthenticated users (can not edit anyways)
