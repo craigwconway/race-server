@@ -21,6 +21,11 @@ import com.bibsmobile.model.Series;
 import com.bibsmobile.service.EventSearchCriteria.GeospatialCriteria;
 import com.bibsmobile.service.EventSearchCriteria.NameCriteria;
 
+import com.bibsmobile.model.dto.EventViewDto;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 /**
  * Service for event business stuff
  * @author galen
@@ -94,8 +99,32 @@ public class EventService {
     			.ofLatitude(latitude)
     			.andLongitude(longitude)
     			.createQuery();
-    	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+    	List<Event> events =  fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+		em.getTransaction().commit();
+		em.close();
+		return events;
     }
+
+	@Transactional
+    public ResponseEntity<String> geospatialSearchDto(double longitude, double latitude, double radius) {
+    	EntityManager em = emf.createEntityManager();
+    	FullTextEntityManager fullTextEntityManager = 
+    		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+    	em.getTransaction().begin();
+    	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
+    	
+    	org.apache.lucene.search.Query luceneQuery = builder
+    			.spatial().within(radius, Unit.KM)
+    			.ofLatitude(latitude)
+    			.andLongitude(longitude)
+    			.createQuery();
+    	List<Event> events =  fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+		ResponseEntity<String> dto = new ResponseEntity(EventViewDto.fromEventsToDtoArray(events), HttpStatus.OK);
+		em.getTransaction().commit();
+		em.close();
+		return dto;
+    }
+    
     
     @Transactional
     public List<Event> eventTypeDistanceSearch(String distance) {

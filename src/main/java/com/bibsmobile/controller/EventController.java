@@ -1338,7 +1338,7 @@ public class EventController {
     	List <Event> results = null;
     	if(longitude != null && latitude != null) {
     		System.out.println(eventService.geospatialSearch(longitude, latitude, radius));
-    		return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(eventService.geospatialSearch(longitude, latitude, radius)), HttpStatus.OK);
+    		return eventService.geospatialSearchDto(longitude, latitude, radius);
     	}
     	if(name != null) {
     		results = eventService.nameSearch(name);
