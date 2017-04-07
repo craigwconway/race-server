@@ -4,6 +4,7 @@
 package com.bibsmobile.service;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -171,6 +172,33 @@ public class EventService {
     			.createQuery();
     	return fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
     }
+
+	@Transactional
+    public ResponseEntity<String> nameSearchInSeriesDto(String name, Series series) {
+    	EntityManager em = emf.createEntityManager();
+    	FullTextEntityManager fullTextEntityManager = 
+    		    org.hibernate.search.jpa.Search.getFullTextEntityManager(em);
+    	em.getTransaction().begin();
+    	QueryBuilder builder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity(Event.class).get();
+    	
+    	org.apache.lucene.search.Query luceneQuery = builder.keyword()
+    			.fuzzy()
+    			.onField("name")
+    			.matching(name)
+    			.createQuery();
+    	List<Event> events =  fullTextEntityManager.createFullTextQuery(luceneQuery, Event.class).getResultList();
+		List<Event> responses = new ArrayList<Event>();
+		for(Event event : events) {
+    		if(event.getSeries() != null && event.getSeries().getId() == series.getId()) {
+    			responses.add(event);
+    		}
+		}
+		ResponseEntity<String> dto = new ResponseEntity(EventViewDto.fromEventsToDtoArray(responses), HttpStatus.OK);
+		em.getTransaction().commit();
+		em.close();
+		return dto;
+    }
+
     
     @Transactional
     public List<Event> distanceRangeQuery(Long low, Long high) {

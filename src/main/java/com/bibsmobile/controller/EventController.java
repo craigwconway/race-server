@@ -285,14 +285,8 @@ public class EventController {
     		SpringJSONUtil.returnErrorMessage("MissingSeriesId", HttpStatus.BAD_REQUEST);
     	}
     	Series series = Series.findSeries(seriesId);
-    	List<Event> rawList = eventService.nameSearch(eventName);
-    	List<Event> eventList = new ArrayList<Event>();
-    	for(Event e :rawList) {
-    		if(e.getSeries() != null && e.getSeries().getId() == series.getId()) {
-    			eventList.add(e);
-    		}
-    	}
-    	return new ResponseEntity<String>(EventDto.fromEventsToDtoArray(eventList), HttpStatus.OK);
+
+    	return eventService.nameSearchInSeriesDto(eventName, series);
     }
 
     @RequestMapping(value = "/webappid", method = RequestMethod.GET)
