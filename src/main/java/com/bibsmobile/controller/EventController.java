@@ -1317,6 +1317,7 @@ public class EventController {
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> searchEvent(
+            @RequestParam(value = "time", required = false, defaultValue = "ALL") String time,
     		@RequestParam(value = "startdate", required = false) Date startDate,
     		@RequestParam(value = "enddate", required = false) Date endDate,
     		@RequestParam(value = "name", required = false) String name,
@@ -1331,8 +1332,16 @@ public class EventController {
 
     	List <Event> results = null;
     	if(longitude != null && latitude != null) {
-    		System.out.println(eventService.geospatialSearch(longitude, latitude, radius));
-    		return eventService.geospatialSearchDto(longitude, latitude, radius);
+            if(StringUtils.equalsIgnoreCase(time, "past")) {
+                System.out.println("Searching past events");
+                return eventService.geospatialSearchTimeDto(longitude, latitude, radius, false);
+            } else if(StringUtils.equalsIgnoreCase(time, "future")) {
+                System.out.println("Searching future events");
+                return eventService.geospatialSearchTimeDto(longitude, latitude, radius, true);
+            } else {
+                System.out.println(eventService.geospatialSearch(longitude, latitude, radius));
+                return eventService.geospatialSearchDto(longitude, latitude, radius);
+            }
     	}
     	if(name != null) {
     		results = eventService.nameSearch(name);
